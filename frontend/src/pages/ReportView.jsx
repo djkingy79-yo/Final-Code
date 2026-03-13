@@ -18,7 +18,6 @@ import {
   ChevronRight,
   Sparkles,
   ShieldCheck,
-  TrendingUp,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -80,16 +79,6 @@ const parseAnalysisSections = (analysis = "") => {
   return sections.length > 0 ? sections : [{ id: "report-section-1", title: "Analysis", content: text }];
 };
 
-const getReadiness = (score) => {
-  if (score >= 75) {
-    return { label: "Filing-Ready", tone: "text-emerald-700", bar: "bg-emerald-500", note: "Strong appellate pathway with actionable grounds." };
-  }
-  if (score >= 50) {
-    return { label: "Evidence Gap", tone: "text-amber-700", bar: "bg-amber-500", note: "Promising grounds present, but supporting material should be strengthened." };
-  }
-  return { label: "Urgent Build", tone: "text-rose-700", bar: "bg-rose-500", note: "Substantial preparation required before filing strategy is finalised." };
-};
-
 const MarkdownBlock = ({ text, testId }) => (
   <ReactMarkdown
     remarkPlugins={[remarkGfm]}
@@ -123,7 +112,6 @@ const ReportView = () => {
   const [report, setReport] = useState(null);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
-  const [legacyReports, setLegacyReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -140,13 +128,6 @@ const ReportView = () => {
       setReport(reportRes.data);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
-
-      try {
-        const legacyRes = await axios.get(`${API}/reports/embedded-legacy`);
-        setLegacyReports(legacyRes.data?.reports || []);
-      } catch (legacyError) {
-        setLegacyReports([]);
-      }
     } catch (error) {
       toast.error("Failed to load report");
       navigate(`/cases/${caseId}`);
@@ -222,9 +203,6 @@ const ReportView = () => {
   const documentsCount = report?.content?.document_count || 0;
   const eventsCount = report?.content?.event_count || 0;
   const strongGrounds = grounds.filter((g) => g.strength === "strong").length;
-  const moderateGrounds = grounds.filter((g) => g.strength === "moderate").length;
-  const caseStrength = Math.min(100, strongGrounds * 30 + moderateGrounds * 18 + Math.min(documentsCount * 2, 20) + Math.min(eventsCount, 10));
-  const readiness = getReadiness(caseStrength);
 
   const sentenceSummary = extractSentenceSummary(analysisText);
   const offenceLabel = caseData?.offence_type || titleFromSnake(caseData?.offence_category);
@@ -249,7 +227,6 @@ const ReportView = () => {
     { label: "Sentence", value: sentenceSummary, icon: Scale, testId: "report-summary-sentence" },
     { label: "Crime / Offence", value: offenceLabel, icon: Gavel, testId: "report-summary-offence" },
     { label: "Grounds of Merit", value: String(grounds.length), icon: Sparkles, testId: "report-summary-grounds" },
-    { label: "Case Strength", value: `${caseStrength}/100`, icon: TrendingUp, testId: "report-summary-strength" },
     {
       label: "Court & State",
       value: `${caseData?.court || "Court N/A"} • ${(caseData?.state || "NSW").toUpperCase()}`,
@@ -335,21 +312,6 @@ const ReportView = () => {
                 <SummaryPill key={item.label} label={item.label} value={item.value} icon={item.icon} testId={item.testId} />
               ))}
             </div>
-
-            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-4" data-testid="appeal-readiness-gauge">
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <p className="text-xs uppercase tracking-wide text-slate-500">Appeal Readiness Gauge</p>
-                <p className={`text-sm font-semibold ${readiness.tone}`} data-testid="appeal-readiness-label">{readiness.label}</p>
-              </div>
-              <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden" data-testid="appeal-readiness-bar-track">
-                <div
-                  className={`h-full ${readiness.bar} transition-all duration-700`}
-                  style={{ width: `${caseStrength}%` }}
-                  data-testid="appeal-readiness-bar"
-                />
-              </div>
-              <p className="text-xs text-slate-600 mt-2" data-testid="appeal-readiness-note">{readiness.note}</p>
-            </div>
           </section>
 
           <section className="mb-8 rounded-2xl border border-slate-200 bg-slate-900 text-white p-5 sm:p-6" data-testid="premium-value-architecture-section">
@@ -428,54 +390,6 @@ const ReportView = () => {
               </article>
             ))}
           </section>
-
-          {legacyReports.length > 0 && (
-            <section className="mt-10 rounded-2xl border-2 border-amber-300 bg-amber-50/40 p-5 sm:p-6" data-testid="embedded-legacy-reports-section">
-              <div className="mb-4">
-                <p className="text-xs uppercase tracking-widest text-amber-700 font-semibold mb-1">Recovered Reports</p>
-                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
-                  Embedded High-Detail Reports From Your History
-                </h3>
-                <p className="text-sm text-slate-700 mt-1">
-                  We found your strongest previous reports and embedded them here so the quality/detail is not lost.
-                </p>
-              </div>
-
-              <div className="space-y-4" data-testid="embedded-legacy-reports-list">
-                {legacyReports.map((legacy, idx) => (
-                  <article key={`${legacy.report_id}-${idx}`} className="rounded-xl border border-amber-200 bg-white p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <div>
-                        <h4 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
-                          {legacy.title || "Recovered Report"}
-                        </h4>
-                        <p className="text-xs text-slate-500">Generated: {formatDate(legacy.generated_at)}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={reportTypeConfig[legacy.report_type]?.cls || reportTypeConfig.quick_summary.cls}>
-                          {reportTypeConfig[legacy.report_type]?.label || legacy.report_type}
-                        </Badge>
-                        {legacy.case_id && legacy.report_id && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigate(`/cases/${legacy.case_id}/reports/${legacy.report_id}`)}
-                            data-testid={`open-embedded-legacy-${legacy.report_id}`}
-                          >
-                            Open Original
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="max-h-[360px] overflow-y-auto pr-2 border-t border-slate-100 pt-3" data-testid={`embedded-legacy-content-${legacy.report_id}`}>
-                      <MarkdownBlock text={legacy.analysis || ""} testId={`embedded-legacy-md-${legacy.report_id}`} />
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          )}
 
           <footer className="mt-12 pt-8 border-t border-slate-200 text-center text-sm text-slate-500" data-testid="report-footer">
             <p>This is a full in-browser report view — no PDF download required to read all sections.</p>
