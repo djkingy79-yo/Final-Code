@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
-  HelpCircle, TrendingUp, CheckSquare, BookOpen,
-  MessageSquare, Users, Search
+  BookOpen,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -34,16 +34,11 @@ import { API } from "../App";
 import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
-import CaseStrengthMeter from "../components/CaseStrengthMeter";
-import DeadlineTracker from "../components/DeadlineTracker";
-import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
 import LegalFrameworkViewer from "../components/LegalFrameworkViewer";
 import DocumentsSection from "../components/DocumentsSection";
 import NotesSection from "../components/NotesSection";
 import ReportsSection from "../components/ReportsSection";
-import CaseComparison from "../components/CaseComparison";
-import ContradictionFinder from "../components/ContradictionFinder";
 import QuickExport from "../components/QuickExport";
 import DocumentBundler from "../components/DocumentBundler";
 
@@ -128,7 +123,7 @@ const CaseDetail = ({ user }) => {
   const [grounds, setGrounds] = useState([]);
   const [groundsCount, setGroundsCount] = useState(0);
   const [groundsUnlocked, setGroundsUnlocked] = useState(false);
-  const [groundsUnlockPrice, setGroundsUnlockPrice] = useState(50.00);
+  const [groundsUnlockPrice, setGroundsUnlockPrice] = useState(99.00);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [activeTab, setActiveTab] = useState("documents");
@@ -213,7 +208,7 @@ const CaseDetail = ({ user }) => {
         setGrounds(groundsData.grounds || []);
         setGroundsCount(groundsData.count || 0);
         setGroundsUnlocked(groundsData.is_unlocked || false);
-        setGroundsUnlockPrice(groundsData.unlock_price || 50.00);
+        setGroundsUnlockPrice(groundsData.unlock_price || 99.00);
       } else {
         setGrounds([]);
         setGroundsCount(0);
@@ -633,14 +628,6 @@ const CaseDetail = ({ user }) => {
                   <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Legal
                 </TabsTrigger>
-                <TabsTrigger value="contradictions" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-contradictions">
-                  <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">Contradictions</span><span className="sm:hidden">Scan</span>
-                </TabsTrigger>
-                <TabsTrigger value="progress" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-progress">
-                  <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  Progress
-                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -829,59 +816,13 @@ const CaseDetail = ({ user }) => {
             />
           </TabsContent>
 
-          {/* Legal Framework Tab */}
+          {/* Legal Framework Tab — DO NOT UNDO */}
           <TabsContent value="legal" className="space-y-6">
             <LegalFrameworkViewer 
               offenceCategory={caseData?.offence_category}
               offenceType={caseData?.offence_type}
               state={caseData?.state}
             />
-          </TabsContent>
-
-          {/* Contradictions Tab */}
-          <TabsContent value="contradictions" className="space-y-6">
-            <ContradictionFinder caseId={caseId} documents={documents} />
-          </TabsContent>
-
-          {/* Progress Tab */}
-          <TabsContent value="progress" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Case Strength Meter */}
-              <CaseStrengthMeter caseId={caseId} />
-              
-              {/* Deadline Tracker */}
-              <DeadlineTracker caseId={caseId} />
-            </div>
-            
-            {/* Case Comparison */}
-            <CaseComparison caseId={caseId} />
-            
-            {/* Appeal Checklist */}
-            <AppealChecklist caseId={caseId} />
-            
-            {/* Quick Links */}
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex flex-wrap gap-3">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate('/resources')}
-                    className="flex items-center gap-2"
-                  >
-                    <Users className="w-4 h-4" />
-                    Resource Directory
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate('/help')}
-                    className="flex items-center gap-2"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                    Help & Glossary
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </main>

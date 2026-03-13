@@ -44,12 +44,13 @@ const FEATURE_INFO = {
     description: "The ultimate forensic-level analysis — a barrister's primary working document.",
     benefits: [
       "Everything in the Full Report, plus:",
-      "8-12 similar cases with full AustLII decision links",
-      "Complete appeal filing guide for ALL court levels",
-      "Witness credibility analysis",
-      "Sentencing comparison with similar cases",
+      "12-15 similar cases with AustLII decision links",
+      "Complete step-by-step appeal filing guide for ALL court levels",
+      "Detailed outcome analysis for each comparative case",
+      "Sentencing comparison with before/after sentence modelling",
       "Complete appeal strategy with oral & written submission advice",
-      "Risk assessment and cost estimates"
+      "Links to required appeal forms and court registries",
+      "Barrister conference dossier"
     ]
   }
 };

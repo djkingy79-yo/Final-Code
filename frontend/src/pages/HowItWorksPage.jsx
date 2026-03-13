@@ -55,13 +55,13 @@ const HowItWorksPage = () => {
     },
     {
       title: "Full Detailed Report",
-      price: "$29 AUD",
+      price: "$150 AUD",
       note: "Premium legal analysis with strategic framing and filing guidance.",
       tone: "border-amber-300 bg-amber-50 dark:bg-amber-900/20",
     },
     {
       title: "Extensive Log Report",
-      price: "$39 AUD",
+      price: "$200 AUD",
       note: "Barrister-level depth with comparative sentencing and options matrix.",
       tone: "border-blue-300 bg-blue-50 dark:bg-blue-900/20",
     },

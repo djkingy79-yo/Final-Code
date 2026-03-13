@@ -385,9 +385,9 @@ class Payment(BaseModel):
 
 # Payment pricing configuration
 FEATURE_PRICES = {
-    "grounds_of_merit": {"price": 50.00, "name": "Unlock Grounds of Merit Details"},
-    "full_report": {"price": 29.00, "name": "Full Detailed Report"},
-    "extensive_report": {"price": 39.00, "name": "Extensive Log Report"}
+    "grounds_of_merit": {"price": 99.00, "name": "Unlock Grounds of Merit Details"},
+    "full_report": {"price": 150.00, "name": "Full Detailed Report"},
+    "extensive_report": {"price": 200.00, "name": "Extensive Log Report"}
 }
 
 # PayPal Configuration
@@ -3602,12 +3602,16 @@ For each top ground provide:
 ## OVERALL APPEAL OUTLOOK
 Give: Strong / Moderate / Needs Further Development + concise reasoning.
 
-## WHAT THE FULL REPORT ($29) ADDS
+## WHAT THE FULL REPORT ($150) ADDS
 - same-depth premium analysis standard as extensive tier
-- comparative sentencing table with reduction pathways
+- comparative sentencing table with reduction pathways and links to real cases
 - common grounds benchmark table for this offence type
 - full options matrix (quash, retrial, downgrade, sentence reduction, dismissal)
 - aggressive hearing strategy and submission playbook
+- step-by-step guide on how to start the appeal process
+- links to required appeal forms for the relevant court
+- links to relevant legislation sections on AustLII
+- detailed explanation of how each ground could assist in a successful appeal
 
 IMPORTANT:
 - No cost discussion.
@@ -3617,7 +3621,7 @@ IMPORTANT:
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a PAID Full Detailed Report ($29 AUD). This must be as detailed as the extensive tier, with assertive appellate strategy, professional courtroom framing, and plain-English action notes."""
+You are generating a PAID Full Detailed Report ($150 AUD). This must be as detailed as the extensive tier, with assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible."""
         user_prompt = f"""Create a FULL DETAILED LEGAL ANALYSIS REPORT for this {category_name.lower()} appeal case.
 
 {case_context}
@@ -3637,12 +3641,24 @@ Chronological reconstruction with event date, source anchor, and legal significa
 For each document/source: key extracts, reliability context, probative value, and appellate relevance.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
-For each viable ground provide legal threshold, supporting material, likely Crown response, aggressive defence reply strategy, and viability rating.
+For each viable ground provide:
+- Legal threshold and supporting material
+- Likely Crown response and aggressive defence reply strategy
+- Viability rating (Strong / Moderate / Weak)
+- **How this ground could assist in a successful appeal** — explain the practical impact if established (e.g., conviction quashed, sentence reduced, retrial ordered)
 
 ## 5. COMPARATIVE SENTENCING TABLE (MANDATORY)
 Provide a markdown table with at least 8 comparable outcomes.
 Required columns:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
+
+For each case in the table, include the AustLII search URL in this format where possible:
+- Search: [https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+
+After the table, provide a **Detailed Outcome Analysis** paragraph for each row explaining:
+- What sentence was originally imposed and why
+- What the appeal court decided and the resulting sentence
+- How the reduction was achieved and what grounds succeeded
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE (MANDATORY)
 Provide a markdown table showing which grounds are most common for this crime category.
@@ -3654,51 +3670,83 @@ First provide a markdown table with:
 | Option | Legal Threshold | Likelihood in This Matter | Core Evidence Trigger | Practical Result |
 
 Then provide detailed analysis for each option, including these pathways:
-- Conviction quashed
-- Retrial ordered
-- Conviction substituted/downgraded (for example, murder to manslaughter where legally sustainable)
-- Sentence reduced as manifestly excessive
-- Appeal dismissed
+- Conviction quashed — detailed outcome explanation
+- Retrial ordered — what happens next
+- Conviction substituted/downgraded (for example, murder to manslaughter where legally sustainable) — resulting sentence impact
+- Sentence reduced as manifestly excessive — before/after sentence comparison
+- Appeal dismissed — consequences and further options
 
-When discussing sentence reduction pathways, show explicit before/after formatting when possible:
+When discussing sentence reduction pathways, show explicit before/after formatting:
 Original sentence/NPP -> revised sentence/NPP (for example 30/22.5 -> 18/11).
 
 ## 8. PRECEDENT OUTCOME MATRIX (10-12 CASES)
-For each case include citation, factual similarity, hearing outcome, extracted principle, and AustLII-style decision path.
+For each case include citation, factual similarity, hearing outcome, extracted principle.
+Include AustLII search link: [Search NSWCCA on AustLII](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
 
 ## 9. STATUTORY + DOCTRINAL FRAMEWORK MAP
 Section-level mapping of all key Acts and appellate principles applicable to this matter.
+For each Act, include the AustLII link: [View on AustLII](https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/)
 
-## 10. COURT PATHWAY OPERATIONS PLAYBOOK
+## 10. HOW TO START YOUR APPEAL — STEP BY STEP GUIDE (MANDATORY)
+Provide a numbered step-by-step guide specific to {state_info.get('name', 'NSW')}:
+1. Obtain trial transcripts and exhibits from court registry
+2. Identify grounds of appeal from the material
+3. Lodge Notice of Intention to Appeal (within time limit)
+4. Prepare detailed written submissions
+5. Serve documents on the Crown/DPP
+6. Attend the appeal hearing
+
+For each step include:
+- What to do in plain English
+- Required form name and where to get it
+- Time limit or deadline
+- Link to the relevant court registry or forms page
+
+Include these links:
+- {state_info.get('name', 'NSW')} Court forms: relevant court website
+- Legal Aid appeals guide: [Legal Aid NSW](https://www.legalaid.nsw.gov.au/)
+- AustLII legislation: [AustLII](https://www.austlii.edu.au/)
+
+## 11. REQUIRED APPEAL FORMS (MANDATORY)
+List all forms needed to lodge an appeal in {state_info.get('name', 'NSW')}, including:
+- Form name/number
+- Purpose
+- Where to obtain it (with URL where possible)
+- Filing deadline
+
+## 12. COURT PATHWAY OPERATIONS PLAYBOOK
 For all relevant court levels provide filing sequence, documents/forms, deadlines, and extension-of-time route.
 
-## 11. AGGRESSIVE SUBMISSIONS BLUEPRINT
+## 13. AGGRESSIVE SUBMISSIONS BLUEPRINT
 Provide both written and oral submission strategy with argument sequence, authority placement, likely bench questions, and response lines.
 
-## 12. HOW TO ARGUE EACH TOP GROUND (MANDATORY)
+## 14. HOW TO ARGUE EACH TOP GROUND (MANDATORY)
 For each priority ground include:
 - Lead proposition (1-2 lines)
 - Supporting authority cluster (statute + 2-3 precedent anchors)
 - Expected prosecution answer
 - Rebuttal strategy for hearing
+- **How establishing this ground could lead to a successful appeal outcome**
 
-## 13. SIMILAR CASE SEARCH OPTIONS (MANDATORY)
+## 15. SIMILAR CASE SEARCH OPTIONS (MANDATORY)
 Provide actionable search guidance:
 - 5 AustLII query strings tailored to this offence/grounds profile
+- Links: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/) | [Search all states](https://www.austlii.edu.au/)
 - court-level filtering suggestions
 - keyword alternates if initial search returns low relevance
 
-## 14. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+## 16. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
 Specific missing material and exact remediation steps with urgency priority.
 
-## 15. 72-HOUR, 7-DAY, 28-DAY ACTION PLAN
+## 17. 72-HOUR, 7-DAY, 28-DAY ACTION PLAN
 Priority-ordered actions with dependencies and objective of each step.
 
-## 16. CLIENT PLAIN-ENGLISH BRIEF
+## 18. CLIENT PLAIN-ENGLISH BRIEF
 Translate the technical outcome into plain-English next steps and realistic scenarios.
 
 IMPORTANT:
 - Use markdown headings and markdown tables exactly where requested.
+- Include working hyperlinks to AustLII and court websites wherever relevant.
 - No cost discussion.
 - No witness contradiction or witness credibility section.
 - Quote supplied material where possible.
@@ -3707,7 +3755,7 @@ IMPORTANT:
     else:  # extensive_log
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating the PREMIUM Extensive Log Report ($39 AUD). This must exceed barrister expectations: highly aggressive strategy, exhaustive legal mapping, and courtroom-ready execution detail."""
+You are generating the PREMIUM Extensive Log Report ($200 AUD). This must exceed barrister expectations: highly aggressive strategy, exhaustive legal mapping, and courtroom-ready execution detail. Include working hyperlinks to AustLII, court databases, forms, and legislation wherever possible."""
         user_prompt = f"""Create an EXTENSIVE LOG REPORT for this {category_name.lower()} appeal case.
 
 {case_context}
@@ -3730,12 +3778,29 @@ Per document/source: extract highlights, reliability context, legal significance
 Where evidence converges/diverges, what is corroborated, what is uncertain, and what proof is still needed.
 
 ## 5. COMPREHENSIVE GROUNDS PORTFOLIO
-All plausible grounds with threshold, supporting anchors, contrary material, success conditions, and tactical deployment order.
+All plausible grounds with:
+- Threshold and supporting anchors
+- Contrary material and success conditions
+- Tactical deployment order
+- **How each ground could assist in a successful appeal** — explain the specific outcome if established (conviction quashed, sentence reduced, retrial ordered, conviction downgraded)
+- Detailed analysis of the practical impact on the defendant's situation
 
 ## 6. COMPARATIVE SENTENCING TABLE (MANDATORY, EXPANDED)
 Provide a markdown table with at least 12 comparable appellate outcomes.
 Required columns:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
+
+For each case, include AustLII search link:
+- [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+- [Search VSCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/vic/VSCA/)
+
+**DETAILED OUTCOME ANALYSIS (MANDATORY):**
+After the table, provide a detailed paragraph for EACH case covering:
+- Original sentence imposed and the court's reasoning
+- What the appeal court found and decided
+- The resulting revised sentence/NPP
+- How the reduction/outcome was achieved — which grounds succeeded
+- Relevance to the current matter
 
 ## 7. COMMON GROUNDS BENCHMARK TABLE FOR THIS OFFENCE (MANDATORY)
 Provide a markdown table showing crime-specific ground prevalence and outcome trend.
@@ -3747,59 +3812,126 @@ First provide a markdown options matrix:
 | Option | Legal Threshold | Trigger Facts Required | Likelihood in This Matter | Typical Remedy |
 
 Then provide detailed scenario modelling for each option:
-- Conviction quashed
-- Retrial ordered
-- Conviction downgraded/substituted (for example murder to manslaughter where evidentiary basis supports substitution)
-- Sentence excessive and reduced
-- Appeal dismissed
 
-For sentence reduction modelling, include explicit before/after expressions where possible:
-Original sentence/NPP -> revised sentence/NPP (example: 30/22.5 -> 18/11), with legal rationale for each reduction path.
+### Conviction Quashed
+- When this occurs and legal requirements
+- Detailed outcome: What happens to the defendant (released, charges dropped, acquitted)
+- Relevant precedent examples
+
+### Retrial Ordered
+- When a retrial is ordered instead of acquittal
+- Detailed outcome: What to expect, timeline, legal representation needs
+- Strategic considerations
+
+### Conviction Downgraded/Substituted
+- For example murder to manslaughter where evidentiary basis supports substitution
+- Detailed outcome: New sentence range, immediate practical effect
+- Resentencing process explained
+
+### Sentence Reduced (Manifestly Excessive)
+- Before/after sentence modelling: Original sentence/NPP -> revised sentence/NPP (example: 30/22.5 -> 18/11)
+- Detailed outcome: New earliest release date, parole implications
+- Legal rationale for each reduction pathway
+
+### Appeal Dismissed
+- What happens if the appeal fails
+- Further options available (High Court special leave, petition)
+- Risk assessment
 
 ## 9. PRECEDENT OUTCOME MATRIX (12-15 CASES)
-For each authority include citation, comparable facts, hearing outcome, governing principle, and AustLII-style decision path.
+For each authority include citation, comparable facts, hearing outcome, governing principle.
+Include search links: [AustLII Case Search](https://www.austlii.edu.au/)
 
 ## 10. STATUTORY + DOCTRINAL MASTER MAP
 Complete section-level map of Acts, appellate principles, and doctrine application in this matter.
+For key Acts include AustLII legislation links: [View legislation](https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/)
 
-## 11. COURT-PATHWAY OPERATIONS GUIDE
+## 11. HOW TO START YOUR APPEAL — COMPLETE STEP-BY-STEP GUIDE (MANDATORY)
+Provide an exhaustive numbered guide specific to {state_info.get('name', 'NSW')}:
+
+**Step 1: Obtain Your Trial Materials**
+- Request certified transcripts from court registry
+- Obtain all exhibits, sentencing remarks, and judge's directions
+- Timeline: Apply within 7 days of deciding to appeal
+
+**Step 2: Engage Legal Representation**
+- Contact Legal Aid: [Legal Aid {state_info.get('abbreviation', 'NSW')}](https://www.legalaid.nsw.gov.au/)
+- Contact the Bar Association for barrister referral
+- Consider the Innocence Project or pro bono schemes
+
+**Step 3: Identify and Refine Grounds**
+- Use this app's AI analysis to identify potential grounds
+- Cross-reference with similar successful appeals
+- Prioritise strongest grounds
+
+**Step 4: Lodge Notice of Intention to Appeal**
+- File within the time limit (typically 28 days from sentence)
+- Use the correct form for your court
+- Pay filing fee or apply for fee waiver
+
+**Step 5: Prepare Written Submissions**
+- Draft detailed arguments for each ground
+- Include all supporting authorities and legislation
+- Follow the court's practice directions
+
+**Step 6: Serve the Crown/DPP**
+- Serve appeal documents on the DPP
+- File proof of service with the court registry
+
+**Step 7: Attend the Hearing**
+- Appear before the Court of Criminal Appeal
+- Present oral submissions (or have your barrister do so)
+
+## 12. REQUIRED APPEAL FORMS AND DOCUMENTS (MANDATORY)
+List every form needed to lodge and prosecute an appeal in {state_info.get('name', 'NSW')}:
+| Form/Document | Purpose | Where to Obtain | Deadline |
+
+Include links to:
+- Court registry websites
+- [Legal Aid factsheets](https://www.legalaid.nsw.gov.au/)
+- [AustLII legislation](https://www.austlii.edu.au/)
+
+## 13. COURT-PATHWAY OPERATIONS GUIDE
 Operational filing playbook across all relevant court levels, including extension-of-time contingencies.
 
-## 12. WRITTEN SUBMISSIONS MASTER OUTLINE
+## 14. WRITTEN SUBMISSIONS MASTER OUTLINE
 Argument architecture, authority sequencing, and evidence anchoring for a high-impact written brief.
 
-## 13. ORAL HEARING SCRIPT + BENCH QUESTION PLAYBOOK
+## 15. ORAL HEARING SCRIPT + BENCH QUESTION PLAYBOOK
 Structured oral strategy with anticipated judicial interventions and controlled response lines.
 
-## 14. HOW TO ARGUE EACH MAJOR GROUND (MANDATORY)
+## 16. HOW TO ARGUE EACH MAJOR GROUND (MANDATORY)
 For each major ground include:
 - Lead proposition
-- authority sequence for submissions
-- anticipated prosecution answer
-- hearing rebuttal line
+- Authority sequence for submissions
+- Anticipated prosecution answer
+- Hearing rebuttal line
+- **Detailed explanation of how establishing this ground could lead to a successful outcome** (conviction quashed, sentence reduced, etc.)
+- Practical impact on the defendant
 
-## 15. SIMILAR CASE SEARCH OPTIONS (MANDATORY)
+## 17. SIMILAR CASE SEARCH OPTIONS (MANDATORY)
 Provide comprehensive search pathways:
 - 8 AustLII-ready query strings
-- offence-specific keyword packs
-- jurisdiction/court filters
-- fallback query strategy when direct analogues are limited
+- Direct links: [AustLII](https://www.austlii.edu.au/) | [NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/) | [VSCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/vic/VSCA/)
+- Offence-specific keyword packs
+- Jurisdiction/court filters
+- Fallback query strategy when direct analogues are limited
 
-## 16. EVIDENCE PREPARATION + ANNEXURE CHECKLIST
+## 18. EVIDENCE PREPARATION + ANNEXURE CHECKLIST
 Exactly what to assemble for appeal books/annexures and how to index key passages.
 
-## 17. RISK, SCENARIO, AND CONTINGENCY ANALYSIS
+## 19. RISK, SCENARIO, AND CONTINGENCY ANALYSIS
 Best-case / base-case / downside pathways and mitigation triggers.
 
-## 18. PRIORITISED 72-HOUR, 7-DAY, 28-DAY EXECUTION PLAN
+## 20. PRIORITISED 72-HOUR, 7-DAY, 28-DAY EXECUTION PLAN
 Action list with dependencies and expected legal impact per step.
 
-## 19. STRATEGIC COMMUNICATION PACK
+## 21. STRATEGIC COMMUNICATION PACK
 Two outputs:
 - Counsel-facing technical briefing
 - Client-facing plain-English pathway summary
 
-## 20. BARRISTER CONFERENCE DOSSIER (MANDATORY)
+## 22. BARRISTER CONFERENCE DOSSIER (MANDATORY)
 Provide a barrister-ready conference pack containing:
 - Lead theory of appeal in 8-12 lines
 - 10-minute oral conference outline
@@ -3807,14 +3939,17 @@ Provide a barrister-ready conference pack containing:
 - Authorities shortlist (primary + fallback)
 - Orders sought: primary order + fallback order
 
-## 21. APPENDIX OF AUTHORITIES + SOURCE REFERENCES
+## 23. APPENDIX OF AUTHORITIES + SOURCE REFERENCES
 Consolidated list of statutes, sections, precedents, and source anchors.
+Include hyperlinks to AustLII for each authority where available.
 
 IMPORTANT:
 - Use markdown headings and markdown tables exactly where requested.
+- Include working hyperlinks to AustLII, court websites, and legal aid wherever relevant.
 - No cost discussion.
 - No witness contradiction or witness credibility section.
-- Every major conclusion must tie back to case material or clearly marked assumptions."""
+- Every major conclusion must tie back to case material or clearly marked assumptions.
+- Provide DETAILED outcome explanations for comparative sentencing cases (not just the table)."""
 
     if aggressive_mode:
         aggressive_directive = """

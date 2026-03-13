@@ -2,8 +2,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
-  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye
+  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -36,16 +38,16 @@ const REPORT_TYPES = [
   { 
     value: "full_detailed", 
     label: "Full Detailed Report", 
-    description: "Barrister-grade deep dossier with comparative sentencing and full options matrix",
-    price: 29.00,
+    description: "Barrister-grade deep dossier with comparative sentencing, appeal forms, external case links and full options matrix",
+    price: 150.00,
     priceId: "full_report",
     isFree: false
   },
   { 
     value: "extensive_log", 
     label: "Extensive Log Report", 
-    description: "Master litigation brief with expanded precedent modelling and hearing script",
-    price: 39.00,
+    description: "Master litigation brief with expanded precedent modelling, appeal filing steps, external law links and hearing script",
+    price: 200.00,
     priceId: "extensive_report",
     isFree: false
   }
@@ -303,22 +305,8 @@ const ReportsSection = ({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="px-4 pb-4 border-t border-slate-100 pt-4">
-                      <div className="space-y-4" data-testid={`report-inline-full-${report.report_id}`}>
-                        <div className="rounded-lg bg-indigo-50 border border-indigo-200 p-3" data-testid={`report-inline-summary-${report.report_id}`}>
-                          <p className="text-xs text-indigo-700 font-semibold uppercase tracking-wide mb-1">In-browser full view</p>
-                          <p className="text-sm text-slate-700">
-                            This report is fully readable below. You can also open the professional full page view.
-                          </p>
-                        </div>
-
-                        <div className="rounded-lg border border-slate-200 p-3 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
-                          <div className="whitespace-pre-wrap text-slate-700 text-sm leading-relaxed">
-                            {reportText}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-100">
+                      {/* DO NOT UNDO — Action buttons at TOP of report box */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-slate-100">
                         <Button
                           variant="outline"
                           size="sm"
@@ -349,6 +337,47 @@ const ReportsSection = ({
                           <Download className="w-4 h-4 mr-1.5" />
                           Export PDF
                         </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.print()}
+                          className="text-slate-700"
+                          data-testid={`print-report-btn-${report.report_id}`}
+                        >
+                          <Printer className="w-4 h-4 mr-1.5" />
+                          Print
+                        </Button>
+                      </div>
+
+                      {/* DO NOT UNDO — Report content rendered as formatted Markdown */}
+                      <div className="rounded-lg border border-slate-200 p-4 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
+                        <div className="prose prose-slate prose-sm max-w-none">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              h1: ({ children }) => <h1 className="text-xl font-bold mt-5 mb-3 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{children}</h1>,
+                              h2: ({ children }) => <h2 className="text-lg font-bold mt-4 mb-2 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{children}</h2>,
+                              h3: ({ children }) => <h3 className="text-base font-semibold mt-3 mb-2 text-slate-800">{children}</h3>,
+                              p: ({ children }) => <p className="text-slate-700 leading-7 mb-3">{children}</p>,
+                              ul: ({ children }) => <ul className="list-disc ml-5 mb-3 space-y-1 text-slate-700">{children}</ul>,
+                              ol: ({ children }) => <ol className="list-decimal ml-5 mb-3 space-y-1 text-slate-700">{children}</ol>,
+                              li: ({ children }) => <li className="leading-7">{children}</li>,
+                              blockquote: ({ children }) => <blockquote className="border-l-4 border-indigo-300 pl-4 italic text-slate-700 my-3">{children}</blockquote>,
+                              a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 underline">{children}</a>,
+                              table: ({ children }) => (
+                                <div className="overflow-x-auto rounded-lg border border-slate-200 my-4">
+                                  <table className="min-w-full text-sm">{children}</table>
+                                </div>
+                              ),
+                              thead: ({ children }) => <thead className="bg-slate-100">{children}</thead>,
+                              th: ({ children }) => <th className="px-3 py-2 text-left font-semibold text-slate-800 border-b border-slate-200">{children}</th>,
+                              td: ({ children }) => <td className="px-3 py-2 align-top text-slate-700 border-b border-slate-100">{children}</td>,
+                              code: ({ children }) => <code className="text-xs bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">{children}</code>,
+                            }}
+                          >
+                            {reportText}
+                          </ReactMarkdown>
+                        </div>
                       </div>
                     </div>
                   </CollapsibleContent>
@@ -448,7 +477,7 @@ const ReportsSection = ({
         }}
         onPaymentSuccess={handlePaymentSuccess}
         featureType={pendingReportType === 'extensive_log' ? 'extensive_report' : 'full_report'}
-        price={pendingReportType === 'extensive_log' ? 39.00 : 29.00}
+        price={pendingReportType === 'extensive_log' ? 200.00 : 150.00}
         caseId={caseId}
       />
     </>

@@ -988,7 +988,7 @@ const LandingPage = () => {
                       <span className="font-semibold">FULL DETAILED REPORT</span>
                       <span className="text-blue-200 text-sm">— Sample Preview</span>
                     </div>
-                    <span className="bg-blue-500 px-3 py-1 rounded-full text-sm font-bold">$29 AUD</span>
+                    <span className="bg-blue-500 px-3 py-1 rounded-full text-sm font-bold">$150 AUD</span>
                   </div>
                   <div className="p-6">
                     <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -1127,7 +1127,7 @@ const LandingPage = () => {
                       <span className="font-semibold">EXTENSIVE LOG REPORT</span>
                       <span className="text-purple-200 text-sm">— Sample Preview</span>
                     </div>
-                    <span className="bg-purple-500 px-3 py-1 rounded-full text-sm font-bold">$39 AUD</span>
+                    <span className="bg-purple-500 px-3 py-1 rounded-full text-sm font-bold">$200 AUD</span>
                   </div>
                   <div className="p-6">
                     <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -1609,7 +1609,7 @@ const LandingPage = () => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Unlock Grounds of Merit</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$50</span>
+                      <span className="text-amber-700 dark:text-amber-400 font-bold">$99</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
                   </div>
@@ -1621,7 +1621,7 @@ const LandingPage = () => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Full Detailed Report</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$29</span>
+                      <span className="text-amber-700 dark:text-amber-400 font-bold">$150</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">Comprehensive analysis with recommendations and case law references</p>
                   </div>
@@ -1633,7 +1633,7 @@ const LandingPage = () => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Extensive Log Report</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$39</span>
+                      <span className="text-amber-700 dark:text-amber-400 font-bold">$200</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">Complete barrister conference dossier with comparative sentencing tables, offence-specific common grounds matrix, and full relief options report</p>
                   </div>

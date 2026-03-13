@@ -173,9 +173,16 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                           key={idx} 
                           className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
                         >
-                          <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200 font-mono shrink-0">
-                            {section.section}
-                          </Badge>
+                          <a
+                            href={`https://www.austlii.edu.au/cgi-bin/viewdoc/au/legis/nsw/consol_act/?query=${encodeURIComponent(section.section + ' ' + actName)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="shrink-0"
+                          >
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 font-mono hover:bg-blue-100 cursor-pointer">
+                              {section.section} <ExternalLink className="w-3 h-3 ml-1 inline" />
+                            </Badge>
+                          </a>
                           <span className="text-slate-700 text-sm">{section.title}</span>
                         </div>
                       ))}
@@ -426,6 +433,103 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             </div>
           </div>
         )}
+
+        {/* DO NOT UNDO — How to Start Your Appeal Section */}
+        <div className="pt-4 border-t border-slate-200">
+          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <FileText className="w-5 h-5 text-indigo-600" />
+            How to Start Your Appeal — Step by Step
+          </h4>
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 space-y-4">
+            <div className="space-y-3">
+              {[
+                { step: 1, title: "Obtain Trial Transcripts & Exhibits", detail: "Request certified copies of all trial transcripts, sentencing remarks, and exhibits from the court registry. You cannot properly assess grounds without reviewing what occurred at trial.", link: null },
+                { step: 2, title: "Identify Your Grounds of Appeal", detail: "Review the materials and identify errors in law, procedure, evidence, or sentencing. Use this app's AI tools to help pinpoint potential grounds.", link: null },
+                { step: 3, title: "Lodge Notice of Intention to Appeal", detail: "File within the required time limit (typically 28 days from sentence). Use the court-specific form for your jurisdiction.", link: `https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/${selectedState}/consol_act/` },
+                { step: 4, title: "Prepare Written Submissions", detail: "Draft detailed legal arguments for each ground, citing relevant legislation and case law. The paid reports in this app provide a strong starting framework.", link: null },
+                { step: 5, title: "Serve Documents on the Crown/DPP", detail: "Serve your appeal documents on the Director of Public Prosecutions and file proof of service with the court.", link: null },
+                { step: 6, title: "Attend the Appeal Hearing", detail: "Present your arguments before the Court of Criminal Appeal (or equivalent). Consider engaging a barrister for the hearing.", link: null },
+              ].map(item => (
+                <div key={item.step} className="flex gap-3">
+                  <span className="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">{item.step}</span>
+                  <div>
+                    <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
+                    <p className="text-xs text-slate-600 mt-0.5">{item.detail}</p>
+                    {item.link && (
+                      <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mt-1">
+                        <ExternalLink className="w-3 h-3" /> View legislation on AustLII
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* DO NOT UNDO — Appeal Forms & Court Links */}
+        <div className="pt-4 border-t border-slate-200">
+          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <FileText className="w-5 h-5 text-emerald-600" />
+            Appeal Forms & Court Registries
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <a href="https://www.supremecourt.justice.nsw.gov.au/Pages/sco2_criminalappeal/sco2_criminalappeal.aspx" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">NSW</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">NSW Court of Criminal Appeal</p>
+                <p className="text-xs text-slate-500">Forms, guides & filing information</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+            <a href="https://www.supremecourt.vic.gov.au/forms" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">VIC</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">Victorian Court of Appeal</p>
+                <p className="text-xs text-slate-500">Appeal forms & practice notes</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+            <a href="https://www.courts.qld.gov.au/services/forms" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">QLD</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">QLD Court of Appeal</p>
+                <p className="text-xs text-slate-500">Court forms & filing guides</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+            <a href="https://www.courts.sa.gov.au/going-to-court/forms-fees/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-amber-600 rounded flex items-center justify-center text-white text-xs font-bold">SA</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">SA Supreme Court</p>
+                <p className="text-xs text-slate-500">Forms & fees schedule</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+            <a href="https://www.supremecourt.wa.gov.au/F/forms.aspx" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold">WA</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">WA Supreme Court</p>
+                <p className="text-xs text-slate-500">Criminal appeal forms</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+            <a href="https://www.legalaid.nsw.gov.au/get-legal-help/factsheets-and-resources/going-to-court/appeals" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-8 h-8 bg-slate-700 rounded flex items-center justify-center text-white text-xs font-bold">AID</div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">Legal Aid — Appeals Guide</p>
+                <p className="text-xs text-slate-500">Free guidance on the appeal process</p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
+            </a>
+          </div>
+        </div>
 
         {/* Case Law Research Section */}
         <div className="pt-4 border-t border-slate-200">
