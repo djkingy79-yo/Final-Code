@@ -659,6 +659,14 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### Complete Design Overhaul — Blue/White/Red (Mar 2026) ✅
+- [x] **REMOVED ALL yellow/amber/gold** — 636 occurrences across 52 files replaced
+- [x] **New colour scheme**: Blue (primary), White (backgrounds), Red (accents/CTA)
+- [x] **Court imagery**: Hero uses Australian High Court building with blue-950 overlay
+- [x] **Typography**: Crimson Pro for headings, Manrope for body text
+- [x] **CSS variables updated**: index.css completely cleaned of amber/gold references
+- [x] **Testing**: iteration_45 — 100% clean across all 6 major pages, 0 amber/yellow/gold references
+
 ### Bug Fix: Recovered Reports + Case Strength Removal (Mar 2026) ✅
 - [x] **Removed "Recovered Reports / Embedded High-Detail Reports"** section from ReportView.jsx — was cluttering paid reports
 - [x] **Removed Case Strength meter** from all pages (legal implications, educational tool only)
