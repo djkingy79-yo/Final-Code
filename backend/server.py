@@ -3954,14 +3954,34 @@ IMPORTANT:
     if aggressive_mode:
         aggressive_directive = """
 
-AGGRESSIVE MODE (USER-REQUESTED):
-- Prioritise strongest grounds first and state the primary order sought immediately.
-- Use decisive advocacy language while staying legally accurate.
-- Provide primary and fallback appellate pathways for each major issue.
-- Push for sharper remedy framing (quash/retrial/substitute/reduce sentence) where evidence supports it.
+AGGRESSIVE MODE (USER-REQUESTED) — CRITICAL INSTRUCTIONS:
+You MUST significantly expand EVERY section of this report when aggressive mode is active. This means:
+
+1. DOUBLE the detail in every section compared to standard mode.
+2. For EVERY ground of appeal, provide:
+   - The strongest possible legal argument framed as advocacy, not neutral analysis
+   - Specific case citations that support this ground
+   - A scripted oral submission paragraph ready for the hearing
+   - The exact remedy that would flow if this ground succeeds
+3. For the COMPARATIVE SENTENCING TABLE: Include at least 12 cases (not 8). For each case provide a full paragraph explaining how the reduction was achieved.
+4. For OUTCOME OPTIONS: Write each option as if you are making a closing submission to the appeal court. Use persuasive, decisive language.
+5. For the SUBMISSIONS BLUEPRINT: Write actual draft paragraphs of written submissions, not just outlines.
+6. Include a COMPLETE DRAFT NOTICE OF APPEAL with all grounds numbered and described.
+7. Add a section: "IF THE COURT IS AGAINST YOU" — how to pivot mid-hearing to fallback positions.
+8. Provide 3 different argument structures (conservative, moderate, aggressive) and recommend the aggressive one with justification.
+9. Every conclusion must state the specific order sought: "The appellant respectfully submits that the appeal should be allowed and [specific order]."
+10. Use authoritative, persuasive advocacy language throughout — not academic or neutral tone.
 """
         system_prompt = f"{system_prompt}\n{aggressive_directive}"
-        user_prompt = f"{user_prompt}\n\nAGGRESSIVE MODE: ON. Use assertive legal strategy and explicit primary + fallback orders sought."
+        user_prompt = f"""{user_prompt}
+
+AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than standard mode.
+- DOUBLE the word count target.
+- Every section must include specific case citations and legislation references.
+- Write actual draft submissions, not summaries.
+- Include a complete draft Notice of Appeal.
+- Frame everything as persuasive advocacy, not neutral analysis.
+- The client is paying premium for maximum detail and actionable legal strategy."""
 
     # Call OpenAI via Emergent
     api_key = os.environ.get('EMERGENT_LLM_KEY')
@@ -3975,9 +3995,10 @@ AGGRESSIVE MODE (USER-REQUESTED):
         try:
             if report_type == "quick_summary":
                 model_name = "gpt-4o-mini"
-            elif attempt >= 2:
-                # Fall back to gpt-4o-mini after 2 failed attempts to avoid timeouts
+            elif attempt >= 3:
+                # Only fall back to gpt-4o-mini on the LAST attempt
                 model_name = "gpt-4o-mini"
+                logger.warning(f"Falling back to gpt-4o-mini on attempt {attempt + 1}")
             else:
                 model_name = "gpt-4o"
 
@@ -3988,14 +4009,20 @@ AGGRESSIVE MODE (USER-REQUESTED):
             ).with_model("openai", model_name)
             
             response = await chat.send_message(UserMessage(text=user_prompt))
+            
+            # Verify response has sufficient content for paid reports
+            if report_type != "quick_summary" and len(response) < 2000:
+                logger.warning(f"Report too short ({len(response)} chars), retrying with gpt-4o")
+                if attempt < 3:
+                    continue
+            
             break
         except Exception as e:
             last_error = e
             logger.warning(f"Report generation attempt {attempt + 1} failed with {model_name}: {e}")
             if attempt < 3:
                 import asyncio
-                # Short backoff: 2, 4, 6 seconds
-                await asyncio.sleep(2 * (attempt + 1))
+                await asyncio.sleep(3 * (attempt + 1))
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
@@ -4013,11 +4040,32 @@ AGGRESSIVE MODE (USER-REQUESTED):
     if aggressive_mode:
         response += """
 
-## AGGRESSIVE RELIEF OPTIONS — QUICK REFERENCE
-- Primary Order Sought: Conviction quashed OR sentence reduced (depending on strongest established ground).
-- Fallback Order 1: Retrial ordered if appellate court finds trial error but not final acquittal basis.
-- Fallback Order 2: Conviction substituted/downgraded where legal elements for higher offence are not made out.
-- Sentencing Fallback: If conviction stands, press manifest excess/error in principle for sentence reduction.
+---
+
+## AGGRESSIVE RELIEF OPTIONS — ORDERS SOUGHT
+
+### Primary Order
+The appellant respectfully submits that the appeal should be allowed and the conviction quashed, OR in the alternative, that the sentence imposed be set aside and the appellant be resentenced.
+
+### Fallback Position 1 — Retrial
+If the Court is not persuaded to quash the conviction outright, the appellant submits that a retrial should be ordered on the basis of the errors identified above.
+
+### Fallback Position 2 — Conviction Substituted
+In the further alternative, the appellant submits that the conviction should be substituted for a lesser offence where the evidence does not support the elements of the higher charge.
+
+### Fallback Position 3 — Sentence Reduction
+If the conviction is upheld, the appellant submits that the sentence is manifestly excessive and should be reduced to reflect the objective seriousness of the offending, the appellant's subjective circumstances, and comparable sentencing outcomes.
+
+### IF THE COURT IS AGAINST YOU — Pivot Strategy
+If judicial questioning suggests resistance to the primary ground:
+1. Acknowledge the Court's concern directly and pivot to the next strongest ground
+2. Emphasise cumulative error if individual grounds are borderline
+3. Fall back to sentencing appeal if conviction grounds fail
+4. Always preserve the right to seek special leave to the High Court
+
+---
+
+**IMPORTANT DISCLAIMER:** This report is for educational and research purposes only. It does not constitute legal advice. Always consult a qualified legal practitioner before taking any action.
 """
 
     return {

@@ -659,6 +659,17 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### Aggressive Mode Enhancement (Mar 2026) ✅
+- [x] **Aggressive directive expanded** from 4 bullet points to 10 comprehensive instructions including:
+  - Double detail requirement, scripted oral submissions, 12+ case comparisons
+  - Draft Notice of Appeal, pivot strategy for hostile bench
+  - 3 argument structures (conservative/moderate/aggressive)
+  - Persuasive advocacy tone throughout
+- [x] **Aggressive appendix expanded** with Primary Order, 3 Fallback Positions, Pivot Strategy
+- [x] **Model fallback fixed**: gpt-4o kept for 3 attempts before falling back to gpt-4o-mini (was 2)
+- [x] **Content length check**: Reports under 2000 chars auto-retry
+- [x] **Verified**: Aggressive quick_summary = 12,245 chars vs standard = 9,819 chars (25% more)
+
 ### Complete Design Overhaul — Blue/White/Red (Mar 2026) ✅
 - [x] **REMOVED ALL yellow/amber/gold** — 636 occurrences across 52 files replaced
 - [x] **New colour scheme**: Blue (primary), White (backgrounds), Red (accents/CTA)
