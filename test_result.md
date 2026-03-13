@@ -4,7 +4,7 @@
 2026-03-06
 
 ## Test Scope
-Final frontend sanity check before handoff on https://appeal-analyzer-1.preview.emergentagent.com:
+Final frontend sanity check before handoff on https://barrister-view-demo.preview.emergentagent.com:
 1. Landing top nav has no dropdown menus and key links are directly visible
 2. Appeal statistics important content is visible by default (no hidden dropdown section)
 3. How It Works headings are centered
@@ -159,7 +159,7 @@ These are **development-only React warnings** caused by React's strict mode addi
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Verification + Runtime Error Check
@@ -194,7 +194,7 @@ These are **development-only React warnings** caused by React's strict mode addi
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of merged legal pages behavior on https://appeal-analyzer-1.preview.emergentagent.com:
+Comprehensive validation of merged legal pages behavior on https://barrister-view-demo.preview.emergentagent.com:
 1. /legal-contacts redirects to /legal-resources
 2. /contacts redirects to /legal-resources
 3. Legal Resources hero indicates merged directory
@@ -216,7 +216,7 @@ Comprehensive validation of merged legal pages behavior on https://appeal-analyz
 **Redirect Behavior:**
 - ✅ Successfully redirects from /legal-contacts to /legal-resources
 - ✅ Uses React Router Navigate component with replace prop
-- ✅ Final URL: https://appeal-analyzer-1.preview.emergentagent.com/legal-resources
+- ✅ Final URL: https://barrister-view-demo.preview.emergentagent.com/legal-resources
 - ✅ No intermediate pages or errors
 
 **Code Implementation (App.js lines 285-287):**
@@ -236,7 +236,7 @@ Comprehensive validation of merged legal pages behavior on https://appeal-analyz
 **Redirect Behavior:**
 - ✅ Successfully redirects from /contacts to /legal-resources
 - ✅ Uses React Router Navigate component with replace prop
-- ✅ Final URL: https://appeal-analyzer-1.preview.emergentagent.com/legal-resources
+- ✅ Final URL: https://barrister-view-demo.preview.emergentagent.com/legal-resources
 - ✅ No intermediate pages or errors
 
 **Code Implementation (App.js lines 288-291):**
@@ -346,7 +346,7 @@ Comprehensive validation of merged legal pages behavior on https://appeal-analyz
 2. ✅ Directory link visible below hero description
 3. ✅ Click link
 4. ✅ Successfully navigates to /legal-resources
-5. ✅ Final URL: https://appeal-analyzer-1.preview.emergentagent.com/legal-resources
+5. ✅ Final URL: https://barrister-view-demo.preview.emergentagent.com/legal-resources
 
 **Status:** ✅ PASS - Contact page directory link correctly points to merged /legal-resources page
 
@@ -378,7 +378,7 @@ Comprehensive validation of merged legal pages behavior on https://appeal-analyz
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Navigation + Content Verification
@@ -498,7 +498,7 @@ Quick backend verification after performance optimization patch:
 ## Backend Verification Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 4/4 PASSED ✅
 
@@ -618,7 +618,7 @@ Quick frontend sanity check after performance hotfix:
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Load Testing + Code-Level Verification
@@ -736,7 +736,7 @@ analysis_result = await analyze_case_with_ai(case_id, user.user_id, report_type,
 ## Backend Quick Check Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - **Total Tests: 3/3 PASSED ✅**
@@ -767,7 +767,7 @@ analysis_result = await analyze_case_with_ai(case_id, user.user_id, report_type,
 2026-03-06
 
 ## Test Scope
-Quick AU-English content sanity pass on https://appeal-analyzer-1.preview.emergentagent.com after latest edits:
+Quick AU-English content sanity pass on https://barrister-view-demo.preview.emergentagent.com after latest edits:
 1. Landing: check 'Categorised' spelling and overall rendering
 2. FAQ/Statistics/Compare Cases pages: check 'anonymised' spelling appears and no runtime errors
 3. Case Detail labels should show 'Favours Prosecution' / 'Favours Defence' (code-path verification)
@@ -905,7 +905,7 @@ const PERSPECTIVES = [
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Content Verification + Code-Level Analysis
@@ -1009,7 +1009,7 @@ Quick backend check after AU-English wording updates:
 ## Backend Test Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - Bonus Tests: 2/2 PASSED ✅
@@ -1042,7 +1042,7 @@ Quick backend check after AU-English wording updates:
 2026-03-06
 
 ## Test Scope
-Quick verification after AU-English spelling lock pass on https://appeal-analyzer-1.preview.emergentagent.com:
+Quick verification after AU-English spelling lock pass on https://barrister-view-demo.preview.emergentagent.com:
 1. Landing page still renders correctly
 2. Hero section uses 'Organise' (AU spelling)
 3. No obvious US spelling regressions in key updated UI messages
@@ -1119,7 +1119,7 @@ Quick verification after AU-English spelling lock pass on https://appeal-analyze
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Content Verification + Console Monitoring
@@ -1243,7 +1243,7 @@ MANDATORY GUARDRAILS:
 ## Backend Regression Test Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - Bonus Tests: 2/2 PASSED ✅
@@ -1276,7 +1276,7 @@ MANDATORY GUARDRAILS:
 2026-03-06
 
 ## Test Scope
-Final frontend verification after latest landing/report wording updates on https://appeal-analyzer-1.preview.emergentagent.com:
+Final frontend verification after latest landing/report wording updates on https://barrister-view-demo.preview.emergentagent.com:
 1. Resources dropdown includes all footer links
 2. Landing hero and image descriptions render correctly with AU spelling
 3. Barrister showcase section reflects updated conference/hearing messaging and comparative sentencing snapshot
@@ -1419,7 +1419,7 @@ Final frontend verification after latest landing/report wording updates on https
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI/Content Verification
@@ -1455,7 +1455,7 @@ Final frontend verification after latest landing/report wording updates on https
 2026-03-06
 
 ## Test Scope
-Quick post-iteration frontend sanity check on https://appeal-analyzer-1.preview.emergentagent.com:
+Quick post-iteration frontend sanity check on https://barrister-view-demo.preview.emergentagent.com:
 1. Landing page renders
 2. /contacts redirects to /legal-contacts
 3. /contact has legal directory link
@@ -1490,7 +1490,7 @@ Quick post-iteration frontend sanity check on https://appeal-analyzer-1.preview.
 
 **Runtime Test:**
 - ✅ Navigation to /contacts successfully redirects to /legal-contacts
-- ✅ Final URL confirmed: https://appeal-analyzer-1.preview.emergentagent.com/legal-contacts
+- ✅ Final URL confirmed: https://barrister-view-demo.preview.emergentagent.com/legal-contacts
 - ✅ Legal Contacts Directory page rendered correctly
 - ✅ Legal directory content visible
 
@@ -1633,7 +1633,7 @@ Quick post-iteration frontend sanity check on https://appeal-analyzer-1.preview.
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Testing (items 1-3) + Code-Level Verification (items 4-6)
@@ -1672,7 +1672,7 @@ Quick post-iteration frontend sanity check on https://appeal-analyzer-1.preview.
 2026-03-06
 
 ## Test Scope
-Final frontend verification on https://appeal-analyzer-1.preview.emergentagent.com after latest fix:
+Final frontend verification on https://barrister-view-demo.preview.emergentagent.com after latest fix:
 1. Confirm app loads and no report-related compile/runtime overlays
 2. Validate ReportsSection collapsible expand/collapse for report cards and verify no uncontrolled/controlled warning behavior after open state fix
 3. Verify ReportView premium page still renders: top summary box, readiness gauge, TOC, markdown section rendering
@@ -1690,7 +1690,7 @@ Final frontend verification on https://appeal-analyzer-1.preview.emergentagent.c
 ### 1. App Load and Runtime Error Check ✅
 
 **Initial Load Test:**
-- ✅ Page navigation completed successfully to https://appeal-analyzer-1.preview.emergentagent.com
+- ✅ Page navigation completed successfully to https://barrister-view-demo.preview.emergentagent.com
 - ✅ No React error overlay detected
 - ✅ No webpack error overlay detected  
 - ✅ No error boundary triggered
@@ -1834,7 +1834,7 @@ All verification checks passed:
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Load Testing + Console Monitoring + Code-Level Verification
@@ -1862,7 +1862,7 @@ The final frontend verification after the open state fix has been successfully c
 2026-03-06
 
 ## Test Scope
-Final frontend sanity pass on https://appeal-analyzer-1.preview.emergentagent.com for current iteration:
+Final frontend sanity pass on https://barrister-view-demo.preview.emergentagent.com for current iteration:
 1. Confirm app loads without compile/runtime overlay
 2. Verify landing page renders correctly (header/hero)
 3. Validate report UX expectations via code-path verification:
@@ -2000,7 +2000,7 @@ All requested features verified and working correctly:
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Load Testing + Code-Level Verification
@@ -2034,7 +2034,7 @@ The final frontend sanity pass has been successfully completed. The application 
 2026-03-06
 
 ## Test Scope
-Backend regression checks against https://appeal-analyzer-1.preview.emergentagent.com/api focused on latest report overhaul:
+Backend regression checks against https://barrister-view-demo.preview.emergentagent.com/api focused on latest report overhaul:
 1. Health endpoint availability validation via /api/health
 2. Auth-protected report endpoint authentication enforcement 
 3. Code-level verification of updated report prompt guardrails excluding costs and witness contradiction sections
@@ -2122,7 +2122,7 @@ MANDATORY GUARDRAILS:
 ## Backend Regression Test Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Total Tests: 8
 - All Tests Passed: ✅ 8/8
@@ -2303,7 +2303,7 @@ All requested features are working correctly:
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Pages Tested:** Landing Page, Legal Resources Page
@@ -2336,7 +2336,7 @@ The latest UI changes have been successfully validated. All requested features a
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of latest UI improvements on https://appeal-analyzer-1.preview.emergentagent.com:
+Comprehensive validation of latest UI improvements on https://barrister-view-demo.preview.emergentagent.com:
 1. Legal Resources page: state filter, merged heading, and resource cards rendering
 2. State filter behavior: NSW filtering and reset to "all"
 3. Appeal Statistics page: huge heading, 0.012% spotlight box, section labels, and collapsible appeal-access analysis
@@ -2526,7 +2526,7 @@ This logic filters to exact state match only, excluding national cards when a sp
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring
@@ -2572,7 +2572,7 @@ This logic filters to exact state match only, excluding national cards when a sp
 2026-03-06
 
 ## Test Scope
-Re-test of latest legal/statistics tidy updates on https://appeal-analyzer-1.preview.emergentagent.com:
+Re-test of latest legal/statistics tidy updates on https://barrister-view-demo.preview.emergentagent.com:
 1. Legal resources page: NSW filter should show NSW + National cards
 2. National-only filter should show only national/multi-state cards
 3. Appeal statistics page: verify big heading + 0.012% spotlight + section labels
@@ -2729,7 +2729,7 @@ While this is a MINOR issue, it can be fixed by wrapping with React.Fragment:
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring
@@ -2779,7 +2779,7 @@ While this is a MINOR issue, it can be fixed by wrapping with React.Fragment:
 2026-03-06
 
 ## Test Scope
-Final quick check on https://appeal-analyzer-1.preview.emergentagent.com/appeal-statistics after Fragment update:
+Final quick check on https://barrister-view-demo.preview.emergentagent.com/appeal-statistics after Fragment update:
 1. Page renders with big heading and 0.012% spotlight
 2. State comparison table renders correctly after Fragment update
 3. Console hydration warning status
@@ -2895,7 +2895,7 @@ The hydration warnings are **NOT caused by the developer's code**, but by the Em
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com/appeal-statistics
+- **URL:** https://barrister-view-demo.preview.emergentagent.com/appeal-statistics
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring + Code Verification
@@ -2946,7 +2946,7 @@ The hydration warnings are **NOT caused by the developer's code**, but by the Em
 2026-03-06
 
 ## Test Scope
-Validation of latest legal resources organisation update on https://appeal-analyzer-1.preview.emergentagent.com/legal-resources:
+Validation of latest legal resources organisation update on https://barrister-view-demo.preview.emergentagent.com/legal-resources:
 1. Confirm merged legal resources/contacts still on one page
 2. Confirm default state filter now loads in state-focused mode (NSW) and cards are easier to scan
 3. Confirm cards are state-ordered and include national support where relevant
@@ -3090,7 +3090,7 @@ Criminal law, family law, civil law services for eligible NSW residents.
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com/legal-resources
+- **URL:** https://barrister-view-demo.preview.emergentagent.com/legal-resources
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Code-Level Verification
@@ -3140,7 +3140,7 @@ Criminal law, family law, civil law services for eligible NSW residents.
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of new page organisation update on https://appeal-analyzer-1.preview.emergentagent.com:
+Comprehensive validation of new page organisation update on https://barrister-view-demo.preview.emergentagent.com:
 1. New standalone page `/how-it-works` exists and loads
 2. Page includes process flow, report pricing section, and 'Start Your Case Now' button
 3. Landing Learn dropdown includes 'How It Works'
@@ -3159,7 +3159,7 @@ Comprehensive validation of new page organisation update on https://appeal-analy
 ### 1. New Standalone Page /how-it-works Exists and Loads ✅
 
 **Page Navigation:**
-- ✅ Successfully navigated to https://appeal-analyzer-1.preview.emergentagent.com/how-it-works
+- ✅ Successfully navigated to https://barrister-view-demo.preview.emergentagent.com/how-it-works
 - ✅ Page loads without any error overlays or runtime errors
 - ✅ No React error boundaries triggered
 - ✅ Clean page load with proper rendering
@@ -3263,7 +3263,7 @@ Comprehensive validation of new page organisation update on https://appeal-analy
 ### 4. Existing /how-to-use Page Still Remains Available ✅
 
 **Page Navigation:**
-- ✅ Successfully navigated to https://appeal-analyzer-1.preview.emergentagent.com/how-to-use
+- ✅ Successfully navigated to https://barrister-view-demo.preview.emergentagent.com/how-to-use
 - ✅ Page loads without any error overlays or runtime errors
 - ✅ No breaking changes detected
 
@@ -3326,7 +3326,7 @@ Comprehensive validation of new page organisation update on https://appeal-analy
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Navigation + Content Verification
@@ -3384,7 +3384,7 @@ Comprehensive validation of new page organisation update on https://appeal-analy
 2026-03-06
 
 ## Test Scope
-Final sanity check after professional redesign pass on https://appeal-analyzer-1.preview.emergentagent.com:
+Final sanity check after professional redesign pass on https://barrister-view-demo.preview.emergentagent.com:
 1. New palette (black/gold/white/bright blue) visible on Landing/How It Works/Appeal Statistics
 2. Typography hierarchy feels consistent (headings strong, body readable)
 3. Global FastScrollTop button appears on long scroll and works
@@ -3516,7 +3516,7 @@ Final sanity check after professional redesign pass on https://appeal-analyzer-1
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive Visual Design + Functionality Validation
@@ -3579,7 +3579,7 @@ Final sanity check after professional redesign pass on https://appeal-analyzer-1
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of presentation tidy updates on https://appeal-analyzer-1.preview.emergentagent.com:
+Comprehensive validation of presentation tidy updates on https://barrister-view-demo.preview.emergentagent.com:
 1. Success Stories page: 3-column layout on desktop, heading above comment, body text smaller, details retained
 2. Landing page Resources dropdown: merged updates (Legal Resources & Contacts, no duplicate contacts entry)
 3. Landing page resource section: new messaging and includes How It Works card
@@ -3734,7 +3734,7 @@ Comprehensive validation of presentation tidy updates on https://appeal-analyzer
 
 ## Test Environment
 
-- **URL:** https://appeal-analyzer-1.preview.emergentagent.com
+- **URL:** https://barrister-view-demo.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Code-Level Verification
@@ -3801,7 +3801,7 @@ Comprehensive validation of presentation tidy updates on https://appeal-analyzer
 2026-03-06
 
 ## Test Scope
-Report-generation stability verification after latest hotfix on https://appeal-analyzer-1.preview.emergentagent.com/api:
+Report-generation stability verification after latest hotfix on https://barrister-view-demo.preview.emergentagent.com/api:
 1. /api/health is healthy
 2. quick_summary report generation with aggressive_mode=true succeeds
 3. response analysis includes 'AGGRESSIVE RELIEF OPTIONS — QUICK REFERENCE' section at the end
@@ -3892,7 +3892,7 @@ def is_admin_user(email: str) -> bool:
 ## Backend Stability Test Summary
 
 **Test Configuration:**
-- Target: https://appeal-analyzer-1.preview.emergentagent.com/api
+- Target: https://barrister-view-demo.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Stability Tests: 4/4 PASSED ✅
 
