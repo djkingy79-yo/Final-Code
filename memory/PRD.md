@@ -15,15 +15,15 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Export: PDF and DOCX with Grounds of Merit and Legal References
 - Payment: PayPal integration for premium features
 
-## Pricing Model (PayPal)
+## Pricing Model (PayPal / PayID)
 | Feature | Price (AUD) |
 |---------|-------------|
 | Document Upload | FREE |
 | Grounds of Merit (count only) | FREE |
-| **Unlock Grounds of Merit Details** | **$50.00** |
+| **Unlock Grounds of Merit Details** | **$99.00** |
 | **Quick Summary Report** | **FREE** |
-| **Full Detailed Report** | **$29.00** |
-| **Extensive Log Report** | **$39.00** |
+| **Full Detailed Report** | **$150.00** |
+| **Extensive Log Report** | **$200.00** |
 
 ## Architecture
 - **Backend**: FastAPI with MongoDB
@@ -659,7 +659,24 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
-### DO NOT UNDO Markers Applied (Mar 2026) ✅
+### Major Overhaul (Mar 2026 — Current Session) ✅
+- [x] **Pricing Updated**: Grounds $99, Full Report $150, Extensive Log $200 AUD
+- [x] **Report Rendering Fixed**: Reports now render as formatted Markdown (was raw text)
+- [x] **Action Buttons Moved to Top**: Full Report Page, Barrister View, PDF Export, Print buttons now at top of report card
+- [x] **Tabs Simplified**: Removed Contradictions tab and Progress tab (including Case Strength meter) from CaseDetail
+  - Remaining tabs: Documents, Timeline, Grounds, Notes, Reports, Legal Framework
+- [x] **Legal Framework Strengthened**:
+  - Legislation sections now have clickable AustLII links
+  - Added "How to Start Your Appeal" 6-step guide with external links
+  - Added "Appeal Forms & Court Registries" section with links for NSW, VIC, QLD, SA, WA, Legal Aid
+- [x] **Report Prompts Enhanced**:
+  - All reports now include links to AustLII, court websites, and legal aid
+  - Full Report ($150): Added step-by-step appeal filing guide, required forms section, detailed outcome analysis
+  - Extensive Report ($200): Added complete appeal process guide, forms checklist, detailed outcome analysis per case, barrister conference dossier
+  - Both paid reports explain how each ground could assist in a successful appeal
+- [x] **Testing**: iteration_43 — 100% backend + frontend pass
+
+
 - [x] **79 files marked** with "DO NOT UNDO" comments to protect approved features:
   - 29 frontend page files
   - 22 frontend component files
