@@ -23,7 +23,7 @@ const ProfessionalSummary = () => {
       <div className="no-print bg-slate-900 text-white py-4 px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Scale className="w-6 h-6 text-amber-400" />
+            <Scale className="w-6 h-6 text-blue-400" />
             <span className="font-semibold" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Criminal Appeal AI
             </span>
@@ -46,7 +46,7 @@ const ProfessionalSummary = () => {
             Criminal Appeal Case Management Tool
           </h1>
           <p className="text-lg text-slate-600">Professional Summary for Legal Practitioners</p>
-          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4"></div>
+          <div className="w-24 h-1 bg-blue-500 mx-auto mt-4"></div>
         </div>
 
         {/* Overview */}
@@ -209,13 +209,13 @@ const ProfessionalSummary = () => {
 
         {/* Important Notice */}
         <section className="mb-8">
-          <Card className="border-amber-300 bg-amber-50">
+          <Card className="border-blue-300 bg-blue-50">
             <CardContent className="p-6">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-amber-900 mb-2">Important Notice</h3>
-                  <p className="text-amber-800 text-sm leading-relaxed">
+                  <h3 className="font-semibold text-blue-900 mb-2">Important Notice</h3>
+                  <p className="text-blue-800 text-sm leading-relaxed">
                     This tool provides AI-assisted document analysis and research support intended to help identify 
                     potential issues that may warrant further legal review. The information generated does not 
                     constitute legal advice and should not be relied upon as a substitute for advice from a 

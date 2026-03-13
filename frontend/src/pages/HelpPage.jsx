@@ -287,12 +287,12 @@ const HelpPage = ({ user }) => {
               <li><strong>Report</strong> — Generate professional legal reports</li>
             </ul>
           </div>
-          <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
-            <p className="flex items-center gap-2 font-medium text-amber-800">
+          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+            <p className="flex items-center gap-2 font-medium text-blue-800">
               <AlertTriangle className="w-4 h-4" />
               Important Disclaimer
             </p>
-            <p className="text-amber-700 text-sm mt-1">
+            <p className="text-blue-700 text-sm mt-1">
               This app provides AI-assisted analysis only. All findings should be reviewed by a qualified 
               legal professional. AI suggestions are not legal advice.
             </p>
@@ -358,9 +358,9 @@ const HelpPage = ({ user }) => {
             <li>Add an optional description</li>
             <li>Click <strong>"Upload"</strong></li>
           </ol>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
-            <p className="font-medium text-amber-800">Important — Extract Text First:</p>
-            <ul className="list-disc list-inside text-amber-700 mt-1 text-sm">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+            <p className="font-medium text-blue-800">Important — Extract Text First:</p>
+            <ul className="list-disc list-inside text-blue-700 mt-1 text-sm">
               <li>After uploading, click <strong>"Extract Text"</strong> for PDF/Word documents</li>
               <li>For scanned documents or images, click <strong>"OCR Scan"</strong></li>
               <li>The AI can only analyse documents that have extracted text</li>
@@ -585,7 +585,7 @@ const HelpPage = ({ user }) => {
                 Back
               </Button>
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-amber-600" />
+                <HelpCircle className="w-5 h-5 text-red-600" />
                 <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Help & Glossary
                 </h1>
@@ -603,7 +603,7 @@ const HelpPage = ({ user }) => {
               onClick={() => setActiveTab("guide")}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === "guide" 
-                  ? "border-amber-500 text-amber-700" 
+                  ? "border-blue-500 text-blue-700" 
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -614,7 +614,7 @@ const HelpPage = ({ user }) => {
               onClick={() => setActiveTab("glossary")}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${
                 activeTab === "glossary" 
-                  ? "border-amber-500 text-amber-700" 
+                  ? "border-blue-500 text-blue-700" 
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -637,7 +637,7 @@ const HelpPage = ({ user }) => {
                 <p className="text-slate-300 mb-4">
                   This guide will walk you through using all features of the app to build and analyse your criminal appeal case.
                 </p>
-                <div className="flex items-center gap-2 text-amber-400">
+                <div className="flex items-center gap-2 text-blue-400">
                   <CheckCircle className="w-5 h-5" />
                   <span className="text-sm">Click on any section below to expand the instructions</span>
                 </div>
@@ -650,7 +650,7 @@ const HelpPage = ({ user }) => {
                 <Card 
                   key={section.id}
                   className={`cursor-pointer transition-all ${
-                    expandedSection === section.id ? 'ring-2 ring-amber-500' : 'hover:shadow-md'
+                    expandedSection === section.id ? 'ring-2 ring-blue-500' : 'hover:shadow-md'
                   }`}
                 >
                   <CardContent className="p-0">
@@ -659,7 +659,7 @@ const HelpPage = ({ user }) => {
                       className="w-full p-4 flex items-center justify-between text-left"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
                           {section.icon}
                         </div>
                         <span className="font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -787,7 +787,7 @@ const HelpPage = ({ user }) => {
                 return (
                   <div key={category}>
                     <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                      <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                         {category}
                       </Badge>
                       <span className="text-sm font-normal text-slate-500">({terms.length} terms)</span>
@@ -803,9 +803,9 @@ const HelpPage = ({ user }) => {
                               {item.definition}
                             </p>
                             {item.example && (
-                              <div className="mt-3 bg-slate-50 p-3 rounded-lg border-l-4 border-amber-400">
+                              <div className="mt-3 bg-slate-50 p-3 rounded-lg border-l-4 border-blue-400">
                                 <p className="text-sm text-slate-600">
-                                  <strong className="text-amber-700">Example:</strong> {item.example}
+                                  <strong className="text-blue-700">Example:</strong> {item.example}
                                 </p>
                               </div>
                             )}

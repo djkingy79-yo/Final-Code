@@ -27,7 +27,7 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
     <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-6" data-testid="timeline-analysis">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-          <Lightbulb className="w-5 h-5 text-amber-500" />
+          <Lightbulb className="w-5 h-5 text-blue-500" />
           AI Timeline Analysis
         </h3>
         <button 
@@ -40,11 +40,11 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
 
       {/* Summary Banner */}
       {hasIssues && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-amber-800">Issues Found in Timeline</p>
-            <p className="text-sm text-amber-700 mt-1">
+            <p className="font-medium text-blue-800">Issues Found in Timeline</p>
+            <p className="text-sm text-blue-700 mt-1">
               {gaps.length} gap{gaps.length !== 1 ? 's' : ''}, {' '}
               {inconsistencies.length} inconsistenc{inconsistencies.length !== 1 ? 'ies' : 'y'}, {' '}
               {contested_facts.length} contested fact{contested_facts.length !== 1 ? 's' : ''}
@@ -193,7 +193,7 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-500" />
+              <Lightbulb className="w-4 h-4 text-blue-500" />
               Key Observations
             </CardTitle>
           </CardHeader>
@@ -233,20 +233,20 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
 
       {/* Contested Facts */}
       {contested_facts.length > 0 && (
-        <Card className="border-amber-200">
+        <Card className="border-blue-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-amber-800">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-800">
+              <AlertTriangle className="w-4 h-4 text-blue-500" />
               Contested Facts to Investigate
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {contested_facts.map((fact, i) => (
-                <div key={i} className="bg-white p-3 rounded-lg border border-amber-200">
+                <div key={i} className="bg-white p-3 rounded-lg border border-blue-200">
                   <p className="text-sm font-medium text-slate-800">{fact.issue}</p>
                   {fact.recommendation && (
-                    <p className="text-xs text-amber-700 mt-2 flex items-center gap-1">
+                    <p className="text-xs text-blue-700 mt-2 flex items-center gap-1">
                       <ChevronRight className="w-3 h-3" />
                       {fact.recommendation}
                     </p>

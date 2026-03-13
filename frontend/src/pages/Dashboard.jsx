@@ -185,7 +185,7 @@ const Dashboard = ({ user }) => {
       <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-card border-r border-border z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
         {/* Logo */}
         <div className="flex items-center gap-3 p-6 pb-4">
-          <div className="w-10 h-10 rounded-xl gradient-amber flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center">
             <Scale className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg font-bold text-foreground tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -294,7 +294,7 @@ const Dashboard = ({ user }) => {
                 <Link to="/admin/dashboard">
                   <Button
                     variant="outline"
-                    className="rounded-xl border-amber-500/40 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                    className="rounded-xl border-blue-500/40 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     data-testid="admin-dashboard-shortcut-btn"
                   >
                     <Shield className="w-4 h-4 mr-2" />
@@ -320,7 +320,7 @@ const Dashboard = ({ user }) => {
           {/* Overview Section - Stats + Info Combined */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-amber-600" />
+              <TrendingUp className="w-5 h-5 text-red-600" />
               <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Overview
               </h2>
@@ -342,8 +342,8 @@ const Dashboard = ({ user }) => {
               
               <div className="card-elevated p-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-red-600 dark:text-blue-400" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">
@@ -385,9 +385,9 @@ const Dashboard = ({ user }) => {
             </div>
             
             {/* Privacy Notice - Compact */}
-            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
-              <Shield className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
-              <p className="text-xs text-amber-800 dark:text-amber-200">
+            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+              <Shield className="w-5 h-5 text-red-600 dark:text-blue-400 shrink-0" />
+              <p className="text-xs text-blue-800 dark:text-blue-200">
                 <strong>Privacy:</strong> Ensure you have lawful authority to upload court documents or personal information.
               </p>
             </div>
@@ -397,7 +397,7 @@ const Dashboard = ({ user }) => {
           <section>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div className="flex items-center gap-2">
-                <Gavel className="w-5 h-5 text-amber-600" />
+                <Gavel className="w-5 h-5 text-red-600" />
                 <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Your Cases
                 </h2>
@@ -460,14 +460,14 @@ const Dashboard = ({ user }) => {
                 {filteredCases.map((caseItem) => (
                   <div 
                     key={caseItem.case_id} 
-                    className="card-elevated p-5 group cursor-pointer hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
+                    className="card-elevated p-5 group cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
                     onClick={() => navigate(`/cases/${caseItem.case_id}`)}
                     data-testid={`case-card-${caseItem.case_id}`}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
                         <h3 
-                          className="text-base font-semibold text-foreground group-hover:text-amber-600 transition-colors truncate"
+                          className="text-base font-semibold text-foreground group-hover:text-red-600 transition-colors truncate"
                           style={{ fontFamily: 'Crimson Pro, serif' }}
                         >
                           {caseItem.title}
@@ -513,7 +513,7 @@ const Dashboard = ({ user }) => {
                       <p className="text-xs text-muted-foreground">
                         {formatDate(caseItem.updated_at)}
                       </p>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-amber-600 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-red-600 transition-colors" />
                     </div>
                   </div>
                 ))}

@@ -104,8 +104,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-              <Scale className="w-5 h-5 text-amber-700" />
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Scale className="w-5 h-5 text-blue-700" />
             </div>
             <div>
               <CardTitle 
@@ -124,7 +124,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             <select
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
               data-testid="state-selector"
             >
               {states.map(s => (
@@ -196,12 +196,12 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
         {/* No State Legislation Notice */}
         {(!category?.state_legislation || Object.keys(category.state_legislation).length === 0) && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium text-amber-900">No State-Specific Legislation</p>
-                <p className="text-sm text-amber-700 mt-1">
+                <p className="font-medium text-blue-900">No State-Specific Legislation</p>
+                <p className="text-sm text-blue-700 mt-1">
                   This offence category is primarily governed by Commonwealth/Federal legislation. 
                   State-specific provisions may exist in procedural laws.
                 </p>
@@ -267,20 +267,20 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             <CollapsibleTrigger asChild>
               <Button 
                 variant="ghost" 
-                className="w-full justify-between p-4 h-auto bg-amber-50 hover:bg-amber-100 rounded-lg"
+                className="w-full justify-between p-4 h-auto bg-blue-50 hover:bg-blue-100 rounded-lg"
                 data-testid="key-elements-toggle"
               >
                 <div className="flex items-center gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600" />
-                  <span className="font-semibold text-amber-900">Key Elements to Prove</span>
-                  <Badge variant="outline" className="bg-white text-amber-700 border-amber-200">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                  <span className="font-semibold text-blue-900">Key Elements to Prove</span>
+                  <Badge variant="outline" className="bg-white text-blue-700 border-blue-200">
                     {category.key_elements.length} elements
                   </Badge>
                 </div>
                 {expandedSections.elements ? (
-                  <ChevronDown className="w-5 h-5 text-amber-600" />
+                  <ChevronDown className="w-5 h-5 text-red-600" />
                 ) : (
-                  <ChevronRight className="w-5 h-5 text-amber-600" />
+                  <ChevronRight className="w-5 h-5 text-red-600" />
                 )}
               </Button>
             </CollapsibleTrigger>
@@ -292,7 +292,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 <ul className="space-y-2">
                   {category.key_elements.map((element, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-sm font-medium shrink-0">
+                      <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-medium shrink-0">
                         {idx + 1}
                       </span>
                       <span className="text-slate-700">{element}</span>
@@ -384,7 +384,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                     <div className="space-y-2">
                       {Object.entries(appealFramework.time_limits).map(([key, value]) => (
                         <div key={key} className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-amber-600" />
+                          <Clock className="w-4 h-4 text-red-600" />
                           <span className="text-sm text-slate-700">
                             <span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span> {value}
                           </span>
@@ -503,7 +503,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             </a>
             <a href="https://www.courts.sa.gov.au/going-to-court/forms-fees/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-              <div className="w-8 h-8 bg-amber-600 rounded flex items-center justify-center text-white text-xs font-bold">SA</div>
+              <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">SA</div>
               <div>
                 <p className="text-sm font-medium text-slate-900">SA Supreme Court</p>
                 <p className="text-xs text-slate-500">Forms & fees schedule</p>
@@ -600,16 +600,16 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               href="https://www.courts.sa.gov.au/judgments"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
+              className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
             >
-              <div className="w-8 h-8 bg-amber-600 rounded flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 SA
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-900">SA Judgments</p>
                 <p className="text-xs text-slate-600">Courts Administration Authority</p>
               </div>
-              <ExternalLink className="w-4 h-4 text-amber-600 ml-auto" />
+              <ExternalLink className="w-4 h-4 text-red-600 ml-auto" />
             </a>
 
             {/* Western Australia */}

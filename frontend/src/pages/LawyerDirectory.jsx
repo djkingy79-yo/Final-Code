@@ -86,7 +86,7 @@ const lawyerResources = [
   {
     state: "South Australia",
     code: "SA",
-    color: "bg-amber-600",
+    color: "bg-red-600",
     legalAid: {
       name: "Legal Services Commission SA",
       url: "https://lsc.sa.gov.au/",
@@ -234,7 +234,7 @@ const LawyerDirectory = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -270,7 +270,7 @@ const LawyerDirectory = () => {
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <Users className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -293,8 +293,8 @@ const LawyerDirectory = () => {
               onClick={() => setSelectedState("all")}
               className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 selectedState === "all"
-                  ? "bg-amber-600 text-white shadow-lg"
-                  : "bg-card border border-border text-muted-foreground hover:border-amber-500"
+                  ? "bg-red-600 text-white shadow-lg"
+                  : "bg-card border border-border text-muted-foreground hover:border-blue-500"
               }`}
             >
               All States
@@ -306,7 +306,7 @@ const LawyerDirectory = () => {
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   selectedState === resource.code.toLowerCase()
                     ? `${resource.color} text-white shadow-lg`
-                    : "bg-card border border-border text-muted-foreground hover:border-amber-500"
+                    : "bg-card border border-border text-muted-foreground hover:border-blue-500"
                 }`}
               >
                 {resource.code}
@@ -318,14 +318,14 @@ const LawyerDirectory = () => {
 
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Important Notice */}
-        <div className="mb-10 p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+        <div className="mb-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0">
-              <Gavel className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+              <Gavel className="w-6 h-6 text-red-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-1">Important</h3>
-              <p className="text-amber-800 dark:text-amber-300 text-sm">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">Important</h3>
+              <p className="text-blue-800 dark:text-blue-300 text-sm">
                 This directory provides links to legal resources for informational purposes only. 
                 We do not endorse any specific lawyer or firm. Always conduct your own research and 
                 meet with potential lawyers before engaging their services. Many offer free initial consultations.
@@ -499,7 +499,7 @@ const LawyerDirectory = () => {
                           href={specialist.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs bg-muted hover:bg-amber-100 dark:hover:bg-amber-900/30 text-foreground px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
+                          className="text-xs bg-muted hover:bg-blue-100 dark:hover:bg-blue-900/30 text-foreground px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                         >
                           {specialist.name}
                           <ExternalLink className="w-3 h-3" />
@@ -522,7 +522,7 @@ const LawyerDirectory = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
             <div className="text-center px-6">
-              <Gavel className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+              <Gavel className="w-12 h-12 text-blue-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Prepare Before You Meet a Lawyer
               </h3>
@@ -531,7 +531,7 @@ const LawyerDirectory = () => {
                 Having organised information can save time and money.
               </p>
               <Link to="/">
-                <Button className="bg-amber-600 text-white hover:bg-amber-700 rounded-xl px-8 shadow-lg">
+                <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-8 shadow-lg">
                   Get Started Free
                 </Button>
               </Link>

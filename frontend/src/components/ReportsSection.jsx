@@ -426,7 +426,7 @@ const ReportsSection = ({
                       FREE
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                       ${type.price.toFixed(2)} AUD
                     </Badge>
                   )}

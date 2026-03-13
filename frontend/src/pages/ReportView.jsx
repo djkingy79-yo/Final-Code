@@ -193,7 +193,7 @@ const ReportView = () => {
 
   const reportTypeConfig = {
     quick_summary: { label: "Quick Summary", cls: "bg-blue-100 text-blue-800 border-blue-200" },
-    full_detailed: { label: "Full Detailed Analysis", cls: "bg-amber-100 text-amber-800 border-amber-200" },
+    full_detailed: { label: "Full Detailed Analysis", cls: "bg-blue-100 text-blue-800 border-blue-200" },
     extensive_log: { label: "Extensive Log Report", cls: "bg-purple-100 text-purple-800 border-purple-200" },
   };
 
@@ -300,7 +300,7 @@ const ReportView = () => {
             </div>
           </div>
 
-          <section className="mb-8 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 via-white to-amber-50 p-5 sm:p-6" data-testid="report-top-summary-box">
+          <section className="mb-8 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 via-white to-blue-50 p-5 sm:p-6" data-testid="report-top-summary-box">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5 text-indigo-700" />
               <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
@@ -324,8 +324,8 @@ const ReportView = () => {
                 <p className="text-xs font-semibold text-blue-200 mb-1">Comparative Sentencing</p>
                 <p className="text-[12px] text-slate-200">Before/after reduction pathways with practical appeal outcomes.</p>
               </div>
-              <div className="rounded-xl border border-yellow-700/60 bg-yellow-900/30 p-3">
-                <p className="text-xs font-semibold text-yellow-100 mb-1">Similar Case Search Options</p>
+              <div className="rounded-xl border border-blue-700/60 bg-blue-900/30 p-3">
+                <p className="text-xs font-semibold text-blue-100 mb-1">Similar Case Search Options</p>
                 <p className="text-[12px] text-slate-200">AustLII-ready query packs and jurisdiction filters.</p>
               </div>
               <div className="rounded-xl border border-emerald-700/60 bg-emerald-900/30 p-3">

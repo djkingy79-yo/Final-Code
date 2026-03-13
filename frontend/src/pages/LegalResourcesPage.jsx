@@ -37,7 +37,7 @@ const LegalResourcesPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -65,7 +65,7 @@ const LegalResourcesPage = () => {
           <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -85,7 +85,7 @@ const LegalResourcesPage = () => {
             One merged directory for legal resources and legal contacts across all Australian states and territories.
             Each listing explains what type of legal advice or support the service can help with.
           </p>
-          <p className="text-xs text-amber-300 mt-3" data-testid="legal-resources-merged-note">
+          <p className="text-xs text-blue-300 mt-3" data-testid="legal-resources-merged-note">
             This page now combines the previous Legal Contacts and Legal Resources information.
           </p>
         </div>
@@ -127,10 +127,10 @@ const LegalResourcesPage = () => {
                 <button
                   key={tab.id}
                   onClick={() => scrollToSection(tab.id)}
-                  className="inline-flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg border border-border bg-card hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-sm text-foreground transition-colors"
+                  className="inline-flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg border border-border bg-card hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-sm text-foreground transition-colors"
                   data-testid={`legal-resource-tab-${tab.id}`}
                 >
-                  <Icon className="w-4 h-4 text-amber-600" />
+                  <Icon className="w-4 h-4 text-red-600" />
                   {tab.label}
                 </button>
               );
@@ -142,9 +142,9 @@ const LegalResourcesPage = () => {
       <DirectoryFilterContext.Provider value={{ stateFilter }}>
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-12" data-state-condensed={stateFilter !== "all"}>
 
-        <section className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-900/20 p-4" data-testid="legal-resources-unified-state-view-banner">
-          <p className="text-xs uppercase tracking-wide text-amber-700 dark:text-amber-300 font-semibold mb-1">Unified State View</p>
-          <p className="text-sm text-amber-900 dark:text-amber-100">
+        <section className="rounded-xl border border-blue-200 bg-blue-50 dark:bg-blue-900/20 p-4" data-testid="legal-resources-unified-state-view-banner">
+          <p className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 font-semibold mb-1">Unified State View</p>
+          <p className="text-sm text-blue-900 dark:text-blue-100">
             {stateFilter === "all"
               ? "Showing all states and national services."
               : stateFilter === "NATIONAL"
@@ -155,7 +155,7 @@ const LegalResourcesPage = () => {
 
         {/* ============ SECTION: You Have Options ============ */}
         <div id="options" className="space-y-6">
-          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
             <h2 className="text-2xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Legal Help You May Not Know About
             </h2>
@@ -223,8 +223,8 @@ const LegalResourcesPage = () => {
 
               {/* Grants & Funding */}
               <div className="bg-card border border-border rounded-xl p-6">
-                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+                  <FileText className="w-6 h-6 text-red-600 dark:text-blue-400" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
                 <p className="text-muted-foreground text-sm mb-3">
@@ -241,7 +241,7 @@ const LegalResourcesPage = () => {
             </div>
 
             {/* Key Message */}
-            <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-6 text-center">
+            <div className="bg-gradient-to-r from-blue-500 to-red-600 rounded-2xl p-6 text-center">
               <h3 className="text-white text-lg font-bold mb-2">Don't Give Up</h3>
               <p className="text-white/90 text-sm">
                 The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services 
@@ -294,7 +294,7 @@ const LegalResourcesPage = () => {
                 phone="1300 366 424"
                 website="https://lsc.sa.gov.au"
                 description="Legal aid services for South Australians."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Legal Aid WA"
@@ -334,7 +334,7 @@ const LegalResourcesPage = () => {
         {/* Law Societies Tab */}
         
           <div id="law-societies" className="space-y-6">
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
               <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Law Societies
               </h2>
@@ -375,7 +375,7 @@ const LegalResourcesPage = () => {
                 phone="(08) 8229 0200"
                 website="https://www.lawsocietysa.asn.au"
                 description="Legal referral service for South Australians."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Law Society of Western Australia"
@@ -490,7 +490,7 @@ const LegalResourcesPage = () => {
                 phone="(08) 8111 5555"
                 website="https://www.lpcc.sa.gov.au"
                 description="Investigates complaints against lawyers in South Australia."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Legal Services and Complaints Committee WA"
@@ -552,7 +552,7 @@ const LegalResourcesPage = () => {
             {/* Federal Courts */}
             <div>
               <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <Scale className="w-5 h-5 text-amber-600" />
+                <Scale className="w-5 h-5 text-red-600" />
                 Federal Courts
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -627,8 +627,8 @@ const LegalResourcesPage = () => {
 
               {/* SA */}
               <div className="mb-6">
-                <h4 className="font-semibold text-amber-600 dark:text-amber-400 mb-3 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">SA</div>
+                <h4 className="font-semibold text-red-600 dark:text-blue-400 mb-3 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white text-xs font-bold">SA</div>
                   South Australia
                 </h4>
                 <div className="grid md:grid-cols-3 gap-3">
@@ -728,7 +728,7 @@ const LegalResourcesPage = () => {
                   phone="1800 765 767"
                   website="https://www.alsnswact.org.au"
                   description="Legal services for Aboriginal and Torres Strait Islander peoples."
-                  color="amber"
+                  color="blue"
                 />
                 <ResourceCard
                   title="Victorian Aboriginal Legal Service"
@@ -736,7 +736,7 @@ const LegalResourcesPage = () => {
                   phone="1800 064 865"
                   website="https://www.vals.org.au"
                   description="Legal assistance for Aboriginal Victorians."
-                  color="amber"
+                  color="blue"
                 />
                 <ResourceCard
                   title="Prisoners Legal Service QLD"
@@ -884,7 +884,7 @@ const LegalResourcesPage = () => {
                 <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto shrink-0" />
               </a>
               <a href="https://www.wa.gov.au/justice" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-3 bg-white dark:bg-slate-700 rounded-lg hover:shadow-md transition-shadow">
-                <span className="w-8 h-8 bg-amber-600 rounded text-white text-xs font-bold flex items-center justify-center">WA</span>
+                <span className="w-8 h-8 bg-red-600 rounded text-white text-xs font-bold flex items-center justify-center">WA</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-foreground truncate">WA Dept of Justice</p>
                   <p className="text-xs text-muted-foreground">wa.gov.au/justice</p>
@@ -955,7 +955,7 @@ const LegalResourcesPage = () => {
                 phone="(08) 9220 7555"
                 website="https://www.ombudsman.wa.gov.au"
                 description="Investigates WA state government and local government agencies."
-                color="amber"
+                color="blue"
               />
             </div>
           </div>
@@ -998,7 +998,7 @@ const LegalResourcesPage = () => {
         {/* ============ NEW SECTION: Legal Profession Bodies ============ */}
         <div id="profession" className="space-y-6">
           <h2 className="text-2xl font-bold text-foreground flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            <Gavel className="w-7 h-7 text-amber-600" />
+            <Gavel className="w-7 h-7 text-red-600" />
             Legal Profession Bodies
           </h2>
           <p className="text-muted-foreground">
@@ -1017,7 +1017,7 @@ const LegalResourcesPage = () => {
                 phone="(02) 6246 3788"
                 website="https://www.lawcouncil.asn.au"
                 description="Peak national body representing the Australian legal profession."
-                color="amber"
+                color="blue"
                 highlight={true}
               />
               <ResourceCard
@@ -1058,7 +1058,7 @@ const LegalResourcesPage = () => {
                 phone="(08) 9324 8600"
                 website="https://www.lawsocietywa.asn.au"
                 description="Peak body for lawyers in Western Australia."
-                color="amber"
+                color="blue"
               />
             </div>
           </div>
@@ -1144,7 +1144,7 @@ const LegalResourcesPage = () => {
                 phone="(08) 9461 2299"
                 website="https://www.lpbwa.org.au"
                 description="Regulates legal practitioners in Western Australia."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Legal Profession Conduct Commissioner SA"
@@ -1241,7 +1241,7 @@ const LegalResourcesPage = () => {
               phone="1800 765 767"
               website="https://www.alsnswact.org.au"
               description="Legal services for Aboriginal and Torres Strait Islander peoples."
-              color="amber"
+              color="blue"
               highlight={true}
             />
             <ResourceCard
@@ -1258,7 +1258,7 @@ const LegalResourcesPage = () => {
               phone="(08) 9265 6666"
               website="https://www.als.org.au"
               description="Legal services for Aboriginal and Torres Strait Islander peoples in WA."
-              color="amber"
+              color="blue"
             />
             <ResourceCard
               title="North Australian Aboriginal Justice Agency"
@@ -1423,7 +1423,7 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
     blue: "bg-blue-600",
     purple: "bg-purple-600",
     red: "bg-red-600",
-    amber: "bg-amber-600",
+    blue_mapped: "bg-red-600",
     emerald: "bg-emerald-600",
     teal: "bg-teal-600",
     orange: "bg-orange-600",
@@ -1434,7 +1434,7 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
 
   return (
     <div
-      className={`bg-card border ${highlight ? 'border-amber-400 dark:border-amber-600 border-2' : 'border-border'} rounded-xl p-5 hover:shadow-md transition-shadow`}
+      className={`bg-card border ${highlight ? 'border-blue-400 dark:border-red-600 border-2' : 'border-border'} rounded-xl p-5 hover:shadow-md transition-shadow`}
       style={{ order: stateOrder[normalisedState] ?? 99 }}
     >
       <div className="flex items-start justify-between gap-3 mb-3">

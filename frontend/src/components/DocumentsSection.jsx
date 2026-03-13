@@ -40,7 +40,7 @@ const getCategoryColor = (category) => {
   const colors = {
     brief: "bg-blue-50 text-blue-700 border-blue-200",
     case_note: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    evidence: "bg-amber-50 text-amber-700 border-amber-200",
+    evidence: "bg-blue-50 text-blue-700 border-blue-200",
     court_document: "bg-purple-50 text-purple-700 border-purple-200",
     public_advertising: "bg-slate-100 text-slate-700 border-slate-200",
     other: "bg-slate-100 text-slate-700 border-slate-200"
@@ -212,7 +212,7 @@ const DocumentsSection = ({
     const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
     return parts.map((part, i) => 
       part.toLowerCase() === query.toLowerCase() 
-        ? <mark key={i} className="bg-amber-200 px-0.5">{part}</mark> 
+        ? <mark key={i} className="bg-blue-200 px-0.5">{part}</mark> 
         : part
     );
   };
@@ -285,7 +285,7 @@ const DocumentsSection = ({
                           <Badge variant="outline" className={getCategoryColor(result.category)}>
                             {DOCUMENT_CATEGORIES.find(c => c.value === result.category)?.label || result.category}
                           </Badge>
-                          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                             {result.match_count} match{result.match_count !== 1 ? 'es' : ''}
                           </Badge>
                         </div>
@@ -449,7 +449,7 @@ const DocumentsSection = ({
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                 isDragging 
-                  ? 'border-amber-500 bg-amber-50' 
+                  ? 'border-blue-500 bg-blue-50' 
                   : 'border-slate-300 hover:border-slate-400'
               }`}
               onDragOver={(e) => {
@@ -474,12 +474,12 @@ const DocumentsSection = ({
                 data-testid="upload-file-input"
               />
               <label htmlFor="files" className="cursor-pointer">
-                <FileUp className={`w-10 h-10 mx-auto mb-3 ${isDragging ? 'text-amber-500' : 'text-slate-400'}`} />
+                <FileUp className={`w-10 h-10 mx-auto mb-3 ${isDragging ? 'text-blue-500' : 'text-slate-400'}`} />
                 <p className="text-sm font-medium text-slate-700">
                   {isDragging ? 'Drop files here' : 'Drag & drop files here'}
                 </p>
                 <p className="text-xs text-slate-500 mt-1">
-                  or <span className="text-amber-600 hover:underline">browse</span> to select
+                  or <span className="text-red-600 hover:underline">browse</span> to select
                 </p>
                 <p className="text-xs text-slate-400 mt-2">
                   PDF, DOCX, TXT, PNG, JPG supported

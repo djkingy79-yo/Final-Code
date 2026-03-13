@@ -196,7 +196,7 @@ const SuccessStories = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -229,7 +229,7 @@ const SuccessStories = () => {
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
             <Link to="/contact" className="block py-2 text-slate-300 hover:text-white">Contact</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -248,10 +248,10 @@ const SuccessStories = () => {
         <div className="max-w-5xl mx-auto relative z-10 text-center">
           <div className="flex items-center justify-center gap-1 mb-6">
             {[1,2,3,4,5].map(i => (
-              <Star key={i} className="w-6 h-6 text-amber-500 fill-amber-500" />
+              <Star key={i} className="w-6 h-6 text-blue-500 fill-blue-500" />
             ))}
           </div>
-          <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">Real Stories, Real Hope</p>
+          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Real Stories, Real Hope</p>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Success Stories
           </h1>
@@ -265,7 +265,7 @@ const SuccessStories = () => {
       {/* Stories */}
       <main className="max-w-7xl mx-auto px-6 pb-16">
         <section className="mb-8" data-testid="success-stories-grid-section">
-          <p className="text-xs uppercase tracking-widest text-amber-600 dark:text-amber-500 font-semibold mb-2">Featured Stories</p>
+          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-2">Featured Stories</p>
           <h2 className="text-2xl font-bold text-foreground mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Real outcomes, organised for quick reading
           </h2>
@@ -280,7 +280,7 @@ const SuccessStories = () => {
               data-testid={`success-story-card-${story.id}`}
             >
               <div className="p-4 border-b border-border bg-muted/30">
-                <p className="text-[11px] uppercase tracking-wide text-amber-600 dark:text-amber-400 font-semibold mb-1">Story Heading</p>
+                <p className="text-[11px] uppercase tracking-wide text-red-600 dark:text-blue-400 font-semibold mb-1">Story Heading</p>
                 <h3 className="text-sm font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid={`success-story-heading-${story.id}`}>
                   {story.name} — {story.relationship} ({story.location})
                 </h3>
@@ -288,7 +288,7 @@ const SuccessStories = () => {
 
               <div className="p-4 flex-1">
                 <div className="flex items-start gap-2 mb-2">
-                  <Quote className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <Quote className="w-4 h-4 text-red-600 dark:text-blue-400 shrink-0 mt-0.5" />
                   <p className="text-xs text-foreground leading-relaxed max-h-52 overflow-y-auto pr-1" data-testid={`success-story-comment-${story.id}`}>
                     "{story.story}"
                   </p>
@@ -313,8 +313,8 @@ const SuccessStories = () => {
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-10 p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
+        <div className="mt-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
             <strong>Note:</strong> These stories are shared by real users with their consent. 
             Individual results vary. This tool does not guarantee any outcome. 
             All legal matters should be reviewed by a qualified legal professional.
@@ -339,7 +339,7 @@ const SuccessStories = () => {
           {!showSubmitForm ? (
             <Button 
               onClick={() => setShowSubmitForm(true)}
-              className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20"
+              className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20"
             >
               Share My Story
             </Button>
@@ -419,7 +419,7 @@ const SuccessStories = () => {
                 <Button 
                   type="submit" 
                   disabled={loading} 
-                  className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl py-5 font-semibold"
+                  className="flex-1 bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl py-5 font-semibold"
                 >
                   {loading ? "Submitting..." : "Submit Story"}
                 </Button>
@@ -442,7 +442,7 @@ const SuccessStories = () => {
             You don't have to do this alone. Let the tool help you find what might have been missed.
           </p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20">
+            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
               Get Started Free
             </Button>
           </Link>

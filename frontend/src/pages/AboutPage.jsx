@@ -15,7 +15,7 @@ const AboutPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -48,7 +48,7 @@ const AboutPage = () => {
             <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white">Success Stories</Link>
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -66,11 +66,11 @@ const AboutPage = () => {
         
         <div className="max-w-4xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Heart className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">My Story</p>
+          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">My Story</p>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Why I Built This App
           </h1>
@@ -87,12 +87,12 @@ const AboutPage = () => {
             <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Criminal Law Appeal Case Management
             </h2>
-            <p className="text-amber-400 font-medium">Founded by Debra King</p>
+            <p className="text-blue-400 font-medium">Founded by Debra King</p>
             <p className="text-slate-400 text-sm mt-2">Glenmore Park, NSW, Australia</p>
             
-            <div className="mt-6 inline-block bg-amber-900/30 border border-amber-700/50 rounded-xl px-6 py-3">
-              <p className="text-amber-300 text-sm font-medium">
-                <span className="text-amber-400">AUSTRALIAN LAW ONLY</span> — Covers all States & Territories
+            <div className="mt-6 inline-block bg-blue-900/30 border border-blue-700/50 rounded-xl px-6 py-3">
+              <p className="text-blue-300 text-sm font-medium">
+                <span className="text-blue-400">AUSTRALIAN LAW ONLY</span> — Covers all States & Territories
               </p>
             </div>
           </div>
@@ -103,8 +103,8 @@ const AboutPage = () => {
       <section className="py-12 px-6 bg-muted/50 dark:bg-muted/20">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <Quote className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <Quote className="w-6 h-6 text-red-600 dark:text-blue-400" />
             </div>
             <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
               My Journey
@@ -185,7 +185,7 @@ const AboutPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Time Served:</span>
-                  <span className="text-amber-400 font-semibold">10+ years</span>
+                  <span className="text-blue-400 font-semibold">10+ years</span>
                 </div>
               </div>
               <div className="space-y-3">
@@ -221,12 +221,12 @@ const AboutPage = () => {
               dedication to finding the truth.
             </p>
 
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
-              <p className="text-amber-800 dark:text-amber-200 font-medium mb-3">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+              <p className="text-blue-800 dark:text-blue-200 font-medium mb-3">
                 <AlertTriangle className="w-5 h-5 inline mr-2 -mt-0.5" />
                 <strong>Then I built this app.</strong>
               </p>
-              <p className="text-amber-700 dark:text-amber-300 text-sm">
+              <p className="text-blue-700 dark:text-blue-300 text-sm">
                 Using this very application, we analysed every document, every transcript, every piece of evidence. 
                 What we found was shocking — Josh had been severely let down by the system.
               </p>
@@ -287,7 +287,7 @@ const AboutPage = () => {
                 <p className="text-muted-foreground text-sm">Matter Pending</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-medium">On Remand</span>
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-medium">On Remand</span>
                 <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-medium">2+ Years</span>
               </div>
             </div>
@@ -299,7 +299,7 @@ const AboutPage = () => {
               </div>
               <div>
                 <span className="text-muted-foreground">Status:</span>
-                <span className="text-amber-600 dark:text-amber-400 font-semibold ml-2">Awaiting Trial</span>
+                <span className="text-red-600 dark:text-blue-400 font-semibold ml-2">Awaiting Trial</span>
               </div>
             </div>
           </div>
@@ -360,12 +360,12 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl p-8 text-center mt-8">
+          <div className="bg-gradient-to-r from-blue-500 to-red-600 rounded-2xl p-8 text-center mt-8">
             <Award className="w-12 h-12 text-white mx-auto mb-4" />
             <p className="text-white text-xl font-semibold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               "If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished."
             </p>
-            <p className="text-amber-100 text-sm">
+            <p className="text-blue-100 text-sm">
               People can change. I'm living proof of that — and I created this app to prove it.
             </p>
           </div>
@@ -375,7 +375,7 @@ const AboutPage = () => {
       {/* Quote */}
       <section className="py-16 px-6 bg-muted/50 dark:bg-muted/20">
         <div className="max-w-3xl mx-auto text-center">
-          <Quote className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
+          <Quote className="w-12 h-12 text-blue-500/30 mx-auto mb-4" />
           <blockquote className="text-xl text-muted-foreground italic leading-relaxed">
             "I just wanted to create something that could help others without them spending years working it out themselves. 
             Josh spent 10 years being told he had no options. Ten years. This app found multiple severe grounds in weeks. 
@@ -397,7 +397,7 @@ const AboutPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/">
-              <Button className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20">
+              <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
                 Get Started Free
               </Button>
             </Link>

@@ -115,7 +115,7 @@ const InstallPrompt = () => {
       </button>
       <div className="flex items-start gap-3">
         <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-2 rounded-lg">
-          <Download className="w-6 h-6 text-amber-400" />
+          <Download className="w-6 h-6 text-blue-400" />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold">Install App</h3>
@@ -135,7 +135,7 @@ const InstallPrompt = () => {
         </Button>
         <Button 
           size="sm" 
-          className="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900"
+          className="flex-1 bg-blue-500 hover:bg-red-600 text-slate-900"
           onClick={handleInstall}
         >
           Install

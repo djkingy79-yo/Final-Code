@@ -56,7 +56,7 @@ const LegalFrameworkPage = () => {
     sa: {
       name: "South Australia",
       abbrev: "SA",
-      color: "amber",
+      color: "blue",
       acts: [
         { name: "Criminal Law Consolidation Act 1935 (SA)", url: "https://www.legislation.sa.gov.au/lz?path=/c/a/criminal%20law%20consolidation%20act%201935", desc: "Main criminal offences in SA" },
         { name: "Controlled Substances Act 1984", url: "https://www.legislation.sa.gov.au/lz?path=/c/a/controlled%20substances%20act%201984", desc: "Drug offences" },
@@ -212,7 +212,7 @@ const LegalFrameworkPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -242,7 +242,7 @@ const LegalFrameworkPage = () => {
             <Link to="/caselaw-search" className="block py-2 text-slate-300 hover:text-white">Caselaw Search</Link>
             <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -268,7 +268,7 @@ const LegalFrameworkPage = () => {
 
         {/* Criminal Law Section */}
           <div id="criminal" className="space-y-4">
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-foreground mb-2">Criminal Law by Jurisdiction</h2>
               <p className="text-sm text-muted-foreground">
                 Each state and territory has its own criminal legislation. The Commonwealth also has criminal laws for federal offences. 
@@ -284,7 +284,7 @@ const LegalFrameworkPage = () => {
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold`}
-                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'amber' ? '#d97706' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
+                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
                     >
                       {state.abbrev}
                     </div>

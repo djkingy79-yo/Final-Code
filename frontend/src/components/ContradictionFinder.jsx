@@ -111,7 +111,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
       case "critical":
         return "bg-red-500 text-white";
       case "significant":
-        return "bg-amber-500 text-white";
+        return "bg-blue-500 text-white";
       case "minor":
         return "bg-blue-500 text-white";
       default:
@@ -124,7 +124,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
       case "critical":
         return "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800";
       case "significant":
-        return "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800";
+        return "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800";
       case "minor":
         return "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800";
       default:
@@ -178,7 +178,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center">
                 <Search className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -193,7 +193,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
             <Button
               onClick={() => setShowScanDialog(true)}
               disabled={scanning || documents.length < 2}
-              className="bg-amber-600 text-white hover:bg-amber-700 rounded-xl px-6 py-5 font-semibold"
+              className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-6 py-5 font-semibold"
               data-testid="scan-contradictions-btn"
             >
               {scanning ? (
@@ -215,7 +215,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
       {/* Results */}
       {loadingScans ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-red-600" />
         </div>
       ) : currentScan ? (
         <div className="space-y-6">
@@ -237,12 +237,12 @@ const ContradictionFinder = ({ caseId, documents }) => {
                 <p className="text-sm text-red-600 dark:text-red-400">Critical</p>
               </CardContent>
             </Card>
-            <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+            <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
               <CardContent className="p-4 text-center">
-                <p className="text-3xl font-bold text-amber-700 dark:text-amber-400">
+                <p className="text-3xl font-bold text-blue-700 dark:text-blue-400">
                   {currentScan.results?.summary?.significant_count || 0}
                 </p>
-                <p className="text-sm text-amber-600 dark:text-amber-400">Significant</p>
+                <p className="text-sm text-red-600 dark:text-blue-400">Significant</p>
               </CardContent>
             </Card>
             <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
@@ -260,7 +260,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
             <Card className="bg-card border-border">
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Key Finding</h3>
                     <p className="text-muted-foreground">
@@ -336,7 +336,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                             </h4>
                             <div className="space-y-2">
                               {contradiction.specific_quotes.map((quote, qi) => (
-                                <div key={qi} className="bg-muted/50 p-3 rounded-lg border-l-4 border-amber-500">
+                                <div key={qi} className="bg-muted/50 p-3 rounded-lg border-l-4 border-blue-500">
                                   <p className="text-sm text-foreground italic">"{quote.quote}"</p>
                                   <p className="text-xs text-muted-foreground mt-1">
                                     {quote.context || quote.doc_id}
@@ -357,7 +357,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                             <ul className="space-y-1">
                               {contradiction.recommendations.map((rec, ri) => (
                                 <li key={ri} className="text-sm text-muted-foreground flex items-start gap-2">
-                                  <span className="text-amber-600">•</span>
+                                  <span className="text-red-600">•</span>
                                   {rec}
                                 </li>
                               ))}
@@ -396,7 +396,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                 <ul className="space-y-2">
                   {currentScan.results.recommended_actions.map((action, i) => (
                     <li key={i} className="flex items-start gap-3 text-muted-foreground">
-                      <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 text-sm font-semibold flex-shrink-0">
+                      <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-red-600 text-sm font-semibold flex-shrink-0">
                         {i + 1}
                       </span>
                       {action}
@@ -423,7 +423,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                       key={scan.scan_id}
                       className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-colors ${
                         currentScan?.scan_id === scan.scan_id 
-                          ? "bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700" 
+                          ? "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700" 
                           : "bg-muted/50 border-border hover:bg-muted"
                       }`}
                       onClick={() => setCurrentScan(scan)}
@@ -441,7 +441,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                       </div>
                       <div className="flex items-center gap-2">
                         {currentScan?.scan_id === scan.scan_id && (
-                          <Badge className="bg-amber-600 text-white">Active</Badge>
+                          <Badge className="bg-red-600 text-white">Active</Badge>
                         )}
                         <Button
                           variant="ghost"
@@ -474,13 +474,13 @@ const ContradictionFinder = ({ caseId, documents }) => {
               and inconsistencies in your case materials.
             </p>
             {documents.length < 2 ? (
-              <p className="text-sm text-amber-600 dark:text-amber-400">
+              <p className="text-sm text-red-600 dark:text-blue-400">
                 You need at least 2 documents to run a contradiction scan.
               </p>
             ) : (
               <Button
                 onClick={() => setShowScanDialog(true)}
-                className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold"
+                className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
                 Run First Scan
@@ -510,7 +510,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                     variant={focusAreas.includes(area.value) ? "default" : "outline"}
                     className={`cursor-pointer transition-colors ${
                       focusAreas.includes(area.value) 
-                        ? "bg-amber-600 text-white hover:bg-amber-700" 
+                        ? "bg-red-600 text-white hover:bg-blue-700" 
                         : "hover:bg-muted"
                     }`}
                     onClick={() => toggleFocusArea(area.value)}
@@ -560,7 +560,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
             <Button
               onClick={runScan}
               disabled={scanning}
-              className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800"
+              className="flex-1 bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800"
             >
               {scanning ? (
                 <>

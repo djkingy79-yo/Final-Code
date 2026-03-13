@@ -1,18 +1,18 @@
 /* DO NOT UNDO — index configuration. All settings in this file are approved and must be preserved. */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-heading: 'Playfair Display', serif;
+  --font-heading: 'Crimson Pro', serif;
   --font-body: 'Manrope', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --deep-indigo: #1E1B4B;
-  --burnished-amber: #B45309;
-  --amber-gold: #D97706;
+  --royal-blue: #1e3a8a;
+  --crimson-red: #dc2626;
   --slate-950: #020617;
 }
 
@@ -48,8 +48,8 @@ code, .mono {
     --popover-foreground: 222 47% 9%;
     --primary: 222 47% 11%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 44 96% 52%;
-    --secondary-foreground: 222 47% 9%;
+    --secondary: 221 83% 53%;
+    --secondary-foreground: 0 0% 100%;
     --muted: 210 18% 95%;
     --muted-foreground: 215 13% 38%;
     --accent: 207 100% 50%;
@@ -69,9 +69,9 @@ code, .mono {
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 7%;
     --popover-foreground: 210 40% 98%;
-    --primary: 44 96% 52%;
-    --primary-foreground: 222 47% 9%;
-    --secondary: 207 100% 50%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 72% 51%;
     --secondary-foreground: 0 0% 100%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
@@ -150,7 +150,7 @@ code, .mono {
 }
 
 .card-elevated:hover {
-  @apply -translate-y-1 border-amber-500/20;
+  @apply -translate-y-1 border-blue-500/20;
 }
 
 /* Gradient backgrounds */
@@ -158,8 +158,8 @@ code, .mono {
   background: linear-gradient(145deg, #06080e 0%, #0b1633 55%, #0a0b10 100%);
 }
 
-.gradient-amber {
-  background: linear-gradient(135deg, #EAB308 0%, #D97706 100%);
+.gradient-blue {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
 }
 
 /* Subtle texture overlay */
@@ -174,12 +174,12 @@ code, .mono {
 
 /* Timeline styles */
 .timeline-connector {
-  @apply border-l-2 border-amber-500 pl-8 relative;
+  @apply border-l-2 border-blue-600 pl-8 relative;
 }
 
 .timeline-connector::before {
   content: '';
-  @apply absolute left-[-5px] w-3 h-3 bg-amber-500 rounded-full;
+  @apply absolute left-[-5px] w-3 h-3 bg-blue-600 rounded-full;
 }
 
 /* Report styles for A4 simulation */
@@ -212,7 +212,7 @@ code, .mono {
 
 /* Gradient text for headings */
 .gradient-text {
-  @apply bg-gradient-to-r from-slate-900 via-yellow-600 to-blue-600 dark:from-white dark:via-yellow-300 dark:to-blue-300 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-blue-900 via-red-600 to-blue-600 dark:from-white dark:via-red-300 dark:to-blue-300 bg-clip-text text-transparent;
 }
 
 /* iOS-safe image rendering helpers */
@@ -252,7 +252,7 @@ code, .mono {
 }
 
 .status-pending {
-  @apply text-amber-700 bg-amber-50 border border-amber-200 dark:text-amber-400 dark:bg-amber-950 dark:border-amber-800;
+  @apply text-blue-700 bg-blue-50 border border-blue-200 dark:text-blue-400 dark:bg-blue-950 dark:border-blue-800;
 }
 
 .status-closed {
@@ -283,7 +283,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Legal icons styling */
 .legal-icon {
-  @apply w-6 h-6 text-amber-600 dark:text-amber-500;
+  @apply w-6 h-6 text-blue-600 dark:text-blue-400;
 }
 
 /* Layered shadows */

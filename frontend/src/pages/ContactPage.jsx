@@ -56,7 +56,7 @@ const ContactPage = () => {
             Thanks for reaching out. Deb will get back to you as soon as possible.
           </p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20">
+            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
               Back to Home
             </Button>
           </Link>
@@ -71,7 +71,7 @@ const ContactPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -104,7 +104,7 @@ const ContactPage = () => {
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
             <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -122,11 +122,11 @@ const ContactPage = () => {
         
         <div className="max-w-2xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <MessageSquare className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">Get in Touch</p>
+          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Get in Touch</p>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Contact Deb
           </h1>
@@ -135,7 +135,7 @@ const ContactPage = () => {
           </p>
           <Link
             to="/legal-resources"
-            className="inline-flex items-center mt-4 text-sm font-semibold text-amber-600 hover:text-amber-700"
+            className="inline-flex items-center mt-4 text-sm font-semibold text-red-600 hover:text-blue-700"
             data-testid="contact-page-directory-link"
           >
             Looking for legal organisations instead? Open Legal Resources & Contacts Directory
@@ -149,7 +149,7 @@ const ContactPage = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
-                <User className="w-4 h-4 text-amber-600" />
+                <User className="w-4 h-4 text-red-600" />
                 Your Name
               </label>
               <Input
@@ -164,7 +164,7 @@ const ContactPage = () => {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
-                <Mail className="w-4 h-4 text-amber-600" />
+                <Mail className="w-4 h-4 text-red-600" />
                 Your Email
               </label>
               <Input
@@ -180,7 +180,7 @@ const ContactPage = () => {
 
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
-              <MessageSquare className="w-4 h-4 text-amber-600" />
+              <MessageSquare className="w-4 h-4 text-red-600" />
               Subject
             </label>
             <Input
@@ -208,7 +208,7 @@ const ContactPage = () => {
           <Button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl py-5 font-semibold shadow-lg shadow-amber-600/20"
+            className="w-full bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl py-5 font-semibold shadow-lg shadow-red-600/20"
             data-testid="contact-submit"
           >
             {loading ? (
@@ -232,7 +232,7 @@ const ContactPage = () => {
           </p>
           <a 
             href="mailto:djkingy79@gmail.com" 
-            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 font-semibold text-lg transition-colors"
+            className="inline-flex items-center gap-2 text-red-600 hover:text-blue-700 font-semibold text-lg transition-colors"
           >
             <Mail className="w-5 h-5" />
             djkingy79@gmail.com

@@ -13,7 +13,7 @@ const glossaryCategories = [
     id: "fundamentals",
     name: "Legal Fundamentals",
     icon: Scale,
-    color: "amber",
+    color: "blue",
     image: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
     terms: [
       {
@@ -624,7 +624,7 @@ const LegalGlossary = () => {
   };
 
   const colorClasses = {
-    amber: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+    blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800",
     red: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800",
     emerald: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
     purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800",
@@ -641,7 +641,7 @@ const LegalGlossary = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -677,7 +677,7 @@ const LegalGlossary = () => {
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <BookOpen className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -695,7 +695,7 @@ const LegalGlossary = () => {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="glossary-content-intro">
-          <p className="text-xs uppercase tracking-widest text-amber-600 dark:text-amber-500 font-semibold mb-1">Glossary Navigator</p>
+          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Glossary Navigator</p>
           <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Scan terms quickly or read in full detail
           </h2>
@@ -709,7 +709,7 @@ const LegalGlossary = () => {
             placeholder="Search for any legal term..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 py-6 text-base rounded-xl border-2 focus:border-amber-500"
+            className="pl-12 py-6 text-base rounded-xl border-2 focus:border-blue-500"
             data-testid="glossary-search"
           />
         </div>
@@ -719,8 +719,8 @@ const LegalGlossary = () => {
             onClick={() => setViewDensity("compact")}
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "compact"
-                ? "bg-amber-600 text-white border-amber-600"
-                : "bg-card text-muted-foreground border-border hover:border-amber-500"
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-card text-muted-foreground border-border hover:border-blue-500"
             }`}
             data-testid="glossary-density-compact"
           >
@@ -730,8 +730,8 @@ const LegalGlossary = () => {
             onClick={() => setViewDensity("expanded")}
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "expanded"
-                ? "bg-amber-600 text-white border-amber-600"
-                : "bg-card text-muted-foreground border-border hover:border-amber-500"
+                ? "bg-red-600 text-white border-red-600"
+                : "bg-card text-muted-foreground border-border hover:border-blue-500"
             }`}
             data-testid="glossary-density-expanded"
           >
@@ -745,12 +745,12 @@ const LegalGlossary = () => {
             onClick={() => setActiveCategory("all")}
             className={`p-4 rounded-xl border-2 transition-all ${
               activeCategory === "all" 
-                ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20" 
-                : "border-border hover:border-amber-500/50"
+                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
+                : "border-border hover:border-blue-500/50"
             }`}
           >
-            <BookOpen className={`w-6 h-6 mx-auto mb-2 ${activeCategory === "all" ? "text-amber-600" : "text-muted-foreground"}`} />
-            <p className={`font-semibold text-sm ${activeCategory === "all" ? "text-amber-700 dark:text-amber-400" : "text-foreground"}`}>
+            <BookOpen className={`w-6 h-6 mx-auto mb-2 ${activeCategory === "all" ? "text-red-600" : "text-muted-foreground"}`} />
+            <p className={`font-semibold text-sm ${activeCategory === "all" ? "text-blue-700 dark:text-blue-400" : "text-foreground"}`}>
               All Terms
             </p>
             <p className="text-xs text-muted-foreground">{getAllTerms().length} terms</p>
@@ -762,12 +762,12 @@ const LegalGlossary = () => {
               onClick={() => setActiveCategory(cat.id)}
               className={`p-4 rounded-xl border-2 transition-all ${
                 activeCategory === cat.id 
-                  ? `border-amber-500 bg-amber-50 dark:bg-amber-900/20` 
-                  : "border-border hover:border-amber-500/50"
+                  ? `border-blue-500 bg-blue-50 dark:bg-blue-900/20` 
+                  : "border-border hover:border-blue-500/50"
               }`}
             >
-              <cat.icon className={`w-6 h-6 mx-auto mb-2 ${activeCategory === cat.id ? "text-amber-600" : "text-muted-foreground"}`} />
-              <p className={`font-semibold text-sm ${activeCategory === cat.id ? "text-amber-700 dark:text-amber-400" : "text-foreground"}`}>
+              <cat.icon className={`w-6 h-6 mx-auto mb-2 ${activeCategory === cat.id ? "text-red-600" : "text-muted-foreground"}`} />
+              <p className={`font-semibold text-sm ${activeCategory === cat.id ? "text-blue-700 dark:text-blue-400" : "text-foreground"}`}>
                 {cat.name}
               </p>
               <p className="text-xs text-muted-foreground">{cat.terms.length} terms</p>
@@ -801,7 +801,7 @@ const LegalGlossary = () => {
           {filteredTerms.map((item, index) => (
             <div 
               key={`${item.term}-${index}`}
-              className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-amber-500/30 transition-all"
+              className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
             >
               <button
                 onClick={() => toggleExpand(item.term)}
@@ -823,9 +823,9 @@ const LegalGlossary = () => {
                   </div>
                   <p className={`text-muted-foreground ${viewDensity === "compact" ? "text-sm" : "text-base"}`}>{item.simple}</p>
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${expandedTerms[item.term] ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-muted'}`}>
+                <div className={`p-2 rounded-lg transition-colors ${expandedTerms[item.term] ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
                   {expandedTerms[item.term] ? (
-                    <ChevronDown className="w-5 h-5 text-amber-600" />
+                    <ChevronDown className="w-5 h-5 text-red-600" />
                   ) : (
                     <ChevronRight className="w-5 h-5 text-muted-foreground" />
                   )}
@@ -834,7 +834,7 @@ const LegalGlossary = () => {
               
               {expandedTerms[item.term] && (
                 <div className={`${viewDensity === "compact" ? "px-4 pb-4" : "px-5 pb-5"}`}>
-                  <div className={`bg-muted/50 rounded-xl border-l-4 border-amber-500 space-y-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}>
+                  <div className={`bg-muted/50 rounded-xl border-l-4 border-blue-500 space-y-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}>
                     <div>
                       <h4 className="text-sm font-semibold text-foreground mb-2">Detailed Explanation</h4>
                       <p className="text-muted-foreground text-sm leading-relaxed">{item.detailed}</p>
@@ -842,7 +842,7 @@ const LegalGlossary = () => {
                     {item.example && (
                       <div className="pt-3 border-t border-border">
                         <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <span className="w-5 h-5 rounded bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 text-xs">Ex</span>
+                          <span className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-red-600 text-xs">Ex</span>
                           Example
                         </h4>
                         <p className="text-muted-foreground text-sm italic">"{item.example}"</p>

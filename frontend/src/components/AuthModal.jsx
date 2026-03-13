@@ -116,7 +116,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             />
           </div>
           <div className="relative z-10">
-            <div className="w-14 h-14 rounded-2xl bg-amber-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-600/30">
+            <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-600/30">
               <Scale className="w-7 h-7 text-white" />
             </div>
             <DialogTitle 
@@ -167,7 +167,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             {mode === "register" && (
               <div>
                 <Label htmlFor="name" className="flex items-center gap-2 text-foreground font-medium">
-                  <User className="w-4 h-4 text-amber-600" />
+                  <User className="w-4 h-4 text-red-600" />
                   Full Name
                 </Label>
                 <Input
@@ -185,7 +185,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             
             <div>
               <Label htmlFor="email" className="flex items-center gap-2 text-foreground font-medium">
-                <Mail className="w-4 h-4 text-amber-600" />
+                <Mail className="w-4 h-4 text-red-600" />
                 Email Address
               </Label>
               <Input
@@ -202,7 +202,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             
             <div>
               <Label htmlFor="password" className="flex items-center gap-2 text-foreground font-medium">
-                <Lock className="w-4 h-4 text-amber-600" />
+                <Lock className="w-4 h-4 text-red-600" />
                 Password
               </Label>
               <div className="relative">
@@ -229,7 +229,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl py-5 font-semibold shadow-lg shadow-amber-600/20"
+              className="w-full bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl py-5 font-semibold shadow-lg shadow-red-600/20"
               data-testid="auth-submit-btn"
             >
               {loading ? (
@@ -249,7 +249,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={switchMode}
-                className="ml-1 text-amber-600 hover:text-amber-700 font-semibold transition-colors"
+                className="ml-1 text-red-600 hover:text-blue-700 font-semibold transition-colors"
               >
                 {mode === "login" ? "Sign up" : "Sign in"}
               </button>
@@ -263,9 +263,9 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
             <p className="text-xs text-muted-foreground text-center">
               By signing in, you agree to our{" "}
-              <a href="/terms" className="text-amber-600 hover:underline">Terms of Service</a>
+              <a href="/terms" className="text-red-600 hover:underline">Terms of Service</a>
               {" "}and{" "}
-              <a href="/terms" className="text-amber-600 hover:underline">Privacy Policy</a>
+              <a href="/terms" className="text-red-600 hover:underline">Privacy Policy</a>
             </p>
           </div>
         </div>

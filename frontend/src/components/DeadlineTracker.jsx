@@ -106,7 +106,7 @@ const DeadlineTracker = ({ caseId }) => {
     if (isCompleted) return "bg-slate-100 text-slate-500";
     if (daysRemaining < 0) return "bg-red-100 text-red-700 border-red-300";
     if (daysRemaining <= 3) return "bg-red-50 text-red-700 border-red-200";
-    if (daysRemaining <= 7) return "bg-amber-50 text-amber-700 border-amber-200";
+    if (daysRemaining <= 7) return "bg-blue-50 text-blue-700 border-blue-200";
     return "bg-slate-50 text-slate-700 border-slate-200";
   };
 
@@ -279,7 +279,7 @@ const DeadlineTracker = ({ caseId }) => {
                                 })}
                               </Badge>
                               {!deadline.is_completed && (
-                                <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : daysRemaining <= 3 ? 'text-red-600' : daysRemaining <= 7 ? 'text-amber-600' : 'text-slate-600'}`}>
+                                <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : daysRemaining <= 3 ? 'text-red-600' : daysRemaining <= 7 ? 'text-red-600' : 'text-slate-600'}`}>
                                   {isOverdue 
                                     ? `${Math.abs(daysRemaining)} days overdue!`
                                     : daysRemaining === 0 
@@ -361,7 +361,7 @@ const DeadlineTracker = ({ caseId }) => {
                     <span>Urgent (≤3 days)</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-amber-200"></div>
+                    <div className="w-3 h-3 rounded-full bg-blue-200"></div>
                     <span>Upcoming (≤7 days)</span>
                   </div>
                 </div>

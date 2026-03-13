@@ -43,7 +43,7 @@ const AdminStats = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading admin statistics...</p>
         </div>
       </div>
@@ -63,7 +63,7 @@ const AdminStats = () => {
           <p className="text-muted-foreground mb-6">{error}</p>
           <Button 
             onClick={() => navigate("/dashboard")} 
-            className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold"
+            className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold"
           >
             Go to Dashboard
           </Button>
@@ -80,7 +80,7 @@ const AdminStats = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -115,7 +115,7 @@ const AdminStats = () => {
             </button>
             <button 
               onClick={() => navigate("/dashboard")} 
-              className="flex items-center gap-2 py-2 text-amber-500 hover:text-amber-400 w-full"
+              className="flex items-center gap-2 py-2 text-blue-500 hover:text-blue-400 w-full"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to Dashboard
@@ -137,11 +137,11 @@ const AdminStats = () => {
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest">Admin Only</p>
+              <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest">Admin Only</p>
               <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Site Analytics
               </h1>
@@ -184,8 +184,8 @@ const AdminStats = () => {
           <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center">
-                  <FolderOpen className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
+                  <FolderOpen className="w-7 h-7 text-red-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground font-medium">Total Cases Created</p>
@@ -213,7 +213,7 @@ const AdminStats = () => {
                   <span className="text-sm text-muted-foreground w-28 font-medium">{day.date}</span>
                   <div className="flex-1 bg-muted rounded-full h-8 overflow-hidden">
                     <div 
-                      className="bg-gradient-to-r from-amber-500 to-amber-600 h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500"
+                      className="bg-gradient-to-r from-blue-500 to-red-600 h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500"
                       style={{ 
                         width: `${Math.max((day.count / maxDailyCount) * 100, day.count > 0 ? 10 : 0)}%`,
                         minWidth: day.count > 0 ? '40px' : '0'

@@ -34,7 +34,7 @@ const GROUND_TYPE_COLORS = {
   procedural_error: "bg-blue-50 text-blue-700 border-blue-200",
   fresh_evidence: "bg-emerald-50 text-emerald-700 border-emerald-200",
   miscarriage_of_justice: "bg-red-50 text-red-700 border-red-200",
-  sentencing_error: "bg-amber-50 text-amber-700 border-amber-200",
+  sentencing_error: "bg-blue-50 text-blue-700 border-blue-200",
   judicial_error: "bg-purple-50 text-purple-700 border-purple-200",
   ineffective_counsel: "bg-orange-50 text-orange-700 border-orange-200",
   prosecution_misconduct: "bg-rose-50 text-rose-700 border-rose-200",
@@ -45,13 +45,13 @@ const GROUND_TYPE_COLORS = {
 
 const STRENGTH_CONFIG = {
   strong: { icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-100", label: "Strong" },
-  moderate: { icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-100", label: "Moderate" },
+  moderate: { icon: AlertTriangle, color: "text-red-600", bg: "bg-blue-100", label: "Moderate" },
   weak: { icon: XCircle, color: "text-red-600", bg: "bg-red-100", label: "Weak" }
 };
 
 const STATUS_CONFIG = {
   identified: { color: "bg-blue-100 text-blue-700", label: "Identified" },
-  investigating: { color: "bg-amber-100 text-amber-700", label: "Investigating" },
+  investigating: { color: "bg-blue-100 text-blue-700", label: "Investigating" },
   confirmed: { color: "bg-emerald-100 text-emerald-700", label: "Confirmed" },
   rejected: { color: "bg-red-100 text-red-700", label: "Rejected" }
 };
@@ -131,12 +131,12 @@ const GroundsOfMerit = ({
     <div className="space-y-4" data-testid="grounds-container">
       {/* Paywall Banner when not unlocked */}
       {!isUnlocked && groundsCount > 0 && (
-        <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <Card className="bg-gradient-to-r from-blue-50 to-orange-50 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
-                  <Lock className="w-6 h-6 text-amber-600" />
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Lock className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-slate-900 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -149,7 +149,7 @@ const GroundsOfMerit = ({
               </div>
               <Button 
                 onClick={() => setShowPaymentModal(true)}
-                className="bg-amber-600 hover:bg-amber-700 text-white"
+                className="bg-red-600 hover:bg-blue-700 text-white"
                 data-testid="unlock-grounds-btn"
               >
                 <CreditCard className="w-4 h-4 mr-2" />
@@ -180,7 +180,7 @@ const GroundsOfMerit = ({
             return (
               <Card 
                 key={ground.ground_id} 
-                className={`card-hover group ${selectedGround?.ground_id === ground.ground_id ? 'ring-2 ring-amber-500' : ''}`}
+                className={`card-hover group ${selectedGround?.ground_id === ground.ground_id ? 'ring-2 ring-blue-500' : ''}`}
                 data-testid={`ground-${ground.ground_id}`}
               >
                 <CardContent className="p-4">
@@ -202,7 +202,7 @@ const GroundsOfMerit = ({
                       </div>
                       
                       <h4 
-                        className="font-semibold text-slate-900 text-lg group-hover:text-amber-700 transition-colors"
+                        className="font-semibold text-slate-900 text-lg group-hover:text-blue-700 transition-colors"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
                         {ground.title}
@@ -271,7 +271,7 @@ const GroundsOfMerit = ({
                         size="sm"
                         onClick={() => onInvestigate(ground.ground_id)}
                         disabled={investigating === ground.ground_id}
-                        className="text-amber-700 border-amber-200 hover:bg-amber-50"
+                        className="text-blue-700 border-blue-200 hover:bg-blue-50"
                         data-testid={`investigate-${ground.ground_id}`}
                       >
                         {investigating === ground.ground_id ? (
@@ -307,7 +307,7 @@ const GroundsOfMerit = ({
         <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }} className="text-2xl flex items-center gap-3">
-              <Scale className="w-6 h-6 text-amber-600" />
+              <Scale className="w-6 h-6 text-red-600" />
               Ground of Merit Analysis
             </DialogTitle>
           </DialogHeader>
@@ -390,12 +390,12 @@ const GroundsOfMerit = ({
                     </h4>
                     <div className="space-y-2">
                       {detailGround.similar_cases.map((caseItem, idx) => (
-                        <div key={idx} className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                          <div className="font-medium text-amber-900">
+                        <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <div className="font-medium text-blue-900">
                             {caseItem.case_name}
                           </div>
                           {caseItem.citation && (
-                            <div className="font-mono text-xs text-amber-700 mt-1">
+                            <div className="font-mono text-xs text-blue-700 mt-1">
                               {caseItem.citation}
                             </div>
                           )}
@@ -409,7 +409,7 @@ const GroundsOfMerit = ({
                 {detailGround.deep_analysis?.full_analysis && (
                   <div>
                     <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-amber-600" />
+                      <Sparkles className="w-4 h-4 text-red-600" />
                       Deep Analysis
                       <span className="text-xs font-normal text-slate-500">
                         Generated {formatDate(detailGround.deep_analysis.investigated_at)}

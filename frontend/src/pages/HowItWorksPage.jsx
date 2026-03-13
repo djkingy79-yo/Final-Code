@@ -57,7 +57,7 @@ const HowItWorksPage = () => {
       title: "Full Detailed Report",
       price: "$150 AUD",
       note: "Premium legal analysis with strategic framing and filing guidance.",
-      tone: "border-amber-300 bg-amber-50 dark:bg-amber-900/20",
+      tone: "border-blue-300 bg-blue-50 dark:bg-blue-900/20",
     },
     {
       title: "Extensive Log Report",
@@ -72,7 +72,7 @@ const HowItWorksPage = () => {
       <header className="bg-gradient-to-r from-black via-slate-950 to-blue-950 sticky top-0 z-50 border-b border-blue-900/40">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "Crimson Pro, serif" }}>
@@ -109,7 +109,7 @@ const HowItWorksPage = () => {
             <Link to="/how-to-use" className="block py-2 text-slate-300 hover:text-white">How To Use</Link>
             <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Legal Resources</Link>
             <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white">Statistics</Link>
-            <Link to="/" className="block py-2 text-amber-400 hover:text-amber-300">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-400 hover:text-blue-300">Back to Home</Link>
           </div>
         )}
       </header>
@@ -117,7 +117,7 @@ const HowItWorksPage = () => {
       <section className="py-14 px-6 bg-gradient-to-b from-black via-slate-950 to-blue-950 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
               <PlayCircle className="w-7 h-7 text-white" />
             </div>
           </div>
@@ -132,7 +132,7 @@ const HowItWorksPage = () => {
 
       <main className="max-w-6xl mx-auto px-6 py-10 space-y-12">
         <section className="text-center" data-testid="how-it-works-flow-heading">
-          <p className="text-xs uppercase tracking-widest text-amber-600 dark:text-amber-500 font-semibold mb-1">Process Flow</p>
+          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Process Flow</p>
           <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
             Follow the exact steps from upload to hearing-ready output
           </h2>
@@ -144,8 +144,8 @@ const HowItWorksPage = () => {
             return (
               <div key={step.title} className="rounded-2xl border border-border bg-card p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-red-600 dark:text-blue-400" />
                   </div>
                   <h2 className="text-lg font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>{step.title}</h2>
                 </div>
@@ -186,7 +186,7 @@ const HowItWorksPage = () => {
           </div>
         </section>
 
-        <section className="rounded-2xl border-2 border-amber-300 bg-amber-50 dark:bg-amber-900/20 p-6 text-center" data-testid="how-it-works-start-case-section">
+        <section className="rounded-2xl border-2 border-blue-300 bg-blue-50 dark:bg-blue-900/20 p-6 text-center" data-testid="how-it-works-start-case-section">
           <h2 className="text-2xl font-bold text-foreground mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
             Ready to begin?
           </h2>
@@ -194,7 +194,7 @@ const HowItWorksPage = () => {
             Start your case now and move through the exact workflow above.
           </p>
           <Link to="/dashboard">
-            <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl px-6" data-testid="how-it-works-start-case-btn">
+            <Button className="bg-red-600 hover:bg-blue-700 text-white rounded-xl px-6" data-testid="how-it-works-start-case-btn">
               Start Your Case Now
             </Button>
           </Link>

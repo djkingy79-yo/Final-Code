@@ -185,7 +185,7 @@ export default function PaymentModal({
       <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6" data-testid="payment-modal">
         <DialogHeader className="space-y-2">
           <DialogTitle className="flex items-center gap-2 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            <Lock className="w-5 h-5 text-amber-500 shrink-0" />
+            <Lock className="w-5 h-5 text-blue-500 shrink-0" />
             <span className="line-clamp-1">{featureInfo.title}</span>
           </DialogTitle>
           <DialogDescription className="text-sm">
@@ -195,7 +195,7 @@ export default function PaymentModal({
 
         <div className="space-y-4 py-2">
           {/* Price Display - Made larger for mobile */}
-          <div className="bg-gradient-to-r from-slate-50 to-amber-50 dark:from-slate-800 dark:to-amber-900/20 rounded-xl p-4 text-center border border-slate-200 dark:border-slate-700">
+          <div className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20 rounded-xl p-4 text-center border border-slate-200 dark:border-slate-700">
             <p className="text-sm text-muted-foreground mb-1">One-time payment</p>
             <p className="text-3xl sm:text-4xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
               ${price?.toFixed(2)} <span className="text-base font-normal text-muted-foreground">AUD</span>
@@ -275,9 +275,9 @@ export default function PaymentModal({
                         </p>
                       </div>
                       
-                      <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-3">
-                        <p className="text-xs text-amber-700 dark:text-amber-300">Amount to transfer</p>
-                        <p className="font-bold text-amber-800 dark:text-amber-200 text-xl">
+                      <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
+                        <p className="text-xs text-blue-700 dark:text-blue-300">Amount to transfer</p>
+                        <p className="font-bold text-blue-800 dark:text-blue-200 text-xl">
                           ${price?.toFixed(2)} AUD
                         </p>
                       </div>
@@ -334,10 +334,10 @@ export default function PaymentModal({
                       </div>
 
                       {/* Amount */}
-                      <div className="flex items-center justify-between p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                      <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                         <div>
-                          <p className="text-xs text-amber-700 dark:text-amber-300">Amount</p>
-                          <p className="font-bold text-amber-800 dark:text-amber-200 text-xl">${payidDetails.amount.toFixed(2)} AUD</p>
+                          <p className="text-xs text-blue-700 dark:text-blue-300">Amount</p>
+                          <p className="font-bold text-blue-800 dark:text-blue-200 text-xl">${payidDetails.amount.toFixed(2)} AUD</p>
                         </div>
                         <Button 
                           size="sm" 
@@ -383,10 +383,10 @@ export default function PaymentModal({
                   </div>
 
                   {/* Alert */}
-                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                     <div className="flex items-start gap-2">
-                      <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
-                      <p className="text-xs text-amber-800 dark:text-amber-200">
+                      <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                      <p className="text-xs text-blue-800 dark:text-blue-200">
                         <strong>Include the reference</strong> in your transfer description so we can match your payment.
                       </p>
                     </div>
@@ -471,7 +471,7 @@ export default function PaymentModal({
           </Tabs>
 
           <p className="text-xs text-muted-foreground text-center pt-2">
-            Questions? <a href="mailto:djkingy79@gmail.com" className="text-amber-600 hover:underline">djkingy79@gmail.com</a>
+            Questions? <a href="mailto:djkingy79@gmail.com" className="text-red-600 hover:underline">djkingy79@gmail.com</a>
           </p>
         </div>
       </DialogContent>

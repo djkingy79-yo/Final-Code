@@ -54,7 +54,7 @@ const getCategoryColor = (category) => {
   const colors = {
     general: "bg-slate-100 text-slate-700 border-slate-200",
     legal_issue: "bg-red-50 text-red-700 border-red-200",
-    evidence: "bg-amber-50 text-amber-700 border-amber-200",
+    evidence: "bg-blue-50 text-blue-700 border-blue-200",
     witness: "bg-purple-50 text-purple-700 border-purple-200",
     strategy: "bg-emerald-50 text-emerald-700 border-emerald-200",
     todo: "bg-blue-50 text-blue-700 border-blue-200",
@@ -407,14 +407,14 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
             return (
               <Card
                 key={note.note_id}
-                className={`hover:shadow-md transition-shadow group ${pinned ? "border-amber-300 bg-amber-50/30" : ""}`}
+                className={`hover:shadow-md transition-shadow group ${pinned ? "border-blue-300 bg-blue-50/30" : ""}`}
                 data-testid={`note-${note.note_id}`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
-                        {pinned && <Pin className="w-4 h-4 text-amber-500" data-testid={`note-pinned-icon-${note.note_id}`} />}
+                        {pinned && <Pin className="w-4 h-4 text-blue-500" data-testid={`note-pinned-icon-${note.note_id}`} />}
                         <h4 className="font-semibold text-slate-900" data-testid={`note-title-${note.note_id}`}>{note.title}</h4>
                         <Badge variant="outline" className={getCategoryColor(note.category)} data-testid={`note-category-${note.note_id}`}>
                           {NOTE_CATEGORIES.find((c) => c.value === note.category)?.label || note.category}
@@ -451,7 +451,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleTogglePin(note)}
-                        className="text-slate-400 hover:text-amber-500"
+                        className="text-slate-400 hover:text-blue-500"
                         data-testid={`toggle-pin-btn-${note.note_id}`}
                       >
                         {pinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}

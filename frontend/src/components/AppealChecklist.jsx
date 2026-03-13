@@ -14,7 +14,7 @@ const PHASE_CONFIG = {
   preparation: { label: "Preparation", color: "bg-slate-500" },
   grounds_identification: { label: "Identify Grounds", color: "bg-blue-500" },
   investigation: { label: "Investigation", color: "bg-purple-500" },
-  documentation: { label: "Documentation", color: "bg-amber-500" },
+  documentation: { label: "Documentation", color: "bg-blue-500" },
   lodgement: { label: "Lodgement", color: "bg-emerald-500" },
   hearing: { label: "Hearing Prep", color: "bg-rose-500" }
 };

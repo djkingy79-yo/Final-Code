@@ -77,7 +77,7 @@ const CaselawSearchPage = () => {
     sa: {
       name: "South Australia",
       abbrev: "SA",
-      color: "amber",
+      color: "blue",
       courts: [
         {
           name: "Courts SA - Judgments",
@@ -222,7 +222,7 @@ const CaselawSearchPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -252,7 +252,7 @@ const CaselawSearchPage = () => {
             <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legislation</Link>
             <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -314,7 +314,7 @@ const CaselawSearchPage = () => {
           <select 
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
-            className="w-full md:w-64 px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="w-full md:w-64 px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">-- Choose a State/Territory --</option>
             <option value="federal">Federal Courts (High Court, Federal Court)</option>
@@ -339,7 +339,7 @@ const CaselawSearchPage = () => {
             {databases[selectedState].courts.map((court, index) => (
               <div key={index} className="bg-card border border-border rounded-2xl overflow-hidden">
                 <div className={`bg-${databases[selectedState].color}-600 px-6 py-4 flex items-center justify-between`}
-                  style={{ backgroundColor: databases[selectedState].color === 'blue' ? '#2563eb' : databases[selectedState].color === 'purple' ? '#9333ea' : databases[selectedState].color === 'red' ? '#dc2626' : databases[selectedState].color === 'amber' ? '#d97706' : databases[selectedState].color === 'emerald' ? '#059669' : databases[selectedState].color === 'teal' ? '#0d9488' : databases[selectedState].color === 'orange' ? '#ea580c' : databases[selectedState].color === 'indigo' ? '#4f46e5' : '#475569' }}
+                  style={{ backgroundColor: databases[selectedState].color === 'blue' ? '#2563eb' : databases[selectedState].color === 'purple' ? '#9333ea' : databases[selectedState].color === 'red' ? '#dc2626' : databases[selectedState].color === 'blue_alt' ? '#1e3a8a' : databases[selectedState].color === 'emerald' ? '#059669' : databases[selectedState].color === 'teal' ? '#0d9488' : databases[selectedState].color === 'orange' ? '#ea580c' : databases[selectedState].color === 'indigo' ? '#4f46e5' : '#475569' }}
                 >
                   <div>
                     <h3 className="text-white font-bold text-lg">{court.name}</h3>
@@ -362,13 +362,13 @@ const CaselawSearchPage = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-amber-600" />
+                        <FileText className="w-4 h-4 text-red-600" />
                         What You'll Find
                       </h4>
                       <ul className="space-y-2">
                         {court.whatYouFind.map((item, i) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
                             {item}
                           </li>
                         ))}
@@ -403,11 +403,11 @@ const CaselawSearchPage = () => {
                 <button
                   key={key}
                   onClick={() => setSelectedState(key)}
-                  className="text-left p-4 bg-card border border-border rounded-xl hover:border-amber-500 hover:shadow-md transition-all"
+                  className="text-left p-4 bg-card border border-border rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold`}
-                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'amber' ? '#d97706' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
+                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
                     >
                       {state.abbrev}
                     </div>
@@ -421,7 +421,7 @@ const CaselawSearchPage = () => {
             </div>
 
             {/* AustLII - Universal Search */}
-            <div className="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-400 dark:border-amber-600 rounded-2xl p-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 dark:border-red-600 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-foreground">AustLII - Search All Australian Courts</h3>
@@ -431,7 +431,7 @@ const CaselawSearchPage = () => {
                   href="https://www.austlii.edu.au/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2"
+                  className="bg-red-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2"
                 >
                   Search AustLII
                   <ExternalLink className="w-4 h-4" />

@@ -102,7 +102,7 @@ const ForgotPasswordPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Remember your password?{" "}
-              <Link to="/login" className="text-amber-600 hover:text-amber-700 font-medium">
+              <Link to="/login" className="text-red-600 hover:text-blue-700 font-medium">
                 Sign in
               </Link>
             </p>

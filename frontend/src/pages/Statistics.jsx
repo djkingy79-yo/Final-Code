@@ -33,7 +33,7 @@ const Statistics = () => {
       homicide: "bg-red-500",
       assault: "bg-orange-500",
       sexual_offences: "bg-pink-500",
-      robbery_theft: "bg-amber-500",
+      robbery_theft: "bg-blue-500",
       drug_offences: "bg-green-500",
       fraud_dishonesty: "bg-blue-500",
       firearms_weapons: "bg-slate-500",
@@ -50,7 +50,7 @@ const Statistics = () => {
       nsw: "bg-blue-600",
       vic: "bg-purple-600",
       qld: "bg-red-600",
-      sa: "bg-amber-600",
+      sa: "bg-red-600",
       wa: "bg-emerald-600",
       tas: "bg-teal-600",
       nt: "bg-orange-600",
@@ -62,7 +62,7 @@ const Statistics = () => {
   const getStrengthColor = (strength) => {
     const colors = {
       Strong: "bg-emerald-500",
-      Moderate: "bg-amber-500",
+      Moderate: "bg-blue-500",
       Weak: "bg-red-500"
     };
     return colors[strength] || "bg-slate-400";
@@ -72,7 +72,7 @@ const Statistics = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading statistics...</p>
         </div>
       </div>
@@ -88,7 +88,7 @@ const Statistics = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -121,7 +121,7 @@ const Statistics = () => {
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
             <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -139,11 +139,11 @@ const Statistics = () => {
         
         <div className="max-w-6xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <BarChart3 className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">Analytics</p>
+          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Analytics</p>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Case Statistics Dashboard
           </h1>
@@ -179,8 +179,8 @@ const Statistics = () => {
           
           <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
-              <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <TrendingUp className="w-7 h-7 text-red-600 dark:text-blue-400" />
               </div>
               <p className="text-3xl font-bold text-foreground">{stats?.overview?.total_reports || 0}</p>
               <p className="text-sm text-muted-foreground mt-1">Reports Generated</p>
@@ -204,8 +204,8 @@ const Statistics = () => {
           <Card className="bg-card border-border shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4 text-red-600 dark:text-blue-400" />
                 </div>
                 Cases by Offence Type
               </CardTitle>
@@ -368,15 +368,15 @@ const Statistics = () => {
                 </h3>
                 <div className="grid md:grid-cols-3 gap-8 text-center">
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                    <p className="text-amber-400 text-sm font-semibold mb-2">Most Common Offence</p>
+                    <p className="text-blue-400 text-sm font-semibold mb-2">Most Common Offence</p>
                     <p className="text-white text-xl font-bold">{stats.insights.most_common_offence}</p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                    <p className="text-amber-400 text-sm font-semibold mb-2">Top Appeal Ground</p>
+                    <p className="text-blue-400 text-sm font-semibold mb-2">Top Appeal Ground</p>
                     <p className="text-white text-xl font-bold">{stats.insights.most_common_ground}</p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                    <p className="text-amber-400 text-sm font-semibold mb-2">Busiest State</p>
+                    <p className="text-blue-400 text-sm font-semibold mb-2">Busiest State</p>
                     <p className="text-white text-xl font-bold">{stats.insights.busiest_state}</p>
                   </div>
                 </div>
@@ -386,8 +386,8 @@ const Statistics = () => {
         )}
 
         {/* Disclaimer */}
-        <div className="mt-10 p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
+        <div className="mt-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
             <strong>Note:</strong> These statistics are based on cases managed through this platform and are provided 
             for informational purposes only. They do not represent official court statistics or predict appeal outcomes. 
             Every case is unique and should be assessed on its own merits by qualified legal professionals.
@@ -405,7 +405,7 @@ const Statistics = () => {
             Let our AI help identify potential grounds for appeal in your case.
           </p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20">
+            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
               Get Started Free
             </Button>
           </Link>

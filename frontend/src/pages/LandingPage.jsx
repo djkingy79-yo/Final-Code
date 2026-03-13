@@ -37,7 +37,7 @@ const LandingPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -73,7 +73,7 @@ const LandingPage = () => {
             <Button 
               onClick={() => setShowAuthModal(true)}
               data-testid="login-btn"
-              className="bg-amber-600 text-white hover:bg-amber-700 rounded-lg px-4 py-2 text-sm font-medium"
+              className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-4 py-2 text-sm font-medium"
             >
               Sign In
             </Button>
@@ -100,18 +100,18 @@ const LandingPage = () => {
             <Link to="/contact" className="block py-2 text-slate-300 hover:text-white">Contact</Link>
             <Link to="/terms" className="block py-2 text-slate-300 hover:text-white">Terms & Privacy</Link>
             <div className="border-t border-slate-700 pt-3 mt-3">
-              <Link to="/how-it-works" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">How It Works + Pricing</Link>
-              <Link to="/how-to-use" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">How To Use The App</Link>
-              <Link to="/legal-framework" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">Legal Framework & Legislation</Link>
-              <Link to="/caselaw-search" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">Live Caselaw Search</Link>
-              <Link to="/success-stories" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">Success Stories</Link>
-              <Link to="/glossary" className="block py-2 text-amber-400 hover:text-amber-300 font-medium">Legal Terms</Link>
+              <Link to="/how-it-works" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">How It Works + Pricing</Link>
+              <Link to="/how-to-use" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">How To Use The App</Link>
+              <Link to="/legal-framework" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Legal Framework & Legislation</Link>
+              <Link to="/caselaw-search" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Live Caselaw Search</Link>
+              <Link to="/success-stories" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Success Stories</Link>
+              <Link to="/glossary" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Legal Terms</Link>
             </div>
             <div className="flex items-center gap-3 pt-2">
               <button onClick={toggleTheme} className="p-2 text-slate-300 hover:text-white">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <Button onClick={() => setShowAuthModal(true)} className="bg-amber-600 text-white hover:bg-amber-700 flex-1">
+              <Button onClick={() => setShowAuthModal(true)} className="bg-red-600 text-white hover:bg-blue-700 flex-1">
                 Sign In
               </Button>
             </div>
@@ -125,7 +125,7 @@ const LandingPage = () => {
           <p className="text-white text-center text-sm md:text-base font-medium">
             <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5" />
             <strong>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
-            <Link to="/terms" className="underline ml-2 hover:text-amber-200">Read full terms</Link>
+            <Link to="/terms" className="underline ml-2 hover:text-blue-200">Read full terms</Link>
           </p>
         </div>
       </div>
@@ -134,66 +134,66 @@ const LandingPage = () => {
       {/* SECTION 1: HERO */}
       {/* ============================================ */}
       <section className="relative py-20 md:py-28 px-6 overflow-hidden">
-        {/* Background Image with Overlay */}
+        {/* Background Image with Blue Overlay — DO NOT UNDO */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/3f6a0144e6ddce5a8eb6a1e25b25974fca11bfd9515dbad29662cab81313d84b.png" 
-            alt="Australian courtroom bench with appeal case documents"
-            className="w-full h-full object-contain sm:object-cover ios-image-safe image-safe opacity-35 dark:opacity-20"
+            src="https://images.unsplash.com/photo-1565094003921-5abbacc16740?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxhdXN0cmFsaWFuJTIwaGlnaCUyMGNvdXJ0JTIwYnVpbGRpbmclMjBqdXN0aWNlfGVufDB8fHx8MTc3MzQyMDYzOXww&ixlib=rb-4.1.0&q=85" 
+            alt="Australian High Court building"
+            className="w-full h-full object-cover ios-image-safe image-safe"
             loading="eager"
             decoding="async"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-blue-900/85 to-slate-900/90" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left">
-              <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-4">
+              <p className="text-red-400 font-semibold text-xs uppercase tracking-widest mb-4">
                 All Australian States & Territories • All Criminal Offences
               </p>
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-tight mb-6"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-6"
                 style={{ fontFamily: 'Crimson Pro, serif' }}
               >
                 Criminal Appeal Research Tool
               </h1>
-              <p className="text-lg text-muted-foreground mb-6 max-w-xl">
+              <p className="text-lg text-blue-100 mb-6 max-w-xl">
                 Organise case documents, generate timelines, and produce premium appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions.
               </p>
               
-              {/* State Badges */}
+              {/* State Badges — DO NOT UNDO */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">NSW</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">VIC</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">QLD</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">SA</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">WA</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">TAS</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">NT</span>
-                <span className="text-xs bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg font-semibold">ACT</span>
-                <span className="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1.5 rounded-lg font-semibold">Federal</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">NSW</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">VIC</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">QLD</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">SA</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">WA</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">TAS</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">NT</span>
+                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">ACT</span>
+                <span className="text-xs bg-red-600/30 text-red-200 px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-red-400/20">Federal</span>
               </div>
               
               {/* Offence Types */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Homicide</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Assault</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Sexual Offences</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Drug Offences</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Robbery</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">Fraud</span>
-                <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">+ More</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Homicide</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Assault</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Sexual Offences</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Drug Offences</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Robbery</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Fraud</span>
+                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">+ More</span>
               </div>
               
-              {/* CTA Buttons */}
+              {/* CTA Buttons — DO NOT UNDO */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button
                   onClick={() => setShowAuthModal(true)}
                   data-testid="hero-login-btn"
-                  className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-4 text-base font-semibold inline-flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30 transition-all hover:scale-105"
+                  className="bg-red-600 text-white hover:bg-red-700 rounded-xl px-8 py-4 text-base font-semibold inline-flex items-center justify-center gap-2 shadow-xl shadow-red-600/30 transition-all hover:scale-105"
                 >
                   Get Started Free
                   <ChevronRight className="w-5 h-5" />
@@ -233,7 +233,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 {/* Floating Badge */}
-                <div className="absolute -top-4 -right-4 bg-amber-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg text-xs sm:text-sm font-semibold">
+                <div className="absolute -top-4 -right-4 bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg text-xs sm:text-sm font-semibold">
                   AI-Powered
                 </div>
               </div>
@@ -291,8 +291,8 @@ const LandingPage = () => {
 
             {/* Generate Reports */}
             <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <FileCheck className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <FileCheck className="w-7 h-7 text-red-600 dark:text-blue-400" />
               </div>
               <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Generate Reports
@@ -374,7 +374,7 @@ const LandingPage = () => {
         </div>
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
-            <p className="text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">Everything At Your Fingertips</p>
+            <p className="text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Everything At Your Fingertips</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Complete Criminal Appeal Platform
             </h2>
@@ -386,7 +386,7 @@ const LandingPage = () => {
           {/* Stats Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-amber-500 mb-1">8</div>
+              <div className="text-3xl font-bold text-blue-500 mb-1">8</div>
               <div className="text-slate-400 text-sm">States & Territories</div>
             </div>
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
@@ -407,7 +407,7 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Case Management */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group">
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Briefcase className="w-5 h-5 text-white" />
@@ -417,13 +417,13 @@ const LandingPage = () => {
               <p className="text-slate-400 text-sm mb-3">
                 Create unlimited cases, upload documents with OCR, track deadlines with calendar view, and organise everything in one secure place.
               </p>
-              <div className="text-amber-500 text-xs font-medium">
+              <div className="text-blue-500 text-xs font-medium">
                 ✓ Unlimited document upload • Deadline tracker • Progress checklist
               </div>
             </div>
 
             {/* AI Analysis */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group">
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BarChart3 className="w-5 h-5 text-white" />
@@ -439,7 +439,7 @@ const LandingPage = () => {
             </div>
 
             {/* Legal Research Hub */}
-            <Link to="/legal-framework" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/legal-framework" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BookOpen className="w-5 h-5 text-white" />
@@ -455,9 +455,9 @@ const LandingPage = () => {
             </Link>
 
             {/* Forms & Templates */}
-            <Link to="/forms" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/forms" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-bold text-white text-lg">Forms & Templates</h3>
@@ -465,13 +465,13 @@ const LandingPage = () => {
               <p className="text-slate-400 text-sm mb-3">
                 30+ downloadable legal forms including Notice of Appeal, Extension of Time, Transcript Requests, and state-specific templates.
               </p>
-              <div className="text-amber-500 text-xs font-medium">
+              <div className="text-blue-500 text-xs font-medium">
                 ✓ Key procedural requirements • Time limits guide • All jurisdictions
               </div>
             </Link>
 
             {/* Legal Contacts Directory */}
-            <Link to="/legal-resources" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/legal-resources" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Users className="w-5 h-5 text-white" />
@@ -487,7 +487,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Legal Glossary */}
-            <Link to="/glossary" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/glossary" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Book className="w-5 h-5 text-white" />
@@ -503,7 +503,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Appeal Statistics */}
-            <Link to="/appeal-statistics" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/appeal-statistics" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <TrendingUp className="w-5 h-5 text-white" />
@@ -519,7 +519,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Success Stories */}
-            <Link to="/success-stories" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/success-stories" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Heart className="w-5 h-5 text-white" />
@@ -535,7 +535,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Lawyer Directory */}
-            <Link to="/lawyers" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/lawyers" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Scale className="w-5 h-5 text-white" />
@@ -551,7 +551,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Reports & Export */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group">
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Download className="w-5 h-5 text-white" />
@@ -567,7 +567,7 @@ const LandingPage = () => {
             </div>
 
             {/* How To Use Guide */}
-            <Link to="/how-to-use" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/how-to-use" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-lime-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <HelpCircle className="w-5 h-5 text-white" />
@@ -583,9 +583,9 @@ const LandingPage = () => {
             </Link>
 
             {/* FAQ */}
-            <Link to="/faq" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-amber-600 transition-all group block">
+            <Link to="/faq" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MessageCircle className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-bold text-white text-lg">FAQ & Support</h3>
@@ -593,7 +593,7 @@ const LandingPage = () => {
               <p className="text-slate-400 text-sm mb-3">
                 Answers to common questions about using the platform, appeal processes, pricing, legal disclaimers, and technical support.
               </p>
-              <div className="text-yellow-500 text-xs font-medium">
+              <div className="text-blue-500 text-xs font-medium">
                 ✓ Comprehensive answers • Contact form • Email support
               </div>
             </Link>
@@ -602,7 +602,7 @@ const LandingPage = () => {
 
           {/* Bottom CTA */}
           <div className="mt-12 text-center">
-            <div className="inline-block bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-8">
+            <div className="inline-block bg-gradient-to-r from-blue-500/10 to-orange-500/10 border border-blue-500/30 rounded-2xl p-8">
               <p className="text-white font-bold text-xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 All This For Free To Get Started
               </p>
@@ -611,7 +611,7 @@ const LandingPage = () => {
               </p>
               <Button
                 onClick={() => setShowAuthModal(true)}
-                className="bg-amber-600 text-white hover:bg-amber-700 rounded-xl px-8 py-3 font-semibold text-lg"
+                className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-8 py-3 font-semibold text-lg"
               >
                 Create Free Account
               </Button>
@@ -627,17 +627,17 @@ const LandingPage = () => {
       {/* ============================================ */}
       <section className="py-20 px-6 bg-background relative">
         {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl" />
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/30">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <Scale className="w-8 h-8 text-white" />
               </div>
             </div>
-            <p className="text-amber-600 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
+            <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               How The Process Works
             </h2>
@@ -667,7 +667,7 @@ const LandingPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
                     <Upload className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-amber-600 dark:text-amber-500 font-bold text-sm uppercase tracking-wider">Step 1</span>
+                  <span className="text-red-600 dark:text-blue-500 font-bold text-sm uppercase tracking-wider">Step 1</span>
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mt-2 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Upload Your Case Documents
@@ -692,7 +692,7 @@ const LandingPage = () => {
               <div className="bg-card rounded-2xl p-6 border border-border shadow-xl">
                 <div className="bg-card rounded-xl border border-border shadow-sm">
                   <div className="bg-slate-800 dark:bg-slate-900 text-white px-4 py-3 rounded-t-xl text-sm font-medium flex items-center gap-2">
-                    <Scale className="w-4 h-4 text-amber-500" />
+                    <Scale className="w-4 h-4 text-blue-500" />
                     Case: R v Smith [2024]
                   </div>
                   <div className="p-4 space-y-3">
@@ -707,9 +707,9 @@ const LandingPage = () => {
                       <span className="text-xs text-muted-foreground bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">Evidence</span>
                     </div>
                     <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl text-sm hover:bg-muted transition-colors">
-                      <FileText className="w-5 h-5 text-amber-600" />
+                      <FileText className="w-5 h-5 text-red-600" />
                       <span className="flex-1 font-medium">Sentencing_Remarks.pdf</span>
-                      <span className="text-xs text-muted-foreground bg-amber-100 dark:bg-amber-900/30 px-2 py-1 rounded">Court Document</span>
+                      <span className="text-xs text-muted-foreground bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded">Court Document</span>
                     </div>
                     <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl text-sm hover:bg-muted transition-colors">
                       <FileText className="w-5 h-5 text-purple-600" />
@@ -726,25 +726,25 @@ const LandingPage = () => {
               <div className="order-2 md:order-1 bg-card rounded-2xl p-6 border border-border shadow-xl">
                 <div className="bg-card rounded-xl border border-border shadow-sm p-5">
                   <div className="text-base font-semibold text-foreground mb-5 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-amber-600" />
+                    <Clock className="w-5 h-5 text-red-600" />
                     Timeline of Events
                   </div>
-                  <div className="relative pl-8 border-l-3 border-amber-500 space-y-5">
+                  <div className="relative pl-8 border-l-3 border-blue-500 space-y-5">
                     <div className="relative">
-                      <div className="absolute -left-10 w-5 h-5 bg-amber-500 rounded-full border-3 border-white shadow"></div>
-                      <div className="text-xs text-amber-600 dark:text-amber-500 font-semibold">15 March 2023</div>
+                      <div className="absolute -left-10 w-5 h-5 bg-blue-500 rounded-full border-3 border-white shadow"></div>
+                      <div className="text-xs text-red-600 dark:text-blue-500 font-semibold">15 March 2023</div>
                       <div className="text-sm font-semibold text-foreground">Incident Occurred</div>
                       <div className="text-xs text-muted-foreground">Altercation at residence, 42 Smith St</div>
                     </div>
                     <div className="relative">
-                      <div className="absolute -left-10 w-5 h-5 bg-amber-500 rounded-full border-3 border-white shadow"></div>
-                      <div className="text-xs text-amber-600 dark:text-amber-500 font-semibold">16 March 2023</div>
+                      <div className="absolute -left-10 w-5 h-5 bg-blue-500 rounded-full border-3 border-white shadow"></div>
+                      <div className="text-xs text-red-600 dark:text-blue-500 font-semibold">16 March 2023</div>
                       <div className="text-sm font-semibold text-foreground">Arrest Made</div>
                       <div className="text-xs text-muted-foreground">Defendant taken into custody</div>
                     </div>
                     <div className="relative">
-                      <div className="absolute -left-10 w-5 h-5 bg-amber-500 rounded-full border-3 border-white shadow"></div>
-                      <div className="text-xs text-amber-600 dark:text-amber-500 font-semibold">22 August 2023</div>
+                      <div className="absolute -left-10 w-5 h-5 bg-blue-500 rounded-full border-3 border-white shadow"></div>
+                      <div className="text-xs text-red-600 dark:text-blue-500 font-semibold">22 August 2023</div>
                       <div className="text-sm font-semibold text-foreground">Trial Commenced</div>
                       <div className="text-xs text-muted-foreground">NSW Supreme Court, Justice Williams</div>
                     </div>
@@ -759,10 +759,10 @@ const LandingPage = () => {
               </div>
               <div className="order-1 md:order-2">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
                     <Clock className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-amber-600 dark:text-amber-500 font-bold text-sm uppercase tracking-wider">Step 2</span>
+                  <span className="text-red-600 dark:text-blue-500 font-bold text-sm uppercase tracking-wider">Step 2</span>
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mt-2 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   AI-Generated Timeline
@@ -792,7 +792,7 @@ const LandingPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg">
                     <Scale className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-amber-600 dark:text-amber-500 font-bold text-sm uppercase tracking-wider">Step 3</span>
+                  <span className="text-red-600 dark:text-blue-500 font-bold text-sm uppercase tracking-wider">Step 3</span>
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mt-2 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Potential Grounds Identified
@@ -825,10 +825,10 @@ const LandingPage = () => {
                     Potential Grounds of Merit (3 Found)
                   </div>
                   
-                  <div className="border border-amber-200 bg-amber-50 rounded-lg p-3">
+                  <div className="border border-blue-200 bg-blue-50 rounded-lg p-3">
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded">STRONG</span>
+                        <span className="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">STRONG</span>
                         <h4 className="font-semibold text-slate-900 text-sm mt-1">Misdirection on Mens Rea</h4>
                         <p className="text-xs text-slate-600 mt-1">Judge's direction on intent may have been inadequate — s.18(1)(a)</p>
                       </div>
@@ -864,7 +864,7 @@ const LandingPage = () => {
             {/* Sample 4: Reports - Detailed */}
             <div>
               <div className="text-center mb-8">
-                <span className="text-amber-600 font-semibold text-xs uppercase tracking-wider">Step 4</span>
+                <span className="text-red-600 font-semibold text-xs uppercase tracking-wider">Step 4</span>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-2 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Generate AI-Powered Reports
                 </h3>
@@ -920,15 +920,15 @@ const LandingPage = () => {
                         </div>
 
                         {/* Grounds Preview */}
-                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 border border-amber-200 dark:border-amber-700">
-                          <h5 className="font-bold text-amber-800 dark:text-amber-200 text-sm mb-2">GROUNDS IDENTIFIED: 3</h5>
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-700">
+                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">GROUNDS IDENTIFIED: 3</h5>
                           <div className="space-y-1 text-xs">
                             <p className="flex items-center gap-2">
                               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                               <strong>Strongest:</strong> Inadequate jury direction on self-defence
                             </p>
                             <p className="flex items-center gap-2 text-slate-500">
-                              <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                               Ground 2: <span className="italic">Unlock full report to view</span>
                             </p>
                             <p className="flex items-center gap-2 text-slate-500">
@@ -1100,8 +1100,8 @@ const LandingPage = () => {
                         </div>
 
                         {/* Filing Guide Preview */}
-                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
-                          <h5 className="font-bold text-amber-800 dark:text-amber-200 text-sm mb-3">APPEAL FILING GUIDE — NSW District Court to CCA</h5>
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-3">APPEAL FILING GUIDE — NSW District Court to CCA</h5>
                           <div className="grid md:grid-cols-2 gap-4 text-xs">
                             <div>
                               <p className="font-semibold text-slate-800 dark:text-slate-200 mb-1">Step 1: Notice of Intention</p>
@@ -1112,7 +1112,7 @@ const LandingPage = () => {
                               <p className="text-slate-600 dark:text-slate-400">Request from Reporting Services promptly and prioritise custody-related material for urgent filing preparation.</p>
                             </div>
                           </div>
-                          <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 italic">Full 8-step guide included in report...</p>
+                          <p className="text-xs text-blue-700 dark:text-blue-300 mt-3 italic">Full 8-step guide included in report...</p>
                         </div>
                       </div>
                     </div>
@@ -1227,7 +1227,7 @@ const LandingPage = () => {
                                 <p className="text-xs text-slate-500">Your sentence</p>
                               </div>
                               <div>
-                                <p className="text-2xl font-bold text-amber-600">+43%</p>
+                                <p className="text-2xl font-bold text-red-600">+43%</p>
                                 <p className="text-xs text-slate-500">Above average</p>
                               </div>
                             </div>
@@ -1283,7 +1283,7 @@ const LandingPage = () => {
                               <p className="text-slate-600 dark:text-slate-400">Success probability</p>
                             </div>
                             <div className="text-center">
-                              <p className="text-2xl font-bold text-amber-600">Ground 1</p>
+                              <p className="text-2xl font-bold text-red-600">Ground 1</p>
                               <p className="text-slate-600 dark:text-slate-400">Primary argument to lead</p>
                             </div>
                             <div className="text-center">
@@ -1310,7 +1310,7 @@ const LandingPage = () => {
             {/* Sample 5: Appeal Progress Tracker */}
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <span className="text-amber-600 font-semibold text-xs uppercase tracking-wider">Step 5</span>
+                <span className="text-red-600 font-semibold text-xs uppercase tracking-wider">Step 5</span>
                 <h3 className="text-xl font-bold text-foreground mt-2 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Track Your Appeal Progress
                 </h3>
@@ -1340,11 +1340,11 @@ const LandingPage = () => {
                       </div>
                       <span className="text-sm text-green-800 dark:text-green-200">Obtain Trial Transcripts</span>
                     </div>
-                    <div className="flex items-center gap-3 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded">
-                      <div className="w-5 h-5 bg-amber-500 rounded flex items-center justify-center">
+                    <div className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
+                      <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
                         <span className="text-white text-xs font-bold">!</span>
                       </div>
-                      <span className="text-sm text-amber-800 dark:text-amber-200 font-medium">Identify Grounds of Appeal ← Current Step</span>
+                      <span className="text-sm text-blue-800 dark:text-blue-200 font-medium">Identify Grounds of Appeal ← Current Step</span>
                     </div>
                     <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded">
                       <div className="w-5 h-5 bg-slate-300 dark:bg-slate-500 rounded"></div>
@@ -1379,8 +1379,8 @@ const LandingPage = () => {
                       <p className="font-semibold text-indigo-900">Lead Ground</p>
                       <p className="text-slate-600">Misdirection on intent</p>
                     </div>
-                    <div className="bg-amber-50 rounded-md p-2 border border-amber-100">
-                      <p className="font-semibold text-amber-900">Orders Sought</p>
+                    <div className="bg-blue-50 rounded-md p-2 border border-blue-100">
+                      <p className="font-semibold text-blue-900">Orders Sought</p>
                       <p className="text-slate-600">Quash + retrial alternative</p>
                     </div>
                   </div>
@@ -1414,7 +1414,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="order-1 md:order-2">
-                <span className="text-amber-600 font-semibold text-xs uppercase tracking-wider">For Legal Professionals</span>
+                <span className="text-red-600 font-semibold text-xs uppercase tracking-wider">For Legal Professionals</span>
                 <h3 className="text-xl font-bold text-foreground mt-2 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Barrister View Built for Conference and Hearing
                 </h3>
@@ -1480,9 +1480,9 @@ const LandingPage = () => {
 
             {/* Live Caselaw Search Card */}
             <Link to="/caselaw-search" className="group">
-              <div className="bg-card border-2 border-border hover:border-amber-600 dark:hover:border-amber-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
+              <div className="bg-card border-2 border-border hover:border-red-600 dark:hover:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-14 h-14 bg-amber-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <FileText className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -1493,7 +1493,7 @@ const LandingPage = () => {
                   Direct access to official court databases across all Australian jurisdictions. Search real judgments 
                   from the High Court, Federal Court, and every state and territory Supreme Court.
                 </p>
-                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-medium">
+                <div className="flex items-center gap-2 text-red-600 dark:text-blue-400 font-medium">
                   <span>Search Case Law</span>
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -1531,7 +1531,7 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-background border-t border-border">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-amber-700 dark:text-amber-500 font-semibold text-xs uppercase tracking-widest mb-3">Pricing</p>
+            <p className="text-blue-700 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Pricing</p>
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Simple, Affordable Access
             </h2>
@@ -1595,45 +1595,45 @@ const LandingPage = () => {
             </div>
 
             {/* Paid Features */}
-            <div className="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-400 dark:border-amber-600 rounded-xl p-6 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 dark:border-red-600 rounded-xl p-6 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                 UNLOCK FULL ANALYSIS
               </div>
               <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
               
               <ul className="space-y-4 text-sm text-foreground mb-6">
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-amber-200 dark:border-amber-700">
-                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Unlock Grounds of Merit</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$99</span>
+                      <span className="text-blue-700 dark:text-blue-400 font-bold">$99</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-amber-200 dark:border-amber-700">
-                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Full Detailed Report</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$150</span>
+                      <span className="text-blue-700 dark:text-blue-400 font-bold">$150</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">Comprehensive analysis with recommendations and case law references</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-amber-200 dark:border-amber-700">
-                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <strong>Extensive Log Report</strong>
-                      <span className="text-amber-700 dark:text-amber-400 font-bold">$200</span>
+                      <span className="text-blue-700 dark:text-blue-400 font-bold">$200</span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">Complete barrister conference dossier with comparative sentencing tables, offence-specific common grounds matrix, and full relief options report</p>
                   </div>
@@ -1670,11 +1670,11 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900" />
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <p className="text-amber-500 text-xs uppercase tracking-widest mb-4">About</p>
+          <p className="text-blue-500 text-xs uppercase tracking-widest mb-4">About</p>
           <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Criminal Law Appeal Case Management
           </h3>
-          <p className="text-amber-400 text-sm font-medium mb-4">Founded by Debra King</p>
+          <p className="text-blue-400 text-sm font-medium mb-4">Founded by Debra King</p>
           <p className="text-slate-400 text-sm mb-6 max-w-2xl mx-auto">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
@@ -1699,7 +1699,7 @@ const LandingPage = () => {
           <Button
             onClick={() => setShowAuthModal(true)}
             data-testid="cta-login-btn"
-            className="bg-amber-600 text-white hover:bg-amber-700 rounded-lg px-8 py-3 font-medium"
+            className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-8 py-3 font-medium"
           >
             Sign In
           </Button>
@@ -1757,9 +1757,9 @@ const SectionBackToTop = ({ onClick, testId }) => (
 );
 
 const FeatureCard = ({ icon: Icon, title, desc }) => (
-  <div className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:border-amber-500/30 hover:-translate-y-1 transition-all duration-300 group">
-    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/20 dark:from-amber-500/10 dark:to-amber-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-      <Icon className="w-6 h-6 text-amber-600 dark:text-amber-500" />
+  <div className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
+    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-red-600/20 dark:from-blue-500/10 dark:to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+      <Icon className="w-6 h-6 text-red-600 dark:text-blue-500" />
     </div>
     <h3 className="font-semibold text-foreground text-base mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>{title}</h3>
     <p className="text-muted-foreground text-sm">{desc}</p>

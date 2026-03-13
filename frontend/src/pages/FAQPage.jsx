@@ -11,7 +11,7 @@ const faqs = [
   {
     category: "Getting Started",
     icon: HelpCircle,
-    color: "amber",
+    color: "blue",
     image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
     questions: [
       {
@@ -236,7 +236,7 @@ const FAQPage = () => {
   const totalQuestions = faqs.reduce((sum, cat) => sum + cat.questions.length, 0);
 
   const colorClasses = {
-    amber: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+    blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
     red: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
     blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
     purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
@@ -251,7 +251,7 @@ const FAQPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -287,7 +287,7 @@ const FAQPage = () => {
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -308,7 +308,7 @@ const FAQPage = () => {
               placeholder="Search for any question..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-6 text-base rounded-xl border-2 focus:border-amber-500"
+              className="pl-12 py-6 text-base rounded-xl border-2 focus:border-blue-500"
               data-testid="faq-search"
             />
           </div>
@@ -323,8 +323,8 @@ const FAQPage = () => {
               onClick={() => setActiveCategory("all")}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeCategory === "all"
-                  ? "bg-amber-600 text-white shadow-lg"
-                  : "bg-card border border-border text-muted-foreground hover:border-amber-500"
+                  ? "bg-red-600 text-white shadow-lg"
+                  : "bg-card border border-border text-muted-foreground hover:border-blue-500"
               }`}
             >
               All Questions ({totalQuestions})
@@ -335,8 +335,8 @@ const FAQPage = () => {
                 onClick={() => setActiveCategory(cat.category)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                   activeCategory === cat.category
-                    ? "bg-amber-600 text-white shadow-lg"
-                    : "bg-card border border-border text-muted-foreground hover:border-amber-500"
+                    ? "bg-red-600 text-white shadow-lg"
+                    : "bg-card border border-border text-muted-foreground hover:border-blue-500"
                 }`}
               >
                 <cat.icon className="w-4 h-4" />
@@ -350,7 +350,7 @@ const FAQPage = () => {
       {/* FAQ Content */}
       <main className="max-w-5xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="faq-content-intro">
-          <p className="text-xs uppercase tracking-widest text-amber-600 dark:text-amber-500 font-semibold mb-1">Quick Answers</p>
+          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Quick Answers</p>
           <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Browse by category or expand individual questions
           </h2>
@@ -397,7 +397,7 @@ const FAQPage = () => {
                     return (
                       <div 
                         key={questionIndex}
-                        className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-amber-500/30 transition-all"
+                        className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
                       >
                         <button
                           onClick={() => toggleItem(categoryIndex, questionIndex)}
@@ -405,9 +405,9 @@ const FAQPage = () => {
                           data-testid={`faq-${categoryIndex}-${questionIndex}`}
                         >
                           <span className="font-medium text-foreground pr-4">{item.q}</span>
-                          <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-muted'}`}>
+                          <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
                             {isOpen ? (
-                              <ChevronDown className="w-5 h-5 text-amber-600" />
+                              <ChevronDown className="w-5 h-5 text-red-600" />
                             ) : (
                               <ChevronRight className="w-5 h-5 text-muted-foreground" />
                             )}
@@ -415,7 +415,7 @@ const FAQPage = () => {
                         </button>
                         {isOpen && (
                           <div className="px-5 pb-4">
-                            <div className="bg-muted/50 rounded-xl p-4 border-l-4 border-amber-500">
+                            <div className="bg-muted/50 rounded-xl p-4 border-l-4 border-blue-500">
                               <p className="text-muted-foreground text-sm leading-relaxed">{item.a}</p>
                             </div>
                           </div>
@@ -438,7 +438,7 @@ const FAQPage = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
             <div className="text-center px-6">
-              <MessageCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+              <MessageCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Still have questions?
               </h3>
@@ -447,7 +447,7 @@ const FAQPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/contact">
-                  <Button className="bg-amber-600 text-white hover:bg-amber-700 rounded-xl px-6">
+                  <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-6">
                     Contact Us
                   </Button>
                 </Link>

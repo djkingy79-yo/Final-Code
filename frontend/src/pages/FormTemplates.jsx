@@ -26,7 +26,7 @@ const STATES = [
   { code: "nsw", name: "New South Wales", color: "bg-blue-600" },
   { code: "vic", name: "Victoria", color: "bg-purple-600" },
   { code: "qld", name: "Queensland", color: "bg-red-600" },
-  { code: "sa", name: "South Australia", color: "bg-amber-600" },
+  { code: "sa", name: "South Australia", color: "bg-red-600" },
   { code: "wa", name: "Western Australia", color: "bg-emerald-600" },
   { code: "tas", name: "Tasmania", color: "bg-teal-600" },
   { code: "nt", name: "Northern Territory", color: "bg-orange-600" },
@@ -38,7 +38,7 @@ const FORM_CATEGORIES = [
     id: "appeal",
     name: "Appeal Documents",
     icon: Gavel,
-    color: "text-amber-600",
+    color: "text-red-600",
     forms: [
       { id: "notice-of-intention", name: "Notice of Intention to Appeal", description: "First step - notify the court you intend to appeal (must be filed within time limits)" },
       { id: "notice-of-appeal", name: "Notice of Appeal", description: "Formal document to lodge an appeal against conviction or sentence" },
@@ -742,7 +742,7 @@ const FormTemplates = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -778,7 +778,7 @@ const FormTemplates = () => {
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-amber-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <FileText className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -800,7 +800,7 @@ const FormTemplates = () => {
                 placeholder="Search forms..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 py-6 text-base rounded-xl border-2 focus:border-amber-500"
+                className="pl-12 py-6 text-base rounded-xl border-2 focus:border-blue-500"
               />
             </div>
             <Select value={selectedState} onValueChange={setSelectedState}>
@@ -821,12 +821,12 @@ const FormTemplates = () => {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Disclaimer */}
-        <div className="mb-8 p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+        <div className="mb-8 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center flex-shrink-0">
-              <Gavel className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+              <Gavel className="w-5 h-5 text-red-600" />
             </div>
-            <div className="text-sm text-amber-800 dark:text-amber-200">
+            <div className="text-sm text-blue-800 dark:text-blue-200">
               <strong>Important:</strong> These templates are provided for general guidance only. 
               Legal requirements vary by jurisdiction and may change. Always verify current requirements 
               with the relevant court and consider seeking legal advice before lodging any documents.
@@ -896,11 +896,11 @@ const FormTemplates = () => {
             </div>
 
             {/* Transcripts and Exhibits */}
-            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-amber-500">
-              <h3 className="text-lg font-bold text-amber-900 dark:text-amber-200 mb-3">
+            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-blue-500">
+              <h3 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-3">
                 📝 Transcripts and Exhibits - Essential Documents
               </h3>
-              <div className="space-y-3 text-sm text-amber-900 dark:text-amber-100">
+              <div className="space-y-3 text-sm text-blue-900 dark:text-blue-100">
                 <p><strong>You will almost certainly need:</strong></p>
                 
                 <div className="space-y-3">
@@ -912,7 +912,7 @@ const FormTemplates = () => {
                       <li>Sentencing remarks</li>
                       <li>Opening and closing addresses</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-amber-100 dark:bg-amber-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
                       <strong>How to get them:</strong> Use the "Request for Court Transcripts" form in the Appeal Documents section. Submit to the court where your trial occurred. <strong>Allow 4-8 weeks</strong> for preparation. Fees apply (typically $300-$1,500+ depending on length of trial).
                     </p>
                   </div>
@@ -924,7 +924,7 @@ const FormTemplates = () => {
                       <li>Documents admitted into evidence</li>
                       <li>Photos, videos, forensic reports</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-amber-100 dark:bg-amber-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
                       <strong>How to get them:</strong> Use the "Request for Exhibits" form. Contact the court registry. Note: Some exhibits may have been destroyed after retention periods.
                     </p>
                   </div>
@@ -937,13 +937,13 @@ const FormTemplates = () => {
                       <li>ERISP (interview recordings)</li>
                       <li>CCTV, body-worn camera footage</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-amber-100 dark:bg-amber-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
                       <strong>How to get them:</strong> FOI request to police or use "Authority to Release - Police Records" form. This can take 30+ days.
                     </p>
                   </div>
                 </div>
 
-                <p className="mt-4 bg-amber-200 dark:bg-amber-900/60 p-3 rounded border border-amber-400 dark:border-amber-600 font-medium">
+                <p className="mt-4 bg-blue-200 dark:bg-blue-900/60 p-3 rounded border border-blue-400 dark:border-red-600 font-medium">
                   ⚡ <strong>PRO TIP:</strong> Request transcripts and exhibits <strong>immediately</strong> — even before finalising your grounds of appeal. You can't properly identify appeal grounds without reviewing what was said and done at trial.
                 </p>
               </div>
@@ -979,7 +979,7 @@ const FormTemplates = () => {
             onClick={() => setSelectedState("all")}
             className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
               selectedState === "all" 
-                ? "bg-amber-600 text-white shadow-lg" 
+                ? "bg-red-600 text-white shadow-lg" 
                 : "bg-card text-muted-foreground hover:bg-muted border border-border"
             }`}
           >
@@ -1010,8 +1010,8 @@ const FormTemplates = () => {
               )}
               className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
                 expandedCategories.includes(cat.id)
-                  ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20"
-                  : "border-border hover:border-amber-500/50"
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-border hover:border-blue-500/50"
               }`}
             >
               <cat.icon className={`w-8 h-8 mx-auto mb-2 ${cat.color}`} />
@@ -1042,7 +1042,7 @@ const FormTemplates = () => {
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      category.color.includes('amber') ? 'bg-amber-100 dark:bg-amber-900/30' :
+                      category.color.includes('blue') ? 'bg-blue-100 dark:bg-blue-900/30' :
                       category.color.includes('blue') ? 'bg-blue-100 dark:bg-blue-900/30' :
                       category.color.includes('emerald') ? 'bg-emerald-100 dark:bg-emerald-900/30' :
                       category.color.includes('purple') ? 'bg-purple-100 dark:bg-purple-900/30' :
@@ -1057,9 +1057,9 @@ const FormTemplates = () => {
                       <p className="text-sm text-muted-foreground">{category.forms.length} templates available</p>
                     </div>
                   </div>
-                  <div className={`p-2 rounded-lg transition-colors ${expandedCategories.includes(category.id) ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-muted'}`}>
+                  <div className={`p-2 rounded-lg transition-colors ${expandedCategories.includes(category.id) ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
                     {expandedCategories.includes(category.id) ? (
-                      <ChevronDown className="w-5 h-5 text-amber-600" />
+                      <ChevronDown className="w-5 h-5 text-red-600" />
                     ) : (
                       <ChevronRight className="w-5 h-5 text-muted-foreground" />
                     )}
@@ -1083,7 +1083,7 @@ const FormTemplates = () => {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleDownload(form.id, state.name)}
-                                  className="text-xs rounded-lg hover:bg-amber-50 hover:border-amber-500 hover:text-amber-700 dark:hover:bg-amber-900/20"
+                                  className="text-xs rounded-lg hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700 dark:hover:bg-blue-900/20"
                                 >
                                   <Download className="w-3 h-3 mr-1" />
                                   {state.code.toUpperCase()}
@@ -1110,7 +1110,7 @@ const FormTemplates = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
             <div className="text-center px-6">
-              <Gavel className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+              <Gavel className="w-12 h-12 text-blue-500 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Need Help With Your Forms?
               </h3>
@@ -1125,7 +1125,7 @@ const FormTemplates = () => {
                   </Button>
                 </Link>
                 <Link to="/lawyers">
-                  <Button className="bg-amber-600 text-white hover:bg-amber-700 rounded-xl px-6">
+                  <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-6">
                     Find a Lawyer
                   </Button>
                 </Link>

@@ -45,7 +45,7 @@ const HowToUsePage = () => {
       num: 3,
       title: "Upload Your Documents",
       icon: Upload,
-      color: "amber",
+      color: "blue",
       image: "/images/howto/step3-case-detail.png",
       description: "Upload all relevant case documents — transcripts, evidence, statements, court records.",
       instructions: [
@@ -143,7 +143,7 @@ const HowToUsePage = () => {
     const map = {
       blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-600 dark:text-blue-400", tipBg: "bg-blue-50 dark:bg-blue-900/20", tipText: "text-blue-800 dark:text-blue-200" },
       emerald: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-600 dark:text-emerald-400", tipBg: "bg-emerald-50 dark:bg-emerald-900/20", tipText: "text-emerald-800 dark:text-emerald-200" },
-      amber: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-600 dark:text-amber-400", tipBg: "bg-amber-50 dark:bg-amber-900/20", tipText: "text-amber-800 dark:text-amber-200" },
+      blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-red-600 dark:text-blue-400", tipBg: "bg-blue-50 dark:bg-blue-900/20", tipText: "text-blue-800 dark:text-blue-200" },
       purple: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-600 dark:text-purple-400", tipBg: "bg-purple-50 dark:bg-purple-900/20", tipText: "text-purple-800 dark:text-purple-200" },
       red: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400", tipBg: "bg-red-50 dark:bg-red-900/20", tipText: "text-red-800 dark:text-red-200" },
       orange: { bg: "bg-orange-100 dark:bg-orange-900/30", text: "text-orange-600 dark:text-orange-400", tipBg: "bg-orange-50 dark:bg-orange-900/20", tipText: "text-orange-800 dark:text-orange-200" },
@@ -159,7 +159,7 @@ const HowToUsePage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -191,7 +191,7 @@ const HowToUsePage = () => {
             <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
             <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -200,7 +200,7 @@ const HowToUsePage = () => {
       <section className="py-12 px-6 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-600 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center">
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
@@ -215,10 +215,10 @@ const HowToUsePage = () => {
       </section>
 
       {/* Quick Start */}
-      <section className="py-8 px-6 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800">
+      <section className="py-8 px-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-start gap-4">
-            <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0 mt-1" />
+            <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-1" />
             <div>
               <h2 className="font-bold text-foreground mb-2">Before You Start</h2>
               <ul className="text-sm text-muted-foreground space-y-1">
@@ -366,7 +366,7 @@ const HowToUsePage = () => {
         {/* CTA */}
         <div className="mt-12 text-center">
           <Link to="/">
-            <Button className="bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-700 hover:to-amber-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-amber-600/20">
+            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
               Get Started Now
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
@@ -378,7 +378,7 @@ const HowToUsePage = () => {
       <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-slate-400 text-sm">
-            Need more help? Check our <Link to="/faq" className="text-amber-500 hover:underline">FAQ</Link> or <Link to="/contact" className="text-amber-500 hover:underline">Contact Us</Link>
+            Need more help? Check our <Link to="/faq" className="text-blue-500 hover:underline">FAQ</Link> or <Link to="/contact" className="text-blue-500 hover:underline">Contact Us</Link>
           </p>
           <p className="text-red-400 text-xs mt-2 font-medium">
             This guide is for informational purposes only. Always seek professional legal advice.

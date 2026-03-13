@@ -75,7 +75,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading analytics...</p>
         </div>
       </div>
@@ -106,7 +106,7 @@ const AdminDashboard = () => {
     const colorClasses = {
       blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
       emerald: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
-      amber: "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
+      blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-red-600 dark:text-blue-400",
       purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400",
       pink: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400",
       indigo: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400",
@@ -177,10 +177,10 @@ const AdminDashboard = () => {
                 <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{stats.visits?.last_7d || 0}</p>
                 <p className="text-xs text-emerald-600 dark:text-emerald-400">Last 7 Days</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-amber-200 dark:border-amber-700">
-                <TrendingUp className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-amber-700 dark:text-amber-300">{stats.visits?.last_30d || 0}</p>
-                <p className="text-xs text-amber-600 dark:text-amber-400">Last 30 Days</p>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-blue-200 dark:border-blue-700">
+                <TrendingUp className="w-6 h-6 text-red-600 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{stats.visits?.last_30d || 0}</p>
+                <p className="text-xs text-red-600 dark:text-blue-400">Last 30 Days</p>
               </div>
               <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-purple-200 dark:border-purple-700">
                 <Activity className="w-6 h-6 text-purple-600 mx-auto mb-2" />
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
             value={stats.documents.total}
             icon={FileText}
             subtitle={`${stats.documents.uploaded_7d} this week`}
-            color="amber"
+            color="blue"
           />
           <StatCard
             title="Site Visits"
@@ -257,7 +257,7 @@ const AdminDashboard = () => {
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
-              <Activity className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+              <Activity className="w-8 h-8 text-red-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.notes_created}</p>
               <p className="text-xs text-muted-foreground">Notes Created</p>
             </CardContent>
@@ -441,7 +441,7 @@ const AdminDashboard = () => {
                 ))}
               </div>
             )}
-            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg text-xs text-amber-800 dark:text-amber-200">
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-xs text-blue-800 dark:text-blue-200">
               <strong>How to verify:</strong> Check your bank statement for incoming transfers with the reference code shown. 
               Once you confirm receipt, click "Confirm Payment" to unlock the feature for the user.
             </div>

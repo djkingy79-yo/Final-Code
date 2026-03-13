@@ -16,7 +16,7 @@ const ContactsPage = () => {
       <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-amber-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -44,7 +44,7 @@ const ContactsPage = () => {
           <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
             <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
-            <Link to="/" className="block py-2 text-amber-500 hover:text-amber-400">Back to Home</Link>
+            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
           </div>
         )}
       </header>
@@ -65,7 +65,7 @@ const ContactsPage = () => {
           </p>
           <div className="mt-5">
             <Link to="/contact" data-testid="legal-contacts-contact-deb-link">
-              <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg">
+              <Button className="bg-red-600 hover:bg-blue-700 text-white rounded-lg">
                 Contact Deb Directly
               </Button>
             </Link>
@@ -117,7 +117,7 @@ const ContactsPage = () => {
                 phone="1300 366 424"
                 website="https://lsc.sa.gov.au"
                 description="Legal aid services for South Australians."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Legal Aid WA"
@@ -156,7 +156,7 @@ const ContactsPage = () => {
 
         {/* Law Societies Section */}
           <div id="law-societies" className="space-y-6">
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
               <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Law Societies & Bar Associations
               </h2>
@@ -201,7 +201,7 @@ const ContactsPage = () => {
                   phone="(08) 8229 0200"
                   website="https://www.lawsocietysa.asn.au"
                   description="Legal referral service for South Australians."
-                  color="amber"
+                  color="blue"
                 />
                 <ResourceCard
                   title="Law Society of Western Australia"
@@ -315,7 +315,7 @@ const ContactsPage = () => {
                 phone="(08) 8111 5555"
                 website="https://www.lpcc.sa.gov.au"
                 description="Investigates complaints against lawyers in South Australia."
-                color="amber"
+                color="blue"
               />
               <ResourceCard
                 title="Legal Services and Complaints Committee WA"
@@ -482,7 +482,7 @@ const ContactsPage = () => {
                   phone="1800 765 767"
                   website="https://www.alsnswact.org.au"
                   description="Legal services for Aboriginal and Torres Strait Islander peoples."
-                  color="amber"
+                  color="blue"
                 />
                 <ResourceCard
                   title="Victorian Aboriginal Legal Service"
@@ -490,7 +490,7 @@ const ContactsPage = () => {
                   phone="1800 064 865"
                   website="https://www.vals.org.au"
                   description="Legal assistance for Aboriginal Victorians."
-                  color="amber"
+                  color="blue"
                 />
                 <ResourceCard
                   title="Prisoners Legal Service QLD"
@@ -583,7 +583,7 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
     blue: "bg-blue-600",
     purple: "bg-purple-600",
     red: "bg-red-600",
-    amber: "bg-amber-600",
+    blue_mapped: "bg-red-600",
     emerald: "bg-emerald-600",
     teal: "bg-teal-600",
     orange: "bg-orange-600",
@@ -593,7 +593,7 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
   };
 
   return (
-    <div className={`bg-card border ${highlight ? 'border-amber-400 dark:border-amber-600 border-2' : 'border-border'} rounded-xl p-5 hover:shadow-md transition-shadow`}>
+    <div className={`bg-card border ${highlight ? 'border-blue-400 dark:border-red-600 border-2' : 'border-border'} rounded-xl p-5 hover:shadow-md transition-shadow`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 ${colorClasses[color]} rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0`}>
