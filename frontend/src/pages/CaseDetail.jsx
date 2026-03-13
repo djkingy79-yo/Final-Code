@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
-  BookOpen,
+  BookOpen, HelpCircle,
   MessageSquare
 } from "lucide-react";
 import { Button } from "../components/ui/button";
