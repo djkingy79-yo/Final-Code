@@ -3975,8 +3975,11 @@ AGGRESSIVE MODE (USER-REQUESTED):
         try:
             if report_type == "quick_summary":
                 model_name = "gpt-4o-mini"
+            elif attempt >= 2:
+                # Fall back to gpt-4o-mini after 2 failed attempts to avoid timeouts
+                model_name = "gpt-4o-mini"
             else:
-                model_name = "gpt-4o" if attempt < 3 else "gpt-4o-mini"
+                model_name = "gpt-4o"
 
             chat = LlmChat(
                 api_key=api_key,
@@ -3988,11 +3991,11 @@ AGGRESSIVE MODE (USER-REQUESTED):
             break
         except Exception as e:
             last_error = e
-            logger.warning(f"Report generation attempt {attempt + 1} failed: {e}")
+            logger.warning(f"Report generation attempt {attempt + 1} failed with {model_name}: {e}")
             if attempt < 3:
                 import asyncio
-                # Exponential backoff: 3, 6, 12 seconds
-                await asyncio.sleep(3 * (2 ** attempt))
+                # Short backoff: 2, 4, 6 seconds
+                await asyncio.sleep(2 * (attempt + 1))
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
