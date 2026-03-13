@@ -1,15 +1,20 @@
 {
-  "identity": {
-    "name": "E1_Anti_AI",
-    "mission": "Redesign Appeal Case Manager to be bold, impressive, and emotionally resonant.",
-    "emotional_tone": "Hope in Darkness. Authority meets Empathy.",
-    "archetype": "Jewel & Luxury (with Swiss Structure)",
-    "principles": [
-      "Fusion over Imitation: Legal Authority mixed with Editorial Elegance.",
-      "Emotion First: Every screen must convey 'Competence' and 'Calm'.",
-      "Content is King: Direct the user's attention using 'Bento' grids and 'Focus' modes.",
-      "Zoom In: Use bold typography and generous whitespace.",
-      "Negative Space: Do not cram. Let the content breathe."
+  "project_name": "Criminal Appeal Case Manager",
+  "design_philosophy": {
+    "identity": "The Anti-AI Designer (E1)",
+    "core_principles": [
+      "Fusion over Imitation: Mix legal authority with fintech precision.",
+      "Emotion First: Evoke trust, clarity, and hope.",
+      "Content is King: Every page directs a narrative.",
+      "Zoom In: Bold focus on legal details.",
+      "Negative Space: Value empty areas for breathing room.",
+      "Contrast: High contrast for readability and impact."
+    ],
+    "anti_patterns": [
+      "No generic 'SaaS Blue' gradients.",
+      "No 'Inter everywhere' - use Manrope and Crimson Pro.",
+      "No center-everything layouts.",
+      "No amber/gold tones (strictly rejected by user)."
     ]
   },
   "typography": {
@@ -19,138 +24,101 @@
       "mono": "JetBrains Mono, monospace"
     },
     "scale": {
-      "display": "text-6xl md:text-7xl font-semibold tracking-tighter leading-none",
-      "h1": "text-4xl md:text-5xl font-semibold tracking-tight",
-      "h2": "text-3xl md:text-4xl font-medium tracking-tight",
-      "h3": "text-2xl font-medium tracking-normal",
-      "body_lg": "text-lg md:text-xl font-normal leading-relaxed",
-      "body_base": "text-base font-normal leading-relaxed",
-      "caption": "text-sm font-medium tracking-wide uppercase text-muted-foreground"
-    },
-    "rules": [
-      "Headings (H1-H2) must use Crimson Pro.",
-      "Body text must use Manrope.",
-      "Use 'tracking-tight' for all headings larger than 24px.",
-      "Use 'tracking-wide' + 'uppercase' for small labels (overlines).",
-      "Never use Inter for headings."
-    ]
+      "h1": "text-5xl md:text-6xl font-bold tracking-tight leading-[1.1]",
+      "h2": "text-4xl md:text-5xl font-semibold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-medium",
+      "body": "text-base md:text-lg leading-relaxed",
+      "small": "text-sm font-medium tracking-wide uppercase"
+    }
   },
   "colors": {
     "palette": {
-      "light": {
-        "background": "#F8FAFC",
-        "foreground": "#0F172A",
-        "card": "#FFFFFF",
-        "card_foreground": "#0F172A",
-        "primary": "#1E1B4B",
-        "primary_foreground": "#F8FAFC",
-        "secondary": "#B45309",
-        "secondary_foreground": "#FFFFFF",
-        "muted": "#F1F5F9",
-        "muted_foreground": "#64748B",
-        "accent": "#F0F9FF",
-        "accent_foreground": "#0F172A",
-        "border": "#E2E8F0"
+      "primary": {
+        "DEFAULT": "#1e3a8a",
+        "foreground": "#ffffff",
+        "description": "Deep Royal Blue - Authority, Trust"
       },
-      "dark": {
-        "background": "#020617",
-        "foreground": "#F8FAFC",
-        "card": "#0F172A",
-        "card_foreground": "#F8FAFC",
-        "primary": "#F8FAFC",
-        "primary_foreground": "#020617",
-        "secondary": "#D97706",
-        "secondary_foreground": "#FFFFFF",
-        "muted": "#1E293B",
-        "muted_foreground": "#94A3B8",
-        "accent": "#1E293B",
-        "accent_foreground": "#F8FAFC",
-        "border": "#1E293B"
-      }
+      "secondary": {
+        "DEFAULT": "#f8fafc",
+        "foreground": "#0f172a",
+        "description": "Slate 50 - Off-white background"
+      },
+      "accent": {
+        "DEFAULT": "#dc2626",
+        "foreground": "#ffffff",
+        "description": "Crimson Red - Alerts, Actions, Appeal Urgency"
+      },
+      "background": "#ffffff",
+      "foreground": "#0f172a",
+      "muted": {
+        "DEFAULT": "#f1f5f9",
+        "foreground": "#64748b"
+      },
+      "card": {
+        "DEFAULT": "#ffffff",
+        "foreground": "#0f172a"
+      },
+      "border": "#e2e8f0"
     },
-    "usage": {
-      "primary_brand": "#1E1B4B (Deep Indigo) - Use for Sidebar, Heavy Headers, Key Actions.",
-      "accent_brand": "#B45309 (Burnished Amber) - Use for 'Call to Action', 'Hope' moments, Highlights.",
-      "success": "#15803d (Deep Green) - Status indicators.",
-      "warning": "#c2410c (Burnt Orange) - Alerts.",
-      "error": "#b91c1c (Deep Red) - Critical errors.",
-      "surface_glass": "bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20"
-    }
-  },
-  "grids": {
-    "dashboard_bento": {
-      "wrapper": "grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6",
-      "items": {
-        "hero_stat": "col-span-full md:col-span-4 lg:col-span-4 row-span-2",
-        "quick_action": "col-span-2 md:col-span-2 row-span-1",
-        "list_tall": "col-span-full md:col-span-2 lg:col-span-2 row-span-2"
-      }
+    "dark_mode": {
+      "background": "#020617",
+      "foreground": "#f8fafc",
+      "primary": "#3b82f6",
+      "accent": "#ef4444",
+      "card": "#0f172a",
+      "border": "#1e293b"
     },
-    "form_layout": {
-      "wrapper": "max-w-2xl mx-auto space-y-8",
-      "field_group": "grid grid-cols-1 md:grid-cols-2 gap-6"
-    }
-  },
-  "components": {
-    "cards": {
-      "style": "bg-card text-card-foreground rounded-xl border border-border/50 shadow-sm hover:shadow-md transition-all duration-300",
-      "interactive": "hover:-translate-y-1 hover:border-primary/20"
-    },
-    "buttons": {
-      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-all shadow-lg shadow-primary/20",
-      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-lg px-6 py-3 font-medium shadow-md",
-      "outline": "border-2 border-primary text-primary hover:bg-primary/5 rounded-lg px-6 py-3 font-medium",
-      "ghost": "hover:bg-accent hover:text-accent-foreground rounded-lg px-4 py-2"
-    },
-    "inputs": {
-      "base": "bg-background border-border focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-lg px-4 py-3 transition-all"
-    }
-  },
-  "layout_strategies": {
-    "landing_page": {
-      "structure": "Asymmetric, High-Impact Hero. Scroll-triggered animations.",
-      "hero_section": "Split screen or Center Focus. Large Serif Headline. 'Trust' imagery.",
-      "features_section": "Bento Grid layout for features. Do not use 3-column generic layout.",
-      "social_proof": "Marquee or Masonry grid of testimonials."
-    },
-    "dashboard": {
-      "structure": "Sidebar Navigation (Collapsible). Top Bar for Global Search/Profile.",
-      "content_area": "Bento Grid for Overview. Data visualization using Recharts (customized to be minimal)."
-    },
-    "case_detail": {
-      "problem": "Currently too crammed.",
-      "solution": "Tabbed Interface or Vertical Navigation. Separate 'Overview', 'Timeline', 'Documents', 'Strategy'.",
-      "focus_mode": "When viewing a document or report, hide non-essential navigation."
+    "gradients": {
+      "hero": "bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900",
+      "subtle": "bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900"
     }
   },
   "visual_enhancers": {
-    "glassmorphism": "Use on sticky headers, modals, and toasts. 'backdrop-blur-xl bg-background/80'.",
-    "texture": "Add a subtle noise texture overlay to the entire app body (opacity 0.03) to reduce digital flatness.",
-    "gradients": "No full-screen gradients. Use subtle 'mesh' gradients in backgrounds of cards or hero sections. #1E1B4B to #312E81.",
-    "shadows": "layered shadows: 'shadow-[0_4px_12px_-2px_rgba(0,0,0,0.08)]'"
+    "borders": "border border-slate-200 dark:border-slate-800",
+    "shadows": "shadow-lg shadow-slate-200/50 dark:shadow-none",
+    "glass": "backdrop-blur-xl bg-white/80 dark:bg-slate-950/80 border border-white/20",
+    "radius": "rounded-xl",
+    "textures": "Use subtle noise overlay on solid backgrounds to prevent flatness."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-blue-900 text-white hover:bg-blue-800 shadow-md transition-all duration-200 rounded-md px-6 py-2.5 font-medium",
+      "secondary": "bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 transition-all duration-200 rounded-md px-6 py-2.5 font-medium",
+      "destructive": "bg-red-600 text-white hover:bg-red-700 transition-all duration-200 rounded-md px-6 py-2.5 font-medium"
+    },
+    "cards": {
+      "style": "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6"
+    },
+    "inputs": {
+      "style": "bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+    }
+  },
+  "layout_strategies": {
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "section_spacing": "py-16 md:py-24",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[minmax(180px,auto)]"
   },
   "image_urls": {
-    "hero_bg": "https://images.unsplash.com/photo-1730629689669-5567c3d00ad5?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "office_interior": "https://images.unsplash.com/photo-1598139384902-5a8217874645?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "abstract_shapes": "https://images.unsplash.com/photo-1675025382844-0b2fe4d87e7f?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "meeting_room": "https://images.unsplash.com/photo-1755551636821-01c102d8349e?crop=entropy&cs=srgb&fm=jpg&q=85"
+    "hero_background": "https://images.unsplash.com/photo-1723760213988-27acb2811d1c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwyfHxoaWdoJTIwY291cnQlMjBvZiUyMGF1c3RyYWxpYSUyMGJ1aWxkaW5nJTIwbW9kZXJuJTIwbGVnYWwlMjBvZmZpY2UlMjBtaW5pbWFsaXN0JTIwanVzdGljZSUyMHNjYWxlcyUyMGJhcnJpc3RlciUyMHdpZyUyMHN5ZG5leSUyMHNreWxpbmUlMjBibHVlfGVufDB8fHx8MTc3MzQyMDIxM3ww&ixlib=rb-4.1.0&q=85",
+    "legal_gavel": "https://images.unsplash.com/photo-1767972463877-b64ba4283cd0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHwyfHxnYXZlbCUyMGp1c3RpY2UlMjBsYXd8ZW58MHx8fHwxNzczNDIwMjI2fDA&ixlib=rb-4.1.0&q=85",
+    "legal_gavel_book": "https://images.unsplash.com/photo-1767972159871-b9f5d320be2b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHxnYXZlbCUyMGp1c3RpY2UlMjBsYXd8ZW58MHx8fHwxNzczNDIwMjI2fDA&ixlib=rb-4.1.0&q=85",
+    "sydney_opera": "https://images.unsplash.com/photo-1568246654191-5d306d62227d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwzfHxoaWdoJTIwY291cnQlMjBvZiUyMGF1c3RyYWxpYSUyMGJ1aWxkaW5nJTIwbW9kZXJuJTIwbGVnYWwlMjBvZmZpY2UlMjBtaW5pbWFsaXN0JTIwanVzdGljZSUyMHNjYWxlcyUyMGJhcnJpc3RlciUyMHdpZyUyMHN5ZG5leSUyMHNreWxpbmUlMjBibHVlfGVufDB8fHx8MTc3MzQyMDIxM3ww&ixlib=rb-4.1.0&q=85"
   },
   "instructions_to_main_agent": [
-    "1. REFRACTORING: The Case Detail page is too heavy. Break it down into tabs or sub-routes (Overview, Timeline, Docs, Notes).",
-    "2. NAVIGATION: Implement a robust Sidebar for the Dashboard area. It should be collapsible.",
-    "3. TYPOGRAPHY: Update 'index.css' to enforce Crimson Pro for headings and Manrope for body. Remove any 'Inter' references if they exist.",
-    "4. COMPONENTS: Update Shadcn components (Card, Button, Input) in 'components/ui' to match the new 'Jewel' aesthetic (more rounding, subtle borders, richer hover states).",
-    "5. DARK MODE: Ensure all colors have a dark mode variant. The dark mode should not be 'pure black', use Slate-950 (#020617).",
-    "6. LANDING PAGE: Redesign completely using the 'Swiss Grid' approach. Use the provided image URLs for visual interest.",
-    "7. BENTO GRID: Use the bento grid class structure provided in 'grids' for the main Dashboard overview."
+    "PHASE 1: Update 'tailwind.config.js' and 'index.css' to reflect the Blue/White/Red palette. REMOVE all Amber/Gold references.",
+    "PHASE 2: Apply the 'Crimson Pro' font to all headings (h1-h6) and 'Manrope' to body text.",
+    "PHASE 3: Refactor the Dashboard to use the 'Bento Grid' layout defined in 'layout_strategies'.",
+    "PHASE 4: Update the Landing Page to use the 'hero_background' image with a heavy blue overlay for text readability.",
+    "PHASE 5: Ensure all buttons and interactive elements use the new color variables (primary = blue-900, accent = red-600).",
+    "CRITICAL: Do not use gradients for backgrounds unless specified. Stick to solid white/slate-50 for clean legal look.",
+    "CRITICAL: Ensure 'data-testid' attributes are present on all interactive elements."
   ],
-  "UNIVERSAL_GUIDELINES": [
-    "Avoid generic centered layouts.",
-    "Use 2-3x more spacing (p-8, gap-8) than typical.",
-    "Every interaction needs a micro-animation (transition-all duration-200).",
-    "Do NOT use 'transition: all'. Use specific properties.",
-    "Ensure high contrast for accessibility (APCA standards).",
-    "Use 'sonner' for toasts.",
-    "Add 'data-testid' to all interactive elements."
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients.",
+    "Don't make generic centered layouts.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters.",
+    "Every interaction needs micro-animations.",
+    "Use 2-3x more spacing than feels comfortable."
   ]
 }
