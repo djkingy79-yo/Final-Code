@@ -659,6 +659,11 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### Bug Fix: HelpCircle Runtime Error (Mar 2026) ✅
+- [x] **Root cause**: HelpCircle icon was removed from lucide-react import in CaseDetail.jsx while the Help button still used it
+- [x] **Fix**: Added HelpCircle back to the import statement
+- [x] **Testing**: iteration_44 — 100% backend (11/11 tests) + 100% frontend, no console errors on CaseDetail
+
 ### Major Overhaul (Mar 2026 — Current Session) ✅
 - [x] **Pricing Updated**: Grounds $99, Full Report $150, Extensive Log $200 AUD
 - [x] **Report Rendering Fixed**: Reports now render as formatted Markdown (was raw text)
