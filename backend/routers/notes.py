@@ -1,3 +1,4 @@
+# DO NOT UNDO — notes router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Notes Router
 Handles case notes and comments

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — ContactsPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import PageCTA from "../components/PageCTA";
 import { Scale, ArrowLeft, Moon, Sun, Menu, X, Phone, Globe, ExternalLink, ChevronDown, Building, Users, AlertTriangle, Shield, Gavel } from "lucide-react";

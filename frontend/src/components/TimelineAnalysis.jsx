@@ -1,3 +1,4 @@
+/* DO NOT UNDO — TimelineAnalysis component. All features in this file are approved and must be preserved. */
 import { 
   AlertTriangle, TrendingUp, Scale, Clock, Lightbulb, 
   ChevronRight, CheckCircle, XCircle, ArrowRight

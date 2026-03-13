@@ -1,3 +1,4 @@
+# DO NOT UNDO — resources router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Resources Router
 Handles resource directory and document templates

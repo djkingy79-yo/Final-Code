@@ -1,3 +1,4 @@
+# DO NOT UNDO — contradictions router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Contradiction Finder Router
 AI-powered feature to scan documents and notes to find contradictions and inconsistencies
@@ -111,7 +112,7 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
     if scan_request.focus_areas:
         focus_instruction = f"Focus particularly on: {', '.join(scan_request.focus_areas)}. "
     
-    prompt = f"""You are a legal contradiction analyst specializing in criminal appeals in Australia.
+    prompt = f"""You are a legal contradiction analyst specialising in criminal appeals in Australia.
 
 Analyze the following case materials for contradictions, inconsistencies, and discrepancies that could be relevant for an appeal.
 
@@ -183,7 +184,7 @@ Important: Return ONLY valid JSON, no additional text."""
         chat = LlmChat(
             api_key=llm_key,
             session_id=f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
-            system_message="You are a legal contradiction analyst specializing in criminal appeals in Australia."
+            system_message="You are a legal contradiction analyst specialising in criminal appeals in Australia."
         ).with_model("openai", "gpt-4o")
         
         response = await chat.send_message(UserMessage(text=prompt))

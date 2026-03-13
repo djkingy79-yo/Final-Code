@@ -1,3 +1,4 @@
+/* DO NOT UNDO — ContactPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, Send, ArrowLeft, CheckCircle, Mail, User, MessageSquare, Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "../components/ui/button";

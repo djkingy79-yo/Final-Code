@@ -1,3 +1,4 @@
+/* DO NOT UNDO — DisclaimerReminder component. All features in this file are approved and must be preserved. */
 import { AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 

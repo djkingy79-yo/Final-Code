@@ -1,3 +1,4 @@
+/* DO NOT UNDO — TermsOfService section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, ArrowLeft, Shield, AlertTriangle, FileText, Users, Lock, Eye, Mail, Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "../components/ui/button";

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — ProfessionalSummary section. All features in this file are approved and must be preserved. */
 import { Scale, FileText, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";

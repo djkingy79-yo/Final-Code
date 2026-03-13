@@ -1,3 +1,4 @@
+# DO NOT UNDO — cases router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Cases Router
 """

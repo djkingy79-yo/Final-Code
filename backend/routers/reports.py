@@ -1,3 +1,4 @@
+# DO NOT UNDO — reports router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Reports Router
 Handles report generation, retrieval, and export (PDF/DOCX)

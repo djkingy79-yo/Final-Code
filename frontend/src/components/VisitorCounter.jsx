@@ -1,3 +1,4 @@
+/* DO NOT UNDO — VisitorCounter component. All features in this file are approved and must be preserved. */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Users, Eye, Briefcase, UserCheck } from "lucide-react";

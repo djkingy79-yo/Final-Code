@@ -1,3 +1,4 @@
+/* DO NOT UNDO — ForgotPasswordPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — AppealStatisticsPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, ArrowLeft, Moon, Sun, Menu, X, BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, XCircle, Clock, FileText, Users, Gavel, PieChart } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -358,7 +359,7 @@ const AppealStatisticsPage = () => {
               <div className="bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/40 dark:to-orange-900/40 rounded-lg p-4 border-2 border-amber-400 dark:border-amber-600">
                 <p className="font-bold text-base mb-2 text-amber-900 dark:text-amber-200">🎯 This Tool's Purpose</p>
                 <p className="text-amber-900 dark:text-amber-100">
-                  <strong>This application exists to bridge that gap.</strong> By making appeal research, document organization, 
+                  <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
                   and AI-powered analysis accessible and affordable, we aim to help those who have grounds for appeal 
                   but lack the resources to pursue justice through traditional means. Everyone deserves a fair chance to have 
                   errors in their case reviewed — not just those who can afford $20,000+ in legal fees.

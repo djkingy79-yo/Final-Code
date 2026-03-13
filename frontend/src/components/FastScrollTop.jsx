@@ -1,3 +1,4 @@
+/* DO NOT UNDO — FastScrollTop component. All features in this file are approved and must be preserved. */
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 

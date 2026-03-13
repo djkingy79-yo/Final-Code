@@ -1,3 +1,4 @@
+# DO NOT UNDO — export router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Export Router
 Handles Quick Export (Appeal Package) generation - ZIP with all docs, reports, and editable templates

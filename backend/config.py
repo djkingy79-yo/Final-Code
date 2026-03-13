@@ -1,3 +1,4 @@
+# DO NOT UNDO — config module. All logic in this file is approved and must be preserved.
 """
 Criminal Appeal AI - Configuration and Database Setup
 """

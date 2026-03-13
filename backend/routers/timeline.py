@@ -1,3 +1,4 @@
+# DO NOT UNDO — timeline router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Timeline Router
 Handles timeline events, auto-generation, analysis, and PDF export

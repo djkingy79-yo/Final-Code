@@ -1,3 +1,4 @@
+/* DO NOT UNDO — FAQPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, ArrowLeft, ChevronDown, ChevronRight, Search, HelpCircle, FileText, Clock, Shield, CreditCard, Users, Gavel, Moon, Sun, MessageCircle, BookOpen } from "lucide-react";
 import { Button } from "../components/ui/button";

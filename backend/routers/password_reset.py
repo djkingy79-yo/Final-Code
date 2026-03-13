@@ -1,3 +1,4 @@
+# DO NOT UNDO — password_reset router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Password Reset Router
 Handles forgot password and password reset functionality

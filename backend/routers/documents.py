@@ -1,3 +1,4 @@
+# DO NOT UNDO — documents router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Documents Router
 Handles document upload, retrieval, search, OCR, and text extraction

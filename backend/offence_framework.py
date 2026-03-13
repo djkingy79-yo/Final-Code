@@ -1,3 +1,4 @@
+# DO NOT UNDO — offence_framework module. All logic in this file is approved and must be preserved.
 # Criminal Offence Types and Legal Framework - ALL AUSTRALIAN STATES
 # This configuration defines all supported offence categories and their applicable legislation
 # Covers: NSW, VIC, QLD, SA, WA, TAS, NT, ACT + Commonwealth

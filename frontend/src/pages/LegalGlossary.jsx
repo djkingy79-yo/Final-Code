@@ -1,3 +1,4 @@
+/* DO NOT UNDO — LegalGlossary section. All features in this file are approved and must be preserved. */
 import { Scale, ArrowLeft, Search, BookOpen, Gavel, Shield, FileText, Users, AlertTriangle, Clock, ChevronDown, ChevronRight, Moon, Sun } from "lucide-react";
 import PageCTA from "../components/PageCTA";
 import { Button } from "../components/ui/button";

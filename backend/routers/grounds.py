@@ -1,3 +1,4 @@
+# DO NOT UNDO — grounds router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Grounds of Merit Router
 Handles grounds of merit CRUD, AI identification, and investigation

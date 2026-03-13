@@ -1,3 +1,4 @@
+/* DO NOT UNDO — TermsAcceptance component. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, AlertTriangle, CheckCircle2, ExternalLink, Shield, Brain, FileWarning, Gavel } from "lucide-react";
 import { Button } from "./ui/button";

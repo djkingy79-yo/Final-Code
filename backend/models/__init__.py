@@ -1,3 +1,4 @@
+# DO NOT UNDO — All models in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Pydantic Models
 """

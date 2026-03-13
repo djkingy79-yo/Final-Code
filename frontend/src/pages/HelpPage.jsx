@@ -1,3 +1,4 @@
+/* DO NOT UNDO — HelpPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 

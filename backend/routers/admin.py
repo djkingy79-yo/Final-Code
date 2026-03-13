@@ -1,3 +1,4 @@
+# DO NOT UNDO — admin router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Admin Router
 Handles admin-only routes: contact messages, success stories, analytics

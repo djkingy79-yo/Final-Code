@@ -1,3 +1,4 @@
+# DO NOT UNDO — server module. All logic in this file is approved and must be preserved.
 from fastapi import FastAPI, APIRouter, HTTPException, Response, Request, UploadFile, File, Form, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
@@ -93,7 +94,7 @@ def get_offence_system_prompt(offence_category: str) -> str:
     
     legislation_str = ", ".join(legislation_refs[:8]) if legislation_refs else "relevant criminal law sections"
     
-    return f"""You are a senior Australian criminal appeal barrister with 30+ years experience in {category_name.lower()} and serious criminal appeals in NSW. You specialize in {category_name.lower()} offences and have extensive knowledge of {legislation_str}.
+    return f"""You are a senior Australian criminal appeal barrister with 30+ years experience in {category_name.lower()} and serious criminal appeals in NSW. You specialise in {category_name.lower()} offences and have extensive knowledge of {legislation_str}.
 
 YOUR EXPERTISE COVERS:
 - {category_name} offences under NSW and Commonwealth law
@@ -1413,7 +1414,7 @@ async def auto_generate_timeline(case_id: str, request: Request):
         doc_context += f"DOCUMENT: {doc.get('filename')}\n"
         doc_context += f"CONTENT:\n{content}\n\n"
     
-    system_prompt = """You are an expert legal analyst specializing in criminal cases. 
+    system_prompt = """You are an expert legal analyst specialising in criminal cases. 
 Your task is to extract a chronological timeline of events from case documents.
 
 For each event, identify:
@@ -1563,7 +1564,7 @@ async def analyze_timeline(case_id: str, request: Request):
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
     
-    system_prompt = """You are an expert criminal appeals analyst specializing in NSW and Australian federal law.
+    system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law.
 Analyse this timeline of events and provide detailed insights for an appeal case.
 
 Your analysis must include:

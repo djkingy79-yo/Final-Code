@@ -1,3 +1,4 @@
+/* DO NOT UNDO — CaseDetail section. All features in this file are approved and must be preserved. */
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";

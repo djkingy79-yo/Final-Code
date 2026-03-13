@@ -1,3 +1,4 @@
+# DO NOT UNDO — deadlines router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Deadlines & Checklist Router
 Handles appeal deadlines and progress checklist

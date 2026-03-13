@@ -1,3 +1,4 @@
+/* DO NOT UNDO — LegalFrameworkPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Scale, ArrowLeft, Moon, Sun, Menu, X, BookOpen, Shield, Gavel, ChevronDown, ExternalLink, FileText, Globe } from "lucide-react";
 import { Button } from "../components/ui/button";

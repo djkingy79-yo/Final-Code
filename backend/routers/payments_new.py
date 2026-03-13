@@ -1,3 +1,4 @@
+# DO NOT UNDO — payments_new router. All endpoints in this file are approved and must be preserved.
 """
 Payment Router for Appeal Case Manager
 Supports PayPal and PayID (Australian bank transfer) payment methods

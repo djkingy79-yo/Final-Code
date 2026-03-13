@@ -1,3 +1,4 @@
+# DO NOT UNDO — ai_service service. All logic in this file is approved and must be preserved.
 """
 Criminal Appeal AI - AI Services Module
 Encapsulates all AI/LLM operations for report generation, grounds analysis, etc.

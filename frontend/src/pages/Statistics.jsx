@@ -1,3 +1,4 @@
+/* DO NOT UNDO — Statistics section. All features in this file are approved and must be preserved. */
 import { useState, useEffect } from "react";
 import { Scale, ArrowLeft, BarChart3, FileText, Users, TrendingUp, MapPin, Gavel, Shield, AlertTriangle, Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "../components/ui/button";

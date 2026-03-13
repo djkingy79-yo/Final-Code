@@ -1,3 +1,4 @@
+# DO NOT UNDO — analytics router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Analytics Router
 Provides comprehensive usage statistics and metrics

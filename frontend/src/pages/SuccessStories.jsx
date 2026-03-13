@@ -1,3 +1,4 @@
+/* DO NOT UNDO — SuccessStories section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import PageCTA from "../components/PageCTA";
 import { Scale, ArrowLeft, Star, Quote, Send, CheckCircle, Heart, Moon, Sun, Menu, X } from "lucide-react";
@@ -67,7 +68,7 @@ const successStories = [
     name: "Marcus W.",
     location: "Gold Coast, QLD",
     relationship: "Cousin",
-    story: "My cousin was convicted on drug trafficking charges based almost entirely on phone intercept evidence. He insisted he was talking about legitimate business, but his overworked legal aid lawyer didn't challenge the interpretation. Using this tool, I went through every transcript of the intercepts. The AI flagged ambiguous language that could have multiple meanings. I found expert linguistics reports from other cases that showed this exact type of coded language analysis can be unreliable without corroborating evidence - which was missing here. We took this to a barrister who specializes in Commonwealth drug cases. He agreed the intercept evidence was weak without physical evidence. The appeal is based on unreasonable verdict - that no reasonable jury could convict on that evidence alone. We got leave to appeal and the hearing is in 3 months.",
+    story: "My cousin was convicted on drug trafficking charges based almost entirely on phone intercept evidence. He insisted he was talking about legitimate business, but his overworked legal aid lawyer didn't challenge the interpretation. Using this tool, I went through every transcript of the intercepts. The AI flagged ambiguous language that could have multiple meanings. I found expert linguistics reports from other cases that showed this exact type of coded language analysis can be unreliable without corroborating evidence - which was missing here. We took this to a barrister who specialises in Commonwealth drug cases. He agreed the intercept evidence was weak without physical evidence. The appeal is based on unreasonable verdict - that no reasonable jury could convict on that evidence alone. We got leave to appeal and the hearing is in 3 months.",
     outcome: "Leave to appeal granted - Hearing pending",
     timeframe: "Leave granted after 7 months",
     featured: true

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — App routing and configuration. All routes and features must be preserved. */
 import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";

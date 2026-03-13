@@ -1,3 +1,4 @@
+# DO NOT UNDO — compare router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Compare Cases Router
 Allows users to compare their own cases and see anonymized patterns from all users

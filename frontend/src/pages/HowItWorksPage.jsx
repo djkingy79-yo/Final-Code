@@ -1,3 +1,4 @@
+/* DO NOT UNDO — HowItWorksPage section. All features in this file are approved and must be preserved. */
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";

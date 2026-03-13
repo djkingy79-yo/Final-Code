@@ -1,3 +1,4 @@
+# DO NOT UNDO — statistics router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Statistics Router
 Handles public statistics and case comparison

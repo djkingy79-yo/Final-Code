@@ -1,3 +1,4 @@
+# DO NOT UNDO — payments router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Payments Router
 Handles PayPal integration for premium features

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — InstallPrompt component. All features in this file are approved and must be preserved. */
 import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Download, X } from 'lucide-react';

@@ -1,3 +1,4 @@
+/* DO NOT UNDO — LegalResourcesPage section. All features in this file are approved and must be preserved. */
 import { useState, createContext, useContext } from "react";
 import PageCTA from "../components/PageCTA";
 import { Scale, ArrowLeft, Building, Users, Phone, Globe, ExternalLink, MapPin, Moon, Sun, Menu, X, Shield, Gavel, FileText, AlertTriangle, Lightbulb } from "lucide-react";

@@ -1,3 +1,4 @@
+# DO NOT UNDO — utilities router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Utilities Router
 Helper endpoints: Australian states, offence framework, categories

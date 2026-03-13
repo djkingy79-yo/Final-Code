@@ -1,3 +1,4 @@
+# DO NOT UNDO — auth router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Complete Auth Router
 Handles all authentication: Email/Password + Google OAuth via Emergent

@@ -1,3 +1,4 @@
+# DO NOT UNDO — auth_utils module. All logic in this file is approved and must be preserved.
 """
 Criminal Appeal AI - Authentication Utilities
 Shared authentication helpers used across all routers

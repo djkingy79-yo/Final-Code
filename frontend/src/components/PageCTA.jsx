@@ -1,3 +1,4 @@
+/* DO NOT UNDO — PageCTA component. All features in this file are approved and must be preserved. */
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ArrowRight, Upload, FileText, Briefcase } from "lucide-react";

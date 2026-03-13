@@ -1,3 +1,4 @@
+/* DO NOT UNDO — LawyerDirectory section. All features in this file are approved and must be preserved. */
 import { Scale, ArrowLeft, ExternalLink, MapPin, Phone, Globe, Users, Building2, Gavel, Moon, Sun, Search } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -20,7 +21,7 @@ const lawyerResources = [
     barAssociation: {
       name: "NSW Bar Association",
       url: "https://nswbar.asn.au/",
-      description: "Find a barrister specializing in criminal appeals"
+      description: "Find a barrister specialising in criminal appeals"
     },
     lawSociety: {
       name: "Law Society of NSW",

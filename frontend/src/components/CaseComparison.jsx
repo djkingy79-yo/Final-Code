@@ -1,3 +1,4 @@
+/* DO NOT UNDO — CaseComparison component. All features in this file are approved and must be preserved. */
 import { useState, useEffect } from "react";
 import { BarChart3, FileText, Shield, TrendingUp, TrendingDown, Minus, Users, MapPin, AlertTriangle, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
