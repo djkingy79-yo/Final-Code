@@ -659,5 +659,22 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### DO NOT UNDO Markers Applied (Mar 2026) ✅
+- [x] **79 files marked** with "DO NOT UNDO" comments to protect approved features:
+  - 29 frontend page files
+  - 22 frontend component files
+  - 3 frontend core files (App.js, index.css, tailwind.config.js)
+  - 20 backend router files
+  - 4 backend core files (server.py, config.py, auth_utils.py, offence_framework.py)
+  - 1 backend service file (ai_service.py)
+  - 1 backend model file (models/__init__.py)
+
+### Australian English Final Sweep (Mar 2026) ✅
+- [x] Fixed remaining American English in user-facing text:
+  - "specializing" → "specialising" (LawyerDirectory, SuccessStories, server.py, contradictions.py)
+  - "organization" → "organisation" (AppealStatisticsPage)
+  - "specialize" → "specialise" (server.py AI prompts)
+- [x] Verified: No American English spellings found in visible UI text (iteration_42.json)
+
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
