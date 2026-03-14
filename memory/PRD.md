@@ -810,3 +810,21 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 ### Performance Optimisation (Mar 2026) ✅
 - [x] **Reduced all retry backoff delays** from 3-24 seconds to 1 second max across ALL AI endpoints
 - [x] **Lawyer Directory** — Already populated with all 8 states
+
+### UX & Health Check Improvements (Mar 2026) ✅
+- [x] **Scroll to Top on Navigation** — Every page now starts at the top when navigated from menu bar
+  - `ScrollToTopOnNav` component uses `useLocation` + `useEffect` to call `window.scrollTo(0, 0)` on pathname change
+  - Added to `App.js` inside `BrowserRouter`
+- [x] **Quick Home Button** — Floating home icon button appears after scrolling 420px
+  - Positioned above the existing scroll-to-top button
+  - Navigates to landing page (`/`) on click
+  - `data-testid="global-quick-home-btn"`
+- [x] **Enhanced Health Check** — `/api/health` now checks MongoDB connectivity
+  - Returns `status` (healthy/degraded), `database` (connected/disconnected), `timestamp`
+  - `ENABLE_HEALTH_CHECK=true` in frontend .env
+- [x] **Full Page Audit** — All 16 public pages verified working on desktop (1920px) and mobile (390px)
+  - No broken sections found
+  - All navigation links working
+  - Dark mode toggle working
+  - Mobile hamburger menu working with 17 links
+  - Testing: iteration_54 — 100% backend + 100% frontend
