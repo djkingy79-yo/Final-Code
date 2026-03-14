@@ -786,6 +786,11 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Delete Case button** — Added to CaseDetail.jsx header with red styling, confirmation dialog, and redirect to dashboard after deletion
 - [x] **Print CSS** — Added `-webkit-print-color-adjust: exact` for gradient headers, TOC bar, and section borders in print mode
 - [x] **Report sections verified** — All 8 sections render (Executive Summary, Grounds, Sentencing Table, Legislation, Next Steps, Strategic Advice, Filing Guide, Appeal Forms)
+- [x] **Form download links** — Fixed with iOS Safari fallback (opens in new tab) and toast notifications. Delayed URL revocation to prevent premature cleanup.
+- [x] **How It Works page** — Completely rewritten with 6 detailed steps, colour-coded headers, "What You'll See on Screen" sections, Pro Tips, interactive CTAs, document upload priority table, sticky step navigation, and 3-tier pricing section
+- [x] **Legal Framework page** — Verified NOT deleted. All 8 states + Commonwealth present with expandable legislation sections
+- [x] **Mobile responsive** — Verified on iPhone viewport (390px) for How It Works, Forms, and Legal Framework pages
+- [x] **Testing**: iterations 49-52 — 100% pass across all features
 
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
