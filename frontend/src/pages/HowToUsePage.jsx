@@ -92,19 +92,19 @@ const HowToUsePage = () => {
     },
     {
       num: 6,
-      title: "Find Contradictions",
+      title: "Review Legal Framework",
       icon: Search,
-      color: "orange",
-      image: "/images/howto/step6-contradictions.png",
-      description: "Use the Contradiction Finder to identify inconsistencies across documents.",
+      color: "blue",
+      image: "/images/howto/step6-legal.png",
+      description: "Explore the applicable legislation, appeal procedures, and court forms for your jurisdiction.",
       instructions: [
-        "Go to the 'Contradictions' tab",
-        "The AI compares statements across all your documents",
-        "Identifies where witnesses contradict each other",
-        "Highlights timeline inconsistencies",
-        "Each contradiction links to the source documents"
+        "Go to the 'Legal' tab in your case",
+        "Review applicable legislation with links to AustLII",
+        "Follow the step-by-step 'How to Start Your Appeal' guide",
+        "Access appeal forms for your state court",
+        "Review common appeal grounds for your offence type"
       ],
-      tip: "Contradictions can be powerful evidence of unreliable testimony."
+      tip: "The Legal Framework tab provides direct links to legislation, court forms, and Legal Aid resources."
     },
     {
       num: 7,
@@ -131,7 +131,7 @@ const HowToUsePage = () => {
       description: "Create professional reports summarising your case and findings.",
       instructions: [
         "Go to the 'Reports' tab",
-        "Choose your report type: Quick Summary (Free), Full Detailed ($29), or Extensive Log ($39)",
+        "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
         "Reports are generated as PDF documents",
         "Download and share with your lawyer"
       ],

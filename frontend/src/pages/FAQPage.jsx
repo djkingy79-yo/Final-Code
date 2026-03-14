@@ -104,15 +104,15 @@ const faqs = [
     questions: [
       {
         q: "What's included in a Quick Summary Report?",
-        a: "The Quick Summary (FREE) includes: case overview, key timeline events, number of potential grounds identified, overall case strength assessment, and next steps recommendations. It's perfect for initial assessment."
+        a: "The Quick Summary (FREE) includes: case overview, key timeline events, number of potential grounds identified, and next steps recommendations. It's perfect for initial assessment."
       },
       {
         q: "What's included in a Full Detailed Report?",
-        a: "The Full Detailed Report ($29) includes everything in Quick Summary PLUS: in-depth analysis of each ground, relevant case law citations, applicable legislation references, similar successful appeals, and detailed recommendations for legal professionals."
+        a: "The Full Detailed Report ($150 AUD) includes everything in Quick Summary PLUS: in-depth analysis of each ground, relevant case law citations with AustLII links, comparative sentencing tables, applicable legislation references, similar successful appeals, step-by-step appeal filing guide, required forms, and detailed recommendations for legal professionals."
       },
       {
         q: "What's included in an Extensive Log Report?",
-        a: "The Extensive Log ($39) is the most comprehensive option. It includes: complete document index, full timeline with source references, evidence matrix, detailed grounds analysis with supporting documents, procedural checklist, and professional formatting suitable for legal submissions."
+        a: "The Extensive Log ($200 AUD) is the most comprehensive option. It includes: complete document index, full timeline with source references, evidence matrix, detailed grounds analysis with outcome explanations, comparative sentencing with detailed case analysis, step-by-step appeal guide with forms, oral and written submissions blueprint, barrister conference dossier, and professional formatting suitable for legal submissions."
       },
       {
         q: "Can I share reports with my lawyer?",
@@ -132,7 +132,7 @@ const faqs = [
       },
       {
         q: "What are the paid features?",
-        a: "Paid features include: Full Detailed Reports ($29 AUD) which provide comprehensive legal analysis with case citations, Extensive Log Reports ($39 AUD) for exhaustive documentation, and Grounds of Merit Details ($50 AUD) for in-depth analysis of each appeal ground."
+        a: "Paid features include: Full Detailed Reports ($150 AUD) which provide comprehensive legal analysis with case citations and comparative sentencing, Extensive Log Reports ($200 AUD) for exhaustive documentation with barrister-ready strategy, and Grounds of Merit Details ($99 AUD) for in-depth analysis of each appeal ground."
       },
       {
         q: "Is my payment secure?",

@@ -170,7 +170,7 @@ const ProfessionalSummary = () => {
                   <h3 className="font-semibold text-slate-900 mb-2">Evidentiary Analysis</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Timeline inconsistencies</li>
-                    <li>• Witness statement contradictions</li>
+                    <li>• Comparative sentencing analysis</li>
                     <li>• Documentary evidence review</li>
                     <li>• Chain of evidence issues</li>
                   </ul>

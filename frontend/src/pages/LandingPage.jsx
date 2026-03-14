@@ -431,7 +431,7 @@ const LandingPage = () => {
                 <h3 className="font-bold text-white text-lg">AI-Powered Analysis</h3>
               </div>
               <p className="text-slate-400 text-sm mb-3">
-                Automatically identify potential appeal grounds, find contradictions, generate case timelines, and get AI-driven insights based on Australian law.
+                Automatically identify potential appeal grounds, generate case timelines, and get AI-driven insights based on Australian law.
               </p>
               <div className="text-emerald-500 text-xs font-medium">
                 ✓ GPT-4 powered • Australian law trained • Grounds identification
@@ -1001,8 +1001,8 @@ const LandingPage = () => {
                             <p className="text-sm text-slate-300">Comprehensive Appeal Analysis</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-blue-300">72/100</p>
-                            <p className="text-xs text-slate-400">Case Strength</p>
+                            <p className="text-2xl font-bold text-blue-300">5 Grounds</p>
+                            <p className="text-xs text-slate-400">Grounds Identified</p>
                           </div>
                         </div>
                       </div>

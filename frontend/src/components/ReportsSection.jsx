@@ -340,7 +340,19 @@ const ReportsSection = ({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.print()}
+                          onClick={() => {
+                            // Navigate to full report page for proper print
+                            const printUrl = `/cases/${caseId}/reports/${report.report_id}`;
+                            const printWindow = window.open(printUrl, '_blank');
+                            if (printWindow) {
+                              printWindow.addEventListener('load', () => {
+                                setTimeout(() => printWindow.print(), 1500);
+                              });
+                            } else {
+                              navigate(printUrl);
+                              setTimeout(() => window.print(), 2000);
+                            }
+                          }}
                           className="text-slate-700"
                           data-testid={`print-report-btn-${report.report_id}`}
                         >

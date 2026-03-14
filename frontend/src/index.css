@@ -188,6 +188,7 @@ code, .mono {
   padding: 20mm;
 }
 
+/* DO NOT UNDO — Print styles for reports */
 @media print {
   .report-paper {
     @apply shadow-none border-none;
@@ -195,8 +196,57 @@ code, .mono {
     padding: 15mm;
   }
   
-  .no-print {
+  .no-print,
+  nav,
+  header,
+  footer,
+  [data-testid="site-header"],
+  [data-testid="site-footer"],
+  button,
+  .sidebar {
     display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt !important;
+  }
+
+  .prose {
+    max-width: 100% !important;
+    color: black !important;
+  }
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 9pt !important;
+  }
+
+  th, td {
+    border: 1px solid #333 !important;
+    padding: 4px 8px !important;
+    color: black !important;
+  }
+
+  th {
+    background: #e5e7eb !important;
+    font-weight: bold !important;
+  }
+
+  a {
+    color: #1e3a8a !important;
+    text-decoration: underline !important;
+  }
+
+  h1, h2, h3, h4 {
+    color: black !important;
+    page-break-after: avoid !important;
+  }
+
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
   }
 }
 
