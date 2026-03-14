@@ -7,7 +7,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare
+  MessageSquare, Trash2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -477,6 +477,17 @@ const CaseDetail = ({ user }) => {
     });
   };
 
+  const handleDeleteCase = async () => {
+    if (!window.confirm("Are you sure you want to delete this entire case and all its documents, reports, timeline events, and notes? This cannot be undone.")) return;
+    try {
+      await axios.delete(`${API}/cases/${caseId}`);
+      toast.success("Case deleted successfully");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to delete case");
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -554,6 +565,16 @@ const CaseDetail = ({ user }) => {
               </Button>
               <QuickExport caseId={caseId} caseTitle={caseData?.title} />
               <DocumentBundler caseId={caseId} documents={documents} />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleDeleteCase}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl"
+                data-testid="delete-case-btn"
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete Case
+              </Button>
             </div>
           </div>
         </div>
