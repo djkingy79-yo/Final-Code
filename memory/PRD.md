@@ -659,6 +659,18 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### Complete Front-to-Back Content Sweep (Mar 2026) ✅
+- [x] **All pages updated** — Removed all contradiction/witness/case strength references from:
+  - Landing page: "Case Strength 72/100" → "5 Grounds / Grounds Identified"
+  - Success Stories: "contradiction finder" → "AI analysis"
+  - How To Use: "Find Contradictions" step → "Review Legal Framework"
+  - FAQ: All prices updated ($99/$150/$200)
+  - Professional Summary: "Witness statement contradictions" → "Comparative sentencing analysis"
+- [x] **Print CSS enhanced** — Full @media print styles: hides nav/buttons, formats tables, proper font sizing
+- [x] **Print button fixed** — Opens full report page then triggers print for clean output
+- [x] **Barrister View** — Print/PDF/Word always visible on ALL screens, enhanced cover page
+- [x] **Testing**: iteration_47 — 100% backend + 100% frontend across ALL 8 pages verified
+
 ### Critical Fixes — Barrister View, Progress Tab, Reports (Mar 2026) ✅
 - [x] **Barrister View Print/PDF/Word** — Buttons now ALWAYS visible on all screen sizes (were hidden on mobile)
 - [x] **Barrister View tables** — Now render as formatted HTML tables via ReactMarkdown (was raw markdown text)
