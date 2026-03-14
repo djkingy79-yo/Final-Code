@@ -2935,8 +2935,8 @@ Supporting Evidence Listed: {', '.join(ground.get('supporting_evidence', []))}
 
     doc_context = build_document_context(
         documents,
-        per_doc_char_limit=2200,
-        total_char_budget=18000,
+        per_doc_char_limit=1500,
+        total_char_budget=12000,
         include_description=False,
         content_heading="CONTENT"
     )
@@ -3004,10 +3004,10 @@ REQUIRED ANALYSIS (search the documents above for evidence):
     if not api_key:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
-    # Try up to 4 times with exponential backoff
+    # Try up to 3 times with fast backoff
     response = None
     last_error = None
-    for attempt in range(4):
+    for attempt in range(3):
         try:
             chat = LlmChat(
                 api_key=api_key,
@@ -3020,9 +3020,9 @@ REQUIRED ANALYSIS (search the documents above for evidence):
         except Exception as e:
             last_error = e
             logger.warning(f"Ground investigation attempt {attempt + 1} failed: {e}")
-            if attempt < 3:
+            if attempt < 2:
                 import asyncio
-                await asyncio.sleep(3 * (2 ** attempt))
+                await asyncio.sleep(2)
     
     if response is None:
         logger.error(f"All ground investigation attempts failed: {last_error}")
