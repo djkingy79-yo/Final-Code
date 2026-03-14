@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
@@ -30,6 +32,16 @@ import {
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Badge } from "../components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 import { API } from "../App";
 import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
@@ -138,7 +150,12 @@ const CaseDetail = ({ user }) => {
   const [selectedGround, setSelectedGround] = useState(null);
   const [generatingTimeline, setGeneratingTimeline] = useState(false);
   const [analyzingTimeline, setAnalyzingTimeline] = useState(false);
+  const [showDeleteCaseDialog, setShowDeleteCaseDialog] = useState(false);
+  const [deleteEventId, setDeleteEventId] = useState(null);
+  const [deleteGroundId, setDeleteGroundId] = useState(null);
   const [timelineAnalysis, setTimelineAnalysis] = useState(null);
+  const [generatingProgress, setGeneratingProgress] = useState(false);
+  const [progressAnalysis, setProgressAnalysis] = useState(null);
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -268,8 +285,12 @@ const CaseDetail = ({ user }) => {
   };
 
   const handleDeleteEvent = async (eventId) => {
-    if (!window.confirm("Delete this event?")) return;
-    
+    setDeleteEventId(eventId);
+  };
+  
+  const confirmDeleteEvent = async () => {
+    const eventId = deleteEventId;
+    setDeleteEventId(null);
     try {
       await axios.delete(`${API}/cases/${caseId}/timeline/${eventId}`);
       setTimeline(timeline.filter(e => e.event_id !== eventId));
@@ -402,8 +423,12 @@ const CaseDetail = ({ user }) => {
   };
 
   const handleDeleteGround = async (groundId) => {
-    if (!window.confirm("Delete this ground of merit?")) return;
-    
+    setDeleteGroundId(groundId);
+  };
+  
+  const confirmDeleteGround = async () => {
+    const groundId = deleteGroundId;
+    setDeleteGroundId(null);
     try {
       await axios.delete(`${API}/cases/${caseId}/grounds/${groundId}`);
       setGrounds(grounds.filter(g => g.ground_id !== groundId));
@@ -466,6 +491,20 @@ const CaseDetail = ({ user }) => {
     });
   };
 
+  /* DO NOT UNDO — AI Progress Analysis generation */
+  const handleGenerateProgressAnalysis = async () => {
+    setGeneratingProgress(true);
+    try {
+      const response = await axios.post(`${API}/cases/${caseId}/progress-analysis`);
+      setProgressAnalysis(response.data);
+      toast.success("Progress analysis generated");
+    } catch (error) {
+      toast.error("Failed to generate progress analysis");
+    } finally {
+      setGeneratingProgress(false);
+    }
+  };
+
   const formatDateTime = (dateStr) => {
     if (!dateStr) return "N/A";
     return new Date(dateStr).toLocaleDateString("en-AU", {
@@ -477,8 +516,12 @@ const CaseDetail = ({ user }) => {
     });
   };
 
-  const handleDeleteCase = async () => {
-    if (!window.confirm("Are you sure you want to delete this entire case and all its documents, reports, timeline events, and notes? This cannot be undone.")) return;
+  const handleDeleteCase = () => {
+    setShowDeleteCaseDialog(true);
+  };
+  
+  const confirmDeleteCase = async () => {
+    setShowDeleteCaseDialog(false);
     try {
       await axios.delete(`${API}/cases/${caseId}`);
       toast.success("Case deleted successfully");
@@ -902,7 +945,61 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
+          {/* DO NOT UNDO — Progress Tab with AI Analysis */}
           <TabsContent value="progress" className="space-y-6">
+            {/* AI Progress Analysis Button */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div>
+                    <h3 className="font-semibold text-base">AI Case Progress Analysis</h3>
+                    <p className="text-xs text-muted-foreground">Get an AI-powered assessment of your appeal progress, next steps, and strategic recommendations</p>
+                  </div>
+                  <Button 
+                    onClick={handleGenerateProgressAnalysis} 
+                    disabled={generatingProgress}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    data-testid="ai-generate-progress-btn"
+                  >
+                    {generatingProgress ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Analysing...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        AI Analyse Progress
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI Scan in Progress indicator */}
+            {generatingProgress && (
+              <div className="border border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 rounded-lg overflow-hidden p-4" data-testid="ai-progress-generating">
+                <div className="flex items-center gap-3 mb-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-purple-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-purple-900 dark:text-purple-200">AI Scan in Progress — Analysing Case Progress</p>
+                </div>
+                <p className="text-xs text-purple-700 dark:text-purple-300 mb-3">Reviewing your case data, documents, and appeal status. This may take 30-60 seconds.</p>
+                <div className="w-full h-2 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-purple-600 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            )}
+
+            {/* AI Progress Analysis Results */}
+            {progressAnalysis && (
+              <Card className="border-purple-200 dark:border-purple-800">
+                <CardContent className="p-4 prose prose-sm dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{progressAnalysis.analysis || progressAnalysis.content || ""}</ReactMarkdown>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Deadline Tracker */}
             <DeadlineTracker caseId={caseId} />
             
@@ -1306,6 +1403,56 @@ const CaseDetail = ({ user }) => {
           toast.success("Payment successful! You can now generate the report.");
         }}
       />
+
+      {/* DO NOT UNDO — Delete Case Confirmation Dialog */}
+      <AlertDialog open={showDeleteCaseDialog} onOpenChange={setShowDeleteCaseDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Case?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this case and ALL its documents, reports, timeline events, and notes. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteCase} className="bg-red-600 hover:bg-red-700 text-white">
+              Yes, Delete Case
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* DO NOT UNDO — Delete Event Confirmation Dialog */}
+      <AlertDialog open={!!deleteEventId} onOpenChange={() => setDeleteEventId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Event?</AlertDialogTitle>
+            <AlertDialogDescription>This timeline event will be permanently removed.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteEvent} className="bg-red-600 hover:bg-red-700 text-white">
+              Delete Event
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* DO NOT UNDO — Delete Ground Confirmation Dialog */}
+      <AlertDialog open={!!deleteGroundId} onOpenChange={() => setDeleteGroundId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Ground of Merit?</AlertDialogTitle>
+            <AlertDialogDescription>This ground will be permanently removed from the case.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteGround} className="bg-red-600 hover:bg-red-700 text-white">
+              Delete Ground
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

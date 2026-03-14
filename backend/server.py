@@ -2089,6 +2089,96 @@ Return JSON:
     
     return {"analysis": analysis, "documents_analyzed": len(documents), "analyzed_at": datetime.now(timezone.utc).isoformat()}
 
+# ============ AI PROGRESS ANALYSIS ============
+# DO NOT UNDO — AI Progress Analysis endpoint
+
+@api_router.post("/cases/{case_id}/progress-analysis", response_model=dict)
+async def generate_progress_analysis(case_id: str, request: Request):
+    """AI-powered case progress analysis with recommendations"""
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    
+    user = await get_current_user(request)
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    
+    documents = await db.documents.find({"case_id": case_id}, {"_id": 0, "file_data": 0}).to_list(100)
+    timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).to_list(100)
+    grounds = await db.grounds.find({"case_id": case_id}, {"_id": 0}).to_list(50)
+    deadlines = await db.deadlines.find({"case_id": case_id}, {"_id": 0}).to_list(50)
+    checklist = await db.checklist_items.find({"case_id": case_id}, {"_id": 0}).to_list(50)
+    reports = await db.reports.find({"case_id": case_id}, {"_id": 0, "content": 0}).to_list(20)
+    
+    context = f"""CASE: {case.get('title', 'Unknown')}
+DEFENDANT: {case.get('defendant_name', 'Unknown')}
+STATE: {case.get('state', 'Unknown').upper()}
+COURT: {case.get('court', 'Unknown')}
+OFFENCE: {case.get('offence_type', 'Unknown')} ({case.get('offence_category', 'Unknown')})
+
+DOCUMENTS UPLOADED: {len(documents)}
+TIMELINE EVENTS: {len(timeline)}
+GROUNDS IDENTIFIED: {len(grounds)}
+REPORTS GENERATED: {len(reports)}
+DEADLINES SET: {len(deadlines)}
+CHECKLIST ITEMS: {len(checklist)} (Completed: {sum(1 for c in checklist if c.get('completed'))})
+"""
+    
+    if grounds:
+        context += "\nIDENTIFIED GROUNDS:\n"
+        for g in grounds:
+            context += f"- {g.get('title', 'Unknown')} (Type: {g.get('ground_type', 'Unknown')}, Strength: {g.get('strength_rating', 'Unknown')})\n"
+    
+    if deadlines:
+        context += "\nDEADLINES:\n"
+        for d in deadlines:
+            context += f"- {d.get('title', 'Unknown')}: {d.get('due_date', 'Unknown')} (Status: {d.get('status', 'pending')})\n"
+    
+    system_prompt = """You are an expert Australian criminal appeal legal analyst. 
+Analyse the case progress and provide a comprehensive progress report using Australian English spelling.
+
+Structure your analysis with these sections:
+
+## APPEAL PROGRESS SUMMARY
+Brief overview of where this case stands in the appeal process.
+
+## COMPLETED STEPS
+What has been done so far based on the data provided.
+
+## CRITICAL NEXT STEPS
+The most urgent actions needed to advance this appeal, in priority order.
+
+## CASE STRENGTH ASSESSMENT
+Based on the grounds identified and documents available, assess the overall case strength.
+
+## TIMELINE RECOMMENDATIONS
+Recommended deadlines and milestones for the appeal process in this jurisdiction.
+
+## STRATEGIC RECOMMENDATIONS
+Specific tactical advice for strengthening this appeal.
+
+## RISK FACTORS
+Potential issues or weaknesses that need to be addressed.
+
+Be specific to the jurisdiction and offence type. Use Australian legal terminology and reference relevant courts and processes."""
+
+    last_error = None
+    for attempt in range(3):
+        try:
+            emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
+            llm = LlmChat(
+                api_key=emergent_api_key,
+                session_id=f"progress_{case_id}_{uuid.uuid4().hex[:8]}",
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o")
+            response = await llm.send_message(UserMessage(text=f"Analyse the progress of this criminal appeal case:\n\n{context}"))
+            return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
+        except Exception as e:
+            last_error = e
+            if attempt < 2:
+                await asyncio.sleep(1)
+    
+    raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
+
 # ============ PAYMENT ENDPOINTS ============
 
 @api_router.get("/payments/prices")

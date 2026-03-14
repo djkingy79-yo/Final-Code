@@ -21,6 +21,16 @@ import {
 } from "../components/ui/dialog";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
 import DisclaimerReminder from "../components/DisclaimerReminder";
@@ -99,12 +109,18 @@ const Dashboard = ({ user }) => {
     }
   };
 
-  const handleDeleteCase = async (caseId) => {
-    if (!window.confirm("Are you sure you want to delete this case and all its data?")) return;
-    
+  const [deleteCaseId, setDeleteCaseId] = useState(null);
+
+  const handleDeleteCase = (caseId) => {
+    setDeleteCaseId(caseId);
+  };
+  
+  const confirmDeleteCase = async () => {
+    const cId = deleteCaseId;
+    setDeleteCaseId(null);
     try {
-      await axios.delete(`${API}/cases/${caseId}`);
-      setCases(cases.filter(c => c.case_id !== caseId));
+      await axios.delete(`${API}/cases/${cId}`);
+      setCases(cases.filter(c => c.case_id !== cId));
       toast.success("Case deleted");
     } catch (error) {
       toast.error("Failed to delete case");
@@ -660,6 +676,24 @@ const Dashboard = ({ user }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* DO NOT UNDO — Delete Case Confirmation Dialog */}
+      <AlertDialog open={!!deleteCaseId} onOpenChange={() => setDeleteCaseId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Case?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this case and ALL its documents, reports, timeline events, and notes. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteCase} className="bg-red-600 hover:bg-red-700 text-white">
+              Yes, Delete Case
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

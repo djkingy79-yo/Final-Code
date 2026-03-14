@@ -25,6 +25,16 @@ import {
 } from "./ui/collapsible";
 import { API } from "../App";
 import PaymentModal from "./PaymentModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 
 const REPORT_TYPES = [
   { 
@@ -174,12 +184,18 @@ const ReportsSection = ({
     }
   };
 
-  const handleDeleteReport = async (reportId) => {
-    if (!confirm("Delete this report?")) return;
-    
+  const [deleteReportId, setDeleteReportId] = useState(null);
+
+  const handleDeleteReport = (reportId) => {
+    setDeleteReportId(reportId);
+  };
+  
+  const confirmDeleteReport = async () => {
+    const rId = deleteReportId;
+    setDeleteReportId(null);
     try {
-      await axios.delete(`${API}/cases/${caseId}/reports/${reportId}`);
-      setReports(reports.filter(r => r.report_id !== reportId));
+      await axios.delete(`${API}/cases/${caseId}/reports/${rId}`);
+      setReports(reports.filter(r => r.report_id !== rId));
       toast.success("Report deleted");
     } catch (error) {
       toast.error("Failed to delete report");
@@ -506,6 +522,24 @@ const ReportsSection = ({
         price={pendingReportType === 'extensive_log' ? 200.00 : 150.00}
         caseId={caseId}
       />
+
+      {/* DO NOT UNDO — Delete Report Confirmation Dialog */}
+      <AlertDialog open={!!deleteReportId} onOpenChange={() => setDeleteReportId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Report?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This report will be permanently deleted. You can generate a new one at any time.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteReport} className="bg-red-600 hover:bg-red-700 text-white">
+              Delete Report
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
