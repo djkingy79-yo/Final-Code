@@ -3,9 +3,10 @@ import { useState } from "react";
 import { 
   Scale, Trash2, ChevronRight, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
-  BookOpen, Gavel, FileText, Lock, CreditCard
+  BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import {
@@ -72,6 +73,19 @@ const GroundsOfMerit = ({
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [detailGround, setDetailGround] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  /* DO NOT UNDO — Search box state for each ground. Uses object to track per-ground search visibility */
+  const [searchOpen, setSearchOpen] = useState({});
+  const [searchTerms, setSearchTerms] = useState({});
+
+  const toggleSearch = (groundId) => {
+    setSearchOpen(prev => ({ ...prev, [groundId]: !prev[groundId] }));
+  };
+
+  const handleCaselawSearch = (groundId, groundTitle) => {
+    const query = searchTerms[groundId] || groundTitle;
+    const encoded = encodeURIComponent(query);
+    window.open(`https://www.austlii.edu.au/cgi-bin/sinosrch.cgi?method=auto&query=${encoded}`, '_blank');
+  };
 
   const openGroundDetail = (ground) => {
     setDetailGround(ground);
@@ -265,7 +279,17 @@ const GroundsOfMerit = ({
                       </p>
                     </div>
                     
-                    <div className="flex items-center gap-1 ml-4">
+                    <div className="flex items-center gap-1 ml-4 flex-shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => toggleSearch(ground.ground_id)}
+                        className="text-green-700 border-green-200 hover:bg-green-50"
+                        data-testid={`search-caselaw-toggle-${ground.ground_id}`}
+                      >
+                        <Search className="w-4 h-4 mr-1" />
+                        Search
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -278,23 +302,47 @@ const GroundsOfMerit = ({
                           <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                           <>
-                            <Search className="w-4 h-4 mr-1" />
+                            <Sparkles className="w-4 h-4 mr-1" />
                             Investigate
                           </>
                         )}
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="destructive"
                         size="sm"
                         onClick={() => onDelete(ground.ground_id)}
-                        className="opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="bg-red-600 hover:bg-red-700 text-white"
                         data-testid={`delete-ground-${ground.ground_id}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                      <ChevronRight className="w-5 h-5 text-slate-400" />
                     </div>
                   </div>
+
+                  {/* DO NOT UNDO — Caselaw Search Box for each ground */}
+                  {searchOpen[ground.ground_id] && (
+                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
+                      <p className="text-xs font-semibold text-green-800 dark:text-green-200 mb-2">Search AustLII for cases related to this ground</p>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder={ground.title || "Search caselaw..."}
+                          value={searchTerms[ground.ground_id] || ""}
+                          onChange={(e) => setSearchTerms(prev => ({ ...prev, [ground.ground_id]: e.target.value }))}
+                          className="flex-1 text-sm"
+                          data-testid={`search-input-${ground.ground_id}`}
+                        />
+                        <Button
+                          size="sm"
+                          onClick={() => handleCaselawSearch(ground.ground_id, ground.title)}
+                          className="bg-green-600 hover:bg-green-700 text-white flex-shrink-0"
+                          data-testid={`search-submit-${ground.ground_id}`}
+                        >
+                          <ExternalLink className="w-4 h-4 mr-1" />
+                          Search
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             );
