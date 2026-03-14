@@ -1,4 +1,8 @@
-/* DO NOT UNDO — LandingPage section. All features in this file are approved and must be preserved. */
+/* ========================================================================
+   DO NOT UNDO — ENTIRE FILE PROTECTED
+   All features, functions, styles, and content in this file are approved
+   and must be preserved. Do not remove, rename, or refactor any code.
+   ======================================================================== */
 import { Scale, FileText, Clock, Shield, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, ListChecks, Users, MapPin, Moon, Sun, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";

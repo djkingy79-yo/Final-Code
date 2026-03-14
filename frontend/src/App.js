@@ -1,4 +1,8 @@
-/* DO NOT UNDO — App routing and configuration. All routes and features must be preserved. */
+/* ========================================================================
+   DO NOT UNDO — ENTIRE FILE PROTECTED
+   All features, functions, styles, and content in this file are approved
+   and must be preserved. Do not remove, rename, or refactor any code.
+   ======================================================================== */
 import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";

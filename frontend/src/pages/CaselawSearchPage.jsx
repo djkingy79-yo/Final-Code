@@ -1,4 +1,8 @@
-/* DO NOT UNDO — CaselawSearchPage section. All features in this file are approved and must be preserved. */
+/* ========================================================================
+   DO NOT UNDO — ENTIRE FILE PROTECTED
+   All features, functions, styles, and content in this file are approved
+   and must be preserved. Do not remove, rename, or refactor any code.
+   ======================================================================== */
 import { useState } from "react";
 import { Scale, ArrowLeft, Moon, Sun, Menu, X, Search, ExternalLink, FileText, BookOpen, Gavel, HelpCircle } from "lucide-react";
 import { Button } from "../components/ui/button";

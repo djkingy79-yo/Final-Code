@@ -1,4 +1,8 @@
-/* DO NOT UNDO — TimelineEnhanced component. All features in this file are approved and must be preserved. */
+/* ========================================================================
+   DO NOT UNDO — ENTIRE FILE PROTECTED
+   All features, functions, styles, and content in this file are approved
+   and must be preserved. Do not remove, rename, or refactor any code.
+   ======================================================================== */
 import { useState, useMemo } from "react";
 import { 
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,

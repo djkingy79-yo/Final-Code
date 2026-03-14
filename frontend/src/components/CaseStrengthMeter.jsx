@@ -1,4 +1,8 @@
-/* DO NOT UNDO — CaseStrengthMeter component. All features in this file are approved and must be preserved. */
+/* ========================================================================
+   DO NOT UNDO — ENTIRE FILE PROTECTED
+   All features, functions, styles, and content in this file are approved
+   and must be preserved. Do not remove, rename, or refactor any code.
+   ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../App";
