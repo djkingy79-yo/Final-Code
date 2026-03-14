@@ -566,14 +566,14 @@ const CaseDetail = ({ user }) => {
               <span className="hidden sm:inline"><QuickExport caseId={caseId} caseTitle={caseData?.title} /></span>
               <span className="hidden sm:inline"><DocumentBundler caseId={caseId} documents={documents} /></span>
               <Button 
-                variant="ghost" 
+                variant="destructive" 
                 size="sm" 
                 onClick={handleDeleteCase}
-                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl"
+                className="bg-red-600 hover:bg-red-700 text-white rounded-xl"
                 data-testid="delete-case-btn"
               >
                 <Trash2 className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Delete Case</span>
+                Delete Case
               </Button>
             </div>
           </div>

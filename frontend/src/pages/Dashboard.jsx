@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { 
-  Scale, Plus, FileText, Clock, MoreVertical, 
+  Scale, Plus, FileText, Clock, Trash2,
   LogOut, FolderOpen, Search, User, HelpCircle, Users, BookOpen,
   FileCheck, Moon, Sun, Menu, X, Home, Gavel, ChevronRight, GitCompare,
   Shield, TrendingUp, Sparkles
@@ -19,12 +19,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "../components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { API } from "../App";
@@ -474,24 +468,15 @@ const Dashboard = ({ user }) => {
                         </h3>
                         <p className="text-sm text-muted-foreground mt-0.5">{caseItem.defendant_name}</p>
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                          <Button variant="ghost" size="sm" className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity -mr-2" data-testid={`case-menu-${caseItem.case_id}`}>
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/cases/${caseItem.case_id}`); }}>
-                            View Case
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={(e) => { e.stopPropagation(); handleDeleteCase(caseItem.case_id); }}
-                            className="text-red-600"
-                          >
-                            Delete Case
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteCase(caseItem.case_id); }}
+                        className="bg-red-600 hover:bg-red-700 text-white rounded-lg flex-shrink-0"
+                        data-testid={`delete-case-btn-${caseItem.case_id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                     
                     {caseItem.case_number && (

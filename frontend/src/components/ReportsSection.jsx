@@ -301,14 +301,15 @@ const ReportsSection = ({
                           <span className="bg-red-500 px-2 py-0.5 rounded-full text-xs font-bold" data-testid={`aggressive-report-badge-${report.report_id}`}>Aggressive</span>
                         )}
                         <Button
-                          variant="ghost"
+                          variant="destructive"
                           size="icon"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeleteReport(report.report_id);
                           }}
-                          className="text-white bg-red-600 hover:bg-red-700 rounded-full"
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-full"
                           data-testid={`delete-report-btn-${report.report_id}`}
+                          aria-label="Delete report"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
