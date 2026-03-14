@@ -106,28 +106,28 @@ const HowItWorksPage = () => {
     },
     {
       num: 3,
-      icon: Brain,
-      title: "AI Analyses Your Case",
-      subtitle: "The system identifies grounds for appeal, legal issues, and strategy",
+      icon: Search,
+      title: "Find Grounds — FREE",
+      subtitle: "AI scans your documents and tells you how many appeal grounds exist",
       color: "bg-purple-600",
       lightColor: "bg-purple-50 dark:bg-purple-900/20",
       borderColor: "border-purple-200 dark:border-purple-800",
       textColor: "text-purple-600",
-      description: "Click 'Investigate Grounds' in the Reports tab. The AI reads all your documents, cross-references Australian legislation, and identifies potential appeal grounds.",
+      description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number and titles of grounds found, but not the detailed analysis.",
       whatYouSee: [
-        "A list of identified appeal grounds with strength ratings (Strong, Moderate, Weak)",
-        "Each ground includes: legal basis, relevant legislation, supporting evidence from your documents",
-        "Timeline of key events automatically extracted from your case materials",
-        "Cross-references to similar cases and their outcomes",
+        "A list of identified appeal grounds with titles and strength ratings (Strong, Moderate, Weak)",
+        "The total number of grounds found (e.g., '5 Grounds Identified')",
+        "Each ground shows a brief title (e.g., 'Misdirection on Provocation', 'Exclusion of Evidence')",
+        "You do NOT see the detailed legal analysis at this stage — that requires Investigate Grounds",
       ],
       proTips: [
-        "Let the analysis complete fully — it may take 1-3 minutes for complex cases",
-        "Review each ground carefully — the AI identifies issues you may have missed",
-        "You can add your own grounds manually if you've identified issues the AI didn't catch",
-        "Use the Timeline tab to verify the AI has the chronology correct",
+        "Upload all your documents BEFORE running Find Grounds — the more data, the better",
+        "This is free, so use it to gauge whether it's worth investing in the full investigation",
+        "You can also manually add grounds you've identified yourself",
+        "Use the Timeline tab first to ensure the AI has the correct chronology",
       ],
       interactive: {
-        label: "What gets analysed",
+        label: "Types of grounds the AI looks for",
         items: [
           "Jury misdirections and procedural errors",
           "Improperly admitted or excluded evidence",
@@ -140,6 +140,41 @@ const HowItWorksPage = () => {
     },
     {
       num: 4,
+      icon: Brain,
+      title: "Investigate Grounds — $99 AUD",
+      subtitle: "Get the detailed legal analysis behind each ground",
+      color: "bg-indigo-600",
+      lightColor: "bg-indigo-50 dark:bg-indigo-900/20",
+      borderColor: "border-indigo-200 dark:border-indigo-800",
+      textColor: "text-indigo-600",
+      description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
+      whatYouSee: [
+        "Detailed analysis of EACH ground with legal basis and relevant legislation",
+        "Supporting evidence from your specific documents cited for each ground",
+        "Cross-references to similar cases and their outcomes (with AustLII links)",
+        "Strength assessment explaining WHY each ground is rated Strong, Moderate, or Weak",
+        "Specific sections of legislation that apply to your case",
+      ],
+      proTips: [
+        "This is the core value — it tells you exactly what your appeal grounds are and WHY",
+        "Share the grounds analysis with your lawyer to save consultation time and money",
+        "The investigation uses your actual documents, not generic advice",
+        "After investigation, generate a Full Report or Extensive Log for the complete package",
+      ],
+      interactive: {
+        label: "What you get for $99",
+        items: [
+          "Full legal analysis of every identified ground",
+          "Relevant case law citations with links",
+          "Specific legislation sections that apply",
+          "Strength rating with detailed reasoning",
+          "Evidence from YOUR documents supporting each ground",
+          "Strategic notes on which grounds to prioritise",
+        ],
+      },
+    },
+    {
+      num: 5,
       icon: FileCheck,
       title: "Generate Premium Reports",
       subtitle: "Choose your report tier — from quick overview to barrister-level depth",
@@ -162,7 +197,7 @@ const HowItWorksPage = () => {
       ],
     },
     {
-      num: 5,
+      num: 6,
       icon: Presentation,
       title: "Present in Barrister View",
       subtitle: "Court-ready presentation format for legal professionals",
@@ -185,7 +220,7 @@ const HowItWorksPage = () => {
       ],
     },
     {
-      num: 6,
+      num: 7,
       icon: ListChecks,
       title: "Track Progress & Take Action",
       subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
@@ -317,7 +352,7 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-400">
-              <Clock className="w-4 h-4" /> 6 simple steps
+              <Clock className="w-4 h-4" /> 7 simple steps
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
@@ -377,7 +412,7 @@ const HowItWorksPage = () => {
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wider opacity-70">Step {step.num} of 6</p>
+                    <p className="text-xs uppercase tracking-wider opacity-70">Step {step.num} of 7</p>
                     <h2 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "Crimson Pro, serif" }}>
                       {step.title}
                     </h2>

@@ -7,7 +7,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare, Trash2
+  MessageSquare, Trash2, Printer
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -658,7 +658,20 @@ const CaseDetail = ({ user }) => {
               </TabsList>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
+              {/* Print button for all tabs */}
+              {["timeline", "grounds", "notes", "progress"].includes(activeTab) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.print()}
+                  className="rounded-xl"
+                  data-testid={`print-${activeTab}-btn`}
+                >
+                  <Printer className="w-4 h-4 mr-2" />
+                  Print {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+                </Button>
+              )}
               {activeTab === "timeline" && (
                 <>
                   <Button 
