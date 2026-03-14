@@ -869,3 +869,15 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Delete ground button now visible on mobile** — Changed from ghost (invisible) to destructive with bg-red-600
 - [x] **DO NOT UNDO comments** added to all new code sections
 - [x] **Testing**: iteration_58 — 100% backend (15/15) + 100% frontend code verification
+
+### Progress Bar on Each Ground + Barrister Print + Extensive Report Upgrade (Mar 2026) ✅
+- [x] **AI investigation progress bar now shows ON each ground card** — Not at the top of the tab, but right on the specific ground being investigated
+  - Uses `investigating === ground.ground_id` condition inside GroundsOfMerit.jsx
+  - Shows spinner, "AI Scan in Progress" message, time estimate, and animated progress bar on that ground's card
+- [x] **Barrister View print button fixed** — White visible styling on dark header + fallback toast for mobile Safari
+- [x] **Extensive Log report ($200) massively upgraded** — Now 25 sections (was 23), word target 12000-18000 (was 9000-12000)
+  - New sections: Barrister Case Snapshot, Complete Draft Written Submissions (ready for filing), Complete Draft Notice of Appeal, Enhanced Barrister Conference Dossier
+  - Each ground now includes draft submission paragraph, key authority with AustLII link, practical impact analysis
+  - Comparative sentencing expanded to 15+ cases with detailed outcome analysis
+  - This is the premium differentiator — actual filing-ready documents
+- [x] **Testing**: iteration_59 — 100% backend (9/9) + all code review verified
