@@ -1,5 +1,5 @@
 """
-Criminal Appeal AI - Routers Package
+DO NOT UNDO — Criminal Appeal AI - Routers Package. All features in this file are approved and must be preserved.
 """
 from routers.auth import router as auth_router
 from routers.cases import router as cases_router

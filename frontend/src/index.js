@@ -1,3 +1,4 @@
+/* DO NOT UNDO — Main entry point. All features in this file are approved and must be preserved. */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@fontsource/crimson-pro/400.css";

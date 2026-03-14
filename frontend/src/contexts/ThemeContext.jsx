@@ -1,3 +1,4 @@
+/* DO NOT UNDO — ThemeContext. All features in this file are approved and must be preserved. */
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext({

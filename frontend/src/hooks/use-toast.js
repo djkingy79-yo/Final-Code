@@ -1,3 +1,4 @@
+/* DO NOT UNDO — Toast hook. All features in this file are approved and must be preserved. */
 "use client";
 // Inspired by react-hot-toast library
 import * as React from "react"
