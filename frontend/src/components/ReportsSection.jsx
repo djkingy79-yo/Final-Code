@@ -221,6 +221,19 @@ const ReportsSection = ({
         </Button>
       </div>
 
+      {generatingReport && (
+        <div className="mb-4 border border-blue-200 bg-blue-50 rounded-lg overflow-hidden p-4" data-testid="report-generating-indicator">
+          <div className="flex items-center gap-3 mb-2">
+            <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
+            <p className="text-sm font-semibold text-blue-900">AI is analysing your case. Please allow time for generation.</p>
+          </div>
+          <p className="text-xs text-blue-700 mb-3">This can take 1-3 minutes for detailed reports. Do not close this page.</p>
+          <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+            <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      )}
+
       {/* Reports List */}
       {reports.length === 0 ? (
         <Card className="p-12 text-center">
@@ -294,7 +307,8 @@ const ReportsSection = ({
                             e.stopPropagation();
                             handleDeleteReport(report.report_id);
                           }}
-                          className="text-white/70 hover:text-red-300 hover:bg-white/10"
+                          className="text-white bg-red-600 hover:bg-red-700 rounded-full"
+                          data-testid={`delete-report-btn-${report.report_id}`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
