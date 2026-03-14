@@ -828,3 +828,13 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Dark mode toggle working
   - Mobile hamburger menu working with 17 links
   - Testing: iteration_54 — 100% backend + 100% frontend
+
+### Delete Report Button Fix (Mar 2026) ✅
+- [x] **Delete report button now visible on mobile** — Changed from ghost/transparent to solid red circle (bg-red-600)
+  - Was invisible on gradient backgrounds (text-white/70 on dark gradient)
+  - Now renders as a clear red circle with white trash icon
+  - Added data-testid for each button
+- [x] **Report generation progress indicator** — Blue card with spinner + animated progress bar during generation
+  - Shows message: "AI is analysing your case. Please allow time for generation."
+  - Reminds user: "This can take 1-3 minutes for detailed reports. Do not close this page."
+- [x] **Testing**: iteration_55 — 100% backend + 100% frontend
