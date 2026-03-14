@@ -790,7 +790,19 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **How It Works page** — Completely rewritten with 6 detailed steps, colour-coded headers, "What You'll See on Screen" sections, Pro Tips, interactive CTAs, document upload priority table, sticky step navigation, and 3-tier pricing section
 - [x] **Legal Framework page** — Verified NOT deleted. All 8 states + Commonwealth present with expandable legislation sections
 - [x] **Mobile responsive** — Verified on iPhone viewport (390px) for How It Works, Forms, and Legal Framework pages
-- [x] **Testing**: iterations 49-52 — 100% pass across all features
+- [x] **Testing**: iterations 49-53 — 100% pass across all features
+
+### Expanded Content & Features (Mar 2026) ✅
+- [x] **Legal Framework page** — Expanded from ~5 laws per state to comprehensive listings:
+  - NSW: 20 acts (Crimes, Drug Misuse, Bail, Evidence, Criminal Appeal, Mental Health, Summary Offences, Road Transport, Children, Terrorism, etc.)
+  - VIC: 16 acts | QLD: 14 acts | SA: 13 acts | WA: 12 acts | TAS: 11 acts | NT: 11 acts | ACT: 12 acts | CTH: 12 acts
+  - All links open to official government legislation websites in new tab
+- [x] **How It Works page** — Now 7 steps including:
+  - Step 3: "Find Grounds — FREE" (AI identifies how many grounds exist)
+  - Step 4: "Investigate Grounds — $99 AUD" (detailed legal analysis of each ground)
+  - "What You Get for $99" section with 6 value items
+- [x] **Print buttons** — Added to ALL CaseDetail tabs (Timeline, Grounds, Notes, Progress)
+- [x] **Form downloads** — Fixed with iOS Safari fallback and toast notifications
 
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
