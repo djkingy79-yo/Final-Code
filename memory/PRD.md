@@ -859,3 +859,13 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Progress indicator shows "AI Scan in Progress — Analysing Case Progress" during generation
 - [x] **DO NOT UNDO comments** — Added to all new code sections
 - [x] **Testing**: iteration_57 — 100% backend + 100% frontend code verification
+
+### Caselaw Search Box + Delete Ground Fix (Mar 2026) ✅
+- [x] **Caselaw search box for EVERY ground** — Each ground now has its own independent "Search" button
+  - Uses per-ground state `searchOpen = {}` (object) so ALL grounds can have search boxes open simultaneously
+  - Search box opens AustLII with the ground's title as default query
+  - Custom search terms can be entered per ground
+  - `data-testid="search-box-{ground_id}"` for each
+- [x] **Delete ground button now visible on mobile** — Changed from ghost (invisible) to destructive with bg-red-600
+- [x] **DO NOT UNDO comments** added to all new code sections
+- [x] **Testing**: iteration_58 — 100% backend (15/15) + 100% frontend code verification
