@@ -499,7 +499,8 @@ const CaseDetail = ({ user }) => {
       setProgressAnalysis(response.data);
       toast.success("Progress analysis generated");
     } catch (error) {
-      toast.error("Failed to generate progress analysis");
+      console.error("Progress analysis error:", error);
+      toast.error(error?.response?.data?.detail || "Failed to generate progress analysis. Please try again.");
     } finally {
       setGeneratingProgress(false);
     }

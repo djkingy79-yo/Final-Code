@@ -3710,7 +3710,8 @@ IMPORTANT:
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a PAID Full Detailed Report ($150 AUD). This must be as detailed as the extensive tier, with assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible."""
+You are generating a PAID Full Detailed Report ($150 AUD). This must be as detailed as the extensive tier, with assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
         user_prompt = f"""Create a FULL DETAILED LEGAL ANALYSIS REPORT for this {category_name.lower()} appeal case.
 
 {case_context}
@@ -3860,7 +3861,9 @@ CRITICAL REQUIREMENTS FOR THIS TIER:
 11. Include a COMPLETE BARRISTER CONFERENCE PACK — this is what makes this report worth $200.
 12. Include FULL DRAFT WRITTEN SUBMISSIONS ready for filing.
 13. Include COMPLETE ORAL ARGUMENT SCRIPTS for each ground.
-14. Include COMPLETE DRAFT NOTICE OF APPEAL with all grounds numbered."""
+14. Include COMPLETE DRAFT NOTICE OF APPEAL with all grounds numbered.
+15. ABSOLUTELY NO PLACEHOLDER TEXT. Never write descriptions in parentheses like '(Entries will develop...)' or '(Expanded description...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with multiple paragraphs of actual legal analysis.
+16. Each section must contain a MINIMUM of 300 words of real content."""
         user_prompt = f"""Create the MOST COMPREHENSIVE EXTENSIVE LOG REPORT possible for this {category_name.lower()} appeal case.
 
 {case_context}
@@ -4039,7 +4042,30 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
                 system_message=system_prompt
             ).with_model("openai", model_name)
             
-            response = await chat.send_message(UserMessage(text=user_prompt))
+            # For extensive_log, split into 3 API calls for full content
+            if report_type == "extensive_log":
+                part1_prompt = user_prompt + "\n\nIMPORTANT: Generate ONLY sections 1 through 9 now. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs, tables where specified, and specific details. Do NOT include sections 10-25 yet."
+                part1 = await chat.send_message(UserMessage(text=part1_prompt))
+                
+                chat2 = LlmChat(
+                    api_key=api_key,
+                    session_id=f"report2_{case_id}_{uuid.uuid4().hex[:8]}",
+                    system_message=system_prompt
+                ).with_model("openai", model_name)
+                part2_prompt = user_prompt + f"\n\nYou have already generated sections 1-9. Now generate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT repeat sections 1-9.\n\nHere is a summary of what was already covered in Part 1 (sections 1-9):\n{part1[:500]}"
+                part2 = await chat2.send_message(UserMessage(text=part2_prompt))
+                
+                chat3 = LlmChat(
+                    api_key=api_key,
+                    session_id=f"report3_{case_id}_{uuid.uuid4().hex[:8]}",
+                    system_message=system_prompt
+                ).with_model("openai", model_name)
+                part3_prompt = user_prompt + f"\n\nYou have already generated sections 1-18. Now generate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT repeat any earlier sections."
+                part3 = await chat3.send_message(UserMessage(text=part3_prompt))
+                
+                response = part1 + "\n\n" + part2 + "\n\n" + part3
+            else:
+                response = await chat.send_message(UserMessage(text=user_prompt))
             
             # Verify response has sufficient content for paid reports
             if report_type != "quick_summary" and len(response) < 2000:
