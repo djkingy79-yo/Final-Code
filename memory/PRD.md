@@ -881,3 +881,14 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Comparative sentencing expanded to 15+ cases with detailed outcome analysis
   - This is the premium differentiator — actual filing-ready documents
 - [x] **Testing**: iteration_59 — 100% backend (9/9) + all code review verified
+
+### Report Links Fix + Report Quality Upgrade (Mar 2026) ✅
+- [x] **All report links now clickable** — Fixed across all 5 components rendering markdown:
+  - ReportView.jsx, BarristerView.jsx, ReportsSection.jsx, GroundsOfMerit.jsx, CaseDetail.jsx
+  - All links: blue + underlined + open in new tab + security attributes
+  - GroundsOfMerit.jsx formatAnalysis completely rewritten from plain-text to ReactMarkdown
+- [x] **Extensive Log report split into 3 API calls** — Sections 1-9, 10-18, 19-25 generated separately to avoid placeholder text
+  - Anti-placeholder instructions added: "NEVER write descriptions in parentheses"
+  - Each section required to have minimum 300 words of real content
+- [x] **Full Detailed report also upgraded** with anti-placeholder instructions
+- [x] **Testing**: iteration_60 — 100% (13/13 code verification tests)
