@@ -892,3 +892,15 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Each section required to have minimum 300 words of real content
 - [x] **Full Detailed report also upgraded** with anti-placeholder instructions
 - [x] **Testing**: iteration_60 — 100% (13/13 code verification tests)
+
+### PayID Payments + Full Regression (Mar 2026) ✅
+- [x] **PayID backend endpoints implemented** — POST /api/payments/payid/create-reference and POST /api/payments/payid/verify
+  - Generates unique ACM-XXXXXXXX reference for bank transfers
+  - Auto-grants feature access after payment confirmation
+- [x] **PayPal endpoint path fixed** in PaymentModal.jsx — was calling wrong path
+- [x] **PayID MongoDB bug fixed** — was inserting with _id: None causing duplicate key errors
+- [x] **Full regression test passed** — iteration_62: 17/17 backend + 100% mobile UI
+  - All CRUD operations: create/read/update/delete cases, reports
+  - All AI features: progress analysis, report generation
+  - All payment flows: PayPal redirect + PayID reference
+  - All mobile UI: login, dashboard, tabs, delete buttons, floating buttons
