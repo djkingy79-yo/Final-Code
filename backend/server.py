@@ -4758,7 +4758,16 @@ async def root():
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+    try:
+        await db.command("ping")
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    return {
+        "status": "healthy" if db_status == "connected" else "degraded",
+        "database": db_status,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
