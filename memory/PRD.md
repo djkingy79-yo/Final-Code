@@ -834,7 +834,13 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Was invisible on gradient backgrounds (text-white/70 on dark gradient)
   - Now renders as a clear red circle with white trash icon
   - Added data-testid for each button
+- [x] **Delete case button on Dashboard** — Changed from hidden dropdown menu to visible red trash button on case card
+  - Was inside a 3-dot dropdown menu that was hard to find on mobile
+  - Now renders as direct red trash button on each case card
+- [x] **Delete case button on CaseDetail** — Changed from ghost to destructive variant with full "Delete Case" text
+  - Was ghost variant with hidden text on mobile (only tiny icon visible)
+  - Now renders as solid red button with icon + "Delete Case" text always visible
 - [x] **Report generation progress indicator** — Blue card with spinner + animated progress bar during generation
   - Shows message: "AI is analysing your case. Please allow time for generation."
   - Reminds user: "This can take 1-3 minutes for detailed reports. Do not close this page."
-- [x] **Testing**: iteration_55 — 100% backend + 100% frontend
+- [x] **Testing**: iterations 55-56 — 100% backend (10/10) + 100% frontend
