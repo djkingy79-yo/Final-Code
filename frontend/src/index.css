@@ -250,6 +250,379 @@ code, .mono {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   LEGAL REPORT MARKDOWN STYLES — Professional legal document formatting
+   Applied via .legal-report wrapper on all ReactMarkdown containers
+   DO NOT UNDO — This stylesheet is critical for report presentation
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.legal-report {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: #1e293b;
+}
+
+.legal-report h1 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #1e3a8a;
+  letter-spacing: -0.01em;
+}
+
+.legal-report h2 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 1.75rem 0 0.6rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.legal-report h3 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.legal-report h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 1.25rem 0 0.4rem;
+}
+
+.legal-report p {
+  margin-bottom: 0.85rem;
+  color: #334155;
+  line-height: 1.85;
+}
+
+.legal-report strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.legal-report em {
+  font-style: italic;
+  color: #475569;
+}
+
+/* Links — Clickable, distinct, and professional */
+.legal-report a {
+  color: #1e40af;
+  text-decoration: underline;
+  text-decoration-color: #93c5fd;
+  text-underline-offset: 2px;
+  font-weight: 500;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+.legal-report a:hover {
+  color: #1e3a8a;
+  text-decoration-color: #1e3a8a;
+}
+
+.legal-report a:visited {
+  color: #4338ca;
+}
+
+/* Lists — Clear structure with proper indentation */
+.legal-report ul {
+  list-style: disc;
+  padding-left: 1.75rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.legal-report ol {
+  list-style: decimal;
+  padding-left: 1.75rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.legal-report li {
+  margin-bottom: 0.4rem;
+  line-height: 1.75;
+  color: #334155;
+}
+
+.legal-report li::marker {
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.legal-report ul ul,
+.legal-report ol ol,
+.legal-report ul ol,
+.legal-report ol ul {
+  margin: 0.35rem 0 0.5rem;
+}
+
+/* Tables — Full professional legal formatting */
+.legal-report table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.92rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.legal-report thead {
+  background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+}
+
+.legal-report thead th {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid #1e3a8a;
+}
+
+.legal-report tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.15s;
+}
+
+.legal-report tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.legal-report tbody tr:hover {
+  background-color: #eff6ff;
+}
+
+.legal-report tbody td {
+  padding: 0.65rem 1rem;
+  vertical-align: top;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.legal-report tbody td:first-child {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Blockquotes — Legal citation styling */
+.legal-report blockquote {
+  border-left: 4px solid #1e3a8a;
+  background: #f8fafc;
+  margin: 1rem 0;
+  padding: 0.85rem 1.25rem;
+  font-style: italic;
+  color: #475569;
+  border-radius: 0 6px 6px 0;
+}
+
+.legal-report blockquote p {
+  margin-bottom: 0.25rem;
+}
+
+/* Code blocks */
+.legal-report code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f1f5f9;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+}
+
+.legal-report pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+
+.legal-report pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Horizontal rules */
+.legal-report hr {
+  border: none;
+  border-top: 2px solid #cbd5e1;
+  margin: 2rem 0;
+}
+
+/* Table responsive wrapper */
+.legal-report-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1rem 0;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.legal-report-table-wrap table {
+  border: none;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Dark mode overrides */
+.dark .legal-report {
+  color: #e2e8f0;
+}
+
+.dark .legal-report h1,
+.dark .legal-report h2,
+.dark .legal-report h3 {
+  color: #f1f5f9;
+}
+
+.dark .legal-report h1 {
+  border-bottom-color: #3b82f6;
+}
+
+.dark .legal-report h2 {
+  border-bottom-color: #475569;
+}
+
+.dark .legal-report p,
+.dark .legal-report li,
+.dark .legal-report td {
+  color: #cbd5e1;
+}
+
+.dark .legal-report strong {
+  color: #f1f5f9;
+}
+
+.dark .legal-report a {
+  color: #60a5fa;
+  text-decoration-color: #3b82f6;
+}
+
+.dark .legal-report a:hover {
+  color: #93c5fd;
+}
+
+.dark .legal-report thead {
+  background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+}
+
+.dark .legal-report thead th {
+  color: #ffffff;
+}
+
+.dark .legal-report tbody tr:nth-child(even) {
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+.dark .legal-report tbody tr:hover {
+  background-color: rgba(30, 58, 138, 0.2);
+}
+
+.dark .legal-report tbody td:first-child {
+  color: #e2e8f0;
+}
+
+.dark .legal-report blockquote {
+  background: rgba(30, 41, 59, 0.5);
+  border-left-color: #3b82f6;
+  color: #94a3b8;
+}
+
+.dark .legal-report code {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+.dark .legal-report table {
+  border-color: #475569;
+}
+
+.dark .legal-report tbody tr {
+  border-bottom-color: #334155;
+}
+
+/* Print styles for legal reports */
+@media print {
+  .legal-report {
+    color: black !important;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+
+  .legal-report h1 {
+    font-size: 16pt;
+    border-bottom-color: #000 !important;
+    color: black !important;
+  }
+
+  .legal-report h2 {
+    font-size: 13pt;
+    border-bottom-color: #666 !important;
+    color: black !important;
+  }
+
+  .legal-report h3 {
+    font-size: 11.5pt;
+    color: black !important;
+  }
+
+  .legal-report p,
+  .legal-report li,
+  .legal-report td {
+    color: black !important;
+  }
+
+  .legal-report a {
+    color: #1e3a8a !important;
+    text-decoration: underline !important;
+  }
+
+  .legal-report thead {
+    background: #e5e7eb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .legal-report thead th {
+    color: black !important;
+    background: #e5e7eb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .legal-report tbody tr:nth-child(even) {
+    background: #f8fafc !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .legal-report table {
+    page-break-inside: auto;
+  }
+
+  .legal-report tr {
+    page-break-inside: avoid;
+  }
+}
+
 /* Loading animation */
 @keyframes pulse-subtle {
   0%, 100% { opacity: 1; }

@@ -60,12 +60,12 @@ const parseAnalysisSections = (analysis = "") => {
   lines.forEach((line) => {
     const trimmed = line.trim();
     const markdownHeader = trimmed.match(/^#{1,3}\s+(.+)$/);
-    const numberedHeader = trimmed.match(/^(?:\d{1,2}|[IVX]{1,5})[.)]\s+(.+)$/i);
-    const boldHeader = trimmed.match(/^\*\*([^*]+)\*\*$/);
+    // Only match standalone bold lines that look like section titles (short, no other text)
+    const boldHeader = trimmed.length < 80 && trimmed.match(/^\*\*([^*]{4,70})\*\*$/);
 
-    if (markdownHeader || numberedHeader || boldHeader) {
+    if (markdownHeader || boldHeader) {
       pushSection();
-      currentTitle = (markdownHeader?.[1] || numberedHeader?.[1] || boldHeader?.[1] || "Analysis")
+      currentTitle = (markdownHeader?.[1] || boldHeader?.[1] || "Analysis")
         .replace(/[\-:]+$/, "")
         .trim();
       currentLines = [];
@@ -80,30 +80,23 @@ const parseAnalysisSections = (analysis = "") => {
 };
 
 const MarkdownBlock = ({ text, testId }) => (
-  <ReactMarkdown
-    remarkPlugins={[remarkGfm]}
-    components={{
-      h1: ({ children }) => <h1 className="text-xl font-bold mt-6 mb-3 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{children}</h1>,
-      h2: ({ children }) => <h2 className="text-lg font-bold mt-5 mb-3 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{children}</h2>,
-      h3: ({ children }) => <h3 className="text-base font-semibold mt-4 mb-2 text-slate-900">{children}</h3>,
-      p: ({ children }) => <p className="text-slate-700 leading-7 mb-3">{children}</p>,
-      ul: ({ children }) => <ul className="list-disc ml-5 mb-3 space-y-1 text-slate-700">{children}</ul>,
-      ol: ({ children }) => <ol className="list-decimal ml-5 mb-3 space-y-1 text-slate-700">{children}</ol>,
-      li: ({ children }) => <li className="leading-7">{children}</li>,
-      blockquote: ({ children }) => <blockquote className="border-l-4 border-indigo-300 pl-4 italic text-slate-700 my-3">{children}</blockquote>,
-      table: ({ children }) => (
-        <div className="overflow-x-auto rounded-lg border border-slate-200 my-4" data-testid={`${testId}-table-wrapper`}>
-          <table className="min-w-full text-sm">{children}</table>
-        </div>
-      ),
-      thead: ({ children }) => <thead className="bg-slate-100">{children}</thead>,
-      th: ({ children }) => <th className="px-3 py-2 text-left font-semibold text-slate-800 border-b border-slate-200">{children}</th>,
-      td: ({ children }) => <td className="px-3 py-2 align-top text-slate-700 border-b border-slate-100">{children}</td>,
-      code: ({ children }) => <code className="text-xs bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">{children}</code>,
-    }}
-  >
-    {text}
-  </ReactMarkdown>
+  <div className="legal-report" data-testid={testId}>
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        a: ({ href, children }) => (
+          <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+        ),
+        table: ({ children }) => (
+          <div className="legal-report-table-wrap" data-testid={`${testId}-table-wrapper`}>
+            <table>{children}</table>
+          </div>
+        ),
+      }}
+    >
+      {text}
+    </ReactMarkdown>
+  </div>
 );
 
 const ReportView = () => {

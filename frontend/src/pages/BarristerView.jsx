@@ -1066,28 +1066,16 @@ const BarristerView = ({ user }) => {
                     </div>
                     {/* DO NOT UNDO — Markdown rendering for Barrister View analysis sections */}
                     <div className="pl-4 sm:pl-12 border-l-2 border-slate-200 dark:border-slate-700">
-                      <div className="prose prose-slate prose-sm max-w-none dark:prose-invert" style={{ fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', lineHeight: '1.85' }}>
+                      <div className="legal-report">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
-                            h1: ({ children }) => <h2 className="text-xl font-bold mt-5 mb-3 text-slate-900 dark:text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>{children}</h2>,
-                            h2: ({ children }) => <h3 className="text-lg font-bold mt-4 mb-2 text-slate-900 dark:text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>{children}</h3>,
-                            h3: ({ children }) => <h4 className="text-base font-semibold mt-3 mb-2 text-slate-800 dark:text-slate-200">{children}</h4>,
-                            p: ({ children }) => <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-3" style={{ fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem', lineHeight: '1.85' }}>{children}</p>,
-                            ul: ({ children }) => <ul className="list-disc ml-5 mb-3 space-y-1 text-slate-700 dark:text-slate-300">{children}</ul>,
-                            ol: ({ children }) => <ol className="list-decimal ml-5 mb-3 space-y-1 text-slate-700 dark:text-slate-300">{children}</ol>,
-                            li: ({ children }) => <li className="leading-7">{children}</li>,
-                            blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-400 pl-4 italic text-slate-700 dark:text-slate-300 my-3">{children}</blockquote>,
-                            a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">{children}</a>,
+                            a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>,
                             table: ({ children }) => (
-                              <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700 my-4">
-                                <table className="min-w-full text-sm">{children}</table>
+                              <div className="legal-report-table-wrap">
+                                <table>{children}</table>
                               </div>
                             ),
-                            thead: ({ children }) => <thead className="bg-slate-100 dark:bg-slate-700">{children}</thead>,
-                            th: ({ children }) => <th className="px-3 py-2 text-left font-semibold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-slate-600">{children}</th>,
-                            td: ({ children }) => <td className="px-3 py-2 align-top text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700">{children}</td>,
-                            strong: ({ children }) => <strong className="font-bold text-slate-900 dark:text-white">{children}</strong>,
                           }}
                         >
                           {section.content}
