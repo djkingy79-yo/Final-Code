@@ -768,9 +768,19 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - `ReportView.jsx` — Full report page MarkdownBlock component
   - `ReportsSection.jsx` — Inline accordion report preview
   - `BarristerView.jsx` — Barrister presentation mode
-- [x] **Fixed section parser** — `parseAnalysisSections` no longer splits numbered list items into separate sections (removed false `numberedHeader` detection)
-- [x] **Removed dead `prose` classes** — `@tailwindcss/typography` was never installed, so `prose prose-slate` did nothing
-- [x] **Testing**: iteration_49 — 100% frontend pass, all tables/links/buttons verified
+- [x] **Redesigned ReportView.jsx** to match landing page style:
+  - Colour-coded gradient headers (green=Quick, blue=Full Detailed, purple=Extensive)
+  - Case overview grid (Defendant, Offence, Sentence, Documents, Timeline)
+  - Table of Contents bar with section count
+  - Section cards with coloured left borders and numbered circles
+  - UPPERCASE tracking-wide section headings
+  - Price badges and report type labels
+  - Not Legal Advice disclaimer footer
+- [x] **Redesigned ReportsSection.jsx** inline report cards:
+  - Colour-coded headers matching report type (green/blue/purple gradient)
+  - Price badges on report headers
+- [x] **Fixed section parser** — no longer splits numbered list items into separate sections
+- [x] **Testing**: iterations 49-50 — 100% frontend pass, all design/visual elements verified
 
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
