@@ -741,6 +741,18 @@ const CaseDetail = ({ user }) => {
 
           {/* Timeline Tab */}
           <TabsContent value="timeline" className="space-y-4">
+            {generatingTimeline && (
+              <div className="border border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 rounded-lg overflow-hidden p-4" data-testid="ai-timeline-progress">
+                <div className="flex items-center gap-3 mb-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-purple-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-purple-900 dark:text-purple-200">AI Scan in Progress — Generating Timeline</p>
+                </div>
+                <p className="text-xs text-purple-700 dark:text-purple-300 mb-3">Analysing your documents for dates and events. This may take 30-60 seconds.</p>
+                <div className="w-full h-2 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-purple-600 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            )}
             {timeline.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
                 <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -779,6 +791,30 @@ const CaseDetail = ({ user }) => {
 
           {/* Grounds of Merit Tab */}
           <TabsContent value="grounds" className="space-y-4">
+            {autoIdentifying && (
+              <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg overflow-hidden p-4" data-testid="ai-grounds-progress">
+                <div className="flex items-center gap-3 mb-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">AI Scan in Progress — Identifying Grounds of Appeal</p>
+                </div>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">Analysing your case documents for potential appeal grounds. Please allow time for this process.</p>
+                <div className="w-full h-2 bg-blue-200 dark:bg-blue-800 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            )}
+            {investigatingGround && (
+              <div className="border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800 rounded-lg overflow-hidden p-4" data-testid="ai-investigate-progress">
+                <div className="flex items-center gap-3 mb-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-green-600 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-green-900 dark:text-green-200">AI Scan in Progress — Deep Investigation</p>
+                </div>
+                <p className="text-xs text-green-700 dark:text-green-300 mb-3">Investigating this ground in detail. This can take up to 2-3 minutes for complex matters.</p>
+                <div className="w-full h-2 bg-green-200 dark:bg-green-800 rounded-full overflow-hidden">
+                  <div className="h-full w-3/4 bg-green-600 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            )}
             {grounds.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
                 <Gavel className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
