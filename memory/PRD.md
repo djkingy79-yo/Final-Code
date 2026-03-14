@@ -806,3 +806,7 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
+
+### Performance Optimisation (Mar 2026) ✅
+- [x] **Reduced all retry backoff delays** from 3-24 seconds to 1 second max across ALL AI endpoints
+- [x] **Lawyer Directory** — Already populated with all 8 states

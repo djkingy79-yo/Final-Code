@@ -1459,7 +1459,7 @@ Return ONLY a valid JSON array of timeline events. No other text."""
             logger.warning(f"Timeline generation attempt {attempt + 1} failed: {e}")
             if attempt < 3:
                 import asyncio
-                await asyncio.sleep(3 * (2 ** attempt))
+                await asyncio.sleep(1)
     
     if response is None:
         logger.error(f"All timeline generation attempts failed: {last_error}")
@@ -1615,7 +1615,7 @@ Provide a comprehensive analysis identifying gaps, inconsistencies, and appeal-r
         except Exception as e:
             last_error = e
             if attempt < 2:
-                await asyncio.sleep(2 ** attempt)
+                await asyncio.sleep(1)
     else:
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
     
@@ -2075,7 +2075,7 @@ Return JSON:
         except Exception as e:
             last_error = e
             if attempt < 2:
-                await asyncio.sleep(2 ** attempt)
+                await asyncio.sleep(1)
     else:
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
     
@@ -3022,7 +3022,7 @@ REQUIRED ANALYSIS (search the documents above for evidence):
             logger.warning(f"Ground investigation attempt {attempt + 1} failed: {e}")
             if attempt < 2:
                 import asyncio
-                await asyncio.sleep(2)
+                await asyncio.sleep(1)
     
     if response is None:
         logger.error(f"All ground investigation attempts failed: {last_error}")
@@ -3270,8 +3270,7 @@ BE THOROUGH. Identify ALL potential grounds. The appellant's freedom may depend 
             logger.warning(f"Auto-identify attempt {attempt + 1} failed: {e}")
             if attempt < 3:
                 import asyncio
-                # Exponential backoff: 3, 6, 12 seconds
-                await asyncio.sleep(3 * (2 ** attempt))
+                await asyncio.sleep(1)
     
     if response is None:
         logger.error(f"All auto-identify attempts failed: {last_error}")
@@ -4034,7 +4033,7 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
             logger.warning(f"Report generation attempt {attempt + 1} failed with {model_name}: {e}")
             if attempt < 3:
                 import asyncio
-                await asyncio.sleep(3 * (attempt + 1))
+                await asyncio.sleep(1)
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
