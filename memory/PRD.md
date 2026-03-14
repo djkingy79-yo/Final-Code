@@ -780,7 +780,12 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Colour-coded headers matching report type (green/blue/purple gradient)
   - Price badges on report headers
 - [x] **Fixed section parser** — no longer splits numbered list items into separate sections
-- [x] **Testing**: iterations 49-50 — 100% frontend pass, all design/visual elements verified
+- [x] **Testing**: iterations 49-51 — 100% pass, all design/visual/API elements verified
+
+### Bug Fixes (Mar 2026) ✅
+- [x] **Delete Case button** — Added to CaseDetail.jsx header with red styling, confirmation dialog, and redirect to dashboard after deletion
+- [x] **Print CSS** — Added `-webkit-print-color-adjust: exact` for gradient headers, TOC bar, and section borders in print mode
+- [x] **Report sections verified** — All 8 sections render (Executive Summary, Grounds, Sentencing Table, Legislation, Next Steps, Strategic Advice, Filing Guide, Appeal Forms)
 
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
