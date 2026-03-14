@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Badge } from "../components/ui/badge";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { toast } from "sonner";
 import PageCTA from "../components/PageCTA";
 import {
   Accordion,
@@ -113,23 +114,34 @@ const FormTemplates = () => {
   const [expandedCategories, setExpandedCategories] = useState(["appeal", "authority"]);
 
   const handleDownload = (formId, stateName) => {
-    // Generate and download the form template
     const form = FORM_CATEGORIES.flatMap(c => c.forms).find(f => f.id === formId);
     if (!form) return;
     
-    // Create a simple template document
     const content = generateFormTemplate(form, stateName);
-    
-    // Create blob and download
     const blob = new Blob([content], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${formId}-${stateName.toLowerCase().replace(/\s+/g, '-')}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    
+    // iOS Safari doesn't support blob downloads — open in new tab instead
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const win = window.open(url, '_blank');
+      if (!win) {
+        toast.error("Please allow popups to download forms");
+      } else {
+        toast.success(`${form.name} (${stateName}) opened — use Share > Save to Files`);
+      }
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${formId}-${stateName.toLowerCase().replace(/\s+/g, '-')}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success(`Downloading ${form.name} (${stateName})`);
+    }
+    
+    // Delay URL revocation to ensure download completes
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   };
 
   const generateFormTemplate = (form, stateName) => {

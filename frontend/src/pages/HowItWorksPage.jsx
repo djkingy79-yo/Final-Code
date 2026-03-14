@@ -17,60 +17,255 @@ import {
   PlayCircle,
   Sparkles,
   ChevronRight,
+  ChevronDown,
+  FolderPlus,
+  FileText,
+  Brain,
+  BarChart3,
+  Printer,
+  Eye,
+  Shield,
+  Clock,
+  AlertTriangle,
+  CheckCircle2,
+  Gavel,
+  BookOpen,
+  MousePointerClick,
+  ArrowRight,
+  ListChecks,
+  Download,
+  Zap,
 } from "lucide-react";
 
 const HowItWorksPage = () => {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
-  const flowSteps = [
+  const detailedSteps = [
     {
+      num: 1,
+      icon: FolderPlus,
+      title: "Create Your Case",
+      subtitle: "Set up your appeal case in under 2 minutes",
+      color: "bg-blue-600",
+      lightColor: "bg-blue-50 dark:bg-blue-900/20",
+      borderColor: "border-blue-200 dark:border-blue-800",
+      textColor: "text-blue-600",
+      description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
+      whatYouSee: [
+        "A clean form asking for: Case title, Defendant name, Court, State/Territory",
+        "Dropdown to select the offence category (Homicide, Assault, Drug Offences, etc.)",
+        "Optional fields for case number, judge name, and brief summary",
+        "Click 'Create Case' and you're taken straight to your case workspace",
+      ],
+      proTips: [
+        "Use the official case citation as the title (e.g., 'R v Smith [2024] NSWCCA 142')",
+        "Select the correct state — this affects which legislation is referenced in reports",
+        "Add a brief summary of the key facts — this helps the AI generate better analysis",
+      ],
+      interactive: {
+        label: "Try it now",
+        text: "Go to your Dashboard and click 'New Case' to start",
+        link: "/dashboard",
+        btnText: "Go to Dashboard",
+      },
+    },
+    {
+      num: 2,
       icon: Upload,
-      title: "1. Upload your case material",
-      desc: "Add transcripts, exhibits, sentencing remarks, briefs, and timeline records.",
+      title: "Upload Case Documents",
+      subtitle: "Drag and drop your transcripts, exhibits, and evidence",
+      color: "bg-emerald-600",
+      lightColor: "bg-emerald-50 dark:bg-emerald-900/20",
+      borderColor: "border-emerald-200 dark:border-emerald-800",
+      textColor: "text-emerald-600",
+      description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
+      whatYouSee: [
+        "A drag-and-drop upload area — drop multiple files at once",
+        "Support for PDF, DOCX, TXT, JPG, and PNG files",
+        "OCR processing indicator — scanned documents are automatically converted to text",
+        "Document list showing file name, type, size, and upload date",
+        "Click any document to view its contents",
+      ],
+      proTips: [
+        "Upload sentencing remarks FIRST — these are the most important for appeal analysis",
+        "Include the trial transcript, judge's directions to jury, and any expert reports",
+        "Police briefs, witness statements, and CCTV evidence summaries are also valuable",
+        "The more documents you upload, the more detailed and accurate the AI analysis will be",
+      ],
+      whatToUpload: [
+        { name: "Sentencing Remarks", priority: "ESSENTIAL", desc: "The judge's reasons for sentence" },
+        { name: "Trial Transcript", priority: "ESSENTIAL", desc: "Full record of what was said at trial" },
+        { name: "Judge's Directions", priority: "HIGH", desc: "Instructions given to the jury" },
+        { name: "Expert Reports", priority: "HIGH", desc: "Psychiatric, forensic, or other expert evidence" },
+        { name: "Police Brief", priority: "MEDIUM", desc: "Summary of the prosecution case" },
+        { name: "Witness Statements", priority: "MEDIUM", desc: "Statements from witnesses" },
+        { name: "Exhibits", priority: "USEFUL", desc: "Photos, documents, physical evidence records" },
+      ],
     },
     {
-      icon: Search,
-      title: "2. Analyse grounds and legal issues",
-      desc: "AI highlights potential grounds, legal pressure points, and strategic pathways.",
+      num: 3,
+      icon: Brain,
+      title: "AI Analyses Your Case",
+      subtitle: "The system identifies grounds for appeal, legal issues, and strategy",
+      color: "bg-purple-600",
+      lightColor: "bg-purple-50 dark:bg-purple-900/20",
+      borderColor: "border-purple-200 dark:border-purple-800",
+      textColor: "text-purple-600",
+      description: "Click 'Investigate Grounds' in the Reports tab. The AI reads all your documents, cross-references Australian legislation, and identifies potential appeal grounds.",
+      whatYouSee: [
+        "A list of identified appeal grounds with strength ratings (Strong, Moderate, Weak)",
+        "Each ground includes: legal basis, relevant legislation, supporting evidence from your documents",
+        "Timeline of key events automatically extracted from your case materials",
+        "Cross-references to similar cases and their outcomes",
+      ],
+      proTips: [
+        "Let the analysis complete fully — it may take 1-3 minutes for complex cases",
+        "Review each ground carefully — the AI identifies issues you may have missed",
+        "You can add your own grounds manually if you've identified issues the AI didn't catch",
+        "Use the Timeline tab to verify the AI has the chronology correct",
+      ],
+      interactive: {
+        label: "What gets analysed",
+        items: [
+          "Jury misdirections and procedural errors",
+          "Improperly admitted or excluded evidence",
+          "Sentencing errors and manifest excess",
+          "Ineffective legal representation",
+          "Fresh or new evidence possibilities",
+          "Prosecutorial misconduct",
+        ],
+      },
     },
     {
+      num: 4,
       icon: FileCheck,
-      title: "3. Generate premium reports",
-      desc: "Create report tiers with structure, precedents, and court-ready planning detail.",
+      title: "Generate Premium Reports",
+      subtitle: "Choose your report tier — from quick overview to barrister-level depth",
+      color: "bg-red-600",
+      lightColor: "bg-red-50 dark:bg-red-900/20",
+      borderColor: "border-red-200 dark:border-red-800",
+      textColor: "text-red-600",
+      description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
+      whatYouSee: [
+        "Three report tiers to choose from (see pricing below)",
+        "Each report generates with professional formatting: tables, links, case citations",
+        "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice, Filing Guide",
+        "Reports can be exported as PDF, Word document, or printed directly",
+      ],
+      proTips: [
+        "Start with the FREE Quick Summary to get an overview before committing to a paid report",
+        "Full Detailed Reports include legislation links and comparative sentencing tables",
+        "Extensive Log Reports are designed to be handed directly to a barrister",
+        "Use 'Aggressive Mode' for maximum detail and length in your report",
+      ],
     },
     {
+      num: 5,
       icon: Presentation,
-      title: "4. Present in Barrister View",
-      desc: "Use hearing-focused layouts, strategy summaries, and printable legal briefing format.",
+      title: "Present in Barrister View",
+      subtitle: "Court-ready presentation format for legal professionals",
+      color: "bg-slate-700",
+      lightColor: "bg-slate-50 dark:bg-slate-800/50",
+      borderColor: "border-slate-200 dark:border-slate-700",
+      textColor: "text-slate-700 dark:text-slate-300",
+      description: "Click 'Barrister View' on any report to see a clean, professional presentation layout designed for legal consultations and court preparation.",
+      whatYouSee: [
+        "Professional layout with expandable sections for each part of the analysis",
+        "Clean typography using Crimson Pro serif font — looks like a proper legal brief",
+        "Tables with formatted headers for sentencing comparisons and case law",
+        "Print button to create hard copies, PDF export, and Word document export",
+        "All legislation links are clickable and open to official government sources",
+      ],
+      proTips: [
+        "Print the Barrister View to take to a legal consultation",
+        "Export as Word to allow your lawyer to edit and add their own notes",
+        "The Barrister View is designed to impress — use it when presenting your case",
+      ],
+    },
+    {
+      num: 6,
+      icon: ListChecks,
+      title: "Track Progress & Take Action",
+      subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
+      color: "bg-amber-600",
+      lightColor: "bg-amber-50 dark:bg-amber-900/20",
+      borderColor: "border-amber-200 dark:border-amber-800",
+      textColor: "text-amber-600",
+      description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
+      whatYouSee: [
+        "Deadline Tracker — shows key dates and how many days remain",
+        "Appeal Checklist — step-by-step list of everything you need to do",
+        "Notes section — add your own observations, questions for your lawyer, and reminders",
+        "Case comparison tool — see how your case compares to similar appeals",
+      ],
+      proTips: [
+        "Set your conviction/sentence date immediately — all deadlines calculate from this",
+        "Check off steps as you complete them so you don't miss anything",
+        "Use Notes to track communications with your lawyer and key decisions",
+      ],
+      interactive: {
+        label: "Critical deadlines",
+        items: [
+          "28 days — File Notice of Intention to Appeal",
+          "3 months — Lodge detailed Grounds of Appeal (varies by state)",
+          "Request transcripts ASAP — they can take weeks to prepare",
+          "Apply for Legal Aid early if you need financial assistance",
+        ],
+      },
     },
   ];
 
   const reportPricing = [
     {
       title: "Quick Summary",
-      price: "Free",
-      note: "Fast overview, early issue spotting, immediate next actions.",
-      tone: "border-blue-200 bg-blue-50 dark:bg-blue-900/20",
+      price: "FREE",
+      color: "from-emerald-600 to-green-500",
+      badge: "bg-green-500",
+      features: [
+        "Fast overview of potential appeal grounds",
+        "Early issue spotting from uploaded documents",
+        "Basic recommendations and immediate next actions",
+        "Good starting point before investing in full analysis",
+      ],
     },
     {
       title: "Full Detailed Report",
       price: "$150 AUD",
-      note: "Premium legal analysis with strategic framing and filing guidance.",
-      tone: "border-blue-300 bg-blue-50 dark:bg-blue-900/20",
+      color: "from-slate-900 to-blue-900",
+      badge: "bg-blue-500",
+      popular: true,
+      features: [
+        "Comprehensive analysis of all potential grounds",
+        "Comparative sentencing tables with similar cases",
+        "Direct links to relevant Australian legislation",
+        "Strategic advice and risk assessment",
+        "Step-by-step filing guide with forms",
+        "Recommended next steps with deadlines",
+      ],
     },
     {
       title: "Extensive Log Report",
       price: "$200 AUD",
-      note: "Barrister-level depth with comparative sentencing and options matrix.",
-      tone: "border-blue-300 bg-blue-50 dark:bg-blue-900/20",
+      color: "from-purple-900 via-slate-900 to-indigo-900",
+      badge: "bg-purple-500",
+      features: [
+        "Everything in Full Detailed, plus:",
+        "Barrister-level depth and analysis",
+        "Detailed options matrix with probability assessments",
+        "Extended case law comparisons with AustLII links",
+        "Complete evidence gap analysis",
+        "Court-ready presentation format",
+        "Plain-English summary for non-lawyers",
+      ],
     },
   ];
 
   return (
     <div className="min-h-screen bg-background" style={{ fontFamily: "Manrope, sans-serif" }}>
       <header className="bg-gradient-to-r from-black via-slate-950 to-blue-950 sticky top-0 z-50 border-b border-blue-900/40">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
@@ -79,127 +274,303 @@ const HowItWorksPage = () => {
               Appeal Case Manager
             </span>
           </Link>
-
           <div className="hidden md:flex items-center gap-4">
             <Link to="/how-to-use" className="text-slate-400 hover:text-white text-sm transition-colors">How To Use</Link>
-            <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Resources</Link>
-            <Link to="/appeal-statistics" className="text-slate-400 hover:text-white text-sm transition-colors">Statistics</Link>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              data-testid="how-it-works-theme-toggle"
-            >
+            <Link to="/legal-framework" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Framework</Link>
+            <Link to="/forms" className="text-slate-400 hover:text-white text-sm transition-colors">Forms</Link>
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors" data-testid="how-it-works-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <Link to="/">
               <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg" data-testid="how-it-works-back-btn">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                <ArrowLeft className="w-4 h-4 mr-2" /> Back
               </Button>
             </Link>
           </div>
-
           <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="how-it-works-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/how-to-use" className="block py-2 text-slate-300 hover:text-white">How To Use</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Legal Resources</Link>
-            <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white">Statistics</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
+            <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
             <Link to="/" className="block py-2 text-blue-400 hover:text-blue-300">Back to Home</Link>
           </div>
         )}
       </header>
 
-      <section className="py-14 px-6 bg-gradient-to-b from-black via-slate-950 to-blue-950 text-white">
+      {/* Hero */}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gradient-to-b from-black via-slate-950 to-blue-950 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
               <PlayCircle className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3" style={{ fontFamily: "Crimson Pro, serif" }}>
-            How It Works — See It In Action
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-title">
+            How It Works — Step by Step
           </h1>
-          <p className="text-slate-300 max-w-3xl mx-auto text-base md:text-lg" data-testid="how-it-works-hero-description">
-            Watch the full process from document upload to barrister-ready output, then choose the report tier that fits your case.
+          <p className="text-slate-300 max-w-3xl mx-auto text-base md:text-lg mb-6" data-testid="how-it-works-hero-description">
+            Follow this detailed guide to go from uploading your first document to having a barrister-ready appeal report. Every screen explained.
           </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <Clock className="w-4 h-4" /> 6 simple steps
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <Zap className="w-4 h-4" /> First report in under 10 minutes
+            </div>
+            <div className="flex items-center gap-2 text-sm text-slate-400">
+              <Shield className="w-4 h-4" /> Quick Summary is FREE
+            </div>
+          </div>
         </div>
       </section>
 
-      <main className="max-w-6xl mx-auto px-6 py-10 space-y-12">
-        <section className="text-center" data-testid="how-it-works-flow-heading">
-          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Process Flow</p>
-          <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
-            Follow the exact steps from upload to hearing-ready output
-          </h2>
-        </section>
+      {/* Step Navigation Tabs */}
+      <div className="sticky top-[72px] z-30 bg-white dark:bg-slate-900 border-b border-border shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 overflow-x-auto">
+          <div className="flex items-center gap-1 py-2 min-w-max">
+            {detailedSteps.map((step, idx) => {
+              const Icon = step.icon;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setActiveStep(idx);
+                    document.getElementById(`step-${idx}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                    activeStep === idx
+                      ? `${step.color} text-white`
+                      : "text-muted-foreground hover:bg-muted"
+                  }`}
+                  data-testid={`how-it-works-step-tab-${idx + 1}`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  Step {step.num}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
-        <section className="grid md:grid-cols-2 gap-6" data-testid="how-it-works-flow-grid">
-          {flowSteps.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.title} className="rounded-2xl border border-border bg-card p-5 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-red-600 dark:text-blue-400" />
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+        {/* DETAILED STEPS */}
+        {detailedSteps.map((step, idx) => {
+          const Icon = step.icon;
+          return (
+            <section
+              key={idx}
+              id={`step-${idx}`}
+              className={`rounded-2xl border ${step.borderColor} overflow-hidden scroll-mt-36`}
+              data-testid={`how-it-works-step-${idx + 1}`}
+            >
+              {/* Step Header */}
+              <div className={`bg-gradient-to-r ${step.color === "bg-blue-600" ? "from-blue-600 to-blue-500" : step.color === "bg-emerald-600" ? "from-emerald-600 to-green-500" : step.color === "bg-purple-600" ? "from-purple-600 to-indigo-500" : step.color === "bg-red-600" ? "from-red-600 to-red-500" : step.color === "bg-slate-700" ? "from-slate-700 to-slate-600" : "from-amber-600 to-amber-500"} text-white p-5 sm:p-6`}>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <h2 className="text-lg font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>{step.title}</h2>
+                  <div>
+                    <p className="text-xs uppercase tracking-wider opacity-70">Step {step.num} of 6</p>
+                    <h2 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "Crimson Pro, serif" }}>
+                      {step.title}
+                    </h2>
+                    <p className="text-sm opacity-80 mt-0.5">{step.subtitle}</p>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground">{step.desc}</p>
               </div>
-            );
-          })}
-        </section>
 
-        <section className="rounded-2xl border border-border bg-card p-6 text-center" data-testid="how-it-works-demo-section">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sparkles className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
-              See It In Action
+              <div className="p-5 sm:p-6 space-y-5 bg-card">
+                {/* Description */}
+                <p className="text-base text-foreground leading-relaxed" style={{ fontFamily: "Crimson Pro, serif" }}>
+                  {step.description}
+                </p>
+
+                {/* What You'll See */}
+                <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Eye className={`w-4 h-4 ${step.textColor}`} />
+                    <h3 className="font-bold text-foreground text-sm uppercase tracking-wide">What You'll See on Screen</h3>
+                  </div>
+                  <ul className="space-y-2.5">
+                    {step.whatYouSee.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <div className={`w-5 h-5 rounded-full ${step.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                          <span className="text-white text-xs font-bold">{i + 1}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* What to Upload (Step 2 only) */}
+                {step.whatToUpload && (
+                  <div className="border border-border rounded-xl overflow-hidden">
+                    <div className="bg-muted/50 px-4 py-3 border-b border-border">
+                      <h3 className="font-bold text-foreground text-sm uppercase tracking-wide flex items-center gap-2">
+                        <Upload className="w-4 h-4" /> Recommended Documents to Upload
+                      </h3>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {step.whatToUpload.map((doc, i) => (
+                        <div key={i} className="flex items-center justify-between px-4 py-3">
+                          <div>
+                            <span className="font-semibold text-foreground text-sm">{doc.name}</span>
+                            <p className="text-xs text-muted-foreground">{doc.desc}</p>
+                          </div>
+                          <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                            doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                            doc.priority === "HIGH" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" :
+                            doc.priority === "MEDIUM" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" :
+                            "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
+                          }`}>
+                            {doc.priority}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pro Tips */}
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <h3 className="font-bold text-foreground text-sm uppercase tracking-wide">Pro Tips</h3>
+                  </div>
+                  <ul className="space-y-2">
+                    {step.proTips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Interactive Element */}
+                {step.interactive?.link && (
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800 text-center">
+                    <MousePointerClick className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <p className="text-sm font-semibold text-foreground mb-1">{step.interactive.label}</p>
+                    <p className="text-xs text-muted-foreground mb-3">{step.interactive.text}</p>
+                    <Link to={step.interactive.link}>
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl" data-testid={`how-it-works-step-${idx + 1}-cta`}>
+                        {step.interactive.btnText} <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Interactive Analysis Items */}
+                {step.interactive?.items && (
+                  <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
+                    <p className="font-bold text-foreground text-sm uppercase tracking-wide mb-3">{step.interactive.label}</p>
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      {step.interactive.items.map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 border border-border">
+                          <Gavel className={`w-3.5 h-3.5 ${step.textColor} flex-shrink-0`} />
+                          <span className="text-xs text-foreground">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          );
+        })}
+
+        {/* REPORT PRICING */}
+        <section className="pt-4" data-testid="how-it-works-pricing-section">
+          <div className="text-center mb-8">
+            <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Report Pricing</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
+              Choose the right report for your needs
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground mb-4">
-            Use this page as your quick walkthrough before starting. You can still access the full detailed tutorial from the How To Use page.
-          </p>
-          <Link to="/how-to-use" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700" data-testid="how-it-works-full-tutorial-link">
-            Open full step-by-step tutorial
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </section>
 
-        <section className="rounded-2xl border border-border bg-card p-6 text-center" data-testid="how-it-works-pricing-section">
-          <h2 className="text-xl font-bold text-foreground mb-4" style={{ fontFamily: "Crimson Pro, serif" }}>
-            Report Prices
-          </h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-3 gap-5">
             {reportPricing.map((tier) => (
-              <div key={tier.title} className={`rounded-xl border p-4 ${tier.tone}`} data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}>
-                <p className="text-sm font-semibold text-foreground">{tier.title}</p>
-                <p className="text-2xl font-black text-foreground mt-1" style={{ fontFamily: "Crimson Pro, serif" }}>{tier.price}</p>
-                <p className="text-xs text-muted-foreground mt-2">{tier.note}</p>
+              <div
+                key={tier.title}
+                className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-border"} bg-card`}
+                data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
+              >
+                <div className={`bg-gradient-to-r ${tier.color} text-white p-5 text-center`}>
+                  {tier.popular && <span className="bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">MOST POPULAR</span>}
+                  <h3 className="text-lg font-bold">{tier.title}</h3>
+                  <p className="text-3xl font-black mt-1" style={{ fontFamily: "Crimson Pro, serif" }}>{tier.price}</p>
+                </div>
+                <div className="p-5">
+                  <ul className="space-y-2.5">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="rounded-2xl border-2 border-blue-300 bg-blue-50 dark:bg-blue-900/20 p-6 text-center" data-testid="how-it-works-start-case-section">
-          <h2 className="text-2xl font-bold text-foreground mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
-            Ready to begin?
+        {/* CTA */}
+        <section className="rounded-2xl border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 sm:p-8 text-center" data-testid="how-it-works-start-case-section">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
+            Ready to begin your appeal?
           </h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Start your case now and move through the exact workflow above.
+          <p className="text-sm text-muted-foreground mb-5 max-w-xl mx-auto">
+            Create your case, upload your documents, and get your first AI analysis in under 10 minutes. Your Quick Summary report is completely free.
           </p>
-          <Link to="/dashboard">
-            <Button className="bg-red-600 hover:bg-blue-700 text-white rounded-xl px-6" data-testid="how-it-works-start-case-btn">
-              Start Your Case Now
-            </Button>
-          </Link>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Link to="/dashboard">
+              <Button className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-6 h-11" data-testid="how-it-works-start-case-btn">
+                Start Your Case Now <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/forms">
+              <Button variant="outline" className="rounded-xl px-6 h-11" data-testid="how-it-works-view-forms-btn">
+                <Download className="w-4 h-4 mr-2" /> View Form Templates
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Quick FAQ */}
+        <section className="space-y-3" data-testid="how-it-works-faq">
+          <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>Common Questions</h2>
+          {[
+            { q: "Do I need a lawyer to use this?", a: "No — Appeal Case Manager is designed for self-represented appellants. However, we strongly recommend consulting a qualified legal professional before taking any action. This tool helps you understand your options and prepare materials." },
+            { q: "How long does report generation take?", a: "Quick Summary: 30-60 seconds. Full Detailed: 1-3 minutes. Extensive Log: 2-5 minutes. Complex cases with many documents may take slightly longer." },
+            { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. We do not share your case information with anyone. You can delete your case and all associated data at any time." },
+            { q: "Can I use this for any Australian state?", a: "Yes — Appeal Case Manager covers all 8 Australian jurisdictions: NSW, VIC, QLD, SA, WA, TAS, NT, and ACT, plus Commonwealth/Federal offences." },
+          ].map((faq, i) => (
+            <div key={i} className="bg-card border border-border rounded-xl p-4">
+              <h3 className="font-semibold text-foreground text-sm">{faq.q}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{faq.a}</p>
+            </div>
+          ))}
         </section>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800 mt-8">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-red-400 text-xs font-medium">
+            This is NOT legal advice. Appeal Case Manager is an AI-powered research tool. All findings must be verified by a qualified Australian legal professional.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
