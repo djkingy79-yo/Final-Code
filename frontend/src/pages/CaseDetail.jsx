@@ -846,18 +846,6 @@ const CaseDetail = ({ user }) => {
                 </div>
               </div>
             )}
-            {investigatingGround && (
-              <div className="border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800 rounded-lg overflow-hidden p-4" data-testid="ai-investigate-progress">
-                <div className="flex items-center gap-3 mb-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-green-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-green-900 dark:text-green-200">AI Scan in Progress — Deep Investigation</p>
-                </div>
-                <p className="text-xs text-green-700 dark:text-green-300 mb-3">Investigating this ground in detail. This can take up to 2-3 minutes for complex matters.</p>
-                <div className="w-full h-2 bg-green-200 dark:bg-green-800 rounded-full overflow-hidden">
-                  <div className="h-full w-3/4 bg-green-600 rounded-full animate-pulse"></div>
-                </div>
-              </div>
-            )}
             {grounds.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
                 <Gavel className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

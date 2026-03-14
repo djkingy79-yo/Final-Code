@@ -71,7 +71,14 @@ const BarristerView = ({ user }) => {
     }
   };
 
-  const handlePrint = () => window.print();
+  const handlePrint = () => {
+    try {
+      window.print();
+    } catch (e) {
+      // Fallback for mobile Safari where window.print() may fail
+      toast.info("Use your browser's Share menu to print this page.");
+    }
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -431,7 +438,7 @@ const BarristerView = ({ user }) => {
                 variant="outline"
                 size="sm"
                 onClick={handlePrint}
-                className="border-slate-500 text-slate-300 hover:bg-slate-700"
+                className="border-white/50 text-white bg-white/20 hover:bg-white/30"
                 data-testid="print-btn"
               >
                 <Printer className="w-4 h-4 mr-1" />
