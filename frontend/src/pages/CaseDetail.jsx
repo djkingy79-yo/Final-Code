@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
-  BookOpen, HelpCircle,
+  BookOpen, HelpCircle, TrendingUp,
   MessageSquare
 } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -34,6 +34,8 @@ import { API } from "../App";
 import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
+import DeadlineTracker from "../components/DeadlineTracker";
+import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
 import LegalFrameworkViewer from "../components/LegalFrameworkViewer";
 import DocumentsSection from "../components/DocumentsSection";
@@ -628,6 +630,10 @@ const CaseDetail = ({ user }) => {
                   <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Legal
                 </TabsTrigger>
+                <TabsTrigger value="progress" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-progress">
+                  <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  Progress
+                </TabsTrigger>
               </TabsList>
             </div>
 
@@ -823,6 +829,39 @@ const CaseDetail = ({ user }) => {
               offenceType={caseData?.offence_type}
               state={caseData?.state}
             />
+          </TabsContent>
+
+          {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
+          <TabsContent value="progress" className="space-y-6">
+            {/* Deadline Tracker */}
+            <DeadlineTracker caseId={caseId} />
+            
+            {/* Appeal Checklist */}
+            <AppealChecklist caseId={caseId} />
+            
+            {/* Quick Links */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/resources')}
+                    className="flex items-center gap-2"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    Resource Directory
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/help')}
+                    className="flex items-center gap-2"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    Help & Glossary
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>

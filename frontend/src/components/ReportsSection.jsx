@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer
+  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -447,6 +447,19 @@ const ReportsSection = ({
                   onCheckedChange={setAggressiveMode}
                   data-testid="aggressive-mode-switch"
                 />
+              </div>
+            </div>
+
+            {/* DO NOT UNDO — Report generation time warning */}
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-3" data-testid="report-generation-warning">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-900">Please Allow Time for Generation</p>
+                  <p className="text-xs text-blue-700">
+                    Reports take 30-90 seconds to generate depending on the tier selected. The Extensive Log Report may take up to 2 minutes due to its comprehensive analysis. Please do not close this page while generating.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

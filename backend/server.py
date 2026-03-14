@@ -3755,12 +3755,24 @@ IMPORTANT:
     else:  # extensive_log
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating the PREMIUM Extensive Log Report ($200 AUD). This must exceed barrister expectations: highly aggressive strategy, exhaustive legal mapping, and courtroom-ready execution detail. Include working hyperlinks to AustLII, court databases, forms, and legislation wherever possible."""
-        user_prompt = f"""Create an EXTENSIVE LOG REPORT for this {category_name.lower()} appeal case.
+You are generating the PREMIUM Extensive Log Report ($200 AUD) — the most comprehensive legal analysis product available. This report MUST exceed barrister expectations. It is the gold standard: exhaustive legal mapping, aggressive courtroom strategy, and hearing-ready execution detail.
+
+CRITICAL REQUIREMENTS FOR THIS TIER:
+1. This report must be SIGNIFICANTLY longer and more detailed than any other tier.
+2. Every section must contain specific citations, real AustLII links, and detailed analysis.
+3. Tables must have at least 12 rows with full data.
+4. Every ground must include a full paragraph explaining how it assists the appeal.
+5. Comparative sentencing must include detailed outcome analysis for EACH case.
+6. Include actual draft paragraphs for written submissions.
+7. Include step-by-step appeal filing guide with form names and court links.
+8. The report must be DIRECTLY USABLE by a barrister — not a summary, but a working document.
+9. Include hyperlinks to AustLII legislation, court databases, forms, and case law wherever possible.
+10. Use Australian English throughout (organise, analyse, defence, offence, licence, practise)."""
+        user_prompt = f"""Create the MOST COMPREHENSIVE EXTENSIVE LOG REPORT possible for this {category_name.lower()} appeal case.
 
 {case_context}
 
-Target range 7000-9500 words. Exhaustive depth required. Use this exact structure:
+Target range 9000-12000 words MINIMUM. This is the premium $200 tier — exhaustive depth is MANDATORY. Every section must be fully developed with real legal analysis. Use this exact structure:
 
 ## TABLE OF CONTENTS
 Numbered list matching every heading below.
