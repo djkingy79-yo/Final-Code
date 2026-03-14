@@ -984,7 +984,23 @@ const CaseDetail = ({ user }) => {
             {progressAnalysis && (
               <Card className="border-purple-200 dark:border-purple-800">
                 <CardContent className="p-4 prose prose-sm dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{progressAnalysis.analysis || progressAnalysis.content || ""}</ReactMarkdown>
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({ href, children }) => (
+                        <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">{children}</a>
+                      ),
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300 dark:border-slate-600">{children}</table></div>
+                      ),
+                      th: ({ children }) => (
+                        <th className="border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 px-3 py-2 text-left text-sm font-semibold">{children}</th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm">{children}</td>
+                      ),
+                    }}
+                  >{progressAnalysis.analysis || progressAnalysis.content || ""}</ReactMarkdown>
                 </CardContent>
               </Card>
             )}

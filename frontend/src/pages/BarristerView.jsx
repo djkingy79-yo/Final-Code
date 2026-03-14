@@ -1077,7 +1077,7 @@ const BarristerView = ({ user }) => {
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
-                            a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>,
+                            a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline hover:text-blue-300 break-words">{children}</a>,
                             table: ({ children }) => (
                               <div className="legal-report-table-wrap">
                                 <table>{children}</table>

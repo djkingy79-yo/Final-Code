@@ -396,7 +396,7 @@ const ReportsSection = ({
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                              a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>,
+                              a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 break-words font-medium">{children}</a>,
                               table: ({ children }) => (
                                 <div className="legal-report-table-wrap">
                                   <table>{children}</table>

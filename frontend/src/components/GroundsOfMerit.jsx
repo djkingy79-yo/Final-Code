@@ -5,6 +5,8 @@ import {
   AlertTriangle, CheckCircle, XCircle, Sparkles,
   BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
@@ -102,43 +104,30 @@ const GroundsOfMerit = ({
   };
 
   // Format the analysis content with sections
+  /* DO NOT UNDO — formatAnalysis renders investigation results with clickable links */
   const formatAnalysis = (analysis) => {
     if (!analysis) return null;
-    
-    const sections = analysis.split(/(?=\d+\.\s+\*\*|(?:\n|\r\n)##\s+|\*\*[A-Z][A-Z\s]+\*\*)/g);
-    
-    return sections.map((section, idx) => {
-      const headerMatch = section.match(/^(\d+\.\s+\*\*[^*]+\*\*|##\s+[^\n]+|\*\*[A-Z][A-Z\s]+\*\*)/);
-      
-      if (headerMatch) {
-        const header = headerMatch[0]
-          .replace(/^##\s+/, '')
-          .replace(/\*\*/g, '')
-          .replace(/^\d+\.\s+/, '')
-          .trim();
-        const body = section.substring(headerMatch[0].length).trim();
-        
-        return (
-          <div key={idx} className="mb-6">
-            <h4 
-              className="text-lg font-semibold text-slate-900 mb-2 border-b border-slate-200 pb-1"
-              style={{ fontFamily: 'Crimson Pro, serif' }}
-            >
-              {header}
-            </h4>
-            <div className="text-slate-700 leading-relaxed whitespace-pre-wrap text-sm">
-              {body}
-            </div>
-          </div>
-        );
-      }
-      
-      return section.trim() ? (
-        <div key={idx} className="text-slate-700 leading-relaxed whitespace-pre-wrap text-sm mb-4">
-          {section}
-        </div>
-      ) : null;
-    });
+    return (
+      <div className="legal-report prose prose-sm dark:prose-invert max-w-none">
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            a: ({ href, children }) => (
+              <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 break-words font-medium">{children}</a>
+            ),
+            table: ({ children }) => (
+              <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300">{children}</table></div>
+            ),
+            th: ({ children }) => (
+              <th className="border border-slate-300 bg-slate-100 px-3 py-2 text-left text-sm font-semibold">{children}</th>
+            ),
+            td: ({ children }) => (
+              <td className="border border-slate-300 px-3 py-2 text-sm">{children}</td>
+            ),
+          }}
+        >{analysis}</ReactMarkdown>
+      </div>
+    );
   };
 
   return (
