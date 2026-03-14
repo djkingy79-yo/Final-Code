@@ -844,3 +844,18 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Shows message: "AI is analysing your case. Please allow time for generation."
   - Reminds user: "This can take 1-3 minutes for detailed reports. Do not close this page."
 - [x] **Testing**: iterations 55-56 — 100% backend (10/10) + 100% frontend
+
+### Delete Fix: AlertDialog + AI Progress Tab (Mar 2026) ✅
+- [x] **Root cause: window.confirm() doesn't work on mobile Safari** — Replaced ALL window.confirm() with AlertDialog modals from shadcn/ui
+  - Dashboard delete case — AlertDialog modal with "Yes, Delete Case" red button
+  - CaseDetail delete case — AlertDialog modal  
+  - CaseDetail delete event — AlertDialog modal
+  - CaseDetail delete ground — AlertDialog modal
+  - Reports delete report — AlertDialog modal with "Delete Report" red button
+- [x] **AI Progress Analysis** — New "AI Analyse Progress" button in Progress tab
+  - Purple-blue gradient button triggers AI analysis of case progress
+  - Backend: POST /api/cases/{case_id}/progress-analysis using GPT-4o
+  - Returns structured analysis: Progress Summary, Completed Steps, Critical Next Steps, Case Strength, Timeline Recommendations, Strategic Recommendations, Risk Factors
+  - Progress indicator shows "AI Scan in Progress — Analysing Case Progress" during generation
+- [x] **DO NOT UNDO comments** — Added to all new code sections
+- [x] **Testing**: iteration_57 — 100% backend + 100% frontend code verification
