@@ -904,3 +904,11 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - All AI features: progress analysis, report generation
   - All payment flows: PayPal redirect + PayID reference
   - All mobile UI: login, dashboard, tabs, delete buttons, floating buttons
+
+### iPad Navigation Fix (Mar 2026) ✅
+- [x] **iPad now has full navigation** — Changed breakpoint from md: (768px) to lg: (1024px)
+  - iPad (768-1023px) now gets hamburger menu with ALL 17+ navigation links
+  - Desktop (1024px+) gets full nav bar with "More" dropdown containing 8 extra pages
+  - Dashboard sidebar consistent with lg: breakpoint
+- [x] **More dropdown on desktop** — Forms, Glossary, Legal Framework, Lawyers, How To Use, Contact, Caselaw Search, Professional Summary
+- [x] **Testing**: iteration_63 — 100% all viewports (390px, 810px, 1024px, 1920px)
