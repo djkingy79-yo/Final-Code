@@ -755,5 +755,22 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - "specialize" → "specialise" (server.py AI prompts)
 - [x] Verified: No American English spellings found in visible UI text (iteration_42.json)
 
+### P0 Fix: Professional Report Rendering (Mar 2026) ✅
+- [x] **Created `.legal-report` CSS stylesheet** in `index.css` with comprehensive professional legal document styling:
+  - Tables: Blue gradient headers (#1e3a8a), white header text, alternating row colours, hover effects, responsive overflow
+  - Links: Blue underlined text, hover states, visited colours, opens in new tab
+  - Blockquotes: Blue left border, grey background, italic, legal citation style
+  - Headings: H1 with blue bottom border, H2 with grey border, proper hierarchy
+  - Lists: Blue markers, proper indentation, nested list support
+  - Dark mode: Full dark mode overrides for all elements
+  - Print: Dedicated print styles with colour-adjust for headers
+- [x] **Applied `.legal-report` wrapper** across all 3 report rendering locations:
+  - `ReportView.jsx` — Full report page MarkdownBlock component
+  - `ReportsSection.jsx` — Inline accordion report preview
+  - `BarristerView.jsx` — Barrister presentation mode
+- [x] **Fixed section parser** — `parseAnalysisSections` no longer splits numbered list items into separate sections (removed false `numberedHeader` detection)
+- [x] **Removed dead `prose` classes** — `@tailwindcss/typography` was never installed, so `prose prose-slate` did nothing
+- [x] **Testing**: iteration_49 — 100% frontend pass, all tables/links/buttons verified
+
 ## Technical Debt (Current)
 - `server.py` remains monolithic and should be modularized into focused routers/services.
