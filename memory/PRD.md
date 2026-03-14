@@ -659,6 +659,15 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
 - Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
 
+### Final Comprehensive Fix + DO NOT UNDO Reinforcement (Mar 2026) ✅
+- [x] **DO_NOT_UNDO.md** — Project-level protection file with 10 absolute rules
+- [x] **DO NOT UNDO markers** on 80+ files across entire codebase
+- [x] **Investigation speed fixed** — Reduced doc context 18000→12000, retry 4→3, backoff exponential→flat 2s
+- [x] **Print button fixed** — Now opens full report page in new tab then triggers print for clean output
+- [x] **Report generation warning** — "Please Allow Time for Generation" blue warning box restored
+- [x] **All content cleaned** — Zero contradictions, zero old prices, zero Case Strength on any page
+- [x] **Testing**: iteration_48 — 100% backend (8/8 API) + 100% code verification (13/13) + 100% frontend UI
+
 ### Complete Front-to-Back Content Sweep (Mar 2026) ✅
 - [x] **All pages updated** — Removed all contradiction/witness/case strength references from:
   - Landing page: "Case Strength 72/100" → "5 Grounds / Grounds Identified"
