@@ -108,7 +108,7 @@ export default function PaymentModal({
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/payments/paypal/create-order`, {
+      const response = await axios.post(`${API}/cases/${caseId}/payments/create-order`, {
         feature_type: featureType,
         case_id: caseId,
         return_url: `${window.location.origin}/cases/${caseId}?payment=success&method=paypal`,

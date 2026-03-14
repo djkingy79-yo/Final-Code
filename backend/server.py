@@ -2381,6 +2381,84 @@ async def paypal_webhook(request: Request):
     
     return {"status": "received"}
 
+# ============ PAYID PAYMENT ENDPOINTS ============
+# DO NOT UNDO — PayID payment endpoints for Australian bank transfers
+
+@api_router.post("/payments/payid/create-reference")
+async def create_payid_reference(request: Request):
+    """Generate a unique payment reference for PayID bank transfer"""
+    user = await get_current_user(request)
+    body = await request.json()
+    feature_type = body.get("feature_type")
+    case_id = body.get("case_id")
+    
+    if not feature_type or not case_id:
+        raise HTTPException(status_code=400, detail="Missing feature_type or case_id")
+    
+    price = FEATURE_PRICES.get(feature_type, {}).get("price", 0)
+    reference = f"ACM-{uuid.uuid4().hex[:8].upper()}"
+    
+    payment_record = {
+        "payment_id": f"pay_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "case_id": case_id,
+        "feature_type": feature_type,
+        "amount": price,
+        "method": "payid",
+        "reference": reference,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.payments.insert_one(payment_record)
+    payment_record.pop("_id", None)
+    
+    return {
+        "reference": reference,
+        "amount": price,
+        "payid": "djkingy79@gmail.com",
+        "payid_name": "Appeal Case Manager",
+        "instructions": f"Transfer ${price:.2f} AUD to the PayID above. Use reference: {reference}"
+    }
+
+@api_router.post("/payments/payid/verify")
+async def verify_payid_payment(request: Request):
+    """Mark a PayID payment as submitted (manual verification by admin)"""
+    user = await get_current_user(request)
+    body = await request.json()
+    reference = body.get("reference")
+    case_id = body.get("case_id")
+    feature_type = body.get("feature_type")
+    
+    if not reference:
+        raise HTTPException(status_code=400, detail="Missing reference")
+    
+    payment = await db.payments.find_one(
+        {"reference": reference, "user_id": user.user_id},
+        {"_id": 0}
+    )
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment reference not found")
+    
+    await db.payments.update_one(
+        {"reference": reference},
+        {"$set": {"status": "submitted", "submitted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Auto-grant access (admin can revoke if payment not received)
+    await db.payments.update_one(
+        {"reference": reference},
+        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Grant feature access
+    await db.cases.update_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"$addToSet": {"unlocked_features": feature_type}}
+    )
+    
+    return {"status": "verified", "message": "Payment confirmed. Feature unlocked."}
+
 # ============ RESOURCE DIRECTORY ============
 
 @api_router.get("/resources/directory", response_model=dict)
