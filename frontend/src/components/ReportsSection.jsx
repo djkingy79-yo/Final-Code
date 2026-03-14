@@ -246,62 +246,60 @@ const ReportsSection = ({
             const reportText = typeof report.content === 'string'
               ? report.content
               : report.content?.analysis || 'No analysis available';
+            
+            /* Colour theme per report type — matches landing page */
+            const rTheme = {
+              quick_summary: { headerBg: "bg-gradient-to-r from-emerald-700 to-green-600", badge: "bg-green-500", label: "Quick Summary", price: "FREE" },
+              full_detailed: { headerBg: "bg-gradient-to-r from-slate-900 to-blue-900", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
+              extensive_log: { headerBg: "bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-900", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
+            }[report.report_type] || { headerBg: "bg-slate-800", badge: "bg-slate-500", label: getReportTypeLabel(report.report_type), price: "" };
+            
             return (
-              <Card key={report.report_id} className="overflow-hidden">
+              <Card key={report.report_id} className="overflow-hidden border-0 shadow-md">
                 <Collapsible
                   open={Boolean(expandedReports[report.report_id])}
                   onOpenChange={(isOpen) => toggleReportExpand(report.report_id, isOpen)}
                 >
                   <CollapsibleTrigger asChild>
-                    <CardContent className="p-4 cursor-pointer hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          {expandedReports[report.report_id] ? (
-                            <ChevronDown className="w-5 h-5 text-slate-400" />
-                          ) : (
-                            <ChevronRight className="w-5 h-5 text-slate-400" />
-                          )}
-                          <div>
-                            <h4 className="font-semibold text-slate-900">
-                              {getReportTypeLabel(report.report_type)}
-                            </h4>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Clock className="w-3 h-3 text-slate-400" />
-                              <span className="text-xs text-slate-500">
-                                {new Date(report.generated_at || report.created_at).toLocaleDateString('en-AU', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </span>
-                            </div>
+                    <div className={`${rTheme.headerBg} text-white px-5 py-3 cursor-pointer flex items-center justify-between`}>
+                      <div className="flex items-center gap-3">
+                        {expandedReports[report.report_id] ? (
+                          <ChevronDown className="w-5 h-5 text-white/70" />
+                        ) : (
+                          <ChevronRight className="w-5 h-5 text-white/70" />
+                        )}
+                        <div>
+                          <h4 className="font-semibold text-white text-sm uppercase tracking-wide">
+                            {rTheme.label}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <Clock className="w-3 h-3 text-white/60" />
+                            <span className="text-xs text-white/70">
+                              {new Date(report.generated_at || report.created_at).toLocaleDateString('en-AU', {
+                                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                              })}
+                            </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                            AI Generated
-                          </Badge>
-                          {report?.content?.aggressive_mode && (
-                            <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200" data-testid={`aggressive-report-badge-${report.report_id}`}>
-                              Aggressive
-                            </Badge>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteReport(report.report_id);
-                            }}
-                            className="text-slate-400 hover:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
                       </div>
-                    </CardContent>
+                      <div className="flex items-center gap-2">
+                        {rTheme.price && <span className={`${rTheme.badge} px-3 py-1 rounded-full text-xs font-bold text-white`}>{rTheme.price}</span>}
+                        {report?.content?.aggressive_mode && (
+                          <span className="bg-red-500 px-2 py-0.5 rounded-full text-xs font-bold" data-testid={`aggressive-report-badge-${report.report_id}`}>Aggressive</span>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteReport(report.report_id);
+                          }}
+                          className="text-white/70 hover:text-red-300 hover:bg-white/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="px-4 pb-4 border-t border-slate-100 pt-4">
