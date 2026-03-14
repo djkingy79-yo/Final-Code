@@ -552,19 +552,19 @@ const CaseDetail = ({ user }) => {
               <span className="text-muted-foreground hidden sm:inline">/</span>
               <span className="font-medium text-foreground truncate text-sm sm:text-base">{caseData?.title}</span>
             </div>
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate("/help")}
-                className="text-muted-foreground hover:text-foreground rounded-xl"
+                className="text-muted-foreground hover:text-foreground rounded-xl hidden sm:flex"
                 data-testid="help-btn"
               >
                 <HelpCircle className="w-4 h-4 mr-1" />
                 Help
               </Button>
-              <QuickExport caseId={caseId} caseTitle={caseData?.title} />
-              <DocumentBundler caseId={caseId} documents={documents} />
+              <span className="hidden sm:inline"><QuickExport caseId={caseId} caseTitle={caseData?.title} /></span>
+              <span className="hidden sm:inline"><DocumentBundler caseId={caseId} documents={documents} /></span>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -573,7 +573,7 @@ const CaseDetail = ({ user }) => {
                 data-testid="delete-case-btn"
               >
                 <Trash2 className="w-4 h-4 mr-1" />
-                Delete Case
+                <span className="hidden sm:inline">Delete Case</span>
               </Button>
             </div>
           </div>

@@ -13,7 +13,7 @@ import time
 # Get base URL from environment - PUBLIC URL for testing what user sees
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://appeal-case-fixer.preview.emergentagent.com"
+    BASE_URL = "https://case-analyzer-au.preview.emergentagent.com"
 
 # Test credentials from review_request
 ADMIN_EMAIL = "djkingy79@gmail.com"
@@ -105,7 +105,7 @@ class TestStripePayments:
             json={
                 "feature_type": "full_report",
                 "case_id": EXISTING_CASE,
-                "origin_url": "https://appeal-case-fixer.preview.emergentagent.com"
+                "origin_url": "https://case-analyzer-au.preview.emergentagent.com"
             }
         )
         
@@ -137,7 +137,7 @@ class TestStripePayments:
             json={
                 "feature_type": "invalid_feature",
                 "case_id": EXISTING_CASE,
-                "origin_url": "https://appeal-case-fixer.preview.emergentagent.com"
+                "origin_url": "https://case-analyzer-au.preview.emergentagent.com"
             }
         )
         
@@ -153,7 +153,7 @@ class TestStripePayments:
             json={
                 "feature_type": "full_report",
                 "case_id": EXISTING_CASE,
-                "origin_url": "https://appeal-case-fixer.preview.emergentagent.com"
+                "origin_url": "https://case-analyzer-au.preview.emergentagent.com"
             }
         )
         
