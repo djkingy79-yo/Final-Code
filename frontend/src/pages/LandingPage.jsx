@@ -44,7 +44,8 @@ const LandingPage = () => {
               Appeal Case Manager
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-4">
+          {/* DO NOT UNDO — Desktop + iPad Navigation */}
+          <div className="hidden lg:flex items-center gap-4">
             <Link to="/how-it-works" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-how-it-works-link">
               See It In Action
             </Link>
@@ -63,6 +64,21 @@ const LandingPage = () => {
             <Link to="/about" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-about-link">
               About
             </Link>
+            <div className="relative group">
+              <button className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1" data-testid="nav-more-dropdown">
+                More <ChevronRight className="w-3 h-3 rotate-90" />
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Forms & Templates</Link>
+                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Legal Glossary</Link>
+                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Legal Framework</Link>
+                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Lawyer Directory</Link>
+                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">How To Use</Link>
+                <Link to="/contact" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Contact</Link>
+                <Link to="/caselaw-search" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Caselaw Search</Link>
+                <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Professional Summary</Link>
+              </div>
+            </div>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
@@ -79,15 +95,15 @@ const LandingPage = () => {
             </Button>
           </div>
           <button 
-            className="md:hidden p-2 text-white"
+            className="lg:hidden p-2 text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-        {/* Mobile Menu */}
+        {/* Mobile + iPad Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
+          <div className="lg:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white">Statistics</Link>
             <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white">Success Stories</Link>
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
