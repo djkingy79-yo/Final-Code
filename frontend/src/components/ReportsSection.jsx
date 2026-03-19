@@ -332,7 +332,60 @@ const ReportsSection = ({
         </Card>
       ) : (
         <div className="space-y-4">
-          {reports.filter(r => r.status !== 'generating' && r.status !== 'failed').map((report) => {
+          {reports.map((report) => {
+            const reportStatus = report.status || 'completed';
+
+            // Show inline card for generating/failed reports
+            if (reportStatus === 'generating') {
+              return (
+                <Card key={report.report_id} className="overflow-hidden border border-blue-200 bg-blue-50 shadow-sm">
+                  <div className="px-5 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900">Generating {getReportTypeLabel(report.report_type)}...</p>
+                        <p className="text-xs text-blue-600">This usually takes 20-60 seconds.</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteReport(report.report_id)}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-full"
+                      data-testid={`delete-report-btn-${report.report_id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </Card>
+              );
+            }
+
+            if (reportStatus === 'failed') {
+              return (
+                <Card key={report.report_id} className="overflow-hidden border border-red-200 bg-red-50 shadow-sm">
+                  <div className="px-5 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-600" />
+                      <div>
+                        <p className="text-sm font-semibold text-red-900">Report generation failed</p>
+                        <p className="text-xs text-red-600">Please delete and try again.</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteReport(report.report_id)}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-full"
+                      data-testid={`delete-report-btn-${report.report_id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </Card>
+              );
+            }
+
             const reportText = typeof report.content === 'string'
               ? report.content
               : report.content?.analysis || 'No analysis available';
@@ -431,17 +484,8 @@ const ReportsSection = ({
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            // Navigate to full report page for proper print
-                            const printUrl = `/cases/${caseId}/reports/${report.report_id}`;
-                            const printWindow = window.open(printUrl, '_blank');
-                            if (printWindow) {
-                              printWindow.addEventListener('load', () => {
-                                setTimeout(() => printWindow.print(), 1500);
-                              });
-                            } else {
-                              navigate(printUrl);
-                              setTimeout(() => window.print(), 2000);
-                            }
+                            navigate(`/cases/${caseId}/reports/${report.report_id}`);
+                            toast.info("Navigating to full report — use your browser's print/share option.");
                           }}
                           className="text-slate-700"
                           data-testid={`print-report-btn-${report.report_id}`}

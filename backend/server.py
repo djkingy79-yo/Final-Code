@@ -4343,6 +4343,13 @@ async def get_reports(case_id: str, request: Request):
     """Get all reports for a case"""
     user = await get_current_user(request)
     
+    # Auto-fail any report stuck in "generating" for more than 5 minutes
+    five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+    await db.reports.update_many(
+        {"case_id": case_id, "user_id": user.user_id, "status": "generating", "generated_at": {"$lt": five_min_ago}},
+        {"$set": {"status": "failed", "error": "Generation timed out"}}
+    )
+    
     reports = await db.reports.find(
         {"case_id": case_id, "user_id": user.user_id},
         {"_id": 0}
