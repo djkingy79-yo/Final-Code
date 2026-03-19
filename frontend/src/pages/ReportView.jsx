@@ -171,8 +171,7 @@ const ReportView = () => {
   };
 
   const handlePrint = () => {
-    handleExportPDF();
-    toast.info("Generating PDF for printing.");
+    window.print();
   };
 
   const handleExportPDF = async () => {

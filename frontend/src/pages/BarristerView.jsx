@@ -76,9 +76,7 @@ const BarristerView = ({ user }) => {
   };
 
   const handlePrint = () => {
-    // Use PDF export as reliable cross-platform print alternative
-    handleExportPDF();
-    toast.info("Generating PDF for printing.");
+    window.print();
   };
 
   const toggleFullscreen = () => {
