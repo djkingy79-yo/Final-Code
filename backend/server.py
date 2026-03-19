@@ -22,6 +22,12 @@ import json
 import asyncio
 import resend
 import re
+# Configure LiteLLM: short timeout, NO retries at any level
+import litellm
+litellm.request_timeout = 60       # 60 second max per LLM call
+litellm.num_retries = 0            # No litellm-level retries
+litellm.DEFAULT_MAX_RETRIES = 0    # No OpenAI SDK-level retries (was 2 = 3min waste on 502)
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -1457,7 +1463,7 @@ Return ONLY a valid JSON array of timeline events. No other text."""
                 api_key=api_key,
                 session_id=f"timeline_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             response = await chat.send_message(UserMessage(text=user_prompt))
             break
@@ -1615,7 +1621,7 @@ Provide a comprehensive analysis identifying gaps, inconsistencies, and appeal-r
                 api_key=emergent_api_key,
                 session_id=f"timeline_analysis_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             response = await chat.send_message(UserMessage(text=user_prompt))
             break
@@ -2075,7 +2081,7 @@ Return JSON:
                 api_key=emergent_api_key,
                 session_id=f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             response = await chat.send_message(UserMessage(text=f"Find contradictions in these documents:\n{doc_context}"))
             break
@@ -2176,7 +2182,7 @@ Be specific to the jurisdiction and offence type. Use Australian legal terminolo
                 api_key=emergent_api_key,
                 session_id=f"progress_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             response = await llm.send_message(UserMessage(text=f"Analyse the progress of this criminal appeal case:\n\n{context}"))
             return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
         except Exception as e:
@@ -3188,7 +3194,7 @@ REQUIRED ANALYSIS (search the documents above for evidence):
                 api_key=api_key,
                 session_id=f"ground_{ground_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o-mini")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             response = await chat.send_message(UserMessage(text=user_prompt))
             break
@@ -3436,7 +3442,7 @@ BE THOROUGH. Identify ALL potential grounds. The appellant's freedom may depend 
                 api_key=api_key,
                 session_id=f"auto_identify_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
-            ).with_model("openai", "gpt-4o-mini")
+            ).with_model("anthropic", "claude-sonnet-4-20250514")
             
             response = await chat.send_message(UserMessage(text=user_prompt))
             break
@@ -4102,76 +4108,51 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
 - Frame everything as persuasive advocacy, not neutral analysis.
 - The client is paying premium for maximum detail and actionable legal strategy."""
 
-    # Call OpenAI via Emergent
+    # Call AI via Emergent — Claude primary (fast, reliable), OpenAI fallback
     api_key = os.environ.get('EMERGENT_LLM_KEY')
     if not api_key:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
-    # Use gpt-4o-mini for all reports — fast and high-quality
-    model_name = "gpt-4o-mini"
-    LLM_TIMEOUT = 90  # seconds max per LLM call
+    # Claude is fast and reliable; OpenAI gpt-4o-mini as fallback
+    MODEL_CHAIN = [
+        ("anthropic", "claude-sonnet-4-20250514"),
+        ("openai", "gpt-4o-mini"),
+    ]
     
-    # Try up to 3 times
+    async def _llm_call(prompt_text, session_suffix=""):
+        """Single LLM call with automatic model fallback."""
+        for provider, model in MODEL_CHAIN:
+            try:
+                chat = LlmChat(
+                    api_key=api_key,
+                    session_id=f"rpt_{case_id}_{session_suffix}_{uuid.uuid4().hex[:6]}",
+                    system_message=system_prompt
+                ).with_model(provider, model)
+                result = await chat.send_message(UserMessage(text=prompt_text))
+                logger.info(f"LLM call OK: {provider}/{model} ({len(result)} chars)")
+                return result
+            except Exception as e:
+                logger.warning(f"LLM {provider}/{model} failed: {e}")
+        raise Exception("All AI providers failed")
+    
     response = None
     last_error = None
-    for attempt in range(3):
-        try:
-            chat = LlmChat(
-                api_key=api_key,
-                session_id=f"report_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("openai", model_name)
-            
-            # For extensive_log, run 3 parts in PARALLEL for speed
-            if report_type == "extensive_log":
-                part1_prompt = user_prompt + "\n\nIMPORTANT: Generate ONLY sections 1 through 9 now. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs, tables where specified, and specific details. Do NOT include sections 10-25 yet."
-                
-                part2_prompt = user_prompt + "\n\nGenerate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-9 or 19-25."
-                
-                part3_prompt = user_prompt + "\n\nGenerate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-18."
-
-                chat2 = LlmChat(
-                    api_key=api_key,
-                    session_id=f"report2_{case_id}_{uuid.uuid4().hex[:8]}",
-                    system_message=system_prompt
-                ).with_model("openai", model_name)
-                chat3 = LlmChat(
-                    api_key=api_key,
-                    session_id=f"report3_{case_id}_{uuid.uuid4().hex[:8]}",
-                    system_message=system_prompt
-                ).with_model("openai", model_name)
-
-                # Run all 3 parts concurrently with timeout
-                part1, part2, part3 = await asyncio.wait_for(
-                    asyncio.gather(
-                        chat.send_message(UserMessage(text=part1_prompt)),
-                        chat2.send_message(UserMessage(text=part2_prompt)),
-                        chat3.send_message(UserMessage(text=part3_prompt)),
-                    ),
-                    timeout=LLM_TIMEOUT
-                )
-                response = part1 + "\n\n" + part2 + "\n\n" + part3
-            else:
-                response = await asyncio.wait_for(
-                    chat.send_message(UserMessage(text=user_prompt)),
-                    timeout=LLM_TIMEOUT
-                )
-            
-            # Verify response has sufficient content for paid reports
-            if report_type != "quick_summary" and len(response) < 2000:
-                logger.warning(f"Report too short ({len(response)} chars), retrying")
-                if attempt < 2:
-                    continue
-            
-            break
-        except asyncio.TimeoutError:
-            last_error = Exception(f"LLM call timed out after {LLM_TIMEOUT}s")
-            logger.warning(f"Report generation attempt {attempt + 1} timed out after {LLM_TIMEOUT}s")
-        except Exception as e:
-            last_error = e
-            logger.warning(f"Report generation attempt {attempt + 1} failed: {e}")
-        if attempt < 2:
-            await asyncio.sleep(1)
+    try:
+        if report_type == "extensive_log":
+            part1_prompt = user_prompt + "\n\nIMPORTANT: Generate ONLY sections 1 through 9 now. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs, tables where specified, and specific details. Do NOT include sections 10-25 yet."
+            part2_prompt = user_prompt + "\n\nGenerate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-9 or 19-25."
+            part3_prompt = user_prompt + "\n\nGenerate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-18."
+            part1, part2, part3 = await asyncio.gather(
+                _llm_call(part1_prompt, "p1"),
+                _llm_call(part2_prompt, "p2"),
+                _llm_call(part3_prompt, "p3"),
+            )
+            response = part1 + "\n\n" + part2 + "\n\n" + part3
+        else:
+            response = await _llm_call(user_prompt, "main")
+    except Exception as e:
+        last_error = e
+        logger.error(f"Report generation failed: {e}")
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")

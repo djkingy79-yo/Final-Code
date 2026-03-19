@@ -80,6 +80,7 @@ const ReportsSection = ({
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [genElapsed, setGenElapsed] = useState(0);
   const [expandedReports, setExpandedReports] = useState({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pendingReportType, setPendingReportType] = useState(null);
@@ -151,18 +152,27 @@ const ReportsSection = ({
   };
 
   const pollingRef = useRef(null);
+  const elapsedRef = useRef(null);
 
   // Clean up polling on unmount
   useEffect(() => {
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
+      if (elapsedRef.current) clearInterval(elapsedRef.current);
     };
   }, []);
 
   const generateReport = async (reportType) => {
     setGeneratingReport(true);
+    setGenElapsed(0);
     setShowReportDialog(false);
-    toast.info("Generating report — usually takes 20-60 seconds.");
+    toast.info("Generating report...");
+
+    // Start elapsed timer
+    const startTime = Date.now();
+    elapsedRef.current = setInterval(() => {
+      setGenElapsed(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
     
     try {
       const response = await axios.post(
@@ -193,15 +203,22 @@ const ReportsSection = ({
       } else {
         toast.error("Failed to start report generation");
       }
-      setGeneratingReport(false);
-      setAggressiveMode(false);
+      stopGenerating();
     }
+  };
+
+  const stopGenerating = () => {
+    if (pollingRef.current) { clearInterval(pollingRef.current); pollingRef.current = null; }
+    if (elapsedRef.current) { clearInterval(elapsedRef.current); elapsedRef.current = null; }
+    setGeneratingReport(false);
+    setAggressiveMode(false);
+    setGenElapsed(0);
   };
 
   const pollForCompletion = (reportId) => {
     let elapsed = 0;
-    const interval = 3000; // poll every 3 seconds
-    const maxWait = 180000; // 3 minutes max
+    const interval = 3000;
+    const maxWait = 360000;
 
     pollingRef.current = setInterval(async () => {
       elapsed += interval;
@@ -209,30 +226,22 @@ const ReportsSection = ({
         const res = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/status`);
         const status = res.data?.status;
         if (status === "completed") {
-          clearInterval(pollingRef.current);
-          pollingRef.current = null;
           toast.success("Report generated successfully!");
           if (onReportsChange) onReportsChange();
-          setGeneratingReport(false);
-          setAggressiveMode(false);
+          stopGenerating();
         } else if (status === "failed") {
-          clearInterval(pollingRef.current);
-          pollingRef.current = null;
           toast.error("Report generation failed. Please try again.");
-          setGeneratingReport(false);
-          setAggressiveMode(false);
+          if (onReportsChange) onReportsChange();
+          stopGenerating();
         }
       } catch {
         // Ignore transient polling errors
       }
 
       if (elapsed >= maxWait) {
-        clearInterval(pollingRef.current);
-        pollingRef.current = null;
-        toast.error("Report generation timed out. Please check back shortly.");
+        toast.error("Report generation timed out. Please refresh and check your reports.");
         if (onReportsChange) onReportsChange();
-        setGeneratingReport(false);
-        setAggressiveMode(false);
+        stopGenerating();
       }
     }, interval);
   };
@@ -302,11 +311,17 @@ const ReportsSection = ({
         <div className="mb-4 border border-blue-200 bg-blue-50 rounded-lg overflow-hidden p-4" data-testid="report-generating-indicator">
           <div className="flex items-center gap-3 mb-2">
             <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
-            <p className="text-sm font-semibold text-blue-900">AI is analysing your case. Please allow time for generation.</p>
+            <p className="text-sm font-semibold text-blue-900">AI is analysing your case...</p>
+            <span className="ml-auto text-xs font-mono text-blue-700">{genElapsed}s</span>
           </div>
-          <p className="text-xs text-blue-700 mb-3">Usually takes 20-60 seconds. Do not close this page.</p>
+          <p className="text-xs text-blue-700 mb-3">
+            {genElapsed < 60 ? "Please wait — this usually takes under a minute." : "Still working — complex cases may take a few minutes."}
+          </p>
           <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-            <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
+            <div
+              className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+              style={{ width: `${Math.min(95, (genElapsed / 120) * 100)}%` }}
+            />
           </div>
         </div>
       )}
