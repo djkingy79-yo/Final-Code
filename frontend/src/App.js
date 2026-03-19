@@ -316,6 +316,10 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin"
+        element={<Navigate to="/admin/dashboard" replace />}
+      />
     </Routes>
   );
 }

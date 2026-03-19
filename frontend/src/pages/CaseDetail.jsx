@@ -189,7 +189,7 @@ const CaseDetail = ({ user }) => {
   useEffect(() => {
     fetchCaseData();
     
-    // Handle payment return (for future PayPal integration)
+    // Handle payment return
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
     

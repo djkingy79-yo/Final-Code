@@ -391,7 +391,6 @@ class Payment(BaseModel):
     feature_type: str  # "grounds_of_merit", "full_report", "extensive_report"
     amount: float
     currency: str = "AUD"
-    paypal_order_id: Optional[str] = None
     status: str = "pending"  # pending, completed, failed, refunded
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
@@ -402,28 +401,6 @@ FEATURE_PRICES = {
     "full_report": {"price": 150.00, "name": "Full Detailed Report"},
     "extensive_report": {"price": 200.00, "name": "Extensive Log Report"}
 }
-
-# PayPal Configuration
-import paypalrestsdk
-PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', '')
-PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET', '')
-PAYPAL_MODE = os.environ.get('PAYPAL_MODE', 'sandbox')  # sandbox or live
-PAYPAL_CONFIGURED = False
-
-if PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET:
-    try:
-        paypalrestsdk.configure({
-            "mode": PAYPAL_MODE,
-            "client_id": PAYPAL_CLIENT_ID,
-            "client_secret": PAYPAL_CLIENT_SECRET
-        })
-        PAYPAL_CONFIGURED = True
-        logger.info(f"PayPal configured in {PAYPAL_MODE} mode")
-    except Exception as e:
-        logger.warning(f"PayPal configuration failed: {e}")
-        PAYPAL_CONFIGURED = False
-else:
-    logger.info("PayPal credentials not configured - payment features disabled")
 
 # ============ AUTH HELPERS ============
 
@@ -2200,8 +2177,7 @@ async def get_feature_prices():
     return {
         "prices": FEATURE_PRICES,
         "currency": "AUD",
-        "paypal_client_id": PAYPAL_CLIENT_ID if PAYPAL_CONFIGURED else "",
-        "paypal_configured": PAYPAL_CONFIGURED
+        "payment_method": "payid"
     }
 
 @api_router.get("/cases/{case_id}/payments")
@@ -2240,159 +2216,6 @@ async def get_case_payments(case_id: str, request: Request):
         "payments": payments,
         "unlocked_features": unlocked
     }
-
-@api_router.post("/cases/{case_id}/payments/create-order")
-async def create_payment_order(case_id: str, request: Request):
-    """Create a PayPal order for a feature purchase"""
-    if not PAYPAL_CONFIGURED:
-        raise HTTPException(status_code=503, detail="Payment service not configured")
-    
-    user = await get_current_user(request)
-    body = await request.json()
-    feature_type = body.get("feature_type")
-    frontend_url = body.get("frontend_url", "")
-    
-    if not frontend_url:
-        raise HTTPException(status_code=400, detail="Frontend URL is required")
-    
-    if feature_type not in FEATURE_PRICES:
-        raise HTTPException(status_code=400, detail="Invalid feature type")
-    
-    # Check if already purchased
-    existing = await db.payments.find_one({
-        "case_id": case_id,
-        "user_id": user.user_id,
-        "feature_type": feature_type,
-        "status": "completed"
-    })
-    if existing:
-        raise HTTPException(status_code=400, detail="Feature already purchased for this case")
-    
-    price_info = FEATURE_PRICES[feature_type]
-    
-    # Create PayPal order
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {"payment_method": "paypal"},
-        "redirect_urls": {
-            "return_url": f"{frontend_url}/payment/success",
-            "cancel_url": f"{frontend_url}/payment/cancel"
-        },
-        "transactions": [{
-            "item_list": {
-                "items": [{
-                    "name": price_info["name"],
-                    "sku": feature_type,
-                    "price": str(price_info["price"]),
-                    "currency": "AUD",
-                    "quantity": 1
-                }]
-            },
-            "amount": {
-                "total": str(price_info["price"]),
-                "currency": "AUD"
-            },
-            "description": f"Criminal Appeal AI - {price_info['name']} for case {case_id}"
-        }]
-    })
-    
-    if payment.create():
-        # Store pending payment
-        payment_record = Payment(
-            user_id=user.user_id,
-            case_id=case_id,
-            feature_type=feature_type,
-            amount=price_info["price"],
-            paypal_order_id=payment.id,
-            status="pending"
-        )
-        payment_dict = payment_record.model_dump()
-        payment_dict["created_at"] = payment_dict["created_at"].isoformat()
-        await db.payments.insert_one(payment_dict)
-        
-        # Get approval URL
-        approval_url = None
-        for link in payment.links:
-            if link.rel == "approval_url":
-                approval_url = link.href
-                break
-        
-        return {
-            "payment_id": payment_record.payment_id,
-            "paypal_order_id": payment.id,
-            "approval_url": approval_url
-        }
-    else:
-        logger.error(f"PayPal payment creation failed: {payment.error}")
-        raise HTTPException(status_code=500, detail="Failed to create payment")
-
-@api_router.post("/cases/{case_id}/payments/capture")
-async def capture_payment(case_id: str, request: Request):
-    """Capture/execute a PayPal payment after user approval"""
-    user = await get_current_user(request)
-    body = await request.json()
-    paypal_payment_id = body.get("paypal_payment_id")
-    payer_id = body.get("payer_id")
-    
-    if not paypal_payment_id or not payer_id:
-        raise HTTPException(status_code=400, detail="paypal_payment_id and payer_id required")
-    
-    # Find the pending payment
-    payment_record = await db.payments.find_one({
-        "paypal_order_id": paypal_payment_id,
-        "case_id": case_id,
-        "user_id": user.user_id,
-        "status": "pending"
-    })
-    
-    if not payment_record:
-        raise HTTPException(status_code=404, detail="Payment not found")
-    
-    # Execute the payment
-    payment = paypalrestsdk.Payment.find(paypal_payment_id)
-    
-    if payment.execute({"payer_id": payer_id}):
-        # Update payment record
-        await db.payments.update_one(
-            {"paypal_order_id": paypal_payment_id},
-            {"$set": {
-                "status": "completed",
-                "completed_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        
-        return {
-            "success": True,
-            "message": "Payment completed successfully",
-            "feature_type": payment_record["feature_type"]
-        }
-    else:
-        await db.payments.update_one(
-            {"paypal_order_id": paypal_payment_id},
-            {"$set": {"status": "failed"}}
-        )
-        raise HTTPException(status_code=400, detail="Payment execution failed")
-
-@api_router.post("/payments/webhook")
-async def paypal_webhook(request: Request):
-    """Handle PayPal IPN/webhook notifications"""
-    body = await request.json()
-    event_type = body.get("event_type", "")
-    
-    if event_type == "PAYMENT.SALE.COMPLETED":
-        resource = body.get("resource", {})
-        parent_payment = resource.get("parent_payment")
-        
-        if parent_payment:
-            await db.payments.update_one(
-                {"paypal_order_id": parent_payment},
-                {"$set": {
-                    "status": "completed",
-                    "completed_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-    
-    return {"status": "received"}
 
 # ============ PAYID PAYMENT ENDPOINTS ============
 # DO NOT UNDO — PayID payment endpoints for Australian bank transfers
@@ -2471,6 +2294,48 @@ async def verify_payid_payment(request: Request):
     )
     
     return {"status": "verified", "message": "Payment confirmed. Feature unlocked."}
+
+
+@api_router.get("/payments/payid/pending")
+async def get_pending_payid_payments(request: Request):
+    """Get all pending PayID payments (admin only)"""
+    user = await get_current_user(request)
+    if not is_admin_user(user.email):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    pending = await db.payments.find(
+        {"method": "payid", "status": {"$in": ["pending", "submitted", "pending_verification"]}},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return {"pending_payments": pending}
+
+
+@api_router.post("/payments/payid/admin-confirm/{reference}")
+async def admin_confirm_payid_payment(reference: str, request: Request):
+    """Admin confirms a PayID payment has been received"""
+    user = await get_current_user(request)
+    if not is_admin_user(user.email):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    payment = await db.payments.find_one({"reference": reference}, {"_id": 0})
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    
+    await db.payments.update_one(
+        {"reference": reference},
+        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat(), "confirmed_by": user.email}}
+    )
+    
+    # Unlock the feature for the user
+    if payment.get("case_id") and payment.get("feature_type"):
+        await db.cases.update_one(
+            {"case_id": payment["case_id"], "user_id": payment["user_id"]},
+            {"$addToSet": {"unlocked_features": payment["feature_type"]}}
+        )
+    
+    return {"status": "confirmed", "reference": reference}
+
 
 # ============ RESOURCE DIRECTORY ============
 
@@ -4113,7 +3978,7 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
     if not api_key:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
-    LLM_TIMEOUT = 65  # Hard timeout per model attempt
+    LLM_TIMEOUT = 45  # Hard timeout per model attempt
 
     def _sync_llm_call(provider, model, prompt_text, session_suffix=""):
         """Synchronous LLM call — runs in a thread so we can enforce timeouts."""
@@ -4990,9 +4855,7 @@ app.include_router(contradictions_router)
 from routers.export import router as export_router
 app.include_router(export_router)
 
-# Include new payment router (PayPal + PayID)
-from routers.payments_new import router as payments_new_router
-app.include_router(payments_new_router)
+# PayID-only payment system (PayPal removed)
 
 app.add_middleware(
     CORSMiddleware,

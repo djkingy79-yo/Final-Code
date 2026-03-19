@@ -140,7 +140,7 @@ const faqs = [
       },
       {
         q: "Is my payment secure?",
-        a: "Yes. All payments are processed through PayPal's secure payment system. We never see or store your credit card details."
+        a: "Yes. All payments are processed via PayID bank transfer — Australia's instant payment system. Your funds go directly to our verified account."
       },
       {
         q: "Can I get a refund?",

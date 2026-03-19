@@ -1664,7 +1664,7 @@ const LandingPage = () => {
                 <p className="text-xs text-muted-foreground mt-1">Barristers charge triple that. A full legal report? Thousands.</p>
               </div>
               <p className="text-xs text-muted-foreground text-center">
-                Secure payment via PayPal
+                Secure payment via PayID bank transfer
               </p>
             </div>
           </div>
