@@ -359,7 +359,7 @@ const ReportsSection = ({
                       <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                       <div>
                         <p className="text-sm font-semibold text-blue-900">Generating {getReportTypeLabel(report.report_type)}...</p>
-                        <p className="text-xs text-blue-600">This usually takes 20-60 seconds.</p>
+                        <p className="text-xs text-blue-600">This usually takes 1-3 minutes. Please wait.</p>
                       </div>
                     </div>
                     <Button
