@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://barrister-toolkit.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://appeal-hub-5.preview.emergentagent.com').rstrip('/')
 
 # Test user credentials
 TEST_EMAIL = "testuser999@test.com"
