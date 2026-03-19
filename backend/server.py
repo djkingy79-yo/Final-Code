@@ -4108,32 +4108,49 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
 - Frame everything as persuasive advocacy, not neutral analysis.
 - The client is paying premium for maximum detail and actionable legal strategy."""
 
-    # Call AI via Emergent — Claude primary (fast, reliable), OpenAI fallback
+    # Call AI via Emergent — with HARD 65s timeout per model (thread-based)
     api_key = os.environ.get('EMERGENT_LLM_KEY')
     if not api_key:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
-    # Claude is fast and reliable; OpenAI gpt-4o-mini as fallback
-    MODEL_CHAIN = [
-        ("anthropic", "claude-sonnet-4-20250514"),
-        ("openai", "gpt-4o-mini"),
-    ]
-    
+    LLM_TIMEOUT = 65  # Hard timeout per model attempt
+
+    def _sync_llm_call(provider, model, prompt_text, session_suffix=""):
+        """Synchronous LLM call — runs in a thread so we can enforce timeouts."""
+        import asyncio as _aio
+        loop = _aio.new_event_loop()
+        try:
+            chat = LlmChat(
+                api_key=api_key,
+                session_id=f"rpt_{case_id}_{session_suffix}_{uuid.uuid4().hex[:6]}",
+                system_message=system_prompt
+            ).with_model(provider, model)
+            result = loop.run_until_complete(chat.send_message(UserMessage(text=prompt_text)))
+            return result
+        finally:
+            loop.close()
+
     async def _llm_call(prompt_text, session_suffix=""):
-        """Single LLM call with automatic model fallback."""
-        for provider, model in MODEL_CHAIN:
+        """LLM call with model fallback and hard per-model timeout."""
+        models = [
+            ("anthropic", "claude-sonnet-4-20250514"),
+            ("openai", "gpt-4o-mini"),
+        ]
+        for provider, model in models:
             try:
-                chat = LlmChat(
-                    api_key=api_key,
-                    session_id=f"rpt_{case_id}_{session_suffix}_{uuid.uuid4().hex[:6]}",
-                    system_message=system_prompt
-                ).with_model(provider, model)
-                result = await chat.send_message(UserMessage(text=prompt_text))
-                logger.info(f"LLM call OK: {provider}/{model} ({len(result)} chars)")
+                result = await asyncio.wait_for(
+                    asyncio.to_thread(_sync_llm_call, provider, model, prompt_text, session_suffix),
+                    timeout=LLM_TIMEOUT
+                )
+                logger.info(f"LLM OK: {provider}/{model} ({len(result)} chars)")
                 return result
+            except asyncio.TimeoutError:
+                logger.warning(f"LLM {provider}/{model} TIMED OUT after {LLM_TIMEOUT}s — trying next")
+                continue
             except Exception as e:
                 logger.warning(f"LLM {provider}/{model} failed: {e}")
-        raise Exception("All AI providers failed")
+                continue
+        raise Exception("All AI providers failed or timed out")
     
     response = None
     last_error = None
