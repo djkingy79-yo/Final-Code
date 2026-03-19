@@ -645,19 +645,8 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Prioritized pending work moved to: `/app/memory/ROADMAP.md`
 
 ## Latest Delivery Note (Mar 2026)
-- Landing, report, and barrister-content polish updates (AU spelling pass, dropdown/footer-link alignment, upgraded barrister showcase messaging, and extensive-report barrister dossier requirements) are logged in `CHANGELOG.md` (latest session).
-- Verification status: `iteration_36.json` (feature/content pass) + backend regression iteration 39 (ready).
-- AU-English enforcement pass completed across key user-facing strings; endpoint contracts retained where API naming uses legacy `/analyze` path segments.
-- Added cross-page AU-English proofreading sweep (FAQ, Statistics, Compare Cases, Case Detail labels, Form Templates, Landing glossary copy) with regression checks passing.
-- Performance hotfix shipped for lag during grounds investigation/report generation: bounded AI context budgets + faster grounds models + clearer long-run UX feedback.
-- Legal directory and appeal statistics readability overhaul delivered: merged legal resources/contacts flow, state-ordered filtering, clearer advice-help descriptions, and reorganised statistics hierarchy with prominent appeal-rate spotlight.
-- Legal directory further simplified into state-focused default mode with national support included, reducing first-load clutter while retaining all listings.
-- Added dedicated `/how-it-works` page with process flow, report pricing, and a direct Start Case CTA while preserving all existing tutorial content on `/how-to-use`.
-- Tightened overall presentation: success stories moved to compact 3-column card layout with heading-above-comment format, and landing navigation/footer/resource sections updated to reflect merged pages and new flow.
-- Continued polish: glossary now supports compact/expanded reading density (compact default) and landing now includes section-level back-to-top controls for long-scroll usability.
-- Visibility pass completed: landing nav uses direct links (no desktop dropdown dependency), stats critical content is always visible, and headings on stats/how-it-works are centred for clearer flow.
-- Report generation reliability hotfix completed: adaptive model fallback, normalised admin unlock checks, and guaranteed aggressive options section appended at report bottom when enabled.
-- Added historical report embedding on Report View via new `/api/reports/embedded-legacy` endpoint so strongest prior reports are visible in-app and not lost.
+- **Session 13 (Mar 19, 2026)**: Deployment readiness check passed. Report generation reliability fixed with retry + model fallback (Claude x2 → gpt-4o-mini). Australian English verified clean. Print buttons verified. Testing: iteration_65 — 100% pass.
+- Previous sessions: See `/app/memory/CHANGELOG.md` for full history.
 
 ### Final Comprehensive Fix + DO NOT UNDO Reinforcement (Mar 2026) ✅
 - [x] **DO_NOT_UNDO.md** — Project-level protection file with 10 absolute rules

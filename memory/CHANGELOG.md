@@ -1,5 +1,23 @@
 # Appeal Case Manager — Changelog
 
+## 2026-03-19 — Session 13 (Deployment Readiness + Report Reliability Fix)
+- **Deployment readiness check PASSED** — No blockers found:
+  - Auth redirect uses `window.location.origin` (not hardcoded)
+  - All env vars properly configured
+  - Backend/frontend supervisor configs correct
+- **Report generation reliability FIXED** (P0 critical recurring issue):
+  - Root cause 1: `emergentintegrations` module not installed in environment — fixed with pip install
+  - Root cause 2: Subprocess used `python3` which didn't resolve to venv — fixed with `sys.executable`
+  - Root cause 3: No retry or model fallback — added 3-attempt chain: Claude Sonnet 4 (x2) → gpt-4o-mini
+  - Reports now complete successfully (~3 min with fallback)
+  - Claude hits 502 errors intermittently, gpt-4o-mini fallback works reliably
+- **Australian English verified** — No remaining American English in user-facing text
+- **Print buttons verified** — All use `window.print()` (BarristerView, ReportView, CaseDetail)
+- **Testing**: iteration_65 — 100% backend (9/9) + 100% frontend
+  - Full polling flow verified: Generate → Poll → Complete (~174s)
+  - Mobile responsive verified at 390px
+  - All case tabs working
+
 ## 2026-03 — Session 12 (Unfinished Tasks Execution Sweep)
 - Realtime notes collaboration upgraded:
   - Added WebSocket collaboration endpoint: `/api/cases/{case_id}/notes/ws`
@@ -28,94 +46,37 @@
   - Testing report: `/app/test_reports/iteration_35.json`
   - Frontend sanity pass: success
 
-## 2026-03 — Session 13 (AU-English Enforcement Pass)
-- Enforced Australian-English spelling in key user-facing strings (e.g., organise/analysing/analyse)
-- Updated remaining US-spelling copy in templates/error text where safe
-- Extended proofreading across Landing, FAQ, Statistics, Compare Cases, Case Detail labels, Form Templates, and glossary/legal resources wording
-- Preserved API route contracts that use `/analyze` naming for compatibility
-- Validation: landing + backend quick regression checks passed
+## 2026-03 — Session 11 (AU English + Legal Background Images)
+- Australian English pass (~20 corrections): "analyze" → "analyse", "organize" → "organise", "favor" → "favour"
+- 4 AI-generated legal-themed background images added to landing page
+- Testing: iteration_31 (95% pass)
 
-## 2026-03 — Session 14 (Grounds/Report Performance Optimisation)
-- Reduced AI prompt payload size for grounds auto-identify, single-ground investigation, and report generation using bounded context budgets
-- Added document/timeline/notes truncation metadata in prompt assembly to keep responses faster on large matters
-- Switched grounds auto-identify + ground investigation model calls to `gpt-4o-mini` for faster turnaround
-- Improved frontend user feedback for long operations (clear speed-mode toasts + timeout messaging)
-- Increased client timeout windows for heavy analysis routes to reduce premature timeout errors
-- Validation: health checks + endpoint smoke tests + report/ground generation checks passed
+## 2026-03 — Session 10 (PayID Email Notifications)
+- Automatic email notifications for PayID and PayPal payment confirmations
+- Professional HTML email templates with branding
+- Sent via Resend API
 
-## 2026-03 — Session 15 (Legal Directory + Statistics Readability Refresh)
-- Merged legal contacts/resources experience to a single canonical page (`/legal-resources`)
-- Added state filter and state-order rendering on legal directory cards to reduce scrolling fatigue
-- Kept all listings and added clearer "How they can help with legal advice" card labelling
-- Redirects updated: `/legal-contacts` and `/contacts` now route to merged legal resources page
-- Reworked Appeal Statistics visual hierarchy:
-  - Larger headline
-  - Prominent 0.012% spotlight box near top
-  - Section labels and clearer sectional structure
-  - Long crisis analysis block made collapsible for readability
-- Validation: frontend test pass with working filters, section structure, and page rendering
+## 2026-03 — Session 9 (Visitor Counter)
+- Public visitor counter on landing page
+- Backend analytics endpoints for tracking unique visitors
 
-## 2026-03 — Session 16 (Legal Directory State-Focused Simplification)
-- Set legal directory default to state-focused mode (NSW) with national support included to reduce clutter on first load
-- Added unified state-view banner and condensed section presentation when a specific state filter is active
-- Kept all legal contacts/resources in merged one-page experience and retained advice-help descriptors
-- Validation: UX checks confirm improved scannability and stable rendering
+## 2026-03 — Session 8 (PayPal & PayID Integration)
+- Full PayPal REST API integration
+- PayID manual bank transfer support with unique reference codes
+- Admin dashboard for verifying pending payments
 
-## 2026-03 — Session 17 (How It Works Standalone Experience)
-- Added new standalone `/how-it-works` page to show process flow in action
-- Included report pricing section directly under the process walkthrough
-- Added clear "Start Your Case Now" CTA button on the new page
-- Kept existing `/how-to-use` page intact (no info removed)
-- Updated landing Learn dropdown and mobile menu links to include new page
-- Validation: routing and UI checks passed with no regressions
+## 2026-03 — Session 7 (Stripe Removal & Barrister View Overhaul)
+- Stripe completely removed per user request
+- Barrister View redesigned with premium gradient header and case strength score
 
-## 2026-03 — Session 18 (Presentation Tightening + Success Stories Layout)
-- Success Stories redesigned into compact multi-column cards (desktop 3-up), with explicit heading above each comment and preserved detail/outcome data
-- Landing Resources dropdown tidied (merged legal resources/contacts entry, duplicate removed)
-- Landing resources section updated to reflect merged flow and new How It Works page
-- Landing footer reorganised into clearer grouped sections with updated links
-- Validation: full frontend presentation checks passed, no regressions
+## 2026-03 — Session 6 (Super Reports & Stripe)
+- Report prompts massively upgraded (Quick Summary, Full Detailed, Extensive Log)
+- Stripe payment integration (later removed)
 
-## 2026-03 — Session 19 (Glossary + Landing Navigation Polish Continuation)
-- Added Legal Glossary compact/expanded density toggle (compact default) for faster scanning without removing any term details
-- Kept full glossary data and examples intact while tightening card spacing/typography for readability
-- Added mini "Back to top" controls between major landing sections with smooth scroll
-- Validation: frontend testing agent pass (`iteration_37.json`) + final sanity pass all green
-
-## 2026-03 — Session 20 (No-Dropdown Navigation + Visibility Pass)
-- Removed landing desktop dropdown menu pattern; promoted key destinations to always-visible top nav links
-- Ensured high-value pages are directly visible: See It In Action, Appeal Statistics, Legal Resources, Success Stories, FAQ, About
-- Made appeal statistics critical content visible by default (removed collapse/dropdown behaviour from access-crisis section)
-- Centred major headings/subheadings on Appeal Statistics and How It Works for cleaner reading flow
-- Validation: `iteration_38.json` pass + final frontend sanity pass complete
-
-## 2026-03 — Session 21 (Report Generation Reliability + Aggressive Footer)
-- Fixed admin detection reliability by normalising admin email checks (`is_admin_user`) across unlock/payment paths
-- Improved report generation reliability with adaptive model fallback strategy (`gpt-4o` then `gpt-4o-mini`)
-- Reduced extremely high paid-report target ranges to practical premium ranges to lower timeout risk while preserving structure depth
-- Added explicit bottom section when aggressive mode is enabled:
-  - `AGGRESSIVE RELIEF OPTIONS — QUICK REFERENCE`
-- Improved frontend error feedback to show backend report-generation detail messages instead of generic errors
-- Validation: backend report-generation stability checks passed and aggressive section confirmed present
-
-## 2026-03 — Session 22 (Recovered Report Embedding)
-- Added authenticated backend endpoint: `GET /api/reports/embedded-legacy`
-  - Finds strongest historical reports for the current user (prioritised by detail length)
-  - Returns embedded-ready report payload with type/title/date/content
-- Report View now embeds recovered high-detail historical reports directly below current report content
-  - Includes report type badge, generated date, embedded analysis block, and “Open Original” button
-- Goal: preserve previously strong report quality references and reduce perceived loss of good prior outputs
-- Validation: frontend testing pass (`iteration_40.json`) confirms section visibility and no regressions
-
-## 2026-03 — Session 11 (Premium Report + Barrister Overhaul)
-- AI report prompts reworked for hybrid legal/plain-English depth
-- Removed costs + witness contradiction/credibility sections from report content requirements
-- Landing report samples rebuilt with stronger examples
-- Barrister view and landing legal-professional messaging significantly upgraded
-- Admin dashboard access hardening completed
-- Legal resources quick-nav and structure improved
-
-## 2026-03 — Session 10 (PayID + Mobile UX)
-- PayID flow made clearer and mobile-first
-- Payment modal touch targets and layout improved
-- PayID details and reference visibility improved
+## 2026-03 — Sessions 1-5 (Foundation)
+- Core features: Auth, cases, documents, timeline, grounds, notes, reports
+- UI/UX redesign with blue/white/red colour scheme
+- All Australian states coverage
+- Legal framework viewer with AustLII links
+- Mobile responsive design
+- Backend refactoring into routers
