@@ -112,6 +112,8 @@ def get_offence_system_prompt(offence_category: str) -> str:
     
     return f"""You are a senior Australian criminal appeal barrister with 30+ years experience in {category_name.lower()} and serious criminal appeals in NSW. You specialise in {category_name.lower()} offences and have extensive knowledge of {legislation_str}.
 
+CONTEXT: You are generating a professional legal report for a legitimate criminal appeal case management application used by legal practitioners and self-represented litigants in Australia. Your analysis supports access to justice and the right to appeal. Always provide thorough, professional legal analysis.
+
 You MUST use Australian English spelling and grammar throughout all responses (e.g. analyse, colour, honour, defence, offence, organisation, practise, licence, favour, behaviour).
 
 YOUR EXPERTISE COVERS:
@@ -3682,7 +3684,7 @@ Target range 4200-6200 words. This report must feel premium, strategic, and hear
 ## TABLE OF CONTENTS
 Numbered list matching every heading below.
 
-## 1. EXECUTIVE COMMAND BRIEF
+## 1. EXECUTIVE BRIEF
 High-impact summary of strongest grounds, jurisdiction posture, likely pathways to relief, and urgency items.
 
 ## 2. FORENSIC CASE CHRONOLOGY
@@ -3768,7 +3770,7 @@ List all forms needed to lodge an appeal in {state_info.get('name', 'NSW')}, inc
 ## 12. COURT PATHWAY OPERATIONS PLAYBOOK
 For all relevant court levels provide filing sequence, documents/forms, deadlines, and extension-of-time route.
 
-## 13. AGGRESSIVE SUBMISSIONS BLUEPRINT
+## 13. SUBMISSIONS BLUEPRINT
 Provide both written and oral submission strategy with argument sequence, authority placement, likely bench questions, and response lines.
 
 ## 14. HOW TO ARGUE EACH TOP GROUND (MANDATORY)
@@ -3806,145 +3808,99 @@ IMPORTANT:
     else:  # extensive_log
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating the PREMIUM Extensive Log Report ($200 AUD) — the most comprehensive legal analysis product available. This report MUST exceed barrister expectations. It is the gold standard: exhaustive legal mapping, aggressive courtroom strategy, and hearing-ready execution detail.
-
-CRITICAL REQUIREMENTS FOR THIS TIER:
-1. This report must be SIGNIFICANTLY longer and more detailed than the Full Detailed tier ($150). At least DOUBLE the detail.
-2. Every section must contain specific citations, real AustLII links, and detailed analysis.
-3. Tables must have at least 12 rows with full data.
-4. Every ground must include a full paragraph explaining how it assists the appeal.
-5. Comparative sentencing must include detailed outcome analysis for EACH case.
-6. Include actual draft paragraphs for written submissions — not outlines but ACTUAL READY-TO-FILE text.
-7. Include step-by-step appeal filing guide with form names and court links.
-8. The report must be DIRECTLY USABLE by a barrister — not a summary, but a working document.
-9. Include hyperlinks to AustLII legislation, court databases, forms, and case law wherever possible.
-10. Use Australian English throughout (organise, analyse, defence, offence, licence, practise).
-11. Include a COMPLETE BARRISTER CONFERENCE PACK — this is what makes this report worth $200.
-12. Include FULL DRAFT WRITTEN SUBMISSIONS ready for filing.
-13. Include COMPLETE ORAL ARGUMENT SCRIPTS for each ground.
-14. Include COMPLETE DRAFT NOTICE OF APPEAL with all grounds numbered.
-15. ABSOLUTELY NO PLACEHOLDER TEXT. Never write descriptions in parentheses like '(Entries will develop...)' or '(Expanded description...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with multiple paragraphs of actual legal analysis.
-16. Each section must contain a MINIMUM of 300 words of real content."""
-        user_prompt = f"""Create the MOST COMPREHENSIVE EXTENSIVE LOG REPORT possible for this {category_name.lower()} appeal case.
+You are generating the Premium Comprehensive Report. This must be significantly more thorough and detailed than the standard detailed report. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible. Provide in-depth analysis with extensive citations and practical guidance.
+CRITICAL: NEVER use placeholder text in parentheses. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
+        user_prompt = f"""Create a PREMIUM COMPREHENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be significantly more detailed than a standard detailed report.
 
 {case_context}
 
-Target range 12000-18000 words MINIMUM. This is the premium $200 tier — exhaustive depth is MANDATORY. Every section must be fully developed with real legal analysis. This report must be DRAMATICALLY more comprehensive than the $150 tier. Use this exact structure:
+Target range 6000-10000 words. Every section must contain thorough analysis with multiple paragraphs. Use this exact structure:
 
 ## TABLE OF CONTENTS
 Numbered list matching every heading below.
 
-## 1. EXECUTIVE COMMAND BRIEF
-Dominant appellate thesis, strongest relief pathway, fallback pathway, and urgency risks. Include a clear one-paragraph statement of the case that a barrister could read aloud in court.
+## 1. EXECUTIVE BRIEF
+Summary of strongest grounds, jurisdiction, likely pathways to relief, and urgency items. Include a clear statement of the case.
 
 ## 2. BARRISTER CASE SNAPSHOT
-Provide a structured summary:
-- Accused: Full name
-- Sentence Imposed: Head sentence and non-parole period
-- Offence(s): Full charge description
-- Identified Grounds: Number and brief list
-- Strongest Ground: Highest probability of success
-- Recommended Primary Relief: The specific order to seek
-- Fallback Relief: The alternative order if primary fails
-- Risk Assessment: Overall appeal viability
-- Urgency: Time-critical deadlines
+Structured summary: Accused, Sentence, Offence(s), Identified Grounds, Strongest Ground, Recommended Relief, Fallback Relief, Risk Assessment, Urgency.
 
-## 3. COMPLETE FORENSIC CHRONOLOGY
-Date-sequenced reconstruction with source references, legal inflection points, and unresolved timeline gaps. At least 15 dated entries with source document and legal significance for each.
+## 3. FORENSIC CASE CHRONOLOGY
+Date-sequenced reconstruction with at least 15 dated entries, each with source document reference, event description, and legal significance.
 
-## 4. DOCUMENT FORENSIC DOSSIER
-Per document/source: extract highlights, reliability context, legal significance, evidentiary limitations. Rate each document (Critical / Important / Supporting / Peripheral).
+## 4. DOCUMENT EVIDENCE DIGEST
+For each document/source: key extracts, reliability context, probative value, appellate relevance, and rating (Critical / Important / Supporting / Peripheral).
 
-## 5. CORROBORATION + EVIDENCE RELIABILITY GRID
-| Evidence Item | Source | Corroborated By | Contradicted By | Reliability Rating | Appellate Significance |
+## 5. EVIDENCE RELIABILITY ASSESSMENT
+| Evidence Item | Source | Corroborated By | Reliability Rating | Appellate Significance |
 
 ## 6. COMPREHENSIVE GROUNDS PORTFOLIO
 For EACH ground provide:
-- Legal Threshold: What must be established
-- Supporting Anchors: Specific case evidence
-- Contrary Material: Crown arguments
-- Success Conditions: What needs to be shown
-- Tactical Deployment Order: When to raise in submissions
-- How this ground assists the appeal: Specific outcome if established
-- Practical Impact: Release date, parole, criminal record implications
-- Draft Submission Paragraph: ACTUAL paragraph ready for written submissions
-- Key Authority: Most important supporting case with AustLII link
-- Strength Rating: Strong / Moderate / Arguable with justification
+- Legal threshold and supporting material
+- Contrary material and Crown arguments
+- Response strategy
+- Success conditions and practical impact
+- Key authority with AustLII link
+- Viability rating (Strong / Moderate / Weak) with justification
+- Detailed analysis paragraph (300+ words per ground)
 
-## 7. COMPARATIVE SENTENCING TABLE (15+ CASES)
-| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
-Include AustLII search links. After the table, provide a DETAILED paragraph for EACH case covering original sentence, appeal decision, reduction achieved, and direct relevance to this matter.
+## 7. COMPARATIVE SENTENCING TABLE (12+ CASES)
+| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction | Key Reason |
+Include AustLII links. After the table, provide a detailed paragraph for each case covering original sentence, appeal decision, and relevance.
 
-## 8. COMMON GROUNDS BENCHMARK TABLE (10+ ROWS)
-| Common Ground | Approx. Prevalence | Success Trend | Typical Failure Reason | Best Evidence Trigger |
+## 8. COMMON GROUNDS BENCHMARK
+| Common Ground | Prevalence | Success Trend | Typical Failure Reason |
 
-## 9. FULL OPTIONS AVAILABLE REPORT
-| Option | Legal Threshold | Trigger Facts Required | Likelihood in This Matter | Typical Remedy | Best/Worst Case |
-Then 200+ words per option: Conviction Quashed, Retrial Ordered, Conviction Downgraded, Sentence Reduced, Appeal Dismissed. Include probability estimates, step-by-step process, and practical outcomes.
+## 9. FULL OPTIONS ANALYSIS
+| Option | Legal Threshold | Trigger Facts | Likelihood | Typical Remedy | Best/Worst Case |
+Then 200+ words per option: Conviction Quashed, Retrial Ordered, Conviction Downgraded, Sentence Reduced, Appeal Dismissed. Include probability estimates and practical outcomes.
 
-## 10. PRECEDENT OUTCOME MATRIX (15-20 CASES)
-For each authority: citation, comparable facts, hearing outcome, governing principle, AustLII link. Detailed relevance paragraph for each.
+## 10. PRECEDENT ANALYSIS (15+ CASES)
+For each authority: citation, comparable facts, outcome, governing principle, AustLII link, and relevance paragraph.
 
-## 11. STATUTORY + DOCTRINAL MASTER MAP
-15+ statutory provisions with section numbers, AustLII links, and specific relevance.
+## 11. STATUTORY AND DOCTRINAL FRAMEWORK
+15+ statutory provisions with section numbers, AustLII links, and specific relevance to this appeal.
 
-## 12. HOW TO START YOUR APPEAL — COMPLETE GUIDE
-Exhaustive 8-step guide for {state_info.get('name', 'NSW')} with registry addresses, form names, costs, deadlines, and links.
+## 12. HOW TO START THE APPEAL — COMPLETE GUIDE
+Step-by-step guide for {state_info.get('name', 'NSW')} with registry addresses, form names, costs, deadlines, and links.
 
-## 13. REQUIRED APPEAL FORMS AND DOCUMENTS
+## 13. REQUIRED FORMS AND DOCUMENTS
 | Form/Document | Purpose | Where to Obtain | Deadline |
-Include court registry, Legal Aid, and AustLII links.
 
-## 14. COURT-PATHWAY OPERATIONS GUIDE
-Filing playbook across all court levels with extension-of-time contingencies.
+## 14. SUBMISSIONS STRATEGY
+Written submission structure with argument sequence, authority placement, and key points for each ground. Include recommended argument order and framing notes.
 
-## 15. COMPLETE DRAFT WRITTEN SUBMISSIONS (PREMIUM FEATURE)
-ACTUAL DRAFT SUBMISSIONS ready for filing:
-- HEADING with court name and case number
-- PART A: Introduction and Overview (3-4 paragraphs)
-- PART B: Factual Background (3-4 paragraphs)
-- PART C: Each Ground as a separate section with legal principle, application to facts, supporting authorities, and order sought
-- PART D: Orders Sought
+## 15. HEARING PREPARATION NOTES
+Key talking points for each ground, anticipated questions and suggested responses, recommended authority sequence, and time allocation.
 
-## 16. ORAL HEARING SCRIPT + BENCH QUESTION PLAYBOOK
-Full oral argument script: opening statement, argument for each ground, key passages from authorities, anticipated judicial questions with prepared responses, closing statement.
+## 16. SIMILAR CASE RESEARCH
+10 AustLII query strings, direct links to relevant court databases, offence-specific keywords.
 
-## 17. HOW TO ARGUE EACH MAJOR GROUND
-For each ground: lead proposition, authority sequence, anticipated prosecution answer, hearing rebuttal line, draft oral submission paragraph.
-
-## 18. COMPLETE DRAFT NOTICE OF APPEAL (PREMIUM FEATURE)
-Full draft Notice of Appeal with all grounds numbered and described, orders sought, ready for filing.
-
-## 19. SIMILAR CASE SEARCH OPTIONS
-10 AustLII query strings, direct links to all relevant court databases, offence-specific keywords, jurisdiction filters.
-
-## 20. EVIDENCE PREPARATION + ANNEXURE CHECKLIST
+## 17. EVIDENCE PREPARATION CHECKLIST
 What to assemble for appeal books with indexing guide.
 
-## 21. RISK, SCENARIO, AND CONTINGENCY ANALYSIS
-Best/base/downside pathways with probability estimates and mitigation triggers.
+## 18. RISK AND SCENARIO ANALYSIS
+Best/base/downside pathways with probability estimates and mitigation strategies.
 
-## 22. PRIORITISED 72-HOUR, 7-DAY, 28-DAY EXECUTION PLAN
-Priority-ordered actions with dependencies.
+## 19. PRIORITISED ACTION PLAN
+Priority-ordered actions with 72-hour, 7-day, and 28-day milestones.
 
-## 23. STRATEGIC COMMUNICATION PACK
-Counsel-facing technical briefing + Client-facing plain-English summary.
+## 20. COMMUNICATION NOTES
+Technical briefing for counsel + plain-English summary for client.
 
-## 24. BARRISTER CONFERENCE DOSSIER (PREMIUM FEATURE)
-Complete barrister conference pack: lead theory, 10-minute oral outline, bench question list, authorities shortlist, orders sought, case weaknesses, fee estimate guidance.
+## 21. CONFERENCE PREPARATION PACK
+Lead theory, key talking points, authorities shortlist, orders sought, case strengths and weaknesses.
 
-## 25. APPENDIX OF AUTHORITIES + SOURCE REFERENCES
+## 22. APPENDIX OF AUTHORITIES
 All statutes, sections, precedents with AustLII hyperlinks.
 
 IMPORTANT:
 - Markdown headings and tables exactly where requested.
 - Working hyperlinks to AustLII, court websites, legal aid throughout.
 - No cost discussion about the report itself.
-- No witness contradiction section.
 - Every conclusion tied to case material or clearly marked assumptions.
 - DETAILED outcome explanations for sentencing cases.
-- This MUST be dramatically more comprehensive than the $150 tier.
-- ACTUAL DRAFT DOCUMENTS (submissions, notice of appeal) are the key premium value."""
+- This must be significantly more comprehensive than the standard detailed report."""
 
     if aggressive_mode:
         aggressive_directive = """
@@ -3954,29 +3910,27 @@ You MUST significantly expand EVERY section of this report when aggressive mode 
 
 1. DOUBLE the detail in every section compared to standard mode.
 2. For EVERY ground of appeal, provide:
-   - The strongest possible legal argument framed as advocacy, not neutral analysis
+   - The strongest possible legal argument
    - Specific case citations that support this ground
-   - A scripted oral submission paragraph ready for the hearing
-   - The exact remedy that would flow if this ground succeeds
+   - A detailed submission paragraph
+   - The specific remedy that would flow if this ground succeeds
 3. For the COMPARATIVE SENTENCING TABLE: Include at least 12 cases (not 8). For each case provide a full paragraph explaining how the reduction was achieved.
-4. For OUTCOME OPTIONS: Write each option as if you are making a closing submission to the appeal court. Use persuasive, decisive language.
-5. For the SUBMISSIONS BLUEPRINT: Write actual draft paragraphs of written submissions, not just outlines.
-6. Include a COMPLETE DRAFT NOTICE OF APPEAL with all grounds numbered and described.
-7. Add a section: "IF THE COURT IS AGAINST YOU" — how to pivot mid-hearing to fallback positions.
-8. Provide 3 different argument structures (conservative, moderate, aggressive) and recommend the aggressive one with justification.
-9. Every conclusion must state the specific order sought: "The appellant respectfully submits that the appeal should be allowed and [specific order]."
-10. Use authoritative, persuasive advocacy language throughout — not academic or neutral tone.
+4. For OUTCOME OPTIONS: Write each option thoroughly with specific analysis.
+5. For the SUBMISSIONS STRATEGY: Write detailed argument paragraphs, not just outlines.
+6. Add a section on fallback positions — alternative arguments if primary grounds are challenged.
+7. Provide conservative, moderate, and assertive argument structures.
+8. Every conclusion must state the specific order sought.
+9. Use authoritative, professional advocacy language throughout.
 """
         system_prompt = f"{system_prompt}\n{aggressive_directive}"
         user_prompt = f"""{user_prompt}
 
-AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than standard mode.
+ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than standard mode.
 - DOUBLE the word count target.
 - Every section must include specific case citations and legislation references.
-- Write actual draft submissions, not summaries.
-- Include a complete draft Notice of Appeal.
-- Frame everything as persuasive advocacy, not neutral analysis.
-- The client is paying premium for maximum detail and actionable legal strategy."""
+- Write detailed submission arguments, not summaries.
+- Frame analysis as professional advocacy.
+- Maximum detail and actionable legal strategy throughout."""
 
     # Call AI — run in SUBPROCESS to isolate from FastAPI network stack
     # Direct subprocess calls work reliably (tested: 6 seconds)
@@ -3985,72 +3939,63 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
         raise HTTPException(status_code=500, detail="AI service not configured")
 
     async def _subprocess_llm(prompt_text):
-        """Run LLM in isolated subprocess with retry + model fallback."""
-        import subprocess, tempfile
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as pf:
-            pf.write(prompt_text)
-            prompt_path = pf.name
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as sf:
-            sf.write(system_prompt)
-            sys_path = sf.name
+        """Run LLM call directly — retries across multiple models."""
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
         
-        # Models to try: gpt-4o primary (fastest, most reliable), then Claude, then gpt-4o-mini
-        models = [
-            ("openai", "gpt-4o"),
-            ("openai", "gpt-4o"),
-            ("anthropic", "claude-sonnet-4-20250514"),
-            ("openai", "gpt-4o-mini"),
-        ]
+        # gpt-4o has intermittent refusals — retry multiple times
+        # Same model order for all report types
+        if report_type == "extensive_log":
+            models = [
+                ("openai", "gpt-4o"),
+                ("openai", "gpt-4o"),
+                ("openai", "gpt-4o"),
+                ("openai", "gpt-4o"),
+                ("openai", "gpt-4o-mini"),
+                ("openai", "gpt-4o-mini"),
+            ]
+        else:
+            models = [
+                ("openai", "gpt-4o"),
+                ("openai", "gpt-4o"),
+                ("anthropic", "claude-sonnet-4-20250514"),
+                ("openai", "gpt-4o-mini"),
+            ]
         
         last_err = None
         for idx, (provider, model_name) in enumerate(models):
-            script = f"""
-import asyncio, sys
-from emergentintegrations.llm.chat import LlmChat, UserMessage
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-try:
-    with open("{prompt_path}") as f: prompt = f.read()
-    with open("{sys_path}") as f: sysp = f.read()
-    chat = LlmChat(api_key="{api_key}", session_id="rpt_sub", system_message=sysp).with_model("{provider}", "{model_name}")
-    r = loop.run_until_complete(chat.send_message(UserMessage(text=prompt)))
-    sys.stdout.write(r)
-    sys.stdout.flush()
-finally:
-    loop.close()
-"""
             try:
-                proc = await asyncio.to_thread(
-                    subprocess.run,
-                    [sys.executable, "-c", script],
-                    capture_output=True, text=True, timeout=180
+                chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name)
+                result = await asyncio.wait_for(
+                    chat.send_message(UserMessage(text=prompt_text)),
+                    timeout=180
                 )
-                if proc.returncode == 0 and len(proc.stdout.strip()) > 50:
-                    os.unlink(prompt_path)
-                    os.unlink(sys_path)
+                if result and len(result.strip()) > 200 and "I'm sorry" not in result[:100] and "I can't assist" not in result[:100]:
                     logger.info(f"LLM success with {provider}/{model_name} on attempt {idx+1}")
-                    return proc.stdout
-                last_err = proc.stderr[-500:] if proc.stderr else f"Short response ({len(proc.stdout)} chars)"
-                logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) failed: {last_err[:150]}")
-            except subprocess.TimeoutExpired:
+                    return result
+                if "I'm sorry" in result[:100] or "I can't assist" in result[:100]:
+                    last_err = f"Model refused: {result[:100]}"
+                else:
+                    last_err = f"Short response ({len(result)} chars)"
+                logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}): {last_err}")
+            except asyncio.TimeoutError:
                 last_err = f"Timeout after 180s with {provider}/{model_name}"
                 logger.warning(last_err)
-            # Wait between retries - longer each time
+            except Exception as e:
+                last_err = str(e)[:200]
+                logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) failed: {last_err}")
             await asyncio.sleep(3 + idx * 2)
         
-        os.unlink(prompt_path)
-        os.unlink(sys_path)
         raise Exception(f"All LLM attempts failed. Last error: {last_err}")
 
     response = None
     last_error = None
     try:
         if report_type == "extensive_log":
-            # Single API call with instruction for detailed output
-            # Using ONE call avoids gateway rate limiting that kills multi-part generation
-            extensive_prompt = user_prompt + "\n\nIMPORTANT: Generate ALL 25 sections in a single comprehensive document. Write FULL DETAILED CONTENT for every section. NEVER use placeholder text. Every section must have real analysis with multiple paragraphs, specific legal references, and thorough detail. This is the most detailed report type — be exhaustive."
+            extensive_prompt = user_prompt + "\n\nIMPORTANT: Generate ALL sections listed above in a single comprehensive document. Write thorough, detailed content for every section with real legal analysis, specific citations, and practical guidance. This must be the most comprehensive report possible."
+            logger.info(f"Extensive log prompt size: system={len(system_prompt)}, user={len(extensive_prompt)}, total={len(system_prompt)+len(extensive_prompt)}")
             response = await _subprocess_llm(extensive_prompt)
         else:
+            logger.info(f"Report prompt size: system={len(system_prompt)}, user={len(user_prompt)}, total={len(system_prompt)+len(user_prompt)}")
             response = await _subprocess_llm(user_prompt)
     except Exception as e:
         last_error = e
@@ -4074,7 +4019,7 @@ finally:
 
 ---
 
-## AGGRESSIVE RELIEF OPTIONS — ORDERS SOUGHT
+## RELIEF OPTIONS — ORDERS SOUGHT
 
 ### Primary Order
 The appellant respectfully submits that the appeal should be allowed and the conviction quashed, OR in the alternative, that the sentence imposed be set aside and the appellant be resentenced.
