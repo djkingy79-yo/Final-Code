@@ -5,6 +5,7 @@
 # ========================================================================
 # DO NOT UNDO — server module. All logic in this file is approved and must be preserved.
 import os
+import sys
 os.environ["DEFAULT_MAX_RETRIES"] = "0"  # Must be set before litellm/openai import
 os.environ["OPENAI_MAX_RETRIES"] = "0"
 
@@ -3984,8 +3985,8 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
         raise HTTPException(status_code=500, detail="AI service not configured")
 
     async def _subprocess_llm(prompt_text):
-        """Run LLM in isolated subprocess — avoids FastAPI event loop/network issues."""
-        import subprocess, tempfile, json as _json
+        """Run LLM in isolated subprocess with retry + model fallback."""
+        import subprocess, tempfile
         with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as pf:
             pf.write(prompt_text)
             prompt_path = pf.name
@@ -3993,27 +3994,46 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
             sf.write(system_prompt)
             sys_path = sf.name
         
-        script = f"""
-import asyncio, sys
+        # Models to try: primary (Claude) x2 attempts, then fallback (OpenAI)
+        models = [
+            ("anthropic", "claude-sonnet-4-20250514"),
+            ("anthropic", "claude-sonnet-4-20250514"),
+            ("openai", "gpt-4o-mini"),
+        ]
+        
+        last_err = None
+        for provider, model_name in models:
+            script = f"""
+import asyncio, sys, time
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 async def run():
     with open("{prompt_path}") as f: prompt = f.read()
     with open("{sys_path}") as f: sysp = f.read()
-    chat = LlmChat(api_key="{api_key}", session_id="rpt_sub", system_message=sysp).with_model("anthropic", "claude-sonnet-4-20250514")
+    chat = LlmChat(api_key="{api_key}", session_id="rpt_sub", system_message=sysp).with_model("{provider}", "{model_name}")
     r = await chat.send_message(UserMessage(text=prompt))
     sys.stdout.write(r)
 asyncio.run(run())
 """
-        proc = await asyncio.to_thread(
-            subprocess.run,
-            ["python3", "-c", script],
-            capture_output=True, text=True, timeout=120
-        )
+            try:
+                proc = await asyncio.to_thread(
+                    subprocess.run,
+                    [sys.executable, "-c", script],
+                    capture_output=True, text=True, timeout=180
+                )
+                if proc.returncode == 0 and len(proc.stdout.strip()) > 100:
+                    os.unlink(prompt_path)
+                    os.unlink(sys_path)
+                    return proc.stdout
+                last_err = proc.stderr[-500:] if proc.stderr else "Empty response"
+                logger.warning(f"LLM attempt with {provider}/{model_name} failed: {last_err[:200]}")
+            except subprocess.TimeoutExpired:
+                last_err = f"Timeout after 180s with {provider}/{model_name}"
+                logger.warning(last_err)
+            await asyncio.sleep(2)
+        
         os.unlink(prompt_path)
         os.unlink(sys_path)
-        if proc.returncode != 0:
-            raise Exception(f"Subprocess failed: {proc.stderr[:300]}")
-        return proc.stdout
+        raise Exception(f"All LLM attempts failed. Last error: {last_err}")
 
     response = None
     last_error = None
