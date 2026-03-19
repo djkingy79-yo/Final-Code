@@ -162,7 +162,7 @@ const ReportsSection = ({
   const generateReport = async (reportType) => {
     setGeneratingReport(true);
     setShowReportDialog(false);
-    toast.info("Starting report generation. This may take 1-3 minutes.");
+    toast.info("Generating report — usually takes 20-60 seconds.");
     
     try {
       const response = await axios.post(
@@ -200,8 +200,8 @@ const ReportsSection = ({
 
   const pollForCompletion = (reportId) => {
     let elapsed = 0;
-    const interval = 4000; // poll every 4 seconds
-    const maxWait = 300000; // 5 minutes max
+    const interval = 3000; // poll every 3 seconds
+    const maxWait = 180000; // 3 minutes max
 
     pollingRef.current = setInterval(async () => {
       elapsed += interval;
@@ -304,7 +304,7 @@ const ReportsSection = ({
             <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
             <p className="text-sm font-semibold text-blue-900">AI is analysing your case. Please allow time for generation.</p>
           </div>
-          <p className="text-xs text-blue-700 mb-3">This can take 1-3 minutes for detailed reports. Do not close this page.</p>
+          <p className="text-xs text-blue-700 mb-3">Usually takes 20-60 seconds. Do not close this page.</p>
           <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
             <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
           </div>
@@ -545,7 +545,7 @@ const ReportsSection = ({
                 <div>
                   <p className="text-sm font-semibold text-blue-900">Please Allow Time for Generation</p>
                   <p className="text-xs text-blue-700">
-                    Reports take 30-90 seconds to generate depending on the tier selected. The Extensive Log Report may take up to 2 minutes due to its comprehensive analysis. Please do not close this page while generating.
+                    Reports typically take 20-60 seconds to generate. Please do not close this page while generating.
                   </p>
                 </div>
               </div>

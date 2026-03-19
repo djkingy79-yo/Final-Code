@@ -3601,40 +3601,40 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     state = case.get('state', 'nsw')
     state_info = AUSTRALIAN_STATES.get(state, AUSTRALIAN_STATES.get('nsw'))
     
-    # Context limits tuned to keep report generation responsive on large cases
+    # Context limits tuned for speed — smaller windows for faster AI responses
     context_limits = {
         "quick_summary": {
-            "per_doc_chars": 1600,
-            "total_doc_chars": 12000,
-            "timeline_limit": 80,
-            "notes_limit": 50,
-            "note_chars": 260,
-            "grounds_limit": 40,
-            "ground_desc_chars": 240,
-            "ground_analysis_chars": 280,
+            "per_doc_chars": 1000,
+            "total_doc_chars": 8000,
+            "timeline_limit": 50,
+            "notes_limit": 30,
+            "note_chars": 200,
+            "grounds_limit": 30,
+            "ground_desc_chars": 200,
+            "ground_analysis_chars": 200,
             "ground_deep_chars": 0,
         },
         "full_detailed": {
-            "per_doc_chars": 3800,
-            "total_doc_chars": 38000,
-            "timeline_limit": 220,
-            "notes_limit": 120,
-            "note_chars": 700,
-            "grounds_limit": 110,
-            "ground_desc_chars": 900,
-            "ground_analysis_chars": 700,
+            "per_doc_chars": 2400,
+            "total_doc_chars": 24000,
+            "timeline_limit": 150,
+            "notes_limit": 80,
+            "note_chars": 500,
+            "grounds_limit": 80,
+            "ground_desc_chars": 600,
+            "ground_analysis_chars": 500,
             "ground_deep_chars": 0,
         },
         "extensive_log": {
-            "per_doc_chars": 5200,
-            "total_doc_chars": 56000,
-            "timeline_limit": 320,
-            "notes_limit": 180,
-            "note_chars": 950,
-            "grounds_limit": 150,
-            "ground_desc_chars": 1300,
-            "ground_analysis_chars": 1000,
-            "ground_deep_chars": 1600,
+            "per_doc_chars": 3500,
+            "total_doc_chars": 36000,
+            "timeline_limit": 220,
+            "notes_limit": 120,
+            "note_chars": 700,
+            "grounds_limit": 100,
+            "ground_desc_chars": 900,
+            "ground_analysis_chars": 700,
+            "ground_deep_chars": 1000,
         },
     }
     limits = context_limits.get(report_type, context_limits["quick_summary"])
@@ -4107,63 +4107,60 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
     if not api_key:
         raise HTTPException(status_code=500, detail="AI service not configured")
     
-    # Try up to 4 times with exponential backoff
+    # Use gpt-4o-mini for all reports — fast and high-quality
+    model_name = "gpt-4o-mini"
+    
+    # Try up to 3 times
     response = None
     last_error = None
-    for attempt in range(4):
+    for attempt in range(3):
         try:
-            if report_type == "quick_summary":
-                model_name = "gpt-4o-mini"
-            elif attempt >= 3:
-                # Only fall back to gpt-4o-mini on the LAST attempt
-                model_name = "gpt-4o-mini"
-                logger.warning(f"Falling back to gpt-4o-mini on attempt {attempt + 1}")
-            else:
-                model_name = "gpt-4o"
-
             chat = LlmChat(
                 api_key=api_key,
                 session_id=f"report_{case_id}_{uuid.uuid4().hex[:8]}",
                 system_message=system_prompt
             ).with_model("openai", model_name)
             
-            # For extensive_log, split into 3 API calls for full content
+            # For extensive_log, run 3 parts in PARALLEL for speed
             if report_type == "extensive_log":
                 part1_prompt = user_prompt + "\n\nIMPORTANT: Generate ONLY sections 1 through 9 now. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs, tables where specified, and specific details. Do NOT include sections 10-25 yet."
-                part1 = await chat.send_message(UserMessage(text=part1_prompt))
                 
+                part2_prompt = user_prompt + "\n\nGenerate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-9 or 19-25."
+                
+                part3_prompt = user_prompt + "\n\nGenerate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-18."
+
                 chat2 = LlmChat(
                     api_key=api_key,
                     session_id=f"report2_{case_id}_{uuid.uuid4().hex[:8]}",
                     system_message=system_prompt
                 ).with_model("openai", model_name)
-                part2_prompt = user_prompt + f"\n\nYou have already generated sections 1-9. Now generate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT repeat sections 1-9.\n\nHere is a summary of what was already covered in Part 1 (sections 1-9):\n{part1[:500]}"
-                part2 = await chat2.send_message(UserMessage(text=part2_prompt))
-                
                 chat3 = LlmChat(
                     api_key=api_key,
                     session_id=f"report3_{case_id}_{uuid.uuid4().hex[:8]}",
                     system_message=system_prompt
                 ).with_model("openai", model_name)
-                part3_prompt = user_prompt + f"\n\nYou have already generated sections 1-18. Now generate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT repeat any earlier sections."
-                part3 = await chat3.send_message(UserMessage(text=part3_prompt))
-                
+
+                # Run all 3 parts concurrently
+                part1, part2, part3 = await asyncio.gather(
+                    chat.send_message(UserMessage(text=part1_prompt)),
+                    chat2.send_message(UserMessage(text=part2_prompt)),
+                    chat3.send_message(UserMessage(text=part3_prompt)),
+                )
                 response = part1 + "\n\n" + part2 + "\n\n" + part3
             else:
                 response = await chat.send_message(UserMessage(text=user_prompt))
             
             # Verify response has sufficient content for paid reports
             if report_type != "quick_summary" and len(response) < 2000:
-                logger.warning(f"Report too short ({len(response)} chars), retrying with gpt-4o")
-                if attempt < 3:
+                logger.warning(f"Report too short ({len(response)} chars), retrying")
+                if attempt < 2:
                     continue
             
             break
         except Exception as e:
             last_error = e
-            logger.warning(f"Report generation attempt {attempt + 1} failed with {model_name}: {e}")
-            if attempt < 3:
-                import asyncio
+            logger.warning(f"Report generation attempt {attempt + 1} failed: {e}")
+            if attempt < 2:
                 await asyncio.sleep(1)
     
     if response is None:
