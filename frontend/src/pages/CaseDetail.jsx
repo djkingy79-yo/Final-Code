@@ -712,7 +712,10 @@ const CaseDetail = ({ user }) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.print()}
+                  onClick={() => {
+                    window.print();
+                    toast.info("If print dialog doesn't appear, use your browser's Share menu.");
+                  }}
                   className="rounded-xl"
                   data-testid={`print-${activeTab}-btn`}
                 >

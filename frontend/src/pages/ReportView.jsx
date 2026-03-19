@@ -170,7 +170,10 @@ const ReportView = () => {
     }
   };
 
-  const handlePrint = () => window.print();
+  const handlePrint = () => {
+    handleExportPDF();
+    toast.info("Generating PDF for printing.");
+  };
 
   const handleExportPDF = async () => {
     try {

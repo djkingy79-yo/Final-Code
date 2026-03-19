@@ -76,12 +76,9 @@ const BarristerView = ({ user }) => {
   };
 
   const handlePrint = () => {
-    try {
-      window.print();
-    } catch (e) {
-      // Fallback for mobile Safari where window.print() may fail
-      toast.info("Use your browser's Share menu to print this page.");
-    }
+    // Use PDF export as reliable cross-platform print alternative
+    handleExportPDF();
+    toast.info("Generating PDF for printing.");
   };
 
   const toggleFullscreen = () => {

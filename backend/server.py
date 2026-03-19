@@ -4109,6 +4109,7 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
     
     # Use gpt-4o-mini for all reports — fast and high-quality
     model_name = "gpt-4o-mini"
+    LLM_TIMEOUT = 90  # seconds max per LLM call
     
     # Try up to 3 times
     response = None
@@ -4140,15 +4141,21 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
                     system_message=system_prompt
                 ).with_model("openai", model_name)
 
-                # Run all 3 parts concurrently
-                part1, part2, part3 = await asyncio.gather(
-                    chat.send_message(UserMessage(text=part1_prompt)),
-                    chat2.send_message(UserMessage(text=part2_prompt)),
-                    chat3.send_message(UserMessage(text=part3_prompt)),
+                # Run all 3 parts concurrently with timeout
+                part1, part2, part3 = await asyncio.wait_for(
+                    asyncio.gather(
+                        chat.send_message(UserMessage(text=part1_prompt)),
+                        chat2.send_message(UserMessage(text=part2_prompt)),
+                        chat3.send_message(UserMessage(text=part3_prompt)),
+                    ),
+                    timeout=LLM_TIMEOUT
                 )
                 response = part1 + "\n\n" + part2 + "\n\n" + part3
             else:
-                response = await chat.send_message(UserMessage(text=user_prompt))
+                response = await asyncio.wait_for(
+                    chat.send_message(UserMessage(text=user_prompt)),
+                    timeout=LLM_TIMEOUT
+                )
             
             # Verify response has sufficient content for paid reports
             if report_type != "quick_summary" and len(response) < 2000:
@@ -4157,11 +4164,14 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
                     continue
             
             break
+        except asyncio.TimeoutError:
+            last_error = Exception(f"LLM call timed out after {LLM_TIMEOUT}s")
+            logger.warning(f"Report generation attempt {attempt + 1} timed out after {LLM_TIMEOUT}s")
         except Exception as e:
             last_error = e
             logger.warning(f"Report generation attempt {attempt + 1} failed: {e}")
-            if attempt < 2:
-                await asyncio.sleep(1)
+        if attempt < 2:
+            await asyncio.sleep(1)
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
