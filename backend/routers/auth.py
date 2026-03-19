@@ -118,9 +118,9 @@ async def login_user(request: LoginRequest, response: Response):
     if not user_doc:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    # Check if user has password (email auth)
+    # Check if user has password (email auth) OR is a Google user who set a password
     if not user_doc.get("password_hash"):
-        raise HTTPException(status_code=401, detail="This account uses Google login. Please sign in with Google.")
+        raise HTTPException(status_code=401, detail="This account uses Google login. Please sign in with Google, or set a password first from your profile.")
     
     # Verify password
     if not verify_password(request.password, user_doc["password_hash"], user_doc["password_salt"]):
@@ -249,6 +249,25 @@ async def accept_terms(request: Request):
         }}
     )
     return {"message": "Terms accepted", "terms_accepted": True}
+
+class SetPasswordRequest(BaseModel):
+    password: str
+
+@router.post("/set-password")
+async def set_password(req: SetPasswordRequest, request: Request):
+    """Allow any authenticated user (including Google users) to set/change their password"""
+    user = await get_current_user(request)
+    
+    if len(req.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    password_hash, password_salt = hash_password(req.password)
+    await db.users.update_one(
+        {"user_id": user.user_id},
+        {"$set": {"password_hash": password_hash, "password_salt": password_salt}}
+    )
+    return {"message": "Password set successfully. You can now log in with email and password."}
+
 
 @router.post("/logout")
 async def logout(request: Request, response: Response):
