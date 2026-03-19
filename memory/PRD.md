@@ -912,3 +912,25 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Dashboard sidebar consistent with lg: breakpoint
 - [x] **More dropdown on desktop** — Forms, Glossary, Legal Framework, Lawyers, How To Use, Contact, Caselaw Search, Professional Summary
 - [x] **Testing**: iteration_63 — 100% all viewports (390px, 810px, 1024px, 1920px)
+
+### Background Report Generation Fix (Mar 2026) ✅
+- [x] **Root cause identified**: Kubernetes ingress proxy times out (~60s) before AI report generation completes (30-90s), causing the HTTP response to never reach the frontend — user sees "reports not generating"
+- [x] **Background task pattern implemented**:
+  - `POST /api/cases/{case_id}/reports/generate` now returns **immediately** (~1s) with `status: "generating"`
+  - AI analysis runs as an `asyncio.create_task()` background task
+  - On completion, report `status` is updated to `"completed"` in MongoDB
+  - On failure, status is updated to `"failed"` with error message
+- [x] **New polling endpoint**: `GET /api/cases/{case_id}/reports/{report_id}/status`
+  - Returns `{ report_id, status }` — used by frontend to poll every 4 seconds
+- [x] **Frontend polling logic** in `ReportsSection.jsx`:
+  - After POST returns, starts polling status endpoint every 4 seconds
+  - Shows progress indicator with animated bar during generation
+  - On `completed`: shows success toast and refreshes reports list
+  - On `failed`: shows error toast
+  - Max wait: 5 minutes before timeout
+  - Generating/failed reports filtered from display list
+- [x] **Australian English enforcement**:
+  - Added "Use Australian English spelling and grammar" directive to `get_offence_system_prompt()` base function (used by all AI features)
+  - Added Australian English directives to standalone prompts: timeline extraction, timeline analysis, contradiction finder
+  - Report generation prompts already had "Use Australian English only" in guardrails
+- [x] **Testing**: iteration_64 — 100% backend (6/6) + 100% frontend

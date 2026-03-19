@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "./ui/dialog";
 import {
@@ -490,11 +491,9 @@ const ReportsSection = ({
             <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }}>
               Generate Report
             </DialogTitle>
+            <DialogDescription>Select the type of report you'd like to generate.</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            <p className="text-sm text-slate-600">
-              Select the type of report you'd like to generate:
-            </p>
             {REPORT_TYPES.map((type) => (
               <div
                 key={type.value}
