@@ -12,7 +12,7 @@ from datetime import datetime
 from io import BytesIO
 
 class JustitiaAPITester:
-    def __init__(self, base_url="https://case-analyzer-au.preview.emergentagent.com"):
+    def __init__(self, base_url="https://barrister-toolkit.preview.emergentagent.com"):
         self.base_url = base_url
         self.session_token = "test_session_notes_1770882054339"  # Updated test session
         self.user_id = "test-user-notes-1770882054339"
@@ -453,7 +453,7 @@ class JustitiaAPITester:
 def main():
     print("🏛️  JUSTITIA AI - CRIMINAL APPEAL CASE MANAGEMENT API TESTING")
     print("=" * 70)
-    print(f"Backend URL: https://case-analyzer-au.preview.emergentagent.com")
+    print(f"Backend URL: https://barrister-toolkit.preview.emergentagent.com")
     print(f"Test User: test-user-notes-1770882054339")
     print(f"Session Token: test_session_notes_1770882054339")
     print(f"Test Case ID: case_64f57656cd75")

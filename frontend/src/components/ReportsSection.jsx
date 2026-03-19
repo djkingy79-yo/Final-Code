@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
@@ -149,35 +149,91 @@ const ReportsSection = ({
     setShowPaymentModal(true);
   };
 
+  const pollingRef = useRef(null);
+
+  // Clean up polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, []);
+
   const generateReport = async (reportType) => {
     setGeneratingReport(true);
     setShowReportDialog(false);
-    toast.info("Generating report with optimised evidence context. Large cases may still take a few minutes.");
+    toast.info("Starting report generation. This may take 1-3 minutes.");
     
     try {
       const response = await axios.post(
         `${API}/cases/${caseId}/reports/generate`,
         { report_type: reportType, aggressive_mode: aggressiveMode },
-        { timeout: 240000 }
+        { timeout: 30000 }
       );
       
-      toast.success("Report generated successfully");
-      if (onReportsChange) onReportsChange();
+      const reportId = response.data?.report_id;
+      const status = response.data?.status;
+
+      if (status === "generating" && reportId) {
+        // Poll for completion
+        pollForCompletion(reportId);
+      } else {
+        // Already completed (unlikely with new flow, but handle gracefully)
+        toast.success("Report generated successfully");
+        if (onReportsChange) onReportsChange();
+        setGeneratingReport(false);
+        setAggressiveMode(false);
+      }
     } catch (error) {
       const detail = error?.response?.data?.detail;
-      if (error.code === 'ECONNABORTED') {
-        toast.info("Report generation timed out. Please retry — processing is now prioritised for speed.");
-      } else if (typeof detail === 'string') {
+      if (typeof detail === 'string') {
         toast.error(detail);
       } else if (detail?.message) {
         toast.error(detail.message);
       } else {
-        toast.error("Failed to generate report");
+        toast.error("Failed to start report generation");
       }
-    } finally {
       setGeneratingReport(false);
       setAggressiveMode(false);
     }
+  };
+
+  const pollForCompletion = (reportId) => {
+    let elapsed = 0;
+    const interval = 4000; // poll every 4 seconds
+    const maxWait = 300000; // 5 minutes max
+
+    pollingRef.current = setInterval(async () => {
+      elapsed += interval;
+      try {
+        const res = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/status`);
+        const status = res.data?.status;
+        if (status === "completed") {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+          toast.success("Report generated successfully!");
+          if (onReportsChange) onReportsChange();
+          setGeneratingReport(false);
+          setAggressiveMode(false);
+        } else if (status === "failed") {
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+          toast.error("Report generation failed. Please try again.");
+          setGeneratingReport(false);
+          setAggressiveMode(false);
+        }
+      } catch {
+        // Ignore transient polling errors
+      }
+
+      if (elapsed >= maxWait) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        toast.error("Report generation timed out. Please check back shortly.");
+        if (onReportsChange) onReportsChange();
+        setGeneratingReport(false);
+        setAggressiveMode(false);
+      }
+    }, interval);
   };
 
   const handlePaymentSuccess = () => {
@@ -275,7 +331,7 @@ const ReportsSection = ({
         </Card>
       ) : (
         <div className="space-y-4">
-          {reports.map((report) => {
+          {reports.filter(r => r.status !== 'generating' && r.status !== 'failed').map((report) => {
             const reportText = typeof report.content === 'string'
               ? report.content
               : report.content?.analysis || 'No analysis available';

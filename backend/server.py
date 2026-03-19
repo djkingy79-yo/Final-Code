@@ -101,6 +101,8 @@ def get_offence_system_prompt(offence_category: str) -> str:
     
     return f"""You are a senior Australian criminal appeal barrister with 30+ years experience in {category_name.lower()} and serious criminal appeals in NSW. You specialise in {category_name.lower()} offences and have extensive knowledge of {legislation_str}.
 
+You MUST use Australian English spelling and grammar throughout all responses (e.g. analyse, colour, honour, defence, offence, organisation, practise, licence, favour, behaviour).
+
 YOUR EXPERTISE COVERS:
 - {category_name} offences under NSW and Commonwealth law
 - Key elements: {', '.join(category_data.get('key_elements', ['actus reus', 'mens rea'])[:4])}
@@ -1419,7 +1421,7 @@ async def auto_generate_timeline(case_id: str, request: Request):
         doc_context += f"DOCUMENT: {doc.get('filename')}\n"
         doc_context += f"CONTENT:\n{content}\n\n"
     
-    system_prompt = """You are an expert legal analyst specialising in criminal cases. 
+    system_prompt = """You are an expert legal analyst specialising in criminal cases. Use Australian English spelling throughout.
 Your task is to extract a chronological timeline of events from case documents.
 
 For each event, identify:
@@ -1569,7 +1571,7 @@ async def analyze_timeline(case_id: str, request: Request):
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
     
-    system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law.
+    system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law. Use Australian English spelling throughout.
 Analyse this timeline of events and provide detailed insights for an appeal case.
 
 Your analysis must include:
@@ -2052,7 +2054,7 @@ async def analyze_witness_contradictions(case_id: str, request: Request):
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
     
-    system_prompt = """You are a legal analyst finding contradictions in witness statements. Find:
+    system_prompt = """You are a legal analyst finding contradictions in witness statements. Use Australian English spelling throughout. Find:
 1. DIRECT CONTRADICTIONS - witnesses contradict each other
 2. INTERNAL INCONSISTENCIES - witness contradicts themselves
 3. TIMELINE CONFLICTS - times/dates don't align
@@ -4216,9 +4218,43 @@ If judicial questioning suggests resistance to the primary ground:
         "event_count": len(timeline)
     }
 
+async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
+    """Background task that generates the AI report and updates the DB record."""
+    try:
+        report_titles = {
+            "quick_summary": "Quick Case Summary",
+            "full_detailed": "Full Detailed Legal Analysis",
+            "extensive_log": "Extensive Case Log & Analysis"
+        }
+        analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode)
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$set": {
+                "status": "completed",
+                "title": report_titles.get(report_type, "Report"),
+                "content": {
+                    "analysis": analysis_result["analysis"],
+                    "case_title": analysis_result["case_data"].get("title", ""),
+                    "defendant": analysis_result["case_data"].get("defendant_name", ""),
+                    "document_count": analysis_result["document_count"],
+                    "event_count": analysis_result["event_count"],
+                    "aggressive_mode": aggressive_mode
+                },
+                "grounds_of_merit": analysis_result["grounds_of_merit"],
+            }}
+        )
+        logger.info(f"Report {report_id} generated successfully")
+    except Exception as exc:
+        logger.error(f"Report {report_id} generation failed: {exc}")
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$set": {"status": "failed", "error": str(exc)}}
+        )
+
+
 @api_router.post("/cases/{case_id}/reports/generate", response_model=dict)
 async def generate_report(case_id: str, report_request: ReportRequest, request: Request):
-    """Generate an AI-powered report for a case"""
+    """Generate an AI-powered report for a case (background task)"""
     user = await get_current_user(request)
     report_type = report_request.report_type
     
@@ -4264,40 +4300,46 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
                 }
             )
     
-    # Generate AI analysis
-    analysis_result = await analyze_case_with_ai(case_id, user.user_id, report_type, report_request.aggressive_mode)
-    
-    # Create report
+    # Create a placeholder report with "generating" status and return immediately
+    report_id = f"rpt_{uuid.uuid4().hex[:12]}"
     report_titles = {
         "quick_summary": "Quick Case Summary",
         "full_detailed": "Full Detailed Legal Analysis",
         "extensive_log": "Extensive Case Log & Analysis"
     }
-    
-    report = Report(
-        case_id=case_id,
-        user_id=user.user_id,
-        report_type=report_type,
-        title=report_titles[report_type],
-        content={
-            "analysis": analysis_result["analysis"],
-            "case_title": analysis_result["case_data"].get("title", ""),
-            "defendant": analysis_result["case_data"].get("defendant_name", ""),
-            "document_count": analysis_result["document_count"],
-            "event_count": analysis_result["event_count"],
-            "aggressive_mode": report_request.aggressive_mode
-        },
-        grounds_of_merit=analysis_result["grounds_of_merit"]
+    placeholder = {
+        "report_id": report_id,
+        "case_id": case_id,
+        "user_id": user.user_id,
+        "report_type": report_type,
+        "title": report_titles.get(report_type, "Report"),
+        "content": {"analysis": "", "aggressive_mode": report_request.aggressive_mode},
+        "grounds_of_merit": [],
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "status": "generating",
+    }
+    insert_doc = {k: v for k, v in placeholder.items()}
+    await db.reports.insert_one(insert_doc)
+
+    # Fire-and-forget background task
+    asyncio.create_task(
+        _run_report_generation(report_id, case_id, user.user_id, report_type, report_request.aggressive_mode)
     )
-    
-    report_dict = report.model_dump()
-    report_dict["generated_at"] = report_dict["generated_at"].isoformat()
-    
-    await db.reports.insert_one(report_dict)
-    
-    # Return the report without MongoDB's _id field
-    created_report = await db.reports.find_one({"report_id": report.report_id}, {"_id": 0})
-    return created_report
+
+    return placeholder
+
+
+@api_router.get("/cases/{case_id}/reports/{report_id}/status")
+async def get_report_status(case_id: str, report_id: str, request: Request):
+    """Poll endpoint for report generation status"""
+    user = await get_current_user(request)
+    report = await db.reports.find_one(
+        {"report_id": report_id, "case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "report_id": 1, "status": 1, "error": 1}
+    )
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return {"report_id": report_id, "status": report.get("status", "completed")}
 
 @api_router.get("/cases/{case_id}/reports", response_model=List[dict])
 async def get_reports(case_id: str, request: Request):
