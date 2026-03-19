@@ -89,27 +89,30 @@ const ReportsSection = ({
   const handleExportPDF = async (reportId) => {
     try {
       toast.info("Generating PDF...");
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const a = document.createElement('a');
+        a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("PDF opening — use Share to save or print.");
+        return;
+      }
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-pdf`,
         { responseType: 'blob' }
       );
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
-      
-      // iOS Safari doesn't support programmatic downloads well
-      // Open in new tab instead
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.open(url, '_blank');
-      } else {
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `report_${reportId}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      }
-      
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `report_${reportId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       setTimeout(() => window.URL.revokeObjectURL(url), 5000);
       toast.success("PDF ready!");
     } catch (error) {

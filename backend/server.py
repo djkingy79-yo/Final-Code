@@ -3477,37 +3477,37 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     state = case.get('state', 'nsw')
     state_info = AUSTRALIAN_STATES.get(state, AUSTRALIAN_STATES.get('nsw'))
     
-    # Context limits tuned for reliability — smaller windows prevent gateway 502 errors
+    # Context limits — FULL DETAIL for quality reports
     context_limits = {
         "quick_summary": {
-            "per_doc_chars": 800,
-            "total_doc_chars": 6000,
-            "timeline_limit": 30,
-            "notes_limit": 20,
-            "note_chars": 150,
-            "grounds_limit": 20,
-            "ground_desc_chars": 150,
-            "ground_analysis_chars": 150,
+            "per_doc_chars": 1000,
+            "total_doc_chars": 8000,
+            "timeline_limit": 50,
+            "notes_limit": 30,
+            "note_chars": 200,
+            "grounds_limit": 30,
+            "ground_desc_chars": 200,
+            "ground_analysis_chars": 200,
             "ground_deep_chars": 0,
         },
         "full_detailed": {
-            "per_doc_chars": 1200,
-            "total_doc_chars": 12000,
-            "timeline_limit": 60,
-            "notes_limit": 40,
-            "note_chars": 300,
-            "grounds_limit": 40,
-            "ground_desc_chars": 400,
-            "ground_analysis_chars": 300,
+            "per_doc_chars": 2400,
+            "total_doc_chars": 24000,
+            "timeline_limit": 150,
+            "notes_limit": 80,
+            "note_chars": 500,
+            "grounds_limit": 80,
+            "ground_desc_chars": 600,
+            "ground_analysis_chars": 500,
             "ground_deep_chars": 0,
         },
         "extensive_log": {
-            "per_doc_chars": 1800,
-            "total_doc_chars": 18000,
-            "timeline_limit": 100,
-            "notes_limit": 60,
-            "note_chars": 400,
-            "grounds_limit": 60,
+            "per_doc_chars": 2400,
+            "total_doc_chars": 24000,
+            "timeline_limit": 150,
+            "notes_limit": 80,
+            "note_chars": 500,
+            "grounds_limit": 80,
             "ground_desc_chars": 600,
             "ground_analysis_chars": 500,
             "ground_deep_chars": 500,
@@ -4007,13 +4007,17 @@ AGGRESSIVE MODE IS ON. This report must be SIGNIFICANTLY more detailed than stan
             script = f"""
 import asyncio, sys
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-async def run():
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+try:
     with open("{prompt_path}") as f: prompt = f.read()
     with open("{sys_path}") as f: sysp = f.read()
     chat = LlmChat(api_key="{api_key}", session_id="rpt_sub", system_message=sysp).with_model("{provider}", "{model_name}")
-    r = await chat.send_message(UserMessage(text=prompt))
+    r = loop.run_until_complete(chat.send_message(UserMessage(text=prompt)))
     sys.stdout.write(r)
-asyncio.run(run())
+    sys.stdout.flush()
+finally:
+    loop.close()
 """
             try:
                 proc = await asyncio.to_thread(
@@ -4021,12 +4025,12 @@ asyncio.run(run())
                     [sys.executable, "-c", script],
                     capture_output=True, text=True, timeout=180
                 )
-                if proc.returncode == 0 and len(proc.stdout.strip()) > 100:
+                if proc.returncode == 0 and len(proc.stdout.strip()) > 50:
                     os.unlink(prompt_path)
                     os.unlink(sys_path)
                     logger.info(f"LLM success with {provider}/{model_name} on attempt {idx+1}")
                     return proc.stdout
-                last_err = proc.stderr[-500:] if proc.stderr else "Empty response"
+                last_err = proc.stderr[-500:] if proc.stderr else f"Short response ({len(proc.stdout)} chars)"
                 logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) failed: {last_err[:150]}")
             except subprocess.TimeoutExpired:
                 last_err = f"Timeout after 180s with {provider}/{model_name}"
@@ -4042,14 +4046,10 @@ asyncio.run(run())
     last_error = None
     try:
         if report_type == "extensive_log":
-            # Run parts SEQUENTIALLY to avoid overwhelming the gateway
-            part1_prompt = user_prompt + "\n\nIMPORTANT: Generate ONLY sections 1 through 9 now. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs, tables where specified, and specific details. Do NOT include sections 10-25 yet."
-            part2_prompt = user_prompt + "\n\nGenerate ONLY sections 10 through 18. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-9 or 19-25."
-            part3_prompt = user_prompt + "\n\nGenerate ONLY sections 19 through 25. Write FULL DETAILED CONTENT for each section. NEVER use placeholder text in parentheses. Every section must have real analysis with multiple paragraphs. Do NOT include sections 1-18."
-            part1 = await _subprocess_llm(part1_prompt)
-            part2 = await _subprocess_llm(part2_prompt)
-            part3 = await _subprocess_llm(part3_prompt)
-            response = part1 + "\n\n" + part2 + "\n\n" + part3
+            # Single API call with instruction for detailed output
+            # Using ONE call avoids gateway rate limiting that kills multi-part generation
+            extensive_prompt = user_prompt + "\n\nIMPORTANT: Generate ALL 25 sections in a single comprehensive document. Write FULL DETAILED CONTENT for every section. NEVER use placeholder text. Every section must have real analysis with multiple paragraphs, specific legal references, and thorough detail. This is the most detailed report type — be exhaustive."
+            response = await _subprocess_llm(extensive_prompt)
         else:
             response = await _subprocess_llm(user_prompt)
     except Exception as e:
