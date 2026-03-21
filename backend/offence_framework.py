@@ -4,14 +4,62 @@
 # Covers: NSW, VIC, QLD, SA, WA, TAS, NT, ACT + Commonwealth
 
 AUSTRALIAN_STATES = {
-    "nsw": {"name": "New South Wales", "abbreviation": "NSW"},
-    "vic": {"name": "Victoria", "abbreviation": "VIC"},
-    "qld": {"name": "Queensland", "abbreviation": "QLD"},
-    "sa": {"name": "South Australia", "abbreviation": "SA"},
-    "wa": {"name": "Western Australia", "abbreviation": "WA"},
-    "tas": {"name": "Tasmania", "abbreviation": "TAS"},
-    "nt": {"name": "Northern Territory", "abbreviation": "NT"},
-    "act": {"name": "Australian Capital Territory", "abbreviation": "ACT"},
+    "nsw": {
+        "name": "New South Wales", "abbreviation": "NSW",
+        "legal_aid_url": "https://www.legalaid.nsw.gov.au/",
+        "court_forms_url": "https://www.supremecourt.justice.nsw.gov.au/Pages/forms_fees.aspx",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/",
+        "appeal_court": "NSW Court of Criminal Appeal (NSWCCA)"
+    },
+    "vic": {
+        "name": "Victoria", "abbreviation": "VIC",
+        "legal_aid_url": "https://www.legalaid.vic.gov.au/",
+        "court_forms_url": "https://www.supremecourt.vic.gov.au/forms",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/vic/VSCA/",
+        "appeal_court": "Victorian Supreme Court - Court of Appeal (VSCA)"
+    },
+    "qld": {
+        "name": "Queensland", "abbreviation": "QLD",
+        "legal_aid_url": "https://www.legalaid.qld.gov.au/",
+        "court_forms_url": "https://www.courts.qld.gov.au/court-users/forms",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/qld/QCA/",
+        "appeal_court": "Queensland Court of Appeal (QCA)"
+    },
+    "sa": {
+        "name": "South Australia", "abbreviation": "SA",
+        "legal_aid_url": "https://www.lsc.sa.gov.au/",
+        "court_forms_url": "https://www.courts.sa.gov.au/forms-and-fees/",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/sa/SASCFC/",
+        "appeal_court": "South Australian Supreme Court Full Court (SASCFC)"
+    },
+    "wa": {
+        "name": "Western Australia", "abbreviation": "WA",
+        "legal_aid_url": "https://www.legalaid.wa.gov.au/",
+        "court_forms_url": "https://www.supremecourt.wa.gov.au/F/forms.aspx",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/wa/WASCA/",
+        "appeal_court": "Western Australian Supreme Court - Court of Appeal (WASCA)"
+    },
+    "tas": {
+        "name": "Tasmania", "abbreviation": "TAS",
+        "legal_aid_url": "https://www.legalaid.tas.gov.au/",
+        "court_forms_url": "https://www.supremecourt.tas.gov.au/practice-and-procedure/forms/",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/tas/TASCCA/",
+        "appeal_court": "Tasmanian Court of Criminal Appeal (TASCCA)"
+    },
+    "nt": {
+        "name": "Northern Territory", "abbreviation": "NT",
+        "legal_aid_url": "https://www.ntlac.nt.gov.au/",
+        "court_forms_url": "https://supremecourt.nt.gov.au/forms",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nt/NTCCA/",
+        "appeal_court": "Northern Territory Court of Criminal Appeal (NTCCA)"
+    },
+    "act": {
+        "name": "Australian Capital Territory", "abbreviation": "ACT",
+        "legal_aid_url": "https://www.legalaidact.org.au/",
+        "court_forms_url": "https://www.courts.act.gov.au/supreme/forms",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/act/ACTCA/",
+        "appeal_court": "ACT Court of Appeal (ACTCA)"
+    },
 }
 
 OFFENCE_CATEGORIES = {

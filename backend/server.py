@@ -3623,7 +3623,7 @@ For each viable ground provide:
 Provide a markdown table with at least 8 comparable sentencing outcomes.
 Required columns:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
-Include AustLII search URL: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+Include AustLII search URL: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
 After the table, provide a **Detailed Outcome Analysis** paragraph for each row explaining how the reduction was achieved and what grounds succeeded.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
@@ -3645,7 +3645,7 @@ Specific missing material from the case file and exact remediation steps with ur
 
 ## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
 For each case: citation, factual similarity to this matter, hearing outcome, extracted legal principle.
-Include AustLII link: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+Include AustLII link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
 Section-level mapping of all key Acts and appellate principles applicable. For each provision include the section number, Act name with year, and relevance to this case.
@@ -3674,7 +3674,7 @@ Step-by-step guide specific to {state_info.get('name', 'NSW')}:
 For each step: what to do in plain English, required form name, time limit/deadline, and link to relevant court registry.
 Then list all required forms in a table:
 | Form/Document | Purpose | Where to Obtain | Filing Deadline |
-Include links: [Legal Aid {state_info.get('name', 'NSW')}](https://www.legalaid.nsw.gov.au/) | [AustLII](https://www.austlii.edu.au/)
+Links: [Legal Aid {state_info.get('name', 'NSW')}]({state_info.get('legal_aid_url', 'https://www.legalaid.nsw.gov.au/')}) | [AustLII](https://www.austlii.edu.au/) | [Court Forms]({state_info.get('court_forms_url', '#')})
 
 ## 14. PRIORITISED ACTION PLAN
 72-hour actions (urgent filings, time-sensitive steps).
@@ -3746,7 +3746,7 @@ For EACH viable ground, provide a MINIMUM 300-word analysis:
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
 Markdown table with at least 12 comparable sentencing outcomes:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
-Include AustLII search link: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+Include AustLII search link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
 After the table, provide a DETAILED paragraph for EACH case explaining:
 - What was the original sentence and sentencing judge's reasoning
 - What the appeal court decided and why
@@ -3782,7 +3782,7 @@ For each of at least 15 cases:
 - Hearing outcome
 - Extracted legal principle
 - How this principle applies to the current case
-Include AustLII link: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/)
+Include AustLII link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
 15+ statutory provisions with:
@@ -3850,12 +3850,12 @@ Step-by-step guide specific to {state_info.get('name', 'NSW')}:
 For each step: plain English explanation, required form, deadline, and link.
 Forms table:
 | Form/Document | Purpose | Where to Obtain | Filing Deadline |
-Links: [Legal Aid {state_info.get('name', 'NSW')}](https://www.legalaid.nsw.gov.au/) | [AustLII](https://www.austlii.edu.au/)
+Links: [Legal Aid {state_info.get('name', 'NSW')}]({state_info.get('legal_aid_url', 'https://www.legalaid.nsw.gov.au/')}) | [AustLII](https://www.austlii.edu.au/) | [Court Forms]({state_info.get('court_forms_url', '#')})
 
 ## 17. SIMILAR CASE SEARCH OPTIONS
 Tailored AustLII search guidance:
 - 5+ query strings specifically designed for this case's offence and grounds profile
-- Links: [Search NSWCCA](https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/) | [Search all states](https://www.austlii.edu.au/)
+- Links: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')}) | [Search all states](https://www.austlii.edu.au/)
 - Court-level filtering suggestions
 - Keyword alternatives for each ground
 - How to narrow results to the most relevant period and jurisdiction
@@ -3906,31 +3906,34 @@ IMPORTANT:
         aggressive_directive = """
 
 AGGRESSIVE MODE (USER-REQUESTED) — CRITICAL INSTRUCTIONS:
-You MUST significantly expand EVERY section of this report when aggressive mode is active. This means:
+You MUST significantly expand EVERY section when aggressive mode is active:
 
-1. DOUBLE the detail in every section compared to standard mode.
+1. DOUBLE the word count target for the entire report.
 2. For EVERY ground of appeal, provide:
-   - The strongest possible legal argument
-   - Specific case citations that support this ground
-   - A detailed submission paragraph
-   - The specific remedy that would flow if this ground succeeds
-3. For the COMPARATIVE SENTENCING TABLE: Include at least 12 cases (not 8). For each case provide a full paragraph explaining how the reduction was achieved.
-4. For OUTCOME OPTIONS: Write each option thoroughly with specific analysis.
-5. For the SUBMISSIONS STRATEGY: Write detailed argument paragraphs, not just outlines.
-6. Add a section on fallback positions — alternative arguments if primary grounds are challenged.
-7. Provide conservative, moderate, and assertive argument structures.
-8. Every conclusion must state the specific order sought.
-9. Use authoritative, professional advocacy language throughout.
+   - The strongest possible legal argument, framed as professional advocacy
+   - Minimum 3 specific case citations that directly support this ground
+   - A detailed draft submission paragraph ready for court
+   - The specific orders to seek if this ground succeeds
+   - Fallback position with alternative argument if primary is challenged
+3. COMPARATIVE SENTENCING TABLE: Include at least 15 cases. For each, a full paragraph explaining how the reduction was achieved and how it parallels this case.
+4. OUTCOME OPTIONS: Write each pathway as a detailed analysis (250+ words) with specific legal thresholds and evidence triggers from THIS case.
+5. SUBMISSIONS STRATEGY: Write full draft argument paragraphs, not just outlines. Include opening lines, authority chains, and closing submissions for each ground.
+6. PRECEDENT MATRIX: Include 20+ cases with detailed factual comparison to this matter.
+7. STATUTORY FRAMEWORK: Map every relevant section with its specific application to the case facts.
+8. For ALL strategy sections: provide conservative, moderate, and assertive argument structures.
+9. Every conclusion must state the specific order sought from the court.
+10. Use authoritative, confident advocacy language throughout — write as if addressing the bench.
 """
         system_prompt = f"{system_prompt}\n{aggressive_directive}"
         user_prompt = f"""{user_prompt}
 
 ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than standard mode.
 - DOUBLE the word count target.
-- Every section must include specific case citations and legislation references.
+- Every section must include specific case citations and legislation references with years.
 - Write detailed submission arguments, not summaries.
-- Frame analysis as professional advocacy.
-- Maximum detail and actionable legal strategy throughout."""
+- Frame analysis as professional appellate advocacy.
+- Reference specific case facts and documents throughout.
+- Maximum detail and actionable legal strategy in every section."""
 
     # Call AI — run in SUBPROCESS to isolate from FastAPI network stack
     # Direct subprocess calls work reliably (tested: 6 seconds)

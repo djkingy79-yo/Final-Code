@@ -42,6 +42,7 @@ const BarristerView = ({ user }) => {
   const { caseId, reportId } = useParams();
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
+  const [allReports, setAllReports] = useState([]);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
   const [timeline, setTimeline] = useState([]);
@@ -55,18 +56,26 @@ const BarristerView = ({ user }) => {
 
   const fetchData = async () => {
     try {
-      const [reportRes, caseRes, groundsRes, timelineRes, docsRes] = await Promise.all([
+      const [reportRes, caseRes, groundsRes, timelineRes, docsRes, allReportsRes] = await Promise.all([
         axios.get(`${API}/cases/${caseId}/reports/${reportId}`),
         axios.get(`${API}/cases/${caseId}`),
         axios.get(`${API}/cases/${caseId}/grounds`),
         axios.get(`${API}/cases/${caseId}/timeline`),
-        axios.get(`${API}/cases/${caseId}/documents`)
+        axios.get(`${API}/cases/${caseId}/documents`),
+        axios.get(`${API}/cases/${caseId}/reports`).catch(() => ({ data: [] }))
       ]);
-      setReport(reportRes.data);
+      const primary = reportRes.data;
+      setReport(primary);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
       setTimeline(timelineRes.data || []);
       setDocuments(docsRes.data || []);
+      // Collect all completed reports sorted by detail level (extensive > full > quick)
+      const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
+      const completed = (allReportsRes.data || [])
+        .filter(r => r.status === "completed" && r.content?.analysis)
+        .sort((a, b) => (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0));
+      setAllReports(completed);
     } catch (error) {
       toast.error("Failed to load report");
       navigate(`/cases/${caseId}`);
@@ -356,7 +365,51 @@ const BarristerView = ({ user }) => {
     );
   }
 
-  const parsedContent = parseAnalysis(report?.content);
+  // Merge all reports — use most detailed version of each section
+  const mergeAllReports = () => {
+    if (!allReports.length && report?.content) return parseAnalysis(report.content);
+    
+    const sectionMap = new Map(); // title -> { section, charCount }
+    const reportOrder = []; // track insertion order
+    
+    // Parse each report (most detailed first due to sort)
+    for (const r of allReports) {
+      if (!r.content?.analysis) continue;
+      const parsed = parseAnalysis(r.content);
+      for (const section of parsed.sections) {
+        const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
+        const existing = sectionMap.get(normalTitle);
+        if (!existing || section.content.length > existing.section.content.length) {
+          if (!existing) reportOrder.push(normalTitle);
+          sectionMap.set(normalTitle, { section, charCount: section.content.length });
+        }
+      }
+    }
+    
+    // Also include primary report if not in allReports
+    if (report?.content?.analysis) {
+      const parsed = parseAnalysis(report.content);
+      for (const section of parsed.sections) {
+        const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
+        const existing = sectionMap.get(normalTitle);
+        if (!existing || section.content.length > existing.section.content.length) {
+          if (!existing) reportOrder.push(normalTitle);
+          sectionMap.set(normalTitle, { section, charCount: section.content.length });
+        }
+      }
+    }
+    
+    // Re-number sections sequentially
+    const merged = reportOrder
+      .map(key => sectionMap.get(key)?.section)
+      .filter(Boolean)
+      .map((s, i) => ({ ...s, number: String(i + 1) }));
+    
+    return { sections: merged };
+  };
+
+  const parsedContent = mergeAllReports();
+  const reportCount = allReports.length;
   const caseStrength = calculateStrength();
   const keyEvents = getKeyEvents();
   const strongGrounds = grounds.filter(g => g.strength === 'strong');
@@ -1118,8 +1171,13 @@ const BarristerView = ({ user }) => {
                   className="text-2xl font-bold text-slate-900 dark:text-white"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
-                  Detailed Analysis
+                  Comprehensive Analysis
                 </h2>
+                {reportCount > 1 && (
+                  <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
+                    Merged from {reportCount} reports
+                  </span>
+                )}
               </div>
 
               <div className="space-y-8">
