@@ -1,157 +1,137 @@
-<analysis>**original_problem_statement:**
-The user, Deb King, requires a web application named Appeal Case Manager to assist with criminal appeals across all Australian jurisdictions. Key features include secure document management, dual user authentication (Google & email/password), advanced AI-powered case analysis (timelines, grounds for appeal), a tiered reporting system with a paywall (initially PayPal & PayID, now PayID only), comprehensive case management tools, a Barrister View for presentations, and a rich library of legal resources. The application must be mobile-responsive and use Australian English.
+<analysis>**original_problem_statement**: 
+The user, Deb King, is building Appeal Case Manager to assist with criminal appeals across Australian jurisdictions. Key requirements include secure document management, dual authentication, AI-powered case analysis (grounds for appeal, timelines), a tiered reporting system with a PayID paywall, Barrister View for presentations, and PDF/Print exports. The app must strictly use Australian English. Current immediate need is to audit the entire landing/marketing pages to ensure descriptions, report samples, and pricing tiers perfectly reflect the newly overhauled AI report structures.
 
-**User's preferred language**: English
+**User's preferred language**: English (INSTRUCT next agent to respond in English)
 
-**what currently exists?**
-A full-stack application (React, FastAPI, MongoDB) with user authentication, document management, and AI report generation. The agent has just completed a long and difficult session focused on fixing critical, recurring issues.
+**what currently exists?** 
+A stable full-stack web application (React, FastAPI, MongoDB) featuring comprehensive case management, an overhauled AI report generation system with strict tier differentiation, dynamic state-specific external law links, a fully functional Barrister View that merges multiple generated reports, and robust iOS-compatible Print/PDF exports.
 
-Key systems in place:
-- **Authentication**: Supports Google OAuth and a newly implemented email/password login as a fallback, specifically created for the user to bypass persistent Google Auth errors.
-- **Report Generation**: Now uses a background task pattern where the frontend polls for completion. The UI has been updated to show generating status with an elapsed timer, and to correctly display failed reports.
-- **AI Backend**: All AI calls have been switched to use Anthropic's Claude Sonnet 4 as the primary model, with OpenAI's gpt-4o-mini as a silent fallback, in an attempt to improve reliability.
-- **Payments**: The entire application has been refactored to be **PayID only**. All PayPal code, UI, and configuration have been removed.
-- **Admin Dashboard**: The PayID management section is now functional, with working endpoints for refreshing the list of pending payments and confirming them.
+**Last working item**: 
+- **Last item agent was working**: Auditing the frontend static/marketing pages (specifically starting with ). The user requested a thorough review to ensure that landing page copy, sample reports, feature lists, pricing tier descriptions, footers, and dropdowns completely align with the actual app capabilities (since the AI report prompts were just massively restructured into 7, 15, and 20-section tiers).
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: N
+- **Which testing method agent to use?** screenshot tool (to visually verify the landing page text and layout updates).
+- **User Testing Done**: N
 
-**Last working item**:
--   **Last item agent was working:** The user requested a deployment readiness check. The  identified a critical blocker related to a hardcoded auth redirect URL. The agent's last action was fixing this blocker in .
--   **Status:** IN PROGRESS
--   **Agent Testing Done:** N
--   **Which testing method agent to use?** deployment_agent (to re-run the health check now that the blocker is fixed).
--   **User Testing Done:** N
-
-**All Pending/In progress Issue list**:
--   **Issue 1: Report Generation Timeouts & Failures (P0 - CRITICAL)**
--   **Issue 2: User Trust is Critically Low (P0 - CRITICAL)**
--   **Issue 3: Print Button on Mobile (P1)**
--   **Issue 4: Australian English Spell Check (P2)**
-
-**Issues Detail:**
--   **Issue 1: Report Generation Timeouts & Failures (P0 - CRITICAL)**
-    -   **Description**: This is the most critical and recurring issue. Reports fail frequently due to the underlying LLM gateway returning 502 errors. The user is extremely frustrated as this has been happening for many sessions.
-    -   **Attempted fixes**: The agent tried numerous complex solutions throughout the session (background tasks, model switching, , , monkey-patching libraries, subprocesses). The final, most promising solution involved running the LLM call in a dedicated thread to prevent blocking the main server process, allowing for reliable timeouts and fallbacks. However, even this has been inconsistent.
-    -   **Next debug checklist:**
-        1.  Verify the final LLM calling logic in . It should use  to wrap the  call.
-        2.  Confirm the model chain is Claude Sonnet 4 (primary) -> OpenAI gpt-4o-mini (fallback).
-        3.  Confirm there are NO SDK-level retries enabled ( env var should be set to  at the very top of ).
-        4.  Run two report generations back-to-back to test for consistency. One should be a free  and one a paid .
-        5.  Provide the user with screenshots of the successful completion and the time taken.
-    -   **Why fix this issue and what will be achieved with the fix?** This is the user's biggest pain point and the main source of distrust and financial complaints. Resolving it is essential for project continuation.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Both.
-
--   **Issue 2: User Trust is Critically Low (P0 - CRITICAL)**
-    -   **Description**: The user is extremely angry about being charged repeatedly for the same unresolved issues (reports, Google auth, print button). They have requested a refund and feel the project is going in circles. The agent has escalated this to the support team twice.
-    -   **Next debug checklist:**
-        1.  Prioritize fixing Issue #1 (Reports) above all else.
-        2.  For every fix, provide undeniable visual proof (screenshots, especially from a mobile perspective).
-        3.  Communicate clearly and empathetically. Acknowledge the user's frustration.
-        4.  Do not finish the job until the user has confirmed the core issues (reports, printing) are resolved on their end.
-    -   **Why fix this issue and what will be achieved with the fix?** To salvage the project and the relationship with the user.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** N/A (This is a process issue).
-
--   **Issue 3: Print Button on Mobile (P1)**
-    -   **Description**: The user has repeatedly stated the print button does not work on their mobile device (iOS/Safari).
-    -   **Attempted fixes**: The agent first changed the implementation to a PDF export, which crashed Safari. The agent then reverted all print buttons (, , ) back to a simple  call.
-    -   **Next debug checklist:**
-        1.  Verify that  is the only logic used for the print buttons.
-        2.  Use the  with a mobile user agent to navigate to Barrister View and click the print button, explicitly checking if the native print dialog appears.
-    -   **Why fix this issue and what will be achieved with the fix?** To resolve a core functionality complaint from the user.
-    -   **Status:** USER VERIFICATION PENDING
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Frontend.
-
--   **Issue 4: Australian English Spell Check (P2)**
-    -   **Description**: The initial request included a full-app spell check for Australian English. The agent added directives to the AI prompts but did not perform a comprehensive review of all static, user-facing text in the frontend components.
-    -   **Next debug checklist:**
-        1.   the  directory for common American-to-Australian English words (e.g., analyze, optimize, center, color).
-        2.  Replace any instances found in user-visible text. Ignore code variables, CSS properties, or library names.
-    -   **Why fix this issue and what will be achieved with the fix?** Fulfills an original product requirement and improves professionalism.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend.
+**All Pending/In progress Issue list**: 
+  - Issue 1: Landing page copy and samples are out of sync with new report structures (P0)
+     - Attempted fixes: Agent just opened  to begin review.
+     - Next debug checklist: Review  to update report descriptions (Quick Summary = 7 sections, Full Detailed = 15 sections, Extensive Log = 20 sections). Ensure see it in action live pics/samples accurately reflect these new sections. Check footers and navigation links.
+     - Why fix this issue and what will be achieved with the fix? Ensures user trust and accurate marketing of the newly updated application.
+     - Status: IN PROGRESS
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Frontend (via Screenshot tool).
+     - Blocked on other issue: None.
 
 **In progress Task List**:
--   **Task 1: Complete Deployment Readiness Check (P0)**
-    -   **Where to resume:** The agent fixed the blocker identified by the deployment agent. The next step is to call the  again to re-run the health check.
-    -   **What will be achieved with this?** Fulfills the user's last explicit instruction and confirms the app is ready for production.
-    -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** N/A (The task is the test).
+  - Task 1: Audit all frontend marketing pages
+     - Where to resume:  and potentially  or  (if separate).
+     - What will be achieved with this? Exact alignment between the product's marketing claims and its actual generated outputs.
+     - Status: IN PROGRESS
+     - Should Test frontend/backend/both after fix? Frontend
+     - Blocked on something: None.
 
-**Upcoming and Future Tasks**
-**Upcoming Tasks:**
-*   **P1: Backend Refactoring:** Decompose the monolithic  into a modular, router-based structure (, , etc.).
-*   **P2: Build Native Mobile App:** Capacitor is configured. Run the build process and test the native wrapper.
+**Upcoming and Future Tasks**:
+    Upcoming Tasks:
+    - P1: Backend Refactoring: Decompose the monolithic  (~4800 lines) into a modular, router-based structure (, , , etc.).
+    - P2: Build Native Mobile App: Capacitor is configured. Run the build process and test the native wrapper.
+    
+    Future Tasks:
+    - P2: Real-time Collaboration/Chat: Enhance the Notes section.
+    - P2: Case Sharing: Allow users to share cases with other registered users.
+    - P2: Launch Marketing: Finalize the marketing plan in .
 
-**Future Tasks:**
-*   **P2: Real-time Collaboration/Chat:** Enhance the Notes section.
-*   **P2: Case Sharing:** Allow users to share cases with other registered users.
-*   **P2: Launch Marketing:** Finalize the marketing plan in .
+**Completed work in this session**:
+- Replaced hardcoded AI endpoints (, ) with  wrapper to prevent 502 crashes. (DONE)
+- Implemented  to strip Certainly! preambles and AI placeholder notes in round/square brackets. Added filter for thin/empty report sections (<30 chars). (DONE)
+- Added editable  field to the  model, frontend dashboard, and a new Edit Case Details dialog in . Improved regex fallback. (DONE)
+- Fixed Print/PDF buttons across *all* CaseDetail tabs (Documents, Timeline, Grounds, Notes, Reports, Legal, Progress) using an iframe approach to fix iOS Safari bugs. (DONE)
+- Fixed PayID refresh button in Admin dashboard (added loading spinners and error toasts). (DONE)
+- Fixed Barrister View TOC numbering and implemented dynamic merging of *all* generated reports for a case into one cohesive presentation. (DONE)
+- Completely restructured the 3 AI Report Prompts: Quick Summary (7 sections), Full Detailed (15 sections), Extensive Log (20 sections, max context). Ensured Client Brief is always the final section. (DONE)
+- Integrated dynamic, state-specific URLs (AustLII, Legal Aid, Courts) into the AI prompts via  in . (DONE)
 
-**Completed work in this session**
--   **Report Generation Overhaul**: Implemented a background task pattern with frontend polling, status indicators, and an elapsed timer to improve UX during long-running AI tasks.
--   **Payment System Rework**: **Completely removed PayPal**. The application is now **PayID only**. This involved removing all backend logic (endpoints, configs) and rewriting the frontend payment modal.
--   **AI Model Strategy**: Switched the entire application to use **Claude Sonnet 4 as the primary LLM**, with OpenAI as a silent fallback, to combat reliability issues.
--   **Admin Dashboard Fix**: Implemented the missing backend endpoints to make the PayID Refresh and Confirm buttons fully functional.
--   **Auth Robustness**:
-    -   Created a **password-based login fallback** for the user's Google account to mitigate persistent OAuth errors. The user can log in with their email and the password .
-    -   Fixed a critical auth redirect URL issue that was blocking deployment.
--   **UI Bug Fixes**: Fixed an issue where failed or stuck reports were invisible to the user. They are now correctly displayed with their status.
+**Earlier issues found/mentioned but not fixed**:
+   - None pending. All user-reported issues from the screenshots were successfully resolved in this session.
 
-**Earlier issues found/mentioned but not fixed**
--   The backend's reliance on FastAPI's  instead of a dedicated task queue (like Celery) remains a potential architectural weakness for handling long-running jobs at scale.
-
-**Known issue recurrence from previous fork**
--   **Issue:** Report generation timeouts and failures.
--   **Recurrence count:** High.
--   **Status:** IN PROGRESS. This is the project's most critical, unresolved issue.
-
-**Code Architecture**
+**Known issue recurrence from previous fork**:
+  - Issue recurrence in previous fork: iOS Print/PDF failures and AI hallucinating lazy bracket placeholders.
+  - Recurrence count: High
+  - Status: RESOLVED (Tightened regex strippers and implemented safe iframe/navigation print workarounds, but monitor if new AI hallucination patterns emerge).
+  
+**Code Architecture**:
 
 
-**Key Technical Concepts**
--   **FastAPI **: Used for non-blocking report generation.
--   **Frontend Polling**: React frontend periodically calls a status endpoint.
--   **LLM Fallback**: Logic to try a primary AI model (Claude) and switch to a secondary (OpenAI) on failure or timeout.
--   ****: The final and most successful method for running blocking LLM calls in a non-blocking fashion to enforce timeouts.
--   **Payment System Removal**: A significant refactor to remove all traces of PayPal from the frontend and backend.
+**Key Technical Concepts**:
+- ****: Used for synchronous blocking LLM calls.
+- ****: Wrapper function to handle 502s via model degradation (gpt-4o -> claude-sonnet -> gpt-4o-mini).
+- **iOS Safari Workarounds**: Frontend uses  or invisible iframes for Print/PDF exports because iOS Safari blocks standard Blob URL downloads and  behavior is inconsistent.
+- **Merged Reports**:  fetches all generated reports for a case and dynamically merges sections based on titles, keeping the most detailed version of each section.
 
-**key DB schema**
--   : Utilizes a  field (, , ) and an  field to manage the asynchronous generation process.
--   : The  and  fields are now populated for the user's Google account to allow for password-based login.
--   : The  field is used to identify 'payid' transactions.  field has been removed.
+**key DB schema**:
+  - : {case_id, user_id, title, defendant_name, case_number, court, *sentence* (new), state, offence_category}
+  - : {report_id, case_id, user_id, report_type, status, content}
 
-**changes in tech stack**
--   **Primary LLM Provider**: Switched from OpenAI to Anthropic (Claude Sonnet 4).
--   **Payment Provider**: Switched from dual PayPal/PayID to **PayID only**.
+**changes in tech stack**:
+  - None
 
-**All files of reference**
--   : Contains all critical backend logic.
--   : The heart of the report generation UI.
--   : The simplified PayID-only payment UI.
--   : The admin UI for managing payments.
--   : Location of the recurring print button issue.
+**All files of reference**: 
+  - : Target for the current copy/alignment audit.
+  - : Contains the newly restructured report prompts.
+  -  & : Updated thoroughly in this session.
 
-**Areas that need refactoring**:
--    remains monolithic and is the top priority for refactoring into a router-based structure.
--   The LLM calling function in  is the result of many failed attempts. While it now works, it should be cleaned up for clarity and maintainability.
+**Areas that need refactoring**: 
+  -  is the primary technical debt. Needs decomposition into API routers (, , , etc.).
 
-**key api endpoints**
--   **New/Fixed:**
-    -   
-    -   
-    -   
-    -   
--   **Modified:**
-    -    (now async with background tasks)
-    -    (now supports password login for Google accounts)
--   **Removed:**
-    -   All PayPal-related endpoints.
+**key api endpoints**:
+  - : Used by Barrister View to fetch all reports for merging.
+  - : Fixed with retry logic.
+  - : Generates PDF directly on backend.
 
-**Critical Info for New Agent**
--   **USER TRUST IS ZERO:** The user is extremely frustrated with recurring issues and costs, and has requested a refund. Your absolute top priority is to resolve their complaints without fail. Acknowledge their frustration and provide undeniable visual proof of fixes.
--   **REPORT GENERATION IS THE CORE PROBLEM:** The LLM</analysis>
-- ALL REPORTS TIMING OUT WASTED HOURS GOING ROUND IN CIRCLES.
+**Critical Info for New Agent**: 
+- **DO NOT alter the  report generation prompts or  regex strippers** without extreme caution. They have been finely tuned to prevent AI laziness, ensure section depth, and strip hallucinated  text.
+- The user expects the  copy to *perfectly* match what the backend actually outputs. Currently: 
+   - Tier 1 (Free): Quick Summary (7 sections, 1500-2200 words, no strategy/forms).
+   - Tier 2 (Paid): Full Detailed (15 sections, 4500-6500 words, covers strategy).
+   - Tier 3 (Premium): Extensive Log (20 sections, 7000-10000 words, massive context, playbooks, fallback positions).
+- iOS export methods must always use direct navigation (no Blob object URLs).
+
+**documents and test reports created in this job**:
+  - 
+  -  to  (Heavy usage of testing agent).
+
+**Last 10 User Messages and any pending HUMAN messages**: 
+ 1. User: Demanded a thorough investigation of the entire code from start to finish to ensure landing pages, sample reports, pricing tiers, and descriptions match the actual overhauled report configurations. Check footers and dropdowns. (IN PROGRESS)
+ 2. User: Asked to apply same report overhaul logic to aggressive mode, ensure Barrister View includes *all* reports, and verify external links (AustLII/forms) work. (COMPLETED)
+ 3. User: Demanded structural analysis of the 3 report types to ensure no overlap, correct ordering (Client Brief at the end), and distinct value between tiers. (COMPLETED)
+ 4. User: Reported PayID refresh broken in Admin, uploaded 10 screenshots showing thin sections, bad section TOC numbering in Barrister View, and  bracket artifacts. (COMPLETED)
+ 5. User: Reported print buttons still broken on several tabs, uploaded 5 screenshots. (COMPLETED)
+ 6. User: Approved adding the Edit Case Details button. (COMPLETED)
+ 7. User: Uploaded final 5 screenshots of UI bugs. (COMPLETED)
+ 8. User: Uploaded next 5 screenshots of UI bugs. (COMPLETED)
+ 9. User: Reported spelling errors (American), print/PDF buttons broken, missing years, AI placeholder brackets visible. Uploaded 5 screenshots. (COMPLETED)
+ 10. User: Confirmed to proceed with plan. (COMPLETED)
+
+**Project Health Check**:
+- App is highly stable. 29/29 tests passing across backend and frontend in the last testing agent run.
+- Broken: Outdated Landing Page Marketing Copy.
+- Mocked: None.
+
+**3rd Party Integrations**: 
+  • OpenAI GPT-4o / GPT-4o-mini — uses Emergent LLM Key
+  • Anthropic Claude Sonnet 4.5 — uses Emergent LLM Key
+  • Resend (Emails) — requires User API Key
+
+**Testing status**:
+  - Testing agent used after significant changes: YES (iterations 66-70).
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created:  through 
+  - Known regressions: None known at this moment.
+
+**Credentials to test flow**:
+Create new test users via the UI/API using  (Google Auth is handled by Emergent wrappers, password auth works natively). 
+
+**What agent forgot to execute**:
+The agent opened  to begin resolving the user's final request (auditing the landing page copy/samples to match the new backend report outputs) but ran out of context before making any edits.</analysis>
+
+- finish what agent was doing prior to forking 

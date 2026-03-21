@@ -15,7 +15,7 @@ import requests
 import os
 import re
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://barrister-brief.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyzer.preview.emergentagent.com')
 
 # ============ BACKEND CODE VERIFICATION TESTS ============
 

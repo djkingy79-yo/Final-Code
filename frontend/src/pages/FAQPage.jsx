@@ -108,15 +108,15 @@ const faqs = [
     questions: [
       {
         q: "What's included in a Quick Summary Report?",
-        a: "The Quick Summary (FREE) includes: case overview, key timeline events, number of potential grounds identified, and next steps recommendations. It's perfect for initial assessment."
+        a: "The Quick Summary (FREE) has 7 sections: Case Snapshot, Primary Issues Identified, Top Potential Grounds (preview), Key Legislation & Similar Cases (preview), Sentencing Overview with comparison table, Appeal Outlook, and What the Paid Reports Add. It's 1,500-2,200 words of real analysis — perfect for initial assessment."
       },
       {
         q: "What's included in a Full Detailed Report?",
-        a: "The Full Detailed Report ($150 AUD) includes everything in Quick Summary PLUS: in-depth analysis of each ground, relevant case law citations with AustLII links, comparative sentencing tables, applicable legislation references, similar successful appeals, step-by-step appeal filing guide, required forms, and detailed recommendations for legal professionals."
+        a: "The Full Detailed Report ($150 AUD) has 15 sections: Executive Brief, Forensic Case Chronology, Document Evidence Digest, Grounds of Merit Portfolio (with Crown response and rebuttal strategy), Comparative Sentencing Table (8+ cases), Common Appeal Grounds, Outcome Options Matrix, Evidentiary Gaps & Remediation Checklist, Precedent Matrix (10-12 cases), Statutory Framework Map, Argument Strategy per Ground, Submissions Blueprint (written + oral), Filing Guide with Required Forms, Prioritised Action Plan, and Client Plain-English Brief. Target: 4,500-6,500 words."
       },
       {
         q: "What's included in an Extensive Log Report?",
-        a: "The Extensive Log ($200 AUD) is the most comprehensive option. It includes: complete document index, full timeline with source references, evidence matrix, detailed grounds analysis with outcome explanations, comparative sentencing with detailed case analysis, step-by-step appeal guide with forms, oral and written submissions blueprint, barrister conference dossier, and professional formatting suitable for legal submissions."
+        a: "The Extensive Log ($200 AUD) is the most comprehensive option with 20 sections. It includes everything in the Full Detailed Report plus 5 exclusive sections: Hearing Preparation Notes (anticipated bench questions and responses), Barrister Conference Pack (authorities shortlist, orders sought, case strengths/weaknesses), Court Pathway Operations Playbook (filing sequence per court level), Similar Case Search Options (tailored AustLII search strings), and Risk Assessment with Contingency Planning per ground. Features 300+ words per ground, 12+ sentencing comparisons, and 15+ precedent cases. Target: 7,000-10,000 words."
       },
       {
         q: "Can I share reports with my lawyer?",
@@ -136,7 +136,7 @@ const faqs = [
       },
       {
         q: "What are the paid features?",
-        a: "Paid features include: Full Detailed Reports ($150 AUD) which provide comprehensive legal analysis with case citations and comparative sentencing, Extensive Log Reports ($200 AUD) for exhaustive documentation with barrister-ready strategy, and Grounds of Merit Details ($99 AUD) for in-depth analysis of each appeal ground."
+        a: "Paid features include: Grounds of Merit Details ($99 AUD) for in-depth analysis of each appeal ground with legal citations, Full Detailed Reports ($150 AUD) with 15 sections covering grounds portfolio, sentencing tables, outcome options, submissions blueprint, and filing guide, and Extensive Log Reports ($200 AUD) with 20 sections including 5 exclusive sections for hearing prep, barrister conference pack, court playbook, search options, and risk assessment."
       },
       {
         q: "Is my payment secure?",

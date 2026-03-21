@@ -454,7 +454,7 @@ const LandingPage = () => {
                 Automatically identify potential appeal grounds, generate case timelines, and get AI-driven insights based on Australian law.
               </p>
               <div className="text-emerald-500 text-xs font-medium">
-                ✓ GPT-4 powered • Australian law trained • Grounds identification
+                ✓ AI-Powered • Australian law trained • Grounds identification
               </div>
             </div>
 
@@ -928,7 +928,7 @@ const LandingPage = () => {
                         </div>
                         {/* Case Overview */}
                         <div>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">CASE OVERVIEW</h5>
+                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">CASE SNAPSHOT</h5>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             <p><span className="text-slate-500">Defendant:</span> <strong>Michael Thompson</strong></p>
                             <p><span className="text-slate-500">Offence:</span> <strong>Aggravated Assault</strong></p>
@@ -941,7 +941,7 @@ const LandingPage = () => {
 
                         {/* Grounds Preview */}
                         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-700">
-                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">GROUNDS IDENTIFIED: 3</h5>
+                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">TOP POTENTIAL GROUNDS: 3</h5>
                           <div className="space-y-1 text-xs">
                             <p className="flex items-center gap-2">
                               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
@@ -958,16 +958,16 @@ const LandingPage = () => {
                           </div>
                         </div>
 
-                        {/* Appeal Viability */}
+                        {/* Appeal Outlook */}
                         <div>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">APPEAL VIABILITY</h5>
+                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">APPEAL OUTLOOK</h5>
                           <div className="flex items-center gap-3">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
-                              <span className="text-white font-bold text-lg">72%</span>
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center px-1">
+                              <span className="text-white font-bold text-xs text-center leading-tight">MODERATE-STRONG</span>
                             </div>
                             <div className="text-xs">
                               <p className="font-semibold text-green-700 dark:text-green-400">MODERATE-STRONG PROSPECTS</p>
-                              <p className="text-slate-600 dark:text-slate-400">Based on identified grounds and similar case outcomes</p>
+                              <p className="text-slate-600 dark:text-slate-400">Based on identified grounds, sentencing overview, and similar case outcomes</p>
                             </div>
                           </div>
                         </div>
@@ -1029,18 +1029,23 @@ const LandingPage = () => {
                       
                       {/* Table of Contents */}
                       <div className="bg-slate-50 dark:bg-slate-700 p-3 border-b border-slate-200 dark:border-slate-600">
-                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">CONTENTS (10 Sections)</p>
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">CONTENTS (15 Sections)</p>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-1 text-xs text-slate-600 dark:text-slate-400">
-                          <span>1. Overview</span>
-                          <span>2. Grounds</span>
-                          <span>3. Evidence</span>
-                          <span>4. Similar Cases</span>
-                          <span>5. Legislation</span>
-                          <span>6. Timeline</span>
-                          <span>7. Strategy</span>
-                          <span>8. Filing Guide</span>
-                          <span>9. Deadlines</span>
-                          <span>10. Recommendations</span>
+                          <span>1. Executive Brief</span>
+                          <span>2. Case Chronology</span>
+                          <span>3. Evidence Digest</span>
+                          <span>4. Grounds Portfolio</span>
+                          <span>5. Sentencing Table (8+)</span>
+                          <span>6. Common Grounds</span>
+                          <span>7. Outcome Options</span>
+                          <span>8. Evidentiary Gaps</span>
+                          <span>9. Precedent Matrix</span>
+                          <span>10. Legislation Map</span>
+                          <span>11. Argument Strategy</span>
+                          <span>12. Submissions Blueprint</span>
+                          <span>13. Filing Guide + Forms</span>
+                          <span>14. Action Plan</span>
+                          <span>15. Client Brief</span>
                         </div>
                       </div>
 
@@ -1167,32 +1172,39 @@ const LandingPage = () => {
                           </div>
                         </div>
                         <div className="flex gap-4 text-xs">
-                          <span className="bg-purple-800 px-2 py-1 rounded">14 Sections</span>
+                          <span className="bg-purple-800 px-2 py-1 rounded">20 Sections</span>
                           <span className="bg-purple-800 px-2 py-1 rounded">8 Documents</span>
-                          <span className="bg-purple-800 px-2 py-1 rounded">12 Similar Cases</span>
-                          <span className="bg-purple-800 px-2 py-1 rounded">23 Timeline Events</span>
+                          <span className="bg-purple-800 px-2 py-1 rounded">15+ Precedent Cases</span>
+                          <span className="bg-purple-800 px-2 py-1 rounded">12+ Sentencing Comparisons</span>
                         </div>
                       </div>
                       
                       {/* Extended TOC */}
                       <div className="bg-slate-50 dark:bg-slate-700 p-3 border-b border-slate-200 dark:border-slate-600">
-                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">COMPLETE TABLE OF CONTENTS</p>
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">COMPLETE TABLE OF CONTENTS (20 SECTIONS)</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-xs text-slate-600 dark:text-slate-400">
-                          <span>1. Executive Summary</span>
-                          <span>2. Case Background</span>
-                          <span>3. Complete Timeline</span>
-                          <span>4. Document Analysis</span>
-                          <span>5. Ground 1: Full</span>
-                          <span>6. Ground 2: Full</span>
-                          <span>7. Ground 3: Full</span>
-                          <span>8. Similar Cases (12)</span>
-                          <span>9. Legislation</span>
-                          <span>10. Submission Blueprint</span>
-                          <span>11. Sentencing Comparison</span>
-                          <span>12. Appeal Strategy</span>
-                          <span>13. Filing Guide (All Courts)</span>
-                          <span>14. Risk Assessment</span>
+                          <span>1. Executive Brief</span>
+                          <span>2. Case Chronology</span>
+                          <span>3. Evidence Digest</span>
+                          <span>4. Grounds — Deep Analysis</span>
+                          <span>5. Sentencing Table (12+)</span>
+                          <span>6. Common Grounds</span>
+                          <span>7. Outcome Pathways</span>
+                          <span>8. Evidentiary Gaps</span>
+                          <span>9. Precedent Matrix (15+)</span>
+                          <span>10. Legislation Map</span>
+                          <span>11. Argument Strategy</span>
+                          <span>12. Submissions Blueprint</span>
+                          <span className="text-purple-600 dark:text-purple-300 font-semibold">13. Hearing Prep Notes*</span>
+                          <span className="text-purple-600 dark:text-purple-300 font-semibold">14. Conference Pack*</span>
+                          <span className="text-purple-600 dark:text-purple-300 font-semibold">15. Court Playbook*</span>
+                          <span>16. Filing Guide + Forms</span>
+                          <span className="text-purple-600 dark:text-purple-300 font-semibold">17. Case Search Options*</span>
+                          <span>18. Action Plan</span>
+                          <span className="text-purple-600 dark:text-purple-300 font-semibold">19. Risk Assessment*</span>
+                          <span>20. Client Brief</span>
                         </div>
+                        <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 font-medium">* Exclusive to the Extensive Log report</p>
                       </div>
 
                       {/* Report Content */}
@@ -1447,8 +1459,8 @@ const LandingPage = () => {
                     <p className="text-muted-foreground">Technical legal framing + plain-English notes for family and clients.</p>
                   </div>
                   <div className="rounded-lg border border-border p-3 bg-card">
-                    <p className="font-semibold text-foreground mb-1">Third Paid Report Advantage</p>
-                    <p className="text-muted-foreground">Extensive Log now includes barrister conference notes, options matrix, and comparative sentencing tracks.</p>
+                    <p className="font-semibold text-foreground mb-1">Extensive Log Advantage</p>
+                    <p className="text-muted-foreground">20 sections with 5 exclusives: hearing prep notes, conference pack, court pathway playbook, tailored case search, and risk assessment.</p>
                   </div>
                 </div>
               </div>
@@ -1643,7 +1655,7 @@ const LandingPage = () => {
                       <strong>Full Detailed Report</strong>
                       <span className="text-blue-700 dark:text-blue-400 font-bold">$150</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">Comprehensive analysis with recommendations and case law references</p>
+                    <p className="text-xs text-muted-foreground mt-1">15 sections: grounds portfolio, 8+ sentencing comparisons, outcome options matrix, submissions blueprint, filing guide with forms, and client brief</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
@@ -1655,7 +1667,7 @@ const LandingPage = () => {
                       <strong>Extensive Log Report</strong>
                       <span className="text-blue-700 dark:text-blue-400 font-bold">$200</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">Complete barrister conference dossier with comparative sentencing tables, offence-specific common grounds matrix, and full relief options report</p>
+                    <p className="text-xs text-muted-foreground mt-1">20 sections: everything in Full Detailed plus hearing preparation notes, barrister conference pack, court pathway playbook, tailored case search, and risk assessment</p>
                   </div>
                 </li>
               </ul>

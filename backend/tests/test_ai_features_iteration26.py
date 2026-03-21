@@ -12,7 +12,7 @@ import os
 import time
 import json
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://barrister-brief.preview.emergentagent.com").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://grounds-analyzer.preview.emergentagent.com").rstrip("/")
 ADMIN_SESSION_TOKEN = "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ"
 CASE_ID = "case_cec9b5706fae"
 

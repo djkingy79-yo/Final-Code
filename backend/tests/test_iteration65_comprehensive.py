@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://barrister-brief.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyzer.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
