@@ -1,12 +1,25 @@
 # Appeal Case Manager — Changelog
 
-## 2026-03-21 — Session 15 (AI Endpoint Fallback Completion)
+## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality Fixes)
 - **All secondary AI endpoints now use `call_llm_with_fallback`** (P0):
   - `investigate_ground_of_merit`: Replaced inline retry logic with shared helper
-  - `auto_identify_grounds`: Replaced hardcoded Claude-only call (root cause of "Investigate button fails") with model fallback (gpt-4o x2 → claude-sonnet-4 → gpt-4o-mini)
-  - Removed unused `from emergentintegrations` imports in refactored functions
+  - `auto_identify_grounds`: Replaced hardcoded Claude-only call with model fallback (gpt-4o x2 -> claude-sonnet-4 -> gpt-4o-mini)
   - Zero hardcoded Claude-only calls remain in codebase
-- **Testing**: iteration_66 passed 100% (13/13 tests). Both investigate and auto-identify endpoints verified working with real LLM calls (<15s response times)
+- **AI Report Content Quality Fixes** (P0):
+  - Added `cleanAIContent` function to both ReportView and BarristerView that strips:
+    - AI preamble text ("Certainly! Here's a comprehensive...")
+    - Bracket placeholder notes ("[Note: Repeat this format...]", "[Continue listing...]", etc.)
+  - Empty/thin sections (<30 chars) now filtered out from display
+  - Backend `report_guardrails` updated with explicit anti-preamble and anti-bracket instructions
+  - All legislation references now require year (e.g. Crimes Act 1900 (NSW))
+- **Sentence Field Fix** (P1):
+  - Added `sentence` field to Case and CaseCreate models
+  - Added sentence input to Dashboard case creation form
+  - `extractSentenceSummary` now checks `caseData.sentence` first before regex fallback
+  - Case context for AI reports includes sentence field
+- **iOS Safari PDF Export Fix** (P1):
+  - Fixed Timeline PDF export to use anchor tag approach instead of Blob URL (matching Reports/BarristerView fix)
+- **Testing**: iteration_66 (13/13 backend), iteration_67 (21/21 backend + frontend)
 
 ## 2026-03-21 — Session 14 (Critical Report & PDF Fix)
 - **Report generation fully fixed** (P0):
