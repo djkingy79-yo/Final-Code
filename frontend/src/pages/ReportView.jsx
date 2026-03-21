@@ -41,7 +41,7 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (byVerb?.[1]) return byVerb[1].trim();
   const byHead = analysis.match(/(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})/im);
   if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1])) return byHead[1].trim();
-  return "Not specified — edit case to add sentence";
+  return "Not recorded";
 };
 
 const cleanAIContent = (text) => {
