@@ -1,5 +1,12 @@
 # Appeal Case Manager — Changelog
 
+## 2026-03-21 — Session 18
+### Australian English Audit + Tier Comparison + Backend Refactoring
+- **Australian English audit**: Fixed "dialog" → "dialogue" in CaseDetail.jsx and AuthModal.jsx. Verified entire codebase — all user-facing text now in Australian English.
+- **Tier comparison table**: Added to landing page — 26-row side-by-side comparison of Quick Summary (7), Full Detailed (15), Extensive Log (20) sections. 5 EXCLUSIVE sections highlighted in purple. Word count targets at bottom. Get Started Free CTA.
+- **Backend refactoring Phase 1**: Extracted cases router (5 routes, ~98 lines removed from server.py). Wired via `app.include_router(cases_router)`. server.py reduced from 4890 to 4792 lines, 67 routes down to 60.
+- **Testing**: iteration_73 — 100% backend (11/11) + 100% frontend
+
 ## 2026-03-21 — Session 17
 ### Report Quality Overhaul
 - **2-pass generation for Extensive Log**: Sections 1-10 in pass 1, sections 11-20 in pass 2 — prevents AI truncation. All 20 sections now consistently generated (~9,755 words standard, ~8,425 words aggressive).
