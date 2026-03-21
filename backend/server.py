@@ -3808,99 +3808,92 @@ IMPORTANT:
     else:  # extensive_log
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating the Premium Comprehensive Report. This must be significantly more thorough and detailed than the standard detailed report. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible. Provide in-depth analysis with extensive citations and practical guidance.
+You are generating the Premium Comprehensive Report — the most detailed legal analysis available. Provide significantly more depth than a standard detailed report. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
 CRITICAL: NEVER use placeholder text in parentheses. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
-        user_prompt = f"""Create a PREMIUM COMPREHENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be significantly more detailed than a standard detailed report.
+        user_prompt = f"""Create a PREMIUM COMPREHENSIVE legal analysis report for this {category_name.lower()} appeal case. This must contain significantly more depth and detail than a standard detailed report.
 
 {case_context}
 
-Target range 6000-10000 words. Every section must contain thorough analysis with multiple paragraphs. Use this exact structure:
+Target range 4500-6500 words. Use this exact structure:
 
 ## TABLE OF CONTENTS
 Numbered list matching every heading below.
 
 ## 1. EXECUTIVE BRIEF
-Summary of strongest grounds, jurisdiction, likely pathways to relief, and urgency items. Include a clear statement of the case.
+Summary of strongest grounds, jurisdiction posture, pathways to relief, urgency items, and one-paragraph statement of the case.
 
-## 2. BARRISTER CASE SNAPSHOT
-Structured summary: Accused, Sentence, Offence(s), Identified Grounds, Strongest Ground, Recommended Relief, Fallback Relief, Risk Assessment, Urgency.
+## 2. FORENSIC CASE CHRONOLOGY
+Chronological reconstruction with event date, source anchor, legal significance. Include at least 15 dated entries.
 
-## 3. FORENSIC CASE CHRONOLOGY
-Date-sequenced reconstruction with at least 15 dated entries, each with source document reference, event description, and legal significance.
+## 3. DOCUMENT EVIDENCE DIGEST
+For each document: key extracts, reliability context, probative value, appellate relevance, rating (Critical/Important/Supporting/Peripheral).
 
-## 4. DOCUMENT EVIDENCE DIGEST
-For each document/source: key extracts, reliability context, probative value, appellate relevance, and rating (Critical / Important / Supporting / Peripheral).
-
-## 5. EVIDENCE RELIABILITY ASSESSMENT
-| Evidence Item | Source | Corroborated By | Reliability Rating | Appellate Significance |
-
-## 6. COMPREHENSIVE GROUNDS PORTFOLIO
-For EACH ground provide:
+## 4. GROUNDS OF MERIT PORTFOLIO
+For each ground provide:
 - Legal threshold and supporting material
-- Contrary material and Crown arguments
-- Response strategy
-- Success conditions and practical impact
+- Likely Crown response and defence reply strategy
+- Viability rating (Strong / Moderate / Weak)
+- How this ground could assist in a successful appeal — practical impact if established
 - Key authority with AustLII link
-- Viability rating (Strong / Moderate / Weak) with justification
-- Detailed analysis paragraph (300+ words per ground)
+- 300+ word analysis paragraph per ground
 
-## 7. COMPARATIVE SENTENCING TABLE (12+ CASES)
-| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction | Key Reason |
-Include AustLII links. After the table, provide a detailed paragraph for each case covering original sentence, appeal decision, and relevance.
+## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
+Include AustLII search links. After the table, provide a detailed paragraph for each case.
 
-## 8. COMMON GROUNDS BENCHMARK
-| Common Ground | Prevalence | Success Trend | Typical Failure Reason |
+## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
+| Common Ground | Frequency | Typical Success Pattern | Best Supporting Evidence |
 
-## 9. FULL OPTIONS ANALYSIS
-| Option | Legal Threshold | Trigger Facts | Likelihood | Typical Remedy | Best/Worst Case |
-Then 200+ words per option: Conviction Quashed, Retrial Ordered, Conviction Downgraded, Sentence Reduced, Appeal Dismissed. Include probability estimates and practical outcomes.
+## 7. OUTCOME OPTIONS AVAILABLE
+| Option | Legal Threshold | Likelihood | Core Evidence Trigger | Practical Result |
+Then detailed analysis for each: Conviction quashed, Retrial ordered, Conviction substituted, Sentence reduced, Appeal dismissed.
 
-## 10. PRECEDENT ANALYSIS (15+ CASES)
-For each authority: citation, comparable facts, outcome, governing principle, AustLII link, and relevance paragraph.
+## 8. PRECEDENT OUTCOME MATRIX (15+ CASES)
+For each: citation, factual similarity, outcome, extracted principle, AustLII link, relevance paragraph.
 
-## 11. STATUTORY AND DOCTRINAL FRAMEWORK
-15+ statutory provisions with section numbers, AustLII links, and specific relevance to this appeal.
+## 9. STATUTORY + DOCTRINAL FRAMEWORK MAP
+15+ statutory provisions with section numbers, AustLII links, and relevance.
 
-## 12. HOW TO START THE APPEAL — COMPLETE GUIDE
-Step-by-step guide for {state_info.get('name', 'NSW')} with registry addresses, form names, costs, deadlines, and links.
+## 10. HOW TO START YOUR APPEAL — STEP BY STEP GUIDE
+Numbered guide for {state_info.get('name', 'NSW')} with forms, deadlines, registry addresses, and links.
 
-## 13. REQUIRED FORMS AND DOCUMENTS
+## 11. REQUIRED APPEAL FORMS
 | Form/Document | Purpose | Where to Obtain | Deadline |
 
-## 14. SUBMISSIONS STRATEGY
-Written submission structure with argument sequence, authority placement, and key points for each ground. Include recommended argument order and framing notes.
+## 12. COURT PATHWAY OPERATIONS PLAYBOOK
+Filing sequence across all court levels with extension-of-time contingencies.
+
+## 13. SUBMISSIONS STRATEGY
+Written and oral submission strategy with argument sequence, authority placement, bench questions, response lines.
+
+## 14. HOW TO ARGUE EACH TOP GROUND
+For each ground: lead proposition, authority cluster, prosecution response, rebuttal strategy, appeal outcome if established.
 
 ## 15. HEARING PREPARATION NOTES
-Key talking points for each ground, anticipated questions and suggested responses, recommended authority sequence, and time allocation.
+Key talking points per ground, anticipated questions and responses, authority sequence, time allocation.
 
-## 16. SIMILAR CASE RESEARCH
-10 AustLII query strings, direct links to relevant court databases, offence-specific keywords.
+## 16. SIMILAR CASE SEARCH OPTIONS
+AustLII query strings, court database links, keyword suggestions.
 
-## 17. EVIDENCE PREPARATION CHECKLIST
-What to assemble for appeal books with indexing guide.
+## 17. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+Missing material and remediation steps with urgency.
 
-## 18. RISK AND SCENARIO ANALYSIS
-Best/base/downside pathways with probability estimates and mitigation strategies.
+## 18. PRIORITISED ACTION PLAN
+72-hour, 7-day, 28-day actions with dependencies.
 
-## 19. PRIORITISED ACTION PLAN
-Priority-ordered actions with 72-hour, 7-day, and 28-day milestones.
+## 19. CONFERENCE PREPARATION PACK
+Lead theory, authorities shortlist, orders sought, case strengths and weaknesses.
 
-## 20. COMMUNICATION NOTES
-Technical briefing for counsel + plain-English summary for client.
-
-## 21. CONFERENCE PREPARATION PACK
-Lead theory, key talking points, authorities shortlist, orders sought, case strengths and weaknesses.
-
-## 22. APPENDIX OF AUTHORITIES
-All statutes, sections, precedents with AustLII hyperlinks.
+## 20. CLIENT PLAIN-ENGLISH BRIEF
+Translate technical outcome into plain-English next steps and realistic scenarios.
 
 IMPORTANT:
 - Markdown headings and tables exactly where requested.
 - Working hyperlinks to AustLII, court websites, legal aid throughout.
-- No cost discussion about the report itself.
 - Every conclusion tied to case material or clearly marked assumptions.
 - DETAILED outcome explanations for sentencing cases.
-- This must be significantly more comprehensive than the standard detailed report."""
+- Use Australian English throughout.
+- This must be significantly more comprehensive than a standard detailed report."""
 
     if aggressive_mode:
         aggressive_directive = """
@@ -3991,7 +3984,7 @@ ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than
     last_error = None
     try:
         if report_type == "extensive_log":
-            extensive_prompt = user_prompt + "\n\nIMPORTANT: Generate ALL sections listed above in a single comprehensive document. Write thorough, detailed content for every section with real legal analysis, specific citations, and practical guidance. This must be the most comprehensive report possible."
+            extensive_prompt = user_prompt + "\n\nGenerate all sections above with thorough legal analysis and citations."
             logger.info(f"Extensive log prompt size: system={len(system_prompt)}, user={len(extensive_prompt)}, total={len(system_prompt)+len(extensive_prompt)}")
             response = await _subprocess_llm(extensive_prompt)
         else:

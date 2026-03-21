@@ -645,8 +645,8 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Prioritized pending work moved to: `/app/memory/ROADMAP.md`
 
 ## Latest Delivery Note (Mar 2026)
-- **Session 13 (Mar 19, 2026)**: Deployment readiness check passed. Report generation reliability fixed with retry + model fallback (Claude x2 → gpt-4o-mini). Australian English verified clean. Print buttons verified. Testing: iteration_65 — 100% pass.
-- Previous sessions: See `/app/memory/CHANGELOG.md` for full history.
+- **Session 14 (Mar 21, 2026)**: Report generation fully fixed — all 3 types working (Quick Summary 7.7K, Full Detailed 16.3K, Extensive Log 22.9K chars). PDF/Print iOS Safari fix deployed. Root causes: missing module, budget exceeded, aggressive prompt language triggering model refusals, word target too high.
+- See `/app/memory/CHANGELOG.md` for full history.
 
 ### Final Comprehensive Fix + DO NOT UNDO Reinforcement (Mar 2026) ✅
 - [x] **DO_NOT_UNDO.md** — Project-level protection file with 10 absolute rules
