@@ -18,13 +18,30 @@ async def get_cases(request: Request):
     """Get all cases for current user"""
     user = await get_current_user(request)
     cases = await db.cases.find({"user_id": user.user_id}, {"_id": 0}).sort("updated_at", -1).to_list(100)
-    
+
+    if not cases:
+        return cases
+
+    # Optimised: Batch count queries using aggregation instead of N+1 pattern
+    case_ids = [case["case_id"] for case in cases]
+
+    doc_counts = await db.documents.aggregate([
+        {"$match": {"case_id": {"$in": case_ids}}},
+        {"$group": {"_id": "$case_id", "count": {"$sum": 1}}}
+    ]).to_list(100)
+
+    event_counts = await db.timeline_events.aggregate([
+        {"$match": {"case_id": {"$in": case_ids}}},
+        {"$group": {"_id": "$case_id", "count": {"$sum": 1}}}
+    ]).to_list(100)
+
+    doc_map = {d["_id"]: d["count"] for d in doc_counts}
+    event_map = {e["_id"]: e["count"] for e in event_counts}
+
     for case in cases:
-        doc_count = await db.documents.count_documents({"case_id": case["case_id"]})
-        event_count = await db.timeline_events.count_documents({"case_id": case["case_id"]})
-        case["document_count"] = doc_count
-        case["event_count"] = event_count
-    
+        case["document_count"] = doc_map.get(case["case_id"], 0)
+        case["event_count"] = event_map.get(case["case_id"], 0)
+
     return cases
 
 

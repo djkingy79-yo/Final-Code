@@ -1687,6 +1687,120 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Report Tier Comparison */}
+      <section className="py-16 px-6 bg-muted/30 dark:bg-muted/10" data-testid="tier-comparison-section">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <p className="text-red-600 text-xs uppercase tracking-widest mb-2">Compare report tiers</p>
+            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              What's in Each Report?
+            </h2>
+            <p className="text-muted-foreground text-sm mt-2 max-w-xl mx-auto">
+              Side-by-side comparison of every section across all three report tiers
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse" data-testid="tier-comparison-table">
+              <thead>
+                <tr>
+                  <th className="text-left p-3 bg-slate-100 dark:bg-slate-800 rounded-tl-lg font-semibold text-foreground" style={{ minWidth: '220px' }}>Section</th>
+                  <th className="p-3 bg-green-50 dark:bg-green-900/20 text-center font-semibold text-green-700 dark:text-green-400" style={{ minWidth: '100px' }}>
+                    Quick Summary<br /><span className="text-xs font-normal">FREE (7 sections)</span>
+                  </th>
+                  <th className="p-3 bg-blue-50 dark:bg-blue-900/20 text-center font-semibold text-blue-700 dark:text-blue-400" style={{ minWidth: '100px' }}>
+                    Full Detailed<br /><span className="text-xs font-normal">$150 (15 sections)</span>
+                  </th>
+                  <th className="p-3 bg-purple-50 dark:bg-purple-900/20 text-center font-semibold text-purple-700 dark:text-purple-400 rounded-tr-lg" style={{ minWidth: '100px' }}>
+                    Extensive Log<br /><span className="text-xs font-normal">$200 (20 sections)</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { section: "Executive Brief / Case Snapshot", qs: true, fd: true, el: true },
+                  { section: "Primary Issues Identified", qs: true, fd: false, el: false },
+                  { section: "Top Potential Grounds (Preview)", qs: true, fd: false, el: false },
+                  { section: "Key Legislation & Similar Cases (Preview)", qs: true, fd: false, el: false },
+                  { section: "Sentencing Overview", qs: true, fd: false, el: false },
+                  { section: "Appeal Outlook", qs: true, fd: false, el: false },
+                  { section: "What the Paid Reports Add", qs: true, fd: false, el: false },
+                  { section: "Forensic Case Chronology", qs: false, fd: true, el: true },
+                  { section: "Document Evidence Digest", qs: false, fd: true, el: true },
+                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, elNote: "300+ words per ground" },
+                  { section: "Comparative Sentencing Table", qs: false, fd: true, el: true, fdNote: "8+ cases", elNote: "12+ cases" },
+                  { section: "Common Appeal Grounds for Offence Type", qs: false, fd: true, el: true },
+                  { section: "Outcome Options Matrix", qs: false, fd: true, el: true, elNote: "Detailed pathways" },
+                  { section: "Evidentiary Gaps + Remediation Checklist", qs: false, fd: true, el: true },
+                  { section: "Precedent Outcome Matrix", qs: false, fd: true, el: true, fdNote: "10-12 cases", elNote: "15+ cases" },
+                  { section: "Statutory + Doctrinal Framework Map", qs: false, fd: true, el: true },
+                  { section: "How to Argue Each Top Ground", qs: false, fd: true, el: true, elNote: "Detailed strategy" },
+                  { section: "Submissions Blueprint (Written + Oral)", qs: false, fd: true, el: true },
+                  { section: "Hearing Preparation Notes", qs: false, fd: false, el: true, exclusive: true },
+                  { section: "Barrister Conference Pack", qs: false, fd: false, el: true, exclusive: true },
+                  { section: "Court Pathway Operations Playbook", qs: false, fd: false, el: true, exclusive: true },
+                  { section: "Filing Guide + Required Forms", qs: false, fd: true, el: true },
+                  { section: "Similar Case Search Options (AustLII)", qs: false, fd: false, el: true, exclusive: true },
+                  { section: "Prioritised Action Plan", qs: false, fd: true, el: true },
+                  { section: "Risk Assessment + Contingency Planning", qs: false, fd: false, el: true, exclusive: true },
+                  { section: "Client Plain-English Brief", qs: false, fd: true, el: true },
+                ].map((row, i) => (
+                  <tr key={i} className={`border-b border-border/50 ${row.exclusive ? 'bg-purple-50/50 dark:bg-purple-900/10' : ''}`}>
+                    <td className="p-2.5 text-foreground font-medium text-xs">
+                      {row.section}
+                      {row.exclusive && <span className="ml-1.5 text-purple-600 dark:text-purple-400 text-xs font-bold">EXCLUSIVE</span>}
+                    </td>
+                    <td className="p-2.5 text-center">
+                      {row.qs ? (
+                        <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                      ) : (
+                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                      )}
+                    </td>
+                    <td className="p-2.5 text-center">
+                      {row.fd ? (
+                        <div>
+                          <svg className="w-5 h-5 text-blue-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                          {row.fdNote && <span className="text-xs text-blue-500 block">{row.fdNote}</span>}
+                        </div>
+                      ) : (
+                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                      )}
+                    </td>
+                    <td className="p-2.5 text-center">
+                      {row.el ? (
+                        <div>
+                          <svg className="w-5 h-5 text-purple-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                          {row.elNote && <span className="text-xs text-purple-500 block">{row.elNote}</span>}
+                        </div>
+                      ) : (
+                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t-2 border-border bg-slate-50 dark:bg-slate-800/50">
+                  <td className="p-2.5 text-foreground font-semibold text-xs">Target word count</td>
+                  <td className="p-2.5 text-center text-xs font-semibold text-green-600">1,500–2,200</td>
+                  <td className="p-2.5 text-center text-xs font-semibold text-blue-600">4,500–6,500</td>
+                  <td className="p-2.5 text-center text-xs font-semibold text-purple-600">7,000–10,000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-6 text-center">
+            <Button
+              onClick={() => setShowAuthModal(true)}
+              data-testid="comparison-get-started-btn"
+              className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-8"
+            >
+              Get Started Free
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* About Link Section */}
       <section className="py-12 px-6 bg-slate-900 dark:bg-slate-950 relative overflow-hidden">
         {/* Background Image */}

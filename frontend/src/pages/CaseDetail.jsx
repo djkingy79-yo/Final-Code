@@ -824,7 +824,7 @@ const CaseDetail = ({ user }) => {
                       iframe.contentWindow.print();
                       setTimeout(() => document.body.removeChild(iframe), 3000);
                     }, 500);
-                    toast.success("Print dialog opening...");
+                    toast.success("Print dialogue opening...");
                     return;
                   }
                   window.print();

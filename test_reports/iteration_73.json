@@ -1,0 +1,86 @@
+{
+  "summary": "Iteration 73 - Tested Australian English audit, landing page tier comparison toggle, and backend cases router extraction. All 11 backend tests passed. Frontend tier comparison table verified with 27 rows, 4 columns, correct pricing (FREE/7, $150/15, $200/20), 5 EXCLUSIVE sections, and word count row. Cases API fully functional after router extraction.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration73_cases_router.py",
+    "/app/test_reports/pytest/iteration73_cases_router.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration73_cases_router.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Cases router successfully extracted to /app/backend/routers/cases.py and wired via app.include_router(cases_router). All 5 CRUD endpoints working. Tier comparison table on landing page has data-testid='tier-comparison-section' and data-testid='tier-comparison-table'. Barrister View URL format is /cases/:caseId/reports/:reportId/barrister (not /barrister-view/:caseId).",
+  "test_results": {
+    "backend_cases_router": {
+      "GET /api/cases": "PASSED - Returns list with document_count and event_count",
+      "GET /api/cases/{case_id}": "PASSED - Returns case with counts",
+      "GET /api/cases/nonexistent": "PASSED - Returns 404",
+      "POST /api/cases": "PASSED - Creates case with checklist initialization",
+      "PUT /api/cases/{case_id}": "PASSED - Updates case",
+      "DELETE /api/cases/{case_id}": "PASSED - Deletes case and related data",
+      "DELETE /api/cases/nonexistent": "PASSED - Returns 404",
+      "auth_required_tests": "PASSED - All endpoints return 401 without auth"
+    },
+    "frontend_tier_comparison": {
+      "section_visible": "PASSED - data-testid='tier-comparison-section' found",
+      "table_visible": "PASSED - data-testid='tier-comparison-table' found",
+      "row_count": "PASSED - 27 rows (26 sections + 1 word count row)",
+      "column_count": "PASSED - 4 columns (Section, Quick Summary, Full Detailed, Extensive Log)",
+      "quick_summary_pricing": "PASSED - 'FREE (7 sections)'",
+      "full_detailed_pricing": "PASSED - '$150 (15 sections)'",
+      "extensive_log_pricing": "PASSED - '$200 (20 sections)'",
+      "exclusive_sections": "PASSED - 5 EXCLUSIVE markers found",
+      "word_count_row": "PASSED - Shows 1,500-2,200 / 4,500-6,500 / 7,000-10,000",
+      "get_started_button": "PASSED - data-testid='comparison-get-started-btn' found"
+    },
+    "australian_english_audit": {
+      "dialogue_spelling": "PASSED - 'dialogue' used in CaseDetail.jsx and AuthModal.jsx",
+      "analyse_spelling": "PASSED - 'analyse/analysing' found in content",
+      "organise_spelling": "PASSED - 'organise' found in content",
+      "no_american_spellings": "PASSED - No user-facing American English found"
+    },
+    "other_pages": {
+      "dashboard": "PASSED - Loads with case list",
+      "case_detail": "PASSED - All 7 tabs visible (documents, timeline, grounds, notes, reports, legal, progress)",
+      "reports_tab": "PASSED - Shows report types",
+      "barrister_view": "PASSED - Loads with correct URL format /cases/:caseId/reports/:reportId/barrister",
+      "how_it_works": "PASSED - Shows pricing and section counts",
+      "faq": "PASSED - Loads with report-related content"
+    }
+  },
+  "verified_features": {
+    "cases_router_extraction": {
+      "status": "WORKING",
+      "notes": "Router extracted from server.py to /app/backend/routers/cases.py. Wired at line 4743-4744 in server.py"
+    },
+    "tier_comparison_table": {
+      "status": "WORKING",
+      "notes": "Side-by-side comparison showing all 26 sections across 3 tiers with EXCLUSIVE markers for Extensive Log"
+    },
+    "australian_english": {
+      "status": "VERIFIED",
+      "notes": "User-facing text uses Australian English (dialogue, analyse, organise). CSS/code properties like 'color', 'center', 'behavior' are acceptable"
+    }
+  },
+  "test_credentials": {
+    "session_cookie": "session_token=Z54IPKofu9l_AVv0fSY99-G8zJEeRuR4qnMkFqXCTeY",
+    "case_id": "case_1114ec0e2fd0",
+    "user_id": "user_d2287f20104b"
+  }
+}

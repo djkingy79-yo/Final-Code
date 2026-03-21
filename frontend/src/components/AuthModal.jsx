@@ -163,7 +163,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             {showGoogleHint && (
               <div className="p-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>This email uses Google login.</strong> Please close this dialog and click "Sign in with Google" to continue.
+                  <strong>This email uses Google login.</strong> Please close this dialogue and click "Sign in with Google" to continue.
                 </p>
               </div>
             )}
