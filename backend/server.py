@@ -3490,13 +3490,24 @@ IMPORTANT:
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a PAID Full Detailed Report ($150 AUD). This must contain significantly more depth and detail than the Quick Summary — roughly double the content. Include assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+You are generating a PAID Full Detailed Report ($150 AUD). The user has ALREADY received a FREE Quick Summary that covered: case snapshot, primary issues identified, top potential grounds (preview), key legislation & similar cases (preview), sentencing overview (3 comparator cases), and appeal outlook.
+
+THIS REPORT MUST BUILD ON — NOT REPEAT — THE QUICK SUMMARY. Do NOT re-state the same overview-level analysis. Instead:
+- Where the Quick Summary previewed 3-5 grounds, THIS report must provide FULL analysis with Crown response, rebuttal strategy, and appeal impact for EVERY viable ground.
+- Where the Quick Summary listed 3 sentencing comparators, THIS report must provide 8+ with detailed outcome analysis paragraphs.
+- Where the Quick Summary gave a 2-paragraph appeal outlook, THIS report must provide full outcome pathway analysis, submissions blueprint, and actionable steps.
+- Every section must deliver NEW insights, deeper strategy, and hearing-ready material that was NOT in the Quick Summary.
+
+Include assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
 CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
         user_prompt = f"""Create a FULL DETAILED LEGAL ANALYSIS REPORT for this {category_name.lower()} appeal case.
 
 {case_context}
 
 Target range 4500-6500 words. This report must feel premium, strategic, and hearing-ready.
+
+CRITICAL — NO REPETITION FROM QUICK SUMMARY:
+The user already has a Quick Summary covering the case overview, top grounds preview, and basic sentencing comparison. This Full Detailed report must ADVANCE beyond that with deep analysis, complete ground-by-ground strategy, expanded sentencing tables, full outcome matrices, and hearing preparation content NOT present in the Quick Summary. Do NOT rewrite the case overview — jump straight into deep strategic analysis.
 
 SECTION ORDERING: Analysis first, then Strategy, then Practical steps, then Client brief at the end.
 
@@ -3604,13 +3615,29 @@ IMPORTANT:
     else:  # extensive_log
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating the PREMIUM Extensive Report ($200 AUD) — the most detailed and case-specific legal analysis available. This must contain SIGNIFICANTLY more depth, detail, and case-specific analysis than the Full Detailed Report. Every section must directly reference the supplied case material. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+You are generating the PREMIUM Extensive Report ($200 AUD) — the most detailed and case-specific legal analysis available.
+
+The user has ALREADY received BOTH:
+1. A FREE Quick Summary (case overview, top grounds preview, basic sentencing comparison)
+2. A PAID Full Detailed Report (executive brief, forensic chronology, evidence digest, grounds portfolio with Crown/defence strategy, 8+ sentencing comparisons, outcome options matrix, evidence gaps checklist, 10-12 precedent cases, statutory framework, argument strategy, submissions blueprint, appeal steps guide, action plan, and plain-English brief)
+
+THIS PREMIUM REPORT MUST BUILD ON — NOT REPEAT — THE FULL DETAILED REPORT. Do NOT re-state the same analysis. Instead:
+- Where the Full Detailed analysed each ground with Crown response and rebuttal, THIS report must provide 300+ word DEEP analysis per ground with fallback positions, additional authorities, and draft submission paragraphs.
+- Where the Full Detailed provided 8+ sentencing comparisons, THIS report must provide 12+ with detailed paragraph analysis for EACH case.
+- Where the Full Detailed had a precedent matrix of 10-12 cases, THIS report must have 15+ with specific factual comparisons.
+- THIS report adds 5 ENTIRELY NEW sections not in the Full Detailed: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning.
+- Every shared section must go SIGNIFICANTLY deeper with fresh analysis, additional authorities, and more detailed strategy.
+
+Every section must directly reference the supplied case material. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
 CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 300 words. Reference specific documents, dates, and facts from the case throughout."""
         user_prompt = f"""Create a PREMIUM EXTENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be the MOST COMPREHENSIVE report — significantly more detailed and case-specific than the Full Detailed tier.
 
 {case_context}
 
 Target range 7000-10000 words. Every section must reference specific facts, documents, and dates from this case.
+
+CRITICAL — NO REPETITION FROM FULL DETAILED REPORT:
+The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (300+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
 
 SECTION ORDERING: Case-specific analysis first, then broader legal framework, then strategy, then practical steps, then client brief at the very end.
 
