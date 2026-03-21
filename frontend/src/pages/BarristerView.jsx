@@ -98,6 +98,39 @@ const BarristerView = ({ user }) => {
     }
   };
 
+  const iosShareOrDownload = async (blob, filename, mimeType) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS && navigator.share) {
+      try {
+        const file = new File([blob], filename, { type: mimeType });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ title: filename, files: [file] });
+          toast.success("Shared successfully!");
+          return;
+        }
+      } catch (shareErr) {
+        if (shareErr.name === 'AbortError') return;
+        console.warn("Share API failed, falling back:", shareErr);
+      }
+    }
+    if (isIOS) {
+      const url = window.URL.createObjectURL(blob);
+      window.location.href = url;
+      toast.success("File opened — use the Share button to save.");
+      setTimeout(() => window.URL.revokeObjectURL(url), 30000);
+    } else {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("Downloaded successfully!");
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+    }
+  };
+
   const handleExportPDF = async () => {
     try {
       toast.info("Generating PDF...");
@@ -106,21 +139,8 @@ const BarristerView = ({ user }) => {
         { responseType: 'blob', timeout: 60000 }
       );
       const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.open(url, '_blank');
-        toast.success("PDF opened — use Share to save or print.");
-      } else {
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        toast.success("PDF downloaded successfully!");
-      }
-      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+      const filename = `${caseData?.title || 'Report'}_barrister_brief.pdf`;
+      await iosShareOrDownload(blob, filename, 'application/pdf');
     } catch (error) {
       console.error("PDF export error:", error);
       toast.error("Failed to export PDF. Please try again.");
@@ -135,21 +155,8 @@ const BarristerView = ({ user }) => {
         { responseType: 'blob', timeout: 60000 }
       );
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-      const url = window.URL.createObjectURL(blob);
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.open(url, '_blank');
-        toast.success("Word document opened — use Share to save.");
-      } else {
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.docx`);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        toast.success("Word document downloaded successfully!");
-      }
-      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+      const filename = `${caseData?.title || 'Report'}_barrister_brief.docx`;
+      await iosShareOrDownload(blob, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     } catch (error) {
       console.error("DOCX export error:", error);
       toast.error("Failed to export Word document. Please try again.");

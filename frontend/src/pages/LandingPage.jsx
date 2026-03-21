@@ -12,6 +12,7 @@ import { API } from "../App";
 import AuthModal from "../components/AuthModal";
 import { useTheme } from "../contexts/ThemeContext";
 import VisitorCounter from "../components/VisitorCounter";
+import StateAppealStats from "../components/StateAppealStats";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -641,6 +642,11 @@ const LandingPage = () => {
       </section>
 
       <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-resources" />
+
+      {/* ============================================ */}
+      {/* STATE APPEAL STATS - Interactive Widget */}
+      {/* ============================================ */}
+      <StateAppealStats />
 
       {/* ============================================ */}
       {/* SECTION 2: SEE IT IN ACTION (with Features merged) */}
