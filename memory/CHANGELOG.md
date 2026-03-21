@@ -14,11 +14,14 @@
 - Backend guardrails: anti-preamble, anti-bracket, legislation years required
 
 ### Report Structure Overhaul (P0)
-- **Quick Summary**: Trimmed from 12 to 7 sections, true overview
-- **Full Detailed**: Reordered 15 sections (Analysis → Strategy → Practical → Client Brief LAST). Removed scattered "How to Start" from middle, combined with Forms.
-- **Extensive Log**: Expanded from 4500-6500 to 7000-10000 word target. Now 20 sections with 5 unique sections (Hearing Prep, Conference Pack, Court Pathway, Similar Case Search, Risk Assessment). 300+ words per ground, 12+ sentencing cases, 15+ precedent cases. Increased context limits (32K chars).
-- Eliminated content doubling between reports
-- Client Plain-English Brief always LAST section in all reports
+- **Quick Summary**: 7 sections, 1500-2200 words (overview only)
+- **Full Detailed**: 15 sections, 4500-6500 words (Analysis -> Strategy -> Practical -> Client Brief LAST)
+- **Extensive Log**: 20 sections, 7000-10000 words. 5 unique sections: Hearing Prep, Conference Pack, Court Pathway, Similar Search, Risk Assessment. 300+ words/ground, 12+ sentencing, 15+ precedent. Context limits: 32K chars.
+- **Aggressive Mode**: Restructured to double word count, 15+ sentencing, 20+ precedent, draft submissions
+- **Barrister View**: Merges ALL reports for case (not just one). Keeps longest section version, deduplicates by title, sequential numbering, "Merged from N reports" badge.
+- State-specific URLs for all 8 jurisdictions (AustLII, Legal Aid, court forms)
+- Client Plain-English Brief always LAST in all reports
+- Eliminated content doubling and scattered ordering
 
 ### Other Fixes
 - PayID admin Refresh: loading state + error toasts
