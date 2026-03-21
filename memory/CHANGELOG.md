@@ -1,24 +1,30 @@
 # Appeal Case Manager — Changelog
 
-## 2026-03-21 — Session 15 (AI Fallback + Content Quality + Print Fix + PayID)
-- **AI Endpoint Fallback** (P0): All secondary endpoints use `call_llm_with_fallback` with model rotation
-- **Print Buttons Fixed** (P0 — 4th ask):
-  - Print on ALL 7 tabs (was missing Documents, Reports, Legal)
-  - iOS Safari: BarristerView/ReportView → PDF export in new tab; CaseDetail → iframe content extraction
-- **AI Content Quality** (P0):
-  - `cleanAIContent` strips both square `[Note: ...]` AND round `(Note: ...)` bracket AI notes
-  - Section filtering threshold raised to 80 chars
-  - Backend guardrails: anti-preamble, anti-bracket, legislation years required
-- **Barrister View Parser Improvement**:
-  - Detects markdown headings (`## Title`), numbered all-caps headings (`5. COMPARATIVE SENTENCING TABLE`)
-  - `cleanTitle` strips leading numbers from section titles for clean display
-- **PayID Admin Refresh Fixed**:
-  - Loading state + spinner on Refresh button
-  - Error toasts for 403/401/generic failures (was silently failing)
-- **Sentence Field**: Added to Case model + creation/edit forms, stricter regex
-- **Edit Case Details**: Button on Case Detail page with full dialog
-- **iOS Timeline PDF**: Fixed to use anchor tag approach
-- **Testing**: iterations 66-69 all passed
+## 2026-03-21 — Session 15
+### AI Endpoint Fallback (P0)
+- All secondary endpoints use `call_llm_with_fallback` with model rotation
+
+### Print Buttons Fixed (P0)
+- Print on ALL 7 tabs (was missing Documents, Reports, Legal)
+- iOS: BarristerView/ReportView → PDF export; CaseDetail → iframe extraction
+
+### AI Content Quality (P0)
+- `cleanAIContent` strips `[Note: ...]` AND `(Note: ...)` bracket/round notes
+- Section filtering threshold 80 chars
+- Backend guardrails: anti-preamble, anti-bracket, legislation years required
+
+### Report Structure Overhaul (P0)
+- **Quick Summary**: Trimmed from 12 to 7 sections, true overview
+- **Full Detailed**: Reordered 15 sections (Analysis → Strategy → Practical → Client Brief LAST). Removed scattered "How to Start" from middle, combined with Forms.
+- **Extensive Log**: Expanded from 4500-6500 to 7000-10000 word target. Now 20 sections with 5 unique sections (Hearing Prep, Conference Pack, Court Pathway, Similar Case Search, Risk Assessment). 300+ words per ground, 12+ sentencing cases, 15+ precedent cases. Increased context limits (32K chars).
+- Eliminated content doubling between reports
+- Client Plain-English Brief always LAST section in all reports
+
+### Other Fixes
+- PayID admin Refresh: loading state + error toasts
+- BarristerView parser: markdown heading detection + cleanTitle
+- Sentence field on Case model + edit dialog
+- iOS PDF export fixed for Timeline
 
 ## 2026-03-21 — Session 14 (Critical Report & PDF Fix)
 - **Report generation fully fixed** (P0):
