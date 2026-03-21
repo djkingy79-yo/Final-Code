@@ -24,6 +24,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
   const [pendingPayments, setPendingPayments] = useState([]);
   const [confirmingRef, setConfirmingRef] = useState(null);
+  const [refreshingPayments, setRefreshingPayments] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -50,13 +51,24 @@ const AdminDashboard = () => {
   };
 
   const fetchPendingPayments = async () => {
+    setRefreshingPayments(true);
     try {
       const response = await axios.get(`${API}/payments/payid/pending`, {
         withCredentials: true
       });
       setPendingPayments(response.data.pending_payments || []);
+      toast.success("PayID payments refreshed");
     } catch (err) {
-      console.log("Could not fetch pending payments");
+      console.error("PayID fetch error:", err);
+      if (err.response?.status === 403) {
+        toast.error("Admin access required to view payments");
+      } else if (err.response?.status === 401) {
+        toast.error("Session expired — please log in again");
+      } else {
+        toast.error("Failed to fetch pending payments");
+      }
+    } finally {
+      setRefreshingPayments(false);
     }
   };
 
@@ -380,9 +392,15 @@ const AdminDashboard = () => {
                 variant="outline" 
                 size="sm" 
                 onClick={fetchPendingPayments}
+                disabled={refreshingPayments}
                 className="shrink-0"
+                data-testid="refresh-payments-btn"
               >
-                Refresh
+                {refreshingPayments ? (
+                  <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Refreshing...</>
+                ) : (
+                  "Refresh"
+                )}
               </Button>
             </div>
           </CardHeader>

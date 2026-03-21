@@ -52,7 +52,7 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
   cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
   cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
-  // Strip bracket placeholder notes the AI lazily writes
+  // Strip bracket placeholder notes — BOTH square [] and round () brackets
   cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[Repeat[^\]]*\]/gi, "");
@@ -63,6 +63,12 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/\[Provide[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[Similar[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[See[^\]]*\]/gi, "");
+  // Round bracket notes — (Note: ...), (See: ...), etc.
+  cleaned = cleaned.replace(/\(Note:\s*[^)]*\)/gi, "");
+  cleaned = cleaned.replace(/\(See:\s*[^)]*\)/gi, "");
+  cleaned = cleaned.replace(/\(Continue[^)]*\)/gi, "");
+  cleaned = cleaned.replace(/\(Link formatting[^)]*\)/gi, "");
+  cleaned = cleaned.replace(/\(Entries will[^)]*\)/gi, "");
   return cleaned.trim();
 };
 

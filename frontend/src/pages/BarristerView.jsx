@@ -214,6 +214,7 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
     cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
     cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
+    // Square bracket notes
     cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
     cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
     cleaned = cleaned.replace(/\[Repeat[^\]]*\]/gi, "");
@@ -224,6 +225,12 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/\[Provide[^\]]*\]/gi, "");
     cleaned = cleaned.replace(/\[Similar[^\]]*\]/gi, "");
     cleaned = cleaned.replace(/\[See[^\]]*\]/gi, "");
+    // Round bracket notes
+    cleaned = cleaned.replace(/\(Note:\s*[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/\(See:\s*[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/\(Continue[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/\(Link formatting[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/\(Entries will[^)]*\)/gi, "");
     return cleaned.trim();
   };
 
@@ -239,15 +246,23 @@ const BarristerView = ({ user }) => {
     let currentContent = [];
     
     const sectionPatterns = [
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(CASE OVERVIEW|OVERVIEW)/i, title: "CASE OVERVIEW", icon: "file" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(EVIDENCE|DOCUMENT)/i, title: "EVIDENCE ANALYSIS", icon: "search" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(GROUNDS|MERIT)/i, title: "GROUNDS OF MERIT", icon: "scale" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(LEGAL|LAW|FRAMEWORK)/i, title: "LEGAL FRAMEWORK", icon: "book" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(STRATEGIC|RECOMMEND|STRATEGY)/i, title: "STRATEGIC RECOMMENDATIONS", icon: "target" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(SIMILAR|PRECEDENT)/i, title: "SIMILAR CASES & PRECEDENT", icon: "archive" },
-      { pattern: /^(?:\d+\.|I\.|II\.|III\.|IV\.|V\.|VI\.)\s*(CONCLUSION)/i, title: "CONCLUSION", icon: "flag" },
-      { pattern: /^\*\*([A-Z][A-Z\s]+)\*\*/i, title: null, icon: "chevron" }
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:CASE OVERVIEW|OVERVIEW)/i, title: "CASE OVERVIEW", icon: "file" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:EVIDENCE|DOCUMENT)/i, title: "EVIDENCE ANALYSIS", icon: "search" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:GROUNDS|MERIT)/i, title: "GROUNDS OF MERIT", icon: "scale" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:LEGAL|LAW|FRAMEWORK)/i, title: "LEGAL FRAMEWORK", icon: "book" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:STRATEGIC|RECOMMEND|STRATEGY)/i, title: "STRATEGIC RECOMMENDATIONS", icon: "target" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:SIMILAR|PRECEDENT)/i, title: "SIMILAR CASES & PRECEDENT", icon: "archive" },
+      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:CONCLUSION)/i, title: "CONCLUSION", icon: "flag" },
+      // Catch markdown headings: ## Title or ### Title
+      { pattern: /^#{1,3}\s+(?:\d+\.\s*)?(.{4,70})$/i, title: null, icon: "chevron" },
+      // Catch bold headings: **TITLE**
+      { pattern: /^\*\*(?:\d+\.\s*)?([A-Z][A-Z\s\-&()]+)\*\*/i, title: null, icon: "chevron" },
+      // Catch numbered all-caps headings: 5. COMPARATIVE SENTENCING TABLE
+      { pattern: /^\d+\.\s+([A-Z][A-Z\s\-&()]{3,70})(?:\s*\(MANDATORY\))?$/i, title: null, icon: "chevron" }
     ];
+    
+    // Helper to clean leading numbers from titles
+    const cleanTitle = (raw) => (raw || "ANALYSIS").replace(/^\d+\.\s*/, "").replace(/\*\*/g, "").replace(/^#+\s*/, "").replace(/[\-:]+$/, "").trim();
     
     for (const line of lines) {
       let foundSection = false;
@@ -269,8 +284,8 @@ const BarristerView = ({ user }) => {
           if (title) {
             currentSection = title;
           } else {
-            const match = line.match(/\*\*([A-Z][A-Z\s]+)\*\*/i);
-            currentSection = match ? match[1].trim() : "ANALYSIS";
+            const match = line.match(/\*\*([^*]+)\*\*/) || line.match(/^#{1,3}\s+(?:\d+\.\s*)?(.+)$/) || line.match(/^\d+\.\s+(.+)$/);
+            currentSection = cleanTitle(match ? (match[1] || match[2]) : line);
           }
           currentContent = [];
           foundSection = true;
