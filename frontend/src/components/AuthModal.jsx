@@ -70,6 +70,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       const endpoint = mode === "login" ? "/auth/login" : "/auth/register";
       const response = await axios.post(`${API}${endpoint}`, formData);
       
+      // Store session token in localStorage as fallback for cookie issues
+      if (response.data?.session_token) {
+        localStorage.setItem("session_token", response.data.session_token);
+      }
+      
       toast.success(mode === "login" ? "Welcome back!" : "Account created successfully!");
       onSuccess(response.data);
       onClose();

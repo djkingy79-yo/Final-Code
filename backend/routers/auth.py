@@ -152,7 +152,8 @@ async def login_user(request: LoginRequest, response: Response):
         "user_id": user_doc["user_id"],
         "email": user_doc["email"],
         "name": user_doc["name"],
-        "picture": user_doc.get("picture")
+        "picture": user_doc.get("picture"),
+        "session_token": session_token
     }
 
 @router.post("/session")
@@ -223,6 +224,7 @@ async def create_session(request: Request, response: Response):
     )
     
     user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    user_doc["session_token"] = session_token
     return user_doc
 
 @router.get("/me")

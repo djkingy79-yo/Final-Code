@@ -49,6 +49,15 @@ export const API = `${BACKEND_URL}/api`;
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 30000; // 30 second timeout for most requests
 
+// Add request interceptor to include session token from localStorage as fallback
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("session_token");
+  if (token && !config.headers["Authorization"]) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Auth Callback Component
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -66,6 +75,12 @@ const AuthCallback = () => {
       if (sessionId) {
         try {
           const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
+          // Store session token in localStorage as fallback for iOS Safari cookie issues
+          if (response.data?.session_token) {
+            localStorage.setItem("session_token", response.data.session_token);
+          }
+          // Clean the hash from URL
+          window.history.replaceState(null, "", window.location.pathname);
           navigate("/dashboard", { state: { user: response.data }, replace: true });
         } catch (error) {
           console.error("Auth error:", error);
