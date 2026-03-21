@@ -150,7 +150,7 @@ async def call_llm_with_fallback(system_prompt: str, user_prompt: str, session_i
     last_err = None
     for idx, (provider, model_name) in enumerate(models):
         try:
-            chat = LlmChat(api_key=api_key, session_id=session_id, system_message=system_prompt).with_model(provider, model_name)
+            chat = LlmChat(api_key=api_key, session_id=session_id, system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
             result = await asyncio.wait_for(chat.send_message(UserMessage(text=user_prompt)), timeout=120)
             if result and len(result.strip()) > 50 and "I'm sorry" not in result[:80]:
                 logger.info(f"LLM success ({session_id}) with {provider}/{model_name} on attempt {idx+1}")
@@ -3427,12 +3427,12 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add."""
+You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 1800 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT.
 
 {case_context}
 
-Write 1500-2200 words. This is an OVERVIEW — keep each section concise but substantive. Structure EXACTLY as follows:
+Write MINIMUM 1800 words (target range 1800-2500 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
 
 ## 1. CASE SNAPSHOT
 3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
@@ -3874,7 +3874,7 @@ ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than
         last_err = None
         for idx, (provider, model_name) in enumerate(models):
             try:
-                chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name)
+                chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
                 result = await asyncio.wait_for(
                     chat.send_message(UserMessage(text=prompt_text)),
                     timeout=180
@@ -3900,54 +3900,145 @@ ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than
     response = None
     last_error = None
     try:
-        if report_type == "extensive_log":
-            # Two-pass generation for extensive_log to avoid truncation
-            # Pass 1: Sections 1-10
-            pass1_instruction = """
+        if report_type == "full_detailed":
+            # Five-pass generation for full_detailed (3 sections per pass)
+            passes = [
+                ("PASS 1/5", """
 
-NOW GENERATE ONLY THE FOLLOWING 10 SECTIONS (sections 1-10). Write thorough legal analysis for each. Do NOT skip any section. Do NOT use '...' continuation markers.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words with multiple detailed paragraphs. Do NOT summarise. Do NOT use '...' continuation markers. Do NOT truncate.
 
-Sections to write NOW:
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
 ## 3. DOCUMENT EVIDENCE DIGEST
-## 4. GROUNDS OF MERIT — DEEP ANALYSIS
-## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+
+Write ALL 3 sections in full detail. STOP after section 3."""),
+                ("PASS 2/5", """
+
+NOW GENERATE ONLY SECTIONS 4-6. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 4. GROUNDS OF MERIT PORTFOLIO
+## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
-## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS
+
+Write ALL 3 sections in full detail. STOP after section 6."""),
+                ("PASS 3/5", """
+
+NOW GENERATE ONLY SECTIONS 7-9. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 7. OUTCOME OPTIONS AVAILABLE — keep ALL outcome pathways in this ONE section
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
+
+Write ALL 3 sections in full detail. STOP after section 9."""),
+                ("PASS 4/5", """
+
+NOW GENERATE ONLY SECTIONS 10-12. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
+## 11. HOW TO ARGUE EACH TOP GROUND
+## 12. SUBMISSIONS BLUEPRINT
+
+Write ALL 3 sections in full detail. STOP after section 12."""),
+                ("PASS 5/5", """
+
+NOW GENERATE ONLY SECTIONS 13-15. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
+## 14. PRIORITISED ACTION PLAN — keep ALL timeframes (72-hour, 7-day, 28-day) in this ONE section
+## 15. CLIENT PLAIN-ENGLISH BRIEF
+
+Write ALL 3 sections in full detail. Do NOT truncate any section."""),
+            ]
+            
+            parts = []
+            for label, instruction in passes:
+                pass_prompt = user_prompt + instruction
+                logger.info(f"Full detailed {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
+                part = await _subprocess_llm(pass_prompt)
+                parts.append(part)
+                logger.info(f"Full detailed {label} response: {len(part)} chars")
+            
+            response = "\n\n".join(parts)
+            logger.info(f"Full detailed combined: {len(response)} chars")
+
+        elif report_type == "extensive_log":
+            # Seven-pass generation for extensive_log (3 sections per pass)
+            passes = [
+                ("PASS 1/7", """
+
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words with multiple detailed paragraphs referencing specific case facts. Do NOT summarise. Do NOT use '...' continuation markers. Do NOT truncate.
+
+## 1. EXECUTIVE BRIEF
+## 2. FORENSIC CASE CHRONOLOGY
+## 3. DOCUMENT EVIDENCE DIGEST
+
+Write ALL 3 sections in full detail. STOP after section 3."""),
+                ("PASS 2/7", """
+
+NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Section 4 requires 300+ words PER ground. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 4. GROUNDS OF MERIT — DEEP ANALYSIS (300+ words per ground)
+## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+
+Write BOTH sections in full detail with case-specific analysis. STOP after section 5."""),
+                ("PASS 3/7", """
+
+NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
+## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS — keep ALL pathways in this ONE section
+## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+
+Write ALL 3 sections in full detail. STOP after section 8."""),
+                ("PASS 4/7", """
+
+NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
 ## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
-
-STOP after section 10. Do NOT write sections 11-20."""
-            pass1_prompt = user_prompt + pass1_instruction
-            logger.info(f"Extensive log PASS 1 prompt size: system={len(system_prompt)}, user={len(pass1_prompt)}")
-            pass1_response = await _subprocess_llm(pass1_prompt)
-            
-            # Pass 2: Sections 11-20
-            pass2_instruction = """
-
-You have already written sections 1-10 for this case. NOW GENERATE ONLY THE FOLLOWING 10 SECTIONS (sections 11-20). Write thorough legal analysis for each. Do NOT skip any section. Do NOT repeat sections 1-10.
-
-Sections to write NOW:
 ## 11. HOW TO ARGUE EACH TOP GROUND — DETAILED STRATEGY
+
+Write ALL 3 sections in full detail. STOP after section 11."""),
+                ("PASS 5/7", """
+
+NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
 ## 12. SUBMISSIONS BLUEPRINT
 ## 13. HEARING PREPARATION NOTES
 ## 14. CONFERENCE PREPARATION PACK
+
+Write ALL 3 sections in full detail. STOP after section 14."""),
+                ("PASS 6/7", """
+
+NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
 ## 15. COURT PATHWAY OPERATIONS PLAYBOOK
 ## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
 ## 17. SIMILAR CASE SEARCH OPTIONS
-## 18. PRIORITISED ACTION PLAN
+
+Write ALL 3 sections in full detail. STOP after section 17."""),
+                ("PASS 7/7", """
+
+NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+
+## 18. PRIORITISED ACTION PLAN — keep ALL timeframes in this ONE section
 ## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
 ## 20. CLIENT PLAIN-ENGLISH BRIEF
 
-Write ALL 10 sections with full content. Do NOT truncate or use '...' markers."""
-            pass2_prompt = user_prompt + pass2_instruction
-            logger.info(f"Extensive log PASS 2 prompt size: system={len(system_prompt)}, user={len(pass2_prompt)}")
-            pass2_response = await _subprocess_llm(pass2_prompt)
+Write ALL 3 sections in full detail. Do NOT truncate any section."""),
+            ]
             
-            response = pass1_response + "\n\n" + pass2_response
-            logger.info(f"Extensive log combined response: {len(response)} chars (pass1={len(pass1_response)}, pass2={len(pass2_response)})")
+            parts = []
+            for label, instruction in passes:
+                pass_prompt = user_prompt + instruction
+                logger.info(f"Extensive log {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
+                part = await _subprocess_llm(pass_prompt)
+                parts.append(part)
+                logger.info(f"Extensive log {label} response: {len(part)} chars")
+            
+            response = "\n\n".join(parts)
+            logger.info(f"Extensive log combined: {len(response)} chars")
+
         else:
             logger.info(f"Report prompt size: system={len(system_prompt)}, user={len(user_prompt)}, total={len(system_prompt)+len(user_prompt)}")
             response = await _subprocess_llm(user_prompt)
