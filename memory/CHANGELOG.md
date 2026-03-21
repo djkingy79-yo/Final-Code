@@ -1,5 +1,19 @@
 # Appeal Case Manager — Changelog
 
+## 2026-03-21 — Session 16
+### Landing Page & Marketing Copy Audit (P0)
+- **All report section counts corrected** across LandingPage, HowItWorksPage, FAQPage:
+  - Quick Summary: "CASE SNAPSHOT" (was CASE OVERVIEW), "TOP POTENTIAL GROUNDS" (was GROUNDS IDENTIFIED), "APPEAL OUTLOOK" with text rating (was 72% percentage)
+  - Full Detailed: TOC now shows "CONTENTS (15 Sections)" with all 15 correct section names (was 10)
+  - Extensive Log: TOC now shows "COMPLETE TABLE OF CONTENTS (20 SECTIONS)" with all 20 names (was 14), 5 exclusive sections highlighted in purple
+- **Badges corrected**: Extensive Log now shows "20 Sections", "15+ Precedent Cases", "12+ Sentencing Comparisons" (was 14/12/23)
+- **Pricing descriptions updated**: Full Detailed mentions "15 sections: grounds portfolio, 8+ sentencing comparisons...", Extensive Log mentions "20 sections" with 5 exclusive features listed
+- **AI feature card**: Changed "GPT-4 powered" to "AI-Powered"
+- **Barrister View section**: Updated to "Extensive Log Advantage" with "20 sections with 5 exclusives"
+- **FAQ answers**: All 3 report tier answers now list exact section names and counts
+- **HowItWorksPage**: Report pricing features updated with accurate section counts and content descriptions
+- **Testing**: iteration_71 — 100% frontend (19/19 tests passed)
+
 ## 2026-03-21 — Session 15
 ### AI Endpoint Fallback (P0)
 - All secondary endpoints use `call_llm_with_fallback` with model rotation
