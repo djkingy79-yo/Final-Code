@@ -13,7 +13,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare, Trash2, Printer
+  MessageSquare, Trash2, Printer, Pencil
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -160,6 +160,9 @@ const CaseDetail = ({ user }) => {
   const [timelineAnalysis, setTimelineAnalysis] = useState(null);
   const [generatingProgress, setGeneratingProgress] = useState(false);
   const [progressAnalysis, setProgressAnalysis] = useState(null);
+  const [showEditCaseDialog, setShowEditCaseDialog] = useState(false);
+  const [editCaseData, setEditCaseData] = useState(null);
+  const [savingCase, setSavingCase] = useState(false);
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -391,6 +394,41 @@ const CaseDetail = ({ user }) => {
     } catch (error) {
       console.error("PDF export error:", error);
       toast.error("Failed to export timeline PDF");
+    }
+  };
+
+  const handleOpenEditCase = () => {
+    setEditCaseData({
+      title: caseData?.title || "",
+      defendant_name: caseData?.defendant_name || "",
+      case_number: caseData?.case_number || "",
+      court: caseData?.court || "",
+      judge: caseData?.judge || "",
+      state: caseData?.state || "nsw",
+      offence_category: caseData?.offence_category || "other",
+      offence_type: caseData?.offence_type || "",
+      sentence: caseData?.sentence || "",
+      summary: caseData?.summary || ""
+    });
+    setShowEditCaseDialog(true);
+  };
+
+  const handleSaveCase = async () => {
+    if (!editCaseData?.title?.trim()) {
+      toast.error("Case title is required");
+      return;
+    }
+    setSavingCase(true);
+    try {
+      await axios.put(`${API}/cases/${caseId}`, editCaseData);
+      setCaseData({ ...caseData, ...editCaseData });
+      setShowEditCaseDialog(false);
+      toast.success("Case details updated");
+    } catch (error) {
+      console.error("Save case error:", error);
+      toast.error("Failed to update case details");
+    } finally {
+      setSavingCase(false);
     }
   };
 
@@ -643,13 +681,25 @@ const CaseDetail = ({ user }) => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Case Info */}
         <div className="mb-8">
-          <h1 
-            className="text-3xl md:text-4xl font-bold text-foreground tracking-tight"
-            style={{ fontFamily: 'Crimson Pro, serif' }}
-            data-testid="case-title"
-          >
-            {caseData?.title}
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <h1 
+              className="text-3xl md:text-4xl font-bold text-foreground tracking-tight"
+              style={{ fontFamily: 'Crimson Pro, serif' }}
+              data-testid="case-title"
+            >
+              {caseData?.title}
+            </h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenEditCase}
+              className="shrink-0 rounded-xl"
+              data-testid="edit-case-btn"
+            >
+              <Pencil className="w-4 h-4 mr-1.5" />
+              Edit
+            </Button>
+          </div>
           <div className="flex flex-wrap items-center gap-4 mt-3 text-muted-foreground">
             <span className="font-medium text-foreground">{caseData?.defendant_name}</span>
             {caseData?.case_number && (
@@ -659,6 +709,13 @@ const CaseDetail = ({ user }) => {
             )}
             {caseData?.court && <span>{caseData.court}</span>}
           </div>
+          {caseData?.sentence && (
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="outline" className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 rounded-lg">
+                Sentence: {caseData.sentence}
+              </Badge>
+            </div>
+          )}
           {/* Offence Type Display */}
           {caseData?.offence_category && (
             <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -1477,6 +1534,86 @@ const CaseDetail = ({ user }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit Case Details Dialog */}
+      <Dialog open={showEditCaseDialog} onOpenChange={setShowEditCaseDialog}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" aria-describedby="edit-case-description">
+          <DialogHeader>
+            <DialogTitle>Edit Case Details</DialogTitle>
+          </DialogHeader>
+          <p id="edit-case-description" className="sr-only">Edit the details of this case</p>
+          {editCaseData && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="edit-title">Case Title</Label>
+                <Input id="edit-title" value={editCaseData.title} onChange={(e) => setEditCaseData({ ...editCaseData, title: e.target.value })} className="mt-1.5 rounded-xl" data-testid="edit-case-title" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-defendant">Defendant</Label>
+                  <Input id="edit-defendant" value={editCaseData.defendant_name} onChange={(e) => setEditCaseData({ ...editCaseData, defendant_name: e.target.value })} className="mt-1.5 rounded-xl" data-testid="edit-case-defendant" />
+                </div>
+                <div>
+                  <Label htmlFor="edit-case-number">Case Number</Label>
+                  <Input id="edit-case-number" value={editCaseData.case_number} onChange={(e) => setEditCaseData({ ...editCaseData, case_number: e.target.value })} className="mt-1.5 rounded-xl" data-testid="edit-case-number" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-court">Court</Label>
+                  <Input id="edit-court" value={editCaseData.court} onChange={(e) => setEditCaseData({ ...editCaseData, court: e.target.value })} className="mt-1.5 rounded-xl" data-testid="edit-case-court" />
+                </div>
+                <div>
+                  <Label htmlFor="edit-judge">Presiding Judge</Label>
+                  <Input id="edit-judge" value={editCaseData.judge} onChange={(e) => setEditCaseData({ ...editCaseData, judge: e.target.value })} className="mt-1.5 rounded-xl" data-testid="edit-case-judge" />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="edit-sentence">Sentence</Label>
+                <Input id="edit-sentence" value={editCaseData.sentence} onChange={(e) => setEditCaseData({ ...editCaseData, sentence: e.target.value })} placeholder="e.g., 30 years imprisonment with NPP of 22 years 6 months" className="mt-1.5 rounded-xl" data-testid="edit-case-sentence" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-state">Jurisdiction</Label>
+                  <Select value={editCaseData.state} onValueChange={(val) => setEditCaseData({ ...editCaseData, state: val })}>
+                    <SelectTrigger className="mt-1.5 rounded-xl" data-testid="edit-case-state"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[{v:"nsw",l:"NSW"},{v:"vic",l:"VIC"},{v:"qld",l:"QLD"},{v:"wa",l:"WA"},{v:"sa",l:"SA"},{v:"tas",l:"TAS"},{v:"nt",l:"NT"},{v:"act",l:"ACT"}].map(s => (
+                        <SelectItem key={s.v} value={s.v}>{s.l}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-offence">Offence Category</Label>
+                  <Select value={editCaseData.offence_category} onValueChange={(val) => setEditCaseData({ ...editCaseData, offence_category: val })}>
+                    <SelectTrigger className="mt-1.5 rounded-xl" data-testid="edit-case-offence"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[{v:"homicide",l:"Homicide"},{v:"assault",l:"Assault"},{v:"sexual_offences",l:"Sexual Offences"},{v:"drug_offences",l:"Drug Offences"},{v:"fraud",l:"Fraud"},{v:"robbery",l:"Robbery"},{v:"other",l:"Other"}].map(o => (
+                        <SelectItem key={o.v} value={o.v}>{o.l}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="edit-offence-type">Specific Offence</Label>
+                <Input id="edit-offence-type" value={editCaseData.offence_type} onChange={(e) => setEditCaseData({ ...editCaseData, offence_type: e.target.value })} placeholder="e.g., Murder" className="mt-1.5 rounded-xl" data-testid="edit-case-offence-type" />
+              </div>
+              <div>
+                <Label htmlFor="edit-summary">Summary</Label>
+                <Textarea id="edit-summary" value={editCaseData.summary} onChange={(e) => setEditCaseData({ ...editCaseData, summary: e.target.value })} rows={3} className="mt-1.5 rounded-xl" data-testid="edit-case-summary" />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditCaseDialog(false)} className="rounded-xl">Cancel</Button>
+            <Button onClick={handleSaveCase} disabled={savingCase} className="rounded-xl" data-testid="save-case-btn">
+              {savingCase ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

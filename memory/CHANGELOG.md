@@ -1,6 +1,6 @@
 # Appeal Case Manager — Changelog
 
-## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality Fixes)
+## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality + Edit Case)
 - **All secondary AI endpoints now use `call_llm_with_fallback`** (P0):
   - `investigate_ground_of_merit`: Replaced inline retry logic with shared helper
   - `auto_identify_grounds`: Replaced hardcoded Claude-only call with model fallback (gpt-4o x2 -> claude-sonnet-4 -> gpt-4o-mini)
@@ -17,6 +17,10 @@
   - Added sentence input to Dashboard case creation form
   - `extractSentenceSummary` now checks `caseData.sentence` first before regex fallback
   - Case context for AI reports includes sentence field
+- **Edit Case Details** (P1):
+  - Added "Edit" button with pencil icon on Case Detail page header
+  - Full edit dialog with all case fields: title, defendant, case number, court, judge, sentence, jurisdiction, offence category, specific offence, summary
+  - Sentence displayed as amber badge on case detail page
 - **iOS Safari PDF Export Fix** (P1):
   - Fixed Timeline PDF export to use anchor tag approach instead of Blob URL (matching Reports/BarristerView fix)
 - **Testing**: iteration_66 (13/13 backend), iteration_67 (21/21 backend + frontend)
