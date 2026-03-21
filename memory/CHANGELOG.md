@@ -1,29 +1,27 @@
 # Appeal Case Manager — Changelog
 
-## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality + Edit Case)
+## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality + Edit Case + Print Fix)
 - **All secondary AI endpoints now use `call_llm_with_fallback`** (P0):
-  - `investigate_ground_of_merit`: Replaced inline retry logic with shared helper
-  - `auto_identify_grounds`: Replaced hardcoded Claude-only call with model fallback (gpt-4o x2 -> claude-sonnet-4 -> gpt-4o-mini)
-  - Zero hardcoded Claude-only calls remain in codebase
+  - `investigate_ground_of_merit` and `auto_identify_grounds`: Replaced hardcoded Claude-only calls with model fallback
+- **PRINT BUTTONS FIXED ACROSS ALL VIEWS** (P0 — asked 4 times):
+  - Print button now appears on ALL 7 tabs in CaseDetail (was missing from Documents, Reports, Legal)
+  - iOS Safari fix: BarristerView/ReportView Print opens PDF export in new tab instead of unreliable `window.print()`
+  - iOS Safari fix: CaseDetail Print uses iframe-based content extraction for reliable printing
+  - Desktop: `window.print()` continues to work as before
 - **AI Report Content Quality Fixes** (P0):
-  - Added `cleanAIContent` function to both ReportView and BarristerView that strips:
-    - AI preamble text ("Certainly! Here's a comprehensive...")
-    - Bracket placeholder notes ("[Note: Repeat this format...]", "[Continue listing...]", etc.)
-  - Empty/thin sections (<30 chars) now filtered out from display
-  - Backend `report_guardrails` updated with explicit anti-preamble and anti-bracket instructions
-  - All legislation references now require year (e.g. Crimes Act 1900 (NSW))
+  - `cleanAIContent` strips AI preamble and bracket placeholder notes
+  - Section filtering threshold increased from 30 to 80 chars — removes thin/useless sections like "Authority Sequence"
+  - Backend guardrails updated with anti-preamble/anti-bracket instructions
 - **Sentence Field Fix** (P1):
-  - Added `sentence` field to Case and CaseCreate models
-  - Added sentence input to Dashboard case creation form
-  - `extractSentenceSummary` now checks `caseData.sentence` first before regex fallback
-  - Case context for AI reports includes sentence field
+  - Added `sentence` field to Case model + Dashboard/CaseDetail forms
+  - Stricter regex prevents wrong sentence extraction ("12 years, reduced due to mental health evidence effects on intent")
+  - Fallback text: "Not specified — edit case to add sentence"
 - **Edit Case Details** (P1):
-  - Added "Edit" button with pencil icon on Case Detail page header
-  - Full edit dialog with all case fields: title, defendant, case number, court, judge, sentence, jurisdiction, offence category, specific offence, summary
-  - Sentence displayed as amber badge on case detail page
+  - "Edit" button on Case Detail page with full dialog for all fields
+  - Sentence displayed as amber badge
 - **iOS Safari PDF Export Fix** (P1):
-  - Fixed Timeline PDF export to use anchor tag approach instead of Blob URL (matching Reports/BarristerView fix)
-- **Testing**: iteration_66 (13/13 backend), iteration_67 (21/21 backend + frontend)
+  - Timeline PDF export now uses anchor tag approach
+- **Testing**: iterations 66 (13/13), 67 (21/21), 68 (all code + build verified)
 
 ## 2026-03-21 — Session 14 (Critical Report & PDF Fix)
 - **Report generation fully fixed** (P0):
