@@ -85,19 +85,6 @@ const BarristerView = ({ user }) => {
   };
 
   const handlePrint = () => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      // iOS Safari: window.print() is unreliable. Open PDF in new tab instead.
-      const a = document.createElement('a');
-      a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      toast.success("PDF opening — use Share to print.");
-      return;
-    }
     window.print();
   };
 
@@ -114,71 +101,58 @@ const BarristerView = ({ user }) => {
   const handleExportPDF = async () => {
     try {
       toast.info("Generating PDF...");
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        // iOS: use anchor tag to API URL — Content-Disposition triggers download
-        const a = document.createElement('a');
-        a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        toast.success("PDF opening — use Share to save or print.");
-        return;
-      }
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-pdf`,
-        { responseType: 'blob' }
+        { responseType: 'blob', timeout: 60000 }
       );
-      
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-      toast.success("PDF downloaded successfully!");
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        window.open(url, '_blank');
+        toast.success("PDF opened — use Share to save or print.");
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success("PDF downloaded successfully!");
+      }
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (error) {
-      toast.error("Failed to export PDF.");
+      console.error("PDF export error:", error);
+      toast.error("Failed to export PDF. Please try again.");
     }
   };
 
   const handleExportDOCX = async () => {
     try {
       toast.info("Generating Word document...");
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        const a = document.createElement('a');
-        a.href = `${API}/cases/${caseId}/reports/${reportId}/export-docx`;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        toast.success("Word document opening — use Share to save.");
-        return;
-      }
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-docx`,
-        { responseType: 'blob' }
+        { responseType: 'blob', timeout: 60000 }
       );
-      
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.docx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-      toast.success("Word document downloaded successfully!");
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        window.open(url, '_blank');
+        toast.success("Word document opened — use Share to save.");
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${caseData?.title || 'Report'}_barrister_brief.docx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success("Word document downloaded successfully!");
+      }
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (error) {
-      toast.error("Failed to export Word document.");
+      console.error("DOCX export error:", error);
+      toast.error("Failed to export Word document. Please try again.");
     }
   };
 
