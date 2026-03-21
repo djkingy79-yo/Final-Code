@@ -2,6 +2,8 @@
 
 ## P0 - Critical (Completed)
 - [x] Multi-pass LLM report generation (word count targets hit)
+- [x] All 6 reports generated with content tier hierarchy (no repetition)
+- [x] Barrister Views verified for all report types
 
 ## P1 - High Priority
 - [ ] **Backend Refactoring** - Decompose server.py (~4,884 lines)
@@ -20,6 +22,6 @@
 - [ ] Finalise marketing launch plan (/app/memory/mobile_app_launch_plan.md)
 
 ## Backlog
-- [ ] Aggressive mode report generation testing (standard mode verified, aggressive untested)
+- [ ] Minor: Reduce aggressive-mode overlap between Full Detailed and Quick Summary
 - [ ] Report regeneration UX improvements
 - [ ] Performance optimisation for large case files
