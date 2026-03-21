@@ -36,13 +36,12 @@ const titleFromSnake = (value) => {
 };
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
-  // Use case data sentence field first if available
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
-  const byLabel = analysis.match(/(?:sentenced?\s+to|received?\s+a?\s*sentence\s+of)\s*[:\-]?\s*([^\n\.]{6,140})/i);
-  if (byLabel?.[1]) return byLabel[1].trim();
-  const byDuration = analysis.match(/(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,60})/i);
-  if (byDuration?.[1]) return byDuration[1].trim();
-  return "Not specified";
+  const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
+  if (byVerb?.[1]) return byVerb[1].trim();
+  const byHead = analysis.match(/(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})/im);
+  if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1])) return byHead[1].trim();
+  return "Not specified — edit case to add sentence";
 };
 
 const cleanAIContent = (text) => {
@@ -77,7 +76,7 @@ const parseAnalysisSections = (analysis = "") => {
 
   const pushSection = () => {
     const content = cleanAIContent(currentLines.join("\n").trim());
-    if (!content || content.length < 30) return;
+    if (!content || content.length < 80) return;
     sections.push({ id: `report-section-${sections.length + 1}`, title: currentTitle, content });
   };
 
@@ -195,6 +194,18 @@ const ReportView = () => {
   };
 
   const handlePrint = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const a = document.createElement('a');
+      a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success("PDF opening — use Share to print.");
+      return;
+    }
     window.print();
   };
 

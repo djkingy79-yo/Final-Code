@@ -76,6 +76,19 @@ const BarristerView = ({ user }) => {
   };
 
   const handlePrint = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      // iOS Safari: window.print() is unreliable. Open PDF in new tab instead.
+      const a = document.createElement('a');
+      a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success("PDF opening — use Share to print.");
+      return;
+    }
     window.print();
   };
 
@@ -185,11 +198,12 @@ const BarristerView = ({ user }) => {
 
   const extractSentenceSummary = (caseInfo, analysis = "") => {
     if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
-    const byLabel = analysis.match(/(?:sentenced?\s+to|received?\s+a?\s*sentence\s+of)\s*[:\-]?\s*([^\n\.]{6,140})/i);
-    if (byLabel?.[1]) return byLabel[1].trim();
-    const byDuration = analysis.match(/(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,60})/i);
-    if (byDuration?.[1]) return byDuration[1].trim();
-    return "Not specified";
+    // Only match definitive sentencing statements, not AI interpretation
+    const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
+    if (byVerb?.[1]) return byVerb[1].trim();
+    const byHead = analysis.match(/(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})/im);
+    if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1])) return byHead[1].trim();
+    return "Not specified — edit case to add sentence";
   };
 
   // Clean AI artifacts from content
@@ -242,7 +256,7 @@ const BarristerView = ({ user }) => {
         if (pattern.test(line)) {
           if (currentSection) {
             const cleanedContent = cleanAIContent(currentContent.join('\n').trim());
-            if (cleanedContent && cleanedContent.length >= 30) {
+            if (cleanedContent && cleanedContent.length >= 80) {
               sections.push({
                 number: String(sections.length + 1),
                 title: currentSection,
@@ -276,7 +290,7 @@ const BarristerView = ({ user }) => {
     
     if (currentSection && currentContent.length > 0) {
       const cleanedContent = cleanAIContent(currentContent.join('\n').trim());
-      if (cleanedContent && cleanedContent.length >= 30) {
+      if (cleanedContent && cleanedContent.length >= 80) {
         sections.push({
           number: String(sections.length + 1),
           title: currentSection,

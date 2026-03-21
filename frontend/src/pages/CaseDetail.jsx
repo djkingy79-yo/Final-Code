@@ -776,22 +776,65 @@ const CaseDetail = ({ user }) => {
             </div>
 
             <div className="flex gap-2 flex-wrap">
-              {/* Print button for all tabs */}
-              {["timeline", "grounds", "notes", "progress"].includes(activeTab) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    window.print();
-                    toast.info("If print dialog doesn't appear, use your browser's Share menu.");
-                  }}
-                  className="rounded-xl"
-                  data-testid={`print-${activeTab}-btn`}
-                >
-                  <Printer className="w-4 h-4 mr-2" />
-                  Print {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-                </Button>
-              )}
+              {/* Print button for all tab sections */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                  if (isIOS) {
+                    // iOS Safari: window.print() is unreliable. Use iframe approach.
+                    const contentEl = document.querySelector('[data-tab-content]');
+                    if (!contentEl) {
+                      toast.error("Nothing to print on this tab.");
+                      return;
+                    }
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.top = '-10000px';
+                    iframe.style.left = '-10000px';
+                    iframe.style.width = '210mm';
+                    document.body.appendChild(iframe);
+                    const doc = iframe.contentDocument;
+                    doc.open();
+                    doc.write(`<!DOCTYPE html><html><head><title>${caseData?.title || 'Case'} - ${activeTab}</title>
+                      <style>
+                        body { font-family: 'Georgia', serif; padding: 24px; color: #1a1a1a; font-size: 14px; line-height: 1.6; }
+                        h1 { font-size: 22px; margin-bottom: 4px; }
+                        h2 { font-size: 18px; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+                        h3 { font-size: 15px; margin-top: 12px; }
+                        table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+                        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
+                        th { background: #f5f5f5; font-weight: bold; }
+                        ul, ol { padding-left: 20px; }
+                        li { margin-bottom: 4px; }
+                        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #eee; }
+                        p { margin: 6px 0; }
+                        button, [data-testid], .no-print { display: none !important; }
+                      </style>
+                    </head><body>
+                      <h1>${caseData?.title || ''}</h1>
+                      <p>${caseData?.defendant_name || ''} | ${caseData?.case_number || ''} | ${caseData?.court || ''}</p>
+                      <hr/>
+                      ${contentEl.innerHTML}
+                    </body></html>`);
+                    doc.close();
+                    setTimeout(() => {
+                      iframe.contentWindow.focus();
+                      iframe.contentWindow.print();
+                      setTimeout(() => document.body.removeChild(iframe), 3000);
+                    }, 500);
+                    toast.success("Print dialog opening...");
+                    return;
+                  }
+                  window.print();
+                }}
+                className="rounded-xl"
+                data-testid={`print-${activeTab}-btn`}
+              >
+                <Printer className="w-4 h-4 mr-2" />
+                Print {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </Button>
               {activeTab === "timeline" && (
                 <>
                   <Button 
@@ -850,7 +893,7 @@ const CaseDetail = ({ user }) => {
           </div>
 
           {/* Documents Tab */}
-          <TabsContent value="documents" className="space-y-4">
+          <TabsContent value="documents" className="space-y-4" data-tab-content>
             <DocumentsSection
               caseId={caseId}
               documents={documents}
@@ -860,7 +903,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Timeline Tab */}
-          <TabsContent value="timeline" className="space-y-4">
+          <TabsContent value="timeline" className="space-y-4" data-tab-content>
             {generatingTimeline && (
               <div className="border border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 rounded-lg overflow-hidden p-4" data-testid="ai-timeline-progress">
                 <div className="flex items-center gap-3 mb-2">
@@ -910,7 +953,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Grounds of Merit Tab */}
-          <TabsContent value="grounds" className="space-y-4">
+          <TabsContent value="grounds" className="space-y-4" data-tab-content>
             {autoIdentifying && (
               <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg overflow-hidden p-4" data-testid="ai-grounds-progress">
                 <div className="flex items-center gap-3 mb-2">
@@ -978,7 +1021,7 @@ const CaseDetail = ({ user }) => {
 
           {/* Notes Tab */}
           {/* Notes Tab */}
-          <TabsContent value="notes" className="space-y-4">
+          <TabsContent value="notes" className="space-y-4" data-tab-content>
             <NotesSection
               caseId={caseId}
               notes={notes}
@@ -988,7 +1031,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Reports Tab */}
-          <TabsContent value="reports" className="space-y-4">
+          <TabsContent value="reports" className="space-y-4" data-tab-content>
             <ReportsSection
               caseId={caseId}
               reports={reports}
@@ -1001,7 +1044,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Legal Framework Tab — DO NOT UNDO */}
-          <TabsContent value="legal" className="space-y-6">
+          <TabsContent value="legal" className="space-y-6" data-tab-content>
             <LegalFrameworkViewer 
               offenceCategory={caseData?.offence_category}
               offenceType={caseData?.offence_type}
@@ -1011,7 +1054,7 @@ const CaseDetail = ({ user }) => {
 
           {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
           {/* DO NOT UNDO — Progress Tab with AI Analysis */}
-          <TabsContent value="progress" className="space-y-6">
+          <TabsContent value="progress" className="space-y-6" data-tab-content>
             {/* AI Progress Analysis Button */}
             <Card>
               <CardContent className="p-4">
