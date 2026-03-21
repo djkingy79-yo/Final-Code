@@ -3633,12 +3633,12 @@ Provide a markdown table:
 ## 7. OUTCOME OPTIONS AVAILABLE
 First, provide a markdown table:
 | Option | Legal Threshold | Likelihood in This Matter | Core Evidence Trigger | Practical Result |
-Then provide detailed analysis for each pathway:
-- Conviction quashed — detailed outcome
-- Retrial ordered — what happens next
-- Conviction substituted/downgraded (e.g., murder to manslaughter) — sentence impact
-- Sentence reduced as manifestly excessive — show before/after: Original sentence/NPP → Revised sentence/NPP
-- Appeal dismissed — consequences and further options
+Then provide detailed analysis for each pathway (keep ALL outcomes within THIS section — do NOT create separate headings for each outcome):
+- **Conviction quashed** — detailed outcome analysis referencing ALL relevant grounds of merit identified above
+- **Retrial ordered** — what happens next, timeframes, what changes
+- **Conviction substituted/downgraded** (e.g., murder to manslaughter) — sentence impact, legal basis
+- **Sentence reduced as manifestly excessive** — show before/after: Original sentence/NPP → Revised sentence/NPP
+- **Appeal dismissed** — consequences and further options (special leave to High Court)
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
 Specific missing material from the case file and exact remediation steps with urgency priority (Critical / Important / Helpful).
@@ -3760,12 +3760,12 @@ Then provide detailed analysis of how each common ground applies or does not app
 ## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS
 Markdown table:
 | Option | Legal Threshold | Likelihood in This Matter | Core Evidence Trigger | Practical Result |
-Then provide DETAILED analysis (minimum 150 words each) for EVERY pathway:
-- Conviction quashed — what standard must be met, what evidence supports this, what the defendant's position would be
-- Retrial ordered — when this happens instead of quashing, what the retrial process involves, timeframes
-- Conviction substituted/downgraded (e.g., murder to manslaughter) — legal basis, resulting sentence range, how this has worked in comparable cases
-- Sentence reduced as manifestly excessive — show explicit before/after: Original sentence/NPP → Revised sentence/NPP with percentage reduction
-- Appeal dismissed — consequences, options for special leave to the High Court, time limits
+Then provide DETAILED analysis (minimum 150 words each) for EVERY pathway (keep ALL outcomes within THIS section — do NOT create separate ## headings for each outcome):
+- **Conviction quashed** — what standard must be met, what evidence supports this, what the defendant's position would be, which grounds support this outcome
+- **Retrial ordered** — when this happens instead of quashing, what the retrial process involves, timeframes
+- **Conviction substituted/downgraded** (e.g., murder to manslaughter) — legal basis, resulting sentence range, how this has worked in comparable cases
+- **Sentence reduced as manifestly excessive** — show explicit before/after: Original sentence/NPP → Revised sentence/NPP with percentage reduction
+- **Appeal dismissed** — consequences, options for special leave to the High Court, time limits
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
 For each gap:
@@ -3916,7 +3916,7 @@ You MUST significantly expand EVERY section when aggressive mode is active:
    - The specific orders to seek if this ground succeeds
    - Fallback position with alternative argument if primary is challenged
 3. COMPARATIVE SENTENCING TABLE: Include at least 15 cases. For each, a full paragraph explaining how the reduction was achieved and how it parallels this case.
-4. OUTCOME OPTIONS: Write each pathway as a detailed analysis (250+ words) with specific legal thresholds and evidence triggers from THIS case.
+4. OUTCOME OPTIONS: Write each pathway as a detailed analysis (250+ words) with specific legal thresholds and evidence triggers from THIS case. Keep ALL outcome pathways within a single section — do NOT split them into separate section headings. Reference ALL identified grounds for each pathway.
 5. SUBMISSIONS STRATEGY: Write full draft argument paragraphs, not just outlines. Include opening lines, authority chains, and closing submissions for each ground.
 6. PRECEDENT MATRIX: Include 20+ cases with detailed factual comparison to this matter.
 7. STATUTORY FRAMEWORK: Map every relevant section with its specific application to the case facts.

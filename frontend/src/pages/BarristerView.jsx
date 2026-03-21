@@ -207,11 +207,18 @@ const BarristerView = ({ user }) => {
 
   const extractSentenceSummary = (caseInfo, analysis = "") => {
     if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
-    // Only match definitive sentencing statements, not AI interpretation
     const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
     if (byVerb?.[1]) return byVerb[1].trim();
     const byHead = analysis.match(/(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})/im);
     if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1])) return byHead[1].trim();
+    const byLife = analysis.match(/(?:sentenced?\s+to\s+)?(life\s+imprisonment|imprisonment\s+for\s+life|life\s+sentence)[^\n\.]{0,60}/i);
+    if (byLife) return byLife[0].replace(/^sentenced?\s+to\s+/i, "").trim();
+    const byYears = analysis.match(/(\d+[\s-]*(?:years?|months?)(?:'s?)?\s*(?:imprisonment|gaol|jail|custody|sentence|non[- ]?parole)[^\n\.]{0,80})/i);
+    if (byYears?.[1]) return byYears[1].trim();
+    const bySentOf = analysis.match(/sentence\s+of\s+(\d+[^\n\.]{5,80})/i);
+    if (bySentOf?.[1]) return bySentOf[1].trim();
+    const byNPP = analysis.match(/((?:minimum|non[- ]?parole)\s+(?:period\s+)?of\s+\d+[^\n\.]{3,60})/i);
+    if (byNPP?.[1]) return byNPP[1].trim();
     return "Not recorded";
   };
 
@@ -240,6 +247,10 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/\(Continue[^)]*\)/gi, "");
     cleaned = cleaned.replace(/\(Link formatting[^)]*\)/gi, "");
     cleaned = cleaned.replace(/\(Entries will[^)]*\)/gi, "");
+    // Strip AI meta-commentary about truncation or its own output
+    cleaned = cleaned.replace(/\n*This truncated document[^\n]*/gi, "");
+    cleaned = cleaned.replace(/\n*This (?:document|report|analysis) (?:provides|covers|contains|demonstrates)[^\n]*(?:sections?|overview|summary)[^\n]*/gi, "");
+    cleaned = cleaned.replace(/\n*Each section (?:demonstrates|provides|covers)[^\n]*/gi, "");
     return cleaned.trim();
   };
 
