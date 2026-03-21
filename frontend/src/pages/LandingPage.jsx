@@ -398,28 +398,28 @@ const LandingPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Complete Criminal Appeal Platform
             </h2>
-            <p className="text-slate-400 text-lg max-w-3xl mx-auto">
+            <p className="text-slate-300 text-lg max-w-3xl mx-auto">
               From document management to legal research, everything you need to build and understand your appeal — all in one place.
             </p>
           </div>
 
-          {/* Stats Row */}
+          {/* Stats Row — Real Australian Criminal Appeal Data */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-blue-500 mb-1">8</div>
-              <div className="text-slate-400 text-sm">States & Territories</div>
+              <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
+              <div className="text-slate-300 text-sm">Criminal Appeals Filed Annually</div>
             </div>
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-emerald-500 mb-1">30+</div>
-              <div className="text-slate-400 text-sm">Legal Form Templates</div>
+              <div className="text-3xl font-bold text-emerald-400 mb-1">~40%</div>
+              <div className="text-slate-300 text-sm">Appeals Heard Result in Change</div>
             </div>
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-blue-500 mb-1">84+</div>
-              <div className="text-slate-400 text-sm">Legal Terms Explained</div>
+              <div className="text-3xl font-bold text-blue-400 mb-1">98%</div>
+              <div className="text-slate-300 text-sm">Resolved Within 12 Months</div>
             </div>
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-purple-500 mb-1">100+</div>
-              <div className="text-slate-400 text-sm">Legal Contacts Listed</div>
+              <div className="text-3xl font-bold text-red-400 mb-1">1 in 80</div>
+              <div className="text-slate-300 text-sm">Convicted Australians Appeal</div>
             </div>
           </div>
 
@@ -434,10 +434,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Case Management</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Create unlimited cases, upload documents with OCR, track deadlines with calendar view, and organise everything in one secure place.
               </p>
-              <div className="text-blue-500 text-xs font-medium">
+              <div className="text-blue-400 text-xs font-medium">
                 ✓ Unlimited document upload • Deadline tracker • Progress checklist
               </div>
             </div>
@@ -450,10 +450,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">AI-Powered Analysis</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Automatically identify potential appeal grounds, generate case timelines, and get AI-driven insights based on Australian law.
               </p>
-              <div className="text-emerald-500 text-xs font-medium">
+              <div className="text-emerald-400 text-xs font-medium">
                 ✓ AI-Powered • Australian law trained • Grounds identification
               </div>
             </div>
@@ -466,10 +466,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Legal Research Hub</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Access legislation for all 8 states, search live court databases, explore legal frameworks, and understand Human Rights laws.
               </p>
-              <div className="text-purple-500 text-xs font-medium">
+              <div className="text-purple-400 text-xs font-medium">
                 ✓ All state legislation • Live caselaw search • Framework guides
               </div>
             </Link>
@@ -482,10 +482,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Forms & Templates</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 30+ downloadable legal forms including Notice of Appeal, Extension of Time, Transcript Requests, and state-specific templates.
               </p>
-              <div className="text-blue-500 text-xs font-medium">
+              <div className="text-blue-400 text-xs font-medium">
                 ✓ Key procedural requirements • Time limits guide • All jurisdictions
               </div>
             </Link>
@@ -498,10 +498,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Contacts Directory</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 100+ legal contacts: Legal Aid offices, Law Societies, Complaints Bodies, Courts, Community Legal Centres, Pro Bono services.
               </p>
-              <div className="text-teal-500 text-xs font-medium">
+              <div className="text-teal-400 text-xs font-medium">
                 ✓ All 8 states • Phone numbers • Direct website links
               </div>
             </Link>
@@ -514,10 +514,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Legal Glossary</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 84+ legal terms explained in plain English including 23 specific Appeal Grounds, evidence law, and sentencing principles.
               </p>
-              <div className="text-indigo-500 text-xs font-medium">
+              <div className="text-indigo-400 text-xs font-medium">
                 ✓ Searchable • Categorised • Plain language explanations
               </div>
             </Link>
@@ -530,11 +530,11 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Appeal Statistics</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 National and state-by-state data on criminal appeals: success rates, common grounds, timelines, and access to justice analysis.
               </p>
-              <div className="text-red-500 text-xs font-medium">
-                ✓ 0.012% appeal rate exposed • State comparisons • Justice gap analysis
+              <div className="text-red-400 text-xs font-medium">
+                ✓ Real appeal success rates • State comparisons • Justice gap analysis
               </div>
             </Link>
 
@@ -546,10 +546,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Success Stories</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
-                14 real stories from families who found hope and successfully appealed: convictions quashed, sentences reduced, justice served.
+              <p className="text-slate-300 text-sm mb-3">
+                Real stories from families who found hope through the appeal process: convictions quashed, sentences reduced, new hearings ordered.
               </p>
-              <div className="text-pink-500 text-xs font-medium">
+              <div className="text-pink-400 text-xs font-medium">
                 ✓ Real outcomes • Diverse scenarios • All jurisdictions
               </div>
             </Link>
@@ -562,10 +562,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Lawyer Directory</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
-                Find criminal appeal specialists, barristers, and solicitors organised by state with expertise areas, success rates, and contact info.
+              <p className="text-slate-300 text-sm mb-3">
+                Find criminal appeal specialists, barristers, and solicitors organised by state with expertise areas and contact info.
               </p>
-              <div className="text-cyan-500 text-xs font-medium">
+              <div className="text-cyan-400 text-xs font-medium">
                 ✓ Verified specialists • State-specific • Pro bono options
               </div>
             </Link>
@@ -578,10 +578,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Reports & Export</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Generate premium reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Barrister View for conference-ready presentations.
               </p>
-              <div className="text-orange-500 text-xs font-medium">
+              <div className="text-orange-400 text-xs font-medium">
                 ✓ Professional formatting • Barrister View • Document bundling
               </div>
             </div>
@@ -594,10 +594,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">Step-by-Step Guide</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Complete tutorial with real app screenshots showing exactly how to use every feature from account creation to report generation.
               </p>
-              <div className="text-lime-500 text-xs font-medium">
+              <div className="text-lime-400 text-xs font-medium">
                 ✓ 10-step guide • Real screenshots • Beginner-friendly
               </div>
             </Link>
@@ -610,10 +610,10 @@ const LandingPage = () => {
                 </div>
                 <h3 className="font-bold text-white text-lg">FAQ & Support</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-3">
+              <p className="text-slate-300 text-sm mb-3">
                 Answers to common questions about using the platform, appeal processes, pricing, legal disclaimers, and technical support.
               </p>
-              <div className="text-blue-500 text-xs font-medium">
+              <div className="text-blue-400 text-xs font-medium">
                 ✓ Comprehensive answers • Contact form • Email support
               </div>
             </Link>
@@ -626,7 +626,7 @@ const LandingPage = () => {
               <p className="text-white font-bold text-xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 All This For Free To Get Started
               </p>
-              <p className="text-slate-400 mb-4">
+              <p className="text-slate-300 mb-4">
                 No credit card • No commitment • Pay only for premium AI analysis when you need it
               </p>
               <Button
@@ -1818,10 +1818,10 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <p className="text-blue-500 text-xs uppercase tracking-widest mb-4">About</p>
           <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            Criminal Law Appeal Case Management
+            Appeal Case Manager
           </h3>
-          <p className="text-blue-400 text-sm font-medium mb-4">Founded by Debra King</p>
-          <p className="text-slate-400 text-sm mb-6 max-w-2xl mx-auto">
+          <p className="text-blue-300 text-sm font-medium mb-4">Founded by Debra King</p>
+          <p className="text-slate-300 text-sm mb-6 max-w-2xl mx-auto">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
@@ -1852,15 +1852,16 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer - Minimal */}
+      {/* Footer */}
       <footer className="py-8 px-6 border-t border-border bg-muted/50 dark:bg-muted/20">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 items-start">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2">
               <Scale className="w-5 h-5 text-muted-foreground" />
-              <span className="text-foreground text-sm font-semibold">Criminal Law Appeal Case Management</span>
+              <span className="text-foreground text-sm font-semibold">Appeal Case Manager</span>
             </div>
             <span className="text-muted-foreground text-xs mt-1">Founded by Debra King</span>
+            <span className="text-muted-foreground text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
           </div>
 
           <div>
@@ -1869,8 +1870,12 @@ const LandingPage = () => {
               <Link to="/how-it-works" className="hover:text-foreground">How It Works</Link>
               <Link to="/success-stories" className="hover:text-foreground">Success Stories</Link>
               <Link to="/appeal-statistics" className="hover:text-foreground">Appeal Statistics</Link>
-              <Link to="/glossary" className="hover:text-foreground">Legal Terms</Link>
+              <Link to="/glossary" className="hover:text-foreground">Legal Glossary</Link>
               <Link to="/legal-resources" className="hover:text-foreground">Resources & Contacts</Link>
+              <Link to="/lawyers" className="hover:text-foreground">Lawyer Directory</Link>
+              <Link to="/legal-framework" className="hover:text-foreground">Legal Framework</Link>
+              <Link to="/faq" className="hover:text-foreground">FAQ</Link>
+              <Link to="/forms" className="hover:text-foreground">Forms & Templates</Link>
               <Link to="/contact" className="hover:text-foreground">Contact</Link>
             </div>
           </div>
@@ -1880,6 +1885,9 @@ const LandingPage = () => {
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">Terms & Privacy</Link>
             <p className="text-xs text-red-600 dark:text-red-400 font-medium mt-3">
               Australian Law Only • Not legal advice
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              All results must be verified by a qualified legal professional
             </p>
           </div>
         </div>

@@ -201,10 +201,10 @@ const AppealStatisticsPage = () => {
           <div className="rounded-2xl border-2 border-blue-400 dark:border-red-600 bg-gradient-to-r from-blue-50 via-white to-blue-50 dark:from-blue-900/20 dark:via-slate-900/20 dark:to-blue-900/20 p-6 md:p-8">
             <p className="text-xs uppercase tracking-wider text-blue-700 dark:text-blue-300 font-semibold mb-2">Appeal Access Snapshot</p>
             <p className="text-5xl md:text-6xl font-black text-blue-700 dark:text-blue-300 leading-none" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="appeal-rate-spotlight-value">
-              0.012%
+              1 in 80
             </p>
             <p className="text-sm text-slate-700 dark:text-slate-300 mt-3 max-w-3xl" data-testid="appeal-rate-spotlight-description">
-              Approximate proportion of defendants who proceed to appeal based on available data. This highlights how difficult it is for most people to access appeal pathways.
+              Only about 1.3% of convicted defendants ever lodge a criminal appeal. Of those who do proceed to hearing, roughly 40% achieve some change to their conviction or sentence.
             </p>
           </div>
         </section>
@@ -221,15 +221,15 @@ const AppealStatisticsPage = () => {
             <StatCard 
               icon={FileText}
               label="Total Appeals Filed"
-              value="~1,250"
-              subtext="Nationwide"
+              value="~8,700"
+              subtext="Nationwide (2021-22)"
               color="blue"
             />
             <StatCard 
               icon={CheckCircle}
               label="Average Success Rate"
-              value="25%"
-              subtext="Appeals allowed"
+              value="~40%"
+              subtext="Appeals heard with change"
               color="emerald"
             />
             <StatCard 
@@ -250,8 +250,8 @@ const AppealStatisticsPage = () => {
 
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm">
             <AlertTriangle className="w-5 h-5 text-red-600 inline mr-2" />
-            <strong>Important:</strong> Only about 0.012% of all criminal cases are appealed. Of those that proceed to hearing, 
-            approximately 1 in 4 succeed. Success rates vary significantly by jurisdiction and type of appeal.
+            <strong>Important:</strong> Only about 1.3% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
+            approximately 40% result in some change to the conviction or sentence. Success rates vary significantly by jurisdiction and type of appeal.
           </div>
 
           {/* ACCESS TO JUSTICE ANALYSIS */}
@@ -263,11 +263,11 @@ const AppealStatisticsPage = () => {
 
             <div className="space-y-4 text-sm text-red-900 dark:text-red-100 mt-4">
               <div className="bg-white/60 dark:bg-slate-900/30 rounded-lg p-4 border border-red-200 dark:border-red-800">
-                <p className="font-bold text-base mb-2">📊 The Shocking Reality: Less than 0.02% Appeal Rate</p>
+                <p className="font-bold text-base mb-2">The Reality: Only 1 in 80 Convicted Australians Appeal</p>
                 <p>
-                  Of the <strong>515,460 defendants</strong> finalised in Australian criminal courts in 2023-24, 
-                  only approximately <strong>1,250 appeals</strong> were filed. That's a <strong className="text-red-700 dark:text-red-400">0.012% appeal rate</strong> — 
-                  meaning 99.988% of convicted defendants never pursue an appeal, even though many likely have legitimate grounds.
+                  Of the <strong>684,138 criminal cases</strong> finalised in Australian courts in 2021-22, 
+                  approximately <strong>8,733 appeals</strong> were filed. That's roughly a <strong className="text-red-700 dark:text-red-400">1.3% appeal rate</strong> — 
+                  meaning over 98% of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
                 </p>
               </div>
 
