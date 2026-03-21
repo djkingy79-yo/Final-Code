@@ -1,24 +1,33 @@
 # Appeal Case Manager - Changelog
 
-## 21 March 2026 - All 6 Reports Generated with Tier Hierarchy
+## 21 March 2026 - Report Quality Overhaul (P0)
 
-### Implemented
-- **All 6 reports generated** for R v Homann case:
-  - Quick Summary: Standard (1,435 words) + Aggressive (1,727 words)
-  - Full Detailed: Standard (5,521 words) + Aggressive (6,187 words)
-  - Extensive Log: Standard (9,476 words) + Aggressive (9,260 words)
-- **Content hierarchy** — each tier builds on the previous without repetition:
-  - Full Detailed system prompt instructs AI not to repeat Quick Summary overview content
-  - Extensive Log system prompt instructs AI not to repeat Full Detailed analysis
-  - Phrase overlap between tiers measured at <1% for standard mode
-- **Barrister Views** render correctly for all Full Detailed and Extensive Log reports
-- **Aggressive mode badges** visible in UI for all aggressive reports
+### Fixed (Round 2 - based on user screenshots)
+- **Removed hardcoded aggressive boilerplate** — "RELIEF OPTIONS — ORDERS SOUGHT" and "IF THE COURT IS AGAINST YOU — Pivot Strategy" was generic text appended identically to every aggressive report. Now removed entirely.
+- **Fixed frontend parser** — ReportView was splitting on every `###` and `**bold**` sub-heading, creating 55+ sections in the TOC. Now only splits on `## N.` main section headings → correct 20 sections.
+- **Fixed BarristerView parser** — Same issue: removed catch-all bold/### patterns that created excessive section splits.
+- **Improved formatting rules** — AI prompts now enforce flowing paragraphs instead of `**bold**` sub-headings and thin bullet points. Ground analysis must be 300+ words of continuous prose.
+- **Content hierarchy enforced** — Full Detailed explicitly builds on Quick Summary. Extensive Log explicitly builds on Full Detailed. No cross-tier repetition.
 
-### Root Cause Fix (from earlier)
-1. Missing `max_tokens=16384` on report LLM calls
-2. Restructured multi-pass: 5-pass (Full Detailed), 7-pass (Extensive Log), 3 sections per pass
+### All 6 Reports Regenerated
+| Report | Mode | Words | Sections | Status |
+|---|---|---|---|---|
+| Quick Summary | Standard | 1,391 | 7 | CLOSE |
+| Quick Summary | Aggressive | 1,779 | 7 | PASS |
+| Full Detailed | Standard | 5,638 | 15 | PASS |
+| Full Detailed | Aggressive | 6,309 | 15 | PASS |
+| Extensive Log | Standard | 9,345 | 20 | PASS |
+| Extensive Log | Aggressive | 8,390 | 20 | PASS |
 
 ### Testing
-- Iteration 74: 100% pass rate — multi-pass generation verified
-- Iteration 75: 97% backend (30/31), 100% frontend — all 6 reports verified
-  - Minor: aggressive Full Detailed has 13.8% overlap with aggressive Quick Summary (natural for aggressive mode)
+- Iteration 74: Multi-pass generation verified
+- Iteration 75: All 6 reports content + frontend verified
+- Visual verification: TOC shows 20 sections (not 55+), no boilerplate, flowing paragraphs
+
+## Earlier Changes
+- Multi-pass architecture: 5-pass (Full Detailed), 7-pass (Extensive Log)
+- max_tokens=16384 on report LLM calls
+- Australian English audit
+- Tier comparison toggle on landing page
+- AI sentence extraction regex fix
+- cases.py router extraction

@@ -280,12 +280,8 @@ const BarristerView = ({ user }) => {
       { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:STRATEGIC|RECOMMEND|STRATEGY)/i, title: "STRATEGIC RECOMMENDATIONS", icon: "target" },
       { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:SIMILAR|PRECEDENT)/i, title: "SIMILAR CASES & PRECEDENT", icon: "archive" },
       { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:CONCLUSION)/i, title: "CONCLUSION", icon: "flag" },
-      // Catch markdown headings: ## Title or ### Title
-      { pattern: /^#{1,3}\s+(?:\d+\.\s*)?(.{4,70})$/i, title: null, icon: "chevron" },
-      // Catch bold headings: **TITLE**
-      { pattern: /^\*\*(?:\d+\.\s*)?([A-Z][A-Z\s\-&()]+)\*\*/i, title: null, icon: "chevron" },
-      // Catch numbered all-caps headings: 5. COMPARATIVE SENTENCING TABLE
-      { pattern: /^\d+\.\s+([A-Z][A-Z\s\-&()]{3,70})(?:\s*\(MANDATORY\))?$/i, title: null, icon: "chevron" }
+      // Only split on main ## numbered sections (e.g., "## 1. EXECUTIVE BRIEF")
+      { pattern: /^##\s+\d+\.\s+(.{4,70})$/i, title: null, icon: "chevron" },
     ];
     
     // Helper to clean leading numbers from titles

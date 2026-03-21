@@ -3422,6 +3422,8 @@ FORMATTING RULES — STRICTLY ENFORCED:
 - DO NOT use placeholder notes in brackets like "[Note: Repeat this format...]", "[Note: Continue listing...]", "[Insert details...]", "[Add more entries...]" etc. Every section MUST contain COMPLETE, REAL content. If you run out of material, end the section gracefully — do NOT leave lazy instructions for someone else to fill in.
 - Every section heading MUST be followed by substantive content (minimum 3-4 sentences). If a section cannot be substantiated from the case material, omit it entirely rather than filling it with vague one-liners.
 - Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
+- SECTION HEADINGS: Use ONLY ## for section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading like **Legal Threshold** on a line by itself. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires..."). This produces a cleaner, more professional document.
+- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (300+ words), NOT as bullet points with thin one-liners. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose. Do NOT split each ground into separate sub-headings.
 """
     
     if report_type == "quick_summary":
@@ -4088,29 +4090,6 @@ Write ALL 3 sections in full detail. Do NOT truncate any section."""),
     
     if aggressive_mode:
         response += """
-
----
-
-## RELIEF OPTIONS — ORDERS SOUGHT
-
-### Primary Order
-The appellant respectfully submits that the appeal should be allowed and the conviction quashed, OR in the alternative, that the sentence imposed be set aside and the appellant be resentenced.
-
-### Fallback Position 1 — Retrial
-If the Court is not persuaded to quash the conviction outright, the appellant submits that a retrial should be ordered on the basis of the errors identified above.
-
-### Fallback Position 2 — Conviction Substituted
-In the further alternative, the appellant submits that the conviction should be substituted for a lesser offence where the evidence does not support the elements of the higher charge.
-
-### Fallback Position 3 — Sentence Reduction
-If the conviction is upheld, the appellant submits that the sentence is manifestly excessive and should be reduced to reflect the objective seriousness of the offending, the appellant's subjective circumstances, and comparable sentencing outcomes.
-
-### IF THE COURT IS AGAINST YOU — Pivot Strategy
-If judicial questioning suggests resistance to the primary ground:
-1. Acknowledge the Court's concern directly and pivot to the next strongest ground
-2. Emphasise cumulative error if individual grounds are borderline
-3. Fall back to sentencing appeal if conviction grounds fail
-4. Always preserve the right to seek special leave to the High Court
 
 ---
 

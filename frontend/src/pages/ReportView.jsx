@@ -115,11 +115,10 @@ const parseAnalysisSections = (analysis = "") => {
 
   lines.forEach((line) => {
     const trimmed = line.trim();
-    const markdownHeader = trimmed.match(/^#{1,3}\s+(.+)$/);
-    const boldHeader = trimmed.length < 80 && trimmed.match(/^\*\*([^*]{4,70})\*\*$/);
-    if (markdownHeader || boldHeader) {
+    const mainSectionHeader = trimmed.match(/^##\s+(\d+\.\s+.+)$/);
+    if (mainSectionHeader) {
       pushSection();
-      currentTitle = (markdownHeader?.[1] || boldHeader?.[1] || "Analysis").replace(/[\-:]+$/, "").trim();
+      currentTitle = mainSectionHeader[1].replace(/[\-:]+$/, "").trim();
       currentLines = [];
       return;
     }
