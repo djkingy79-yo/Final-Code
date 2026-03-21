@@ -3696,7 +3696,11 @@ IMPORTANT:
 - No cost discussion. No witness contradiction section.
 - Quote supplied case material where possible.
 - Keep analysis jurisdiction-specific to {state_info.get('name', 'NSW')} and relevant Commonwealth law.
-- Every section must contain substantive content — no placeholders, no vague one-liners."""
+- Every section must contain substantive content — no placeholders, no vague one-liners.
+- NEVER use continuation markers like "... (continue)" or similar truncation. Write the ACTUAL content.
+- Do NOT insert meta-commentary about the document itself. Only output the report content.
+- Keep ALL outcome pathways within SECTION 7 — do NOT create separate ## headings for each outcome.
+- Keep ALL action items (72-hour, 7-day, 28-day) within SECTION 14 — do NOT create separate ## headings for each timeframe."""
 
     else:  # extensive_log
         system_prompt = f"""{base_system}
@@ -3900,7 +3904,11 @@ IMPORTANT:
 - Australian English throughout.
 - No cost discussion. No witness contradiction section.
 - Quote directly from supplied documents where relevant.
-- Every conclusion must be tied to case material or clearly marked as an assumption."""
+- Every conclusion must be tied to case material or clearly marked as an assumption.
+- NEVER use continuation markers like "... (continue with further analysis)", "... (continue analysis of other cases)", or similar truncation. Write the ACTUAL content for every section.
+- Do NOT insert meta-commentary about the document itself (e.g., "This truncated document provides..."). Only output the report content.
+- Keep ALL outcome pathways (conviction quashed, retrial, etc.) within SECTION 7 — do NOT create separate ## headings for individual outcomes.
+- Keep ALL action items (72-hour, 7-day, 28-day) within SECTION 18 — do NOT create separate ## headings for each timeframe."""
 
     if aggressive_mode:
         aggressive_directive = """
@@ -3994,9 +4002,53 @@ ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than
     last_error = None
     try:
         if report_type == "extensive_log":
-            extensive_prompt = user_prompt + "\n\nGenerate all sections above with thorough legal analysis and citations."
-            logger.info(f"Extensive log prompt size: system={len(system_prompt)}, user={len(extensive_prompt)}, total={len(system_prompt)+len(extensive_prompt)}")
-            response = await _subprocess_llm(extensive_prompt)
+            # Two-pass generation for extensive_log to avoid truncation
+            # Pass 1: Sections 1-10
+            pass1_instruction = """
+
+NOW GENERATE ONLY THE FOLLOWING 10 SECTIONS (sections 1-10). Write thorough legal analysis for each. Do NOT skip any section. Do NOT use '...' continuation markers.
+
+Sections to write NOW:
+## 1. EXECUTIVE BRIEF
+## 2. FORENSIC CASE CHRONOLOGY
+## 3. DOCUMENT EVIDENCE DIGEST
+## 4. GROUNDS OF MERIT — DEEP ANALYSIS
+## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
+## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS
+## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
+
+STOP after section 10. Do NOT write sections 11-20."""
+            pass1_prompt = user_prompt + pass1_instruction
+            logger.info(f"Extensive log PASS 1 prompt size: system={len(system_prompt)}, user={len(pass1_prompt)}")
+            pass1_response = await _subprocess_llm(pass1_prompt)
+            
+            # Pass 2: Sections 11-20
+            pass2_instruction = """
+
+You have already written sections 1-10 for this case. NOW GENERATE ONLY THE FOLLOWING 10 SECTIONS (sections 11-20). Write thorough legal analysis for each. Do NOT skip any section. Do NOT repeat sections 1-10.
+
+Sections to write NOW:
+## 11. HOW TO ARGUE EACH TOP GROUND — DETAILED STRATEGY
+## 12. SUBMISSIONS BLUEPRINT
+## 13. HEARING PREPARATION NOTES
+## 14. CONFERENCE PREPARATION PACK
+## 15. COURT PATHWAY OPERATIONS PLAYBOOK
+## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
+## 17. SIMILAR CASE SEARCH OPTIONS
+## 18. PRIORITISED ACTION PLAN
+## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
+## 20. CLIENT PLAIN-ENGLISH BRIEF
+
+Write ALL 10 sections with full content. Do NOT truncate or use '...' markers."""
+            pass2_prompt = user_prompt + pass2_instruction
+            logger.info(f"Extensive log PASS 2 prompt size: system={len(system_prompt)}, user={len(pass2_prompt)}")
+            pass2_response = await _subprocess_llm(pass2_prompt)
+            
+            response = pass1_response + "\n\n" + pass2_response
+            logger.info(f"Extensive log combined response: {len(response)} chars (pass1={len(pass1_response)}, pass2={len(pass2_response)})")
         else:
             logger.info(f"Report prompt size: system={len(system_prompt)}, user={len(user_prompt)}, total={len(system_prompt)+len(user_prompt)}")
             response = await _subprocess_llm(user_prompt)
