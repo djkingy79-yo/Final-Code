@@ -3417,13 +3417,21 @@ MANDATORY GUARDRAILS:
 - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis.
 - DO NOT include witness contradiction sections or witness credibility scoring sections.
 
+CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
+- DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
+- NEVER create filler sections with titles like "URGENCY PRIORITY", "RELEVANCE", "KEY TAKEAWAY", "SUMMARY", "OVERVIEW" as standalone sections. These are padding. Instead, weave relevance and urgency INTO the substantive analysis.
+- NEVER write generic consultant-speak like "Leverage legal databases to draw parallels that authenticate excessive sentencing claims through empirical trends." Instead, NAME the specific cases, cite the specific sentencing outcomes, and EXPLAIN the specific parallels.
+- Every paragraph MUST reference specific names, dates, section numbers, case citations, or document names from the supplied case material. If a paragraph could apply to ANY appeal case, it is too generic — rewrite it with THIS case's specific facts.
+- For legislation sections: Do NOT just name the Act and describe what it covers in general terms. APPLY each provision to THIS case's specific facts. WRONG: "s.44 discusses parole periods, directly affecting Homann's sentencing outcomes." RIGHT: "Under s.44 of the Crimes (Sentencing Procedure) Act 1999 (NSW), the non-parole period must reflect the objective seriousness of the offence. In Homann's case, the 22-year non-parole period imposed by Justice McCallum is arguable as disproportionate when compared with R v Loveridge [2014] NSWCCA 120 where a 7-year non-parole period was imposed for a one-punch manslaughter..."
+- For precedent/sentencing tables: Include the full case citation, the specific factual similarity to THIS case, the actual sentence imposed, and the specific relevance to the current appeal. NEVER use a one-line vague description.
+
 FORMATTING RULES — STRICTLY ENFORCED:
-- DO NOT begin your response with any preamble, greeting, or introduction like "Certainly!", "Here's a comprehensive...", "Sure!", "I've prepared..." etc. Start directly with the first section heading.
-- DO NOT use placeholder notes in brackets like "[Note: Repeat this format...]", "[Note: Continue listing...]", "[Insert details...]", "[Add more entries...]" etc. Every section MUST contain COMPLETE, REAL content. If you run out of material, end the section gracefully — do NOT leave lazy instructions for someone else to fill in.
-- Every section heading MUST be followed by substantive content (minimum 3-4 sentences). If a section cannot be substantiated from the case material, omit it entirely rather than filling it with vague one-liners.
+- DO NOT begin your response with any preamble, greeting, or introduction.
+- DO NOT use placeholder notes in brackets like "[Note: Continue...]", "[Insert details...]". Every section MUST contain COMPLETE, REAL content.
+- Every section heading MUST be followed by substantive content (minimum 3-4 detailed paragraphs). If a section cannot be substantiated from the case material, omit it entirely.
 - Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
-- SECTION HEADINGS: Use ONLY ## for section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading like **Legal Threshold** on a line by itself. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires..."). This produces a cleaner, more professional document.
-- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (300+ words), NOT as bullet points with thin one-liners. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose. Do NOT split each ground into separate sub-headings.
+- SECTION HEADINGS: Use ONLY ## for numbered section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires...").
+- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (300+ words), NOT as bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
 """
     
     if report_type == "quick_summary":
@@ -3934,49 +3942,49 @@ ENHANCED DETAIL MODE IS ON. This report must be SIGNIFICANTLY more detailed than
             passes = [
                 ("PASS 1/5", """
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words with multiple detailed paragraphs. Do NOT summarise. Do NOT use '...' continuation markers. Do NOT truncate.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis.
 
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
 ## 3. DOCUMENT EVIDENCE DIGEST
 
-Write ALL 3 sections in full detail. STOP after section 3."""),
+Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
                 ("PASS 2/5", """
 
-NOW GENERATE ONLY SECTIONS 4-6. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
-## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
+## 5. COMPARATIVE SENTENCING TABLE (8+ CASES with full citations and specific factual parallels)
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
 
-Write ALL 3 sections in full detail. STOP after section 6."""),
+Write ALL 3 sections. STOP after section 6."""),
                 ("PASS 3/5", """
 
-NOW GENERATE ONLY SECTIONS 7-9. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it.
 
 ## 7. OUTCOME OPTIONS AVAILABLE — keep ALL outcome pathways in this ONE section
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
-## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
+## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES with full citations and factual parallels)
 
-Write ALL 3 sections in full detail. STOP after section 9."""),
+Write ALL 3 sections. STOP after section 9."""),
                 ("PASS 4/5", """
 
-NOW GENERATE ONLY SECTIONS 10-12. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court.
 
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case)
 ## 11. HOW TO ARGUE EACH TOP GROUND
 ## 12. SUBMISSIONS BLUEPRINT
 
-Write ALL 3 sections in full detail. STOP after section 12."""),
+Write ALL 3 sections. STOP after section 12."""),
                 ("PASS 5/5", """
 
-NOW GENERATE ONLY SECTIONS 13-15. Write thorough, detailed legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
 ## 14. PRIORITISED ACTION PLAN — keep ALL timeframes (72-hour, 7-day, 28-day) in this ONE section
 ## 15. CLIENT PLAIN-ENGLISH BRIEF
 
-Write ALL 3 sections in full detail. Do NOT truncate any section."""),
+Write ALL 3 sections. Do NOT truncate any section."""),
             ]
             
             parts = []
@@ -3995,66 +4003,66 @@ Write ALL 3 sections in full detail. Do NOT truncate any section."""),
             passes = [
                 ("PASS 1/7", """
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words with multiple detailed paragraphs referencing specific case facts. Do NOT summarise. Do NOT use '...' continuation markers. Do NOT truncate.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions of what analysis should be done — DO the analysis.
 
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
 ## 3. DOCUMENT EVIDENCE DIGEST
 
-Write ALL 3 sections in full detail. STOP after section 3."""),
+Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
                 ("PASS 2/7", """
 
-NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Section 4 requires 300+ words PER ground. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Section 4 requires 300+ words PER ground — write each ground as flowing paragraphs covering threshold, facts, viability, Crown response, rebuttal, and impact. Do NOT use bullet points or sub-headings within grounds.
 
-## 4. GROUNDS OF MERIT — DEEP ANALYSIS (300+ words per ground)
-## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+## 4. GROUNDS OF MERIT — DEEP ANALYSIS (300+ words per ground, flowing paragraphs)
+## 5. COMPARATIVE SENTENCING TABLE (12+ CASES with full citations and specific factual comparisons)
 
-Write BOTH sections in full detail with case-specific analysis. STOP after section 5."""),
+Write BOTH sections with deep case-specific analysis. STOP after section 5."""),
                 ("PASS 3/7", """
 
-NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Apply every provision to THIS case's facts. Do NOT just describe what the law says — explain how it applies to Homann specifically.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
 ## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS — keep ALL pathways in this ONE section
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
 
-Write ALL 3 sections in full detail. STOP after section 8."""),
+Write ALL 3 sections. STOP after section 8."""),
                 ("PASS 4/7", """
 
-NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the precedent matrix, include full citations and explain the SPECIFIC factual parallel to Homann's case for each. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally.
 
-## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
+## 9. PRECEDENT OUTCOME MATRIX (15+ CASES with full citations and factual parallels)
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case specifically)
 ## 11. HOW TO ARGUE EACH TOP GROUND — DETAILED STRATEGY
 
-Write ALL 3 sections in full detail. STOP after section 11."""),
+Write ALL 3 sections. STOP after section 11."""),
                 ("PASS 5/7", """
 
-NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. These are practical hearing-ready sections — include draft submission paragraphs, specific questions to prepare for, and conference agenda items tied to THIS case.
 
 ## 12. SUBMISSIONS BLUEPRINT
 ## 13. HEARING PREPARATION NOTES
 ## 14. CONFERENCE PREPARATION PACK
 
-Write ALL 3 sections in full detail. STOP after section 14."""),
+Write ALL 3 sections. STOP after section 14."""),
                 ("PASS 6/7", """
 
-NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Include specific court forms, filing deadlines for NSW, and similar case search strategies tied to THIS case's facts.
 
 ## 15. COURT PATHWAY OPERATIONS PLAYBOOK
 ## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
 ## 17. SIMILAR CASE SEARCH OPTIONS
 
-Write ALL 3 sections in full detail. STOP after section 17."""),
+Write ALL 3 sections. STOP after section 17."""),
                 ("PASS 7/7", """
 
-NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive legal analysis. MINIMUM 1500 WORDS for this pass. Each section MUST be at least 400 words. Do NOT skip any section. Do NOT repeat earlier sections.
+NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. The action plan must have specific deadlines. The risk assessment must address specific weaknesses in THIS case. The plain-English brief must explain the specific grounds and their implications to the client.
 
 ## 18. PRIORITISED ACTION PLAN — keep ALL timeframes in this ONE section
 ## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
 ## 20. CLIENT PLAIN-ENGLISH BRIEF
 
-Write ALL 3 sections in full detail. Do NOT truncate any section."""),
+Write ALL 3 sections. Do NOT truncate any section."""),
             ]
             
             parts = []

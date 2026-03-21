@@ -1,33 +1,32 @@
 # Appeal Case Manager - Changelog
 
-## 21 March 2026 - Report Quality Overhaul (P0)
+## 21 March 2026 - Report Content Quality Overhaul (P0 Final Fix)
 
-### Fixed (Round 2 - based on user screenshots)
-- **Removed hardcoded aggressive boilerplate** — "RELIEF OPTIONS — ORDERS SOUGHT" and "IF THE COURT IS AGAINST YOU — Pivot Strategy" was generic text appended identically to every aggressive report. Now removed entirely.
-- **Fixed frontend parser** — ReportView was splitting on every `###` and `**bold**` sub-heading, creating 55+ sections in the TOC. Now only splits on `## N.` main section headings → correct 20 sections.
-- **Fixed BarristerView parser** — Same issue: removed catch-all bold/### patterns that created excessive section splits.
-- **Improved formatting rules** — AI prompts now enforce flowing paragraphs instead of `**bold**` sub-headings and thin bullet points. Ground analysis must be 300+ words of continuous prose.
-- **Content hierarchy enforced** — Full Detailed explicitly builds on Quick Summary. Extensive Log explicitly builds on Full Detailed. No cross-tier repetition.
+### Root Cause
+The AI was writing ABOUT the analysis instead of DOING the analysis. Generic consultant-speak like "Delve into aggravating factors" and filler sections like "URGENCY PRIORITY: HELPFUL" were filling up word counts without providing any actual legal analysis.
+
+### Fixes Applied
+1. **Added hard anti-pattern guardrails** to the AI system prompt:
+   - Explicit examples of WRONG vs RIGHT content (e.g., "Delve into..." vs actually applying s.21A to Homann's specific facts)
+   - Banned filler section titles (URGENCY PRIORITY, RELEVANCE, KEY TAKEAWAY)
+   - Required every paragraph to reference specific names, dates, section numbers, case citations, or document names
+   - Required legislation sections to APPLY provisions to THIS case, not just describe what the Act covers
+2. **Removed hardcoded boilerplate** — generic "RELIEF OPTIONS / PIVOT STRATEGY" text removed
+3. **Fixed frontend parsers** — ReportView and BarristerView now only split on `## N.` main sections (20 sections, not 55+)
+4. **Strengthened per-pass instructions** — each multi-pass chunk demands CASE-SPECIFIC analysis
+
+### Content Quality Verification
+- Zero garbage patterns found in new reports ("Delve into", "Leverage legal databases", "URGENCY PRIORITY", "RELEVANCE", "empirical trends", "Collate case law data", "KEY TAKEAWAY" — all CLEAN)
+- Section 10 (Statutory Framework) now APPLIES s.18 and s.19A to Homann specifically
+- Section 9 (Precedent Matrix) has 15+ real cases with full citations and specific factual parallels
+- Section 8 (Evidence Gaps) has specific remediation steps referencing Dr Allnutt
 
 ### All 6 Reports Regenerated
-| Report | Mode | Words | Sections | Status |
-|---|---|---|---|---|
-| Quick Summary | Standard | 1,391 | 7 | CLOSE |
-| Quick Summary | Aggressive | 1,779 | 7 | PASS |
-| Full Detailed | Standard | 5,638 | 15 | PASS |
-| Full Detailed | Aggressive | 6,309 | 15 | PASS |
-| Extensive Log | Standard | 9,345 | 20 | PASS |
-| Extensive Log | Aggressive | 8,390 | 20 | PASS |
-
-### Testing
-- Iteration 74: Multi-pass generation verified
-- Iteration 75: All 6 reports content + frontend verified
-- Visual verification: TOC shows 20 sections (not 55+), no boilerplate, flowing paragraphs
-
-## Earlier Changes
-- Multi-pass architecture: 5-pass (Full Detailed), 7-pass (Extensive Log)
-- max_tokens=16384 on report LLM calls
-- Australian English audit
-- Tier comparison toggle on landing page
-- AI sentence extraction regex fix
-- cases.py router extraction
+| Report | Mode | Words | Sections |
+|---|---|---|---|
+| Quick Summary | Standard | 1,547 | 7 |
+| Quick Summary | Aggressive | 1,386 | 7 |
+| Full Detailed | Standard | 5,037 | 15 |
+| Full Detailed | Aggressive | 6,028 | 15 |
+| Extensive Log | Standard | 8,315 | 20 |
+| Extensive Log | Aggressive | 8,271 | 20 |
