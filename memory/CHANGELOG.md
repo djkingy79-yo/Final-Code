@@ -1,5 +1,15 @@
 # Appeal Case Manager — Changelog
 
+## 2026-03-21 — Session 17
+### Report Quality Overhaul
+- **2-pass generation for Extensive Log**: Sections 1-10 in pass 1, sections 11-20 in pass 2 — prevents AI truncation. All 20 sections now consistently generated (~9,755 words standard, ~8,425 words aggressive).
+- **Sentence auto-extraction**: Improved regex to catch "life imprisonment", "X years' imprisonment", "sentence of X years", "non-parole period of X years". Added `cleanSentence()` to strip URLs, brackets, and cap at 120 chars.
+- **AI meta-comment stripping**: Added to `cleanAIContent()` — strips "This truncated document...", "Each section demonstrates...", etc.
+- **Anti-lazy prompt instructions**: Both full_detailed and extensive_log prompts now explicitly ban "..." continuation markers, require ALL outcomes within SECTION 7, and ALL action items within the Action Plan section.
+- **Outcome Options consolidation**: Prompts updated to tell AI to keep all outcome pathways in ONE section, referencing ALL identified grounds.
+- **Regenerated all 6 reports**: Quick Summary (std/agg), Full Detailed (std/agg), Extensive Log (std/agg) — all verified with correct section counts.
+- **Testing**: iteration_72 — 100% frontend (all features verified)
+
 ## 2026-03-21 — Session 16
 ### Landing Page & Marketing Copy Audit (P0)
 - **All report section counts corrected** across LandingPage, HowItWorksPage, FAQPage:

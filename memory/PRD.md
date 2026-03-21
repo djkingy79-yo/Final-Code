@@ -648,8 +648,8 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Prioritized pending work moved to: `/app/memory/ROADMAP.md`
 
 ## Latest Delivery Note (Mar 2026)
-- **Session 16 (Mar 21, 2026)**: Complete landing page and marketing copy audit — all report descriptions, sample previews, pricing tiers, TOCs, and FAQ answers now precisely match the actual backend report structures (Quick Summary 7 sections FREE, Full Detailed 15 sections $150, Extensive Log 20 sections $200, Grounds $99). Testing: iteration_71 — 100% frontend pass.
-- **Session 15 (Mar 21, 2026)**: Report generation fully fixed — all 3 types working. PDF/Print iOS Safari fix. AI content quality guardrails. Report structure overhaul into 7/15/20-section tiers.
+- **Session 17 (Mar 21, 2026)**: Report quality overhaul — implemented 2-pass generation for Extensive Log (all 20 sections now generated), improved sentence auto-extraction (life imprisonment, non-parole periods, etc.), AI meta-comment stripping, anti-lazy prompt instructions, outcome options kept in single section. All 6 reports regenerated and verified. Testing: iteration_72 — 100% frontend pass.
+- **Session 16 (Mar 21, 2026)**: Complete landing page and marketing copy audit — all report descriptions, TOCs, FAQs now match actual backend report structures.
 - See `/app/memory/CHANGELOG.md` for full history.
 
 ### Final Comprehensive Fix + DO NOT UNDO Reinforcement (Mar 2026) ✅
