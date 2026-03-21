@@ -648,6 +648,7 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - Prioritized pending work moved to: `/app/memory/ROADMAP.md`
 
 ## Latest Delivery Note (Mar 2026)
+- **Session 20 (Mar 21, 2026)**: Added interactive state-by-state appeal stats widget (8 states, filed/allowed/dismissed/pending, ranked grounds, crime types, conviction vs sentence split). Fixed iOS Safari PDF/Print using navigator.share() API with fallback. Testing: iteration_77 — 100% frontend. iOS fix requires user testing on iPhone.
 - **Session 19 (Mar 21, 2026)**: Landing page overhaul — fixed inaccurate stats (0.012% → 1 in 80 / ~1.3%), improved text readability (slate-400 → slate-300 on dark backgrounds), shortened all 14 success stories, updated footer with expanded links, updated header/about section naming. Appeal Statistics page corrected with real data (~8,700 appeals, ~40% success rate). Testing: iteration_76 — 100% frontend.
 - **Session 18 (Mar 21, 2026)**: Australian English audit (all user-facing text verified), tier comparison table on landing page (26 sections side-by-side), backend refactoring started (cases router extracted). Testing: iteration_73 — 100% backend+frontend.
 - **Session 17 (Mar 21, 2026)**: Report quality overhaul — 2-pass generation for Extensive Log, sentence auto-extraction, AI meta-comment stripping.
