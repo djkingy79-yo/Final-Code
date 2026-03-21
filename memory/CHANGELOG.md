@@ -1,27 +1,24 @@
 # Appeal Case Manager — Changelog
 
-## 2026-03-21 — Session 15 (AI Endpoint Fallback + Content Quality + Edit Case + Print Fix)
-- **All secondary AI endpoints now use `call_llm_with_fallback`** (P0):
-  - `investigate_ground_of_merit` and `auto_identify_grounds`: Replaced hardcoded Claude-only calls with model fallback
-- **PRINT BUTTONS FIXED ACROSS ALL VIEWS** (P0 — asked 4 times):
-  - Print button now appears on ALL 7 tabs in CaseDetail (was missing from Documents, Reports, Legal)
-  - iOS Safari fix: BarristerView/ReportView Print opens PDF export in new tab instead of unreliable `window.print()`
-  - iOS Safari fix: CaseDetail Print uses iframe-based content extraction for reliable printing
-  - Desktop: `window.print()` continues to work as before
-- **AI Report Content Quality Fixes** (P0):
-  - `cleanAIContent` strips AI preamble and bracket placeholder notes
-  - Section filtering threshold increased from 30 to 80 chars — removes thin/useless sections like "Authority Sequence"
-  - Backend guardrails updated with anti-preamble/anti-bracket instructions
-- **Sentence Field Fix** (P1):
-  - Added `sentence` field to Case model + Dashboard/CaseDetail forms
-  - Stricter regex prevents wrong sentence extraction ("12 years, reduced due to mental health evidence effects on intent")
-  - Fallback text: "Not specified — edit case to add sentence"
-- **Edit Case Details** (P1):
-  - "Edit" button on Case Detail page with full dialog for all fields
-  - Sentence displayed as amber badge
-- **iOS Safari PDF Export Fix** (P1):
-  - Timeline PDF export now uses anchor tag approach
-- **Testing**: iterations 66 (13/13), 67 (21/21), 68 (all code + build verified)
+## 2026-03-21 — Session 15 (AI Fallback + Content Quality + Print Fix + PayID)
+- **AI Endpoint Fallback** (P0): All secondary endpoints use `call_llm_with_fallback` with model rotation
+- **Print Buttons Fixed** (P0 — 4th ask):
+  - Print on ALL 7 tabs (was missing Documents, Reports, Legal)
+  - iOS Safari: BarristerView/ReportView → PDF export in new tab; CaseDetail → iframe content extraction
+- **AI Content Quality** (P0):
+  - `cleanAIContent` strips both square `[Note: ...]` AND round `(Note: ...)` bracket AI notes
+  - Section filtering threshold raised to 80 chars
+  - Backend guardrails: anti-preamble, anti-bracket, legislation years required
+- **Barrister View Parser Improvement**:
+  - Detects markdown headings (`## Title`), numbered all-caps headings (`5. COMPARATIVE SENTENCING TABLE`)
+  - `cleanTitle` strips leading numbers from section titles for clean display
+- **PayID Admin Refresh Fixed**:
+  - Loading state + spinner on Refresh button
+  - Error toasts for 403/401/generic failures (was silently failing)
+- **Sentence Field**: Added to Case model + creation/edit forms, stricter regex
+- **Edit Case Details**: Button on Case Detail page with full dialog
+- **iOS Timeline PDF**: Fixed to use anchor tag approach
+- **Testing**: iterations 66-69 all passed
 
 ## 2026-03-21 — Session 14 (Critical Report & PDF Fix)
 - **Report generation fully fixed** (P0):
