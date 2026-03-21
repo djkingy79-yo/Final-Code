@@ -75,6 +75,7 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] Similar case identification
 - [x] Report generation (Quick Summary, Full Detailed, Extensive Log)
 - [x] **Auto-generate Timeline from documents** - AI extracts dates and events
+- [x] **All AI endpoints use `call_llm_with_fallback` with model fallback** (gpt-4o x2 → claude-sonnet-4 → gpt-4o-mini)
 
 ### PayPal Paywall System ✅ (Mar 2026)
 - [x] **Grounds of Merit Paywall** - Shows count for free, $50 to unlock full details

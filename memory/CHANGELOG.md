@@ -1,5 +1,13 @@
 # Appeal Case Manager — Changelog
 
+## 2026-03-21 — Session 15 (AI Endpoint Fallback Completion)
+- **All secondary AI endpoints now use `call_llm_with_fallback`** (P0):
+  - `investigate_ground_of_merit`: Replaced inline retry logic with shared helper
+  - `auto_identify_grounds`: Replaced hardcoded Claude-only call (root cause of "Investigate button fails") with model fallback (gpt-4o x2 → claude-sonnet-4 → gpt-4o-mini)
+  - Removed unused `from emergentintegrations` imports in refactored functions
+  - Zero hardcoded Claude-only calls remain in codebase
+- **Testing**: iteration_66 passed 100% (13/13 tests). Both investigate and auto-identify endpoints verified working with real LLM calls (<15s response times)
+
 ## 2026-03-21 — Session 14 (Critical Report & PDF Fix)
 - **Report generation fully fixed** (P0):
   - Root cause 1: `emergentintegrations` module missing — installed
