@@ -96,6 +96,43 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/\n*This truncated document[^\n]*/gi, "");
   cleaned = cleaned.replace(/\n*This (?:document|report|analysis) (?:provides|covers|contains|demonstrates)[^\n]*(?:sections?|overview|summary)[^\n]*/gi, "");
   cleaned = cleaned.replace(/\n*Each section (?:demonstrates|provides|covers)[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\n*The sections? above (?:are|is|were|was) (?:crafted|designed|written|prepared|created)[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\n*(?:The above|These) sections? (?:are|is|were|was) (?:crafted|designed|written|prepared|created)[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\n*(?:presenting|advances?) (?:a comprehensive|field-specific|detailed)[^\n]*(?:court of appeal|legal professionals?)[^\n]*/gi, "");
+  
+  // Convert American spellings to Australian
+  const ausReplacements = [
+    [/\bfinalized\b/gi, (m) => m[0] === 'F' ? 'Finalised' : 'finalised'],
+    [/\brecognized\b/gi, (m) => m[0] === 'R' ? 'Recognised' : 'recognised'],
+    [/\borganized\b/gi, (m) => m[0] === 'O' ? 'Organised' : 'organised'],
+    [/\bsummarized\b/gi, (m) => m[0] === 'S' ? 'Summarised' : 'summarised'],
+    [/\bprioritized\b/gi, (m) => m[0] === 'P' ? 'Prioritised' : 'prioritised'],
+    [/\banalyzing\b/gi, (m) => m[0] === 'A' ? 'Analysing' : 'analysing'],
+    [/\banalyzed\b/gi, (m) => m[0] === 'A' ? 'Analysed' : 'analysed'],
+    [/\banalyze\b/gi, (m) => m[0] === 'A' ? 'Analyse' : 'analyse'],
+    [/\bbehavior\b/gi, (m) => m[0] === 'B' ? 'Behaviour' : 'behaviour'],
+    [/\bfavored\b/gi, (m) => m[0] === 'F' ? 'Favoured' : 'favoured'],
+    [/\bfavoring\b/gi, (m) => m[0] === 'F' ? 'Favouring' : 'favouring'],
+    [/\bfavor\b/gi, (m) => m[0] === 'F' ? 'Favour' : 'favour'],
+    [/\bhonor\b/gi, (m) => m[0] === 'H' ? 'Honour' : 'honour'],
+    [/\bdefense\b/gi, (m) => m[0] === 'D' ? 'Defence' : 'defence'],
+    [/\boffense\b/gi, (m) => m[0] === 'O' ? 'Offence' : 'offence'],
+    [/\blabor\b/gi, (m) => m[0] === 'L' ? 'Labour' : 'labour'],
+    [/\bcenter\b/gi, (m) => m[0] === 'C' ? 'Centre' : 'centre'],
+    [/\bspecialized\b/gi, (m) => m[0] === 'S' ? 'Specialised' : 'specialised'],
+    [/\bcharacterized\b/gi, (m) => m[0] === 'C' ? 'Characterised' : 'characterised'],
+    [/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised'],
+    [/\bemphasized\b/gi, (m) => m[0] === 'E' ? 'Emphasised' : 'emphasised'],
+    [/\bemphasize\b/gi, (m) => m[0] === 'E' ? 'Emphasise' : 'emphasise'],
+    [/\bminimize\b/gi, (m) => m[0] === 'M' ? 'Minimise' : 'minimise'],
+    [/\bmaximize\b/gi, (m) => m[0] === 'M' ? 'Maximise' : 'maximise'],
+    [/\bcriticized\b/gi, (m) => m[0] === 'C' ? 'Criticised' : 'criticised'],
+    [/\bcriticize\b/gi, (m) => m[0] === 'C' ? 'Criticise' : 'criticise'],
+  ];
+  for (const [pattern, replacer] of ausReplacements) {
+    cleaned = cleaned.replace(pattern, replacer);
+  }
+  
   return cleaned.trim();
 };
 
@@ -319,9 +356,11 @@ const ReportView = () => {
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
+              {report?.report_type === 'extensive_log' && (
               <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} data-testid="barrister-view-btn">
                 <Eye className="w-4 h-4 mr-2" /> Barrister View
               </Button>
+              )}
               <Button variant="outline" size="sm" onClick={handlePrint} data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
