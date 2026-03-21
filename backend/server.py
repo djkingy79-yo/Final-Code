@@ -133,6 +133,37 @@ api_router = APIRouter(prefix="/api")
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# ============ REUSABLE LLM HELPER ============
+async def call_llm_with_fallback(system_prompt: str, user_prompt: str, session_id: str = "default") -> str:
+    """Call LLM with model fallback: gpt-4o (x2) -> Claude -> gpt-4o-mini."""
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    api_key = os.environ.get('EMERGENT_LLM_KEY')
+    if not api_key:
+        raise Exception("AI service not configured — EMERGENT_LLM_KEY missing")
+    
+    models = [
+        ("openai", "gpt-4o"),
+        ("openai", "gpt-4o"),
+        ("anthropic", "claude-sonnet-4-20250514"),
+        ("openai", "gpt-4o-mini"),
+    ]
+    last_err = None
+    for idx, (provider, model_name) in enumerate(models):
+        try:
+            chat = LlmChat(api_key=api_key, session_id=session_id, system_message=system_prompt).with_model(provider, model_name)
+            result = await asyncio.wait_for(chat.send_message(UserMessage(text=user_prompt)), timeout=120)
+            if result and len(result.strip()) > 50 and "I'm sorry" not in result[:80]:
+                logger.info(f"LLM success ({session_id}) with {provider}/{model_name} on attempt {idx+1}")
+                return result
+            last_err = f"Short/refused response from {provider}/{model_name}"
+        except asyncio.TimeoutError:
+            last_err = f"Timeout with {provider}/{model_name}"
+        except Exception as e:
+            last_err = str(e)[:200]
+        logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) for {session_id}: {last_err}")
+        await asyncio.sleep(2 + idx)
+    raise Exception(f"All LLM attempts failed: {last_err}")
+
 # ============ ROOT HEALTH CHECK (for Kubernetes) ============
 @app.get("/health")
 async def root_health_check():
@@ -1434,33 +1465,11 @@ Only include events you can clearly identify from the documents. Be thorough - e
 
 Return ONLY a valid JSON array of timeline events. No other text."""
 
-    api_key = os.environ.get('EMERGENT_LLM_KEY')
-    if not api_key:
-        raise HTTPException(status_code=500, detail="AI service not configured")
-    
-    # Try up to 4 times with exponential backoff
-    response = None
-    last_error = None
-    for attempt in range(4):
-        try:
-            chat = LlmChat(
-                api_key=api_key,
-                session_id=f"timeline_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            
-            response = await chat.send_message(UserMessage(text=user_prompt))
-            break
-        except Exception as e:
-            last_error = e
-            logger.warning(f"Timeline generation attempt {attempt + 1} failed: {e}")
-            if attempt < 3:
-                import asyncio
-                await asyncio.sleep(1)
-    
-    if response is None:
-        logger.error(f"All timeline generation attempts failed: {last_error}")
-        raise HTTPException(status_code=500, detail=f"AI timeline generation failed after retries: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, user_prompt, f"timeline_{case_id}")
+    except Exception as e:
+        logger.error(f"All timeline generation attempts failed: {e}")
+        raise HTTPException(status_code=500, detail=f"AI timeline generation failed after retries: {str(e)}")
     
     # Parse the JSON response
     import json
@@ -1598,23 +1607,10 @@ IDENTIFIED GROUNDS OF APPEAL:
 
 Provide a comprehensive analysis identifying gaps, inconsistencies, and appeal-relevant insights."""
 
-    last_error = None
-    for attempt in range(3):
-        try:
-            chat = LlmChat(
-                api_key=emergent_api_key,
-                session_id=f"timeline_analysis_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            
-            response = await chat.send_message(UserMessage(text=user_prompt))
-            break
-        except Exception as e:
-            last_error = e
-            if attempt < 2:
-                await asyncio.sleep(1)
-    else:
-        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, user_prompt, f"timeline_analysis_{case_id}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
     
     # Parse JSON response
     try:
@@ -2058,23 +2054,10 @@ Return JSON:
     "total_critical": 0, "total_significant": 0, "total_minor": 0
 }"""
 
-    last_error = None
-    for attempt in range(3):
-        try:
-            chat = LlmChat(
-                api_key=emergent_api_key,
-                session_id=f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            
-            response = await chat.send_message(UserMessage(text=f"Find contradictions in these documents:\n{doc_context}"))
-            break
-        except Exception as e:
-            last_error = e
-            if attempt < 2:
-                await asyncio.sleep(1)
-    else:
-        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, f"Find contradictions in these documents:\n{doc_context}", f"contradiction_{case_id}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
     
     try:
         json_match = response
@@ -2158,23 +2141,11 @@ Potential issues or weaknesses that need to be addressed.
 
 Be specific to the jurisdiction and offence type. Use Australian legal terminology and reference relevant courts and processes."""
 
-    last_error = None
-    for attempt in range(3):
-        try:
-            emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
-            llm = LlmChat(
-                api_key=emergent_api_key,
-                session_id=f"progress_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            response = await llm.send_message(UserMessage(text=f"Analyse the progress of this criminal appeal case:\n\n{context}"))
-            return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
-        except Exception as e:
-            last_error = e
-            if attempt < 2:
-                await asyncio.sleep(1)
-    
-    raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, f"Analyse the progress of this criminal appeal case:\n\n{context}", f"progress_{case_id}")
+        return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
 
 # ============ PAYMENT ENDPOINTS ============
 
@@ -2935,8 +2906,6 @@ async def delete_ground_of_merit(case_id: str, ground_id: str, request: Request)
 @api_router.post("/cases/{case_id}/grounds/{ground_id}/investigate", response_model=dict)
 async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Request):
     """Deep AI investigation of a specific ground of merit"""
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-    
     user = await get_current_user(request)
     
     # Get the ground
@@ -3053,33 +3022,11 @@ REQUIRED ANALYSIS (search the documents above for evidence):
 6. STRATEGIC RECOMMENDATION
    - How to present this ground to the court"""
 
-    api_key = os.environ.get('EMERGENT_LLM_KEY')
-    if not api_key:
-        raise HTTPException(status_code=500, detail="AI service not configured")
-    
-    # Try up to 3 times with fast backoff
-    response = None
-    last_error = None
-    for attempt in range(3):
-        try:
-            chat = LlmChat(
-                api_key=api_key,
-                session_id=f"ground_{ground_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            
-            response = await chat.send_message(UserMessage(text=user_prompt))
-            break
-        except Exception as e:
-            last_error = e
-            logger.warning(f"Ground investigation attempt {attempt + 1} failed: {e}")
-            if attempt < 2:
-                import asyncio
-                await asyncio.sleep(1)
-    
-    if response is None:
-        logger.error(f"All ground investigation attempts failed: {last_error}")
-        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, user_prompt, f"ground_{ground_id}_{uuid.uuid4().hex[:8]}")
+    except Exception as e:
+        logger.error(f"Ground investigation LLM failed: {e}")
+        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(e)}")
     
     # Parse response to extract structured data
     law_sections = []
@@ -3130,8 +3077,6 @@ REQUIRED ANALYSIS (search the documents above for evidence):
 @api_router.post("/cases/{case_id}/grounds/auto-identify", response_model=dict)
 async def auto_identify_grounds(case_id: str, request: Request):
     """AI automatically identifies potential grounds of merit from case materials - prevents duplicates"""
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-    
     user = await get_current_user(request)
     
     # Verify case ownership
@@ -3301,33 +3246,11 @@ Return your analysis in this JSON format:
 
 BE THOROUGH. Identify ALL potential grounds. The appellant's freedom may depend on this analysis."""
 
-    api_key = os.environ.get('EMERGENT_LLM_KEY')
-    if not api_key:
-        raise HTTPException(status_code=500, detail="AI service not configured")
-    
-    # Try up to 4 times with exponential backoff
-    response = None
-    last_error = None
-    for attempt in range(4):
-        try:
-            chat = LlmChat(
-                api_key=api_key,
-                session_id=f"auto_identify_{case_id}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("anthropic", "claude-sonnet-4-20250514")
-            
-            response = await chat.send_message(UserMessage(text=user_prompt))
-            break
-        except Exception as e:
-            last_error = e
-            logger.warning(f"Auto-identify attempt {attempt + 1} failed: {e}")
-            if attempt < 3:
-                import asyncio
-                await asyncio.sleep(1)
-    
-    if response is None:
-        logger.error(f"All auto-identify attempts failed: {last_error}")
-        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(last_error)}")
+    try:
+        response = await call_llm_with_fallback(system_prompt, user_prompt, f"auto_identify_{case_id}_{uuid.uuid4().hex[:8]}")
+    except Exception as e:
+        logger.error(f"Auto-identify LLM failed: {e}")
+        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(e)}")
     
     # Helper function to check if ground is a duplicate
     def is_duplicate_ground(new_title, new_type, existing_grounds):

@@ -8,7 +8,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://appeal-hub-5.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://barrister-brief.preview.emergentagent.com').rstrip('/')
 
 class TestSession:
     """Shared session for all tests"""
