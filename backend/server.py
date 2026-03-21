@@ -192,6 +192,7 @@ class Case(BaseModel):
     state: str = "nsw"  # nsw, vic, qld, sa, wa, tas, nt, act
     offence_category: str = "homicide"  # homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences
     offence_type: Optional[str] = None  # Specific offence within category
+    sentence: Optional[str] = None  # e.g. "30 years imprisonment with NPP of 22.5 years"
     status: str = "active"
     summary: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -206,6 +207,7 @@ class CaseCreate(BaseModel):
     state: str = "nsw"
     offence_category: str = "homicide"
     offence_type: Optional[str] = None
+    sentence: Optional[str] = None
     summary: Optional[str] = None
 
 class Document(BaseModel):
@@ -3448,6 +3450,7 @@ Defendant: {case.get('defendant_name', 'N/A')}
 Case Number: {case.get('case_number', 'N/A')}
 Court: {case.get('court', 'N/A')}
 Judge: {case.get('judge', 'N/A')}
+Sentence: {case.get('sentence', 'N/A')}
 Summary: {case.get('summary', 'N/A')}
 
 {offence_context}
@@ -3510,10 +3513,16 @@ MANDATORY GUARDRAILS:
 - Use a HYBRID tone: court-ready legal analysis + plain-English action notes for the client.
 - Use Australian English only.
 - Anchor findings to supplied case material; clearly mark uncertainty when evidence is incomplete.
-- Include legislation as: section + Act + jurisdiction.
+- Include legislation as: section + Act + jurisdiction + year (e.g. s.18 Crimes Act 1900 (NSW)).
 - Include sentencing comparisons and precedent outcomes where relevant.
 - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis.
 - DO NOT include witness contradiction sections or witness credibility scoring sections.
+
+FORMATTING RULES — STRICTLY ENFORCED:
+- DO NOT begin your response with any preamble, greeting, or introduction like "Certainly!", "Here's a comprehensive...", "Sure!", "I've prepared..." etc. Start directly with the first section heading.
+- DO NOT use placeholder notes in brackets like "[Note: Repeat this format...]", "[Note: Continue listing...]", "[Insert details...]", "[Add more entries...]" etc. Every section MUST contain COMPLETE, REAL content. If you run out of material, end the section gracefully — do NOT leave lazy instructions for someone else to fill in.
+- Every section heading MUST be followed by substantive content (minimum 3-4 sentences). If a section cannot be substantiated from the case material, omit it entirely rather than filling it with vague one-liners.
+- Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
 """
     
     if report_type == "quick_summary":

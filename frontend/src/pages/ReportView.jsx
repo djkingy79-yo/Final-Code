@@ -35,16 +35,40 @@ const titleFromSnake = (value) => {
   return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
-const extractSentenceSummary = (analysis = "") => {
-  const byLabel = analysis.match(/sentence[^\n:]*[:\-]\s*([^\n\.]{6,140})/i);
+const extractSentenceSummary = (caseInfo, analysis = "") => {
+  // Use case data sentence field first if available
+  if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
+  const byLabel = analysis.match(/(?:sentenced?\s+to|received?\s+a?\s*sentence\s+of)\s*[:\-]?\s*([^\n\.]{6,140})/i);
   if (byLabel?.[1]) return byLabel[1].trim();
-  const byDuration = analysis.match(/([0-9]+(?:\.[0-9]+)?\s*(?:year|years|month|months)[^\n\.]{0,90})/i);
+  const byDuration = analysis.match(/(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,60})/i);
   if (byDuration?.[1]) return byDuration[1].trim();
-  return "Not clearly stated in report";
+  return "Not specified";
+};
+
+const cleanAIContent = (text) => {
+  if (!text) return text;
+  let cleaned = text;
+  // Strip AI preamble lines ("Certainly!", "Here's a comprehensive...", "Sure!", etc.)
+  cleaned = cleaned.replace(/^(Certainly!|Sure!|Of course!|Absolutely!|Here('s| is) a comprehensive[^\n]*\n?)/i, "");
+  cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
+  cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
+  cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
+  // Strip bracket placeholder notes the AI lazily writes
+  cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Repeat[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Follow[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Insert[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Add[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Include[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Provide[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[Similar[^\]]*\]/gi, "");
+  cleaned = cleaned.replace(/\[See[^\]]*\]/gi, "");
+  return cleaned.trim();
 };
 
 const parseAnalysisSections = (analysis = "") => {
-  const text = analysis.replace(/\r\n/g, "\n").trim();
+  const text = cleanAIContent(analysis.replace(/\r\n/g, "\n").trim());
   if (!text) return [];
   const lines = text.split("\n");
   const sections = [];
@@ -52,8 +76,8 @@ const parseAnalysisSections = (analysis = "") => {
   let currentLines = [];
 
   const pushSection = () => {
-    const content = currentLines.join("\n").trim();
-    if (!content) return;
+    const content = cleanAIContent(currentLines.join("\n").trim());
+    if (!content || content.length < 30) return;
     sections.push({ id: `report-section-${sections.length + 1}`, title: currentTitle, content });
   };
 
@@ -243,7 +267,7 @@ const ReportView = () => {
   const sections = useMemo(() => parseAnalysisSections(analysisText), [analysisText]);
   const documentsCount = report?.content?.document_count || 0;
   const eventsCount = report?.content?.event_count || 0;
-  const sentenceSummary = extractSentenceSummary(analysisText);
+  const sentenceSummary = extractSentenceSummary(caseData, analysisText);
   const offenceLabel = caseData?.offence_type || titleFromSnake(caseData?.offence_category);
   const theme = REPORT_THEME[report?.report_type] || REPORT_THEME.quick_summary;
 

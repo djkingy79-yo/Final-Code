@@ -58,6 +58,7 @@ const Dashboard = ({ user }) => {
     state: "nsw",
     offence_category: "homicide",
     offence_type: "",
+    sentence: "",
     summary: ""
   });
 
@@ -106,7 +107,7 @@ const Dashboard = ({ user }) => {
       const response = await axios.post(`${API}/cases`, newCase);
       setCases([response.data, ...cases]);
       setShowNewCaseDialog(false);
-      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "homicide", offence_type: "", summary: "" });
+      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "homicide", offence_type: "", sentence: "", summary: "" });
       toast.success("Case created successfully");
     } catch (error) {
       toast.error("Failed to create case");
@@ -650,6 +651,17 @@ const Dashboard = ({ user }) => {
                   placeholder="Judge name"
                   className="mt-1.5 rounded-xl"
                   data-testid="new-case-judge"
+                />
+              </div>
+              <div>
+                <Label htmlFor="sentence">Sentence</Label>
+                <Input
+                  id="sentence"
+                  value={newCase.sentence}
+                  onChange={(e) => setNewCase({ ...newCase, sentence: e.target.value })}
+                  placeholder="e.g., 30 years imprisonment with NPP of 22 years 6 months"
+                  className="mt-1.5 rounded-xl"
+                  data-testid="new-case-sentence"
                 />
               </div>
               <div>

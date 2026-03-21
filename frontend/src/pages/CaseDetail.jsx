@@ -362,6 +362,18 @@ const CaseDetail = ({ user }) => {
 
   const handleExportTimelinePDF = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const a = document.createElement('a');
+        a.href = `${API}/cases/${caseId}/timeline/export-pdf`;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("PDF opening — use Share to save or print.");
+        return;
+      }
       const response = await axios.get(`${API}/cases/${caseId}/timeline/export-pdf`, {
         responseType: 'blob'
       });

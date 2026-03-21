@@ -183,21 +183,41 @@ const BarristerView = ({ user }) => {
     return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
-  const extractSentenceSummary = (analysis = "") => {
-    const byLabel = analysis.match(/sentence[^\n:]*[:\-]\s*([^\n\.]{6,140})/i);
+  const extractSentenceSummary = (caseInfo, analysis = "") => {
+    if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
+    const byLabel = analysis.match(/(?:sentenced?\s+to|received?\s+a?\s*sentence\s+of)\s*[:\-]?\s*([^\n\.]{6,140})/i);
     if (byLabel?.[1]) return byLabel[1].trim();
-
-    const byDuration = analysis.match(/([0-9]+(?:\.[0-9]+)?\s*(?:year|years|month|months)[^\n\.]{0,90})/i);
+    const byDuration = analysis.match(/(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,60})/i);
     if (byDuration?.[1]) return byDuration[1].trim();
+    return "Not specified";
+  };
 
-    return "Not clearly stated in report";
+  // Clean AI artifacts from content
+  const cleanAIContent = (text) => {
+    if (!text) return text;
+    let cleaned = text;
+    cleaned = cleaned.replace(/^(Certainly!|Sure!|Of course!|Absolutely!|Here('s| is) a comprehensive[^\n]*\n?)/i, "");
+    cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
+    cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
+    cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
+    cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Repeat[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Follow[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Insert[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Add[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Include[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Provide[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[Similar[^\]]*\]/gi, "");
+    cleaned = cleaned.replace(/\[See[^\]]*\]/gi, "");
+    return cleaned.trim();
   };
 
   // Parse and structure the analysis for legal brief format
   const parseAnalysis = (content) => {
     if (!content?.analysis) return { sections: [] };
     
-    const analysis = content.analysis;
+    const analysis = cleanAIContent(content.analysis);
     const sections = [];
     
     const lines = analysis.split('\n');
@@ -221,12 +241,15 @@ const BarristerView = ({ user }) => {
       for (const { pattern, title, icon } of sectionPatterns) {
         if (pattern.test(line)) {
           if (currentSection) {
-            sections.push({
-              number: String(sections.length + 1),
-              title: currentSection,
-              content: currentContent.join('\n').trim(),
-              icon: icon
-            });
+            const cleanedContent = cleanAIContent(currentContent.join('\n').trim());
+            if (cleanedContent && cleanedContent.length >= 30) {
+              sections.push({
+                number: String(sections.length + 1),
+                title: currentSection,
+                content: cleanedContent,
+                icon: icon
+              });
+            }
           }
           
           if (title) {
@@ -252,18 +275,21 @@ const BarristerView = ({ user }) => {
     }
     
     if (currentSection && currentContent.length > 0) {
-      sections.push({
-        number: String(sections.length + 1),
-        title: currentSection,
-        content: currentContent.join('\n').trim()
-      });
+      const cleanedContent = cleanAIContent(currentContent.join('\n').trim());
+      if (cleanedContent && cleanedContent.length >= 30) {
+        sections.push({
+          number: String(sections.length + 1),
+          title: currentSection,
+          content: cleanedContent
+        });
+      }
     }
     
     if (sections.length === 0) {
       sections.push({
         number: "1",
         title: "ANALYSIS",
-        content: analysis
+        content: cleanAIContent(analysis)
       });
     }
     
@@ -306,7 +332,7 @@ const BarristerView = ({ user }) => {
   const keyEvents = getKeyEvents();
   const strongGrounds = grounds.filter(g => g.strength === 'strong');
   const moderateGrounds = grounds.filter(g => g.strength === 'moderate');
-  const sentenceSummary = extractSentenceSummary(report?.content?.analysis || "");
+  const sentenceSummary = extractSentenceSummary(caseData, report?.content?.analysis || "");
   const offenceSummary = caseData?.offence_type || formatOffenceLabel(caseData?.offence_category);
   const leadGround = strongGrounds[0] || grounds[0] || null;
   const authorityMap = new Map();
