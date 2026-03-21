@@ -1,21 +1,25 @@
-# Appeal Case Manager — Roadmap
+# Appeal Case Manager - Roadmap
 
-## P0 (Immediate) — COMPLETED
-- ✅ Deployment readiness check passed
-- ✅ Report generation reliability fixed (retry + model fallback)
-- ✅ Australian English verification
-- ✅ Print buttons verified
+## P0 - Critical (Completed)
+- [x] Multi-pass LLM report generation (word count targets hit)
 
-## P1 (Next)
-- Multi-user case sharing model so realtime notes support cross-account collaboration
-- Mention notifications and branch/thread discussion improvements in notes
-- Barrister View: bind comparative sentencing/options panels to parsed report tables dynamically
-- Monitor Claude 502 errors — consider upgrading to a more reliable model when available
+## P1 - High Priority
+- [ ] **Backend Refactoring** - Decompose server.py (~4,884 lines)
+  - [x] cases.py router extracted
+  - [ ] Extract notes.py router
+  - [ ] Extract documents.py router
+  - [ ] Extract timeline.py router
+  - [ ] Extract reports.py router
+  - [ ] Extract grounds.py router
 
-## P2 (Technical / Platform)
-- Refactor monolithic `backend/server.py` into dedicated routers/services (cases, documents, reports, notes, timeline, grounds)
-- Harden websocket auth + add reconnect metrics/monitoring
+- [ ] **Native Mobile App** - Capacitor configured, needs build and test
 
-## P3 (Release)
-- Build signed Android/iOS binaries and complete store metadata/submission workflow
-- Marketing launch plan finalisation
+## P2 - Medium Priority
+- [ ] Real-time Collaboration/Chat for Notes section
+- [ ] Case Sharing between registered users
+- [ ] Finalise marketing launch plan (/app/memory/mobile_app_launch_plan.md)
+
+## Backlog
+- [ ] Aggressive mode report generation testing (standard mode verified, aggressive untested)
+- [ ] Report regeneration UX improvements
+- [ ] Performance optimisation for large case files
