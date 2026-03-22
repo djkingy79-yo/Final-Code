@@ -21,7 +21,7 @@ import requests
 import os
 import re
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://barrister-brief-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-generator.preview.emergentagent.com')
 
 class TestBackendHealth:
     """Backend health check tests"""

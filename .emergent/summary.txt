@@ -1,125 +1,161 @@
-<analysis>**original_problem_statement**: 
-The user, Deb King, is building Appeal Case Manager to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, a tiered reporting system (Free, Paid, Premium), Barrister View, and PayID integration. The immediate requirement is that the AI-generated reports (specifically Full Detailed and Extensive Log tiers) are generating drastically below their targeted word counts (e.g., 1000 words instead of 4500+, 4000 words instead of 7000+). The AI is skipping or condensing sections. A multi-pass LLM generation architecture is required to hit these robust legal document lengths without hitting token limits.
+<analysis>original_problem_statement: 
+The user, Deb King, is building Appeal Case Manager to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, a tiered reporting system (Free, Paid, Premium), Barrister View, and PayID integration. The core requirement is generating massive, hyper-detailed, case-specific legal reports using a multi-pass LLM architecture, rendering them cleanly without AI-waffle, and ensuring flawless mobile (iOS) compatibility. 
 
-**User's preferred language**: English (Australian) (INSTRUCT next agent to respond in English and strictly use Australian spelling like analyse, dialogue, organise in the app).
+**User's preferred language**: English (Australian). (INSTRUCT next agent to respond in English and strictly use Australian spelling like analyse, dialogue, organise, finalise, behaviour, Barrister in all UI text, code variables where applicable, and AI-generated outputs).
 
 **what currently exists?** 
-A stable full-stack web application (React, FastAPI, MongoDB). The app has a fully audited landing page with a new tier-comparison toggle. An Australian English audit has been completed. The backend monolithic  is currently undergoing a refactoring phase (the  router has been successfully extracted). The report generation engine has just been updated to use a 3-pass (Full Detailed) and 4-pass (Extensive Log) generation process to solve the short word-count issue.
+A full-stack web application (React, FastAPI, MongoDB). The backend features a robust LLM generation engine producing case reports without generic boilerplate. The frontend features a Barrister View that synthesizes 6 reports, tiered report rendering, and an overhauled Landing Page with real Australian criminal appeal statistics, interactive state-by-state data widgets, and realistic report sample previews. iOS Safari compatibility for PDF exports has been implemented via the Web Share API.
 
 **Last working item**: 
-    - Last item agent was working: Modifying  to implement a multi-pass generation strategy for AI reports. The agent updated the LLM logic to split Full Detailed generation into 3 passes and Extensive Log into 4 passes, combining the responses to hit the massive target word counts (4500-6500 words and 7000-10000 words respectively).
-    - Status: TESTING PENDING
-    - Agent Testing Done: N (The code edit was successful, but the agent ran out of context before restarting the server and generating the reports to verify).
-    - Which testing method agent to use? backend testing agent / manual testing via executing python script/bash to trigger the report generation for a test case, checking the DB for the final string length, and frontend screenshot to verify rendering.
+    - Last item agent was working: Preparing to address the user's final UI/UX feedback regarding the synchronization of the navigation menu/footer, correcting Success Stories to remove references to non-existent tools, and ensuring all marketing copy accurately reflects the Free vs Paid tier boundaries.
+    - Status: NOT STARTED
+    - Agent Testing Done: N
+    - Which testing method agent to use? Frontend screenshot tool (to visually verify menu alignment, footer order, and text changes).
     - User Testing Done: N
 
 **All Pending/In progress Issue list**: 
-  - Issue 1: Reports are too short and losing information (P0)
-     - Attempted fixes: Agent updated the  params to use  and just implemented a 3-pass generation for  and 4-pass generation for  in .
-     - Next debug checklist: Restart the backend supervisor. Delete existing reports for case . Trigger generation for all 6 report types (Standard + Aggressive for Quick Summary, Full Detailed, and Extensive Log). Monitor the backend logs, and verify that the final concatenated string lengths match the expected word counts (1500+, 4500+, 7000+).
-     - Why fix this issue and what will be achieved with the fix? It is the core value proposition of the app. The user is furious that the reports are currently returning short, condensed responses missing vital legal context.
-     - Status: TESTING PENDING
-     - Is recurring issue? Y (LLMs naturally condense output; token limits cause truncation. Required heavy multi-pass chunking).
-     - Should Test frontend/backend/both after fix? Both (Ensure DB gets the massive string, and Frontend UI  /  renders all sections correctly without crashing).
-     - Blocked on other issue: None.
+  Issue 1: Success Stories mention fake tools & need a rewrite (P0)
+     - Attempted fixes: None in the current iteration.
+     - Next debug checklist: 
+        - File: 
+        - Remove any references to case comparison, contradiction AI tool, or other unbuilt features.
+        - Rewrite them so they don't sound pathetic and accurately reflect the app's real flow.
+     - Why fix this issue and what will be achieved with the fix? It sets false expectations and the user is highly frustrated by inaccuracies.
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Frontend
+     - Blocked on other issue: None
+
+  Issue 2: Navigation Menu and Footer are out of sync & incorrectly ordered (P0)
+     - Attempted fixes: None.
+     - Next debug checklist: 
+        - Files: , header/navigation components.
+        - Ensure the dropdown menu has the EXACT same format and link order as the footer menu.
+        - Hard Rule: About must be the SECOND TO LAST page. Success Stories must be the LAST page. The rest must be uniformly ordered.
+     - Why fix this issue and what will be achieved with the fix? Fixes UI inconsistency across the app's main storefront.
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Frontend (Screenshot tool)
+     - Blocked on other issue: None
+
+  Issue 3: See It In Action & How It Works text misrepresents Free Tier (P0)
+     - Attempted fixes: Agent updated some parts, but user insists it is still wrong.
+     - Next debug checklist: 
+        - Files: , 
+        - Ensure steps are in perfect logical chronological order.
+        - CRITICAL BUSINESS RULE: The FREE case upload MUST ONLY show the **number of grounds**. It MUST NOT show the Titles of the grounds. The user must pay **9 AUD** to see the titles and detailed explanations. Ensure absolutely no text implies titles are free.
+     - Why fix this issue and what will be achieved with the fix? Direct impact on monetization; leaking titles for free ruins the upsell funnel.
+     - Status: NOT STARTED
+     - Is recurring issue? Y (User repeatedly has to correct this).
+     - Should Test frontend/backend/both after fix? Frontend
+     - Blocked on other issue: None
 
 **In progress Task List**:
-  - Task 1: Backend Refactoring (Decomposing )
+  Task 1: Backend Refactoring (Decomposing )
+     - Where to resume:  and  are extracted. Need to extract remaining routes (notes, timeline, documents) into  and wire them into .
+     - What will be achieved with this? Maintainability (server.py is ~4900 lines).
+     - Status: BLOCKED (Do not start until the immediate P0 frontend issues above are fully resolved).
+     - Should Test frontend/backend/both after fix? Backend (testing agent).
+     - Blocked on something: User's immediate UI/UX P0 complaints.
 
-- Sick of constant merry go round crap the REPORTS WHERE GREAT ONCE AGAIN DUMB AGENT SABOTAGING WORK IVE PAID THOUSANDS FOR ONE JOB THATS FORKED OVER 50 times FIX N TO MY STANDARD N HURRY UP NO MORE RIPPING ME OFF 
-     - Where to resume:  was successfully extracted and wired. Next, extract , , , etc., into the  directory and wire them in .
-     - What will be achieved with this? Maintainability.  is currently ~4800 lines.
-     - Status: IN PROGRESS
-     - Should Test frontend/backend/both after fix? Backend (Testing agent to verify all endpoints still work).
-     - Blocked on something: Finish the P0 Report Word Count issue first.
-
-**Upcoming and Future Tasks**:
+**Upcoming and Future Tasks**
     Upcoming Tasks:
     - P1: Build Native Mobile App: Capacitor is configured. Run the build process and test the native wrapper.
     
     Future Tasks:
-    - P2: Real-time Collaboration/Chat: Enhance the Notes section (e.g., real-time notifications/websockets for comments).
+    - P2: Real-time Collaboration/Chat: Enhance the Notes section.
     - P2: Case Sharing: Allow users to share cases with other registered users.
     - P2: Launch Marketing: Finalize the marketing plan in .
 
-**Completed work in this session**:
-- Added a Report Tier Comparison toggle to the  showing 26 rows of features with Extenstive-exclusive highlights (DONE).
-- Conducted a full codebase Australian English audit (fixed dialogue, verified analyse, etc.) (DONE).
-- Fixed the AI Sentence extraction regex in  and  to prevent URL leakage and gracefully fallback to Not recorded instead of showing placeholder text (DONE).
-- Added  strip logic to remove AI meta-comments like This truncated document provides... (DONE).
-- Extracted and wired the  router, removing duplicate routes from  (DONE).
+**Completed work in this session**
+- Landing Page stats replaced with accurate data (8,700 cases, ~40% success rate). (DONE)
+- Implemented interactive State Appeal Stats widget. (DONE)
+- Darkened mobile hero section background overlay (95% opacity) to fix text contrast/readability. (DONE)
+- iOS Safari PDF/Print compatibility fixed using  API. (DONE)
+- Barrister View critical bug fixed: Changed  filter that was rejecting all reports (due to  in DB) to allow rendering. (DONE)
+- Added Table of Contents to Barrister View and fixed sentence/offence data extraction. (DONE)
+- System prompts for Quick Summary, Full Detailed, and Aggressive Mode overhauled to force tone changes and remove generic fluff. (DONE)
+- Overhauled See It In Action & sample previews to use realistic content/layouts instead of fake case names/graphics. (DONE)
 
-**Earlier issues found/mentioned but not fixed**:
-   - None
+**Earlier issues found/mentioned but not fixed**
+   - None missed, everything captured in Pending lists.
 
-**Known issue recurrence from previous fork**:
-  - Issue recurrence in previous fork: AI Hallucinating placeholder brackets, AI condensing/truncating reports.
-  - Recurrence count: Very High
-  - Status: IN PROGRESS (Multi-pass logic just implemented to brute-force the LLM into generating long-form content).
+**Known issue recurrence from previous fork**
+  - Issue recurrence in previous fork: Marketing copy hallucinating features or misrepresenting tier access (e.g., Free vs Paid).
+  - Recurrence count: High
+  - Status: IN PROGRESS
+  Note: The user is extremely strict about the exact wording for the Free vs 9 AUD tiers. Pay close attention to this. 
 
-**Code Architecture**:
+**Code Architecture**
 
 
-**Key Technical Concepts**:
-- **Multi-pass LLM Generation**: To hit 10,000 words,  issues 4 separate LLM prompts asking for ~5 sections at a time. It then concatenates the results.
-- **Frontend AI Cleaning**:  in the frontend strips out AI conversational filler (Certainly!, Here is...).
-- **Regex Sentence parsing**: Frontend uses regex to extract the Sentence from the report body since the AI doesn't always format it perfectly.
+**Key Technical Concepts**
+- **Multi-pass LLM Generation**:  runs sequential LLM calls. The system relies heavily on specific prompts to enforce standard vs aggressive tones.
+- **Frontend Merging**: The Barrister View synthesizes content from up to 6 different generated reports into one comprehensive layout.
 
-**key DB schema**:
+**key DB schema**
   - : {case_id, user_id, title, defendant_name, case_number, court, sentence, state}
-  - : {report_id, case_id, user_id, report_type, aggressive_mode, status, content: {analysis}}
+  - : {report_id, case_id, user_id, report_type, status, aggressive_mode, content}
 
-**changes in tech stack**:
-  - Added  to Litellm params via Emergent LlmChat  wrapper.
+**changes in tech stack**
+  - No changes. 
 
-**All files of reference**: 
-  - : Contains the multi-pass report generation logic you need to test.
-  - : Example of the successful router extraction.
-  - : Last successful test run before the short-report issue was re-raised.
+**All files of reference** 
+  - : Needs content cleanup (remove fake tool references).
+  - : Needs footer/dropdown synchronization and sequential flow checking.
+  - : Needs text updates to enforce Free = Number of grounds only.
 
-**Areas that need refactoring**: 
-  -  needs further router extraction.
+**Areas that need refactoring** 
+  -  is nearly 5,000 lines and needs routing extraction to .
 
-**key api endpoints**:
-  - : Triggers the background task for the multi-pass generation.
+**key api endpoints**
+  - : Now optimized for iOS via Share API on the frontend.
+  - : Triggers the massive background LLM generation.
 
-**Critical Info for New Agent**: 
-- **DO NOT alter the frontend section parser logic () to merge headings.** The previous agent tried to fix thin sections by changing the parser, which completely deleted user content and broke the app. The thin section issue is purely an AI generation issue, which the new multi-pass prompts are designed to fix.
-- **Australian English Only**: The user was very explicit. Do not use American spellings in any UI text or toasts.
-- **Priority**: Immediately test the 3-pass and 4-pass generation logic in . Ensure it concatenates correctly and produces massive string lengths.
+**Critical Info for New Agent** 
+- **USER FRUSTRATION LEVEL IS EXTREMELY HIGH**: The user has expressed deep frustration (STOP RIPPING ME OFF, GET A CLUE) regarding broken features, hallucinated marketing copy, and lost progress. **Do exactly what is asked with surgical precision and verify thoroughly before presenting.**
+- **Tier Rules**: FREE tier = Number of grounds ONLY. 9 AUD tier = Titles of grounds + detailed explanations. Do not mix this up in any copy.
+- **Feature Hallucinations**: Do not mention Contradiction AI Tool, Case Comparison, etc., in the success stories or landing page copy. If it doesn't exist, remove it.
 
-**documents and test reports created in this job**:
+**documents and test reports created in this job** 
   - 
   - 
   - 
   - 
+  - 
 
-**Last 10 User Messages and any pending HUMAN messages**: 
- 1. User: Demanded report word counts be fixed because they are too short and lost heaps of info. (PENDING TESTING)
- 2. User: Requested an Australian English spelling audit across the codebase, then requested starting on the tier comparison toggle and backend refactor. (COMPLETED)
- 3. User: Complained the reports lost sections, 9 grounds identified but only 1 analyzed, plain English missing, uploaded error screenshots. (PARTIALLY RESOLVED - Parser reverted, multi-pass generation in progress).
- 4. User: Requested automatic sentence display fallback. (COMPLETED)
- 5. User: Uploaded screenshots showing thin action sections and Not specified sentence bug. (COMPLETED)
- 6. User: Approved adding the tier preview toggle to the landing page and uploaded screenshots of UI bugs. (COMPLETED)
- 7. User: Confirmed pricing is 99 (Grounds), Free (Summary), 150 (Full), 200 (Extensive). (COMPLETED)
- 8. User: Approved the plan. (COMPLETED)
+**Last 10 User Messages and any pending HUMAN messages** 
+ 1. User: Demanded 3 tasks: stats widget, footer/header dropdown sync, readable landing page.
+ 2. User: Reiterated not to change any word count for reports.
+ 3. User: Approved the state stats widget enhancement.
+ 4. User: Complained the hero section was still hard to read on mobile. (Fixed)
+ 5. User: Extremely angry (STOP RIPPING ME OFF). Complained Barrister view only shows 3 reports, scattered info, no TOC, print broken. Uploaded screenshots.
+ 6. User: Complained case summaries were bland, aggressive mode failing.
+ 7. User: Swore again to fix standard, assess all 6 reports, no repetition.
+ 8. User: Demanded to fix prompts once and for all.
+ 9. User: Fix the 6 reports first to have the info to make the barrister view GET A CLUE CUNT. (Agent fixed report ingestion & prompts).
+ 10. User: **(PENDING)** Complained success stories mention non-existent tools (case comparison, contradiction ai). Requested steps to be ordered properly, footer/dropdown to match exactly (Success Stories last, About second last). Emphasized Free tier shows NUMBER of grounds only, 9 shows titles + details.
 
-**Project Health Check**:
-- Broken: AI Report generation word counts (potentially fixed by last edit, but untested).
+**Project Health Check:**
+- Broken: Navigation/Footer mismatch, misleading marketing copy (Success Stories / Free Tier descriptions).
 - Mocked: None.
 
-**3rd Party Integrations**: 
+**3rd Party Integrations** 
   • OpenAI GPT-4o / GPT-4o-mini — uses Emergent LLM Key
-  • Anthropic Claude Sonnet 4.5 — uses Emergent LLM Key
+  • Emergent Auth (Google) — uses Emergent-managed social login
 
-**Testing status**:
-  - Testing agent used after significant changes: YES (iteration 73).
+**Testing status**
+  - Testing agent used after significant changes: YES (iterations 76-79).
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: 
-  - Known regressions: Reports generating too short (currently attempting to fix).
+  - Known regressions: None known.
 
-**Credentials to test flow**:
-Case  (User: ) is actively being used for generating test reports. Session token from previous bash commands:  (May be expired, re-fetch via bash or create a new user).
+**Credentials to test flow:**
+Use Emergent Google Auth flow. Test Case:  (R v Homann).
 
-**What agent forgot to execute**:
-The agent successfully edited  to add 3-pass and 4-pass generation logic, but ran out of tokens before they could restart the backend supervisor, trigger the report generation, and verify if the word counts finally hit the 4500+ and 7000+ targets.</analysis>
+**What agent forgot to execute**
+The agent finished the session before executing the user's final instruction (Message 310) which requires syncing the header/footer menus, reordering the pages (About 2nd last, Success Stories last), purging non-existent tools from Success Stories, and correcting the Free vs Paid text in the How It Works/Landing page.</analysis>
+
+- ACTION ALL INSTRUCTIONS NOT COMPLETED BY AGENT
+
+- ENSURE REPORTS ALL 6 and BARRISTER VIEW RETAIN THEIR FULL DETAIL DO NOT CHANGE MINIMISE ETC IVE HADVTHIS FIX FIXED 35 times being charged every time ripped off GET THIS SHIT COMPLETE TO FULL STANDARD IM LOSING MY SHIT IT NOT THIS HARD 

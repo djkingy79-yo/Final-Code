@@ -67,7 +67,7 @@ async def send_payment_confirmation_email(user_email: str, user_name: str, featu
     
     try:
         # Get the frontend URL for the case link
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://barrister-brief-1.preview.emergentagent.com')
+        frontend_url = os.environ.get('FRONTEND_URL', 'https://grounds-generator.preview.emergentagent.com')
         case_link = f"{frontend_url}/cases/{case_id}"
         
         html_content = f"""
