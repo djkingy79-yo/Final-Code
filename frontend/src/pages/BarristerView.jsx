@@ -93,7 +93,7 @@ const BarristerView = ({ user }) => {
   };
 
   const handlePrint = () => {
-    window.print();
+    openBarristerPreview("print");
   };
 
   const toggleFullscreen = () => {
@@ -139,8 +139,87 @@ const BarristerView = ({ user }) => {
     }
   };
 
+  const buildAuthUrl = (baseUrl) => {
+    const token = localStorage.getItem("session_token");
+    if (!token) return baseUrl;
+    const separator = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${separator}session_token=${token}`;
+  };
+
+  const openBarristerPreview = (mode = "print") => {
+    const contentEl = document.querySelector('[data-testid="barrister-report"]');
+    if (!contentEl) {
+      toast.error("Unable to open report preview.");
+      return;
+    }
+    const title = `Barrister Brief — ${caseData?.title || "Case"}`;
+    const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
+    const notice = mode === "pdf"
+      ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
+      : '';
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title}</title>
+  <style>
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 18px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h3 { font-size: 15px; margin-top: 14px; color: #1e40af; }
+    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 12px; color: #0f172a; }
+    th { background: #dbeafe; font-weight: 700; }
+    ul, ol { padding-left: 18px; }
+    li { margin-bottom: 4px; }
+    button, .no-print { display: none !important; }
+    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  ${notice}
+  <h1>${title}</h1>
+  <div class="meta">${meta}</div>
+  <hr />
+  ${contentEl.innerHTML}
+</body>
+</html>`;
+
+    const previewWindow = window.open("", "_blank", "width=1200,height=800");
+    if (!previewWindow) {
+      const blob = new Blob([html], { type: "text/html" });
+      const url = window.URL.createObjectURL(blob);
+      window.location.href = url;
+      toast.success("Preview opened — use Print / Save as PDF to download.");
+      return;
+    }
+
+    previewWindow.document.open();
+    previewWindow.document.write(html);
+    previewWindow.document.close();
+    previewWindow.focus();
+
+    if (mode === "print") {
+      setTimeout(() => previewWindow.print(), 700);
+      toast.success("Print dialogue opening...");
+      return;
+    }
+    toast.success("PDF preview opened — use Print / Save as PDF to download.");
+  };
+
   const handleExportPDF = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`);
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("PDF opened — use Share to save or print.");
+        return;
+      }
       toast.info("Generating PDF...");
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-pdf`,
@@ -157,6 +236,13 @@ const BarristerView = ({ user }) => {
 
   const handleExportDOCX = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-docx`);
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("Word document opened — use Share to save.");
+        return;
+      }
       toast.info("Generating Word document...");
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-docx`,

@@ -415,7 +415,7 @@ const CaseDetail = ({ user }) => {
     th { background: #e0f2fe; font-weight: 700; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
-    button, [data-testid], .no-print { display: none !important; }
+    button, .no-print { display: none !important; }
     @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
   </style>
 </head>
@@ -438,13 +438,17 @@ const CaseDetail = ({ user }) => {
     const noticeHtml = mode === "pdf"
       ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
+    const html = buildTabPreviewHtml(contentEl.innerHTML, tabLabel, noticeHtml);
     const previewWindow = window.open("", "_blank", "width=1200,height=800");
     if (!previewWindow) {
-      toast.error("Pop-up blocked. Please allow pop-ups and try again.");
+      const blob = new Blob([html], { type: "text/html" });
+      const url = window.URL.createObjectURL(blob);
+      window.location.href = url;
+      toast.success("Preview opened — use Print / Save as PDF to download.");
       return;
     }
     previewWindow.document.open();
-    previewWindow.document.write(buildTabPreviewHtml(contentEl.innerHTML, tabLabel, noticeHtml));
+    previewWindow.document.write(html);
     previewWindow.document.close();
     previewWindow.focus();
     if (mode === "print") {

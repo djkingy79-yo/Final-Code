@@ -348,19 +348,13 @@ const ReportView = () => {
       toast.error("Unable to open report preview.");
       return;
     }
-    const previewWindow = window.open("", "_blank", "width=1200,height=800");
-    if (!previewWindow) {
-      toast.error("Pop-up blocked. Please allow pop-ups and try again.");
-      return;
-    }
     const title = report?.title || `${caseData?.title || "Case"} Report`;
     const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
     const notice = mode === "pdf"
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
 
-    previewWindow.document.open();
-    previewWindow.document.write(`<!DOCTYPE html>
+    const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -378,7 +372,7 @@ const ReportView = () => {
     th { background: #dbeafe; font-weight: 700; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
-    button, [data-testid], .no-print { display: none !important; }
+    button, .no-print { display: none !important; }
     @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
   </style>
 </head>
@@ -389,7 +383,19 @@ const ReportView = () => {
   <hr />
   ${contentEl.innerHTML}
 </body>
-</html>`);
+</html>`;
+
+    const previewWindow = window.open("", "_blank", "width=1200,height=800");
+    if (!previewWindow) {
+      const blob = new Blob([html], { type: "text/html" });
+      const url = window.URL.createObjectURL(blob);
+      window.location.href = url;
+      toast.success("Preview opened — use Print / Save as PDF to download.");
+      return;
+    }
+
+    previewWindow.document.open();
+    previewWindow.document.write(html);
     previewWindow.document.close();
     previewWindow.focus();
 
