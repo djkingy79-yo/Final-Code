@@ -70,11 +70,19 @@ const BarristerView = ({ user }) => {
       setGrounds(groundsRes.data?.grounds || []);
       setTimeline(timelineRes.data || []);
       setDocuments(docsRes.data || []);
-      // Collect all completed reports sorted by detail level (extensive > full > quick)
+      // Collect all reports with analysis content, sorted by detail level (extensive > full > quick)
       const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
       const completed = (allReportsRes.data || [])
-        .filter(r => r.status === "completed" && r.content?.analysis)
-        .sort((a, b) => (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0));
+        .filter(r => r.content?.analysis && r.content.analysis.length > 200 && r.status !== "failed")
+        .sort((a, b) => {
+          // Aggressive reports first within same type
+          const aAgg = a.content?.aggressive_mode ? 1 : 0;
+          const bAgg = b.content?.aggressive_mode ? 1 : 0;
+          const typeA = typeOrder[a.report_type] || 0;
+          const typeB = typeOrder[b.report_type] || 0;
+          if (typeB !== typeA) return typeB - typeA;
+          return bAgg - aAgg;
+        });
       setAllReports(completed);
     } catch (error) {
       toast.error("Failed to load report");
@@ -189,7 +197,12 @@ const BarristerView = ({ user }) => {
   const cleanSentence = (s) => {
     if (!s) return s;
     let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*https?:.*$/, "");
-    if (c.length > 120) c = c.substring(0, 117) + "...";
+    // Strip analysis text that may follow the actual sentence
+    c = c.replace(/\.\s*(The|This|It|His|Her|Their|A|An|In|Under|Given|However|Furthermore|Additionally|Moreover|Such|Notably|Importantly|As|While|Although|With|For|Where|Which).*/s, ".");
+    // Strip text after common analysis phrases
+    c = c.replace(/,\s*(which|that|this|is crucial|meaning|indicating|suggesting|reflecting|demonstrating|as per|pursuant|under s\.).*/si, "");
+    c = c.trim();
+    if (c.length > 150) c = c.substring(0, 147) + "...";
     return c.trim();
   };
 
@@ -397,47 +410,81 @@ const BarristerView = ({ user }) => {
     );
   }
 
-  // Merge all reports — use most detailed version of each section
+  // Merge all reports — collect best content from ALL reports (normal + aggressive)
   const mergeAllReports = () => {
     if (!allReports.length && report?.content) return parseAnalysis(report.content);
     
-    const sectionMap = new Map(); // title -> { section, charCount }
+    const sectionMap = new Map(); // normalTitle -> { section, charCount, sources }
     const reportOrder = []; // track insertion order
     
-    // Parse each report (most detailed first due to sort)
-    for (const r of allReports) {
+    // Count report types for display
+    const normalCount = allReports.filter(r => !r.content?.aggressive_mode).length;
+    const aggressiveCount = allReports.filter(r => r.content?.aggressive_mode).length;
+    
+    // Parse EVERY report — aggressive first (they should be richer), then normal
+    const sortedReports = [...allReports].sort((a, b) => {
+      // aggressive > normal
+      const aAgg = a.content?.aggressive_mode ? 1 : 0;
+      const bAgg = b.content?.aggressive_mode ? 1 : 0;
+      if (bAgg !== aAgg) return bAgg - aAgg;
+      // then by tier: extensive > full > quick
+      const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
+      return (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0);
+    });
+    
+    for (const r of sortedReports) {
       if (!r.content?.analysis) continue;
       const parsed = parseAnalysis(r.content);
+      const reportLabel = `${r.report_type === 'quick_summary' ? 'Summary' : r.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${r.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
+      
       for (const section of parsed.sections) {
         const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
         const existing = sectionMap.get(normalTitle);
-        if (!existing || section.content.length > existing.section.content.length) {
+        if (!existing || section.content.length > existing.charCount) {
           if (!existing) reportOrder.push(normalTitle);
-          sectionMap.set(normalTitle, { section, charCount: section.content.length });
+          sectionMap.set(normalTitle, { 
+            section, 
+            charCount: section.content.length, 
+            sources: existing ? [...existing.sources, reportLabel] : [reportLabel]
+          });
+        } else {
+          // Still track this report as a source even if its version is shorter
+          existing.sources.push(reportLabel);
         }
       }
     }
     
-    // Also include primary report if not in allReports
+    // Also include primary report if not already covered
     if (report?.content?.analysis) {
       const parsed = parseAnalysis(report.content);
+      const reportLabel = `${report.report_type === 'quick_summary' ? 'Summary' : report.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${report.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
+      
       for (const section of parsed.sections) {
         const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
         const existing = sectionMap.get(normalTitle);
-        if (!existing || section.content.length > existing.section.content.length) {
+        if (!existing || section.content.length > existing.charCount) {
           if (!existing) reportOrder.push(normalTitle);
-          sectionMap.set(normalTitle, { section, charCount: section.content.length });
+          sectionMap.set(normalTitle, { 
+            section, 
+            charCount: section.content.length, 
+            sources: existing ? [...existing.sources, reportLabel] : [reportLabel]
+          });
+        } else {
+          existing.sources.push(reportLabel);
         }
       }
     }
     
     // Re-number sections sequentially
     const merged = reportOrder
-      .map(key => sectionMap.get(key)?.section)
+      .map(key => {
+        const entry = sectionMap.get(key);
+        return entry ? { ...entry.section, sources: [...new Set(entry.sources)] } : null;
+      })
       .filter(Boolean)
       .map((s, i) => ({ ...s, number: String(i + 1) }));
     
-    return { sections: merged };
+    return { sections: merged, normalCount, aggressiveCount, totalReports: allReports.length };
   };
 
   const parsedContent = mergeAllReports();
@@ -716,6 +763,68 @@ const BarristerView = ({ user }) => {
               <p className="text-xs text-red-600 dark:text-red-400 text-center font-medium tracking-wide">
                 CONFIDENTIAL — This document contains privileged legal analysis prepared for educational and research purposes. Not legal advice. Consult a qualified practitioner.
               </p>
+            </div>
+
+            {/* ===== TABLE OF CONTENTS ===== */}
+            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50" data-testid="barrister-toc">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                </div>
+                <h2 
+                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  style={{ fontFamily: 'Crimson Pro, serif' }}
+                >
+                  Table of Contents
+                </h2>
+                {parsedContent.totalReports > 0 && (
+                  <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
+                    Synthesised from {parsedContent.totalReports} reports{parsedContent.aggressiveCount > 0 ? ` (${parsedContent.normalCount} standard + ${parsedContent.aggressiveCount} aggressive)` : ''}
+                  </span>
+                )}
+              </div>
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-1">
+                {/* Fixed structural sections */}
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">I</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Executive Summary</span>
+                </div>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">II</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Hearing Strategy Snapshot</span>
+                </div>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">III</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Authorities & Precedent Pack</span>
+                </div>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">IV</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Comparative Sentencing & Relief Pathways</span>
+                </div>
+                {grounds.length > 0 && (
+                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">V</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Grounds of Merit ({grounds.length} grounds)</span>
+                  </div>
+                )}
+                {keyEvents.length > 0 && (
+                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">VI</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Critical Timeline Events</span>
+                  </div>
+                )}
+                {/* AI Analysis sections from merged reports */}
+                {parsedContent.sections.map((section, idx) => (
+                  <div key={idx} className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">{section.number}</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{section.title}</span>
+                  </div>
+                ))}
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">*</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Legal Reference Framework</span>
+                </div>
+              </div>
             </div>
 
             {/* ===== EXECUTIVE SUMMARY SECTION ===== */}
@@ -1214,9 +1323,9 @@ const BarristerView = ({ user }) => {
                 >
                   Comprehensive Analysis
                 </h2>
-                {reportCount > 1 && (
+                {parsedContent.totalReports > 1 && (
                   <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
-                    Merged from {reportCount} reports
+                    Synthesised from {parsedContent.totalReports} reports{parsedContent.aggressiveCount > 0 ? ` (${parsedContent.normalCount} standard + ${parsedContent.aggressiveCount} aggressive)` : ''}
                   </span>
                 )}
               </div>

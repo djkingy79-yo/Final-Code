@@ -339,9 +339,9 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-white/60 dark:bg-slate-900/30 rounded-lg p-4 border border-red-200 dark:border-red-800">
-                <p className="font-bold text-base mb-2">💔 The Hidden Tragedy</p>
+                <p className="font-bold text-base mb-2">The Hidden Tragedy</p>
                 <p>
-                  Given that <strong>25% of appeals that proceed succeed</strong>, it's statistically certain that 
+                  Given that <strong>approximately 40% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
                   <strong className="text-red-700 dark:text-red-400"> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>, 
                   simply because they lack the knowledge, resources, or support to appeal.
                 </p>

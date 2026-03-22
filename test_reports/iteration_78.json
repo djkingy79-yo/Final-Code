@@ -1,0 +1,71 @@
+{
+  "summary": "Iteration 78 - Frontend-only testing for Barrister View TOC, sentence extraction fix, and Appeal Statistics corrections. All 12 features verified successfully.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_78.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (skipped per request)",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All fixes verified: 1) BarristerView TOC exists with data-testid='barrister-toc' at line 769, 2) TOC shows section headings (Executive Summary, Hearing Strategy, Authorities & Precedent, Comparative Sentencing), 3) 'Synthesised from N reports' badge at line 782, 4) Confidentiality notice at line 764, 5) Export buttons (PDF, DOCX, Print) with data-testids at lines 628/638/648, 6) cleanSentence strips analysis phrases including 'is crucial', 'indicating' at line 203 in both ReportView and BarristerView, 7) Appeal Statistics shows '~40%' success rate, 8) '1 in 80' headline, 9) Hidden Tragedy mentions '40% of appeals', 10) Landing page state widget works (NSW/VIC/QLD buttons tested), 11) iosShareOrDownload function exists in both ReportView.jsx (line 271) and BarristerView.jsx (line 109).",
+  "test_results": {
+    "barrister_view_code_review": {
+      "toc_section_exists": "PASSED (data-testid='barrister-toc' at line 769)",
+      "toc_title": "PASSED ('Table of Contents' at line 778)",
+      "synthesised_badge": "PASSED ('Synthesised from N reports' at line 782)",
+      "executive_summary_heading": "PASSED (line 790)",
+      "hearing_strategy_heading": "PASSED (line 794)",
+      "authorities_precedent_heading": "PASSED (line 798)",
+      "comparative_sentencing_heading": "PASSED (line 802)",
+      "confidentiality_notice": "PASSED (line 764 - 'CONFIDENTIAL — This document contains privileged legal analysis...')",
+      "export_pdf_button": "PASSED (data-testid='export-btn' at line 628)",
+      "export_docx_button": "PASSED (data-testid='export-docx-btn' at line 638)",
+      "print_button": "PASSED (data-testid='print-btn' at line 648)"
+    },
+    "sentence_extraction_fix": {
+      "reportview_cleanSentence_strips_analysis": "PASSED (line 43 - strips 'is crucial', 'indicating', 'suggesting', etc.)",
+      "barristerview_cleanSentence_strips_analysis": "PASSED (line 203 - same regex pattern)"
+    },
+    "appeal_statistics_page": {
+      "headline_1_in_80": "PASSED (UI verified - shows '1 in 80')",
+      "average_success_rate_40_percent": "PASSED (UI verified - shows '~40%')",
+      "hidden_tragedy_40_percent": "PASSED (UI verified - mentions '40% of appeals')",
+      "description_40_percent": "PASSED (UI verified - 'roughly 40% achieve some change')"
+    },
+    "landing_page": {
+      "state_widget_section": "PASSED (data-testid='state-appeal-stats-section' found)",
+      "state_selector_buttons": "PASSED (data-testid='state-selector-buttons' found)",
+      "nsw_button_click": "PASSED",
+      "vic_button_click": "PASSED",
+      "qld_button_click": "PASSED",
+      "hero_text_readable": "PASSED (white text on dark blue background visible)"
+    },
+    "ios_export_function": {
+      "reportview_iosShareOrDownload": "PASSED (line 271)",
+      "reportview_uses_function_for_pdf": "PASSED (line 310)",
+      "reportview_uses_function_for_docx": "PASSED (line 323)",
+      "barristerview_iosShareOrDownload": "PASSED (line 109)",
+      "barristerview_uses_function_for_pdf": "PASSED (line 151)",
+      "barristerview_uses_function_for_docx": "PASSED (line 167)"
+    }
+  },
+  "notes": {
+    "barrister_view_auth_required": "BarristerView requires authentication and an existing extensive_log report. Code patterns verified via grep - cannot test UI without auth.",
+    "cleanSentence_regex_pattern": "Both files use: c.replace(/,\\s*(which|that|this|is crucial|meaning|indicating|suggesting|reflecting|demonstrating|as per|pursuant|under s\\.).*/si, '')"
+  }
+}

@@ -37,10 +37,12 @@ const titleFromSnake = (value) => {
 
 const cleanSentence = (s) => {
   if (!s) return s;
-  // Truncate at brackets, URLs, or excessive length
   let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*\(http.*$/, "").replace(/\s*https?:.*$/, "");
-  // Cap at 120 chars
-  if (c.length > 120) c = c.substring(0, 117) + "...";
+  // Strip analysis text that follows the actual sentence
+  c = c.replace(/\.\s*(The|This|It|His|Her|Their|A|An|In|Under|Given|However|Furthermore|Additionally|Moreover|Such|Notably|Importantly|As|While|Although|With|For|Where|Which).*/s, ".");
+  c = c.replace(/,\s*(which|that|this|is crucial|meaning|indicating|suggesting|reflecting|demonstrating|as per|pursuant|under s\.).*/si, "");
+  c = c.trim();
+  if (c.length > 150) c = c.substring(0, 147) + "...";
   return c.trim();
 };
 
