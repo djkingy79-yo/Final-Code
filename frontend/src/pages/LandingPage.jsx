@@ -165,7 +165,7 @@ const LandingPage = () => {
             decoding="async"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-blue-900/85 to-slate-900/90" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/95 via-blue-900/95 to-slate-900/95" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
@@ -181,32 +181,32 @@ const LandingPage = () => {
               >
                 Criminal Appeal Research Tool
               </h1>
-              <p className="text-lg text-blue-100 mb-6 max-w-xl">
+              <p className="text-lg md:text-xl text-white/90 mb-6 max-w-xl leading-relaxed">
                 Organise case documents, generate timelines, and produce premium appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions.
               </p>
               
               {/* State Badges — DO NOT UNDO */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">NSW</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">VIC</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">QLD</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">SA</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">WA</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">TAS</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">NT</span>
-                <span className="text-xs bg-white/15 text-white px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-white/10">ACT</span>
-                <span className="text-xs bg-red-600/30 text-red-200 px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm border border-red-400/20">Federal</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">NSW</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">VIC</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">QLD</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">SA</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">WA</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">TAS</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">NT</span>
+                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">ACT</span>
+                <span className="text-xs bg-red-600/50 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-red-400/30">Federal</span>
               </div>
               
               {/* Offence Types */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Homicide</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Assault</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Sexual Offences</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Drug Offences</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Robbery</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">Fraud</span>
-                <span className="text-xs bg-white/10 text-blue-200 px-2 py-1 rounded">+ More</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Homicide</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Assault</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Sexual Offences</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Drug Offences</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Robbery</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Fraud</span>
+                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">+ More</span>
               </div>
               
               {/* CTA Buttons — DO NOT UNDO */}
@@ -222,7 +222,7 @@ const LandingPage = () => {
                 <Link to="/professional-summary">
                   <Button
                     variant="outline"
-                    className="border-2 border-slate-300 dark:border-slate-600 text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl px-8 py-4 text-base font-medium w-full sm:w-auto"
+                    className="border-2 border-white/60 text-white hover:bg-white/20 rounded-xl px-8 py-4 text-base font-medium w-full sm:w-auto"
                   >
                     For Legal Professionals
                   </Button>
