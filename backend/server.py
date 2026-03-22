@@ -3262,6 +3262,152 @@ BE THOROUGH. Identify ALL potential grounds. The appellant's freedom may depend 
 
 # ============ AI ANALYSIS & REPORTS ============
 
+
+def _normalise_text(value: str) -> str:
+    cleaned = re.sub(r"[^a-z0-9\s]", " ", (value or "").lower())
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
+def _token_set(value: str) -> set:
+    return {token for token in _normalise_text(value).split(" ") if len(token) > 3}
+
+
+def _jaccard_similarity(set_a: set, set_b: set) -> float:
+    if not set_a or not set_b:
+        return 0.0
+    intersection = len(set_a & set_b)
+    union = len(set_a | set_b)
+    return 0.0 if union == 0 else intersection / union
+
+
+def _build_anchor_terms(case: dict, documents: list, timeline: list, grounds: list) -> set:
+    terms = set()
+
+    def add_terms(value):
+        if not value:
+            return
+        for token in re.split(r"[^a-z0-9]+", str(value).lower()):
+            if len(token) > 3:
+                terms.add(token)
+
+    for field in ["title", "defendant_name", "case_number", "court", "judge", "sentence", "state", "offence_type", "offence_category"]:
+        add_terms(case.get(field))
+
+    for doc in documents or []:
+        add_terms(doc.get("filename"))
+        add_terms(doc.get("category"))
+        add_terms(doc.get("document_type"))
+
+    for event in timeline or []:
+        add_terms(event.get("title"))
+        add_terms(event.get("event_type"))
+        add_terms(event.get("event_date"))
+
+    for ground in grounds or []:
+        add_terms(ground.get("title"))
+        add_terms(ground.get("ground_type"))
+
+    return terms
+
+
+def _paragraph_quality_score(paragraph: str, anchor_terms: set) -> float:
+    if not paragraph:
+        return 0.0
+    score = 0.0
+    if re.search(r"\b\d{2,}\b", paragraph):
+        score += 1.1
+    if re.search(r"\b(s\.|section)\s*\d+", paragraph, re.I):
+        score += 1.2
+    if re.search(r"\bAct\s+\d{4}\b", paragraph, re.I):
+        score += 1.0
+    if re.search(r"\bR\s+v\b", paragraph) or re.search(r"\bNSWCCA\b", paragraph):
+        score += 0.9
+
+    word_set = _token_set(paragraph)
+    if anchor_terms and word_set:
+        anchor_hits = sum(1 for word in word_set if word in anchor_terms)
+        score += min(2.0, anchor_hits * 0.25)
+
+    score += min(1.4, len(paragraph) / 1200)
+    return score
+
+
+def _split_report_sections(text: str) -> list:
+    parts = re.split(r"(^##\s+\d+\.\s+.+$)", text, flags=re.M)
+    if len(parts) <= 1:
+        return [("", text.strip())]
+
+    sections = []
+    lead = parts[0].strip()
+    if lead:
+        sections.append(("", lead))
+
+    for index in range(1, len(parts), 2):
+        heading = parts[index].strip()
+        content = parts[index + 1] if index + 1 < len(parts) else ""
+        sections.append((heading, content.strip()))
+
+    return sections
+
+
+def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> str:
+    if not text:
+        return text
+
+    sections = _split_report_sections(text)
+    cleaned_sections = []
+    seen_sets = []
+    seen_texts = []
+
+    min_keep = 1 if report_type == "quick_summary" else 2
+    quality_threshold = 1.0 if report_type == "quick_summary" else 1.25
+
+    for heading, content in sections:
+        paragraphs = [p.strip() for p in re.split(r"\n\s*\n+", content) if p.strip()]
+        kept = []
+
+        for paragraph in paragraphs:
+            if len(paragraph) < 60:
+                kept.append(paragraph)
+                continue
+
+            paragraph_set = _token_set(paragraph)
+            is_duplicate = False
+            for existing_set, existing_text in zip(seen_sets, seen_texts):
+                if paragraph in existing_text or existing_text in paragraph:
+                    is_duplicate = True
+                    break
+                if _jaccard_similarity(paragraph_set, existing_set) > 0.68:
+                    is_duplicate = True
+                    break
+
+            if is_duplicate:
+                continue
+
+            score = _paragraph_quality_score(paragraph, anchor_terms)
+            if score < quality_threshold and len(kept) >= min_keep:
+                continue
+
+            kept.append(paragraph)
+            seen_sets.append(paragraph_set)
+            seen_texts.append(paragraph)
+
+        if len(kept) < min_keep and paragraphs:
+            scored = sorted(paragraphs, key=lambda p: _paragraph_quality_score(p, anchor_terms), reverse=True)
+            kept = scored[:min_keep]
+
+        cleaned_sections.append((heading, "\n\n".join(kept).strip()))
+
+    rebuilt = []
+    for heading, content in cleaned_sections:
+        if heading:
+            rebuilt.append(heading)
+        if content:
+            rebuilt.append(content)
+
+    return "\n\n".join(rebuilt).strip()
+
+
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False) -> dict:
     """Use OpenAI GPT-5.2 to analyse case and generate report"""
     from emergentintegrations.llm.chat import LlmChat, UserMessage
@@ -4097,7 +4243,10 @@ Write ALL 3 sections. Do NOT truncate any section."""),
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
         raise HTTPException(status_code=500, detail=f"AI report generation failed after retries: {str(last_error)}")
-    
+
+    anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
+    response = _dedupe_report_content(response, report_type, anchor_terms)
+
     # Parse response to extract grounds of merit
     grounds_of_merit = []
     if "GROUNDS OF MERIT" in response or "Ground" in response:

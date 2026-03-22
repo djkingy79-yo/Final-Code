@@ -1622,10 +1622,11 @@ const BarristerView = ({ user }) => {
           width: 100%;
           border-collapse: collapse;
           margin: 0.8rem 0;
+          background: #ffffff;
         }
         .legal-report th {
-          background: #e0f2fe;
-          color: #0f172a;
+          background: #dbeafe;
+          color: #0f172a !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
@@ -1633,6 +1634,7 @@ const BarristerView = ({ user }) => {
           padding: 8px 10px;
           font-size: 0.85rem;
           vertical-align: top;
+          color: #0f172a;
         }
         .legal-report blockquote {
           border-left: 4px solid #38bdf8;

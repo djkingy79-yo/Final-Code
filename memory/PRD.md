@@ -948,3 +948,10 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Success Stories copy cleaned** — removed references to non-existent tools (case comparison) and tightened wording
 - [x] **Global quick Home + Top-of-page buttons** — visibility threshold lowered for consistent access
 - [x] **Testing**: Landing page dropdown + footer screenshots captured (landing-more-dropdown.png, landing-footer-order.png)
+
+### Report De-duplication + Export Reliability (Mar 2026) ✅
+- [x] **Backend report de-duplication pass** — removes repeated/generic paragraphs using similarity + case-anchor scoring
+- [x] **Report export reliability** — iOS export now supports session token URLs + print preview window
+- [x] **Report header fallbacks** — offence/defendant now derived from report analysis when case metadata is missing
+- [x] **Table header contrast fix** — stronger table header styling in Report + Barrister views
+- [x] **Testing**: Lint checks only (report view needs authenticated verification)

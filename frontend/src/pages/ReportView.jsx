@@ -69,6 +69,35 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
   return "Not recorded";
 };
 
+const extractOffenceFromAnalysis = (analysis = "") => {
+  const patterns = [
+    /(?:offence(?:s)?\s+of|for\s+the\s+offence\s+of|convicted\s+of|charged\s+with)\s+([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
+    /(?:primary|principal)\s+offence(?:\s+was|:)?\s+([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
+    /(?:count\s+\d+\s*[:\-])\s*([A-Z][A-Za-z0-9\s,'-]{4,120})/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = analysis.match(pattern);
+    if (match?.[1]) {
+      return match[1]
+        .replace(/under\s+s\.[^\n\.]+/i, "")
+        .replace(/,?\s*(?:under|pursuant\s+to).*/i, "")
+        .trim();
+    }
+  }
+  return "Not specified";
+};
+
+const extractDefendantFromAnalysis = (analysis = "") => {
+  const byCaseName = analysis.match(/\bR\s+v\.?\s+([A-Z][A-Za-z\s'\-]{2,60})/);
+  if (byCaseName?.[1]) return byCaseName[1].trim();
+  const byAppellant = analysis.match(/(?:the\s+)?appellant\s+([A-Z][A-Za-z\s'\-]{2,60})/i);
+  if (byAppellant?.[1]) return byAppellant[1].trim();
+  const byDefendant = analysis.match(/(?:the\s+)?defendant\s+(?:was|is|,)?\s*([A-Z][A-Za-z\s'\-]{2,60})/i);
+  if (byDefendant?.[1]) return byDefendant[1].trim();
+  return "N/A";
+};
+
 const cleanAIContent = (text) => {
   if (!text) return text;
   let cleaned = text;
@@ -270,7 +299,7 @@ const ReportView = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    openReportPreview("print");
   };
 
   const iosShareOrDownload = async (blob, filename, mimeType) => {
@@ -306,8 +335,81 @@ const ReportView = () => {
     }
   };
 
+  const buildAuthUrl = (baseUrl) => {
+    const token = localStorage.getItem("session_token");
+    if (!token) return baseUrl;
+    const separator = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${separator}session_token=${token}`;
+  };
+
+  const openReportPreview = (mode = "print") => {
+    const contentEl = document.querySelector('[data-testid="report-content"]');
+    if (!contentEl) {
+      toast.error("Unable to open report preview.");
+      return;
+    }
+    const previewWindow = window.open("", "_blank", "width=1200,height=800");
+    if (!previewWindow) {
+      toast.error("Pop-up blocked. Please allow pop-ups and try again.");
+      return;
+    }
+    const title = report?.title || `${caseData?.title || "Case"} Report`;
+    const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
+    const notice = mode === "pdf"
+      ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
+      : '';
+
+    previewWindow.document.open();
+    previewWindow.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title}</title>
+  <style>
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 18px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h3 { font-size: 15px; margin-top: 14px; color: #1e40af; }
+    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 12px; color: #0f172a; }
+    th { background: #dbeafe; font-weight: 700; }
+    ul, ol { padding-left: 18px; }
+    li { margin-bottom: 4px; }
+    button, [data-testid], .no-print { display: none !important; }
+    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  ${notice}
+  <h1>${title}</h1>
+  <div class="meta">${meta}</div>
+  <hr />
+  ${contentEl.innerHTML}
+</body>
+</html>`);
+    previewWindow.document.close();
+    previewWindow.focus();
+
+    if (mode === "print") {
+      setTimeout(() => previewWindow.print(), 700);
+      toast.success("Print dialogue opening...");
+      return;
+    }
+    toast.success("PDF preview opened — use Print / Save as PDF to download.");
+  };
+
   const handleExportPDF = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`);
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("PDF opened — use Share to save or print.");
+        return;
+      }
       toast.info("Generating PDF...");
       const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -321,6 +423,13 @@ const ReportView = () => {
 
   const handleExportDOCX = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-docx`);
+        window.open(url, "_blank", "noopener,noreferrer");
+        toast.success("Word document opened — use Share to save.");
+        return;
+      }
       toast.info("Generating Word document...");
       const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-docx`, { responseType: "blob", timeout: 60000 });
       const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
@@ -342,7 +451,8 @@ const ReportView = () => {
   const documentsCount = report?.content?.document_count || 0;
   const eventsCount = report?.content?.event_count || 0;
   const sentenceSummary = extractSentenceSummary(caseData, analysisText);
-  const offenceLabel = caseData?.offence_type || titleFromSnake(caseData?.offence_category);
+  const defendantName = caseData?.defendant_name || report?.content?.defendant || extractDefendantFromAnalysis(analysisText);
+  const offenceLabel = caseData?.offence_type || titleFromSnake(caseData?.offence_category) || extractOffenceFromAnalysis(analysisText);
   const theme = REPORT_THEME[report?.report_type] || REPORT_THEME.quick_summary;
 
   const scrollToSection = (sectionId) => {
@@ -421,7 +531,7 @@ const ReportView = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-sm" style={{ fontFamily: "Crimson Pro, serif" }}>
               <div>
                 <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Defendant</p>
-                <p className="font-bold text-slate-900 dark:text-white" data-testid="report-summary-accused">{caseData?.defendant_name || "N/A"}</p>
+                <p className="font-bold text-slate-900 dark:text-white" data-testid="report-summary-accused">{defendantName}</p>
               </div>
               <div>
                 <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Offence</p>
@@ -543,10 +653,11 @@ const ReportView = () => {
           width: 100%;
           border-collapse: collapse;
           margin: 0.8rem 0;
+          background: #ffffff;
         }
         .legal-report th {
-          background: #e0f2fe;
-          color: #0f172a;
+          background: #dbeafe;
+          color: #0f172a !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
@@ -554,6 +665,7 @@ const ReportView = () => {
           padding: 8px 10px;
           font-size: 0.85rem;
           vertical-align: top;
+          color: #0f172a;
         }
         .legal-report blockquote {
           border-left: 4px solid #38bdf8;
