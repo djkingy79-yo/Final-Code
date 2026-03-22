@@ -284,7 +284,6 @@ const SuccessStories = () => {
               data-testid={`success-story-card-${story.id}`}
             >
               <div className="p-4 border-b border-border bg-muted/30">
-                <p className="text-[11px] uppercase tracking-wide text-red-600 dark:text-blue-400 font-semibold mb-1">Story Heading</p>
                 <h3 className="text-sm font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid={`success-story-heading-${story.id}`}>
                   {story.name} — {story.relationship} ({story.location})
                 </h3>

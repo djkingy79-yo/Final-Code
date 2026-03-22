@@ -675,10 +675,10 @@ const LandingPage = () => {
           {/* Feature Grid - merged from Features section */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
             <FeatureCard icon={Upload} title="Upload Documents" desc="Organise case files in one place" />
+            <FeatureCard icon={FileText} title="OCR Extraction" desc="Text from scanned documents" />
             <FeatureCard icon={Clock} title="Build Timelines" desc="AI-generated event chronology" />
             <FeatureCard icon={BarChart3} title="Find Issues" desc="Flag potential appeal grounds" />
             <FeatureCard icon={FileCheck} title="Generate Reports" desc="Structured case summaries" />
-            <FeatureCard icon={FileText} title="OCR Extraction" desc="Text from scanned documents" />
             <FeatureCard icon={Presentation} title="Barrister View" desc="Conference-ready hearing deck" />
             <FeatureCard icon={ListChecks} title="Progress Tracker" desc="Track appeal process steps" />
             <FeatureCard icon={Shield} title="Secure Storage" desc="Your data, your control" />
@@ -918,88 +918,58 @@ const LandingPage = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-xs text-slate-400 uppercase tracking-wider">Quick Summary Report</p>
-                            <h4 className="text-lg font-bold">R v Thompson [2024] NSWDC 847</h4>
+                            <h4 className="text-lg font-bold">R v [Defendant] — Case Summary</h4>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs text-slate-400">Generated</p>
-                            <p className="text-sm">5 March 2026</p>
+                            <p className="text-xs text-slate-400">7 Sections</p>
+                            <p className="text-sm">~1,500-2,200 words</p>
                           </div>
                         </div>
                       </div>
                       
+                      {/* TOC */}
+                      <div className="bg-slate-50 dark:bg-slate-700 p-3 border-b border-slate-200 dark:border-slate-600">
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">TABLE OF CONTENTS</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-xs text-slate-600 dark:text-slate-400">
+                          <span>1. Executive Brief</span>
+                          <span>2. Primary Issues</span>
+                          <span>3. Appeal Grounds (count)</span>
+                          <span>4. Legislation Anchor</span>
+                          <span>5. Sentencing Overview</span>
+                          <span>6. What Paid Reports Add</span>
+                          <span>7. Appeal Outlook</span>
+                        </div>
+                      </div>
+
                       {/* Report Content */}
                       <div className="p-5 space-y-4">
-                        <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs px-3 py-1 rounded-full font-semibold">
-                          SAMPLE A • Conviction Appeal Snapshot
-                        </div>
-                        {/* Case Overview */}
-                        <div>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">CASE SNAPSHOT</h5>
-                          <div className="grid grid-cols-2 gap-2 text-xs">
-                            <p><span className="text-slate-500">Defendant:</span> <strong>Michael Thompson</strong></p>
-                            <p><span className="text-slate-500">Offence:</span> <strong>Aggravated Assault</strong></p>
-                            <p><span className="text-slate-500">Verdict:</span> <strong className="text-red-600">Guilty</strong></p>
-                            <p><span className="text-slate-500">Sentence:</span> <strong>4 years (NPP 2.5 years)</strong></p>
-                            <p><span className="text-slate-500">Court:</span> <strong>NSW District Court</strong></p>
-                            <p><span className="text-slate-500">Documents:</span> <strong>8 files analysed</strong></p>
-                          </div>
-                        </div>
-
-                        {/* Grounds Preview */}
-                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-700">
-                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">TOP POTENTIAL GROUNDS: 3</h5>
-                          <div className="space-y-1 text-xs">
-                            <p className="flex items-center gap-2">
-                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                              <strong>Strongest:</strong> Inadequate jury direction on self-defence
-                            </p>
-                            <p className="flex items-center gap-2 text-slate-500">
-                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                              Ground 2: <span className="italic">Unlock full report to view</span>
-                            </p>
-                            <p className="flex items-center gap-2 text-slate-500">
-                              <span className="w-2 h-2 bg-slate-400 rounded-full"></span>
-                              Ground 3: <span className="italic">Unlock full report to view</span>
-                            </p>
+                        {/* Grounds - NUMBER ONLY */}
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">POTENTIAL APPEAL GROUNDS</h5>
+                          <div className="flex items-center gap-4">
+                            <div className="text-3xl font-bold text-blue-700 dark:text-blue-300">3</div>
+                            <div className="text-xs text-slate-600 dark:text-slate-400">
+                              <p>Potential grounds identified from your documents</p>
+                              <p className="mt-1 font-semibold text-blue-700 dark:text-blue-300">Strength: 1 Strong, 1 Moderate, 1 Potential</p>
+                              <p className="mt-1 italic text-slate-500">Ground titles and detailed analysis available in paid reports</p>
+                            </div>
                           </div>
                         </div>
 
                         {/* Appeal Outlook */}
                         <div>
                           <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-200 pb-2 mb-2">APPEAL OUTLOOK</h5>
-                          <div className="flex items-center gap-3">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center px-1">
-                              <span className="text-white font-bold text-xs text-center leading-tight">MODERATE-STRONG</span>
-                            </div>
-                            <div className="text-xs">
-                              <p className="font-semibold text-green-700 dark:text-green-400">MODERATE-STRONG PROSPECTS</p>
-                              <p className="text-slate-600 dark:text-slate-400">Based on identified grounds, sentencing overview, and similar case outcomes</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Deadline Warning */}
-                        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 border border-red-200 dark:border-red-700">
-                          <p className="text-xs text-red-800 dark:text-red-200 font-semibold flex items-center gap-2">
-                            <span className="text-lg">⚠️</span>
-                            DEADLINE: Notice of Appeal must be filed within 28 days of sentence (by 2 April 2026)
+                          <p className="text-xs text-slate-700 dark:text-slate-300">
+                            Based on the identified grounds, sentencing context, and comparable outcomes, this case presents identifiable avenues for appeal. 
+                            The free summary provides a high-level overview — upgrade to a Full Detailed or Extensive Log report for complete analysis with case law, 
+                            legislation references, and strategic filing advice.
                           </p>
-                        </div>
-
-                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 border border-slate-200 dark:border-slate-600">
-                          <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">SAMPLE B • Sentence Appeal Snapshot</p>
-                          <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
-                            <p><strong className="text-slate-900 dark:text-white">Case:</strong> R v Nguyen [2023] NSWCCA (sentence appeal)</p>
-                            <p><strong className="text-slate-900 dark:text-white">Core Issue:</strong> Manifest excess relative to objective seriousness and parity outcomes.</p>
-                            <p><strong className="text-slate-900 dark:text-white">Legislation Anchor:</strong> Crimes (Sentencing Procedure) Act 1999 (NSW), s 5 and sentencing principles.</p>
-                            <p><strong className="text-slate-900 dark:text-white">Action:</strong> Compile sentencing remarks + comparable NSWCCA outcomes for disparity argument.</p>
-                          </div>
                         </div>
 
                         {/* Upgrade Prompt */}
                         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white text-center">
-                          <p className="font-semibold text-sm mb-1">Want the full analysis?</p>
-                          <p className="text-xs opacity-90">Upgrade to see all grounds, similar cases, legislation references, and step-by-step filing guide</p>
+                          <p className="font-semibold text-sm mb-1">Want to see the ground titles and full analysis?</p>
+                          <p className="text-xs opacity-90">Upgrade to see all grounds named, similar cases, legislation references, and step-by-step filing guide</p>
                         </div>
                       </div>
                     </div>
@@ -1023,110 +993,75 @@ const LandingPage = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-xs text-blue-300 uppercase tracking-wider">Full Detailed Report</p>
-                            <h4 className="text-lg font-bold">R v Thompson [2024] NSWDC 847</h4>
-                            <p className="text-sm text-slate-300">Comprehensive Appeal Analysis</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-blue-300">5 Grounds</p>
-                            <p className="text-xs text-slate-400">Grounds Identified</p>
+                            <h4 className="text-lg font-bold">R v [Your Case] — 5-Pass Analysis</h4>
+                            <p className="text-sm text-slate-300">4,500-6,500 words • 15 sections</p>
                           </div>
                         </div>
                       </div>
                       
                       {/* Table of Contents */}
                       <div className="bg-slate-50 dark:bg-slate-700 p-3 border-b border-slate-200 dark:border-slate-600">
-                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">CONTENTS (15 Sections)</p>
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-1 text-xs text-slate-600 dark:text-slate-400">
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">TABLE OF CONTENTS (15 Sections)</p>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-xs text-slate-600 dark:text-slate-400">
                           <span>1. Executive Brief</span>
-                          <span>2. Case Chronology</span>
+                          <span>2. Forensic Case Chronology</span>
                           <span>3. Evidence Digest</span>
-                          <span>4. Grounds Portfolio</span>
-                          <span>5. Sentencing Table (8+)</span>
-                          <span>6. Common Grounds</span>
-                          <span>7. Outcome Options</span>
+                          <span>4. Grounds of Appeal Portfolio</span>
+                          <span>5. Sentencing Comparison Table</span>
+                          <span>6. Common Grounds Analysis</span>
+                          <span>7. Outcome Options Matrix</span>
                           <span>8. Evidentiary Gaps</span>
-                          <span>9. Precedent Matrix</span>
+                          <span>9. Precedent Case Matrix</span>
                           <span>10. Legislation Map</span>
                           <span>11. Argument Strategy</span>
-                          <span>12. Submissions Blueprint</span>
+                          <span>12. Submissions Outline</span>
                           <span>13. Filing Guide + Forms</span>
-                          <span>14. Action Plan</span>
-                          <span>15. Client Brief</span>
+                          <span>14. Recommended Next Steps</span>
+                          <span>15. Client Instructions Brief</span>
                         </div>
                       </div>
 
                       {/* Report Content */}
                       <div className="p-5 space-y-5">
-                        <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs px-3 py-1 rounded-full font-semibold">
-                          SAMPLE A • Jury Direction Ground
-                        </div>
-                        {/* Ground 1 - Full Detail */}
                         <div>
                           <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b-2 border-blue-500 pb-2 mb-3">
-                            GROUND 1: INADEQUATE JURY DIRECTION — <span className="text-green-600">STRONG</span>
+                            WHAT EACH GROUND OF APPEAL INCLUDES
                           </h5>
-                          <p className="text-xs text-slate-700 dark:text-slate-300 mb-3">
-                            The trial judge's direction on self-defence under s.418 Crimes Act 1900 (NSW) was materially inadequate. 
-                            At page 47 of the summing up, His Honour stated only that "the defendant claims he was defending himself" 
-                            without explaining the elements the jury must consider: (a) whether the defendant believed conduct was 
-                            necessary; and (b) whether the response was reasonable in the circumstances as the defendant perceived them.
-                          </p>
-                          
                           <div className="grid md:grid-cols-2 gap-3">
                             <div className="bg-blue-50 dark:bg-blue-900/20 rounded p-3">
-                              <p className="text-xs font-bold text-blue-800 dark:text-blue-200 mb-2">RELEVANT LEGISLATION</p>
+                              <p className="text-xs font-bold text-blue-800 dark:text-blue-200 mb-2">LEGAL ANALYSIS</p>
                               <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-                                <li>• s.418 Crimes Act 1900 (NSW) — Self-defence</li>
-                                <li>• s.419 Crimes Act 1900 (NSW) — Onus of proof</li>
-                                <li>• s.420 Crimes Act 1900 (NSW) — Excessive self-defence</li>
+                                <li>Named ground with full legal basis</li>
+                                <li>Evidence from YOUR documents supporting the ground</li>
+                                <li>Comparable case law with AustLII links</li>
+                                <li>Strength rating (Strong/Moderate/Weak) with reasoning</li>
                               </ul>
                             </div>
                             <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded p-3">
-                              <p className="text-xs font-bold text-emerald-800 dark:text-emerald-200 mb-2">SUPPORTING EVIDENCE</p>
+                              <p className="text-xs font-bold text-emerald-800 dark:text-emerald-200 mb-2">SENTENCING COMPARISON</p>
                               <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-                                <li>• Summing up transcript pp.45-52</li>
-                                <li>• CCTV footage showing initial aggressor</li>
-                                <li>• Witness statement (Sarah Collins)</li>
+                                <li>8+ comparable cases with sentences</li>
+                                <li>Average sentence for your offence</li>
+                                <li>Percentage above/below average</li>
+                                <li>Parity argument for manifest excess</li>
                               </ul>
                             </div>
                           </div>
                         </div>
 
-                        {/* Similar Cases */}
-                        <div>
-                          <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b-2 border-blue-500 pb-2 mb-3">
-                            SIMILAR SUCCESSFUL APPEALS (4 Cases)
-                          </h5>
-                          <div className="space-y-2">
-                            <div className="flex items-start gap-3 p-2 bg-slate-50 dark:bg-slate-700 rounded text-xs">
-                              <span className="text-green-600 font-bold">✓</span>
-                              <div>
-                                <p className="font-semibold text-slate-900 dark:text-white">Katarzynski v R [2002] NSWCCA 420</p>
-                                <p className="text-slate-600 dark:text-slate-400">Appeal allowed — inadequate self-defence direction. "The jury must be told what to look for."</p>
-                                <a href="#" className="text-blue-600 hover:underline">Read full decision on AustLII →</a>
-                              </div>
-                            </div>
-                            <div className="flex items-start gap-3 p-2 bg-slate-50 dark:bg-slate-700 rounded text-xs">
-                              <span className="text-green-600 font-bold">✓</span>
-                              <div>
-                                <p className="font-semibold text-slate-900 dark:text-white">R v Patel [2019] NSWCCA 103</p>
-                                <p className="text-slate-600 dark:text-slate-400">Conviction quashed — failure to direct on partial defence. Similar fact pattern.</p>
-                                <a href="#" className="text-blue-600 hover:underline">Read full decision on AustLII →</a>
-                              </div>
-                            </div>
-                            <p className="text-xs text-slate-500 italic">+ 2 more cases in full report...</p>
-                          </div>
+                        {/* Filing Guide */}
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200">
+                          <h5 className="font-bold text-blue-800 dark:text-blue-200 text-sm mb-2">FILING GUIDE</h5>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">Complete step-by-step guide: which forms to file, which court registry, time limits, transcript requests, and what to include in your Notice of Appeal.</p>
                         </div>
 
+                        {/* Outcome Options */}
                         <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 border border-slate-200 dark:border-slate-600">
                           <h5 className="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-300 dark:border-slate-600 pb-2 mb-3">
-                            SAMPLE B: SENTENCING ERROR ANALYSIS (HYBRID STYLE)
+                            OUTCOME OPTIONS MATRIX
                           </h5>
                           <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                            <p><strong>Legal framing:</strong> The sentence appears affected by an error in principle where mitigating rehabilitation material was not given adequate weight in the balancing exercise.</p>
-                            <p><strong>Plain-English impact:</strong> This means the court may have set the penalty too high even if conviction findings stay in place.</p>
-                            <p><strong>Authorities to brief:</strong> Markarian v The Queen [2005] HCA 25; House v The King (1936) 55 CLR 499; relevant NSWCCA parity authorities.</p>
-                            <p><strong>Next tactical step:</strong> Build a comparator bundle with sentencing remarks, parity matrix, and transcript extracts for oral emphasis.</p>
+                            <p><strong>Includes:</strong> Conviction appeal pathway, sentence appeal pathway, each mapped to your specific grounds with legal thresholds, evidence requirements, and realistic timeframes.</p>
                           </div>
                         </div>
 
@@ -1156,7 +1091,7 @@ const LandingPage = () => {
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-white rounded-full"></div>
                       <span className="font-semibold">EXTENSIVE LOG REPORT</span>
-                      <span className="text-purple-200 text-sm">— Sample Preview</span>
+                      <span className="text-purple-200 text-sm">— What You Receive</span>
                     </div>
                     <span className="bg-purple-500 px-3 py-1 rounded-full text-sm font-bold">$200 AUD</span>
                   </div>
@@ -1166,28 +1101,22 @@ const LandingPage = () => {
                       <div className="bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-900 text-white p-5">
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <p className="text-xs text-purple-300 uppercase tracking-wider">Extensive Log Report — Forensic Analysis</p>
-                            <h4 className="text-xl font-bold">R v Thompson [2024] NSWDC 847</h4>
-                            <p className="text-sm text-slate-300">Complete Appeal Documentation & Strategy</p>
-                          </div>
-                          <div className="text-right">
-                            <div className="bg-white/10 rounded-lg p-3">
-                              <p className="text-3xl font-bold text-purple-300">72</p>
-                              <p className="text-xs text-slate-400">Strength Score</p>
-                            </div>
+                            <p className="text-xs text-purple-300 uppercase tracking-wider">Extensive Log Report — 7-Pass Forensic Analysis</p>
+                            <h4 className="text-xl font-bold">R v [Your Case] — Barrister-Ready Document</h4>
+                            <p className="text-sm text-slate-300">7,000-10,000+ words • 20 sections</p>
                           </div>
                         </div>
-                        <div className="flex gap-4 text-xs">
+                        <div className="flex gap-3 text-xs flex-wrap">
                           <span className="bg-purple-800 px-2 py-1 rounded">20 Sections</span>
-                          <span className="bg-purple-800 px-2 py-1 rounded">8 Documents</span>
-                          <span className="bg-purple-800 px-2 py-1 rounded">15+ Precedent Cases</span>
                           <span className="bg-purple-800 px-2 py-1 rounded">12+ Sentencing Comparisons</span>
+                          <span className="bg-purple-800 px-2 py-1 rounded">15+ Precedent Cases</span>
+                          <span className="bg-purple-800 px-2 py-1 rounded">Barrister View Access</span>
                         </div>
                       </div>
                       
                       {/* Extended TOC */}
                       <div className="bg-slate-50 dark:bg-slate-700 p-3 border-b border-slate-200 dark:border-slate-600">
-                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">COMPLETE TABLE OF CONTENTS (20 SECTIONS)</p>
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">TABLE OF CONTENTS (20 SECTIONS)</p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-xs text-slate-600 dark:text-slate-400">
                           <span>1. Executive Brief</span>
                           <span>2. Case Chronology</span>
@@ -1216,7 +1145,7 @@ const LandingPage = () => {
                       {/* Report Content */}
                       <div className="p-5 space-y-5">
                         <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 text-xs px-3 py-1 rounded-full font-semibold">
-                          SAMPLE A • Hearing-Ready Strategic Dossier
+                          Sections 13-19 are EXCLUSIVE to the Extensive Log
                         </div>
 
                         {/* Hearing Submission Blueprint */}
@@ -1276,17 +1205,8 @@ const LandingPage = () => {
                         </div>
 
                         <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 border border-indigo-200 dark:border-indigo-700">
-                          <h5 className="font-bold text-indigo-900 dark:text-indigo-200 text-sm mb-3">SAMPLE B: PRECEDENT OUTCOME MATRIX</h5>
-                          <div className="grid md:grid-cols-2 gap-3 text-xs text-slate-700 dark:text-slate-300">
-                            <div className="bg-white dark:bg-slate-800 rounded p-3 border border-indigo-100 dark:border-indigo-800">
-                              <p className="font-semibold mb-1">R v XY [2021] NSWCCA 88</p>
-                              <p className="text-slate-600 dark:text-slate-400">Outcome: Conviction quashed due to misdirection on intent elements.</p>
-                            </div>
-                            <div className="bg-white dark:bg-slate-800 rounded p-3 border border-indigo-100 dark:border-indigo-800">
-                              <p className="font-semibold mb-1">R v AB [2022] NSWCCA 191</p>
-                              <p className="text-slate-600 dark:text-slate-400">Outcome: Resentenced after appellate finding of error in principle.</p>
-                            </div>
-                          </div>
+                          <h5 className="font-bold text-indigo-900 dark:text-indigo-200 text-sm mb-3">CONFERENCE PACK — BARRISTER BRIEFING</h5>
+                          <p className="text-xs text-slate-700 dark:text-slate-300 mb-2">Includes client conference script, strength/weakness matrix, questions to expect from the bench, and priority authority references for oral argument.</p>
                         </div>
 
                         {/* Appeal Strategy */}
