@@ -42,7 +42,7 @@ const successStories = [
     name: "Jenny K.",
     location: "Brisbane, QLD",
     relationship: "Mother",
-    story: "My son was sentenced for drug supply charges. I'm not legally trained, but the timeline feature showed contradictory police surveillance evidence. The AI identified problems with how the search warrant was executed outside authorised hours. I took the organised report to Legal Aid's appeal review unit and they've now assigned a senior solicitor to review.",
+    story: "My son was sentenced for drug supply charges. I'm not legally trained, but the timeline feature highlighted gaps in police surveillance notes. The AI report flagged problems with how the search warrant was executed outside authorised hours. I took the organised report to Legal Aid's appeal review unit and they've now assigned a senior solicitor to review.",
     outcome: "Legal Aid appeal review approved",
     timeframe: "Review in progress",
     featured: true
@@ -62,7 +62,7 @@ const successStories = [
     name: "Amanda P.",
     location: "Perth, WA",
     relationship: "Sister",
-    story: "My brother got 8 years for dangerous driving causing death, but the accident occurred when he swerved to avoid a child on the road. The case comparison feature showed his sentence was well above the normal range. The AI identified that the judge hadn't given adequate weight to his clean record and genuine remorse. The Court of Appeal reduced the sentence to 4 years.",
+    story: "My brother got 8 years for dangerous driving causing death, but the accident occurred when he swerved to avoid a child on the road. The Full Detailed report's comparative sentencing table showed his sentence was well above the normal range for accessorial driving cases. The AI flagged that the judge hadn't given adequate weight to his clean record and genuine remorse. The Court of Appeal reduced the sentence to 4 years.",
     outcome: "Sentence reduced from 8 years to 4 years — Parole eligible",
     timeframe: "11 months from appeal lodgement",
     featured: true
@@ -92,7 +92,7 @@ const successStories = [
     name: "James H.",
     location: "Hobart, TAS",
     relationship: "Friend",
-    story: "My mate got 6 years for armed robbery but was only present — he didn't know his co-accused had a weapon. The case comparison feature showed similar cases received much lighter sentences for accessorial liability. Legal Aid's appeal unit agreed there was an error in the jury direction on this point. We've filed notice of appeal.",
+    story: "My mate got 6 years for armed robbery but was only present — he didn't know his co-accused had a weapon. The Full Detailed report's comparative sentencing table showed similar accessorial liability cases received much lighter sentences. Legal Aid's appeal unit agreed there was an error in the jury direction on this point. We've filed notice of appeal.",
     outcome: "Appeal lodged — Jury misdirection on accessory liability",
     timeframe: "Waiting for hearing date",
     featured: true

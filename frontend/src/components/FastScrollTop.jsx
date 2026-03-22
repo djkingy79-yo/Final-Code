@@ -24,7 +24,7 @@ export const FastScrollTop = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > 420);
+      setVisible(window.scrollY > 240);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });

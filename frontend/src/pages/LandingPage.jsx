@@ -60,28 +60,31 @@ const LandingPage = () => {
             <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-legal-resources-link">
               Legal Resources
             </Link>
-            <Link to="/success-stories" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-success-stories-link">
-              Success Stories
-            </Link>
             <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-faq-link">
               FAQ
             </Link>
             <Link to="/about" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-about-link">
               About
             </Link>
+            <Link to="/success-stories" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-success-stories-link">
+              Success Stories
+            </Link>
             <div className="relative group">
               <button className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1" data-testid="nav-more-dropdown">
                 More <ChevronRight className="w-3 h-3 rotate-90" />
               </button>
               <div className="absolute right-0 top-full mt-2 w-56 bg-slate-800 border border-slate-700 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Forms & Templates</Link>
-                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Legal Glossary</Link>
-                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Legal Framework</Link>
-                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Lawyer Directory</Link>
-                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">How To Use</Link>
-                <Link to="/contact" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Contact</Link>
-                <Link to="/caselaw-search" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Caselaw Search</Link>
-                <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700">Professional Summary</Link>
+                <Link to="/how-it-works" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-how-it-works">How It Works</Link>
+                <Link to="/appeal-statistics" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-appeal-statistics">Appeal Statistics</Link>
+                <Link to="/legal-resources" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-legal-resources">Resources & Contacts</Link>
+                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-legal-framework">Legal Framework</Link>
+                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-forms">Forms & Templates</Link>
+                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-glossary">Legal Glossary</Link>
+                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-lawyers">Lawyer Directory</Link>
+                <Link to="/faq" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-faq">FAQ</Link>
+                <Link to="/contact" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-contact">Contact</Link>
+                <Link to="/about" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-about">About</Link>
+                <Link to="/success-stories" className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700" data-testid="nav-more-success-stories">Success Stories</Link>
               </div>
             </div>
             <button
@@ -109,30 +112,25 @@ const LandingPage = () => {
         {/* Mobile + iPad Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white">Statistics</Link>
-            <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white">Success Stories</Link>
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Legal Resources & Contacts</Link>
-            <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
-            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/how-it-works" className="block py-2 text-slate-300 hover:text-white">How It Works</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
-            <Link to="/about" className="block py-2 text-slate-300 hover:text-white">About</Link>
-            <Link to="/contact" className="block py-2 text-slate-300 hover:text-white">Contact</Link>
-            <Link to="/terms" className="block py-2 text-slate-300 hover:text-white">Terms & Privacy</Link>
+            <Link to="/how-it-works" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-how-it-works">How It Works</Link>
+            <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
+            <Link to="/forms" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-forms">Forms & Templates</Link>
+            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-glossary">Legal Glossary</Link>
+            <Link to="/lawyers" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
+            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-faq">FAQ</Link>
+            <Link to="/contact" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-contact">Contact</Link>
+            <Link to="/about" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-about">About</Link>
+            <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-success-stories">Success Stories</Link>
             <div className="border-t border-slate-700 pt-3 mt-3">
-              <Link to="/how-it-works" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">How It Works + Pricing</Link>
-              <Link to="/how-to-use" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">How To Use The App</Link>
-              <Link to="/legal-framework" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Legal Framework & Legislation</Link>
-              <Link to="/caselaw-search" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Live Caselaw Search</Link>
-              <Link to="/success-stories" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Success Stories</Link>
-              <Link to="/glossary" className="block py-2 text-blue-400 hover:text-blue-300 font-medium">Legal Terms</Link>
+              <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>
             </div>
             <div className="flex items-center gap-3 pt-2">
-              <button onClick={toggleTheme} className="p-2 text-slate-300 hover:text-white">
+              <button onClick={toggleTheme} className="p-2 text-slate-300 hover:text-white" data-testid="mobile-theme-toggle">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <Button onClick={() => setShowAuthModal(true)} className="bg-red-600 text-white hover:bg-blue-700 flex-1">
+              <Button onClick={() => setShowAuthModal(true)} className="bg-red-600 text-white hover:bg-blue-700 flex-1" data-testid="mobile-login-btn">
                 Sign In
               </Button>
             </div>
@@ -824,10 +822,8 @@ const LandingPage = () => {
                   Potential Grounds Identified
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  The AI analyses your case documents against known appeal grounds under NSW and Federal law. 
-                  It flags potential issues such as procedural errors, misdirections to the jury, or elements 
-                  that may not have been properly established. Each ground shows its strength and relevant legal sections.
-                  Click "Investigate" to see detailed analysis.
+                  The AI scans your case documents against known appeal grounds under NSW and Federal law and returns the total number found.
+                  This FREE step only shows the count and strength mix — ground titles and full analysis unlock with Investigate Grounds ($99 AUD).
                 </p>
                 {/* Scales image */}
                 <div className="mt-6 flex items-center gap-4">
@@ -848,40 +844,21 @@ const LandingPage = () => {
                 <div className="bg-card rounded-xl border border-border shadow-sm p-5 space-y-4">
                   <div className="text-base font-semibold text-foreground mb-3 flex items-center gap-2">
                     <BarChart3 className="w-5 h-5 text-emerald-600" />
-                    Potential Grounds of Merit (3 Found)
+                    Potential Grounds of Merit (Count Only)
                   </div>
-                  
-                  <div className="border border-blue-200 bg-blue-50 rounded-lg p-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">STRONG</span>
-                        <h4 className="font-semibold text-slate-900 text-sm mt-1">Misdirection on Mens Rea</h4>
-                        <p className="text-xs text-slate-600 mt-1">Judge's direction on intent may have been inadequate — s.18(1)(a)</p>
+
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                    <div className="flex items-center gap-4">
+                      <div className="text-4xl font-bold text-blue-700 dark:text-blue-300">3</div>
+                      <div className="text-xs text-slate-600 dark:text-slate-400">
+                        <p>Potential grounds detected in your documents</p>
+                        <p className="mt-1 italic text-slate-500">Ground titles + detailed analysis unlock with Investigate Grounds ($99 AUD)</p>
                       </div>
-                      <button className="text-xs bg-slate-900 text-white px-3 py-1 rounded hover:bg-slate-800">Investigate</button>
                     </div>
                   </div>
-                  
-                  <div className="border border-blue-200 bg-blue-50 rounded-lg p-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">MODERATE</span>
-                        <h4 className="font-semibold text-slate-900 text-sm mt-1">Procedural Fairness Issue</h4>
-                        <p className="text-xs text-slate-600 mt-1">Defence counsel may not have been given adequate time to prepare</p>
-                      </div>
-                      <button className="text-xs bg-slate-900 text-white px-3 py-1 rounded hover:bg-slate-800">Investigate</button>
-                    </div>
-                  </div>
-                  
-                  <div className="border border-slate-200 bg-slate-50 rounded-lg p-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-xs font-medium text-slate-600 bg-slate-200 px-2 py-0.5 rounded">POTENTIAL</span>
-                        <h4 className="font-semibold text-slate-900 text-sm mt-1">Fresh Evidence Available</h4>
-                        <p className="text-xs text-slate-600 mt-1">New witness statement may impact original findings</p>
-                      </div>
-                      <button className="text-xs bg-slate-900 text-white px-3 py-1 rounded hover:bg-slate-800">Investigate</button>
-                    </div>
+
+                  <div className="border border-dashed border-slate-200 bg-slate-50 dark:bg-slate-900/40 rounded-lg p-3">
+                    <p className="text-xs text-slate-500">Free view shows the count only. No titles or analysis displayed.</p>
                   </div>
                 </div>
               </div>
@@ -950,7 +927,6 @@ const LandingPage = () => {
                             <div className="text-3xl font-bold text-blue-700 dark:text-blue-300">3</div>
                             <div className="text-xs text-slate-600 dark:text-slate-400">
                               <p>Potential grounds identified from your documents</p>
-                              <p className="mt-1 font-semibold text-blue-700 dark:text-blue-300">Strength: 1 Strong, 1 Moderate, 1 Potential</p>
                               <p className="mt-1 italic text-slate-500">Ground titles and detailed analysis available in paid reports</p>
                             </div>
                           </div>
@@ -1793,16 +1769,17 @@ const LandingPage = () => {
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Explore</p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-              <Link to="/how-it-works" className="hover:text-foreground">How It Works</Link>
-              <Link to="/success-stories" className="hover:text-foreground">Success Stories</Link>
-              <Link to="/appeal-statistics" className="hover:text-foreground">Appeal Statistics</Link>
-              <Link to="/glossary" className="hover:text-foreground">Legal Glossary</Link>
-              <Link to="/legal-resources" className="hover:text-foreground">Resources & Contacts</Link>
-              <Link to="/lawyers" className="hover:text-foreground">Lawyer Directory</Link>
-              <Link to="/legal-framework" className="hover:text-foreground">Legal Framework</Link>
-              <Link to="/faq" className="hover:text-foreground">FAQ</Link>
-              <Link to="/forms" className="hover:text-foreground">Forms & Templates</Link>
-              <Link to="/contact" className="hover:text-foreground">Contact</Link>
+              <Link to="/how-it-works" className="hover:text-foreground" data-testid="footer-how-it-works">How It Works</Link>
+              <Link to="/appeal-statistics" className="hover:text-foreground" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+              <Link to="/legal-resources" className="hover:text-foreground" data-testid="footer-legal-resources">Resources & Contacts</Link>
+              <Link to="/legal-framework" className="hover:text-foreground" data-testid="footer-legal-framework">Legal Framework</Link>
+              <Link to="/forms" className="hover:text-foreground" data-testid="footer-forms">Forms & Templates</Link>
+              <Link to="/glossary" className="hover:text-foreground" data-testid="footer-glossary">Legal Glossary</Link>
+              <Link to="/lawyers" className="hover:text-foreground" data-testid="footer-lawyers">Lawyer Directory</Link>
+              <Link to="/faq" className="hover:text-foreground" data-testid="footer-faq">FAQ</Link>
+              <Link to="/contact" className="hover:text-foreground" data-testid="footer-contact">Contact</Link>
+              <Link to="/about" className="hover:text-foreground" data-testid="footer-about">About</Link>
+              <Link to="/success-stories" className="hover:text-foreground" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
 

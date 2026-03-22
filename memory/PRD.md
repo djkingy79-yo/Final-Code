@@ -941,3 +941,10 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Barrister View section headers upgraded** — brighter section bands and stronger heading emphasis for quick scanning
 - [x] **PDF/Print preview for all case tabs** — Timeline, Grounds, Notes, Reports, Legal, and Progress now open a clean PDF preview window with print-ready styling
 - [x] **Testing**: Landing page load screenshot captured (ui-landing-after-report-styles.png)
+
+### Navigation + Free Grounds Copy Fix (Mar 2026) ✅
+- [x] **Dropdown now matches footer order** — About second last, Success Stories last, and mobile menu aligned to footer order
+- [x] **Free grounds preview corrected** — “See It In Action” Step 3 now shows count-only (no titles) with $99 unlock messaging
+- [x] **Success Stories copy cleaned** — removed references to non-existent tools (case comparison) and tightened wording
+- [x] **Global quick Home + Top-of-page buttons** — visibility threshold lowered for consistent access
+- [x] **Testing**: Landing page dropdown + footer screenshots captured (landing-more-dropdown.png, landing-footer-order.png)
