@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -292,6 +292,146 @@ const BarristerView = ({ user }) => {
     return cleaned.trim();
   };
 
+  const normaliseText = (text) => (text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const toWordSet = (text) => {
+    const cleaned = normaliseText(text);
+    if (!cleaned) return new Set();
+    return new Set(cleaned.split(" ").filter((word) => word.length > 3));
+  };
+
+  const jaccardSimilarity = (setA, setB) => {
+    if (!setA.size || !setB.size) return 0;
+    let intersection = 0;
+    for (const item of setA) {
+      if (setB.has(item)) intersection += 1;
+    }
+    const union = setA.size + setB.size - intersection;
+    return union === 0 ? 0 : intersection / union;
+  };
+
+  const splitParagraphs = (text) => (text || "")
+    .split(/\n\s*\n+/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 60 && !/IMPORTANT DISCLAIMER/i.test(p));
+
+  const buildAnchorTerms = () => {
+    const terms = new Set();
+    const addTerms = (value) => {
+      if (!value) return;
+      const cleaned = String(value).toLowerCase();
+      cleaned.split(/[^a-z0-9]+/).forEach((token) => {
+        if (token.length > 3) terms.add(token);
+      });
+    };
+
+    addTerms(caseData?.title);
+    addTerms(caseData?.defendant_name);
+    addTerms(caseData?.case_number);
+    addTerms(caseData?.court);
+    addTerms(caseData?.judge);
+    addTerms(caseData?.sentence);
+    addTerms(caseData?.offence_type);
+    addTerms(caseData?.offence_category);
+    addTerms(caseData?.state);
+
+    (documents || []).forEach((doc) => addTerms(doc.filename));
+    (timeline || []).forEach((event) => {
+      addTerms(event.title);
+      addTerms(event.event_type);
+      addTerms(event.event_date);
+    });
+    (grounds || []).forEach((ground) => addTerms(ground.title));
+
+    return terms;
+  };
+
+  const scoreParagraph = (text, anchorSet) => {
+    if (!text) return 0;
+    let score = 0;
+    if (/\b\d{2,}\b/.test(text)) score += 1.3;
+    if (/\b(?:s\.|section)\s*\d+/i.test(text)) score += 1.4;
+    if (/\bAct\s+\d{4}\b/i.test(text)) score += 1.2;
+    if (/\b(NSW|Cth|QLD|VIC|TAS|SA|WA|ACT|NT)\b/.test(text)) score += 0.8;
+    if (/\bR\s+v\b|\bv\s+[A-Z]/.test(text)) score += 1.1;
+    if (/^\s*[-*]\s+/m.test(text)) score += 0.7;
+
+    const wordSet = toWordSet(text);
+    let anchorHits = 0;
+    for (const word of wordSet) {
+      if (anchorSet.has(word)) anchorHits += 1;
+    }
+    score += Math.min(2.2, anchorHits * 0.25);
+    score += Math.min(1.8, text.length / 900);
+
+    return score;
+  };
+
+  const selectDistinctParagraphs = (entries, anchorSet) => {
+    const rawParagraphs = [];
+    entries.forEach((entry) => {
+      const paragraphs = splitParagraphs(entry.section.content);
+      paragraphs.forEach((paragraph, index) => {
+        rawParagraphs.push({
+          text: paragraph,
+          score: scoreParagraph(paragraph, anchorSet),
+          source: entry.reportLabel,
+          reportRank: entry.reportRank,
+          paragraphIndex: index
+        });
+      });
+    });
+
+    if (!rawParagraphs.length) {
+      return entries[0]?.section.content || "";
+    }
+
+    const sourceCount = new Set(entries.map((entry) => entry.reportLabel)).size;
+    const maxParagraphs = Math.max(6, Math.min(12, Math.ceil(sourceCount * 2.5)));
+    const qualityThreshold = 1.2;
+    const preferred = rawParagraphs.filter((p) => p.score >= qualityThreshold);
+    const pool = preferred.length >= 4 ? preferred : rawParagraphs;
+
+    pool.sort((a, b) => (b.score - a.score) || (b.text.length - a.text.length));
+
+    const selected = [];
+    const selectedSets = [];
+
+    const isTooSimilar = (candidate) => {
+      const candidateSet = toWordSet(candidate.text);
+      return selectedSets.some((set) => jaccardSimilarity(candidateSet, set) > 0.68);
+    };
+
+    for (const paragraph of pool) {
+      if (selected.length >= maxParagraphs) break;
+      if (isTooSimilar(paragraph)) continue;
+      selected.push(paragraph);
+      selectedSets.push(toWordSet(paragraph.text));
+    }
+
+    const coveredSources = new Set(selected.map((item) => item.source));
+    if (coveredSources.size < sourceCount) {
+      const allSources = Array.from(new Set(entries.map((entry) => entry.reportLabel)));
+      allSources.forEach((source) => {
+        if (coveredSources.has(source)) return;
+        const candidate = pool.find((item) => item.source === source && !isTooSimilar(item));
+        if (candidate) {
+          selected.push(candidate);
+          coveredSources.add(source);
+          selectedSets.push(toWordSet(candidate.text));
+        }
+      });
+    }
+
+    selected.sort((a, b) => (a.reportRank - b.reportRank) || (a.paragraphIndex - b.paragraphIndex));
+
+    return selected.map((item) => item.text).join("\n\n");
+  };
+
   // Parse and structure the analysis for legal brief format
   const parseAnalysis = (content) => {
     if (!content?.analysis) return { sections: [] };
@@ -394,6 +534,8 @@ const BarristerView = ({ user }) => {
       .slice(0, 5);
   };
 
+  const anchorSet = useMemo(() => buildAnchorTerms(), [caseData, documents, timeline, grounds]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
@@ -410,19 +552,30 @@ const BarristerView = ({ user }) => {
     );
   }
 
-  // Merge all reports — collect best content from ALL reports (normal + aggressive)
+  // Merge all reports — collect distinct content from ALL reports (normal + aggressive)
   const mergeAllReports = () => {
-    if (!allReports.length && report?.content) return parseAnalysis(report.content);
-    
-    const sectionMap = new Map(); // normalTitle -> { section, charCount, sources }
-    const reportOrder = []; // track insertion order
-    
+    const availableReports = allReports?.length ? allReports : [];
+
+    if (!availableReports.length && report?.content) {
+      const parsed = parseAnalysis(report.content);
+      const isAggressive = Boolean(report?.content?.aggressive_mode);
+      return {
+        sections: parsed.sections || [],
+        normalCount: isAggressive ? 0 : 1,
+        aggressiveCount: isAggressive ? 1 : 0,
+        totalReports: parsed.sections?.length ? 1 : 0
+      };
+    }
+
+    const sectionBuckets = new Map(); // normalTitle -> { title, entries, sources }
+    const reportOrder = [];
+
     // Count report types for display
-    const normalCount = allReports.filter(r => !r.content?.aggressive_mode).length;
-    const aggressiveCount = allReports.filter(r => r.content?.aggressive_mode).length;
-    
+    const normalCount = availableReports.filter(r => !r.content?.aggressive_mode).length;
+    const aggressiveCount = availableReports.filter(r => r.content?.aggressive_mode).length;
+
     // Parse EVERY report — aggressive first (they should be richer), then normal
-    const sortedReports = [...allReports].sort((a, b) => {
+    const sortedReports = [...availableReports].sort((a, b) => {
       // aggressive > normal
       const aAgg = a.content?.aggressive_mode ? 1 : 0;
       const bAgg = b.content?.aggressive_mode ? 1 : 0;
@@ -431,60 +584,49 @@ const BarristerView = ({ user }) => {
       const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
       return (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0);
     });
-    
-    for (const r of sortedReports) {
-      if (!r.content?.analysis) continue;
-      const parsed = parseAnalysis(r.content);
-      const reportLabel = `${r.report_type === 'quick_summary' ? 'Summary' : r.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${r.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
-      
-      for (const section of parsed.sections) {
+
+    const registerSections = (reportItem, reportLabel, reportRank) => {
+      if (!reportItem?.content?.analysis) return;
+      const parsed = parseAnalysis(reportItem.content);
+      parsed.sections.forEach((section, sectionIndex) => {
         const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
-        const existing = sectionMap.get(normalTitle);
-        if (!existing || section.content.length > existing.charCount) {
-          if (!existing) reportOrder.push(normalTitle);
-          sectionMap.set(normalTitle, { 
-            section, 
-            charCount: section.content.length, 
-            sources: existing ? [...existing.sources, reportLabel] : [reportLabel]
-          });
-        } else {
-          // Still track this report as a source even if its version is shorter
-          existing.sources.push(reportLabel);
+        if (!sectionBuckets.has(normalTitle)) {
+          sectionBuckets.set(normalTitle, { title: section.title, entries: [], sources: new Set() });
+          reportOrder.push(normalTitle);
         }
-      }
-    }
-    
-    // Also include primary report if not already covered
-    if (report?.content?.analysis) {
-      const parsed = parseAnalysis(report.content);
+        const bucket = sectionBuckets.get(normalTitle);
+        bucket.entries.push({ section, reportLabel, reportRank, sectionIndex });
+        bucket.sources.add(reportLabel);
+      });
+    };
+
+    sortedReports.forEach((reportItem, index) => {
+      const reportLabel = `${reportItem.report_type === 'quick_summary' ? 'Summary' : reportItem.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${reportItem.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
+      registerSections(reportItem, reportLabel, index);
+    });
+
+    const existingIds = new Set(availableReports.map((item) => item.report_id));
+    if (report?.content?.analysis && !existingIds.has(report.report_id)) {
       const reportLabel = `${report.report_type === 'quick_summary' ? 'Summary' : report.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${report.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
-      
-      for (const section of parsed.sections) {
-        const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
-        const existing = sectionMap.get(normalTitle);
-        if (!existing || section.content.length > existing.charCount) {
-          if (!existing) reportOrder.push(normalTitle);
-          sectionMap.set(normalTitle, { 
-            section, 
-            charCount: section.content.length, 
-            sources: existing ? [...existing.sources, reportLabel] : [reportLabel]
-          });
-        } else {
-          existing.sources.push(reportLabel);
-        }
-      }
+      registerSections(report, reportLabel, sortedReports.length + 1);
     }
-    
-    // Re-number sections sequentially
+
     const merged = reportOrder
-      .map(key => {
-        const entry = sectionMap.get(key);
-        return entry ? { ...entry.section, sources: [...new Set(entry.sources)] } : null;
+      .map((key) => {
+        const bucket = sectionBuckets.get(key);
+        if (!bucket) return null;
+        const mergedContent = selectDistinctParagraphs(bucket.entries, anchorSet || new Set());
+        if (!mergedContent || mergedContent.length < 120) return null;
+        return {
+          title: bucket.title,
+          content: mergedContent,
+          sources: Array.from(bucket.sources)
+        };
       })
       .filter(Boolean)
-      .map((s, i) => ({ ...s, number: String(i + 1) }));
-    
-    return { sections: merged, normalCount, aggressiveCount, totalReports: allReports.length };
+      .map((section, index) => ({ ...section, number: String(index + 1) }));
+
+    return { sections: merged, normalCount, aggressiveCount, totalReports: availableReports.length };
   };
 
   const parsedContent = mergeAllReports();

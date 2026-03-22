@@ -929,3 +929,8 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
   - Added Australian English directives to standalone prompts: timeline extraction, timeline analysis, contradiction finder
   - Report generation prompts already had "Use Australian English only" in guardrails
 - [x] **Testing**: iteration_64 — 100% backend (6/6) + 100% frontend
+
+### Barrister View Synthesis + Anti-Repetition Guardrails (Mar 2026) ✅
+- [x] **Barrister View synthesis upgraded** — now blends distinct paragraphs across ALL reports (standard + aggressive) with case-specific scoring and de-duplication to avoid generic repetition
+- [x] **Report prompt guardrails strengthened** — added anti-repetition rules and aggressive-mode directives to add new authorities and fresh analysis beyond standard reports
+- [x] **Testing**: Landing page load screenshot captured (barrister-landing.png)

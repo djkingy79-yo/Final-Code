@@ -3422,6 +3422,8 @@ CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
 - NEVER create filler sections with titles like "URGENCY PRIORITY", "RELEVANCE", "KEY TAKEAWAY", "SUMMARY", "OVERVIEW" as standalone sections. These are padding. Instead, weave relevance and urgency INTO the substantive analysis.
 - NEVER write generic consultant-speak like "Leverage legal databases to draw parallels that authenticate excessive sentencing claims through empirical trends." Instead, NAME the specific cases, cite the specific sentencing outcomes, and EXPLAIN the specific parallels.
 - Every paragraph MUST reference specific names, dates, section numbers, case citations, or document names from the supplied case material. If a paragraph could apply to ANY appeal case, it is too generic — rewrite it with THIS case's specific facts.
+- Avoid repetition across sections. If a point is already covered, deepen it with NEW evidence, dates, or authority rather than restating it.
+- Do NOT reuse boilerplate phrases. Every paragraph must read as drafted specifically for this case and this report tier.
 - For legislation sections: Do NOT just name the Act and describe what it covers in general terms. APPLY each provision to THIS case's specific facts. WRONG: "s.44 discusses parole periods, directly affecting Homann's sentencing outcomes." RIGHT: "Under s.44 of the Crimes (Sentencing Procedure) Act 1999 (NSW), the non-parole period must reflect the objective seriousness of the offence. In Homann's case, the 22-year non-parole period imposed by Justice McCallum is arguable as disproportionate when compared with R v Loveridge [2014] NSWCCA 120 where a 7-year non-parole period was imposed for a one-punch manslaughter..."
 - For precedent/sentencing tables: Include the full case citation, the specific factual similarity to THIS case, the actual sentence imposed, and the specific relevance to the current appeal. NEVER use a one-line vague description.
 
@@ -3858,6 +3860,8 @@ TONE SHIFT — You are no longer a cautious analyst. You are a senior criminal a
 - Attack prosecution weaknesses directly: "The Crown's reliance on [X] is fatally undermined by [Y]"
 - Draft ACTUAL submission paragraphs that could be read to the bench word-for-word
 - For each ground, write the opening line you would say to the Court of Appeal judges
+- Assume a standard (non-aggressive) version already exists. This aggressive report must add materially NEW arguments, authorities, and case-specific detail — do NOT rephrase or recycle the standard report.
+- If a point is already made earlier in this report, deepen it with NEW evidence, dates, or authority rather than repeating it.
 
 EXPANDED SCOPE:
 1. DOUBLE the word count target for the entire report.
