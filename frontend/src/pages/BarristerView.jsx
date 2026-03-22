@@ -1475,8 +1475,8 @@ const BarristerView = ({ user }) => {
               <div className="space-y-8">
                 {parsedContent.sections.map((section, idx) => (
                   <div key={idx} className="page-break-inside-avoid">
-                    <div className="flex items-baseline gap-4 mb-4 pb-3 border-b-2 border-blue-500">
-                      <span className="text-3xl font-bold text-blue-500" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <div className="flex flex-wrap items-baseline gap-4 mb-4 pb-3 border-b-2 border-blue-600 bg-gradient-to-r from-blue-50 via-white to-indigo-50 dark:from-blue-900/30 dark:via-slate-800 dark:to-indigo-900/30 rounded-xl px-4 py-3">
+                      <span className="text-3xl font-bold text-blue-600 bg-blue-100/80 dark:bg-blue-900/40 rounded-lg px-3 py-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         {section.number}.
                       </span>
                       <h3 
@@ -1600,6 +1600,47 @@ const BarristerView = ({ user }) => {
 
       {/* Print Styles */}
       <style>{`
+        .legal-report {
+          font-size: 0.95rem;
+          line-height: 1.75;
+          color: #0f172a;
+        }
+        .legal-report h1,
+        .legal-report h2,
+        .legal-report h3 {
+          font-family: 'Crimson Pro', serif;
+          font-weight: 700;
+          color: #0f172a;
+          margin: 1.2rem 0 0.6rem;
+        }
+        .legal-report h2 { font-size: 1.1rem; }
+        .legal-report h3 { font-size: 1rem; }
+        .legal-report strong { color: #111827; font-weight: 700; }
+        .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
+        .legal-report li { margin-bottom: 0.45rem; }
+        .legal-report table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 0.8rem 0;
+        }
+        .legal-report th {
+          background: #e0f2fe;
+          color: #0f172a;
+          font-weight: 700;
+        }
+        .legal-report th, .legal-report td {
+          border: 1px solid #cbd5e1;
+          padding: 8px 10px;
+          font-size: 0.85rem;
+          vertical-align: top;
+        }
+        .legal-report blockquote {
+          border-left: 4px solid #38bdf8;
+          padding: 10px 14px;
+          margin: 0.8rem 0;
+          background: #eff6ff;
+          color: #1e3a8a;
+        }
         @media print {
           @page {
             size: A4;

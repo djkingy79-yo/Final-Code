@@ -143,6 +143,11 @@ const parseAnalysisSections = (analysis = "") => {
   if (!text) return [];
   const lines = text.split("\n");
   const sections = [];
+  const cleanSectionTitle = (value) => (value || "")
+    .replace(/^\d+\.\s*/, "")
+    .replace(/[\-:]+$/, "")
+    .replace(/\*\*/g, "")
+    .trim();
   let currentTitle = "Executive Analysis";
   let currentLines = [];
 
@@ -157,7 +162,7 @@ const parseAnalysisSections = (analysis = "") => {
     const mainSectionHeader = trimmed.match(/^##\s+(\d+\.\s+.+)$/);
     if (mainSectionHeader) {
       pushSection();
-      currentTitle = mainSectionHeader[1].replace(/[\-:]+$/, "").trim();
+      currentTitle = cleanSectionTitle(mainSectionHeader[1]);
       currentLines = [];
       return;
     }
@@ -192,43 +197,43 @@ const MarkdownBlock = ({ text, testId }) => (
 const REPORT_THEME = {
   quick_summary: {
     label: "Quick Summary Report",
-    headerBg: "bg-gradient-to-r from-emerald-700 to-green-600",
-    accentBg: "bg-green-600",
-    accentText: "text-green-600",
-    priceBadge: "bg-green-500",
+    headerBg: "bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-500",
+    accentBg: "bg-emerald-600",
+    accentText: "text-emerald-700",
+    priceBadge: "bg-emerald-500",
     price: "FREE",
-    borderColor: "border-green-200 dark:border-green-800",
-    lightBg: "from-green-50 to-white dark:from-green-900/20 dark:to-slate-900",
-    sectionBorder: "border-green-500",
-    tocBg: "bg-green-50 dark:bg-green-900/20",
-    tocBorder: "border-green-200 dark:border-green-700",
-    sectionNumberBg: "bg-green-100 text-green-700",
+    borderColor: "border-emerald-300 dark:border-emerald-700",
+    lightBg: "from-emerald-50 via-white to-lime-50 dark:from-emerald-900/20 dark:to-slate-900",
+    sectionBorder: "border-emerald-500",
+    tocBg: "bg-emerald-50/80 dark:bg-emerald-900/20",
+    tocBorder: "border-emerald-200 dark:border-emerald-700",
+    sectionNumberBg: "bg-emerald-100 text-emerald-700",
   },
   full_detailed: {
     label: "Full Detailed Report",
-    headerBg: "bg-gradient-to-r from-slate-900 to-blue-900",
+    headerBg: "bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600",
     accentBg: "bg-blue-600",
-    accentText: "text-blue-600",
+    accentText: "text-blue-700",
     priceBadge: "bg-blue-500",
     price: "$150 AUD",
-    borderColor: "border-blue-200 dark:border-blue-800",
-    lightBg: "from-blue-50 to-white dark:from-blue-900/20 dark:to-slate-900",
+    borderColor: "border-blue-300 dark:border-blue-700",
+    lightBg: "from-blue-50 via-white to-cyan-50 dark:from-blue-900/20 dark:to-slate-900",
     sectionBorder: "border-blue-500",
-    tocBg: "bg-blue-50/50 dark:bg-blue-900/20",
+    tocBg: "bg-blue-50/80 dark:bg-blue-900/20",
     tocBorder: "border-blue-200 dark:border-blue-700",
     sectionNumberBg: "bg-blue-100 text-blue-700",
   },
   extensive_log: {
     label: "Extensive Log Report",
-    headerBg: "bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-900",
+    headerBg: "bg-gradient-to-r from-fuchsia-900 via-purple-800 to-indigo-700",
     accentBg: "bg-purple-600",
-    accentText: "text-purple-600",
+    accentText: "text-purple-700",
     priceBadge: "bg-purple-500",
     price: "$200 AUD",
-    borderColor: "border-purple-200 dark:border-purple-800",
-    lightBg: "from-purple-50 to-white dark:from-purple-900/20 dark:to-slate-900",
+    borderColor: "border-purple-300 dark:border-purple-700",
+    lightBg: "from-purple-50 via-white to-indigo-50 dark:from-purple-900/20 dark:to-slate-900",
     sectionBorder: "border-purple-500",
-    tocBg: "bg-purple-50/50 dark:bg-purple-900/20",
+    tocBg: "bg-purple-50/80 dark:bg-purple-900/20",
     tocBorder: "border-purple-200 dark:border-purple-700",
     sectionNumberBg: "bg-purple-100 text-purple-700",
   },
@@ -516,8 +521,54 @@ const ReportView = () => {
       </main>
 
       <style>{`
+        .legal-report {
+          font-size: 0.95rem;
+          line-height: 1.7;
+          color: #0f172a;
+        }
+        .legal-report h1,
+        .legal-report h2,
+        .legal-report h3 {
+          font-family: 'Crimson Pro', serif;
+          font-weight: 700;
+          color: #0f172a;
+          margin: 1.2rem 0 0.6rem;
+        }
+        .legal-report h2 { font-size: 1.1rem; }
+        .legal-report h3 { font-size: 1rem; }
+        .legal-report strong { color: #111827; font-weight: 700; }
+        .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
+        .legal-report li { margin-bottom: 0.4rem; }
+        .legal-report table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 0.8rem 0;
+        }
+        .legal-report th {
+          background: #e0f2fe;
+          color: #0f172a;
+          font-weight: 700;
+        }
+        .legal-report th, .legal-report td {
+          border: 1px solid #cbd5e1;
+          padding: 8px 10px;
+          font-size: 0.85rem;
+          vertical-align: top;
+        }
+        .legal-report blockquote {
+          border-left: 4px solid #38bdf8;
+          padding: 10px 14px;
+          margin: 0.8rem 0;
+          background: #eff6ff;
+          color: #1e3a8a;
+        }
         @media print {
+          body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
           .no-print { display: none !important; }
+          .legal-report { font-size: 12px; }
         }
       `}</style>
     </div>

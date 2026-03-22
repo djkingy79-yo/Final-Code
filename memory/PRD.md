@@ -934,3 +934,10 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Barrister View synthesis upgraded** — now blends distinct paragraphs across ALL reports (standard + aggressive) with case-specific scoring and de-duplication to avoid generic repetition
 - [x] **Report prompt guardrails strengthened** — added anti-repetition rules and aggressive-mode directives to add new authorities and fresh analysis beyond standard reports
 - [x] **Testing**: Landing page load screenshot captured (barrister-landing.png)
+
+### Report Presentation + Case Tab PDF Preview (Mar 2026) ✅
+- [x] **Report View numbering fixed** — section headings now avoid double numbering; TOC aligns with report sections
+- [x] **Brighter, bolder report styling** — enhanced colour gradients and markdown typography for stronger visual emphasis
+- [x] **Barrister View section headers upgraded** — brighter section bands and stronger heading emphasis for quick scanning
+- [x] **PDF/Print preview for all case tabs** — Timeline, Grounds, Notes, Reports, Legal, and Progress now open a clean PDF preview window with print-ready styling
+- [x] **Testing**: Landing page load screenshot captured (ui-landing-after-report-styles.png)

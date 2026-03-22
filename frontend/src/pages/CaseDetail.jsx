@@ -397,6 +397,64 @@ const CaseDetail = ({ user }) => {
     }
   };
 
+  const buildTabPreviewHtml = (contentHtml, tabLabel, noticeHtml) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
+  <style>
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.6; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 20px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h3 { font-size: 15px; margin-top: 14px; color: #1e40af; }
+    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 12px; }
+    th { background: #e0f2fe; font-weight: 700; }
+    ul, ol { padding-left: 18px; }
+    li { margin-bottom: 4px; }
+    button, [data-testid], .no-print { display: none !important; }
+    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  ${noticeHtml}
+  <h1>${caseData?.title || ''} — ${tabLabel}</h1>
+  <div class="meta">${caseData?.defendant_name || ''} | ${caseData?.case_number || ''} | ${caseData?.court || ''}</div>
+  <hr />
+  ${contentHtml}
+</body>
+</html>`;
+
+  const openTabPrintPreview = (mode = "print") => {
+    const contentEl = document.querySelector('[data-tab-content]');
+    if (!contentEl) {
+      toast.error("Nothing to export on this tab.");
+      return;
+    }
+    const tabLabel = activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+    const noticeHtml = mode === "pdf"
+      ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
+      : '';
+    const previewWindow = window.open("", "_blank", "width=1200,height=800");
+    if (!previewWindow) {
+      toast.error("Pop-up blocked. Please allow pop-ups and try again.");
+      return;
+    }
+    previewWindow.document.open();
+    previewWindow.document.write(buildTabPreviewHtml(contentEl.innerHTML, tabLabel, noticeHtml));
+    previewWindow.document.close();
+    previewWindow.focus();
+    if (mode === "print") {
+      setTimeout(() => previewWindow.print(), 600);
+      toast.success("Print dialogue opening...");
+      return;
+    }
+    toast.success("PDF view opened — use Print / Save as PDF to download.");
+  };
+
   const handleOpenEditCase = () => {
     setEditCaseData({
       title: caseData?.title || "",
@@ -780,60 +838,22 @@ const CaseDetail = ({ user }) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                  if (isIOS) {
-                    // iOS Safari: window.print() is unreliable. Use iframe approach.
-                    const contentEl = document.querySelector('[data-tab-content]');
-                    if (!contentEl) {
-                      toast.error("Nothing to print on this tab.");
-                      return;
-                    }
-                    const iframe = document.createElement('iframe');
-                    iframe.style.position = 'absolute';
-                    iframe.style.top = '-10000px';
-                    iframe.style.left = '-10000px';
-                    iframe.style.width = '210mm';
-                    document.body.appendChild(iframe);
-                    const doc = iframe.contentDocument;
-                    doc.open();
-                    doc.write(`<!DOCTYPE html><html><head><title>${caseData?.title || 'Case'} - ${activeTab}</title>
-                      <style>
-                        body { font-family: 'Georgia', serif; padding: 24px; color: #1a1a1a; font-size: 14px; line-height: 1.6; }
-                        h1 { font-size: 22px; margin-bottom: 4px; }
-                        h2 { font-size: 18px; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
-                        h3 { font-size: 15px; margin-top: 12px; }
-                        table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-                        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
-                        th { background: #f5f5f5; font-weight: bold; }
-                        ul, ol { padding-left: 20px; }
-                        li { margin-bottom: 4px; }
-                        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #eee; }
-                        p { margin: 6px 0; }
-                        button, [data-testid], .no-print { display: none !important; }
-                      </style>
-                    </head><body>
-                      <h1>${caseData?.title || ''}</h1>
-                      <p>${caseData?.defendant_name || ''} | ${caseData?.case_number || ''} | ${caseData?.court || ''}</p>
-                      <hr/>
-                      ${contentEl.innerHTML}
-                    </body></html>`);
-                    doc.close();
-                    setTimeout(() => {
-                      iframe.contentWindow.focus();
-                      iframe.contentWindow.print();
-                      setTimeout(() => document.body.removeChild(iframe), 3000);
-                    }, 500);
-                    toast.success("Print dialogue opening...");
-                    return;
-                  }
-                  window.print();
-                }}
+                onClick={() => openTabPrintPreview("print")}
                 className="rounded-xl"
                 data-testid={`print-${activeTab}-btn`}
               >
                 <Printer className="w-4 h-4 mr-2" />
                 Print {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => openTabPrintPreview("pdf")}
+                className="rounded-xl"
+                data-testid={`pdf-${activeTab}-btn`}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                PDF View
               </Button>
               {activeTab === "timeline" && (
                 <>
