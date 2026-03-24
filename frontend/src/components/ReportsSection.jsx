@@ -86,9 +86,21 @@ const ReportsSection = ({
   const [pendingReportType, setPendingReportType] = useState(null);
   const [aggressiveMode, setAggressiveMode] = useState(false);
 
-  const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
-  const hasAllReports = requiredReportTypes.every((type) =>
-    reports.some((report) => report.report_type === type && report.status === "completed")
+  const requiredReportCombos = [
+    { type: "quick_summary", aggressive: false },
+    { type: "quick_summary", aggressive: true },
+    { type: "full_detailed", aggressive: false },
+    { type: "full_detailed", aggressive: true },
+    { type: "extensive_log", aggressive: false },
+    { type: "extensive_log", aggressive: true },
+  ];
+
+  const hasAllReports = requiredReportCombos.every((combo) =>
+    reports.some((report) =>
+      report.report_type === combo.type &&
+      Boolean(report.content?.aggressive_mode) === combo.aggressive &&
+      report.status === "completed"
+    )
   );
 
   const handleExportPDF = async (reportId) => {
@@ -507,7 +519,7 @@ const ReportsSection = ({
                               data-testid={`barrister-view-locked-${report.report_id}`}
                             >
                               <Presentation className="w-4 h-4 mr-1.5" />
-                              Barrister View — unlock after all 3 reports
+                              Barrister View — unlock after all 6 reports
                             </Button>
                           )
                         )}
