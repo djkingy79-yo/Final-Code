@@ -20,6 +20,16 @@ const BINDING_DYNAMIC_CACHE = new WeakMap(); // node -> boolean
 // Value: { sourceInfo, arrayContext, fromFile }
 const PROP_SOURCE_CACHE = new Map();
 
+function safeTraverse(pathLike, visitors) {
+  if (!pathLike || typeof pathLike.traverse !== "function") return;
+  try {
+    pathLike.traverse(visitors);
+  } catch (error) {
+    // Swallow traversal errors to avoid breaking the dev build
+    return;
+  }
+}
+
 function resolveImportPath(source, fromFile) {
   const cacheKey = `${fromFile}::${source}`;
   if (RESOLVE_CACHE.has(cacheKey)) return RESOLVE_CACHE.get(cacheKey);
@@ -282,7 +292,7 @@ function fileExportHasPortals({
     visitedPaths.add(nodePath.node);
 
     let hit = false;
-    nodePath.traverse({
+    safeTraverse(nodePath, {
       JSXOpeningElement(op) {
         if (hit) return;
         const name = jsxNameOf(op.node, t);
@@ -348,7 +358,7 @@ function usageIsCompositePortal({
   if (binding && binding.path) {
     // Analyze the definition directly
     let hit = false;
-    binding.path.traverse({
+    safeTraverse(binding.path, {
       JSXOpeningElement(op) {
         if (hit) return;
         const name = jsxNameOf(op.node, t);
@@ -359,7 +369,7 @@ function usageIsCompositePortal({
         if (/^[A-Z]/.test(name || "")) {
           const innerBinding = op.scope.getBinding(name);
           if (innerBinding && innerBinding.path) {
-            innerBinding.path.traverse(this.visitors);
+            safeTraverse(innerBinding.path, this.visitors);
           }
         }
       },
@@ -799,7 +809,7 @@ const babelMetadataPlugin = ({ types: t }) => {
 
     let tracedSource = null;
 
-    programPath.traverse({
+    safeTraverse(programPath, {
       JSXOpeningElement(jsxPath) {
         if (tracedSource) return;
 
@@ -939,7 +949,7 @@ const babelMetadataPlugin = ({ types: t }) => {
           if (!rootPath || typeof rootPath.traverse !== "function") return;
 
           // Search for usages of this component
-          rootPath.traverse({
+          safeTraverse(rootPath, {
             JSXOpeningElement(jsxPath) {
               if (result) return;
 
@@ -1428,7 +1438,7 @@ const babelMetadataPlugin = ({ types: t }) => {
   function pathHasDynamicJSX(targetPath) {
     if (!targetPath || !targetPath.node) return false;
     let dynamic = false;
-    targetPath.traverse({
+    safeTraverse(targetPath, {
       JSXExpressionContainer(p) {
         if (dynamic) return;
         if (!t.isJSXEmptyExpression(p.node.expression)) {
