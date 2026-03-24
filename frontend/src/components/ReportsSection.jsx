@@ -189,7 +189,7 @@ const ReportsSection = ({
       const response = await axios.post(
         `${API}/cases/${caseId}/reports/generate`,
         { report_type: reportType, aggressive_mode: aggressiveMode },
-        { timeout: 30000 }
+        { timeout: 120000 }
       );
       
       const reportId = response.data?.report_id;
@@ -229,7 +229,7 @@ const ReportsSection = ({
   const pollForCompletion = (reportId) => {
     let elapsed = 0;
     const interval = 3000;
-    const maxWait = 360000;
+    const maxWait = 1800000;
 
     pollingRef.current = setInterval(async () => {
       elapsed += interval;
@@ -319,19 +319,19 @@ const ReportsSection = ({
       </div>
 
       {generatingReport && (
-        <div className="mb-4 border border-blue-200 bg-blue-50 rounded-lg overflow-hidden p-4" data-testid="report-generating-indicator">
-          <div className="flex items-center gap-3 mb-2">
-            <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
-            <p className="text-sm font-semibold text-blue-900">AI is analysing your case...</p>
-            <span className="ml-auto text-xs font-mono text-blue-700">{genElapsed}s</span>
+        <div className="mb-6 border-2 border-blue-300 bg-blue-50 rounded-xl overflow-hidden p-6" data-testid="report-generating-indicator">
+          <div className="flex flex-wrap items-center gap-4 mb-3">
+            <Loader2 className="w-6 h-6 animate-spin text-blue-600 flex-shrink-0" />
+            <div>
+              <p className="text-lg font-bold text-blue-900">Searching case materials…</p>
+              <p className="text-sm text-blue-800">We are reading documents, timeline events, and grounds. Larger cases can take 10–25 minutes.</p>
+            </div>
+            <span className="ml-auto text-sm font-mono text-blue-700">{genElapsed}s</span>
           </div>
-          <p className="text-xs text-blue-700 mb-3">
-            {genElapsed < 60 ? "Please wait — this usually takes under a minute." : "Still working — complex cases may take a few minutes."}
-          </p>
-          <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-blue-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-blue-600 rounded-full transition-all duration-1000"
-              style={{ width: `${Math.min(95, (genElapsed / 120) * 100)}%` }}
+              style={{ width: `${Math.min(98, (genElapsed / 900) * 100)}%` }}
             />
           </div>
         </div>
@@ -624,13 +624,13 @@ const ReportsSection = ({
             </div>
 
             {/* DO NOT UNDO — Report generation time warning */}
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-3" data-testid="report-generation-warning">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+            <div className="rounded-xl border-2 border-blue-300 bg-blue-50 p-4" data-testid="report-generation-warning">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-blue-900">Please Allow Time for Generation</p>
-                  <p className="text-xs text-blue-700">
-                    Reports typically take 20-60 seconds to generate. Please do not close this page while generating.
+                  <p className="text-base font-bold text-blue-900">Searching case materials…</p>
+                  <p className="text-sm text-blue-800">
+                    Reports can take 10–25 minutes for large files. Keep this window open while generation runs.
                   </p>
                 </div>
               </div>

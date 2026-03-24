@@ -3614,7 +3614,10 @@ Include at least 3 rows with real comparable cases.
 Overall assessment: Strong / Moderate / Needs Further Development.
 2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors.
 
-## 7. WHAT THE PAID REPORTS ADD
+## 7. CLIENT PLAIN-ENGLISH GUIDE
+Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position.
+
+## 8. WHAT THE PAID REPORTS ADD
 The Full Detailed Report ($150) includes:
 - Deep-dive analysis of every ground with Crown response and rebuttal strategies
 - Comparative sentencing table with 8+ cases and reduction pathways
@@ -3632,9 +3635,6 @@ The Extensive Report ($200) adds on top of the Full Detailed:
 - Court pathway operations playbook across all court levels
 - Fallback positions and alternative argument strategies for each ground
 - Tailored AustLII search strings for further research
-
-## 8. CLIENT PLAIN-ENGLISH GUIDE
-THIS MUST BE THE FINAL SECTION. Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic.
 
 IMPORTANT:
 - No cost estimates or funding discussion.
@@ -4081,7 +4081,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
                 chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
                 result = await asyncio.wait_for(
                     chat.send_message(UserMessage(text=prompt_text)),
-                    timeout=180
+                    timeout=420
                 )
                 if result and len(result.strip()) > 200 and "I'm sorry" not in result[:100] and "I can't assist" not in result[:100]:
                     logger.info(f"LLM success with {provider}/{model_name} on attempt {idx+1}")
@@ -4438,10 +4438,10 @@ async def get_reports(case_id: str, request: Request):
     """Get all reports for a case"""
     user = await get_current_user(request)
     
-    # Auto-fail any report stuck in "generating" for more than 5 minutes
-    five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+    # Auto-fail any report stuck in "generating" for more than 30 minutes
+    thirty_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat()
     await db.reports.update_many(
-        {"case_id": case_id, "user_id": user.user_id, "status": "generating", "generated_at": {"$lt": five_min_ago}},
+        {"case_id": case_id, "user_id": user.user_id, "status": "generating", "generated_at": {"$lt": thirty_min_ago}},
         {"$set": {"status": "failed", "error": "Generation timed out"}}
     )
     

@@ -841,6 +841,21 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) !important;
 }
 
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+input,
+textarea,
+select {
+  font-size: 1.05rem;
+  padding: 0.75rem 0.9rem;
+}
+
 /* Hide theme toggles (dark-only experience) */
 button:has(svg.lucide-sun),
 button:has(svg.lucide-moon) {

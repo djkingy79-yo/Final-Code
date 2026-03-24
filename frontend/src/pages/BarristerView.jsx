@@ -1751,8 +1751,8 @@ const BarristerView = ({ user }) => {
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
-          padding: 8px 10px;
-          font-size: 0.85rem;
+          padding: 10px 12px;
+          font-size: 0.95rem;
           vertical-align: top;
           color: #0f172a;
         }
