@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+   DO NOT UNDO - ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -118,7 +118,7 @@ const ReportsSection = ({
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        toast.success("PDF opening — use Share to save or print.");
+        toast.success("PDF opening - use Share to save or print.");
         return;
       }
       const response = await axios.get(
@@ -335,8 +335,8 @@ const ReportsSection = ({
           <div className="flex flex-wrap items-center gap-4 mb-3">
             <Loader2 className="w-6 h-6 animate-spin text-blue-200 flex-shrink-0" />
             <div>
-              <p className="text-lg font-bold text-blue-100">Searching case materials…</p>
-              <p className="text-sm text-blue-100/80">We are reading documents, timeline events, and grounds. Larger cases can take 10–25 minutes.</p>
+              <p className="text-lg font-bold text-blue-100">Searching case materials...</p>
+              <p className="text-sm text-blue-100/80">We are reading documents, timeline events, and grounds. Larger cases can take 10-25 minutes.</p>
             </div>
             <span className="ml-auto text-sm font-mono text-blue-200">{genElapsed}s</span>
           </div>
@@ -428,7 +428,7 @@ const ReportsSection = ({
               ? report.content
               : report.content?.analysis || 'No analysis available';
             
-            /* Colour theme per report type — matches landing page */
+            /* Colour theme per report type - matches landing page */
             const rTheme = {
               quick_summary: { headerBg: "bg-gradient-to-r from-emerald-700 to-green-600", badge: "bg-green-500", label: "Quick Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-gradient-to-r from-slate-900 to-blue-900", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
@@ -486,7 +486,7 @@ const ReportsSection = ({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="px-4 pb-4 border-t border-slate-100 pt-4">
-                      {/* DO NOT UNDO — Action buttons at TOP of report box */}
+                      {/* DO NOT UNDO - Action buttons at TOP of report box */}
                       <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-slate-100">
                         <Button
                           variant="outline"
@@ -519,7 +519,7 @@ const ReportsSection = ({
                               data-testid={`barrister-view-locked-${report.report_id}`}
                             >
                               <Presentation className="w-4 h-4 mr-1.5" />
-                              Barrister View — unlock after all 6 reports
+                              Barrister View - unlock after all 6 reports
                             </Button>
                           )
                         )}
@@ -538,7 +538,7 @@ const ReportsSection = ({
                           size="sm"
                           onClick={() => {
                             navigate(`/cases/${caseId}/reports/${report.report_id}`);
-                            toast.info("Navigating to full report — use your browser's print/share option.");
+                            toast.info("Navigating to full report - use your browser's print/share option.");
                           }}
                           className="text-slate-700"
                           data-testid={`print-report-btn-${report.report_id}`}
@@ -548,7 +548,7 @@ const ReportsSection = ({
                         </Button>
                       </div>
 
-                      {/* DO NOT UNDO — Report content rendered as formatted Markdown */}
+                      {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
                         <div className="legal-report">
                           <ReactMarkdown
@@ -635,14 +635,14 @@ const ReportsSection = ({
               </div>
             </div>
 
-            {/* DO NOT UNDO — Report generation time warning */}
+            {/* DO NOT UNDO - Report generation time warning */}
             <div className="rounded-xl border-2 border-blue-400/40 bg-blue-500/10 p-4" data-testid="report-generation-warning">
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-blue-200 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-base font-bold text-blue-100">Searching case materials…</p>
+                  <p className="text-base font-bold text-blue-100">Searching case materials...</p>
                   <p className="text-sm text-blue-100/80">
-                    Reports can take 10–25 minutes for large files. Keep this window open while generation runs.
+                    Reports can take 10-25 minutes for large files. Keep this window open while generation runs.
                   </p>
                 </div>
               </div>
@@ -679,7 +679,7 @@ const ReportsSection = ({
         caseId={caseId}
       />
 
-      {/* DO NOT UNDO — Delete Report Confirmation Dialog */}
+      {/* DO NOT UNDO - Delete Report Confirmation Dialog */}
       <AlertDialog open={!!deleteReportId} onOpenChange={() => setDeleteReportId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
