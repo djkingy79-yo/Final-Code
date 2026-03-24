@@ -258,11 +258,11 @@ const StateAppealStats = () => {
     <section className="py-16 px-6 bg-background border-t border-border" data-testid="state-appeal-stats-section">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
-          <p className="text-red-600 dark:text-blue-400 font-semibold text-xs uppercase tracking-widest mb-3">Appeals In Your State</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-500 dark:text-blue-400 font-semibold text-sm uppercase tracking-widest mb-4">Appeals In Your State</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             How Many Appeals Were Filed In Your State?
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-base">
             Tap your state to see criminal appeal data — filings, success rates, top grounds, and the most common offences appealed.
           </p>
         </div>
@@ -274,7 +274,7 @@ const StateAppealStats = () => {
               key={st}
               onClick={() => setSelected(st)}
               data-testid={`state-btn-${st}`}
-              className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+              className={`px-5 py-2.5 rounded-xl text-base font-bold transition-all ${
                 selected === st
                   ? "bg-red-600 text-white shadow-lg shadow-red-600/30 scale-105"
                   : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
@@ -291,10 +291,10 @@ const StateAppealStats = () => {
           <div className="bg-slate-900 dark:bg-slate-950 px-6 py-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
-                <h3 className="text-white font-bold text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-white font-bold text-xl" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {data.name}
                 </h3>
-                <p className="text-slate-400 text-xs">{data.court}</p>
+                <p className="text-slate-300 text-sm">{data.court}</p>
               </div>
               <div className="flex items-center gap-1.5 bg-emerald-600/20 border border-emerald-500/30 rounded-lg px-3 py-1.5">
                 <TrendingUp className="w-4 h-4 text-emerald-400" />
@@ -306,26 +306,26 @@ const StateAppealStats = () => {
           {/* Key Numbers */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
             <div className="bg-card p-4 text-center">
-              <p className="text-2xl font-bold text-foreground">{data.filed}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Appeals Filed</p>
+              <p className="text-3xl font-bold text-foreground">{data.filed}</p>
+              <p className="text-sm text-muted-foreground mt-1">Appeals Filed</p>
             </div>
             <div className="bg-card p-4 text-center">
-              <p className="text-2xl font-bold text-emerald-600">{data.allowed}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Allowed / Varied</p>
+              <p className="text-3xl font-bold text-emerald-400">{data.allowed}</p>
+              <p className="text-sm text-muted-foreground mt-1">Allowed / Varied</p>
             </div>
             <div className="bg-card p-4 text-center">
-              <p className="text-2xl font-bold text-red-600">{data.dismissed}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Dismissed / Refused</p>
+              <p className="text-3xl font-bold text-red-400">{data.dismissed}</p>
+              <p className="text-sm text-muted-foreground mt-1">Dismissed / Refused</p>
             </div>
             <div className="bg-card p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">{data.pending}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Pending</p>
+              <p className="text-3xl font-bold text-blue-400">{data.pending}</p>
+              <p className="text-sm text-muted-foreground mt-1">Pending</p>
             </div>
           </div>
 
           {/* Conviction vs Sentence split */}
           <div className="px-6 py-4 border-t border-border">
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4 text-base">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                 <span className="text-muted-foreground">Conviction Appeals: <strong className="text-foreground">{data.convictionAppeals}</strong></span>
@@ -347,7 +347,7 @@ const StateAppealStats = () => {
           <div className="grid md:grid-cols-2 gap-px bg-border border-t border-border">
             {/* Top Grounds */}
             <div className="bg-card p-5">
-              <h4 className="font-bold text-foreground text-sm mb-3 flex items-center gap-2">
+              <h4 className="font-bold text-foreground text-lg mb-4 flex items-center gap-2">
                 <Scale className="w-4 h-4 text-blue-600" />
                 Top Appeal Grounds (Ranked)
               </h4>
@@ -357,10 +357,10 @@ const StateAppealStats = () => {
                     <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
                       i === 0 ? 'bg-red-600' : i === 1 ? 'bg-blue-600' : 'bg-slate-500'
                     }`}>{i + 1}</span>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 text-base">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-foreground font-medium truncate">{g.ground}</span>
-                        <span className="text-xs text-muted-foreground font-bold shrink-0">{g.pct}%</span>
+                        <span className="text-base text-foreground font-semibold truncate">{g.ground}</span>
+                        <span className="text-base text-muted-foreground font-bold shrink-0">{g.pct}%</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-muted mt-1 overflow-hidden">
                         <div className={`h-full rounded-full transition-all ${
@@ -375,19 +375,19 @@ const StateAppealStats = () => {
 
             {/* Crime Types */}
             <div className="bg-card p-5">
-              <h4 className="font-bold text-foreground text-sm mb-3 flex items-center gap-2">
+              <h4 className="font-bold text-foreground text-lg mb-4 flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-emerald-600" />
                 Offence Types Appealed
               </h4>
               <div className="space-y-2">
                 {data.topCrimes.map((c, i) => (
                   <div key={i} className="flex items-center justify-between gap-3">
-                    <span className="text-xs text-foreground font-medium">{c.crime}</span>
+                    <span className="text-base text-foreground font-semibold">{c.crime}</span>
                     <div className="flex items-center gap-2">
                       <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
                         <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${c.pct * 3}%` }}></div>
                       </div>
-                      <span className="text-xs text-muted-foreground font-bold w-8 text-right">{c.pct}%</span>
+                      <span className="text-base text-muted-foreground font-bold w-10 text-right">{c.pct}%</span>
                     </div>
                   </div>
                 ))}
@@ -397,10 +397,10 @@ const StateAppealStats = () => {
 
           {/* Footer */}
           <div className="px-6 py-3 bg-muted/50 border-t border-border flex items-center justify-between flex-wrap gap-2">
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Source: {data.source}. Some figures are estimates based on available court data.
             </p>
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Avg processing time: <strong>{data.avgTime}</strong>
             </p>
           </div>

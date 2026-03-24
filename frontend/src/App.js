@@ -70,7 +70,8 @@ const AuthCallback = () => {
 
     const processAuth = async () => {
       const hash = window.location.hash;
-      const sessionId = new URLSearchParams(hash.substring(1)).get("session_id");
+      const query = window.location.search;
+      const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
       if (sessionId) {
         try {
@@ -95,10 +96,10 @@ const AuthCallback = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto"></div>
-        <p className="mt-4 text-slate-600 font-medium">Authenticating...</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-950">
+      <div className="text-center text-slate-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+        <p className="mt-4 text-slate-300 font-medium">Authenticating...</p>
       </div>
     </div>
   );
@@ -145,10 +146,10 @@ const ProtectedRoute = ({ children }) => {
 
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto"></div>
-          <p className="mt-4 text-slate-600 font-medium">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="text-center text-slate-100">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
+          <p className="mt-4 text-slate-300 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -172,7 +173,7 @@ function AppRouter() {
   const location = useLocation();
 
   // Check URL fragment for session_id synchronously during render
-  if (location.hash?.includes("session_id=")) {
+  if (location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
     return <AuthCallback />;
   }
 

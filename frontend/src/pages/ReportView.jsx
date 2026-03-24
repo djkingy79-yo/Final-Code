@@ -524,7 +524,7 @@ const ReportView = () => {
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div>
                 <p className="text-xs uppercase tracking-wider opacity-70 mb-1">{theme.label}</p>
-                <h1 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="report-title">
+                <h1 className="text-3xl sm:text-4xl font-bold text-slate-100" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="report-title">
                   {report?.title || `${caseData?.title || "Case"} Report`}
                 </h1>
                 <p className="text-sm opacity-80 mt-1">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
@@ -604,7 +604,7 @@ const ReportView = () => {
                       {idx + 1}
                     </span>
                     <h3
-                      className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wide"
+                      className="text-2xl font-bold text-slate-100 uppercase tracking-wide"
                       style={{ fontFamily: "Crimson Pro, serif" }}
                       data-testid={`report-section-heading-${idx + 1}`}
                     >
@@ -614,7 +614,7 @@ const ReportView = () => {
                 </div>
 
                 {/* Section content with professional markdown rendering */}
-                <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-sm" data-testid={`report-section-content-${idx + 1}`}>
+                <div className="bg-slate-900 rounded-lg border border-slate-700 p-6 sm:p-7 shadow-md" data-testid={`report-section-content-${idx + 1}`}>
                   <MarkdownBlock text={section.content} testId={`report-section-md-${idx + 1}`} />
                 </div>
 
