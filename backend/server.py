@@ -3541,6 +3541,9 @@ Summary: {case.get('summary', 'N/A')}
         if len(grounds) > limits["grounds_limit"]:
             case_context += f"[... {len(grounds) - limits['grounds_limit']} additional grounds omitted for speed ...]\n"
 
+    grounds_titles = [g.get('title') for g in grounds if g.get('title')]
+    grounds_enumerated = "\n".join([f"{idx + 1}. {title}" for idx, title in enumerate(grounds_titles)])
+
     # Define prompts based on report type with offence-specific language
     base_system = get_offence_system_prompt(offence_category)
     report_guardrails = """
@@ -3569,30 +3572,30 @@ FORMATTING RULES — STRICTLY ENFORCED:
 - Every section heading MUST be followed by substantive content (minimum 3-4 detailed paragraphs). If a section cannot be substantiated from the case material, omit it entirely.
 - Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
 - SECTION HEADINGS: Use ONLY ## for numbered section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires...").
-- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (300+ words), NOT as bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
+- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (minimum 300 words in Quick Summary, 500+ words in Full Detailed, 900+ words in Extensive). Do NOT use bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
 """
     
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 1800 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
+You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2500 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT.
 
 {case_context}
 
-Write MINIMUM 1800 words (target range 1800-2500 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
+Write MINIMUM 2500 words (target range 2500-3500 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
 
 ## 1. CASE SNAPSHOT
 3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
 
 ## 2. PRIMARY ISSUES IDENTIFIED
-6-8 bullet points. Each bullet must include:
+6-10 bullet points. Each bullet must include:
 - Issue label
 - Which document/evidence it comes from
 - Why it matters legally for an appeal
 
-## 3. TOP POTENTIAL GROUNDS (PREVIEW)
-For each of the 3-5 strongest grounds:
+## 3. ALL GROUNDS IDENTIFIED (PREVIEW)
+You MUST list EVERY ground identified in the case materials (use the grounds list provided below). For each ground:
 - Ground title + type (e.g., Procedural Irregularity, Manifestly Excessive Sentence)
 - Strength rating: Strong / Moderate / Weak
 - 2-3 sentence legal rationale referencing the specific case facts
@@ -3630,10 +3633,16 @@ The Extensive Report ($200) adds on top of the Full Detailed:
 - Fallback positions and alternative argument strategies for each ground
 - Tailored AustLII search strings for further research
 
+## 8. CLIENT PLAIN-ENGLISH GUIDE
+THIS MUST BE THE FINAL SECTION. Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic.
+
 IMPORTANT:
 - No cost estimates or funding discussion.
 - No witness contradiction or witness credibility section.
-- Be specific to the supplied material throughout — do not write generic legal advice."""
+- Be specific to the supplied material throughout — do not write generic legal advice.
+
+GROUNDS TO COVER (MUST INCLUDE ALL):
+{grounds_enumerated}"""
 
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
@@ -3642,6 +3651,7 @@ You are generating a PAID Full Detailed Report ($150 AUD). The user has ALREADY 
 
 THIS REPORT MUST BUILD ON — NOT REPEAT — THE QUICK SUMMARY. Do NOT re-state the same overview-level analysis. Instead:
 - Where the Quick Summary previewed 3-5 grounds, THIS report must provide FULL analysis with Crown response, rebuttal strategy, and appeal impact for EVERY viable ground.
+- You MUST include every ground listed in GROUNDS TO COVER (no omissions) with a minimum of 500 words per ground.
 - Where the Quick Summary listed 3 sentencing comparators, THIS report must provide 8+ with detailed outcome analysis paragraphs.
 - Where the Quick Summary gave a 2-paragraph appeal outlook, THIS report must provide full outcome pathway analysis, submissions blueprint, and actionable steps.
 - Every section must deliver NEW insights, deeper strategy, and hearing-ready material that was NOT in the Quick Summary.
@@ -3652,7 +3662,10 @@ CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop.
 
 {case_context}
 
-Target range 4500-6500 words. This report must feel premium, strategic, and hearing-ready.
+GROUNDS TO COVER (MUST INCLUDE ALL — if 9 grounds, write 9 full analyses):
+{grounds_enumerated}
+
+Target range 7000-9000 words. This report must feel premium, strategic, and hearing-ready.
 
 CRITICAL — NO REPETITION FROM QUICK SUMMARY:
 The user already has a Quick Summary covering the case overview, top grounds preview, and basic sentencing comparison. This Full Detailed report must ADVANCE beyond that with deep analysis, complete ground-by-ground strategy, expanded sentencing tables, full outcome matrices, and hearing preparation content NOT present in the Quick Summary. Do NOT rewrite the case overview — jump straight into deep strategic analysis.
@@ -3662,7 +3675,7 @@ SECTION ORDERING: Analysis first, then Strategy, then Practical steps, then Clie
 Use this exact structure:
 
 ## 1. EXECUTIVE BRIEF
-High-impact summary: strongest grounds, jurisdiction posture, likely pathways to relief, urgency items, and recommended next steps. This should read as a confident assessment of the appeal prospects.
+High-impact summary: strongest grounds, jurisdiction posture, likely pathways to relief, urgency items, and recommended next steps. Include a clear case snapshot paragraph (defendant, offence, sentence, court, judge) and a short list of primary issues at the end of this section.
 
 ## 2. FORENSIC CASE CHRONOLOGY
 Chronological reconstruction of the case with event date, source anchor (which document/evidence), and legal significance of each event. Include at least 10 dated entries from the supplied material.
@@ -3671,11 +3684,12 @@ Chronological reconstruction of the case with event date, source anchor (which d
 For each document/source uploaded: key extracts, reliability context, probative value, and appellate relevance.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
-For each viable ground provide:
+For EACH ground listed in GROUNDS TO COVER above (no omissions), provide:
 - Legal threshold and supporting material from the case
 - Viability rating (Strong / Moderate / Weak) with reasoning
 - Likely Crown response and aggressive defence reply strategy
 - **How this ground could assist in a successful appeal** — explain the practical impact if established (e.g., conviction quashed, sentence reduced, retrial ordered)
+- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 500 words per ground.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
 Provide a markdown table with at least 8 comparable sentencing outcomes.
@@ -3770,29 +3784,32 @@ The user has ALREADY received BOTH:
 2. A PAID Full Detailed Report (executive brief, forensic chronology, evidence digest, grounds portfolio with Crown/defence strategy, 8+ sentencing comparisons, outcome options matrix, evidence gaps checklist, 10-12 precedent cases, statutory framework, argument strategy, submissions blueprint, appeal steps guide, action plan, and plain-English brief)
 
 THIS PREMIUM REPORT MUST BUILD ON — NOT REPEAT — THE FULL DETAILED REPORT. Do NOT re-state the same analysis. Instead:
-- Where the Full Detailed analysed each ground with Crown response and rebuttal, THIS report must provide 300+ word DEEP analysis per ground with fallback positions, additional authorities, and draft submission paragraphs.
+- Where the Full Detailed analysed each ground with Crown response and rebuttal, THIS report must provide 900+ word DEEP analysis per ground with fallback positions, additional authorities, and draft submission paragraphs.
 - Where the Full Detailed provided 8+ sentencing comparisons, THIS report must provide 12+ with detailed paragraph analysis for EACH case.
 - Where the Full Detailed had a precedent matrix of 10-12 cases, THIS report must have 15+ with specific factual comparisons.
 - THIS report adds 5 ENTIRELY NEW sections not in the Full Detailed: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning.
 - Every shared section must go SIGNIFICANTLY deeper with fresh analysis, additional authorities, and more detailed strategy.
 
 Every section must directly reference the supplied case material. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
-CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 300 words. Reference specific documents, dates, and facts from the case throughout."""
+CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 900 words. Reference specific documents, dates, and facts from the case throughout."""
         user_prompt = f"""Create a PREMIUM EXTENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be the MOST COMPREHENSIVE report — significantly more detailed and case-specific than the Full Detailed tier.
 
 {case_context}
 
-Target range 7000-10000 words. Every section must reference specific facts, documents, and dates from this case.
+GROUNDS TO COVER (MUST INCLUDE ALL — if 9 grounds, write 9 full analyses):
+{grounds_enumerated}
+
+Target range 15000-20000 words. Every section must reference specific facts, documents, and dates from this case.
 
 CRITICAL — NO REPETITION FROM FULL DETAILED REPORT:
-The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (300+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
+The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (900+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
 
 SECTION ORDERING: Case-specific analysis first, then broader legal framework, then strategy, then practical steps, then client brief at the very end.
 
 Use this exact structure:
 
 ## 1. EXECUTIVE BRIEF
-Confident assessment of the appeal: strongest grounds with specific evidence anchors, jurisdiction posture, pathways to relief, urgency items, and a clear one-paragraph statement of the case. Reference the specific documents and facts that support each conclusion.
+Confident assessment of the appeal: strongest grounds with specific evidence anchors, jurisdiction posture, pathways to relief, urgency items, and a clear one-paragraph statement of the case. Include a case snapshot paragraph (defendant, offence, sentence, court, judge) and a short list of primary issues at the end.
 
 ## 2. FORENSIC CASE CHRONOLOGY
 Comprehensive chronological reconstruction with at least 15 dated entries. For each entry:
@@ -3811,7 +3828,7 @@ For EACH document/source in the case material:
 - Rating: Critical / Important / Supporting / Peripheral
 
 ## 4. GROUNDS OF MERIT — DEEP ANALYSIS
-For EACH viable ground, provide a MINIMUM 300-word analysis:
+For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIMUM 900-word analysis:
 - Legal threshold with specific statutory reference (section + Act + year)
 - How the case facts satisfy or approach this threshold — quote evidence
 - Viability rating (Strong / Moderate / Weak) with detailed reasoning
@@ -3820,6 +3837,8 @@ For EACH viable ground, provide a MINIMUM 300-word analysis:
 - **Practical impact if this ground succeeds** — what order the court would make, what happens to the conviction/sentence
 - Key authority with AustLII link and explanation of how it applies
 - Fallback position if the primary argument on this ground is rejected
+- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 900 words per ground
+- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers)
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
 Markdown table with at least 12 comparable sentencing outcomes:
@@ -4090,7 +4109,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
             passes = [
                 ("PASS 1/5", """
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis.
 
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
@@ -4099,7 +4118,7 @@ NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
                 ("PASS 2/5", """
 
-NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions.
+NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Section 4 MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" with 500+ words per ground. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES with full citations and specific factual parallels)
@@ -4108,7 +4127,7 @@ NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections. STOP after section 6."""),
                 ("PASS 3/5", """
 
-NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it.
+NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it.
 
 ## 7. OUTCOME OPTIONS AVAILABLE — keep ALL outcome pathways in this ONE section
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
@@ -4117,7 +4136,7 @@ NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections. STOP after section 9."""),
                 ("PASS 4/5", """
 
-NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court.
+NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court.
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case)
 ## 11. HOW TO ARGUE EACH TOP GROUND
@@ -4126,7 +4145,7 @@ NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. 
 Write ALL 3 sections. STOP after section 12."""),
                 ("PASS 5/5", """
 
-NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client.
+NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
 ## 14. PRIORITISED ACTION PLAN — keep ALL timeframes (72-hour, 7-day, 28-day) in this ONE section
@@ -4151,7 +4170,7 @@ Write ALL 3 sections. Do NOT truncate any section."""),
             passes = [
                 ("PASS 1/7", """
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions of what analysis should be done — DO the analysis.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions of what analysis should be done — DO the analysis.
 
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
@@ -4160,15 +4179,15 @@ NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive, CASE-SPECIFIC legal 
 Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
                 ("PASS 2/7", """
 
-NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Section 4 requires 300+ words PER ground — write each ground as flowing paragraphs covering threshold, facts, viability, Crown response, rebuttal, and impact. Do NOT use bullet points or sub-headings within grounds.
+NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Section 4 requires 900+ words PER ground and MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" in flowing paragraphs (no bullet points or sub-headings within grounds).
 
-## 4. GROUNDS OF MERIT — DEEP ANALYSIS (300+ words per ground, flowing paragraphs)
+## 4. GROUNDS OF MERIT — DEEP ANALYSIS (900+ words per ground, flowing paragraphs)
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES with full citations and specific factual comparisons)
 
 Write BOTH sections with deep case-specific analysis. STOP after section 5."""),
                 ("PASS 3/7", """
 
-NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Apply every provision to THIS case's facts. Do NOT just describe what the law says — explain how it applies to Homann specifically.
+NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Apply every provision to THIS case's facts. Do NOT just describe what the law says — explain how it applies to Homann specifically.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
 ## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS — keep ALL pathways in this ONE section
@@ -4177,7 +4196,7 @@ NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive, CASE-SPECIFIC legal 
 Write ALL 3 sections. STOP after section 8."""),
                 ("PASS 4/7", """
 
-NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. For the precedent matrix, include full citations and explain the SPECIFIC factual parallel to Homann's case for each. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally.
+NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. For the precedent matrix, include full citations and explain the SPECIFIC factual parallel to Homann's case for each. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally.
 
 ## 9. PRECEDENT OUTCOME MATRIX (15+ CASES with full citations and factual parallels)
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case specifically)
@@ -4186,7 +4205,7 @@ NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive, CASE-SPECIFIC legal
 Write ALL 3 sections. STOP after section 11."""),
                 ("PASS 5/7", """
 
-NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. These are practical hearing-ready sections — include draft submission paragraphs, specific questions to prepare for, and conference agenda items tied to THIS case.
+NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. These are practical hearing-ready sections — include draft submission paragraphs, specific questions to prepare for, and conference agenda items tied to THIS case.
 
 ## 12. SUBMISSIONS BLUEPRINT
 ## 13. HEARING PREPARATION NOTES
@@ -4195,7 +4214,7 @@ NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive, CASE-SPECIFIC lega
 Write ALL 3 sections. STOP after section 14."""),
                 ("PASS 6/7", """
 
-NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. Include specific court forms, filing deadlines for NSW, and similar case search strategies tied to THIS case's facts.
+NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Include specific court forms, filing deadlines for NSW, and similar case search strategies tied to THIS case's facts.
 
 ## 15. COURT PATHWAY OPERATIONS PLAYBOOK
 ## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
@@ -4204,7 +4223,7 @@ NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive, CASE-SPECIFIC lega
 Write ALL 3 sections. STOP after section 17."""),
                 ("PASS 7/7", """
 
-NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 1500 WORDS for this pass. The action plan must have specific deadlines. The risk assessment must address specific weaknesses in THIS case. The plain-English brief must explain the specific grounds and their implications to the client.
+NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. The action plan must have specific deadlines. The risk assessment must address specific weaknesses in THIS case. The plain-English brief must explain the specific grounds and their implications to the client.
 
 ## 18. PRIORITISED ACTION PLAN — keep ALL timeframes in this ONE section
 ## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
@@ -4239,13 +4258,13 @@ Write ALL 3 sections. Do NOT truncate any section."""),
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
     min_lengths = {
-        "quick_summary": 12000,
-        "full_detailed": 32000,
-        "extensive_log": 48000
+        "quick_summary": 18000,
+        "full_detailed": 50000,
+        "extensive_log": 95000
     }
     target_length = min_lengths.get(report_type, 12000)
     if aggressive_mode:
-        target_length = int(target_length * 1.6)
+        target_length = int(target_length * 2.0)
 
     if len(response) < target_length:
         try:
@@ -4261,6 +4280,10 @@ REPORT TO EXPAND:
                 response = expanded
         except Exception as exc:
             logger.warning(f"Report expansion skipped: {exc}")
+
+    response = response.strip()
+    if not response.endswith("DO NOT UNDO."):
+        response = f"{response}\n\nDO NOT UNDO."
 
     # Parse response to extract grounds of merit
     grounds_of_merit = []

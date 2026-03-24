@@ -38,16 +38,12 @@ const titleFromSnake = (value) => {
 const cleanSentence = (s) => {
   if (!s) return s;
   let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*\(http.*$/, "").replace(/\s*https?:.*$/, "");
-  // Strip analysis text that follows the actual sentence
-  c = c.replace(/\.\s*(The|This|It|His|Her|Their|A|An|In|Under|Given|However|Furthermore|Additionally|Moreover|Such|Notably|Importantly|As|While|Although|With|For|Where|Which).*/s, ".");
-  c = c.replace(/,\s*(which|that|this|is crucial|meaning|indicating|suggesting|reflecting|demonstrating|as per|pursuant|under s\.).*/si, "");
   c = c.trim();
-  if (c.length > 150) c = c.substring(0, 147) + "...";
   return c.trim();
 };
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
-  if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return cleanSentence(caseInfo.sentence.trim());
+  if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
   // Match "sentenced to X years imprisonment" patterns
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
   if (byVerb?.[1]) return cleanSentence(byVerb[1]);
