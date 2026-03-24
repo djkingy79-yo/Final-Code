@@ -932,8 +932,11 @@ const babelMetadataPlugin = ({ types: t }) => {
           }
           if (!localName) return;
 
-          const rootPath = importPath.parentPath?.parentPath || importPath.findParent((p) => p.isProgram());
-          if (!rootPath) return;
+          let rootPath = importPath.parentPath?.parentPath || importPath.findParent((p) => p.isProgram());
+          if (!rootPath || typeof rootPath.traverse !== "function") {
+            rootPath = importPath.findParent((p) => typeof p.traverse === "function");
+          }
+          if (!rootPath || typeof rootPath.traverse !== "function") return;
 
           // Search for usages of this component
           rootPath.traverse({
