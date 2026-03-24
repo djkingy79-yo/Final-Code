@@ -3442,11 +3442,11 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     # Context limits — FULL DETAIL for quality reports
     context_limits = {
         "quick_summary": {
-            "per_doc_chars": 1000,
-            "total_doc_chars": 8000,
-            "timeline_limit": 50,
-            "notes_limit": 30,
-            "note_chars": 200,
+            "per_doc_chars": 700,
+            "total_doc_chars": 6000,
+            "timeline_limit": 40,
+            "notes_limit": 20,
+            "note_chars": 180,
             "grounds_limit": 30,
             "ground_desc_chars": 200,
             "ground_analysis_chars": 200,
@@ -3578,12 +3578,12 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2500 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
+You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT.
 
 {case_context}
 
-Write MINIMUM 2500 words (target range 2500-3500 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
+Write MINIMUM 2000 words (target range 2000-3000 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
 
 ## 1. CASE SNAPSHOT
 3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
@@ -4258,7 +4258,7 @@ Write ALL 3 sections. Do NOT truncate any section."""),
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
     min_lengths = {
-        "quick_summary": 18000,
+        "quick_summary": 9000,
         "full_detailed": 50000,
         "extensive_log": 95000
     }
