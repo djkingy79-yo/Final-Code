@@ -44,6 +44,8 @@ const cleanSentence = (s) => {
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
+  const combined = analysis.match(/sentenced?\s+to\s+([^\n\.]{10,180}?(?:non[- ]?parole\s+period|NPP)[^\n\.]{0,160})/i);
+  if (combined?.[1]) return cleanSentence(combined[1]);
   // Match "sentenced to X years imprisonment" patterns
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
   if (byVerb?.[1]) return cleanSentence(byVerb[1]);
@@ -199,12 +201,12 @@ const parseAnalysisSections = (analysis = "") => {
 };
 
 const MarkdownBlock = ({ text, testId }) => (
-  <div className="legal-report" data-testid={testId}>
+  <div className="legal-report text-[1.02rem] sm:text-[1.08rem] text-slate-100" data-testid={testId}>
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
         a: ({ href, children }) => (
-          <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline underline-offset-2 hover:text-blue-800 break-words font-medium">{children}</a>
+          <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-300 underline underline-offset-2 hover:text-blue-200 break-words font-medium">{children}</a>
         ),
         table: ({ children }) => (
           <div className="legal-report-table-wrap" data-testid={`${testId}-table-wrapper`}>
@@ -480,12 +482,12 @@ const ReportView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
+    <div className="min-h-screen bg-slate-950">
       {/* Sticky action bar */}
-      <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40 no-print" data-testid="report-header">
+      <header className="bg-slate-950/95 backdrop-blur border-b border-slate-800 sticky top-0 z-40 no-print" data-testid="report-header">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${caseId}`)} data-testid="back-btn">
+          <div className="flex items-center justify-between gap-3 flex-wrap text-slate-100">
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${caseId}`)} className="text-slate-200 hover:text-white hover:bg-slate-800" data-testid="back-btn">
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
@@ -495,18 +497,18 @@ const ReportView = () => {
                     <Eye className="w-4 h-4 mr-2" /> Barrister View
                   </Button>
                 ) : (
-                  <Button variant="outline" size="sm" disabled className="text-slate-400 border-slate-200 cursor-not-allowed" data-testid="barrister-view-locked">
+                  <Button variant="outline" size="sm" disabled className="text-slate-500 border-slate-700 cursor-not-allowed" data-testid="barrister-view-locked">
                     <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 3 reports
                   </Button>
                 )
               )}
-              <Button variant="outline" size="sm" onClick={handlePrint} data-testid="print-btn">
+              <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-700 text-slate-200 hover:bg-slate-800" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100" data-testid="export-docx-btn">
+              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-blue-600/20 text-blue-200 border-blue-500/40 hover:bg-blue-600/30" data-testid="export-docx-btn">
                 <FileText className="w-4 h-4 mr-2" /> Export Word
               </Button>
-              <Button size="sm" onClick={handleExportPDF} className="bg-slate-900 text-white hover:bg-slate-800" data-testid="export-pdf-btn">
+              <Button size="sm" onClick={handleExportPDF} className="bg-blue-600 text-white hover:bg-blue-500" data-testid="export-pdf-btn">
                 <Download className="w-4 h-4 mr-2" /> Export PDF
               </Button>
             </div>
@@ -542,27 +544,27 @@ const ReportView = () => {
           </div>
 
           {/* ===== CASE OVERVIEW GRID ===== */}
-          <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-5 sm:p-6" data-testid="report-top-summary-box">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-sm" style={{ fontFamily: "Crimson Pro, serif" }}>
-              <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Defendant</p>
-                <p className="font-bold text-slate-900 dark:text-white" data-testid="report-summary-accused">{defendantName}</p>
+          <div className="bg-slate-900 border-b border-slate-700 p-5 sm:p-6" data-testid="report-top-summary-box">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 text-base" style={{ fontFamily: "Crimson Pro, serif" }}>
+              <div className="lg:col-span-1">
+                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Defendant</p>
+                <p className="font-semibold text-slate-100" data-testid="report-summary-accused">{defendantName}</p>
               </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Offence</p>
-                <p className="font-bold text-slate-900 dark:text-white" data-testid="report-summary-offence">{offenceLabel}</p>
+              <div className="lg:col-span-1">
+                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Offence</p>
+                <p className="font-semibold text-slate-100" data-testid="report-summary-offence">{offenceLabel}</p>
               </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Sentence</p>
-                <p className="font-bold text-slate-900 dark:text-white" data-testid="report-summary-sentence">{sentenceSummary}</p>
+              <div className="sm:col-span-2 lg:col-span-2">
+                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Sentence</p>
+                <p className="font-semibold text-slate-100" data-testid="report-summary-sentence">{sentenceSummary}</p>
               </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Documents</p>
-                <p className="font-bold text-slate-900 dark:text-white">{documentsCount} files analysed</p>
+              <div className="lg:col-span-1">
+                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Documents</p>
+                <p className="font-semibold text-slate-100">{documentsCount} files analysed</p>
               </div>
-              <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-0.5">Timeline Events</p>
-                <p className="font-bold text-slate-900 dark:text-white">{eventsCount} events</p>
+              <div className="lg:col-span-1">
+                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Timeline Events</p>
+                <p className="font-semibold text-slate-100">{eventsCount} events</p>
               </div>
             </div>
           </div>
@@ -656,38 +658,40 @@ const ReportView = () => {
         .legal-report h3 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #0f172a;
+          color: #f8fafc;
           margin: 1.4rem 0 0.7rem;
         }
         .legal-report h2 { font-size: 1.25rem; }
         .legal-report h3 { font-size: 1.1rem; }
-        .legal-report strong { color: #111827; font-weight: 700; }
+        .legal-report strong { color: #f8fafc; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.4rem; }
+        .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
+          min-width: 720px;
           border-collapse: collapse;
           margin: 0.8rem 0;
-          background: #ffffff;
+          background: #0b1220;
         }
         .legal-report th {
-          background: #dbeafe;
-          color: #0f172a !important;
+          background: #1e293b;
+          color: #e2e8f0 !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
-          border: 1px solid #cbd5e1;
+          border: 1px solid #334155;
           padding: 10px 12px;
           font-size: 0.95rem;
           vertical-align: top;
-          color: #0f172a;
+          color: #e2e8f0;
         }
         .legal-report blockquote {
           border-left: 4px solid #38bdf8;
           padding: 10px 14px;
           margin: 0.8rem 0;
-          background: #eff6ff;
-          color: #1e3a8a;
+          background: #1e293b;
+          color: #e2e8f0;
         }
         @media print {
           body {
@@ -695,7 +699,15 @@ const ReportView = () => {
             -webkit-print-color-adjust: exact;
           }
           .no-print { display: none !important; }
-          .legal-report { font-size: 12px; }
+          .legal-report { font-size: 12px; color: #0f172a; }
+          .legal-report h1,
+          .legal-report h2,
+          .legal-report h3,
+          .legal-report strong { color: #0f172a; }
+          .legal-report table { background: #ffffff; }
+          .legal-report th { background: #dbeafe; color: #0f172a !important; }
+          .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
+          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; }
         }
       `}</style>
     </div>

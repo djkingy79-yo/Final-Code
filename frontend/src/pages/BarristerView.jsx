@@ -1730,38 +1730,40 @@ const BarristerView = ({ user }) => {
         .legal-report h3 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #0f172a;
+          color: #f8fafc;
           margin: 1.4rem 0 0.7rem;
         }
         .legal-report h2 { font-size: 1.25rem; }
         .legal-report h3 { font-size: 1.1rem; }
-        .legal-report strong { color: #111827; font-weight: 700; }
+        .legal-report strong { color: #f8fafc; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.45rem; }
+        .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
+          min-width: 720px;
           border-collapse: collapse;
           margin: 0.8rem 0;
-          background: #ffffff;
+          background: #0b1220;
         }
         .legal-report th {
-          background: #dbeafe;
-          color: #0f172a !important;
+          background: #1e293b;
+          color: #e2e8f0 !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
-          border: 1px solid #cbd5e1;
+          border: 1px solid #334155;
           padding: 10px 12px;
           font-size: 0.95rem;
           vertical-align: top;
-          color: #0f172a;
+          color: #e2e8f0;
         }
         .legal-report blockquote {
           border-left: 4px solid #38bdf8;
           padding: 10px 14px;
           margin: 0.8rem 0;
-          background: #eff6ff;
-          color: #1e3a8a;
+          background: #1e293b;
+          color: #e2e8f0;
         }
         @media print {
           @page {
@@ -1781,6 +1783,16 @@ const BarristerView = ({ user }) => {
           .no-print {
             display: none !important;
           }
+
+          .legal-report { font-size: 12px; color: #0f172a; }
+          .legal-report h1,
+          .legal-report h2,
+          .legal-report h3,
+          .legal-report strong { color: #0f172a; }
+          .legal-report table { background: #ffffff; }
+          .legal-report th { background: #dbeafe; color: #0f172a !important; }
+          .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
+          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; }
         }
       `}</style>
     </div>

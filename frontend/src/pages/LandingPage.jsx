@@ -239,8 +239,8 @@ const LandingPage = () => {
                   decoding="async"
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80'; }}
                 />
-                {/* Floating Card - hidden on small mobile */}
-                <div className="hidden sm:block absolute -bottom-6 -left-6 bg-card p-5 rounded-2xl shadow-xl border border-border">
+                {/* Floating Card - hidden on mobile/tablet */}
+                <div className="hidden lg:block absolute -bottom-6 -left-6 bg-card p-5 rounded-2xl shadow-xl border border-border" data-testid="hero-grounds-floating-card">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
                       <BarChart3 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
