@@ -209,7 +209,7 @@ const HowItWorksPage = () => {
       lightColor: "bg-slate-50 dark:bg-slate-800/50",
       borderColor: "border-slate-200 dark:border-slate-700",
       textColor: "text-slate-700 dark:text-slate-300",
-      description: "Click 'Barrister View' on any Extensive Log report to see a clean, professional presentation that synthesises all your reports. Includes a full Table of Contents, source tracking, and conference-ready formatting.",
+      description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       whatYouSee: [
         "Table of Contents with clickable section headings",
         "'Synthesised from N reports' badge showing how many reports were combined",

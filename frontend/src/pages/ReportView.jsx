@@ -275,6 +275,7 @@ const ReportView = () => {
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasAllReports, setHasAllReports] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -282,14 +283,20 @@ const ReportView = () => {
 
   const fetchData = async () => {
     try {
-      const [reportRes, caseRes, groundsRes] = await Promise.all([
+      const [reportRes, caseRes, groundsRes, reportsRes] = await Promise.all([
         axios.get(`${API}/cases/${caseId}/reports/${reportId}`),
         axios.get(`${API}/cases/${caseId}`),
         axios.get(`${API}/cases/${caseId}/grounds`),
+        axios.get(`${API}/cases/${caseId}/reports`),
       ]);
       setReport(reportRes.data);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
+      const requiredTypes = ["quick_summary", "full_detailed", "extensive_log"];
+      const hasAll = requiredTypes.every((type) =>
+        (reportsRes.data || []).some((item) => item.report_type === type && item.status === "completed")
+      );
+      setHasAllReports(hasAll);
     } catch (error) {
       toast.error("Failed to load report");
       navigate(`/cases/${caseId}`);
@@ -487,9 +494,15 @@ const ReportView = () => {
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
               {report?.report_type === 'extensive_log' && (
-              <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} data-testid="barrister-view-btn">
-                <Eye className="w-4 h-4 mr-2" /> Barrister View
-              </Button>
+                hasAllReports ? (
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} data-testid="barrister-view-btn">
+                    <Eye className="w-4 h-4 mr-2" /> Barrister View
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" disabled className="text-slate-400 border-slate-200 cursor-not-allowed" data-testid="barrister-view-locked">
+                    <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 3 reports
+                  </Button>
+                )
               )}
               <Button variant="outline" size="sm" onClick={handlePrint} data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
@@ -638,8 +651,8 @@ const ReportView = () => {
 
       <style>{`
         .legal-report {
-          font-size: 0.95rem;
-          line-height: 1.7;
+          font-size: 1.05rem;
+          line-height: 1.8;
           color: #0f172a;
         }
         .legal-report h1,
@@ -648,10 +661,10 @@ const ReportView = () => {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #0f172a;
-          margin: 1.2rem 0 0.6rem;
+          margin: 1.4rem 0 0.7rem;
         }
-        .legal-report h2 { font-size: 1.1rem; }
-        .legal-report h3 { font-size: 1rem; }
+        .legal-report h2 { font-size: 1.25rem; }
+        .legal-report h3 { font-size: 1.1rem; }
         .legal-report strong { color: #111827; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.4rem; }

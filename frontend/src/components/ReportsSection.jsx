@@ -86,13 +86,21 @@ const ReportsSection = ({
   const [pendingReportType, setPendingReportType] = useState(null);
   const [aggressiveMode, setAggressiveMode] = useState(false);
 
+  const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
+  const hasAllReports = requiredReportTypes.every((type) =>
+    reports.some((report) => report.report_type === type && report.status === "completed")
+  );
+
   const handleExportPDF = async (reportId) => {
     try {
       toast.info("Generating PDF...");
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
+        const token = localStorage.getItem("session_token");
+        const baseUrl = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+        const href = token ? `${baseUrl}?session_token=${token}` : baseUrl;
         const a = document.createElement('a');
-        a.href = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+        a.href = href;
         a.target = '_blank';
         a.rel = 'noopener';
         document.body.appendChild(a);
@@ -478,16 +486,31 @@ const ReportsSection = ({
                           <Eye className="w-4 h-4 mr-1.5" />
                           Full Report Page
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)}
-                          className="text-slate-700"
-                          data-testid={`barrister-view-btn-${report.report_id}`}
-                        >
-                          <Presentation className="w-4 h-4 mr-1.5" />
-                          Barrister View
-                        </Button>
+                        {report.report_type === 'extensive_log' && (
+                          hasAllReports ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)}
+                              className="text-slate-700"
+                              data-testid={`barrister-view-btn-${report.report_id}`}
+                            >
+                              <Presentation className="w-4 h-4 mr-1.5" />
+                              Barrister View
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled
+                              className="text-slate-400 border-slate-200 cursor-not-allowed"
+                              data-testid={`barrister-view-locked-${report.report_id}`}
+                            >
+                              <Presentation className="w-4 h-4 mr-1.5" />
+                              Barrister View — unlock after all 3 reports
+                            </Button>
+                          )
+                        )}
                         <Button
                           variant="outline"
                           size="sm"

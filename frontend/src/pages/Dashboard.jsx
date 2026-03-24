@@ -321,7 +321,7 @@ const Dashboard = ({ user }) => {
               )}
               <Button
                 onClick={() => setShowNewCaseDialog(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/20"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/30 px-6 py-4 text-lg font-semibold"
                 data-testid="new-case-btn"
               >
                 <Plus className="w-4 h-4 mr-2" />

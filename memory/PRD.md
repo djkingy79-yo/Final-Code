@@ -955,3 +955,12 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Report header fallbacks** — offence/defendant now derived from report analysis when case metadata is missing
 - [x] **Table header contrast fix** — stronger table header styling in Report + Barrister views
 - [x] **Testing**: Lint checks only (report view needs authenticated verification)
+
+### Dark-Only UI + Report Depth Controls (Mar 2026) ✅
+- [x] **Dark-only theme enforced** — light mode disabled, brighter contrast overrides, larger global typography
+- [x] **Landing page simplified** — reduced to 1–4 step summary with full walkthrough on How It Works page
+- [x] **Primary CTAs enlarged** — bigger, higher-contrast buttons for case creation and hero actions
+- [x] **Barrister View gating** — only unlocks once all three reports are completed
+- [x] **Aggressive report depth controls** — server enforces higher length targets and expansion pass when reports are too short
+- [x] **Section ordering for Barrister View** — canonical ordering to keep flow consistent
+- [x] **Testing**: Landing page screenshot captured (landing-dark-summary.png)

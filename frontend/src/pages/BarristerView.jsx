@@ -518,6 +518,32 @@ const BarristerView = ({ user }) => {
     return selected.map((item) => item.text).join("\n\n");
   };
 
+  const SECTION_PRIORITY = [
+    [/EXECUTIVE/, /SUMMARY/],
+    [/CHRONOLOGY/, /TIMELINE/],
+    [/DOCUMENT/],
+    [/GROUNDS OF MERIT/, /GROUNDS/],
+    [/SENTENCING/, /COMPARATIVE/],
+    [/COMMON APPEAL GROUNDS/, /APPEAL GROUNDS/],
+    [/OUTCOME/, /OPTIONS/],
+    [/EVIDENTIARY/, /GAPS/],
+    [/PRECEDENT/, /MATRIX/],
+    [/STATUTORY/, /DOCTRINAL/, /LEGISLATION/],
+    [/ARGUE/, /STRATEGY/, /SUBMISSIONS/],
+    [/HEARING/, /CONFERENCE/],
+    [/FORMS/, /APPEAL/, /PATHWAY/],
+    [/ACTION PLAN/, /PRIORITISED/],
+    [/RISK/],
+    [/CLIENT/, /PLAIN-ENGLISH/]
+  ];
+
+  const getSectionPriority = (title) => {
+    if (!title) return 999;
+    const upper = title.toUpperCase();
+    const index = SECTION_PRIORITY.findIndex((patterns) => patterns.some((pattern) => pattern.test(upper)));
+    return index === -1 ? 999 : index;
+  };
+
   // Parse and structure the analysis for legal brief format
   const parseAnalysis = (content) => {
     if (!content?.analysis) return { sections: [] };
@@ -709,10 +735,18 @@ const BarristerView = ({ user }) => {
           sources: Array.from(bucket.sources)
         };
       })
-      .filter(Boolean)
-      .map((section, index) => ({ ...section, number: String(index + 1) }));
+      .filter(Boolean);
 
-    return { sections: merged, normalCount, aggressiveCount, totalReports: availableReports.length };
+    const ordered = [...merged].sort((a, b) => {
+      const aIndex = getSectionPriority(a.title);
+      const bIndex = getSectionPriority(b.title);
+      if (aIndex === bIndex) return 0;
+      return aIndex - bIndex;
+    });
+
+    const renumbered = ordered.map((section, index) => ({ ...section, number: String(index + 1) }));
+
+    return { sections: renumbered, normalCount, aggressiveCount, totalReports: availableReports.length };
   };
 
   const parsedContent = mergeAllReports();
@@ -1687,8 +1721,8 @@ const BarristerView = ({ user }) => {
       {/* Print Styles */}
       <style>{`
         .legal-report {
-          font-size: 0.95rem;
-          line-height: 1.75;
+          font-size: 1.05rem;
+          line-height: 1.8;
           color: #0f172a;
         }
         .legal-report h1,
@@ -1697,10 +1731,10 @@ const BarristerView = ({ user }) => {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #0f172a;
-          margin: 1.2rem 0 0.6rem;
+          margin: 1.4rem 0 0.7rem;
         }
-        .legal-report h2 { font-size: 1.1rem; }
-        .legal-report h3 { font-size: 1rem; }
+        .legal-report h2 { font-size: 1.25rem; }
+        .legal-report h3 { font-size: 1.1rem; }
         .legal-report strong { color: #111827; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.45rem; }

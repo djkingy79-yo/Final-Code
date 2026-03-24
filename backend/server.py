@@ -3356,18 +3356,16 @@ def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> st
 
     sections = _split_report_sections(text)
     cleaned_sections = []
-    seen_sets = []
-    seen_texts = []
-
-    min_keep = 1 if report_type == "quick_summary" else 2
-    quality_threshold = 1.0 if report_type == "quick_summary" else 1.25
+    similarity_threshold = 0.85 if report_type == "quick_summary" else 0.82
 
     for heading, content in sections:
         paragraphs = [p.strip() for p in re.split(r"\n\s*\n+", content) if p.strip()]
         kept = []
+        seen_sets = []
+        seen_texts = []
 
         for paragraph in paragraphs:
-            if len(paragraph) < 60:
+            if len(paragraph) < 40:
                 kept.append(paragraph)
                 continue
 
@@ -3377,24 +3375,16 @@ def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> st
                 if paragraph in existing_text or existing_text in paragraph:
                     is_duplicate = True
                     break
-                if _jaccard_similarity(paragraph_set, existing_set) > 0.68:
+                if _jaccard_similarity(paragraph_set, existing_set) > similarity_threshold:
                     is_duplicate = True
                     break
 
             if is_duplicate:
                 continue
 
-            score = _paragraph_quality_score(paragraph, anchor_terms)
-            if score < quality_threshold and len(kept) >= min_keep:
-                continue
-
             kept.append(paragraph)
             seen_sets.append(paragraph_set)
             seen_texts.append(paragraph)
-
-        if len(kept) < min_keep and paragraphs:
-            scored = sorted(paragraphs, key=lambda p: _paragraph_quality_score(p, anchor_terms), reverse=True)
-            kept = scored[:min_keep]
 
         cleaned_sections.append((heading, "\n\n".join(kept).strip()))
 
@@ -4008,6 +3998,7 @@ TONE SHIFT — You are no longer a cautious analyst. You are a senior criminal a
 - For each ground, write the opening line you would say to the Court of Appeal judges
 - Assume a standard (non-aggressive) version already exists. This aggressive report must add materially NEW arguments, authorities, and case-specific detail — do NOT rephrase or recycle the standard report.
 - If a point is already made earlier in this report, deepen it with NEW evidence, dates, or authority rather than repeating it.
+- This aggressive report must be approximately DOUBLE the depth of the standard report. Do not compress or summarise.
 
 EXPANDED SCOPE:
 1. DOUBLE the word count target for the entire report.
@@ -4246,6 +4237,30 @@ Write ALL 3 sections. Do NOT truncate any section."""),
 
     anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
     response = _dedupe_report_content(response, report_type, anchor_terms)
+
+    min_lengths = {
+        "quick_summary": 12000,
+        "full_detailed": 32000,
+        "extensive_log": 48000
+    }
+    target_length = min_lengths.get(report_type, 12000)
+    if aggressive_mode:
+        target_length = int(target_length * 1.6)
+
+    if len(response) < target_length:
+        try:
+            expansion_prompt = f"""{case_context}
+
+You must expand the report below to at least {target_length} characters. Keep ALL headings exactly as-is. Do NOT remove or rewrite any existing text — only ADD new paragraphs with case-specific details, dates, document references, and authorities. Avoid repetition. Maintain the tone of the report. If aggressive mode is on, keep the assertive advocacy style and add stronger authority chains.
+
+REPORT TO EXPAND:
+{response}
+"""
+            expanded = await _subprocess_llm(expansion_prompt)
+            if expanded and len(expanded) > len(response):
+                response = expanded
+        except Exception as exc:
+            logger.warning(f"Report expansion skipped: {exc}")
 
     # Parse response to extract grounds of merit
     grounds_of_merit = []
