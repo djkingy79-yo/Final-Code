@@ -403,7 +403,10 @@ const LandingPage = () => {
           </div>
 
           {/* Stats Row — Real Australian Criminal Appeal Data */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div className="text-center mb-4">
+            <p className="text-blue-300 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12" data-testid="landing-statistics-row">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
               <div className="text-slate-300 text-sm">Criminal Appeals Filed Annually</div>

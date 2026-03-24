@@ -319,18 +319,18 @@ const ReportsSection = ({
       </div>
 
       {generatingReport && (
-        <div className="mb-6 border-2 border-blue-300 bg-blue-50 rounded-xl overflow-hidden p-6" data-testid="report-generating-indicator">
+        <div className="mb-6 border-2 border-blue-400/40 bg-blue-500/10 rounded-xl overflow-hidden p-6" data-testid="report-generating-indicator">
           <div className="flex flex-wrap items-center gap-4 mb-3">
-            <Loader2 className="w-6 h-6 animate-spin text-blue-600 flex-shrink-0" />
+            <Loader2 className="w-6 h-6 animate-spin text-blue-200 flex-shrink-0" />
             <div>
-              <p className="text-lg font-bold text-blue-900">Searching case materials…</p>
-              <p className="text-sm text-blue-800">We are reading documents, timeline events, and grounds. Larger cases can take 10–25 minutes.</p>
+              <p className="text-lg font-bold text-blue-100">Searching case materials…</p>
+              <p className="text-sm text-blue-100/80">We are reading documents, timeline events, and grounds. Larger cases can take 10–25 minutes.</p>
             </div>
-            <span className="ml-auto text-sm font-mono text-blue-700">{genElapsed}s</span>
+            <span className="ml-auto text-sm font-mono text-blue-200">{genElapsed}s</span>
           </div>
-          <div className="w-full h-3 bg-blue-200 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-blue-500/30 rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+              className="h-full bg-blue-400 rounded-full transition-all duration-1000"
               style={{ width: `${Math.min(98, (genElapsed / 900) * 100)}%` }}
             />
           </div>
@@ -571,35 +571,35 @@ const ReportsSection = ({
           if (!open) setAggressiveMode(false);
         }}
       >
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg bg-slate-950 text-slate-100 border border-slate-800">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <DialogTitle className="text-2xl text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Generate Report
             </DialogTitle>
-            <DialogDescription>Select the type of report you'd like to generate.</DialogDescription>
+            <DialogDescription className="text-slate-300 text-sm">Select the type of report you'd like to generate.</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             {REPORT_TYPES.map((type) => (
               <div
                 key={type.value}
                 onClick={() => setSelectedReportType(type.value)}
-                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                className={`p-5 border-2 rounded-xl cursor-pointer transition-all ${
                   selectedReportType === type.value 
-                    ? 'border-slate-900 bg-slate-50' 
-                    : 'border-slate-200 hover:border-slate-300'
+                    ? 'border-blue-500 bg-slate-900/80 shadow-lg shadow-blue-500/20' 
+                    : 'border-slate-800 bg-slate-900/40 hover:border-slate-600'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium text-slate-900">{type.label}</h4>
-                    <p className="text-sm text-slate-600 mt-1">{type.description}</p>
+                    <h4 className="font-semibold text-white text-base">{type.label}</h4>
+                    <p className="text-sm text-slate-300 mt-1">{type.description}</p>
                   </div>
                   {type.isFree ? (
-                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                    <Badge variant="outline" className="bg-emerald-500/20 text-emerald-200 border-emerald-400/40 px-3 py-1 text-xs">
                       FREE
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                    <Badge variant="outline" className="bg-blue-500/20 text-blue-200 border-blue-400/40 px-3 py-1 text-xs">
                       ${type.price.toFixed(2)} AUD
                     </Badge>
                   )}
@@ -607,11 +607,11 @@ const ReportsSection = ({
               </div>
             ))}
 
-            <div className="rounded-lg border border-rose-200 bg-rose-50 p-3" data-testid="aggressive-mode-container">
+            <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-4" data-testid="aggressive-mode-container">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-rose-900">Aggressive Mode</p>
-                  <p className="text-xs text-rose-700">
+                  <p className="text-base font-semibold text-rose-200">Aggressive Mode</p>
+                  <p className="text-sm text-rose-100/80">
                     Uses stronger advocacy language with primary and fallback orders sought.
                   </p>
                 </div>
@@ -624,12 +624,12 @@ const ReportsSection = ({
             </div>
 
             {/* DO NOT UNDO — Report generation time warning */}
-            <div className="rounded-xl border-2 border-blue-300 bg-blue-50 p-4" data-testid="report-generation-warning">
+            <div className="rounded-xl border-2 border-blue-400/40 bg-blue-500/10 p-4" data-testid="report-generation-warning">
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                <AlertCircle className="w-5 h-5 text-blue-200 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-base font-bold text-blue-900">Searching case materials…</p>
-                  <p className="text-sm text-blue-800">
+                  <p className="text-base font-bold text-blue-100">Searching case materials…</p>
+                  <p className="text-sm text-blue-100/80">
                     Reports can take 10–25 minutes for large files. Keep this window open while generation runs.
                   </p>
                 </div>
@@ -637,13 +637,13 @@ const ReportsSection = ({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowReportDialog(false)}>
+            <Button variant="outline" onClick={() => setShowReportDialog(false)} className="border-slate-700 text-slate-200 hover:bg-slate-800">
               Cancel
             </Button>
             <Button 
               onClick={() => handleGenerateReport(selectedReportType)}
               disabled={!selectedReportType || generatingReport}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-600 text-white hover:bg-blue-500 px-6 py-4 text-base font-semibold"
             >
               {generatingReport ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

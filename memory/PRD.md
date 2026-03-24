@@ -964,3 +964,11 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Aggressive report depth controls** — server enforces higher length targets and expansion pass when reports are too short
 - [x] **Section ordering for Barrister View** — canonical ordering to keep flow consistent
 - [x] **Testing**: Landing page screenshot captured (landing-dark-summary.png)
+
+### How It Works Visuals + Report Generation Feedback (Mar 2026) ✅
+- [x] **How It Works rebuilt with visuals** — added step-by-step images and captions (upload, grounds, reports, barrister, progress)
+- [x] **Report dialog readability** — larger text, dark theme contrast, and clearer warnings during generation
+- [x] **Generation status visibility** — enlarged “Searching case materials” progress indicator and warning
+- [x] **Progress analysis timeout** — extended timeout with clearer messaging for large cases
+- [x] **Landing statistics clarity** — added explicit statistics label on the front page
+- [x] **Testing**: Landing + How It Works screenshots captured (landing-stats-section.png, how-it-works-visuals.png)

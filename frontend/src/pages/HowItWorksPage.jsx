@@ -57,6 +57,11 @@ const HowItWorksPage = () => {
       borderColor: "border-blue-200 dark:border-blue-800",
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1565094003921-5abbacc16740?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxhdXN0cmFsaWFuJTIwaGlnaCUyMGNvdXJ0JTIwYnVpbGRpbmclMjBqdXN0aWNlfGVufDB8fHx8MTc3MzQyMDYzOXww&ixlib=rb-4.1.0&q=85",
+        alt: "Australian High Court building",
+        caption: "Your case starts with a clean dashboard setup and proper court details."
+      },
       whatYouSee: [
         "A clean form asking for: Case title, Defendant name, Court, State/Territory",
         "Dropdown to select the offence category (Homicide, Assault, Drug Offences, etc.)",
@@ -85,6 +90,11 @@ const HowItWorksPage = () => {
       borderColor: "border-emerald-200 dark:border-emerald-800",
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1596784326488-23581279e33d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwxfHxkb2N1bWVudCUyMHVwbG9hZCUyMGxhcHRvcHxlbnwwfHx8Ymx1ZXwxNzc0MzYzNTk3fDA&ixlib=rb-4.1.0&q=85",
+        alt: "Document upload screen on laptop",
+        caption: "Drop files in one place — transcripts, sentencing remarks, exhibits, and expert reports."
+      },
       whatYouSee: [
         "A drag-and-drop upload area — drop multiple files at once",
         "Support for PDF, DOCX, TXT, JPG, and PNG files",
@@ -118,6 +128,11 @@ const HowItWorksPage = () => {
       borderColor: "border-purple-200 dark:border-purple-800",
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+        alt: "Legal documents and notes",
+        caption: "Grounds count appears after the AI scans every document in your case file."
+      },
       whatYouSee: [
         "The total number of potential appeal grounds identified (e.g., '5 Grounds Found')",
         "Strength distribution: how many are Strong, Moderate, or Weak",
@@ -152,6 +167,11 @@ const HowItWorksPage = () => {
       borderColor: "border-indigo-200 dark:border-indigo-800",
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1769029265788-d7921a103403?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHxjb3VydHJvb20lMjBnYXZlbHxlbnwwfHx8fDE3NzQzNjM1OTZ8MA&ixlib=rb-4.1.0&q=85",
+        alt: "Courtroom gavel",
+        caption: "Investigate Grounds unlocks the full legal reasoning and case‑specific evidence links."
+      },
       whatYouSee: [
         "Detailed analysis of EACH ground with legal basis and relevant legislation",
         "Supporting evidence from your specific documents cited for each ground",
@@ -187,6 +207,11 @@ const HowItWorksPage = () => {
       borderColor: "border-red-200 dark:border-red-800",
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+        alt: "Report paperwork on desk",
+        caption: "Reports include sentencing tables, grounds analysis, and court-ready formatting."
+      },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
         "Each report generates with professional formatting: tables, links, case citations",
@@ -210,6 +235,11 @@ const HowItWorksPage = () => {
       borderColor: "border-slate-200 dark:border-slate-700",
       textColor: "text-slate-700 dark:text-slate-300",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1589307904488-7d60ff29c975?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
+        alt: "Barrister desk with legal brief",
+        caption: "Barrister View combines every report into a court‑ready briefing pack."
+      },
       whatYouSee: [
         "Table of Contents with clickable section headings",
         "'Synthesised from N reports' badge showing how many reports were combined",
@@ -234,6 +264,11 @@ const HowItWorksPage = () => {
       borderColor: "border-amber-200 dark:border-amber-800",
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
+      visual: {
+        image: "https://images.unsplash.com/photo-1698768383340-9145c3c9889a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwxfHx0aW1lbGluZSUyMGNhbGVuZGFyJTIwbm90ZXN8ZW58MHx8fGJsdWV8MTc3NDM2MzU5OHww&ixlib=rb-4.1.0&q=85",
+        alt: "Calendar timeline",
+        caption: "Progress tracking keeps deadlines visible and your next steps clear."
+      },
       whatYouSee: [
         "Deadline Tracker — shows key dates and how many days remain",
         "Appeal Checklist — step-by-step list of everything you need to do",
@@ -431,6 +466,23 @@ const HowItWorksPage = () => {
                 <p className="text-base text-foreground leading-relaxed" style={{ fontFamily: "Crimson Pro, serif" }}>
                   {step.description}
                 </p>
+
+                {step.visual && (
+                  <div className="grid md:grid-cols-[1.2fr,1fr] gap-4 items-center" data-testid={`how-it-works-step-${step.num}-visual`}>
+                    <div className="rounded-xl overflow-hidden border border-border shadow-lg bg-slate-900">
+                      <img
+                        src={step.visual.image}
+                        alt={step.visual.alt}
+                        className="w-full h-48 sm:h-56 object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {step.visual.caption}
+                    </div>
+                  </div>
+                )}
 
                 {/* What You'll See */}
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>

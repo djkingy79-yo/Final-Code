@@ -610,13 +610,20 @@ const CaseDetail = ({ user }) => {
   /* DO NOT UNDO — AI Progress Analysis generation */
   const handleGenerateProgressAnalysis = async () => {
     setGeneratingProgress(true);
+    toast.info("Generating progress analysis — this can take several minutes.");
     try {
-      const response = await axios.post(`${API}/cases/${caseId}/progress-analysis`);
+      const response = await axios.post(`${API}/cases/${caseId}/progress-analysis`, {}, {
+        timeout: 600000
+      });
       setProgressAnalysis(response.data);
       toast.success("Progress analysis generated");
     } catch (error) {
       console.error("Progress analysis error:", error);
-      toast.error(error?.response?.data?.detail || "Failed to generate progress analysis. Please try again.");
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        toast.error("Progress analysis timed out. Please retry — larger cases can take longer.");
+      } else {
+        toast.error(error?.response?.data?.detail || "Failed to generate progress analysis. Please try again.");
+      }
     } finally {
       setGeneratingProgress(false);
     }
