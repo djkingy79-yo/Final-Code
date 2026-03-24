@@ -424,9 +424,13 @@ const ReportsSection = ({
               );
             }
 
-            const reportText = typeof report.content === 'string'
+            const rawReportText = typeof report.content === 'string'
               ? report.content
               : report.content?.analysis || 'No analysis available';
+            const reportText = (rawReportText || "")
+              .replace(/^\s*DO NOT UNDO\.?\s*$/gim, "")
+              .replace(/\n{3,}/g, "\n\n")
+              .trim();
             
             /* Colour theme per report type - matches landing page */
             const rTheme = {

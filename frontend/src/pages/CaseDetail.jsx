@@ -415,7 +415,7 @@ const CaseDetail = ({ user }) => {
     th { background: #e0f2fe; font-weight: 700; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
-    button, .no-print { display: none !important; }
+    .no-print { display: none !important; }
     @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
   </style>
 </head>
@@ -429,8 +429,13 @@ const CaseDetail = ({ user }) => {
 </html>`;
 
   const openTabPrintPreview = (mode = "print") => {
-    const contentEl = document.querySelector('[data-tab-content]');
+    const contentEl = document.querySelector('[data-tab-content][data-state="active"]') || document.querySelector('[data-tab-content]');
     if (!contentEl) {
+      toast.error("Nothing to export on this tab.");
+      return;
+    }
+    const contentHtml = (contentEl.innerHTML || "").trim();
+    if (!contentHtml) {
       toast.error("Nothing to export on this tab.");
       return;
     }
@@ -438,7 +443,7 @@ const CaseDetail = ({ user }) => {
     const noticeHtml = mode === "pdf"
       ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
-    const html = buildTabPreviewHtml(contentEl.innerHTML, tabLabel, noticeHtml);
+    const html = buildTabPreviewHtml(contentHtml, tabLabel, noticeHtml);
     const previewWindow = window.open("", "_blank", "width=1200,height=800");
     if (!previewWindow) {
       const blob = new Blob([html], { type: "text/html" });
