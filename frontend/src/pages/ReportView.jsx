@@ -380,7 +380,7 @@ const ReportView = () => {
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
 
-    const footer = '<div class="footer">Prepared for: <strong>Debra King</strong></div>';
+    const footer = '<div class="footer">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</div>';
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -666,7 +666,7 @@ const ReportView = () => {
             </div>
             <div className="text-center pt-3 border-t border-slate-200 dark:border-slate-700">
               <p className="text-xs text-slate-400">
-                Prepared for <strong>Debra King</strong>
+                Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
               </p>
             </div>
           </div>

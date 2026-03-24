@@ -158,7 +158,7 @@ const BarristerView = ({ user }) => {
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
 
-    const footer = '<div class="footer">Prepared for: <strong>Debra King</strong></div>';
+    const footer = '<div class="footer">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</div>';
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -532,7 +532,50 @@ const BarristerView = ({ user }) => {
     return selected.map((item) => item.text).join("\n\n");
   };
 
+  const buildSynthesisSection = (reports) => {
+    if (!reports?.length) return null;
+    const paragraphs = [];
+    reports.forEach((report, reportIndex) => {
+      const analysis = report?.content?.analysis || "";
+      splitParagraphs(analysis).forEach((paragraph, paragraphIndex) => {
+        paragraphs.push({
+          text: paragraph,
+          score: scoreParagraph(paragraph, anchorSet || new Set()),
+          reportRank: reportIndex,
+          paragraphIndex
+        });
+      });
+    });
+
+    if (!paragraphs.length) return null;
+
+    paragraphs.sort((a, b) => (b.score - a.score) || (b.text.length - a.text.length));
+    const selected = [];
+    const selectedSets = [];
+
+    const isTooSimilar = (candidate) => {
+      const candidateSet = toWordSet(candidate.text);
+      return selectedSets.some((set) => jaccardSimilarity(candidateSet, set) > 0.7);
+    };
+
+    for (const paragraph of paragraphs) {
+      if (selected.length >= 10) break;
+      if (isTooSimilar(paragraph)) continue;
+      selected.push(paragraph.text);
+      selectedSets.push(toWordSet(paragraph.text));
+    }
+
+    if (!selected.length) return null;
+
+    return {
+      title: "Barrister Synthesis",
+      content: selected.join("\n\n"),
+      sources: ["All Reports"]
+    };
+  };
+
   const SECTION_PRIORITY = [
+    [/BARRISTER SYNTHESIS/],
     [/EXECUTIVE/, /SUMMARY/],
     [/CHRONOLOGY/, /TIMELINE/],
     [/DOCUMENT/],
@@ -750,6 +793,11 @@ const BarristerView = ({ user }) => {
         };
       })
       .filter(Boolean);
+
+    const synthesisSection = buildSynthesisSection(sortedReports);
+    if (synthesisSection) {
+      merged.unshift(synthesisSection);
+    }
 
     const ordered = [...merged].sort((a, b) => {
       const aIndex = getSectionPriority(a.title);
@@ -1027,8 +1075,8 @@ const BarristerView = ({ user }) => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Prepared for</p>
-                    <p className="text-sm text-white font-medium">Debra King</p>
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Footer</p>
+                    <p className="text-sm text-white font-medium">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</p>
                   </div>
                 </div>
               </div>
@@ -1716,7 +1764,7 @@ const BarristerView = ({ user }) => {
                   </span>
                 </div>
                 <p className="text-slate-300 mb-2">
-                  Prepared for: <span className="font-semibold text-white">Debra King</span>
+                  Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
                 </p>
                 <div className="mt-4 pt-4 border-t border-slate-700">
                   <p className="text-xs text-slate-400">

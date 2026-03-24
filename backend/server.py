@@ -1592,7 +1592,7 @@ async def export_timeline_pdf(case_id: str, request: Request):
     # Header
     story.append(Paragraph(f"Case Timeline: {case.get('title', 'Untitled Case')}", title_style))
     story.append(Paragraph(f"Generated for {user.name} on {datetime.now().strftime('%d %B %Y')}", subtitle_style))
-    story.append(Paragraph("Prepared for: Debra King", meta_style))
+    story.append(Paragraph("Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW", meta_style))
     story.append(Spacer(1, 10*mm))
     
     # Summary stats
@@ -2279,7 +2279,7 @@ GROUNDS OF APPEAL:
 DATED: {datetime.now().strftime('%d %B %Y')}
 
 ---
-Prepared for: Debra King"""
+Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"""
     elif template_id == "leave_to_appeal":
         content = f"""APPLICATION FOR LEAVE TO APPEAL AGAINST SENTENCE
 
@@ -2293,7 +2293,7 @@ WHY LEAVE SHOULD BE GRANTED: {body.get('why_leave_granted', '[REASONS]')}
 
 DATED: {datetime.now().strftime('%d %B %Y')}
 ---
-Prepared for: Debra King"""
+Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"""
     else:
         content = f"Template {template_id} - Please contact support for this template."
     
@@ -4335,11 +4335,14 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
             "extensive_log": "Extensive Case Log & Analysis"
         }
         analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode)
+        title = report_titles.get(report_type, "Report")
+        if aggressive_mode:
+            title = f"{title} (Aggressive)"
         await db.reports.update_one(
             {"report_id": report_id},
             {"$set": {
                 "status": "completed",
-                "title": report_titles.get(report_type, "Report"),
+                "title": title,
                 "content": {
                     "analysis": analysis_result["analysis"],
                     "case_title": analysis_result["case_data"].get("title", ""),
@@ -4415,12 +4418,15 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         "full_detailed": "Full Detailed Legal Analysis",
         "extensive_log": "Extensive Case Log & Analysis"
     }
+    title = report_titles.get(report_type, "Report")
+    if report_request.aggressive_mode:
+        title = f"{title} (Aggressive)"
     placeholder = {
         "report_id": report_id,
         "case_id": case_id,
         "user_id": user.user_id,
         "report_type": report_type,
-        "title": report_titles.get(report_type, "Report"),
+        "title": title,
         "content": {"analysis": "", "aggressive_mode": report_request.aggressive_mode},
         "grounds_of_merit": [],
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -4750,7 +4756,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story = []
     
     # Header
-    story.append(Paragraph("Prepared for: Debra King", styles['ReportSubtitle']))
+    story.append(Paragraph("Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW", styles['ReportSubtitle']))
     story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
     story.append(Paragraph(f"Defendant: {case.get('defendant_name', 'Unknown')}", styles['ReportSubtitle']))
     story.append(Spacer(1, 10*mm))
@@ -4758,10 +4764,13 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     # Report Title
     report_type_labels = {
         'quick_summary': 'Quick Case Summary',
-        'full_detailed': 'Full Detailed Legal Analysis', 
+        'full_detailed': 'Full Detailed Legal Analysis',
         'extensive_log': 'Extensive Case Log & Analysis'
     }
-    story.append(Paragraph(report_type_labels.get(report.get('report_type'), 'Legal Report'), styles['ReportTitle']))
+    title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    if report.get('content', {}).get('aggressive_mode'):
+        title = f"{title} (Aggressive)"
+    story.append(Paragraph(title, styles['ReportTitle']))
     story.append(Spacer(1, 5*mm))
     
     # Case Info Table
@@ -4863,7 +4872,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     # Footer disclaimer
     story.append(Spacer(1, 15*mm))
     story.append(Paragraph(
-        "Prepared for: Debra King",
+        "Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW",
         ParagraphStyle(
             name='Disclaimer',
             fontSize=8,
@@ -4952,7 +4961,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
 
     sub_header = doc.add_paragraph()
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    sub_run = sub_header.add_run("Prepared for: Debra King")
+    sub_run = sub_header.add_run("Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW")
     sub_run.font.size = Pt(11)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
 
@@ -4970,7 +4979,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         'full_detailed': 'Full Detailed Legal Analysis', 
         'extensive_log': 'Extensive Case Log & Analysis'
     }
-    title = doc.add_heading(report_type_labels.get(report.get('report_type'), 'Legal Report'), 0)
+    report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    if report.get('content', {}).get('aggressive_mode'):
+        report_title = f"{report_title} (Aggressive)"
+    title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     
     doc.add_paragraph()
@@ -5153,7 +5165,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disclaimer = doc.add_paragraph()
     disclaimer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disclaimer_run = disclaimer.add_run(
-        "Prepared for: Debra King"
+        "Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"
     )
     disclaimer_run.font.size = Pt(9)
     disclaimer_run.font.italic = True

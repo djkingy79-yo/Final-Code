@@ -83,13 +83,24 @@ const AuthCallback = () => {
           // Clean the hash from URL
           window.history.replaceState(null, "", window.location.pathname);
           navigate("/dashboard", { state: { user: response.data }, replace: true });
+          return;
         } catch (error) {
           console.error("Auth error:", error);
-          navigate("/", { replace: true });
         }
-      } else {
-        navigate("/", { replace: true });
       }
+
+      const existingToken = localStorage.getItem("session_token");
+      if (existingToken) {
+        try {
+          const me = await axios.get(`${API}/auth/me`);
+          navigate("/dashboard", { state: { user: me.data }, replace: true });
+          return;
+        } catch (error) {
+          localStorage.removeItem("session_token");
+        }
+      }
+
+      navigate("/", { replace: true });
     };
 
     processAuth();
@@ -173,12 +184,13 @@ function AppRouter() {
   const location = useLocation();
 
   // Check URL fragment for session_id synchronously during render
-  if (location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
+  if (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
     return <AuthCallback />;
   }
 
   return (
     <Routes>
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/" element={<LandingPage />} />
       <Route
         path="/dashboard"

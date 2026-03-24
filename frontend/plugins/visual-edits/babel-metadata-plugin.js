@@ -424,6 +424,11 @@ function usageIsCompositePortal({
 // ───────────────────────────────────────────────────────────────────────────────
 // Babel plugin for JSX transformation - adds metadata to all elements
 const babelMetadataPlugin = ({ types: t }) => {
+  // Disable visual edits plugin to prevent build crashes
+  return { visitor: {} };
+
+  // eslint-disable-next-line no-unreachable
+
   const fileNameCache = new Map();
 
   const ARRAY_METHODS = new Set([
