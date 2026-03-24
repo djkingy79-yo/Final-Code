@@ -4595,56 +4595,149 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name='ReportTitle',
-        fontSize=24,
-        spaceAfter=12,
+        fontSize=26,
+        spaceAfter=14,
         alignment=TA_CENTER,
         fontName='Helvetica-Bold'
     ))
     styles.add(ParagraphStyle(
         name='ReportSubtitle',
-        fontSize=14,
-        spaceAfter=12,
+        fontSize=12,
+        spaceAfter=10,
         alignment=TA_CENTER,
-        textColor=colors.grey
+        textColor=colors.HexColor('#475569')
     ))
     styles.add(ParagraphStyle(
         name='SectionHeader',
-        fontSize=14,
-        spaceBefore=20,
-        spaceAfter=10,
+        fontSize=16,
+        spaceBefore=18,
+        spaceAfter=8,
+        fontName='Helvetica-Bold',
+        textColor=colors.HexColor('#0f172a')
+    ))
+    styles.add(ParagraphStyle(
+        name='SubHeader',
+        fontSize=13,
+        spaceBefore=10,
+        spaceAfter=6,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#1e293b')
     ))
     styles.add(ParagraphStyle(
         name='ReportBodyText',
-        fontSize=10,
-        spaceAfter=8,
+        fontSize=11,
+        spaceAfter=6,
         alignment=TA_JUSTIFY,
-        leading=14
+        leading=16
+    ))
+    styles.add(ParagraphStyle(
+        name='BulletText',
+        parent=styles['ReportBodyText'],
+        leftIndent=12,
+        bulletIndent=6
     ))
     styles.add(ParagraphStyle(
         name='LawSection',
-        fontSize=9,
+        fontSize=10,
         spaceAfter=4,
-        leftIndent=20,
+        leftIndent=18,
         textColor=colors.HexColor('#1e40af')
     ))
     styles.add(ParagraphStyle(
         name='GroundTitle',
-        fontSize=11,
+        fontSize=13,
         spaceBefore=10,
         spaceAfter=4,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#92400e')
     ))
-    
+
+    def format_inline(text: str) -> str:
+        clean = (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        clean = re.sub(r"\*\*(.*?)\*\*", r"<b>\\1</b>", clean)
+        return clean
+
+    def render_table(lines):
+        rows = []
+        for line in lines:
+            parts = [p.strip() for p in line.strip().strip("|").split("|")]
+            if not parts:
+                continue
+            if all(set(p) <= set("-:") for p in parts):
+                continue
+            rows.append([re.sub(r"\*\*(.*?)\*\*", r"\\1", p) for p in parts])
+        if not rows:
+            return
+        col_count = max(len(r) for r in rows)
+        rows = [r + [""] * (col_count - len(r)) for r in rows]
+        col_width = doc.width / col_count
+        table = Table(rows, colWidths=[col_width] * col_count, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white])
+        ]))
+        story.append(table)
+        story.append(Spacer(1, 4*mm))
+
+    def render_markdown(text: str):
+        lines = (text or "").splitlines()
+        buffer = []
+        table_lines = []
+
+        def flush_paragraph():
+            if buffer:
+                paragraph = " ".join(buffer).strip()
+                if paragraph:
+                    story.append(Paragraph(format_inline(paragraph), styles['ReportBodyText']))
+                    story.append(Spacer(1, 2*mm))
+            buffer.clear()
+
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                flush_paragraph()
+                continue
+            if stripped.startswith("|") and "|" in stripped:
+                flush_paragraph()
+                table_lines.append(stripped)
+                continue
+            if table_lines and not (stripped.startswith("|") and "|" in stripped):
+                render_table(table_lines)
+                table_lines = []
+            if stripped.startswith("## "):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped[3:].strip()), styles['SectionHeader']))
+                story.append(Spacer(1, 2*mm))
+                continue
+            if stripped.startswith("### "):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped[4:].strip()), styles['SubHeader']))
+                story.append(Spacer(1, 1*mm))
+                continue
+            if stripped.startswith("- ") or stripped.startswith("• "):
+                flush_paragraph()
+                bullet_text = stripped[2:].strip()
+                story.append(Paragraph(f"• {format_inline(bullet_text)}", styles['BulletText']))
+                story.append(Spacer(1, 1*mm))
+                continue
+            buffer.append(stripped)
+
+        flush_paragraph()
+        if table_lines:
+            render_table(table_lines)
+
     story = []
     
     # Header
-    story.append(Paragraph("Criminal Appeal AI", styles['ReportSubtitle']))
-    story.append(Paragraph("Prepared for: Deb King, Glenmore Park 2745", styles['ReportSubtitle']))
-    story.append(Paragraph("One woman's fight for justice — seeking truth for Joshua Homann, failed by the system", styles['ReportSubtitle']))
-    story.append(Paragraph("Criminal Appeal Case Management", styles['ReportSubtitle']))
+    story.append(Paragraph("Appeal Case Manager", styles['ReportSubtitle']))
+    story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
+    story.append(Paragraph(f"Defendant: {case.get('defendant_name', 'Unknown')}", styles['ReportSubtitle']))
+    story.append(Paragraph("Criminal Appeal Report Package", styles['ReportSubtitle']))
     story.append(Spacer(1, 10*mm))
     
     # Report Title
@@ -4748,23 +4841,14 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     
     # Main Analysis Content
     story.append(Paragraph("DETAILED ANALYSIS", styles['SectionHeader']))
-    
+
     analysis_text = report.get('content', {}).get('analysis', 'No analysis available.')
-    
-    # Split analysis into paragraphs for better formatting
-    paragraphs = analysis_text.split('\n\n')
-    for para in paragraphs:
-        if para.strip():
-            # Clean up markdown-style formatting
-            clean_para = para.replace('**', '').replace('##', '').strip()
-            if clean_para:
-                story.append(Paragraph(clean_para, styles['ReportBodyText']))
-                story.append(Spacer(1, 3*mm))
-    
+    render_markdown(analysis_text)
+
     # Footer disclaimer
     story.append(Spacer(1, 15*mm))
     story.append(Paragraph(
-        "This report was generated by Criminal Appeal AI for Deb King, Glenmore Park 2745. It should be reviewed by qualified legal counsel before being relied upon in legal proceedings.",
+        "This report was generated by Appeal Case Manager. It should be reviewed by qualified legal counsel before being relied upon in legal proceedings.",
         ParagraphStyle(
             name='Disclaimer',
             fontSize=8,
@@ -4846,23 +4930,17 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Header
     header_para = doc.add_paragraph()
     header_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    header_run = header_para.add_run("CRIMINAL APPEAL AI")
-    header_run.font.size = Pt(12)
-    header_run.font.color.rgb = RGBColor(100, 116, 139)
-    
+    header_run = header_para.add_run("APPEAL CASE MANAGER")
+    header_run.font.size = Pt(14)
+    header_run.font.bold = True
+    header_run.font.color.rgb = RGBColor(15, 23, 42)
+
     sub_header = doc.add_paragraph()
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    sub_run = sub_header.add_run("Prepared for: Deb King, Glenmore Park 2745")
-    sub_run.font.size = Pt(10)
-    sub_run.font.color.rgb = RGBColor(100, 116, 139)
-    
-    motto_para = doc.add_paragraph()
-    motto_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    motto_run = motto_para.add_run("One woman's fight for justice — seeking truth for Joshua Homann, failed by the system")
-    motto_run.font.size = Pt(9)
-    motto_run.font.italic = True
-    motto_run.font.color.rgb = RGBColor(100, 116, 139)
-    
+    sub_run = sub_header.add_run(f"Case: {case.get('title', 'Unknown')}")
+    sub_run.font.size = Pt(11)
+    sub_run.font.color.rgb = RGBColor(71, 85, 105)
+
     doc.add_paragraph()
     
     # Report Title
@@ -4981,23 +5059,80 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     
     # Detailed Analysis
     doc.add_heading('DETAILED ANALYSIS', level=1)
-    
+
+    def add_table_docx(lines):
+        rows = []
+        for line in lines:
+            parts = [p.strip() for p in line.strip().strip("|").split("|")]
+            if not parts:
+                continue
+            if all(set(p) <= set("-:") for p in parts):
+                continue
+            rows.append(parts)
+        if not rows:
+            return
+        table = doc.add_table(rows=len(rows), cols=len(rows[0]))
+        table.style = 'Table Grid'
+        for r_idx, row in enumerate(rows):
+            for c_idx, value in enumerate(row):
+                cell = table.cell(r_idx, c_idx)
+                cell.text = value.replace('**', '')
+                if r_idx == 0:
+                    for run in cell.paragraphs[0].runs:
+                        run.bold = True
+        doc.add_paragraph()
+
+    def render_markdown_docx(text):
+        lines = (text or "").splitlines()
+        buffer = []
+        table_lines = []
+
+        def flush_paragraph():
+            if buffer:
+                paragraph = " ".join(buffer).replace('**', '').strip()
+                if paragraph:
+                    doc.add_paragraph(paragraph)
+            buffer.clear()
+
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                flush_paragraph()
+                continue
+            if stripped.startswith("|") and "|" in stripped:
+                flush_paragraph()
+                table_lines.append(stripped)
+                continue
+            if table_lines and not (stripped.startswith("|") and "|" in stripped):
+                add_table_docx(table_lines)
+                table_lines = []
+            if stripped.startswith("## "):
+                flush_paragraph()
+                doc.add_heading(stripped[3:].strip(), level=1)
+                continue
+            if stripped.startswith("### "):
+                flush_paragraph()
+                doc.add_heading(stripped[4:].strip(), level=2)
+                continue
+            if stripped.startswith("- ") or stripped.startswith("• "):
+                flush_paragraph()
+                doc.add_paragraph(stripped[2:].strip(), style='List Bullet')
+                continue
+            buffer.append(stripped)
+
+        flush_paragraph()
+        if table_lines:
+            add_table_docx(table_lines)
+
     analysis_text = report.get('content', {}).get('analysis', 'No analysis available.')
-    
-    # Split analysis into paragraphs
-    paragraphs = analysis_text.split('\n\n')
-    for para in paragraphs:
-        if para.strip():
-            clean_para = para.replace('**', '').replace('##', '').strip()
-            if clean_para:
-                doc.add_paragraph(clean_para)
+    render_markdown_docx(analysis_text)
     
     # Footer disclaimer
     doc.add_paragraph()
     disclaimer = doc.add_paragraph()
     disclaimer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disclaimer_run = disclaimer.add_run(
-        "This report was generated by Justitia AI and should be reviewed by qualified legal counsel before being relied upon in legal proceedings."
+        "This report was generated by Appeal Case Manager and should be reviewed by qualified legal counsel before being relied upon in legal proceedings."
     )
     disclaimer_run.font.size = Pt(9)
     disclaimer_run.font.italic = True
