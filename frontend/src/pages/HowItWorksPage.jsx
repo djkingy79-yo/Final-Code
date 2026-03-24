@@ -283,7 +283,7 @@ const HowItWorksPage = () => {
         "Deadline Tracker — shows key dates and how many days remain",
         "Appeal Checklist — step-by-step list of everything you need to do",
         "Notes section — add your own observations, questions for your lawyer, and reminders",
-        "Case comparison tool — see how your case compares to similar appeals",
+        "AI progress scan — generates a structured summary of next steps and risks",
       ],
       proTips: [
         "Set your conviction/sentence date immediately — all deadlines calculate from this",
@@ -309,7 +309,7 @@ const HowItWorksPage = () => {
       color: "from-emerald-600 to-green-500",
       badge: "bg-green-500",
       features: [
-        "7 sections: case snapshot, issues, grounds preview, legislation, sentencing overview, appeal outlook",
+        "7 sections: case snapshot, issues, grounds count preview (no titles), legislation, sentencing overview, appeal outlook",
         "1,500-2,200 words of real legal analysis",
         "Shows what the paid reports add so you can decide if you need more",
         "Good starting point before investing in full analysis",

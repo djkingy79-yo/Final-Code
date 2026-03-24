@@ -52,22 +52,13 @@ const LandingPage = () => {
           {/* DO NOT UNDO — Desktop + iPad Navigation */}
           <div className="hidden lg:flex items-center gap-4">
             <Link to="/how-it-works" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-how-it-works-link">
-              See It In Action
+              How It Works
             </Link>
             <Link to="/appeal-statistics" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-appeal-statistics-link">
               Appeal Statistics
             </Link>
             <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-legal-resources-link">
-              Legal Resources
-            </Link>
-            <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-faq-link">
-              FAQ
-            </Link>
-            <Link to="/about" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-about-link">
-              About
-            </Link>
-            <Link to="/success-stories" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-success-stories-link">
-              Success Stories
+              Resources & Contacts
             </Link>
             <div className="relative group">
               <button className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1" data-testid="nav-more-dropdown">

@@ -22,7 +22,7 @@ const successStories = [
     name: "Sarah M.",
     location: "Western Sydney, NSW",
     relationship: "Wife",
-    story: "After my husband's conviction, Legal Aid said there were no grounds for appeal. Using this tool, I uploaded the trial transcript and the AI flagged an issue with the judge's direction to the jury on the standard of proof. A criminal barrister reviewed the report and agreed. Eight months later, the conviction on that charge was quashed and his sentence was reduced by 5 years.",
+    story: "After my husband's conviction, Legal Aid said there were no grounds for appeal. I uploaded the trial transcript, ran the free grounds count, then paid for the $99 grounds investigation and Full Detailed report. The grounds analysis highlighted a misdirection on the standard of proof. A criminal barrister reviewed the report and agreed. Eight months later, the conviction on that charge was quashed and his sentence was reduced by 5 years.",
     outcome: "Conviction partially quashed — Sentence reduced by 5 years",
     timeframe: "8 months from appeal to decision",
     featured: true
@@ -32,7 +32,7 @@ const successStories = [
     name: "Michael T.",
     location: "Newcastle, NSW",
     relationship: "Brother",
-    story: "My brother was convicted of aggravated assault despite claiming self-defence. His original lawyer never properly investigated that angle. This tool helped me organise CCTV footage, medical records and witness details into a coherent timeline. The AI found that the complainant's version didn't match CCTV timestamps. We've lodged a fresh evidence appeal and are waiting for the hearing.",
+    story: "My brother was convicted of aggravated assault despite claiming self-defence. I uploaded the CCTV, medical records and witness details, then used the timeline to organise the events. The grounds investigation report highlighted a timing conflict between the CCTV and the account in the brief. We've lodged a fresh evidence appeal and are waiting for the hearing.",
     outcome: "Appeal lodged — Fresh evidence application pending",
     timeframe: "Hearing scheduled",
     featured: true
@@ -42,7 +42,7 @@ const successStories = [
     name: "Jenny K.",
     location: "Brisbane, QLD",
     relationship: "Mother",
-    story: "My son was sentenced for drug supply charges. I'm not legally trained, but the timeline feature highlighted gaps in police surveillance notes. The AI report flagged problems with how the search warrant was executed outside authorised hours. I took the organised report to Legal Aid's appeal review unit and they've now assigned a senior solicitor to review.",
+    story: "My son was sentenced for drug supply charges. I'm not legally trained, but the timeline feature highlighted gaps in police surveillance notes. The grounds investigation report showed the search warrant was executed outside authorised hours. I took the organised report to Legal Aid's appeal review unit and they've now assigned a senior solicitor to review.",
     outcome: "Legal Aid appeal review approved",
     timeframe: "Review in progress",
     featured: true
@@ -52,7 +52,7 @@ const successStories = [
     name: "David R.",
     location: "Melbourne, VIC",
     relationship: "Father",
-    story: "My daughter was convicted of fraud and sentenced to 3 years. Going through the transcript, the AI picked up that the prosecution's forensic accountant had made a calculation error that inflated the alleged loss amount. An independent expert confirmed the error. On appeal, her sentence was reduced to 18 months with immediate parole eligibility.",
+    story: "My daughter was convicted of fraud and sentenced to 3 years. The Full Detailed report's document analysis highlighted a calculation error in the prosecution's forensic accounting that inflated the alleged loss. An independent expert confirmed the error. On appeal, her sentence was reduced to 18 months with immediate parole eligibility.",
     outcome: "Sentence reduced from 3 years to 18 months — Released on parole",
     timeframe: "6 months from appeal to release",
     featured: true
@@ -62,7 +62,7 @@ const successStories = [
     name: "Amanda P.",
     location: "Perth, WA",
     relationship: "Sister",
-    story: "My brother got 8 years for dangerous driving causing death, but the accident occurred when he swerved to avoid a child on the road. The Full Detailed report's comparative sentencing table showed his sentence was well above the normal range for accessorial driving cases. The AI flagged that the judge hadn't given adequate weight to his clean record and genuine remorse. The Court of Appeal reduced the sentence to 4 years.",
+    story: "My brother got 8 years for dangerous driving causing death, but the accident occurred when he swerved to avoid a child on the road. The Full Detailed report's comparative sentencing table showed his sentence was well above the normal range for accessorial driving cases. The grounds analysis also noted the judge hadn't given adequate weight to his clean record and genuine remorse. The Court of Appeal reduced the sentence to 4 years.",
     outcome: "Sentence reduced from 8 years to 4 years — Parole eligible",
     timeframe: "11 months from appeal lodgement",
     featured: true
@@ -72,7 +72,7 @@ const successStories = [
     name: "Marcus W.",
     location: "Gold Coast, QLD",
     relationship: "Cousin",
-    story: "My cousin was convicted on drug trafficking based almost entirely on phone intercepts. The AI flagged that the language used was ambiguous and could have legitimate meanings. Without physical evidence to corroborate the intercepts, a specialist barrister argued the verdict was unreasonable. We got leave to appeal and the hearing is in 3 months.",
+    story: "My cousin was convicted on drug trafficking based almost entirely on phone intercepts. The grounds investigation report noted the language was ambiguous and could have legitimate meanings. Without physical evidence to corroborate the intercepts, a specialist barrister argued the verdict was unreasonable. We got leave to appeal and the hearing is in 3 months.",
     outcome: "Leave to appeal granted — Hearing pending",
     timeframe: "Leave granted after 7 months",
     featured: true
@@ -82,7 +82,7 @@ const successStories = [
     name: "Rebecca L.",
     location: "Adelaide, SA",
     relationship: "Wife",
-    story: "My husband was convicted of historical allegations from 30 years ago based on testimony alone. The AI found that the judge's Longman warning about uncorroborated testimony after long delay was inadequate. A senior criminal silk confirmed the misdirection. The Court of Criminal Appeal ordered a retrial, and the DPP decided not to proceed. After 2 years, he's cleared.",
+    story: "My husband was convicted of historical allegations from 30 years ago based on testimony alone. The grounds investigation report identified that the judge's Longman warning about uncorroborated testimony after long delay was inadequate. A senior criminal silk confirmed the misdirection. The Court of Criminal Appeal ordered a retrial, and the DPP decided not to proceed. After 2 years, he's cleared.",
     outcome: "Conviction quashed — DPP discontinued retrial",
     timeframe: "14 months — Now cleared",
     featured: true
@@ -102,7 +102,7 @@ const successStories = [
     name: "Patricia S.",
     location: "Canberra, ACT",
     relationship: "Mother",
-    story: "My son has an intellectual disability and was convicted of assault. His legal aid lawyer didn't explore his cognitive impairment. The timeline feature helped me organise medical records going back to childhood. A pro bono barrister obtained a forensic psychologist's report, and the Court of Appeal found the original judge failed to adequately consider his disability. Sentence reduced to time served.",
+    story: "My son has an intellectual disability and was convicted of assault. The timeline feature helped me organise medical records going back to childhood. The grounds investigation report highlighted that the original judge failed to adequately consider his disability. A pro bono barrister obtained a forensic psychologist's report, and the Court of Appeal reduced the sentence to time served.",
     outcome: "Sentence reduced to time served — Released with support plan",
     timeframe: "9 months from appeal to release",
     featured: true
@@ -112,7 +112,7 @@ const successStories = [
     name: "Daniel K.",
     location: "Darwin, NT",
     relationship: "Uncle",
-    story: "My Aboriginal nephew was sentenced without the judge considering Bugmy factors — the disadvantage and intergenerational trauma he'd experienced. The AI showed comparable cases where proper Bugmy evidence led to significantly lower sentences. The Aboriginal Legal Service compiled cultural reports, and the Court of Appeal reduced his sentence from 5 years to 2 years with parole.",
+    story: "My Aboriginal nephew was sentenced without the judge considering Bugmy factors — the disadvantage and intergenerational trauma he'd experienced. The grounds investigation report summarised comparable authorities where proper Bugmy evidence led to significantly lower sentences. The Aboriginal Legal Service compiled cultural reports, and the Court of Appeal reduced his sentence from 5 years to 2 years with parole.",
     outcome: "Sentence reduced to 2 years — Parole granted",
     timeframe: "10 months total",
     featured: true
@@ -122,7 +122,7 @@ const successStories = [
     name: "Sophie R.",
     location: "Townsville, QLD",
     relationship: "Partner",
-    story: "My partner's conviction rested on poor-quality CCTV that never clearly showed a face. The AI flagged that identification evidence needs specific warnings to the jury. A forensic video analyst confirmed the footage was insufficient for positive identification. The Court of Appeal agreed the trial miscarried. Conviction quashed — the DPP chose not to retry.",
+    story: "My partner's conviction rested on poor-quality CCTV that never clearly showed a face. The grounds investigation report highlighted the warnings required for identification evidence. A forensic video analyst confirmed the footage was insufficient for positive identification. The Court of Appeal agreed the trial miscarried. Conviction quashed — the DPP chose not to retry.",
     outcome: "Conviction quashed — DPP no retrial",
     timeframe: "18 months total — Now exonerated",
     featured: true
@@ -132,7 +132,7 @@ const successStories = [
     name: "Christopher B.",
     location: "Wollongong, NSW",
     relationship: "Brother",
-    story: "My brother got 10 years for drug importation as a courier driver who unknowingly delivered packages. The timeline analysis showed he was paid normal courier wages — not trafficking money. The AI identified case law on wilful blindness requiring actual suspicion. The appeal court quashed the conviction. At retrial, he took a lesser plea and was released for time served.",
+    story: "My brother got 10 years for drug importation as a courier driver who unknowingly delivered packages. The grounds investigation report identified case law on wilful blindness requiring actual suspicion. The appeal court quashed the conviction. At retrial, he took a lesser plea and was released for time served.",
     outcome: "Conviction quashed — Lesser plea, time served",
     timeframe: "16 months total",
     featured: true
@@ -142,7 +142,7 @@ const successStories = [
     name: "Michelle D.",
     location: "Cairns, QLD",
     relationship: "Daughter",
-    story: "My 68-year-old father with early dementia was sentenced to 4 years for business fraud. His lawyer didn't present medical evidence or argue for a non-custodial sentence. The AI showed dozens of cases where elderly first-time offenders received suspended sentences. A specialist confirmed his dementia. On appeal, he was resentenced to an Intensive Correction Order and released.",
+    story: "My 68-year-old father with early dementia was sentenced to 4 years for business fraud. His lawyer didn't present medical evidence or argue for a non-custodial sentence. The Full Detailed report showed comparable cases where elderly first-time offenders received suspended sentences. A specialist confirmed his dementia. On appeal, he was resentenced to an Intensive Correction Order and released.",
     outcome: "Resentenced to Intensive Correction Order — Released",
     timeframe: "Served 7 months before release",
     featured: true
