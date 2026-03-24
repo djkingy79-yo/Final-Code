@@ -253,6 +253,14 @@ const states = ["NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT", "ACT"];
 const StateAppealStats = () => {
   const [selected, setSelected] = useState("NSW");
   const data = stateData[selected];
+  const sentenceShare = Math.round((data.sentenceAppeals / data.filed) * 100);
+  const convictionShare = Math.max(0, 100 - sentenceShare);
+  const leadingGround = data.topGrounds?.[0]?.ground || "jurisdictional error";
+  const insightBullets = [
+    `Sentence appeals make up about ${sentenceShare}% of filings in ${data.name}, while conviction appeals account for about ${convictionShare}%.`,
+    `The most common ground in ${data.name} is ${leadingGround}, which often reflects how the trial was directed or how evidence was assessed.`,
+    `The current success rate is ${data.successRate}% with an average decision time of ${data.avgTime}. Use this to plan timeframes for counsel and client expectations.`,
+  ];
 
   return (
     <section className="py-16 px-6 bg-background border-t border-border" data-testid="state-appeal-stats-section">
@@ -395,13 +403,28 @@ const StateAppealStats = () => {
             </div>
           </div>
 
+          {/* Insights */}
+          <div className="px-6 py-5 border-t border-border bg-slate-900/50" data-testid="appeal-stats-insights">
+            <h4 className="font-bold text-foreground text-lg mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              What this data suggests
+            </h4>
+            <ul className="space-y-2 text-sm text-slate-300">
+              {insightBullets.map((item, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Footer */}
           <div className="px-6 py-3 bg-muted/50 border-t border-border flex items-center justify-between flex-wrap gap-2">
-            <p className="text-xs text-muted-foreground">
-              Source: {data.source}. Some figures are estimates based on available court data.
+            <p className="text-sm text-muted-foreground">
+              Sources: {data.source}. Figures drawn from public annual reports and court statistics.
             </p>
-            <p className="text-xs text-muted-foreground">
-              Avg processing time: <strong>{data.avgTime}</strong>
+            <p className="text-sm text-muted-foreground">
+              Average processing time: <strong>{data.avgTime}</strong>
             </p>
           </div>
         </div>

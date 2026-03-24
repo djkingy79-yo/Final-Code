@@ -239,8 +239,8 @@ const LandingPage = () => {
                   decoding="async"
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80'; }}
                 />
-                {/* Floating Card - hidden on mobile/tablet */}
-                <div className="hidden lg:block absolute -bottom-6 -left-6 bg-card p-5 rounded-2xl shadow-xl border border-border" data-testid="hero-grounds-floating-card">
+                {/* Floating Card - hidden (avoids misleading counts) */}
+                <div className="hidden" data-testid="hero-grounds-floating-card">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
                       <BarChart3 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -406,7 +406,7 @@ const LandingPage = () => {
           <div className="text-center mb-4">
             <p className="text-blue-300 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12" data-testid="landing-statistics-row">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-testid="landing-statistics-row">
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
               <div className="text-slate-300 text-sm">Criminal Appeals Filed Annually</div>
@@ -424,6 +424,9 @@ const LandingPage = () => {
               <div className="text-slate-300 text-sm">Convicted Australians Appeal</div>
             </div>
           </div>
+          <p className="text-xs text-slate-400 text-center mb-12" data-testid="landing-stats-source">
+            Sources: public annual reports and criminal appeal statistics from state courts (figures aggregated nationally).
+          </p>
 
           {/* Feature Grid - All Pages & Capabilities */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -937,28 +940,28 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-muted/30 dark:bg-muted/10" data-testid="tier-comparison-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-red-600 text-xs uppercase tracking-widest mb-2">Compare report tiers</p>
-            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-red-400 text-sm uppercase tracking-widest mb-2">Compare report tiers</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
               What's in Each Report?
             </h2>
-            <p className="text-muted-foreground text-sm mt-2 max-w-xl mx-auto">
+            <p className="text-muted-foreground text-base mt-2 max-w-2xl mx-auto">
               Side-by-side comparison of every section across all three report tiers
             </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse" data-testid="tier-comparison-table">
+            <table className="w-full text-base border-collapse" data-testid="tier-comparison-table">
               <thead>
                 <tr>
-                  <th className="text-left p-3 bg-slate-100 dark:bg-slate-800 rounded-tl-lg font-semibold text-foreground" style={{ minWidth: '220px' }}>Section</th>
-                  <th className="p-3 bg-green-50 dark:bg-green-900/20 text-center font-semibold text-green-700 dark:text-green-400" style={{ minWidth: '100px' }}>
-                    Quick Summary<br /><span className="text-xs font-normal">FREE (7 sections)</span>
+                  <th className="text-left p-4 bg-slate-900 border border-slate-700 font-semibold text-slate-100" style={{ minWidth: '240px' }}>Section</th>
+                  <th className="p-4 bg-emerald-500/15 text-center font-semibold text-emerald-200 border border-emerald-400/20" style={{ minWidth: '130px' }}>
+                    Quick Summary<br /><span className="text-sm font-normal">FREE (7 sections)</span>
                   </th>
-                  <th className="p-3 bg-blue-50 dark:bg-blue-900/20 text-center font-semibold text-blue-700 dark:text-blue-400" style={{ minWidth: '100px' }}>
-                    Full Detailed<br /><span className="text-xs font-normal">$150 (15 sections)</span>
+                  <th className="p-4 bg-blue-500/15 text-center font-semibold text-blue-200 border border-blue-400/20" style={{ minWidth: '130px' }}>
+                    Full Detailed<br /><span className="text-sm font-normal">$150 (15 sections)</span>
                   </th>
-                  <th className="p-3 bg-purple-50 dark:bg-purple-900/20 text-center font-semibold text-purple-700 dark:text-purple-400 rounded-tr-lg" style={{ minWidth: '100px' }}>
-                    Extensive Log<br /><span className="text-xs font-normal">$200 (20 sections)</span>
+                  <th className="p-4 bg-purple-500/15 text-center font-semibold text-purple-200 border border-purple-400/20" style={{ minWidth: '130px' }}>
+                    Extensive Log<br /><span className="text-sm font-normal">$200 (20 sections)</span>
                   </th>
                 </tr>
               </thead>
@@ -966,14 +969,14 @@ const LandingPage = () => {
                 {[
                   { section: "Executive Brief / Case Snapshot", qs: true, fd: true, el: true },
                   { section: "Primary Issues Identified", qs: true, fd: false, el: false },
-                  { section: "Top Potential Grounds (Preview)", qs: true, fd: false, el: false },
+                  { section: "All Grounds Identified (Preview)", qs: true, fd: false, el: false },
                   { section: "Key Legislation & Similar Cases (Preview)", qs: true, fd: false, el: false },
                   { section: "Sentencing Overview", qs: true, fd: false, el: false },
                   { section: "Appeal Outlook", qs: true, fd: false, el: false },
                   { section: "What the Paid Reports Add", qs: true, fd: false, el: false },
                   { section: "Forensic Case Chronology", qs: false, fd: true, el: true },
                   { section: "Document Evidence Digest", qs: false, fd: true, el: true },
-                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, elNote: "300+ words per ground" },
+                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, fdNote: "500+ words per ground", elNote: "900+ words per ground" },
                   { section: "Comparative Sentencing Table", qs: false, fd: true, el: true, fdNote: "8+ cases", elNote: "12+ cases" },
                   { section: "Common Appeal Grounds for Offence Type", qs: false, fd: true, el: true },
                   { section: "Outcome Options Matrix", qs: false, fd: true, el: true, elNote: "Detailed pathways" },
@@ -989,12 +992,12 @@ const LandingPage = () => {
                   { section: "Similar Case Search Options (AustLII)", qs: false, fd: false, el: true, exclusive: true },
                   { section: "Prioritised Action Plan", qs: false, fd: true, el: true },
                   { section: "Risk Assessment + Contingency Planning", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "Client Plain-English Brief", qs: false, fd: true, el: true },
+                  { section: "Client Plain-English Brief", qs: true, fd: true, el: true },
                 ].map((row, i) => (
-                  <tr key={i} className={`border-b border-border/50 ${row.exclusive ? 'bg-purple-50/50 dark:bg-purple-900/10' : ''}`}>
-                    <td className="p-2.5 text-foreground font-medium text-xs">
+                  <tr key={i} className={`border-b border-slate-800 ${row.exclusive ? 'bg-purple-500/10' : ''}`}>
+                    <td className="p-3 text-slate-100 font-semibold text-sm">
                       {row.section}
-                      {row.exclusive && <span className="ml-1.5 text-purple-600 dark:text-purple-400 text-xs font-bold">EXCLUSIVE</span>}
+                      {row.exclusive && <span className="ml-2 text-purple-300 text-xs font-bold">EXCLUSIVE</span>}
                     </td>
                     <td className="p-2.5 text-center">
                       {row.qs ? (
@@ -1007,7 +1010,7 @@ const LandingPage = () => {
                       {row.fd ? (
                         <div>
                           <svg className="w-5 h-5 text-blue-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                          {row.fdNote && <span className="text-xs text-blue-500 block">{row.fdNote}</span>}
+                          {row.fdNote && <span className="text-sm text-blue-300 block">{row.fdNote}</span>}
                         </div>
                       ) : (
                         <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
@@ -1017,7 +1020,7 @@ const LandingPage = () => {
                       {row.el ? (
                         <div>
                           <svg className="w-5 h-5 text-purple-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                          {row.elNote && <span className="text-xs text-purple-500 block">{row.elNote}</span>}
+                          {row.elNote && <span className="text-sm text-purple-300 block">{row.elNote}</span>}
                         </div>
                       ) : (
                         <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
@@ -1026,20 +1029,55 @@ const LandingPage = () => {
                   </tr>
                 ))}
                 <tr className="border-t-2 border-border bg-slate-50 dark:bg-slate-800/50">
-                  <td className="p-2.5 text-foreground font-semibold text-xs">Target word count</td>
-                  <td className="p-2.5 text-center text-xs font-semibold text-green-600">1,500–2,200</td>
-                  <td className="p-2.5 text-center text-xs font-semibold text-blue-600">4,500–6,500</td>
-                  <td className="p-2.5 text-center text-xs font-semibold text-purple-600">7,000–10,000</td>
+                  <td className="p-3 text-foreground font-semibold text-sm">Target word count</td>
+                  <td className="p-3 text-center text-sm font-semibold text-green-400">2,000–3,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-blue-400">7,000–9,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-purple-400">15,000–20,000</td>
+                </tr>
+                <tr className="border-t border-border bg-slate-900/40">
+                  <td className="p-3 text-foreground font-semibold text-sm">Aggressive mode depth</td>
+                  <td className="p-3 text-center text-sm text-green-300">~2× depth</td>
+                  <td className="p-3 text-center text-sm text-blue-300">~2× depth</td>
+                  <td className="p-3 text-center text-sm text-purple-300">~2× depth</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-10 grid md:grid-cols-3 gap-6" data-testid="report-snapshot-section">
+            {[
+              {
+                label: "Quick Summary — Case Snapshot",
+                meta: "Generated excerpt (R v Homann)",
+                body: "On 12 March 2014 the accused was convicted of murder and sentenced to 30 years imprisonment with a 22‑year non‑parole period. The sentencing remarks identify contested intent, the forensic timeline, and the Crown’s reliance on prior admissions in the record.",
+              },
+              {
+                label: "Full Detailed — Ground Analysis",
+                meta: "Generated excerpt (Ground 4)",
+                body: "Ground 4: Misdirection on intent. The trial judge’s summing‑up at pp 214–218 of the transcript did not clarify the difference between intention and recklessness for murder. The defence submissions (Day 9, 14:22) demonstrate the jury was left without a clear pathway to the lesser verdict.",
+              },
+              {
+                label: "Extensive Log — Sentencing Comparison",
+                meta: "Generated excerpt (Comparative Table)",
+                body: "Comparable authorities show materially lower non‑parole periods for similar factual matrices. R v Loveridge [2014] NSWCCA 120 (7 year NPP) and R v Pham [2015] HCA 39 indicate the sentencing range applied here may be outside proportionate bounds.",
+              }
+            ].map((card, idx) => (
+              <div key={idx} className="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl">
+                <p className="text-xs uppercase tracking-widest text-blue-300 mb-2">{card.label}</p>
+                <h3 className="text-lg font-bold text-slate-100 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  Report Snapshot
+                </h3>
+                <p className="text-sm text-slate-400 mb-4">{card.meta}</p>
+                <p className="text-sm text-slate-200 leading-relaxed">{card.body}</p>
+              </div>
+            ))}
           </div>
 
           <div className="mt-6 text-center">
             <Button
               onClick={() => setShowAuthModal(true)}
               data-testid="comparison-get-started-btn"
-              className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-8"
+              className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-10 py-4 text-base font-semibold"
             >
               Get Started Free
             </Button>

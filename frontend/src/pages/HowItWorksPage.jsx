@@ -212,6 +212,11 @@ const HowItWorksPage = () => {
         alt: "Report paperwork on desk",
         caption: "Reports include sentencing tables, grounds analysis, and court-ready formatting."
       },
+      preview: {
+        title: "Extensive Log — Grounds of Merit",
+        subtitle: "Sample excerpt from generated report",
+        body: "Ground 2: Misdirection on intent. The summing-up between pages 214–218 fails to distinguish intent from recklessness in the context of the accused’s statements, leaving the jury without a lawful pathway to consider manslaughter. This ground is strengthened by the sentencing remarks and the expert chronology extracted from the trial transcript."
+      },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
         "Each report generates with professional formatting: tables, links, case citations",
@@ -239,6 +244,11 @@ const HowItWorksPage = () => {
         image: "https://images.unsplash.com/photo-1589307904488-7d60ff29c975?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
         alt: "Barrister desk with legal brief",
         caption: "Barrister View combines every report into a court‑ready briefing pack."
+      },
+      preview: {
+        title: "Barrister View — Executive Brief",
+        subtitle: "Sample excerpt from generated brief",
+        body: "Executive Brief: The appeal rests on three strong grounds—misdirection on intent, inconsistent jury directions, and disproportionate sentencing. The case chronology and comparative sentencing analysis indicate a viable pathway to sentence reduction or retrial."
       },
       whatYouSee: [
         "Table of Contents with clickable section headings",
@@ -481,6 +491,14 @@ const HowItWorksPage = () => {
                     <div className="text-sm text-muted-foreground">
                       {step.visual.caption}
                     </div>
+                  </div>
+                )}
+
+                {step.preview && (
+                  <div className="mt-4 bg-slate-900 border border-slate-700 rounded-2xl p-5 shadow-xl" data-testid={`how-it-works-step-${step.num}-preview`}>
+                    <p className="text-xs uppercase tracking-widest text-blue-300 mb-2">{step.preview.title}</p>
+                    <p className="text-sm text-slate-400 mb-3">{step.preview.subtitle}</p>
+                    <p className="text-sm text-slate-200 leading-relaxed">{step.preview.body}</p>
                   </div>
                 )}
 

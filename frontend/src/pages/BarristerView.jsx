@@ -1600,7 +1600,7 @@ const BarristerView = ({ user }) => {
                         {section.number}.
                       </span>
                       <h3 
-                        className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wide"
+                        className="text-2xl font-bold text-slate-100 uppercase tracking-wide"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
                         {section.title}

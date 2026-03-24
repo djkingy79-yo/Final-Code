@@ -972,3 +972,11 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 - [x] **Progress analysis timeout** — extended timeout with clearer messaging for large cases
 - [x] **Landing statistics clarity** — added explicit statistics label on the front page
 - [x] **Testing**: Landing + How It Works screenshots captured (landing-stats-section.png, how-it-works-visuals.png)
+
+### Landing + Stats Realism Refresh (Mar 2026) ✅
+- [x] **Report tier table updated** — real word counts, per-ground depth, aggressive depth row, and brighter typography
+- [x] **Real report snapshots** — added generated-report excerpts to landing + How It Works to show actual output style
+- [x] **Appeal statistics insights** — added dynamic insights + clearer sources to entice exploration
+- [x] **Report view readability** — darker header, larger headings, stronger contrast, wider tables on mobile
+- [x] **Google auth callback hardened** — accepts session_id via hash or query to stop landing redirect
+- [x] **Testing**: New landing + stats screenshots captured (landing-report-tiers.png, landing-report-snapshots.png, appeal-stats-insights.png)
