@@ -178,7 +178,7 @@ const QuickExport = ({ caseId, caseTitle }) => {
                 <li>• Fresh Evidence Affidavit</li>
                 <li>• Chronology of Proceedings</li>
               </ul>
-              <p className="text-xs text-red-600 dark:text-blue-400 mt-2 italic">
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 italic">
                 All templates are pre-filled with your case details
               </p>
             </div>

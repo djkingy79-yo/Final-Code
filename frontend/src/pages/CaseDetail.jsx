@@ -404,15 +404,15 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.6; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
     h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 20px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
     h3 { font-size: 15px; margin-top: 14px; color: #1e40af; }
     .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
     table { border-collapse: collapse; width: 100%; margin: 12px 0; }
     td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 12px; }
-    th { background: #e0f2fe; font-weight: 700; }
+    th { background: #dbeafe; font-weight: 700; color: #0f172a; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
     .no-print { display: none !important; }
@@ -902,7 +902,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleAutoIdentifyGrounds}
                     disabled={autoIdentifying}
-                    className="bg-red-600 text-white hover:bg-blue-700 rounded-xl"
+                    className="bg-blue-600 text-white hover:bg-blue-500 rounded-xl"
                     data-testid="auto-identify-btn"
                   >
                     {autoIdentifying ? (
@@ -1016,7 +1016,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleAutoIdentifyGrounds}
                     disabled={autoIdentifying}
-                    className="bg-red-600 text-white hover:bg-blue-700 rounded-xl"
+                    className="bg-blue-600 text-white hover:bg-blue-500 rounded-xl"
                   >
                     {autoIdentifying ? (
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />

@@ -13,11 +13,18 @@
   --font-heading: 'Crimson Pro', serif;
   --font-body: 'Manrope', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  
-  --deep-indigo: #1E1B4B;
-  --royal-blue: #1e3a8a;
-  --crimson-red: #dc2626;
-  --slate-950: #020617;
+
+  --brand-ink: #0f172a;
+  --brand-surface: #0b1020;
+  --brand-surface-2: #111827;
+  --brand-border: #1f2937;
+  --brand-muted: #94a3b8;
+  --brand-muted-2: #64748b;
+  --brand-primary: #2563eb;
+  --brand-primary-strong: #1d4ed8;
+  --brand-secondary: #10b981;
+  --brand-secondary-strong: #059669;
+  --brand-highlight: #ffffff;
 }
 
 body {
@@ -26,7 +33,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-size: 19px;
+  font-size: 18px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -35,13 +42,13 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
-h1 { font-size: clamp(2.6rem, 4.2vw, 4.6rem); line-height: 1.08; }
+h1 { font-size: clamp(2.4rem, 4vw, 4.2rem); line-height: 1.1; }
 h2 { font-size: clamp(1.9rem, 3vw, 3rem); line-height: 1.2; }
-h3 { font-size: clamp(1.4rem, 2.2vw, 1.85rem); line-height: 1.25; }
-h4 { font-size: clamp(1.2rem, 1.8vw, 1.5rem); line-height: 1.3; }
+h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.25; }
+h4 { font-size: clamp(1.2rem, 1.8vw, 1.6rem); line-height: 1.3; }
 h5 { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.35; }
 h6 { font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.4; }
-p, li { line-height: 1.8; font-size: 1.1rem; }
+p, li { line-height: 1.75; font-size: 1.05rem; }
 
 code, .mono {
   font-family: var(--font-mono);
@@ -49,26 +56,26 @@ code, .mono {
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 222 47% 9%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 9%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 9%;
-    --primary: 222 47% 11%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 221 83% 53%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 84% 39%;
     --secondary-foreground: 0 0% 100%;
     --muted: 210 18% 95%;
     --muted-foreground: 215 13% 38%;
-    --accent: 207 100% 50%;
+    --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --border: 214 24% 89%;
     --input: 214 24% 89%;
-    --ring: 207 100% 50%;
-    --radius: 0.75rem;
+    --ring: 221 83% 53%;
+    --radius: 0.9rem;
   }
 
   .dark {
@@ -80,17 +87,17 @@ code, .mono {
     --popover-foreground: 210 40% 98%;
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 72% 51%;
+    --secondary: 160 84% 39%;
     --secondary-foreground: 0 0% 100%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
-    --accent: 207 100% 50%;
+    --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 207 100% 50%;
+    --ring: 221 83% 53%;
   }
 }
 
@@ -245,7 +252,7 @@ code, .mono {
   }
 
   a {
-    color: #1e3a8a !important;
+    color: #111111 !important;
     text-decoration: underline !important;
   }
 
@@ -268,13 +275,13 @@ code, .mono {
 .legal-report {
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 1.05rem;
-  line-height: 1.85;
-  color: #1e293b;
+  line-height: 1.8;
+  color: #0f172a;
 }
 
 .legal-report h1 {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 1.55rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: #0f172a;
   margin: 2rem 0 0.75rem;
@@ -285,33 +292,33 @@ code, .mono {
 
 .legal-report h2 {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: #0f172a;
-  margin: 1.75rem 0 0.6rem;
+  margin: 1.7rem 0 0.6rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid #cbd5e1;
 }
 
 .legal-report h3 {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #1e293b;
-  margin: 1.5rem 0 0.5rem;
+  margin: 1.4rem 0 0.5rem;
 }
 
 .legal-report h4 {
-  font-size: 1rem;
+  font-size: 1.02rem;
   font-weight: 600;
   color: #334155;
-  margin: 1.25rem 0 0.4rem;
+  margin: 1.2rem 0 0.4rem;
 }
 
 .legal-report p {
   margin-bottom: 0.85rem;
   color: #334155;
-  line-height: 1.85;
+  line-height: 1.75;
 }
 
 .legal-report strong {
@@ -363,7 +370,7 @@ code, .mono {
 }
 
 .legal-report li::marker {
-  color: #1e3a8a;
+  color: #475569;
   font-weight: 600;
 }
 
@@ -498,7 +505,7 @@ code, .mono {
 .dark .legal-report h1,
 .dark .legal-report h2,
 .dark .legal-report h3 {
-  color: #f1f5f9;
+  color: #f8fafc;
 }
 
 .dark .legal-report h1 {
@@ -506,7 +513,7 @@ code, .mono {
 }
 
 .dark .legal-report h2 {
-  border-bottom-color: #475569;
+  border-bottom-color: #64748b;
 }
 
 .dark .legal-report p,
@@ -516,7 +523,7 @@ code, .mono {
 }
 
 .dark .legal-report strong {
-  color: #f1f5f9;
+  color: #f8fafc;
 }
 
 .dark .legal-report a {
@@ -600,7 +607,7 @@ code, .mono {
   }
 
   .legal-report a {
-    color: #1e3a8a !important;
+    color: #111111 !important;
     text-decoration: underline !important;
   }
 
@@ -636,7 +643,7 @@ code, .mono {
 @media print {
   /* Report colour header — force print backgrounds */
   [data-testid="report-colour-header"] {
-    background: #1e293b !important;
+    background: #1e3a8a !important;
     color: white !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -692,7 +699,7 @@ code, .mono {
 
 /* Gradient text for headings */
 .gradient-text {
-  @apply bg-gradient-to-r from-blue-900 via-red-600 to-blue-600 dark:from-white dark:via-red-300 dark:to-blue-300 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-blue-900 via-purple-600 to-emerald-500 dark:from-white dark:via-blue-300 dark:to-emerald-300 bg-clip-text text-transparent;
 }
 
 /* iOS-safe image rendering helpers */
@@ -822,7 +829,7 @@ input:focus, textarea:focus, select:focus {
 .dark .bg-slate-50,
 .dark .bg-slate-100,
 .dark .bg-slate-200 {
-  background-color: #0b1220 !important;
+  background-color: #111827 !important;
 }
 
 .dark .text-slate-500,
@@ -832,12 +839,12 @@ input:focus, textarea:focus, select:focus {
 }
 
 .dark .text-slate-400 {
-  color: #cbd5f5 !important;
+  color: #cbd5e1 !important;
 }
 
 .dark .border-slate-200,
 .dark .border-slate-300 {
-  border-color: #1f2a44 !important;
+  border-color: #1f2937 !important;
 }
 
 .dark .shadow-xl,
@@ -850,7 +857,7 @@ input:focus, textarea:focus, select:focus {
 .dark select {
   background-color: #0f172a !important;
   color: #f8fafc !important;
-  border-color: #1e293b !important;
+  border-color: #1f2937 !important;
 }
 
 input,
@@ -860,8 +867,4 @@ select {
   padding: 0.75rem 0.9rem;
 }
 
-/* Hide theme toggles (dark-only experience) */
-button:has(svg.lucide-sun),
-button:has(svg.lucide-moon) {
-  display: none !important;
-}
+/* Colour reset removed — preserving original report colours */

@@ -1327,21 +1327,40 @@ async def auto_generate_timeline(case_id: str, request: Request):
     
     # Get documents with content
     documents = await db.documents.find(
-        {"case_id": case_id, "content_text": {"$exists": True, "$ne": ""}},
+        {"case_id": case_id},
         {"_id": 0, "file_data": 0}
-    ).to_list(100)
+    ).to_list(500)
     
     if not documents:
-        raise HTTPException(status_code=400, detail="No documents with extracted text found. Please upload documents and extract text first.")
+        raise HTTPException(status_code=400, detail="No documents found. Please upload documents first.")
+
+    documents_with_text = [doc for doc in documents if doc.get("content_text")]
+    missing_docs = [doc for doc in documents if not doc.get("content_text")]
+
+    if not documents_with_text:
+        raise HTTPException(status_code=400, detail="No documents with extracted text found. Please extract text before generating a timeline.")
     
     # Build context from documents
     doc_context = f"CASE: {case.get('title', 'Unknown')}\nDEFENDANT: {case.get('defendant_name', 'Unknown')}\n\n"
-    doc_context += "=== DOCUMENTS ===\n\n"
+    doc_context += f"DOCUMENT COUNT: {len(documents)} (with text: {len(documents_with_text)}; missing text: {len(missing_docs)})\n\n"
+    doc_context += "=== DOCUMENTS WITH TEXT ===\n\n"
     
-    for doc in documents:
-        content = doc.get('content_text', '')[:3000]  # Limit per doc
-        doc_context += f"DOCUMENT: {doc.get('filename')}\n"
+    for doc in documents_with_text:
+        content = doc.get('content_text', '')[:4000]  # Limit per doc
+        doc_context += f"DOCUMENT: {doc.get('filename', 'Untitled')}\n"
+        if doc.get("document_type"):
+            doc_context += f"TYPE: {doc.get('document_type')}\n"
         doc_context += f"CONTENT:\n{content}\n\n"
+
+    if missing_docs:
+        doc_context += "=== DOCUMENTS WITHOUT EXTRACTED TEXT (metadata only) ===\n\n"
+        for doc in missing_docs:
+            uploaded_at = doc.get('uploaded_at')
+            uploaded_label = uploaded_at.isoformat() if hasattr(uploaded_at, 'isoformat') else str(uploaded_at)
+            doc_context += f"DOCUMENT: {doc.get('filename', 'Untitled')} | Uploaded: {uploaded_label}\n"
+            if doc.get("document_type"):
+                doc_context += f"TYPE: {doc.get('document_type')}\n"
+            doc_context += "NOTE: No extracted text available.\n\n"
     
     system_prompt = """You are an expert legal analyst specialising in criminal cases. Use Australian English spelling throughout.
 Your task is to extract a chronological timeline of events from case documents.
@@ -1358,9 +1377,9 @@ Return your response as a JSON array of events, ordered chronologically. Example
   {"date": "2019-05-16", "title": "Arrest of Defendant", "description": "Police arrested...", "event_type": "arrest"}
 ]
 
-Only include events you can clearly identify from the documents. Be thorough - extract ALL dates and events mentioned."""
+Only include events you can clearly identify from the documents. Be thorough - extract ALL dates and events mentioned. If any documents are listed without extracted text, add a timeline entry noting the document exists and that text extraction is missing (date can be approximate or the upload date if provided)."""
 
-    user_prompt = f"""Analyse these documents and extract a complete chronological timeline of all events.
+    user_prompt = f"""Analyse these documents and extract a complete chronological timeline of all events. Ensure every document listed is represented in the timeline.
 
 {doc_context}
 

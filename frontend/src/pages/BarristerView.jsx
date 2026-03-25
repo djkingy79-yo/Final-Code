@@ -169,7 +169,7 @@ const BarristerView = ({ user }) => {
   <style>
     body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
     h1 { font-family: 'Crimson Pro', serif; font-size: 26px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
     h3 { font-size: 16px; margin-top: 14px; color: #1e40af; }
     .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
@@ -1781,8 +1781,8 @@ const BarristerView = ({ user }) => {
       {/* Print Styles */}
       <style>{`
         .legal-report {
-          font-size: 1.05rem;
-          line-height: 1.8;
+          font-size: 1.02rem;
+          line-height: 1.75;
           color: #0f172a;
         }
         .legal-report h1,
@@ -1790,12 +1790,12 @@ const BarristerView = ({ user }) => {
         .legal-report h3 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #f8fafc;
+          color: #0f172a;
           margin: 1.4rem 0 0.7rem;
         }
         .legal-report h2 { font-size: 1.25rem; }
         .legal-report h3 { font-size: 1.1rem; }
-        .legal-report strong { color: #f8fafc; font-weight: 700; }
+        .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.45rem; }
         .legal-report-table-wrap { overflow-x: auto; }
@@ -1804,26 +1804,26 @@ const BarristerView = ({ user }) => {
           min-width: 720px;
           border-collapse: collapse;
           margin: 0.8rem 0;
-          background: #0b1220;
+          background: #ffffff;
         }
         .legal-report th {
-          background: #1e293b;
-          color: #e2e8f0 !important;
+          background: #1e3a8a;
+          color: #ffffff !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
-          border: 1px solid #334155;
+          border: 1px solid #cbd5e1;
           padding: 10px 12px;
           font-size: 0.95rem;
           vertical-align: top;
-          color: #e2e8f0;
+          color: #0f172a;
         }
         .legal-report blockquote {
-          border-left: 4px solid #38bdf8;
+          border-left: 4px solid #1e3a8a;
           padding: 10px 14px;
           margin: 0.8rem 0;
-          background: #1e293b;
-          color: #e2e8f0;
+          background: #eff6ff;
+          color: #1e3a8a;
         }
         @media print {
           @page {
@@ -1850,9 +1850,9 @@ const BarristerView = ({ user }) => {
           .legal-report h3,
           .legal-report strong { color: #0f172a; }
           .legal-report table { background: #ffffff; }
-          .legal-report th { background: #dbeafe; color: #0f172a !important; }
+          .legal-report th { background: #1e3a8a; color: #ffffff !important; }
           .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
-          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; }
+          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; border-left: 4px solid #1e3a8a; }
         }
       `}</style>
     </div>

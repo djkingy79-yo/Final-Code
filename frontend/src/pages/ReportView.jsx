@@ -212,12 +212,12 @@ const parseAnalysisSections = (analysis = "") => {
 };
 
 const MarkdownBlock = ({ text, testId }) => (
-  <div className="legal-report text-[1.02rem] sm:text-[1.08rem] text-slate-100" data-testid={testId}>
+  <div className="legal-report text-[1.02rem] sm:text-[1.08rem] text-slate-900" data-testid={testId}>
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
         a: ({ href, children }) => (
-          <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-300 underline underline-offset-2 hover:text-blue-200 break-words font-medium">{children}</a>
+          <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline underline-offset-2 hover:text-blue-500 break-words font-medium">{children}</a>
         ),
         table: ({ children }) => (
           <div className="legal-report-table-wrap" data-testid={`${testId}-table-wrapper`}>
@@ -392,7 +392,7 @@ const ReportView = () => {
   <style>
     body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
     h1 { font-family: 'Crimson Pro', serif; font-size: 26px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1d4ed8; padding-bottom: 4px; color: #1e3a8a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
     h3 { font-size: 16px; margin-top: 14px; color: #1e40af; }
     .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
@@ -532,7 +532,7 @@ const ReportView = () => {
               <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-700 text-slate-200 hover:bg-slate-800" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-blue-600/20 text-blue-200 border-blue-500/40 hover:bg-blue-600/30" data-testid="export-docx-btn">
+              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-indigo-600/20 text-indigo-200 border-indigo-500/40 hover:bg-indigo-600/30" data-testid="export-docx-btn">
                 <FileText className="w-4 h-4 mr-2" /> Export Word
               </Button>
               <Button size="sm" onClick={handleExportPDF} className="bg-blue-600 text-white hover:bg-blue-500" data-testid="export-pdf-btn">
@@ -544,7 +544,7 @@ const ReportView = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <div className={`bg-gradient-to-r ${theme.lightBg} rounded-xl border ${theme.borderColor} overflow-hidden shadow-xl`} data-testid="report-content">
+        <div className={`bg-white rounded-xl border ${theme.borderColor} overflow-hidden shadow-xl`} data-testid="report-content">
 
           {/* ===== COLOUR-CODED REPORT HEADER (matches landing page) ===== */}
           <div className={`${theme.headerBg} text-white p-6 sm:p-8`} data-testid="report-colour-header">
@@ -571,27 +571,27 @@ const ReportView = () => {
           </div>
 
           {/* ===== CASE OVERVIEW GRID ===== */}
-          <div className="bg-slate-900 border-b border-slate-700 p-5 sm:p-6" data-testid="report-top-summary-box">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 text-base" style={{ fontFamily: "Crimson Pro, serif" }}>
+          <div className="bg-white/95 border-b border-slate-200 p-5 sm:p-6" data-testid="report-top-summary-box">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 text-sm sm:text-base" style={{ fontFamily: "Crimson Pro, serif" }}>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Defendant</p>
-                <p className="font-semibold text-slate-100" data-testid="report-summary-accused">{defendantName}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Defendant</p>
+                <p className="font-semibold text-slate-900" data-testid="report-summary-accused">{defendantName}</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Offence</p>
-                <p className="font-semibold text-slate-100" data-testid="report-summary-offence">{offenceLabel}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Offence</p>
+                <p className="font-semibold text-slate-900" data-testid="report-summary-offence">{offenceLabel}</p>
               </div>
               <div className="sm:col-span-2 lg:col-span-2">
-                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Sentence</p>
-                <p className="font-semibold text-slate-100" data-testid="report-summary-sentence">{sentenceSummary}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Sentence</p>
+                <p className="font-semibold text-slate-900" data-testid="report-summary-sentence">{sentenceSummary}</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Documents</p>
-                <p className="font-semibold text-slate-100">{documentsCount} files analysed</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Documents</p>
+                <p className="font-semibold text-slate-900">{documentsCount} files analysed</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Timeline Events</p>
-                <p className="font-semibold text-slate-100">{eventsCount} events</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Timeline Events</p>
+                <p className="font-semibold text-slate-900">{eventsCount} events</p>
               </div>
             </div>
           </div>
@@ -676,8 +676,8 @@ const ReportView = () => {
 
       <style>{`
         .legal-report {
-          font-size: 1.05rem;
-          line-height: 1.8;
+          font-size: 1.02rem;
+          line-height: 1.75;
           color: #0f172a;
         }
         .legal-report h1,
@@ -685,12 +685,12 @@ const ReportView = () => {
         .legal-report h3 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #f8fafc;
+          color: #0f172a;
           margin: 1.4rem 0 0.7rem;
         }
         .legal-report h2 { font-size: 1.25rem; }
         .legal-report h3 { font-size: 1.1rem; }
-        .legal-report strong { color: #f8fafc; font-weight: 700; }
+        .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.4rem; }
         .legal-report-table-wrap { overflow-x: auto; }
@@ -699,26 +699,26 @@ const ReportView = () => {
           min-width: 720px;
           border-collapse: collapse;
           margin: 0.8rem 0;
-          background: #0b1220;
+          background: #ffffff;
         }
         .legal-report th {
-          background: #1e293b;
-          color: #e2e8f0 !important;
+          background: #1e3a8a;
+          color: #ffffff !important;
           font-weight: 700;
         }
         .legal-report th, .legal-report td {
-          border: 1px solid #334155;
+          border: 1px solid #cbd5e1;
           padding: 10px 12px;
           font-size: 0.95rem;
           vertical-align: top;
-          color: #e2e8f0;
+          color: #0f172a;
         }
         .legal-report blockquote {
-          border-left: 4px solid #38bdf8;
+          border-left: 4px solid #1e3a8a;
           padding: 10px 14px;
           margin: 0.8rem 0;
-          background: #1e293b;
-          color: #e2e8f0;
+          background: #eff6ff;
+          color: #1e3a8a;
         }
         @media print {
           body {
@@ -732,9 +732,9 @@ const ReportView = () => {
           .legal-report h3,
           .legal-report strong { color: #0f172a; }
           .legal-report table { background: #ffffff; }
-          .legal-report th { background: #dbeafe; color: #0f172a !important; }
+          .legal-report th { background: #1e3a8a; color: #ffffff !important; }
           .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
-          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; }
+          .legal-report blockquote { background: #eff6ff; color: #1e3a8a; border-left: 4px solid #1e3a8a; }
         }
       `}</style>
     </div>
