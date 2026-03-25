@@ -460,10 +460,10 @@ const ReportsSection = ({
             
             /* Colour theme per report type - matches landing page */
             const rTheme = {
-              quick_summary: { headerBg: "bg-gradient-to-r from-emerald-700 to-green-600", badge: "bg-green-500", label: "Quick Summary", price: "FREE" },
-              full_detailed: { headerBg: "bg-gradient-to-r from-slate-900 to-blue-900", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
-              extensive_log: { headerBg: "bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-900", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
-            }[report.report_type] || { headerBg: "bg-slate-800", badge: "bg-slate-500", label: getReportTypeLabel(report.report_type), price: "" };
+              quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
+              full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
+              extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
+            }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             return (
               <Card key={report.report_id} className="overflow-hidden border-0 shadow-md">
@@ -613,7 +613,7 @@ const ReportsSection = ({
           if (!open) setAggressiveMode(false);
         }}
       >
-        <DialogContent className="sm:max-w-lg bg-slate-950 text-slate-100 border border-slate-800">
+        <DialogContent className="sm:max-w-lg bg-white text-slate-900 border border-slate-200">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Generate Report
@@ -627,8 +627,8 @@ const ReportsSection = ({
                 onClick={() => setSelectedReportType(type.value)}
                 className={`p-5 border-2 rounded-xl cursor-pointer transition-all ${
                   selectedReportType === type.value 
-                    ? 'border-blue-500 bg-slate-900/80 shadow-lg shadow-blue-500/20' 
-                    : 'border-slate-800 bg-slate-900/40 hover:border-slate-600'
+                    ? 'border-blue-500 bg-white shadow-lg shadow-blue-500/10' 
+                    : 'border-slate-200 bg-white hover:border-slate-400'
                 }`}
               >
                 <div className="flex items-center justify-between">

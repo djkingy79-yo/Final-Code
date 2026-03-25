@@ -355,7 +355,7 @@ function AppRouter() {
 function App() {
   return (
     <ThemeProvider>
-      <div className="App">
+      <div className="App force-light">
         <BrowserRouter>
           <ScrollToTopOnNav />
           <AppRouter />

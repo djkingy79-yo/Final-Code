@@ -145,7 +145,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
             data-testid="google-signin-btn"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -166,7 +166,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {showGoogleHint && (
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl">
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
                   <strong>This email uses Google login.</strong> Please close this dialogue and click "Sign in with Google" to continue.
                 </p>

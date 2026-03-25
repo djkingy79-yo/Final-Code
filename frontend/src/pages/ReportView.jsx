@@ -509,7 +509,7 @@ const ReportView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="report-page min-h-screen bg-white">
       {/* Sticky action bar */}
       <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40 no-print" data-testid="report-header">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">

@@ -870,6 +870,44 @@ select {
 
 /* Colour reset removed — preserving original report colours */
 
+/* Report pages — force white + remove dark */
+.report-page {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.report-page .bg-slate-900,
+.report-page .bg-slate-950,
+.report-page .bg-slate-800,
+.report-page .bg-black {
+  background-color: #ffffff !important;
+}
+
+.report-page .text-slate-100,
+.report-page .text-slate-200,
+.report-page .text-slate-300 {
+  color: #0f172a !important;
+}
+
+.report-page .border-slate-700,
+.report-page .border-slate-800,
+.report-page .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+.report-page .bg-gradient-to-r,
+.report-page .bg-gradient-to-br,
+.report-page .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+.report-page .opacity-60,
+.report-page .opacity-70,
+.report-page .opacity-80 {
+  opacity: 1 !important;
+}
+
 /* Landing pages — bright, bold, white background */
 .landing-page {
   background: #ffffff;
@@ -920,8 +958,165 @@ select {
   color: #0f172a !important;
 }
 
-.landing-page .text-white {
+.landing-page h1.text-white,
+.landing-page h2.text-white,
+.landing-page h3.text-white,
+.landing-page p.text-white,
+.landing-page span.text-white {
+  color: #0f172a !important;
+}
+
+.landing-page .bg-slate-900,
+.landing-page .bg-slate-950,
+.landing-page .bg-slate-800,
+.landing-page .bg-black {
+  background-color: #ffffff !important;
+}
+
+.landing-page [class*="bg-slate-7"],
+.landing-page [class*="bg-slate-8"],
+.landing-page [class*="bg-slate-9"],
+.landing-page [class*="bg-blue-9"],
+.landing-page [class*="bg-indigo-9"],
+.landing-page [class*="bg-purple-9"] {
+  background-color: #ffffff !important;
+}
+
+.landing-page .border-slate-700,
+.landing-page .border-slate-800,
+.landing-page .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+.landing-page .text-slate-100,
+.landing-page .text-slate-200,
+.landing-page .text-slate-300,
+.landing-page .text-slate-400,
+.landing-page .text-slate-500 {
+  color: #0f172a !important;
+}
+
+.landing-page .border-border {
+  border-color: #e2e8f0 !important;
+}
+
+.landing-page ul,
+.landing-page ol {
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.landing-cta-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-size: 1.1rem !important;
+  padding: 1rem 2.5rem !important;
+  border-radius: 14px !important;
+}
+
+.landing-cta-secondary {
+  border: 2px solid #2563eb !important;
+  color: #1e3a8a !important;
+  font-size: 1.05rem !important;
+  padding: 0.95rem 2.2rem !important;
+  border-radius: 14px !important;
+}
+
+.landing-page .btn-bright {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Force light mode across app (remove dark backgrounds) */
+.force-light [class*="bg-slate-9"],
+.force-light [class*="bg-slate-8"],
+.force-light [class*="bg-slate-7"],
+.force-light [class*="bg-black"] {
+  background-color: #ffffff !important;
+}
+
+.force-light [class*="bg-gradient-to-"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+.force-light [class*="bg-slate-9"] *,
+.force-light [class*="bg-slate-8"] *,
+.force-light [class*="bg-black"] * {
+  color: #0f172a !important;
+}
+
+.force-light [class*="text-slate-100"],
+.force-light [class*="text-slate-200"],
+.force-light [class*="text-slate-300"],
+.force-light [class*="text-slate-400"],
+.force-light [class*="text-slate-500"],
+.force-light [class*="text-muted-foreground"] {
+  color: #0f172a !important;
+}
+
+.force-light [class*="border-slate-7"],
+.force-light [class*="border-slate-8"],
+.force-light [class*="border-slate-9"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Landing pages — bright, bold, white background */
+.landing-page {
+  background: #ffffff;
   color: #0f172a;
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  color: #1e3a8a !important;
+  font-weight: 800;
+}
+
+.landing-page p,
+.landing-page li,
+.landing-page span {
+  color: #0f172a;
+}
+
+.landing-page .text-muted-foreground {
+  color: #334155 !important;
+}
+
+.landing-page .opacity-60,
+.landing-page .opacity-70,
+.landing-page .opacity-80 {
+  opacity: 1 !important;
+}
+
+.landing-page .bg-gradient-to-r,
+.landing-page .bg-gradient-to-br,
+.landing-page .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+.landing-page [class*="dark:bg-slate"],
+.landing-page [class*="dark:bg-blue"],
+.landing-page [class*="dark:bg-indigo"],
+.landing-page [class*="dark:bg-purple"],
+.landing-page [class*="dark:bg-emerald"],
+.landing-page [class*="dark:bg-teal"],
+.landing-page [class*="dark:bg-black"] {
+  background-color: #ffffff !important;
+}
+
+.landing-page [class*="dark:text" ] {
+  color: #0f172a !important;
+}
+
+.landing-page h1.text-white,
+.landing-page h2.text-white,
+.landing-page h3.text-white,
+.landing-page p.text-white,
+.landing-page span.text-white {
+  color: #0f172a !important;
 }
 
 
