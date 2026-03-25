@@ -218,6 +218,32 @@ const ReportsSection = ({
         setAggressiveMode(false);
       }
     } catch (error) {
+      const isTimeout = error?.code === "ECONNABORTED" || error?.message?.toLowerCase().includes("timeout");
+      if (isTimeout) {
+        toast.info("Report generation started — reconnecting...");
+        try {
+          const latestRes = await axios.get(`${API}/cases/${caseId}/reports`);
+          const latestReport = (latestRes.data || []).find((report) =>
+            report.report_type === reportType &&
+            Boolean(report.content?.aggressive_mode) === aggressiveMode
+          );
+          if (latestReport?.report_id) {
+            if (latestReport.status === "completed") {
+              toast.success("Report generated successfully!");
+              if (onReportsChange) onReportsChange();
+              stopGenerating();
+            } else {
+              pollForCompletion(latestReport.report_id);
+            }
+            return;
+          }
+        } catch (lookupError) {
+          console.warn("Report lookup after timeout failed:", lookupError);
+        }
+        toast.error("Report generation is taking longer than expected. Please try again.");
+        stopGenerating();
+        return;
+      }
       const detail = error?.response?.data?.detail;
       if (typeof detail === 'string') {
         toast.error(detail);
