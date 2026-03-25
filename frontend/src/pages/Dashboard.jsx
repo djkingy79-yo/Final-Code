@@ -204,11 +204,11 @@ const Dashboard = ({ user }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="case-page min-h-screen bg-white">
       <DisclaimerReminder />
       
       {/* Sidebar */}
-      <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-card border-r border-border z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
+      <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
         {/* Logo */}
         <div className="flex items-center gap-3 p-6 pb-4">
           <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center">

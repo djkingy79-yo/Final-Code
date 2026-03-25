@@ -113,11 +113,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-card border-border">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white border-slate-200" style={{ backgroundColor: "#ffffff", color: "#0f172a" }}>
         {/* Header with branding */}
-        <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 px-6 py-8 text-center relative overflow-hidden">
+        <div className="bg-white border-b border-slate-200 px-6 py-8 text-center relative">
           {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 opacity-0">
             <img 
               src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" 
               alt=""
@@ -129,12 +129,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               <Scale className="w-7 h-7 text-white" />
             </div>
             <DialogTitle 
-              className="text-2xl font-bold text-white mb-1"
+              className="text-2xl font-bold text-slate-900 mb-1"
               style={{ fontFamily: 'Crimson Pro, serif' }}
             >
               {mode === "login" ? "Welcome Back" : "Join Appeal Manager"}
             </DialogTitle>
-            <p className="text-slate-300 text-sm">
+            <p className="text-slate-600 text-sm">
               {mode === "login" ? "Sign in to manage your cases" : "Create your account to get started"}
             </p>
           </div>
@@ -238,7 +238,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 rounded-xl py-5 font-semibold shadow-lg shadow-blue-600/20"
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-xl py-5 font-semibold shadow-lg shadow-blue-600/20"
               data-testid="auth-submit-btn"
             >
               {loading ? (

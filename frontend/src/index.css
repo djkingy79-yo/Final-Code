@@ -171,11 +171,11 @@ code, .mono {
 
 /* Gradient backgrounds */
 .gradient-hero {
-  background: linear-gradient(145deg, #06080e 0%, #0b1633 55%, #0a0b10 100%);
+  background: #ffffff;
 }
 
 .gradient-blue {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  background: #1e3a8a;
 }
 
 /* Subtle texture overlay */
@@ -283,7 +283,7 @@ code, .mono {
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #1e3a8a;
   margin: 2rem 0 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #1e3a8a;
@@ -294,7 +294,7 @@ code, .mono {
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #1e3a8a;
   margin: 1.7rem 0 0.6rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid #cbd5e1;
@@ -869,3 +869,164 @@ select {
 }
 
 /* Colour reset removed — preserving original report colours */
+
+/* Landing pages — bright, bold, white background */
+.landing-page {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  color: #1e3a8a !important;
+  font-weight: 800;
+}
+
+.landing-page p,
+.landing-page li,
+.landing-page span {
+  color: #0f172a;
+}
+
+.landing-page .text-muted-foreground {
+  color: #334155 !important;
+}
+
+.landing-page .opacity-60,
+.landing-page .opacity-70,
+.landing-page .opacity-80 {
+  opacity: 1 !important;
+}
+
+.landing-page .bg-gradient-to-r,
+.landing-page .bg-gradient-to-br,
+.landing-page .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+.landing-page [class*="dark:bg-slate"],
+.landing-page [class*="dark:bg-blue"],
+.landing-page [class*="dark:bg-indigo"],
+.landing-page [class*="dark:bg-purple"],
+.landing-page [class*="dark:bg-emerald"],
+.landing-page [class*="dark:bg-teal"],
+.landing-page [class*="dark:bg-black"] {
+  background-color: #ffffff !important;
+}
+
+.landing-page [class*="dark:text" ] {
+  color: #0f172a !important;
+}
+
+.landing-page .text-white {
+  color: #0f172a;
+}
+
+
+.landing-page .bg-slate-900,
+.landing-page .bg-slate-950,
+.landing-page .bg-black {
+  background-color: #ffffff !important;
+}
+
+.landing-page .border-slate-700,
+.landing-page .border-slate-800,
+.landing-page .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+.landing-page .text-slate-100,
+.landing-page .text-slate-200,
+.landing-page .text-slate-300,
+.landing-page .text-slate-400,
+.landing-page .text-slate-500 {
+  color: #0f172a !important;
+}
+
+.landing-page .border-border {
+  border-color: #e2e8f0 !important;
+}
+
+.landing-page ul,
+.landing-page ol {
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.landing-cta-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-size: 1.1rem !important;
+  padding: 1rem 2.5rem !important;
+  border-radius: 14px !important;
+}
+
+.landing-cta-secondary {
+  border: 2px solid #2563eb !important;
+  color: #1e3a8a !important;
+  font-size: 1.05rem !important;
+  padding: 0.95rem 2.2rem !important;
+  border-radius: 14px !important;
+}
+
+.landing-page .btn-bright {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Case pages — force white workspace */
+.case-page {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.case-page .bg-card,
+.case-page .bg-background {
+  background-color: #ffffff !important;
+}
+
+.case-page .bg-slate-900,
+.case-page .bg-slate-950,
+.case-page .bg-black {
+  background-color: #ffffff !important;
+}
+
+.case-page .border-border,
+.case-page .border-slate-700,
+.case-page .border-slate-800,
+.case-page .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+.case-page .text-white {
+  color: #0f172a !important;
+}
+
+.case-page .text-muted-foreground,
+.case-page .text-slate-400,
+.case-page .text-slate-500 {
+  color: #475569 !important;
+}
+
+.case-page .bg-gradient-to-r,
+.case-page .bg-gradient-to-br,
+.case-page .bg-gradient-to-b {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+.case-page [class*="dark:bg-slate"],
+.case-page [class*="dark:bg-blue"],
+.case-page [class*="dark:bg-indigo"],
+.case-page [class*="dark:bg-purple"],
+.case-page [class*="dark:bg-emerald"],
+.case-page [class*="dark:bg-teal"],
+.case-page [class*="dark:bg-black"] {
+  background-color: #ffffff !important;
+}
+
+.case-page [class*="dark:text"] {
+  color: #0f172a !important;
+}

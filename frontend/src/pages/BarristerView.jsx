@@ -708,7 +708,7 @@ const BarristerView = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <div className="relative">
             <Scale className="w-16 h-16 text-blue-500 mx-auto animate-pulse" />
@@ -910,9 +910,9 @@ const BarristerView = ({ user }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 print:bg-white">
+    <div className="min-h-screen bg-white print:bg-white">
       {/* Premium Header Bar - hidden when printing */}
-      <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white sticky top-0 z-50 no-print border-b border-blue-500/30">
+      <header className="bg-blue-900 text-white sticky top-0 z-50 no-print border-b border-blue-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">

@@ -235,7 +235,7 @@ const MarkdownBlock = ({ text, testId }) => (
 const REPORT_THEME = {
   quick_summary: {
     label: "Quick Summary Report",
-    headerBg: "bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-500",
+    headerBg: "bg-emerald-600",
     accentBg: "bg-emerald-600",
     accentText: "text-emerald-700",
     priceBadge: "bg-emerald-500",
@@ -249,7 +249,7 @@ const REPORT_THEME = {
   },
   full_detailed: {
     label: "Full Detailed Report",
-    headerBg: "bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600",
+    headerBg: "bg-blue-700",
     accentBg: "bg-blue-600",
     accentText: "text-blue-700",
     priceBadge: "bg-blue-500",
@@ -263,7 +263,7 @@ const REPORT_THEME = {
   },
   extensive_log: {
     label: "Extensive Log Report",
-    headerBg: "bg-gradient-to-r from-fuchsia-900 via-purple-800 to-indigo-700",
+    headerBg: "bg-purple-700",
     accentBg: "bg-purple-600",
     accentText: "text-purple-700",
     priceBadge: "bg-purple-500",
@@ -550,18 +550,18 @@ const ReportView = () => {
           <div className={`${theme.headerBg} text-white p-6 sm:p-8`} data-testid="report-colour-header">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div>
-                <p className="text-xs uppercase tracking-wider opacity-70 mb-1">{theme.label}</p>
+                <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">{theme.label}</p>
                 <h1 className="text-3xl sm:text-4xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="report-title">
                   {report?.title || `${caseData?.title || "Case"} Report`}
                 </h1>
-                <p className="text-sm opacity-80 mt-1">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
               </div>
               <div className="text-right">
-                <p className="text-3xl font-bold opacity-90">{grounds.length} Ground{grounds.length !== 1 ? "s" : ""}</p>
-                <p className="text-xs opacity-60">Identified</p>
+                <p className="text-3xl font-bold text-white">{grounds.length} Ground{grounds.length !== 1 ? "s" : ""}</p>
+                <p className="text-xs text-white/80 font-semibold">Identified</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-wrap text-sm opacity-80">
+            <div className="flex items-center gap-3 flex-wrap text-sm text-white/90">
               <span className={`${theme.priceBadge} px-3 py-1 rounded-full text-sm font-bold text-white`}>{theme.price}</span>
               {report?.content?.aggressive_mode && (
                 <span className="bg-red-500 px-3 py-1 rounded-full text-sm font-bold text-white" data-testid="report-aggressive-mode-badge">Aggressive Mode</span>
@@ -631,7 +631,7 @@ const ReportView = () => {
                       {idx + 1}
                     </span>
                     <h3
-                      className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight"
+                      className={`text-xl sm:text-2xl font-bold ${theme.accentText} tracking-tight`}
                       style={{ fontFamily: "Crimson Pro, serif" }}
                       data-testid={`report-section-heading-${idx + 1}`}
                     >
@@ -685,7 +685,7 @@ const ReportView = () => {
         .legal-report h3 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #0f172a;
+          color: #1e3a8a;
           margin: 1.6rem 0 0.8rem;
         }
         .legal-report h2 { font-size: 1.5rem; }

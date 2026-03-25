@@ -662,7 +662,7 @@ const CaseDetail = ({ user }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-muted-foreground mx-auto" />
           <p className="mt-4 text-muted-foreground">Loading case...</p>
@@ -673,7 +673,7 @@ const CaseDetail = ({ user }) => {
 
   if (loadError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center max-w-md">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
           <h2 className="mt-4 text-xl font-semibold text-foreground">Error Loading Case</h2>
@@ -702,7 +702,7 @@ const CaseDetail = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="case-page min-h-screen bg-white">
       {/* Header */}
       <header className="glass-header sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">

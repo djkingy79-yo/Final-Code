@@ -30,7 +30,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div id="landing-top" className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div id="landing-top" className="landing-page min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Auth Modal */}
       <AuthModal 
         isOpen={showAuthModal} 
@@ -88,7 +88,7 @@ const LandingPage = () => {
             <Button 
               onClick={() => setShowAuthModal(true)}
               data-testid="login-btn"
-              className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-4 py-2 text-sm font-medium"
+              className="landing-cta-primary px-5 py-3 text-base font-semibold"
             >
               Sign In
             </Button>
@@ -121,7 +121,7 @@ const LandingPage = () => {
               <button onClick={toggleTheme} className="p-2 text-slate-300 hover:text-white" data-testid="mobile-theme-toggle">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <Button onClick={() => setShowAuthModal(true)} className="bg-red-600 text-white hover:bg-blue-700 flex-1" data-testid="mobile-login-btn">
+              <Button onClick={() => setShowAuthModal(true)} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
                 Sign In
               </Button>
             </div>
@@ -203,7 +203,7 @@ const LandingPage = () => {
                 <Button
                   onClick={() => setShowAuthModal(true)}
                   data-testid="hero-login-btn"
-                  className="bg-red-600 text-white hover:bg-red-700 rounded-xl px-10 py-5 text-lg font-semibold inline-flex items-center justify-center gap-2 shadow-xl shadow-red-600/40 transition-all hover:scale-105"
+                  className="landing-cta-primary inline-flex items-center justify-center gap-2 shadow-xl transition-all hover:scale-105"
                 >
                   Get Started Free
                   <ChevronRight className="w-5 h-5" />
@@ -211,7 +211,7 @@ const LandingPage = () => {
                 <Link to="/professional-summary">
                   <Button
                     variant="outline"
-                    className="border-2 border-white/60 text-white hover:bg-white/20 rounded-xl px-10 py-5 text-lg font-semibold w-full sm:w-auto"
+                    className="landing-cta-secondary w-full sm:w-auto"
                   >
                     For Legal Professionals
                   </Button>
@@ -860,7 +860,7 @@ const LandingPage = () => {
               <Button
                 onClick={() => setShowAuthModal(true)}
                 variant="outline"
-                className="w-full border-border text-foreground hover:bg-muted"
+                className="landing-cta-primary w-full"
               >
                 Get Started Free
               </Button>
@@ -1068,7 +1068,7 @@ const LandingPage = () => {
             <Button
               onClick={() => setShowAuthModal(true)}
               data-testid="comparison-get-started-btn"
-              className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-10 py-4 text-base font-semibold"
+              className="landing-cta-primary"
             >
               Get Started Free
             </Button>
@@ -1109,18 +1109,18 @@ const LandingPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-background">
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Start?
           </h2>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-slate-700 mb-6">
             Sign in to organise your case and identify potential appeal issues.
           </p>
           <Button
             onClick={() => setShowAuthModal(true)}
             data-testid="cta-login-btn"
-            className="bg-red-600 text-white hover:bg-blue-700 rounded-lg px-8 py-3 font-medium"
+            className="landing-cta-primary"
           >
             Sign In
           </Button>
