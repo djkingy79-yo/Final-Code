@@ -39,6 +39,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
   useEffect(() => {
     if (offenceCategory) {
       fetchFramework();
+    } else {
+      setFramework(null);
+      setLoading(false);
     }
   }, [offenceCategory, selectedState]);
 
@@ -92,7 +95,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
       <Card className="border-slate-200">
         <CardContent className="p-8 text-center">
           <Scale className="w-12 h-12 text-slate-300 mx-auto" />
-          <p className="mt-3 text-slate-600">No legal framework available</p>
+          <p className="mt-3 text-slate-600">No legal framework available for this case.</p>
+          <p className="text-xs text-slate-500 mt-2">Set an offence category to load the framework.</p>
         </CardContent>
       </Card>
     );

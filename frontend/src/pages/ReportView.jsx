@@ -631,7 +631,7 @@ const ReportView = () => {
                       {idx + 1}
                     </span>
                     <h3
-                      className="text-2xl font-bold text-slate-100 uppercase tracking-wide"
+                      className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight"
                       style={{ fontFamily: "Crimson Pro, serif" }}
                       data-testid={`report-section-heading-${idx + 1}`}
                     >
@@ -641,7 +641,7 @@ const ReportView = () => {
                 </div>
 
                 {/* Section content with professional markdown rendering */}
-                <div className="bg-slate-900 rounded-lg border border-slate-700 p-6 sm:p-7 shadow-md" data-testid={`report-section-content-${idx + 1}`}>
+                <div className="bg-white rounded-lg border border-slate-200 p-6 sm:p-7 shadow-sm" data-testid={`report-section-content-${idx + 1}`}>
                   <MarkdownBlock text={section.content} testId={`report-section-md-${idx + 1}`} />
                 </div>
 
@@ -676,8 +676,8 @@ const ReportView = () => {
 
       <style>{`
         .legal-report {
-          font-size: 1.02rem;
-          line-height: 1.75;
+          font-size: 1.08rem;
+          line-height: 1.82;
           color: #0f172a;
         }
         .legal-report h1,
@@ -688,11 +688,11 @@ const ReportView = () => {
           color: #0f172a;
           margin: 1.4rem 0 0.7rem;
         }
-        .legal-report h2 { font-size: 1.25rem; }
-        .legal-report h3 { font-size: 1.1rem; }
+        .legal-report h2 { font-size: 1.4rem; }
+        .legal-report h3 { font-size: 1.2rem; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
-        .legal-report li { margin-bottom: 0.4rem; }
+        .legal-report li { margin-bottom: 0.5rem; }
         .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
@@ -708,14 +708,14 @@ const ReportView = () => {
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
-          padding: 10px 12px;
-          font-size: 0.95rem;
+          padding: 12px 12px;
+          font-size: 1rem;
           vertical-align: top;
           color: #0f172a;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;
-          padding: 10px 14px;
+          padding: 12px 14px;
           margin: 0.8rem 0;
           background: #eff6ff;
           color: #1e3a8a;

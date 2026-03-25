@@ -398,17 +398,17 @@ const DocumentsSection = ({
                       </Badge>
                       {doc.content_text ? (
                         <>
-                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                            Text Extracted ({Math.round(doc.content_text.length / 1000)}k chars)
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[11px] px-2 py-0.5">
+                            Extracted {Math.round(doc.content_text.length / 1000)}k chars
                           </Badge>
                           {doc.ocr_extracted && (
-                            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-[11px] px-2 py-0.5">
                               OCR
                             </Badge>
                           )}
                         </>
                       ) : (
-                        <Badge variant="outline" className="bg-slate-100 text-slate-600 border-slate-200">
+                        <Badge variant="outline" className="bg-slate-100 text-slate-600 border-slate-200 text-[11px] px-2 py-0.5">
                           No text extracted
                         </Badge>
                       )}
