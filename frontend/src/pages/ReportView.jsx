@@ -212,7 +212,7 @@ const parseAnalysisSections = (analysis = "") => {
 };
 
 const MarkdownBlock = ({ text, testId }) => (
-  <div className="legal-report text-[1.02rem] sm:text-[1.08rem] text-slate-900" data-testid={testId}>
+  <div className="legal-report text-[1.12rem] sm:text-[1.18rem] text-slate-900" data-testid={testId}>
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
@@ -509,12 +509,12 @@ const ReportView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-white">
       {/* Sticky action bar */}
-      <header className="bg-slate-950/95 backdrop-blur border-b border-slate-800 sticky top-0 z-40 no-print" data-testid="report-header">
+      <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40 no-print" data-testid="report-header">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
-          <div className="flex items-center justify-between gap-3 flex-wrap text-slate-100">
-            <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${caseId}`)} className="text-slate-200 hover:text-white hover:bg-slate-800" data-testid="back-btn">
+          <div className="flex items-center justify-between gap-3 flex-wrap text-slate-900">
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${caseId}`)} className="text-slate-700 hover:text-slate-900 hover:bg-slate-100" data-testid="back-btn">
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
@@ -524,12 +524,12 @@ const ReportView = () => {
                     <Eye className="w-4 h-4 mr-2" /> Barrister View
                   </Button>
                 ) : (
-                  <Button variant="outline" size="sm" disabled className="text-slate-500 border-slate-700 cursor-not-allowed" data-testid="barrister-view-locked">
+                  <Button variant="outline" size="sm" disabled className="text-slate-500 border-slate-200 cursor-not-allowed" data-testid="barrister-view-locked">
                     <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 6 reports
                   </Button>
                 )
               )}
-              <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-700 text-slate-200 hover:bg-slate-800" data-testid="print-btn">
+              <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-200 text-slate-700 hover:bg-slate-100" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
               <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-indigo-600/20 text-indigo-200 border-indigo-500/40 hover:bg-indigo-600/30" data-testid="export-docx-btn">
@@ -551,7 +551,7 @@ const ReportView = () => {
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div>
                 <p className="text-xs uppercase tracking-wider opacity-70 mb-1">{theme.label}</p>
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-100" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="report-title">
+                <h1 className="text-3xl sm:text-4xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="report-title">
                   {report?.title || `${caseData?.title || "Case"} Report`}
                 </h1>
                 <p className="text-sm opacity-80 mt-1">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
@@ -657,16 +657,16 @@ const ReportView = () => {
           </div>
 
           {/* ===== DISCLAIMER FOOTER ===== */}
-          <div className="bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700 p-5 sm:p-6" data-testid="report-footer">
+          <div className="bg-white border-t border-slate-200 p-5 sm:p-6" data-testid="report-footer">
             <div className="flex items-start gap-3 mb-3">
               <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide mb-1">Not Legal Advice</p>
-                <p className="text-xs text-slate-600 dark:text-slate-400">This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.</p>
+                <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Not Legal Advice</p>
+                <p className="text-xs text-slate-600">This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.</p>
               </div>
             </div>
-            <div className="text-center pt-3 border-t border-slate-200 dark:border-slate-700">
-              <p className="text-xs text-slate-400">
+            <div className="text-center pt-3 border-t border-slate-200">
+              <p className="text-xs text-slate-500">
                 Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
               </p>
             </div>
@@ -676,8 +676,8 @@ const ReportView = () => {
 
       <style>{`
         .legal-report {
-          font-size: 1.08rem;
-          line-height: 1.82;
+          font-size: 1.15rem;
+          line-height: 1.85;
           color: #0f172a;
         }
         .legal-report h1,
@@ -686,19 +686,19 @@ const ReportView = () => {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #0f172a;
-          margin: 1.4rem 0 0.7rem;
+          margin: 1.6rem 0 0.8rem;
         }
-        .legal-report h2 { font-size: 1.4rem; }
-        .legal-report h3 { font-size: 1.2rem; }
+        .legal-report h2 { font-size: 1.5rem; }
+        .legal-report h3 { font-size: 1.25rem; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
-        .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
-        .legal-report li { margin-bottom: 0.5rem; }
+        .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
+        .legal-report li { margin-bottom: 0.55rem; }
         .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
           min-width: 720px;
           border-collapse: collapse;
-          margin: 0.8rem 0;
+          margin: 1rem 0;
           background: #ffffff;
         }
         .legal-report th {
@@ -709,14 +709,14 @@ const ReportView = () => {
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
           padding: 12px 12px;
-          font-size: 1rem;
+          font-size: 1.02rem;
           vertical-align: top;
           color: #0f172a;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;
           padding: 12px 14px;
-          margin: 0.8rem 0;
+          margin: 0.9rem 0;
           background: #eff6ff;
           color: #1e3a8a;
         }
