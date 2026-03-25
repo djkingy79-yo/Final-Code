@@ -30,6 +30,10 @@ class Case(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
+    state: str = "nsw"
+    offence_category: str = "homicide"
+    offence_type: Optional[str] = None
+    sentence: Optional[str] = None
     status: str = "active"
     summary: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -37,11 +41,16 @@ class Case(BaseModel):
 
 
 class CaseCreate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     title: str
     defendant_name: str
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
+    state: str = "nsw"
+    offence_category: str = "homicide"
+    offence_type: Optional[str] = None
+    sentence: Optional[str] = None
     summary: Optional[str] = None
 
 

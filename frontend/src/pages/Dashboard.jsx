@@ -110,7 +110,16 @@ const Dashboard = ({ user }) => {
       setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "homicide", offence_type: "", sentence: "", summary: "" });
       toast.success("Case created successfully");
     } catch (error) {
-      toast.error("Failed to create case");
+      const detail = error?.response?.data?.detail;
+      if (typeof detail === "string") {
+        toast.error(detail);
+      } else if (detail?.message) {
+        toast.error(detail.message);
+      } else if (error?.response?.status === 401) {
+        toast.error("Session expired. Please sign in again.");
+      } else {
+        toast.error("Failed to create case");
+      }
     }
   };
 
