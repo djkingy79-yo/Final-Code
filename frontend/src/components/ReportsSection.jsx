@@ -545,7 +545,7 @@ const ReportsSection = ({
                               variant="outline"
                               size="sm"
                               disabled
-                              className="text-slate-400 border-slate-200 cursor-not-allowed"
+                              className="text-slate-700 border-slate-200 bg-white opacity-80 cursor-not-allowed"
                               data-testid={`barrister-view-locked-${report.report_id}`}
                             >
                               <Presentation className="w-4 h-4 mr-1.5" />

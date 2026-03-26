@@ -1077,6 +1077,25 @@ select {
   background-color: #ffffff !important;
 }
 
+.force-light [class*="from-slate-9"],
+.force-light [class*="to-slate-9"],
+.force-light [class*="via-slate-9"],
+.force-light [class*="from-slate-8"],
+.force-light [class*="to-slate-8"],
+.force-light [class*="via-slate-8"],
+.force-light [class*="from-slate-7"],
+.force-light [class*="to-slate-7"],
+.force-light [class*="via-slate-7"],
+.force-light [class*="from-black"],
+.force-light [class*="to-black"],
+.force-light [class*="via-black"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  --tw-gradient-from: #ffffff !important;
+  --tw-gradient-to: #ffffff !important;
+  --tw-gradient-stops: #ffffff !important;
+}
+
 .force-light [class*="bg-slate-50"],
 .force-light [class*="bg-slate-100"],
 .force-light [class*="bg-slate-200"],
@@ -1121,10 +1140,13 @@ select {
 
 .force-light [data-testid="report-colour-header"] *,
 .force-light .landing-cta-primary,
-.force-light .landing-cta-primary *,
+.force-light .landing-cta-primary * {
+  color: #ffffff !important;
+}
+
 .force-light .landing-cta-secondary,
 .force-light .landing-cta-secondary * {
-  color: #ffffff !important;
+  color: #1e3a8a !important;
 }
 
 .force-light [class*="bg-blue-6"],
@@ -1311,9 +1333,6 @@ select {
   border-color: #e2e8f0 !important;
 }
 
-.case-page .text-white {
-  color: #0f172a !important;
-}
 
 .case-page .text-muted-foreground,
 .case-page .text-slate-400,

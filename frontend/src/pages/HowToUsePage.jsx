@@ -145,73 +145,72 @@ const HowToUsePage = () => {
 
   const getColorClasses = (color) => {
     const map = {
-      blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-600 dark:text-blue-400", tipBg: "bg-blue-50 dark:bg-blue-900/20", tipText: "text-blue-800 dark:text-blue-200" },
-      emerald: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-600 dark:text-emerald-400", tipBg: "bg-emerald-50 dark:bg-emerald-900/20", tipText: "text-emerald-800 dark:text-emerald-200" },
-      blue: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-red-600 dark:text-blue-400", tipBg: "bg-blue-50 dark:bg-blue-900/20", tipText: "text-blue-800 dark:text-blue-200" },
-      purple: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-600 dark:text-purple-400", tipBg: "bg-purple-50 dark:bg-purple-900/20", tipText: "text-purple-800 dark:text-purple-200" },
-      red: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400", tipBg: "bg-red-50 dark:bg-red-900/20", tipText: "text-red-800 dark:text-red-200" },
-      orange: { bg: "bg-orange-100 dark:bg-orange-900/30", text: "text-orange-600 dark:text-orange-400", tipBg: "bg-orange-50 dark:bg-orange-900/20", tipText: "text-orange-800 dark:text-orange-200" },
-      teal: { bg: "bg-teal-100 dark:bg-teal-900/30", text: "text-teal-600 dark:text-teal-400", tipBg: "bg-teal-50 dark:bg-teal-900/20", tipText: "text-teal-800 dark:text-teal-200" },
-      indigo: { bg: "bg-indigo-100 dark:bg-indigo-900/30", text: "text-indigo-600 dark:text-indigo-400", tipBg: "bg-indigo-50 dark:bg-indigo-900/20", tipText: "text-indigo-800 dark:text-indigo-200" },
+      blue: { bg: "bg-blue-100", text: "text-blue-700", tipBg: "bg-blue-50", tipText: "text-blue-800" },
+      emerald: { bg: "bg-emerald-100", text: "text-emerald-700", tipBg: "bg-emerald-50", tipText: "text-emerald-800" },
+      purple: { bg: "bg-purple-100", text: "text-purple-700", tipBg: "bg-purple-50", tipText: "text-purple-800" },
+      red: { bg: "bg-red-100", text: "text-red-700", tipBg: "bg-red-50", tipText: "text-red-800" },
+      orange: { bg: "bg-orange-100", text: "text-orange-700", tipBg: "bg-orange-50", tipText: "text-orange-800" },
+      teal: { bg: "bg-teal-100", text: "text-teal-700", tipBg: "bg-teal-50", tipText: "text-teal-800" },
+      indigo: { bg: "bg-indigo-100", text: "text-indigo-700", tipBg: "bg-indigo-50", tipText: "text-indigo-800" }
     };
     return map[color] || map.blue;
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-3" data-testid="how-to-use-home-link">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="how-to-use-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="how-to-use-brand-text">
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors">Resources</Link>
-            <Link to="/legal-framework" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Framework</Link>
-            <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">FAQ</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-legal-terms">Legal Terms</Link>
+            <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-resources">Resources</Link>
+            <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-legal-framework">Legal Framework</Link>
+            <Link to="/faq" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-faq">FAQ</Link>
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="how-to-use-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="how-to-use-back-link">
+              <Button className="landing-cta-primary" data-testid="how-to-use-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="md:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="how-to-use-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
-            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-to-use-mobile-legal-terms">Legal Terms</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-to-use-mobile-resources">Resources</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-to-use-mobile-legal-framework">Legal Framework</Link>
+            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-to-use-mobile-faq">FAQ</Link>
+            <Link to="/" className="block py-2 text-blue-700 hover:text-blue-800" data-testid="how-to-use-mobile-back">Back to Home</Link>
           </div>
         )}
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+      <section className="py-12 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center">
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             How to Use the App
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="text-slate-700 max-w-2xl mx-auto">
             A step-by-step guide with screenshots to help you get the most out of Appeal Case Manager. 
             Follow these steps to organise your case and identify potential appeal grounds.
           </p>
@@ -219,13 +218,13 @@ const HowToUsePage = () => {
       </section>
 
       {/* Quick Start */}
-      <section className="py-8 px-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+      <section className="py-8 px-6 bg-blue-50 border-b border-blue-200">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-1" />
             <div>
-              <h2 className="font-bold text-foreground mb-2">Before You Start</h2>
-              <ul className="text-sm text-muted-foreground space-y-1">
+              <h2 className="font-bold text-slate-900 mb-2">Before You Start</h2>
+              <ul className="text-sm text-slate-700 space-y-1">
                 <li>- <strong>Gather your documents</strong> — transcripts, evidence, court records, witness statements</li>
                 <li>- <strong>Note key dates</strong> — incident date, arrest, trial, sentencing</li>
                 <li>- <strong>Know your deadline</strong> — you usually have 28 days from sentencing to file an appeal</li>
@@ -251,19 +250,19 @@ const HowToUsePage = () => {
                   <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}>
                     <Icon className={`w-6 h-6 ${colors.text}`} />
                   </div>
-                  <span className="text-xs font-bold text-muted-foreground bg-muted px-2 py-1 rounded">STEP {step.num}</span>
+                  <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP {step.num}</span>
                 </div>
-                <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {step.title}
                 </h3>
-                <p className="text-muted-foreground">{step.description}</p>
+                <p className="text-slate-700">{step.description}</p>
 
                 {/* Screenshot */}
-                <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-3 border border-slate-200 dark:border-slate-700 shadow-lg">
+                <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-lg">
                   <img 
                     src={step.image} 
                     alt={`Step ${step.num}: ${step.title}`}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700"
+                    className="w-full rounded-xl border border-slate-200"
                     loading="lazy"
                   />
                 </div>
@@ -271,8 +270,8 @@ const HowToUsePage = () => {
                 {/* Instructions */}
                 <div className={`grid ${isEven ? 'md:grid-cols-2' : 'md:grid-cols-2'} gap-6`}>
                   <div>
-                    <h4 className="font-semibold text-foreground text-sm mb-3">Instructions:</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
+                    <h4 className="font-semibold text-slate-900 text-sm mb-3">Instructions:</h4>
+                    <ul className="space-y-2 text-sm text-slate-700">
                       {step.instructions.map((inst, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <ChevronRight className="w-4 h-4 shrink-0 mt-0.5" />
@@ -295,22 +294,22 @@ const HowToUsePage = () => {
           {/* Barrister View */}
           <div className="bg-card border border-border rounded-2xl p-8" data-testid="howto-barrister-view">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-                <Presentation className="w-6 h-6 text-slate-600 dark:text-slate-400" />
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <Presentation className="w-6 h-6 text-slate-700" />
               </div>
-              <span className="text-xs font-bold text-muted-foreground bg-muted px-2 py-1 rounded">STEP 9</span>
+              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP 9</span>
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Use Barrister View
             </h3>
-            <p className="text-muted-foreground mb-4">Present your case professionally with the clean Barrister View.</p>
-            <ul className="space-y-2 text-sm text-muted-foreground mb-4">
+            <p className="text-slate-700 mb-4">Present your case professionally with the clean Barrister View.</p>
+            <ul className="space-y-2 text-sm text-slate-700 mb-4">
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Click 'Barrister View' from your case reports</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Opens a clean, professional presentation format</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Perfect for meetings with lawyers or counsel</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Can be printed or exported to PDF</li>
             </ul>
-            <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm text-slate-700 dark:text-slate-300">
+            <div className="p-3 bg-white rounded-lg text-sm text-slate-700">
               <strong>Tip:</strong> Use this when discussing your case with legal professionals.
             </div>
           </div>
@@ -318,37 +317,37 @@ const HowToUsePage = () => {
           {/* Export */}
           <div className="bg-card border border-border rounded-2xl p-8" data-testid="howto-export">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center">
-                <Download className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
+                <Download className="w-6 h-6 text-pink-700" />
               </div>
-              <span className="text-xs font-bold text-muted-foreground bg-muted px-2 py-1 rounded">STEP 10</span>
+              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP 10</span>
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Export & Share
             </h3>
-            <p className="text-muted-foreground mb-4">Export your case data for use outside the app.</p>
-            <ul className="space-y-2 text-sm text-muted-foreground mb-4">
+            <p className="text-slate-700 mb-4">Export your case data for use outside the app.</p>
+            <ul className="space-y-2 text-sm text-slate-700 mb-4">
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Creates a ZIP file with all documents and reports</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Timeline and summary as editable DOCX files</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Bundle Documents' to merge PDFs into one file</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
-            <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded-lg text-sm text-pink-800 dark:text-pink-200">
+            <div className="p-3 bg-pink-50 rounded-lg text-sm text-pink-800">
               <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court.
             </div>
           </div>
         </div>
 
         {/* What's Next */}
-        <div className="mt-16 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-8 border border-emerald-200 dark:border-emerald-800">
-          <h2 className="text-xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <div className="mt-16 bg-white rounded-2xl p-8 border border-emerald-200">
+          <h2 className="text-xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             What Happens Next?
           </h2>
           <div className="grid md:grid-cols-2 gap-6 text-sm">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">If Grounds Are Found</h3>
-              <ul className="text-muted-foreground space-y-1">
+              <h3 className="font-semibold text-slate-900 mb-2">If Grounds Are Found</h3>
+              <ul className="text-slate-700 space-y-1">
                 <li>- Review the detailed analysis for each ground</li>
                 <li>- Generate a Full Report to share with a lawyer</li>
                 <li>- Seek legal advice on the strength of your appeal</li>
@@ -356,8 +355,8 @@ const HowToUsePage = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-2">Getting Legal Help</h3>
-              <ul className="text-muted-foreground space-y-1">
+              <h3 className="font-semibold text-slate-900 mb-2">Getting Legal Help</h3>
+              <ul className="text-slate-700 space-y-1">
                 <li>- Apply to <Link to="/legal-resources" className="text-blue-600 hover:underline">Legal Aid</Link> in your state</li>
                 <li>- Contact <Link to="/legal-resources" className="text-blue-600 hover:underline">Pro Bono services</Link></li>
                 <li>- Find a lawyer via your <Link to="/legal-resources" className="text-blue-600 hover:underline">Law Society</Link></li>
@@ -370,7 +369,7 @@ const HowToUsePage = () => {
         {/* CTA */}
         <div className="mt-12 text-center">
           <Link to="/">
-            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
+            <Button className="landing-cta-primary" data-testid="how-to-use-start-cta">
               Get Started Now
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
@@ -379,9 +378,9 @@ const HowToUsePage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-700 text-sm">
             Need more help? Check our <Link to="/faq" className="text-blue-500 hover:underline">FAQ</Link> or <Link to="/contact" className="text-blue-500 hover:underline">Contact Us</Link>
           </p>
           <p className="text-red-400 text-xs mt-2 font-medium">

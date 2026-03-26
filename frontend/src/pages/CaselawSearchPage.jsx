@@ -221,58 +221,58 @@ const CaselawSearchPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-3" data-testid="caselaw-home-link">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="caselaw-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="caselaw-brand-text">
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/legal-framework" className="text-slate-400 hover:text-white text-sm transition-colors">Legislation</Link>
-            <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors">Resources</Link>
-            <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-legislation">Legislation</Link>
+            <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-resources">Resources</Link>
+            <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-legal-terms">Legal Terms</Link>
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="caselaw-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="caselaw-back-link">
+              <Button className="landing-cta-primary" data-testid="caselaw-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="md:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="caselaw-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legislation</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="caselaw-mobile-legislation">Legislation</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="caselaw-mobile-resources">Resources</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="caselaw-mobile-legal-terms">Legal Terms</Link>
+            <Link to="/" className="block py-2 text-blue-700 hover:text-blue-800" data-testid="caselaw-mobile-back">Back to Home</Link>
           </div>
         )}
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+      <section className="py-12 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center">
               <Search className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Live Caselaw Search
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="text-slate-700 max-w-2xl mx-auto">
             Search real Australian court decisions across all states and territories. 
             Find cases similar to yours, understand legal precedents, and research appeal outcomes.
           </p>
@@ -280,26 +280,26 @@ const CaselawSearchPage = () => {
       </section>
 
       {/* What is Caselaw */}
-      <section className="py-8 px-6 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+      <section className="py-8 px-6 bg-blue-50 border-b border-blue-200">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-blue-600" />
                 What is Case Law?
               </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-slate-700 text-sm leading-relaxed">
                 Case law (also called "precedent" or "judge-made law") consists of the written decisions made by judges 
                 when they decide cases. These decisions interpret legislation, apply legal principles, and create 
                 binding precedents that other courts must follow.
               </p>
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-blue-600" />
                 Why Search Case Law?
               </h2>
-              <ul className="text-muted-foreground text-sm space-y-1">
+              <ul className="text-slate-700 text-sm space-y-1">
                 <li>• Find cases with similar facts to yours</li>
                 <li>• Understand how courts interpret specific laws</li>
                 <li>• Research successful appeal arguments</li>
@@ -314,11 +314,12 @@ const CaselawSearchPage = () => {
       {/* State Selector */}
       <main className="max-w-5xl mx-auto px-6 py-8">
         <div className="mb-8">
-          <label className="block text-sm font-semibold text-foreground mb-3">Select Jurisdiction</label>
+          <label className="block text-sm font-semibold text-slate-900 mb-3">Select Jurisdiction</label>
           <select 
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
-            className="w-full md:w-64 px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full md:w-64 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            data-testid="caselaw-state-select"
           >
             <option value="">-- Choose a State/Territory --</option>
             <option value="federal">Federal Courts (High Court, Federal Court)</option>
@@ -336,24 +337,25 @@ const CaselawSearchPage = () => {
         {/* Selected State Details */}
         {selectedState && databases[selectedState] && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               {databases[selectedState].name} Court Databases
             </h2>
             
             {databases[selectedState].courts.map((court, index) => (
-              <div key={index} className="bg-card border border-border rounded-2xl overflow-hidden">
+              <div key={index} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <div className={`bg-${databases[selectedState].color}-600 px-6 py-4 flex items-center justify-between`}
                   style={{ backgroundColor: databases[selectedState].color === 'blue' ? '#2563eb' : databases[selectedState].color === 'purple' ? '#9333ea' : databases[selectedState].color === 'red' ? '#dc2626' : databases[selectedState].color === 'blue_alt' ? '#1e3a8a' : databases[selectedState].color === 'emerald' ? '#059669' : databases[selectedState].color === 'teal' ? '#0d9488' : databases[selectedState].color === 'orange' ? '#ea580c' : databases[selectedState].color === 'indigo' ? '#4f46e5' : '#475569' }}
                 >
                   <div>
                     <h3 className="text-white font-bold text-lg">{court.name}</h3>
-                    <p className="text-white/70 text-sm">{court.courts.join(" • ")}</p>
+                    <p className="text-white/90 text-sm">{court.courts.join(" • ")}</p>
                   </div>
                   <a 
                     href={court.url} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                    className="bg-white text-slate-900 hover:bg-slate-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors"
+                    data-testid={`caselaw-visit-${court.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     Visit Database
                     <ExternalLink className="w-4 h-4" />
@@ -361,17 +363,17 @@ const CaselawSearchPage = () => {
                 </div>
                 
                 <div className="p-6 space-y-6">
-                  <p className="text-muted-foreground">{court.description}</p>
+                  <p className="text-slate-700">{court.description}</p>
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                         <FileText className="w-4 h-4 text-red-600" />
                         What You'll Find
                       </h4>
                       <ul className="space-y-2">
                         {court.whatYouFind.map((item, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
                             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
                             {item}
                           </li>
@@ -380,11 +382,11 @@ const CaselawSearchPage = () => {
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                         <Search className="w-4 h-4 text-blue-600" />
                         Search Tips
                       </h4>
-                      <p className="text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
+                      <p className="text-sm text-slate-700 bg-white border border-slate-200 p-4 rounded-lg">
                         {court.searchTips}
                       </p>
                     </div>
@@ -398,7 +400,7 @@ const CaselawSearchPage = () => {
         {/* No Selection - Show All Quick Links */}
         {!selectedState && (
           <div>
-            <h2 className="text-xl font-bold text-foreground mb-6" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Quick Access - All Jurisdictions
             </h2>
             
@@ -407,7 +409,7 @@ const CaselawSearchPage = () => {
                 <button
                   key={key}
                   onClick={() => setSelectedState(key)}
-                  className="text-left p-4 bg-card border border-border rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
+                  className="text-left p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold`}
@@ -415,9 +417,9 @@ const CaselawSearchPage = () => {
                     >
                       {state.abbrev}
                     </div>
-                    <span className="font-semibold text-foreground">{state.name}</span>
+                    <span className="font-semibold text-slate-900">{state.name}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-slate-700">
                     {state.courts.length} database{state.courts.length > 1 ? 's' : ''} available
                   </p>
                 </button>
@@ -425,11 +427,11 @@ const CaselawSearchPage = () => {
             </div>
 
             {/* AustLII - Universal Search */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 dark:border-red-600 rounded-2xl p-6">
+            <div className="bg-blue-50 border-2 border-blue-300 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">AustLII - Search All Australian Courts</h3>
-                  <p className="text-sm text-muted-foreground">Australasian Legal Information Institute - The most comprehensive free legal database</p>
+                  <h3 className="text-lg font-bold text-slate-900">AustLII - Search All Australian Courts</h3>
+                  <p className="text-sm text-slate-700">Australasian Legal Information Institute - The most comprehensive free legal database</p>
                 </div>
                 <a 
                   href="https://www.austlii.edu.au/"
@@ -443,16 +445,16 @@ const CaselawSearchPage = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">What is AustLII?</h4>
-                  <p className="text-muted-foreground">A free, non-profit service providing access to legal information from Australia, New Zealand, and the Pacific region.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">What is AustLII?</h4>
+                  <p className="text-slate-700">A free, non-profit service providing access to legal information from Australia, New Zealand, and the Pacific region.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Coverage</h4>
-                  <p className="text-muted-foreground">All Australian courts, tribunals, legislation, treaties, law reform reports, and journal articles.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Coverage</h4>
+                  <p className="text-slate-700">All Australian courts, tribunals, legislation, treaties, law reform reports, and journal articles.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Best For</h4>
-                  <p className="text-muted-foreground">Cross-jurisdictional research, finding historical cases, and comprehensive legal research across all states.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Best For</h4>
+                  <p className="text-slate-700">Cross-jurisdictional research, finding historical cases, and comprehensive legal research across all states.</p>
                 </div>
               </div>
             </div>
@@ -460,14 +462,14 @@ const CaselawSearchPage = () => {
         )}
 
         {/* Understanding Judgments */}
-        <section className="mt-12 bg-card border border-border rounded-2xl p-6">
-          <h2 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <section className="mt-12 bg-white border border-slate-200 rounded-2xl p-6">
+          <h2 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Understanding Court Judgments
           </h2>
           <div className="grid md:grid-cols-2 gap-6 text-sm">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">What's in a Judgment?</h3>
-              <ul className="text-muted-foreground space-y-1">
+              <h3 className="font-semibold text-slate-900 mb-2">What's in a Judgment?</h3>
+              <ul className="text-slate-700 space-y-1">
                 <li><strong>Case Citation:</strong> Unique identifier (e.g., R v Smith [2024] NSWSC 142)</li>
                 <li><strong>Parties:</strong> Crown (R) vs Defendant in criminal cases</li>
                 <li><strong>Facts:</strong> Summary of what happened</li>
@@ -477,8 +479,8 @@ const CaselawSearchPage = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-2">How to Use Case Law</h3>
-              <ul className="text-muted-foreground space-y-1">
+              <h3 className="font-semibold text-slate-900 mb-2">How to Use Case Law</h3>
+              <ul className="text-slate-700 space-y-1">
                 <li><strong>Find similar cases:</strong> Search for your offence type + jurisdiction</li>
                 <li><strong>Check appeal success:</strong> Look for "appeal allowed" in criminal appeals</li>
                 <li><strong>Understand sentencing:</strong> Review sentencing remarks for comparable cases</li>
@@ -493,7 +495,7 @@ const CaselawSearchPage = () => {
       {/* Footer */}
       <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800 mt-12">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-700 text-sm">
             All court databases are publicly accessible and free to use.
           </p>
           <p className="text-red-400 text-xs mt-2 font-medium">

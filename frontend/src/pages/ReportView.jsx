@@ -237,43 +237,43 @@ const REPORT_THEME = {
     label: "Quick Summary Report",
     headerBg: "bg-emerald-600",
     accentBg: "bg-emerald-600",
-    accentText: "text-emerald-700",
+    accentText: "text-emerald-800",
     priceBadge: "bg-emerald-500",
     price: "FREE",
-    borderColor: "border-emerald-300 dark:border-emerald-700",
-    lightBg: "from-emerald-50 via-white to-lime-50 dark:from-emerald-900/20 dark:to-slate-900",
+    borderColor: "border-emerald-300",
+    lightBg: "from-emerald-50 via-white to-lime-50",
     sectionBorder: "border-emerald-500",
-    tocBg: "bg-emerald-50/80 dark:bg-emerald-900/20",
-    tocBorder: "border-emerald-200 dark:border-emerald-700",
-    sectionNumberBg: "bg-emerald-100 text-emerald-700",
+    tocBg: "bg-emerald-50/80",
+    tocBorder: "border-emerald-200",
+    sectionNumberBg: "bg-emerald-200 text-emerald-900",
   },
   full_detailed: {
     label: "Full Detailed Report",
     headerBg: "bg-blue-700",
     accentBg: "bg-blue-600",
-    accentText: "text-blue-700",
+    accentText: "text-blue-900",
     priceBadge: "bg-blue-500",
     price: "$150 AUD",
-    borderColor: "border-blue-300 dark:border-blue-700",
-    lightBg: "from-blue-50 via-white to-cyan-50 dark:from-blue-900/20 dark:to-slate-900",
+    borderColor: "border-blue-300",
+    lightBg: "from-blue-50 via-white to-cyan-50",
     sectionBorder: "border-blue-500",
-    tocBg: "bg-blue-50/80 dark:bg-blue-900/20",
-    tocBorder: "border-blue-200 dark:border-blue-700",
-    sectionNumberBg: "bg-blue-100 text-blue-700",
+    tocBg: "bg-blue-50/80",
+    tocBorder: "border-blue-200",
+    sectionNumberBg: "bg-blue-200 text-blue-900",
   },
   extensive_log: {
     label: "Extensive Log Report",
     headerBg: "bg-purple-700",
     accentBg: "bg-purple-600",
-    accentText: "text-purple-700",
+    accentText: "text-purple-900",
     priceBadge: "bg-purple-500",
     price: "$200 AUD",
-    borderColor: "border-purple-300 dark:border-purple-700",
-    lightBg: "from-purple-50 via-white to-indigo-50 dark:from-purple-900/20 dark:to-slate-900",
+    borderColor: "border-purple-300",
+    lightBg: "from-purple-50 via-white to-indigo-50",
     sectionBorder: "border-purple-500",
-    tocBg: "bg-purple-50/80 dark:bg-purple-900/20",
-    tocBorder: "border-purple-200 dark:border-purple-700",
-    sectionNumberBg: "bg-purple-100 text-purple-700",
+    tocBg: "bg-purple-50/80",
+    tocBorder: "border-purple-200",
+    sectionNumberBg: "bg-purple-200 text-purple-900",
   },
 };
 
@@ -390,15 +390,15 @@ const ReportView = () => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${title}</title>
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 16px; }
     h1 { font-family: 'Crimson Pro', serif; font-size: 26px; margin-bottom: 6px; color: #0f172a; }
     h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 16px; margin-top: 14px; color: #1e40af; }
-    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
+    h3 { font-size: 16px; margin-top: 14px; color: #0f172a; font-weight: 700; }
+    .meta { font-size: 12px; color: #334155; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
-    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #cbd5e1; font-size: 12px; color: #475569; text-align: center; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #cbd5e1; font-size: 12px; color: #334155; text-align: center; }
     table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 13px; color: #0f172a; }
+    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 14px; color: #0f172a; }
     th { background: #dbeafe; font-weight: 700; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
@@ -502,7 +502,7 @@ const ReportView = () => {
       <div className="min-h-screen flex items-center justify-center bg-slate-50" data-testid="report-view-loading">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-slate-400 mx-auto" />
-          <p className="mt-4 text-slate-600">Loading report...</p>
+          <p className="mt-4 text-slate-700">Loading report...</p>
         </div>
       </div>
     );
@@ -520,11 +520,11 @@ const ReportView = () => {
             <div className="flex items-center gap-2 flex-wrap">
               {report?.report_type === 'extensive_log' && (
                 hasAllReports ? (
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} data-testid="barrister-view-btn">
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} className="border-blue-300 text-blue-800 hover:bg-blue-50" data-testid="barrister-view-btn">
                     <Eye className="w-4 h-4 mr-2" /> Barrister View
                   </Button>
                 ) : (
-                  <Button variant="outline" size="sm" disabled className="text-slate-500 border-slate-200 cursor-not-allowed" data-testid="barrister-view-locked">
+                  <Button variant="outline" size="sm" disabled className="text-slate-700 border-slate-200 bg-white opacity-80 cursor-not-allowed" data-testid="barrister-view-locked">
                     <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 6 reports
                   </Button>
                 )
@@ -532,7 +532,7 @@ const ReportView = () => {
               <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-200 text-slate-700 hover:bg-slate-100" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="bg-indigo-600/20 text-indigo-200 border-indigo-500/40 hover:bg-indigo-600/30" data-testid="export-docx-btn">
+              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="border-blue-300 text-blue-800 hover:bg-blue-50" data-testid="export-docx-btn">
                 <FileText className="w-4 h-4 mr-2" /> Export Word
               </Button>
               <Button size="sm" onClick={handleExportPDF} className="bg-blue-600 text-white hover:bg-blue-500" data-testid="export-pdf-btn">
@@ -574,23 +574,23 @@ const ReportView = () => {
           <div className="bg-white/95 border-b border-slate-200 p-5 sm:p-6" data-testid="report-top-summary-box">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 text-sm sm:text-base" style={{ fontFamily: "Crimson Pro, serif" }}>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Defendant</p>
+                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Defendant</p>
                 <p className="font-semibold text-slate-900" data-testid="report-summary-accused">{defendantName}</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Offence</p>
+                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Offence</p>
                 <p className="font-semibold text-slate-900" data-testid="report-summary-offence">{offenceLabel}</p>
               </div>
               <div className="sm:col-span-2 lg:col-span-2">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Sentence</p>
+                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Sentence</p>
                 <p className="font-semibold text-slate-900" data-testid="report-summary-sentence">{sentenceSummary}</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Documents</p>
+                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Documents</p>
                 <p className="font-semibold text-slate-900">{documentsCount} files analysed</p>
               </div>
               <div className="lg:col-span-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Timeline Events</p>
+                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Timeline Events</p>
                 <p className="font-semibold text-slate-900">{eventsCount} events</p>
               </div>
             </div>
@@ -600,8 +600,8 @@ const ReportView = () => {
           {sections.length > 1 && (
             <div className={`${theme.tocBg} border-b ${theme.tocBorder} p-4 sm:p-5`} data-testid="report-table-of-contents">
               <div className="flex items-center gap-2 mb-2">
-                <ListOrdered className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+                <ListOrdered className="w-4 h-4 text-slate-700" />
+                <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
                   Contents ({sections.length} Sections)
                 </p>
               </div>
@@ -610,10 +610,10 @@ const ReportView = () => {
                   <button
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
-                    className="text-left text-xs text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors truncate"
+                    className="text-left text-xs text-slate-700 hover:text-blue-700 transition-colors truncate"
                     data-testid={`report-toc-item-${idx + 1}`}
                   >
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">{idx + 1}.</span> {section.title}
+                    <span className="font-semibold text-slate-900">{idx + 1}.</span> {section.title}
                   </button>
                 ))}
               </div>
@@ -647,7 +647,7 @@ const ReportView = () => {
 
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  className="mt-2 inline-flex items-center gap-1 text-xs text-slate-700 hover:text-slate-900"
                   data-testid={`report-back-to-top-${idx + 1}`}
                 >
                   <ChevronRight className="w-3 h-3 rotate-[-90deg]" /> Back to top
@@ -662,11 +662,11 @@ const ReportView = () => {
               <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Not Legal Advice</p>
-                <p className="text-xs text-slate-600">This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.</p>
+                <p className="text-xs text-slate-700">This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.</p>
               </div>
             </div>
             <div className="text-center pt-3 border-t border-slate-200">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
               </p>
             </div>
