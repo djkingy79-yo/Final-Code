@@ -2026,7 +2026,7 @@ CHECKLIST ITEMS: {len(checklist)} (Completed: {sum(1 for c in checklist if c.get
     if grounds:
         context += "\nIDENTIFIED GROUNDS:\n"
         for g in grounds:
-            context += f"- {g.get('title', 'Unknown')} (Type: {g.get('ground_type', 'Unknown')}, Strength: {g.get('strength_rating', 'Unknown')})\n"
+            context += f"- {g.get('title', 'Unknown')} (Type: {g.get('ground_type', 'Unknown')}, Strength: {g.get('strength', 'Unknown')})\n"
     
     if deadlines:
         context += "\nDEADLINES:\n"
@@ -3783,7 +3783,7 @@ MATERIAL COUNTS (use these exact numbers in the report):
 - Total timeline events: {len(timeline)}
 - Total grounds identified: {len(grounds)}
 
-Target range 10000-15000 words. This report must feel premium, strategic, and hearing-ready. This is a $150 AUD paid product — it must deliver AT LEAST twice the depth and detail of the free Quick Summary.
+Target range 12000-18000 words. This report must feel premium, strategic, and hearing-ready. This is a $150 AUD paid product — it must deliver AT LEAST twice the depth and detail of the free Quick Summary.
 
 CRITICAL — THIS REPORT MUST BE DRAMATICALLY DIFFERENT FROM THE FREE REPORT:
 The client already has the Quick Summary (free report). If this $150 report looks similar to the free one, the product is worthless and the client will demand a refund. YOU MUST:
@@ -4248,7 +4248,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
             passes = [
                 ("PASS 1/5", """
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis.
+NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis. This is a PAID $150 report — it MUST be dramatically more detailed than the free Quick Summary.
 
 ## 1. EXECUTIVE BRIEF
 ## 2. FORENSIC CASE CHRONOLOGY
@@ -4257,7 +4257,7 @@ NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
                 ("PASS 2/5", """
 
-NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Section 4 MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" with 500+ words per ground. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions.
+NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Section 4 MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" with 600+ words per ground including Crown response predictions, defence rebuttal, and how establishing this ground assists a successful appeal. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions. Include 8+ rows in the sentencing comparison table.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES with full citations and specific factual parallels)
@@ -4266,7 +4266,7 @@ NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections. STOP after section 6."""),
                 ("PASS 3/5", """
 
-NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it.
+NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it. Include detailed analysis for EVERY outcome pathway.
 
 ## 7. OUTCOME OPTIONS AVAILABLE — keep ALL outcome pathways in this ONE section
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
@@ -4275,7 +4275,7 @@ NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MI
 Write ALL 3 sections. STOP after section 9."""),
                 ("PASS 4/5", """
 
-NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court.
+NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court. Write actual hearing-ready submission text.
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case)
 ## 11. HOW TO ARGUE EACH TOP GROUND
@@ -4284,7 +4284,7 @@ NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. 
 Write ALL 3 sections. STOP after section 12."""),
                 ("PASS 5/5", """
 
-NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client.
+NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client. The Client Brief must cover EVERY ground and EVERY outcome in accessible language.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
 ## 14. PRIORITISED ACTION PLAN — keep ALL timeframes (72-hour, 7-day, 28-day) in this ONE section

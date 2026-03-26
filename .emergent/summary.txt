@@ -1,52 +1,65 @@
 <analysis>**original_problem_statement:** 
-The user, Deb King, is building Appeal Case Manager to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, a tiered reporting system (Free, Paid), Barrister View, and PayID integration. The core requirement is generating massive, hyper-detailed, case-specific legal reports. 
+The user, Deb King, is building Appeal Case Manager to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, 50 Full Detailed, 00 Extensive Log, and a locked Barrister View). The core requirement is generating massive, hyper-detailed, case-specific legal reports.
 
 PRODUCT REQUIREMENTS:
-- **Report Tiers:** Free Tier (shows *number* of grounds), 9 AUD Tier (shows *titles* of grounds), Quick Summary, Full Detailed, Extensive Report. *(Note: Aggressive Mode was explicitly deleted by user request in previous sessions).*
-- **Barrister View:** Capstone report synthesizing the **3** standard reports.
-- **UI/UX Strict Rule:** Forced light mode globally. High contrast only. The user demands a strict professional law app aesthetic—NO dark mode, NO dark gradients, NO grey/muted text. Backgrounds must be white, body text black, large readable fonts, with coloured headings for contrast.
+- **Report Tiers:** Must strictly scale in depth. Free (Base) -> 50 (2x depth, 10-15k words, min 600 words/ground) -> 00 (3x depth, 25-35k words). 
+- **Barrister View:** Locked until all 3 standard reports are generated/paid. Acts as a capstone synthesis.
+- **Report Language:** STRICT third-person educational tool. Absolutely NO we, us, our, you, or your legal team. 
+- **Branding:** All reports (on-screen, PDF, DOCX) must feature Created and Designed by Deb King at the top and a prominent, bold legal disclaimer at the bottom.
+- **UI/UX Strict Rule:** Forced light mode globally. High contrast only. Tables must be scrollable on mobile. 
 
-**User's preferred language**: English (Australian). (INSTRUCT next agent to respond in English and strictly use Australian spelling like analyse, dialogue, organise, finalise, behaviour, Barrister in all UI text, code variables where applicable, and AI-generated outputs).
+**User's preferred language**: English (Australian). (INSTRUCT next agent to respond in English and strictly use Australian spelling like analyse, organise, barrister, defence in all UI text, code variables, and AI-generated outputs).
 
 **what currently exists?** 
-A full-stack web application (React, FastAPI, MongoDB). In previous sessions, a massive UI/UX audit was conducted to strip out dark mode artifacts across almost all pages. Aggressive Mode reporting was completely purged. Barrister View now unlocks after 3 standard reports. The app relies heavily on  CSS to combat Tailwind's dark mode defaults.
+A React + FastAPI + MongoDB web application. Extensive overhauls have been applied to report generation prompts to scale depth, force ground counts, and enforce third-person language. The  handles multi-pass LLM generation (up to 7 passes) with partial saving to prevent timeouts. Print/PDF/DOCX exports have been heavily styled to replicate the exact on-screen formatting, fix overlapping tables, and apply the user's mandatory branding/disclaimers. 
 
 **Last working item**: 
-    - Last item agent was working: The current agent initiated an  immediately upon starting the session to clarify the previous agent's pending task. The actual pending task is replacing stock placeholder images on the  with actual, live Playwright screenshots of the app, and fixing typography on that page (making image captions smaller, ensuring headings are larger than subheadings).
+    - Last item agent was working: The agent was attempting to locate and fix the Progress/Overview tab which is displaying stale/incorrect data (e.g., saying specific grounds have not been identified yet despite grounds existing). The agent globbed for  and  but found nothing, just as the user said Continue.
     - Status: IN PROGRESS
     - Agent Testing Done: N
-    - Which testing method agent to use? Frontend screenshot tool (to visually verify typography and image replacement).
+    - Which testing method agent to use? Frontend testing agent & screenshot tool (to verify UI updates).
     - User Testing Done: N
 
 **All Pending/In progress Issue list**: 
-  Issue 1: How It Works page has stock images and bad typography (P0)
-     - Attempted fixes: A previous agent captured live screenshots using Playwright but did not insert them. The current agent paused to .
-     - Next debug checklist: 
-        - File: 
-        - Replace unsplash URLs with the newly generated local live screenshots (check  or capture new ones if missing).
-        - Ensure text under the pictures is explicitly smaller (e.g.,  or ).
-        - Ensure headings (, ) are strictly hierarchical in size and use a consistent font family (e.g.,  for headings,  for body).
-     - Why fix this issue and what will be achieved with the fix? It is the user's explicit final demand; failure to do this will result in extreme user anger.
-     - Status: IN PROGRESS
-     - Is recurring issue? N
-     - Should Test frontend/backend/both after fix? Frontend (Screenshot tool)
-     - Blocked on other issue: None
-
-  Issue 2: General UI/UX Readability Regressions (P1)
-     - Attempted fixes: Global CSS  was applied in earlier iterations, but the user continues to find edge cases.
-     - Next debug checklist: 
-        - Monitor user screenshots for any remaining , , or dark backgrounds across the app.
-     - Why fix this issue and what will be achieved with the fix? Meets user's strict non-SaaS, high-contrast legal-document aesthetic.
+  Issue 1: Progress/Overview Tab showing stale/wrong data (P0)
+     - Attempted fixes: Agent searched for  and  files but failed. 
+     - Next debug checklist: The Progress or Overview section is likely embedded directly inside  or a closely related component. Locate the text Without identified grounds for appeal... and bind it to actual  state rather than generic filler.
+     - Why fix this issue and what will be achieved with the fix? It contradicts the app's actual state and frustrates the user.
      - Status: IN PROGRESS
      - Is recurring issue? Y
      - Should Test frontend/backend/both after fix? Frontend
      - Blocked on other issue: None
 
+  Issue 2: Non-functional Delete Buttons (P0)
+     - Attempted fixes: None yet.
+     - Next debug checklist: Check delete handlers in Timeline, Grounds, and Progress tab components inside . Ensure API calls correctly wire to state updates.
+     - Why fix this issue and what will be achieved with the fix? Core CRUD functionality is broken.
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Both
+     - Blocked on other issue: None
+
+  Issue 3: Documents Tab UI is messy/cluttered (P1)
+     - Attempted fixes: None yet. Acknowledged in thoughts but skipped.
+     - Next debug checklist: Open . The user explicitly demanded the removal of the Extract Text and OCR Scan buttons to simplify the layout.
+     - Why fix this issue and what will be achieved with the fix? Meets user's aesthetic and simplicity demands.
+     - Status: NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Frontend
+
+  Issue 4: Notes Tab failing to add notes (P1)
+     - Attempted fixes: Agent added frontend error handling to  to trace a  API error, but did not resolve the core token/auth issue preventing note creation.
+     - Next debug checklist: Check  interaction in . Ensure the  is properly attached to the request or WebSocket payload.
+     - Why fix this issue and what will be achieved with the fix? Core collaboration feature is broken.
+     - Status: TESTING PENDING
+     - Is recurring issue? Y
+     - Should Test frontend/backend/both after fix? Both
+
 **In progress Task List**: 
   Task 1: Backend Refactoring (Decomposing )
-     - Where to resume:  and  are extracted. Need to extract remaining routes.
-     - What will be achieved with this? Maintainability ( is >5,000 lines).
-     - Status: BLOCKED (Do NOT start until all immediate P0 UI/UX frontend issues are 100% resolved and verified by the user).
+     - Where to resume:  and  are extracted. Need to extract remaining routes out of the >5,400 line .
+     - What will be achieved with this? Maintainability and prevention of hot-reload lag.
+     - Status: BLOCKED (Do NOT start until all immediate P0/P1 UI/UX frontend issues are 100% resolved and verified by the user).
      - Should Test frontend/backend/both after fix? Backend.
      - Blocked on something: User's immediate UI/UX P0 complaints.
 
@@ -59,71 +72,91 @@ A full-stack web application (React, FastAPI, MongoDB). In previous sessions, a 
     - P2: Case Sharing: Allow users to share cases with other registered users.
 
 **Completed work in this session**
-- None. The session consisted entirely of the agent reading the previous context and immediately executing an  tool call.
+- Extensively modified AI prompts in  to ban we/us/our/your, enforce exact word counts for 50 and 00 reports, and enforce mandatory inclusion of ALL case grounds. (DONE)
+- Fixed extensive_log report timeout by breaking up LLM multi-passes and saving partial generations to DB. (DONE)
+- Fixed PDF/DOCX and Print view styling: Tables no longer overlap, headers match screen colors, N/A fields hidden. (DONE)
+- Injected Created and Designed by Deb King header and bold red Disclaimer into all reports and exports. (DONE)
+- Fixed ReactMarkdown tables on mobile: Removed , added  and horizontal scroll wrappers. (DONE)
+- Locked Barrister View with padlock icon logic, removed its dark gradient, and integrated strict language stripping. (DONE)
+- Reduced typography sizing across FAQ page and purged Our phrasing. (DONE)
 
 **Earlier issues found/mentioned but not fixed**
-   - None missed; the  styling/image issue is the sole active blocker.
+   - Issue 1: Documents Tab Cleanup
+     - Debug checklist:  - remove Extract Text and OCR Scan buttons as per screenshot request.
+     - Why to solve this issue and what will be achieved with this? User explicit demand to declutter the UI.
+     - Should Test frontend/backend/both after fix: Frontend
+     - Is recurring issue? N
 
 **Known issue recurrence from previous fork**
-  - Issue recurrence in previous fork: UI styling constantly reverting to SaaS app look (grey text, dark gradients) instead of legal document look.
+  - Issue recurrence in previous fork: UI styling constantly reverting, mobile tables breaking, AI ignoring prompt instructions, we/us language seeping into reports.
   - Recurrence count: Extremely High.
   - Status: IN PROGRESS
-  Note: **CRITICAL WARNING:** The user is extraordinarily hostile, verbally abusive (cunt, dickhead, scammer), and has explicitly threatened a bank dispute. **DO NOT argue. DO NOT explain yourself. DO NOT make unprompted creative choices.** Execute *exactly* what is in the user's text and screenshots with surgical precision. 
+  - Note: **CRITICAL WARNING:** The user (Deb King) is extraordinarily demanding, highly aggressive, uses profanity (FUCKIN CRAP, pathetic), and demands perfection matching screenshots. **DO NOT argue. DO NOT explain yourself. Execute *exactly* what is requested with surgical precision.**
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **Strict Light Theme Enforcement:** We are actively fighting Tailwind defaults.  contains  overrides. Always use , , , and explicitly colored buttons (). 
-- **Live Screenshots:** Tutorial pages must use actual screenshots generated by the Playwright tool rather than stock photography to build user trust.
+- **Report Generation Pipeline:** Multi-tier, multi-pass AI generation.  (1 pass),  (5 passes),  (7 passes). All passes must use  to cleanse backend output.
+- **Strict Light Theme & Print overrides:**  overrides Tailwind defaults. For tables, avoid  for mobile screens, apply it exclusively inside .
 
 **key DB schema**
-  - : {report_id, case_id, user_id, report_type, status, content} *(Note:  bool was removed).*
+  - : {report_id, case_id, user_id, report_type, status, content, error} 
   - : {case_id, user_id, title, defendant_name, case_number, court, sentence, state}
 
 **changes in tech stack**
   - None.
 
 **All files of reference** 
-  -  (Requires immediate image swapping and typography fixes)
+  -  (Check here for the stale Progress tab data and delete buttons)
+  -  (For the 401 Auth fix)
+  -  (To remove Extract/OCR buttons)
+  -  (For any backend routing/AI prompt adjustments)
 
 **Areas that need refactoring** 
-  -  (Massive monolith - strictly blocked right now).
+  -  (Monolith - blocked right now).
+  -  and  have heavily duplicated regex stripping and table CSS logic.
 
 **key api endpoints**
-  -  (Aggressive mode payload removed).
   - 
+  -  (currently failing)
+  -  (need to locate exact endpoints for failing timeline/grounds delete buttons)
 
 **Critical Info for New Agent** 
-- **USER CRISIS LEVEL: MAXIMUM.** You are dealing with an incredibly angry client. Keep responses short, factual, and strictly focused on the immediate fixes. 
-- **The Immediate Task:** Await the user's response to the pending  query. Then immediately open . Replace the Unsplash image links with the correct live screenshots. Ensure the caption text beneath the images is explicitly smaller ( or ). Ensure headings are uniform. 
-- **NO AGGRESSIVE MODE:** Do not attempt to fix or reference Aggressive reports. The user ordered them deleted, and they have been scrubbed.
+- **Tone & Perspective Rule:** NEVER allow the AI to generate we, us, our, you, or your legal team. The app is a third-person educational tool.
+- **Handling User:** The user just prompted Continue after a 30-screenshot fixing session. Do not wait for uploads. Immediately dive into fixing the Progress/Overview tab stale data, the Broken delete buttons, and Documents tab decluttering.
+- **Mobile Tables:** Do not use  on table headers or  outside of print CSS, otherwise mobile tables render vertically letter-by-letter.
 
 **documents and test reports created in this job** 
-  - None in this specific run. (Prior real app screenshots were saved to ).
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
 
 **Last 10 User Messages and any pending HUMAN messages** 
- 1. User: **(PENDING)** User realized the How It Works page still has stock photos and bad typography. Demanded: The pictures in the how it works must be pictures of that’s written under the pic... make the font under the picture smaller go thru and make all headings larger than sub headings and all font same format throughout.
+ 1. User: The second report is pathetic almost same copy as free report... FUCKIN CRAP LISTEN FIX IT NOW the tables are all over the place... + Uploaded final 5 screenshots.
+ 2. User: **(PENDING)** Continue 
+ *(Agent had verified and fixed the mobile tables, PDF layout, and AI prompts, and was looking for the Progress tab file to fix the stale data right as the user said Continue).*
 
 **Project Health Check:**
-- Broken: How It Works page typography and imagery. General UI high-contrast adherence.
+- Broken: Progress/Overview tab showing outdated hardcoded text instead of actual DB grounds data. Delete buttons in Case sections. Notes creation (401 Error).
 - Mocked: None.
 
 **3rd Party Integrations** 
-  • OpenAI GPT-4o / GPT-4o-mini — uses Emergent LLM Key
+  • OpenAI GPT-4o — uses Emergent LLM Key
   • Emergent Auth (Google) — uses Emergent-managed social login
 
 **Testing status**
-  - Testing agent used after significant changes: NO 
-  - Troubleshoot agent used after agent stuck in loop: NO.
-  - Test files created: None.
-  - Known regressions: None currently known.
+  - Testing agent used after significant changes: YES (iteration 81 through 85)
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: None
+  - Known regressions: Notes tab  request failing with auth/token issues.
 
 **Credentials to test flow:**
 Use Emergent Google Auth flow.
 
 **What agent forgot to execute**
-The agent paused the session by initiating an  tool call to get clarity, so no actual development work was performed in this session. The immediate P0 UI/UX fixes on  are completely pending and must be executed immediately following the user's clarification.</analysis>
-
-- sick of agents lack of work wasted 28 hours just trying to edit a bloody job lots of money.
-- I WANT A FULL AUDIT ANALYSIS OF ENTIRE JOB FRON FRONT TO BACK FIND ALL FORMAT PAGES THAT ARENT FOLLOWING FORMAT FIX, DO NOT DELETE ANY INFO OR DOWN SIZE REPORTS LEVEL THEM.
+The agent missed cleaning up the Documents tab (removing the 'Extract Text' and 'OCR Scan' buttons as requested in screenshot IMG_3988). The agent also struggled to find the Progress component file to fix the stale text issue before the session cut off—it is highly likely embedded inside .</analysis>
+- finish all actions not completed by agent GET IT DONE SICK OF MERRY GO ROUNDS AND SABOTAGE HAVE PAID FOR THESE FIXES 20 x already 

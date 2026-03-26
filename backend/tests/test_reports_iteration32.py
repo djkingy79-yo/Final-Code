@@ -9,7 +9,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://legal-doc-hub-5.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyser.preview.emergentagent.com').rstrip('/')
 
 class TestHealthAndEndpoints:
     """Basic health and endpoint checks"""

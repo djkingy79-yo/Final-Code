@@ -11,7 +11,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://legal-doc-hub-5.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyser.preview.emergentagent.com').rstrip('/')
 
 # Test credentials from previous iteration (iteration_26)
 ADMIN_SESSION_TOKEN = "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ"

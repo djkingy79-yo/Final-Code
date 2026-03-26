@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock
+  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -47,7 +47,10 @@ const REPORT_TYPES = [
     description: "Rapid triage brief with key grounds preview and immediate next steps",
     price: 0,
     priceId: null,
-    isFree: true
+    isFree: true,
+    color: "emerald",
+    icon: "FileText",
+    features: ["Case snapshot", "Primary issues", "Grounds preview", "Appeal outlook"]
   },
   { 
     value: "full_detailed", 
@@ -55,7 +58,10 @@ const REPORT_TYPES = [
     description: "Barrister-grade deep dossier with comparative sentencing, appeal forms, external case links and full options matrix",
     price: 150.00,
     priceId: "full_report",
-    isFree: false
+    isFree: false,
+    color: "blue",
+    icon: "Scale",
+    features: ["Everything in Quick Summary", "Deep ground analysis (500+ words each)", "8+ sentencing comparisons", "Submissions blueprint", "Action plan"]
   },
   { 
     value: "extensive_log", 
@@ -63,7 +69,10 @@ const REPORT_TYPES = [
     description: "Master litigation brief with expanded precedent modelling, appeal filing steps, external law links and hearing script",
     price: 200.00,
     priceId: "extensive_report",
-    isFree: false
+    isFree: false,
+    color: "purple",
+    icon: "BookOpen",
+    features: ["Everything in Full Detailed", "900+ words per ground", "15+ precedent cases", "Hearing preparation pack", "Court pathway playbook"]
   }
 ];
 
@@ -346,30 +355,62 @@ const ReportsSection = ({
       </div>
 
       {generatingReport && (
-        <div className="mb-6 border border-blue-200 bg-blue-50 rounded-xl overflow-hidden p-6" data-testid="report-generating-indicator">
-          <div className="flex flex-wrap items-center gap-4 mb-3">
-            <Loader2 className="w-6 h-6 animate-spin text-blue-700 flex-shrink-0" />
-            <div>
-              <p className="text-lg font-bold text-slate-900">Analysing case materials...</p>
-              <p className="text-sm text-slate-700">
-                {genElapsed < 30
-                  ? "Reading documents, timeline events, and grounds..."
-                  : genElapsed < 120
-                  ? "AI is writing detailed legal analysis sections..."
-                  : genElapsed < 300
-                  ? "Building multi-section report — this takes time for thorough analysis..."
-                  : "Completing final sections. Large reports (Extensive Log) can take 5-15 minutes."}
-              </p>
+        <div className="mb-6 rounded-xl overflow-hidden shadow-lg border-2 border-blue-300" data-testid="report-generating-indicator">
+          <div className="bg-blue-700 text-white px-6 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-white">
+                    {genElapsed < 30
+                      ? "Analysing Case Materials"
+                      : genElapsed < 120
+                      ? "Writing Legal Analysis"
+                      : genElapsed < 300
+                      ? "Building Report Sections"
+                      : "Finalising Report"}
+                  </p>
+                  <p className="text-sm text-white/80">
+                    {genElapsed < 30
+                      ? "Reading documents, timeline events, and grounds..."
+                      : genElapsed < 120
+                      ? "AI is constructing detailed legal analysis sections..."
+                      : genElapsed < 300
+                      ? "Multi-section generation in progress — thorough analysis takes time..."
+                      : "Completing final sections. Large reports can take 5-15 minutes."}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-mono font-bold text-white">
+                  {genElapsed < 60 ? `${genElapsed}s` : `${Math.floor(genElapsed / 60)}m ${String(genElapsed % 60).padStart(2, '0')}s`}
+                </span>
+                <p className="text-xs text-white/60">elapsed</p>
+              </div>
             </div>
-            <span className="ml-auto text-sm font-mono text-blue-700">
-              {genElapsed < 60 ? `${genElapsed}s` : `${Math.floor(genElapsed / 60)}m ${genElapsed % 60}s`}
-            </span>
           </div>
-          <div className="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-500 rounded-full transition-all duration-1000"
-              style={{ width: `${Math.min(98, (genElapsed / 900) * 100)}%` }}
-            />
+          <div className="bg-blue-50 px-6 py-3">
+            <div className="flex items-center gap-3 mb-2">
+              {[
+                { label: "Reading", active: genElapsed >= 0 },
+                { label: "Analysing", active: genElapsed >= 15 },
+                { label: "Writing", active: genElapsed >= 60 },
+                { label: "Finalising", active: genElapsed >= 300 },
+              ].map((step, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
+                  <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+                style={{ width: `${Math.min(98, (genElapsed / 900) * 100)}%` }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -616,45 +657,126 @@ const ReportsSection = ({
             <DialogDescription className="text-slate-700 text-sm">Select the type of report you'd like to generate.</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            {REPORT_TYPES.map((type) => (
-              <div
-                key={type.value}
-                onClick={() => setSelectedReportType(type.value)}
-                className={`p-5 border-2 rounded-xl cursor-pointer transition-all ${
-                  selectedReportType === type.value 
-                    ? 'border-blue-500 bg-white shadow-lg shadow-blue-500/10' 
-                    : 'border-slate-200 bg-white hover:border-slate-400'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold text-slate-900 text-base">{type.label}</h4>
-                    <p className="text-sm text-slate-700 mt-1">{type.description}</p>
+            {REPORT_TYPES.map((type) => {
+              const colorMap = {
+                emerald: {
+                  border: selectedReportType === type.value ? 'border-emerald-500 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-emerald-300',
+                  badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                  icon: 'bg-emerald-100 text-emerald-700',
+                  check: 'text-emerald-600',
+                },
+                blue: {
+                  border: selectedReportType === type.value ? 'border-blue-500 ring-2 ring-blue-200' : 'border-slate-200 hover:border-blue-300',
+                  badge: 'bg-blue-100 text-blue-700 border-blue-200',
+                  icon: 'bg-blue-100 text-blue-700',
+                  check: 'text-blue-600',
+                },
+                purple: {
+                  border: selectedReportType === type.value ? 'border-purple-500 ring-2 ring-purple-200' : 'border-slate-200 hover:border-purple-300',
+                  badge: 'bg-purple-100 text-purple-700 border-purple-200',
+                  icon: 'bg-purple-100 text-purple-700',
+                  check: 'text-purple-600',
+                },
+              };
+              const colors = colorMap[type.color] || colorMap.blue;
+              const IconComponent = type.color === 'emerald' ? FileText : type.color === 'blue' ? Scale : BookOpen;
+              
+              return (
+                <div
+                  key={type.value}
+                  onClick={() => setSelectedReportType(type.value)}
+                  className={`p-4 border-2 rounded-xl cursor-pointer transition-all bg-white shadow-sm hover:shadow-md ${colors.border}`}
+                  data-testid={`report-type-${type.value}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <h4 className="font-bold text-slate-900 text-base">{type.label}</h4>
+                        {type.isFree ? (
+                          <Badge variant="outline" className={`${colors.badge} px-3 py-1 text-xs font-bold`}>
+                            FREE
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className={`${colors.badge} px-3 py-1 text-xs font-bold`}>
+                            ${type.price.toFixed(2)} AUD
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-slate-600 mb-2">{type.description}</p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1">
+                        {type.features.map((f, i) => (
+                          <span key={i} className="flex items-center gap-1 text-xs text-slate-500">
+                            <CheckCircle2 className={`w-3 h-3 flex-shrink-0 ${colors.check}`} />
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  {type.isFree ? (
-                    <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200 px-3 py-1 text-xs">
-                      FREE
+                </div>
+              );
+            })}
+
+            {/* Barrister View - locked option */}
+            <div
+              className={`p-4 border-2 rounded-xl transition-all ${
+                hasAllReports
+                  ? 'border-amber-400 bg-amber-50/50 cursor-pointer hover:shadow-md hover:border-amber-500'
+                  : 'border-slate-200 bg-slate-50 opacity-70 cursor-not-allowed'
+              } ${selectedReportType === 'barrister_view' ? 'ring-2 ring-amber-200 border-amber-500' : ''}`}
+              onClick={() => {
+                if (hasAllReports) setSelectedReportType('barrister_view');
+              }}
+              data-testid="report-type-barrister"
+            >
+              <div className="flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${hasAllReports ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-400'}`}>
+                  {hasAllReports ? <Crown className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <h4 className={`font-bold text-base ${hasAllReports ? 'text-amber-900' : 'text-slate-400'}`}>Barrister View</h4>
+                    <Badge variant="outline" className={`px-3 py-1 text-xs font-bold ${hasAllReports ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-400 border-slate-200'}`}>
+                      {hasAllReports ? 'UNLOCKED' : 'LOCKED'}
                     </Badge>
-                  ) : (
-                    <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1 text-xs">
-                      ${type.price.toFixed(2)} AUD
-                    </Badge>
+                  </div>
+                  <p className={`text-sm mb-2 ${hasAllReports ? 'text-slate-600' : 'text-slate-400'}`}>
+                    {hasAllReports
+                      ? "Capstone synthesis combining all three reports into a single barrister-ready brief."
+                      : "Generate and pay for all three reports to unlock this view."}
+                  </p>
+                  {!hasAllReports && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                      <span className="flex items-center gap-1 text-xs text-slate-400">
+                        <Lock className="w-3 h-3" />
+                        Requires: Quick Summary (Free) + Full Detailed ($150) + Extensive Log ($200)
+                      </span>
+                    </div>
+                  )}
+                  {hasAllReports && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                      {["All-in-one brief", "Barrister-ready format", "Complete case synthesis"].map((f, i) => (
+                        <span key={i} className="flex items-center gap-1 text-xs text-amber-700">
+                          <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+                          {f}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
-            ))}
+            </div>
 
-
-            {/* DO NOT UNDO - Report generation time warning */}
-            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4" data-testid="report-generation-warning">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-blue-700 mt-0.5 shrink-0" />
-                <div>
-                  <p className="text-base font-bold text-slate-900">Searching case materials...</p>
-                  <p className="text-sm text-slate-700">
-                    Reports can take 10-25 minutes for large files. Keep this window open while generation runs.
-                  </p>
-                </div>
+            {/* Report generation time info */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" data-testid="report-generation-warning">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-slate-500 shrink-0" />
+                <p className="text-xs text-slate-600">
+                  Reports can take 10-25 minutes for large files. Keep this window open during generation.
+                </p>
               </div>
             </div>
           </div>
@@ -663,15 +785,28 @@ const ReportsSection = ({
               Cancel
             </Button>
             <Button 
-              onClick={() => handleGenerateReport(selectedReportType)}
-              disabled={!selectedReportType || generatingReport}
+              onClick={() => {
+                if (selectedReportType === 'barrister_view') {
+                  // Navigate to barrister view of the extensive_log report
+                  const extReport = reports.find(r => r.report_type === 'extensive_log' && r.status === 'completed');
+                  if (extReport) {
+                    navigate(`/cases/${caseId}/reports/${extReport.report_id}/barrister`);
+                    setShowReportDialog(false);
+                  } else {
+                    toast.error("Extensive Log report not found");
+                  }
+                  return;
+                }
+                handleGenerateReport(selectedReportType);
+              }}
+              disabled={!selectedReportType || generatingReport || (selectedReportType === 'barrister_view' && !hasAllReports)}
               className="landing-cta-primary px-6 py-4 text-base font-semibold"
               data-testid="report-dialog-generate"
             >
               {generatingReport ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : null}
-              Generate Report
+              {selectedReportType === 'barrister_view' ? 'Open Barrister View' : 'Generate Report'}
             </Button>
           </DialogFooter>
         </DialogContent>

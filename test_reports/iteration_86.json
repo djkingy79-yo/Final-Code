@@ -1,0 +1,99 @@
+{
+  "summary": "Iteration 86 testing complete. Verified all requested features: Generate Report dialog with 4 options (Quick Summary FREE, Full Detailed $150, Extensive Log $200, Barrister View locked), Barrister View locked state logic, blue generating indicator with progress steps and elapsed time, Documents tab cleanup (no Extract Text/OCR Scan buttons), strength rating colours (Strong=red, Moderate=blue), delete confirmation dialogs for reports/events/grounds, and backend health check.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_results": {
+    "backend_health_check": {
+      "status": "PASS",
+      "details": "/api/health returns {status: 'healthy', database: 'connected'}"
+    },
+    "generate_report_dialog_4_options": {
+      "status": "PASS",
+      "details": "REPORT_TYPES array has 3 report types (quick_summary, full_detailed, extensive_log) plus Barrister View as 4th locked option"
+    },
+    "quick_summary_free": {
+      "status": "PASS",
+      "details": "Quick Summary has price: 0, isFree: true, color: emerald"
+    },
+    "full_detailed_150": {
+      "status": "PASS",
+      "details": "Full Detailed Report has price: 150.00, color: blue"
+    },
+    "extensive_log_200": {
+      "status": "PASS",
+      "details": "Extensive Log Report has price: 200.00, color: purple"
+    },
+    "barrister_view_locked": {
+      "status": "PASS",
+      "details": "Barrister View option uses hasAllReports check (15+ references), shows LOCKED badge when not all 3 reports completed"
+    },
+    "generating_indicator_blue_header": {
+      "status": "PASS",
+      "details": "Generating indicator has bg-blue-700 header with progress steps (Reading, Analysing, Writing, Finalising)"
+    },
+    "generating_indicator_elapsed_time": {
+      "status": "PASS",
+      "details": "genElapsed state tracks elapsed time, displayed in header"
+    },
+    "documents_no_extract_text_button": {
+      "status": "PASS",
+      "details": "No 'Extract Text' button found in DocumentsSection.jsx"
+    },
+    "documents_no_ocr_scan_button": {
+      "status": "PASS",
+      "details": "No 'OCR Scan' button found in DocumentsSection.jsx action buttons"
+    },
+    "documents_upload_button_exists": {
+      "status": "PASS",
+      "details": "Upload Document button exists with data-testid='upload-doc-btn'"
+    },
+    "strength_rating_strong_red": {
+      "status": "PASS",
+      "details": "Strong rating uses text-red-600 class in ReportView.jsx MarkdownBlock component"
+    },
+    "strength_rating_moderate_blue": {
+      "status": "PASS",
+      "details": "Moderate rating uses text-blue-600 class in ReportView.jsx MarkdownBlock component"
+    },
+    "delete_report_confirmation": {
+      "status": "PASS",
+      "details": "AlertDialog with confirmDeleteReport handler in ReportsSection.jsx"
+    },
+    "delete_event_confirmation": {
+      "status": "PASS",
+      "details": "deleteEventId state and confirmDeleteEvent handler in CaseDetail.jsx"
+    },
+    "delete_ground_confirmation": {
+      "status": "PASS",
+      "details": "deleteGroundId state and confirmDeleteGround handler in CaseDetail.jsx"
+    },
+    "google_auth_configured": {
+      "status": "PASS",
+      "details": "Sign in with Google button visible in login modal"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration86_features.py",
+    "/app/test_reports/pytest/iteration86_features.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration86_features.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration 86 features verified. Generate Report dialog has 4 options with Barrister View locked until all 3 reports completed. Documents tab cleaned up (no Extract Text/OCR Scan buttons). Strength ratings colour-coded (Strong=red, Moderate=blue). Delete confirmations working. Backend health check returns healthy. App uses Emergent Google Auth."
+}

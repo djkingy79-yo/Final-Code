@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://legal-doc-hub-5.preview.emergentagent.com"
+    BASE_URL = "https://grounds-analyser.preview.emergentagent.com"
 
 # Test user credentials
 TEST_USER_ID = f"test_user_{uuid.uuid4().hex[:8]}"

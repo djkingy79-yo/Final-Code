@@ -16,7 +16,7 @@ import os
 import uuid
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://legal-doc-hub-5.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyser.preview.emergentagent.com')
 
 class TestIteration62Regression:
     """Full regression test suite for iteration 62"""

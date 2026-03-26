@@ -321,6 +321,71 @@ const MarkdownBlock = ({ text, testId }) => (
             <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
           </div>
         ),
+        strong: ({ children }) => {
+          const childText = typeof children === 'string' ? children : (Array.isArray(children) ? children.join('') : '');
+          if (/^Strength Rating$/i.test(childText)) {
+            return <strong className="text-slate-900 font-bold">{children}</strong>;
+          }
+          return <strong>{children}</strong>;
+        },
+        li: ({ children, ...props }) => {
+          // Colour-code strength ratings in list items
+          const processChildren = (kids) => {
+            if (!kids) return kids;
+            if (typeof kids === 'string') {
+              // Colour "Strong" red and "Moderate" blue in strength rating contexts
+              if (/Strength Rating:\s*Strong/i.test(kids)) {
+                return kids.replace(/(Strong)/i, '|||STRONG|||');
+              }
+              if (/Strength Rating:\s*Moderate/i.test(kids)) {
+                return kids.replace(/(Moderate)/i, '|||MODERATE|||');
+              }
+              if (/Strength Rating:\s*Weak/i.test(kids)) {
+                return kids.replace(/(Weak)/i, '|||WEAK|||');
+              }
+              return kids;
+            }
+            return kids;
+          };
+          return <li {...props}>{children}</li>;
+        },
+        p: ({ children, ...props }) => {
+          // Apply strength rating colours within paragraphs
+          const renderWithColours = (nodes) => {
+            if (!Array.isArray(nodes)) nodes = [nodes];
+            return nodes.map((node, idx) => {
+              if (typeof node === 'string') {
+                // Colour strength values
+                if (/:\s*Strong\b/i.test(node)) {
+                  const parts = node.split(/(Strong)/i);
+                  return parts.map((part, i) =>
+                    /^Strong$/i.test(part) 
+                      ? <span key={`${idx}-${i}`} className="font-bold text-red-600">{part}</span> 
+                      : <span key={`${idx}-${i}`}>{part}</span>
+                  );
+                }
+                if (/:\s*Moderate\b/i.test(node)) {
+                  const parts = node.split(/(Moderate)/i);
+                  return parts.map((part, i) =>
+                    /^Moderate$/i.test(part) 
+                      ? <span key={`${idx}-${i}`} className="font-bold text-blue-600">{part}</span> 
+                      : <span key={`${idx}-${i}`}>{part}</span>
+                  );
+                }
+                if (/:\s*Weak\b/i.test(node)) {
+                  const parts = node.split(/(Weak)/i);
+                  return parts.map((part, i) =>
+                    /^Weak$/i.test(part) 
+                      ? <span key={`${idx}-${i}`} className="font-bold text-orange-500">{part}</span> 
+                      : <span key={`${idx}-${i}`}>{part}</span>
+                  );
+                }
+              }
+              return node;
+            });
+          };
+          return <p {...props}>{renderWithColours(children)}</p>;
+        },
       }}
     >
       {text}
@@ -979,7 +1044,7 @@ const ReportView = () => {
         .legal-report h4 { font-size: 1.15rem; color: #334155; font-family: 'Manrope', sans-serif; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
-        .legal-report li { margin-bottom: 0.55rem; }
+        .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
           width: 100%;
           min-width: 700px;
