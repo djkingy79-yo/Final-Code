@@ -873,8 +873,8 @@ select {
   background: #b91c1c !important;
 }
 
-.landing-notice-banner,
-.landing-notice-banner * {
+.force-light .landing-notice-banner,
+.force-light .landing-notice-banner * {
   color: #ffffff !important;
 }
 
@@ -1131,9 +1131,6 @@ select {
   opacity: 1 !important;
 }
 
-.force-light .text-white {
-  color: #0f172a !important;
-}
 
 .force-light [data-testid="report-colour-header"] *,
 .force-light .landing-cta-primary,
@@ -1369,4 +1366,61 @@ select {
 
 .case-page [class*="dark:text"] {
   color: #0f172a !important;
+}
+
+/* Ensure notice banner stays white text even in force-light */
+.force-light .landing-notice-banner,
+.force-light .landing-notice-banner * {
+  color: #ffffff !important;
+}
+
+.force-light .text-foreground {
+  color: #0f172a !important;
+}
+
+.force-light .text-muted-foreground {
+  color: #334155 !important;
+}
+
+.force-light [class*="bg-muted"],
+.force-light [class*="bg-slate-50"],
+.force-light [class*="bg-slate-100"],
+.force-light [class*="bg-gray-50"],
+.force-light [class*="bg-gray-100"] {
+  background-color: #ffffff !important;
+}
+
+.force-light ul,
+.force-light ol {
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.force-light ul li::marker,
+.force-light ol li::marker {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.landing-page .text-white {
+  color: #0f172a !important;
+}
+
+.notice-white {
+  color: #ffffff !important;
+}
+
+.landing-page .notice-white,
+.landing-page .notice-white * {
+  color: #ffffff !important;
+}
+
+.landing-page .landing-notice-banner .notice-white,
+.landing-page .landing-notice-banner .notice-white * {
+  color: #ffffff !important;
+}
+
+.landing-page .landing-notice-banner .text-white,
+.landing-page .landing-notice-banner .text-white * {
+  color: #ffffff !important;
 }

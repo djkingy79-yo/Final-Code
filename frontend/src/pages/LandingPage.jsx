@@ -132,10 +132,10 @@ const LandingPage = () => {
       {/* Single Clear Disclaimer */}
       <div className="bg-red-700 py-3 landing-notice-banner">
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-white text-center text-sm md:text-base font-medium">
-            <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5" />
-            <strong>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
-            <Link to="/terms" className="landing-notice-link underline ml-2">Read full terms</Link>
+          <p className="text-white text-center text-sm md:text-base font-medium notice-white" style={{ color: "#ffffff" }}>
+            <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5 text-white notice-white" style={{ color: "#ffffff" }} />
+            <strong className="text-white notice-white" style={{ color: "#ffffff" }}>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
+            <Link to="/terms" className="landing-notice-link underline ml-2 notice-white">Read full terms</Link>
           </p>
         </div>
       </div>
