@@ -140,6 +140,72 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/\n*(?:The above|These) sections? (?:are|is|were|was) (?:crafted|designed|written|prepared|created)[^\n]*/gi, "");
   cleaned = cleaned.replace(/\n*(?:presenting|advances?) (?:a comprehensive|field-specific|detailed)[^\n]*(?:court of appeal|legal professionals?)[^\n]*/gi, "");
   
+  // Strip "we/us/our" language — convert to third-person educational tone
+  const weUsReplacements = [
+    [/\bWe are arguing\b/g, 'The applicant argues'],
+    [/\bwe are arguing\b/g, 'the applicant argues'],
+    [/\bWe are aiming\b/g, 'The appeal aims'],
+    [/\bwe are aiming\b/g, 'the appeal aims'],
+    [/\bWe are filing\b/g, 'The legal professional is filing'],
+    [/\bwe are filing\b/g, 'the legal professional is filing'],
+    [/\bWe are taking\b/g, 'The legal professional is taking'],
+    [/\bwe are taking\b/g, 'the legal professional is taking'],
+    [/\bWe succeed\b/g, 'The appeal succeeds'],
+    [/\bwe succeed\b/g, 'the appeal succeeds'],
+    [/\bwe will gather\b/g, 'the legal professional will gather'],
+    [/\bWe will gather\b/g, 'The legal professional will gather'],
+    [/\bwe will craft\b/g, 'the legal professional will craft'],
+    [/\bWe will craft\b/g, 'The legal professional will craft'],
+    [/\bwe will file\b/g, 'the legal professional will file'],
+    [/\bWe will file\b/g, 'The legal professional will file'],
+    [/\bwe will prepare\b/g, 'the legal professional will prepare'],
+    [/\bWe will prepare\b/g, 'The legal professional will prepare'],
+    [/\bwe will submit\b/g, 'the legal professional will submit'],
+    [/\bWe will submit\b/g, 'The legal professional will submit'],
+    [/\bwe will seek\b/g, 'the applicant will seek'],
+    [/\bWe will seek\b/g, 'The applicant will seek'],
+    [/\bwe will argue\b/g, 'the applicant will argue'],
+    [/\bWe will argue\b/g, 'The applicant will argue'],
+    [/\bwe will demonstrate\b/g, 'the appeal will demonstrate'],
+    [/\bWe will demonstrate\b/g, 'The appeal will demonstrate'],
+    [/\bwe will show\b/g, 'the appeal will show'],
+    [/\bWe will show\b/g, 'The appeal will show'],
+    [/\bcontact with us\b/g, 'contact with the legal professional'],
+    [/\bContact us\b/g, 'Contact the legal professional'],
+    [/\bcontact us\b/g, 'contact the legal professional'],
+    [/\bour submissions\b/g, 'the submissions'],
+    [/\bOur submissions\b/g, 'The submissions'],
+    [/\bour claims\b/g, "the applicant's claims"],
+    [/\bOur claims\b/g, "The applicant's claims"],
+    [/\bour arguments\b/g, "the applicant's arguments"],
+    [/\bOur arguments\b/g, "The applicant's arguments"],
+    [/\bour position\b/g, "the applicant's position"],
+    [/\bOur position\b/g, "The applicant's position"],
+    [/\bour case\b/g, "the applicant's case"],
+    [/\bOur case\b/g, "The applicant's case"],
+    [/\bour strategy\b/g, "the legal strategy"],
+    [/\bOur strategy\b/g, "The legal strategy"],
+    [/\bour analysis\b/g, "this analysis"],
+    [/\bOur analysis\b/g, "This analysis"],
+    [/\bon our behalf\b/g, "on behalf of the applicant"],
+    [/\bback our\b/g, "support the applicant's"],
+    [/\bensuring our\b/g, "ensuring the"],
+    [/\b, we are\b/g, ', the legal professional is'],
+    [/\b, we will\b/g, ', the legal professional will'],
+    [/\b, we have\b/g, ', the legal professional has'],
+    [/\bWe have identified\b/g, 'This analysis has identified'],
+    [/\bwe have identified\b/g, 'this analysis has identified'],
+    [/\bWe have reviewed\b/g, 'This analysis has reviewed'],
+    [/\bwe have reviewed\b/g, 'this analysis has reviewed'],
+    [/\bWe have analysed\b/g, 'This analysis has examined'],
+    [/\bwe have analysed\b/g, 'this analysis has examined'],
+    [/\bWe have analyzed\b/g, 'This analysis has examined'],
+    [/\bwe have analyzed\b/g, 'this analysis has examined'],
+  ];
+  for (const [pattern, replacer] of weUsReplacements) {
+    cleaned = cleaned.replace(pattern, replacer);
+  }
+
   // Convert American spellings to Australian
   const ausReplacements = [
     [/\bfinalized\b/gi, (m) => m[0] === 'F' ? 'Finalised' : 'finalised'],
@@ -382,30 +448,107 @@ const ReportView = () => {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 16px; }
-    h1 { font-family: 'Crimson Pro', serif; font-size: 26px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 16px; margin-top: 14px; color: #0f172a; font-weight: 700; }
-    .meta { font-size: 12px; color: #334155; margin-bottom: 12px; }
-    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
-    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #cbd5e1; font-size: 12px; color: #334155; text-align: center; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 14px; color: #0f172a; }
-    th { background: #dbeafe; font-weight: 700; }
-    ul, ol { padding-left: 18px; }
-    li { margin-bottom: 4px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
+    .report-container { max-width: 900px; margin: 0 auto; }
+    .report-header { background: ${theme.headerBg.includes('emerald') ? '#059669' : theme.headerBg.includes('blue') ? '#1d4ed8' : '#7e22ce'}; color: #fff; padding: 28px 32px; }
+    .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+    .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
+    .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
+    .report-header .grounds-label { font-size: 11px; color: rgba(255,255,255,0.8); text-align: right; }
+    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; background: #fff; }
+    .summary-grid .item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 2px; }
+    .summary-grid .item-value { font-size: 13px; font-weight: 600; color: #0f172a; font-family: 'Crimson Pro', serif; }
+    .toc { padding: 14px 32px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+    .toc-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin-bottom: 6px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .toc-grid a { font-size: 11px; color: #334155; text-decoration: none; }
+    .toc-grid a:hover { color: #1d4ed8; }
+    .sections { padding: 24px 32px; }
+    .section { margin-bottom: 24px; page-break-inside: avoid; }
+    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid ${theme.headerBg.includes('emerald') ? '#059669' : theme.headerBg.includes('blue') ? '#1d4ed8' : '#7e22ce'}; padding-left: 12px; margin-bottom: 12px; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: ${theme.headerBg.includes('emerald') ? '#d1fae5' : theme.headerBg.includes('blue') ? '#dbeafe' : '#ede9fe'}; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; }
+    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
+    .section-body h1, .section-body h2, .section-body h3 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 1.2rem 0 0.6rem; }
+    .section-body h2 { font-size: 1.3rem; }
+    .section-body h3 { font-size: 1.1rem; }
+    .section-body p { margin-bottom: 0.7rem; }
+    .section-body strong { color: #0f172a; font-weight: 700; }
+    .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
+    .section-body li { margin-bottom: 0.4rem; }
+    .section-body a { color: #1d4ed8; text-decoration: underline; }
+    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; }
+    .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
+    .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
+    .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
+    .disclaimer-text { font-size: 11px; color: #334155; }
+    .disclaimer-text strong { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 2px; }
+    .footer { text-align: center; padding: 12px 32px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #475569; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
     .no-print { display: none !important; }
-    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section { page-break-inside: avoid; }
+    }
   </style>
 </head>
 <body>
   ${notice}
-  <h1>${title}</h1>
-  <div class="meta">${meta}</div>
-  <hr />
-  ${contentEl.innerHTML}
-  ${footer}
+  <div class="report-container">
+    <div class="report-header">
+      <div class="header-row">
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">${theme.label}</div>
+          <h1>${title}</h1>
+          <div class="meta-line">${meta}</div>
+          <div class="badge">${theme.price}</div>
+          <div class="gen-date">Generated: ${formatDate(report?.generated_at)}</div>
+        </div>
+        <div>
+          <div class="grounds-count">${grounds.length}</div>
+          <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
+        </div>
+      </div>
+    </div>
+    <div class="summary-grid">
+      <div><div class="item-label">Defendant</div><div class="item-value">${defendantName}</div></div>
+      <div><div class="item-label">Offence</div><div class="item-value">${offenceLabel}</div></div>
+      <div><div class="item-label">Sentence</div><div class="item-value">${sentenceSummary}</div></div>
+      <div><div class="item-label">Documents</div><div class="item-value">${documentsCount} files analysed</div></div>
+      <div><div class="item-label">Timeline Events</div><div class="item-value">${eventsCount} events</div></div>
+    </div>
+    ${sections.length > 1 ? `<div class="toc"><div class="toc-title">Contents (${sections.length} Sections)</div><div class="toc-grid">${sections.map((s, i) => `<a href="#print-section-${i+1}"><strong>${i+1}.</strong> ${s.title}</a>`).join('')}</div></div>` : ''}
+    <div class="sections">
+      ${sections.map((section, idx) => `
+        <div class="section" id="print-section-${idx+1}">
+          <div class="section-header">
+            <span class="section-number">${idx+1}</span>
+            <span class="section-title">${section.title}</span>
+          </div>
+          <div class="section-body">${document.getElementById(section.id)?.querySelector('[data-testid^="report-section-content-"]')?.innerHTML || ''}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="disclaimer">
+      <div class="disclaimer-icon">&#9888;</div>
+      <div class="disclaimer-text">
+        <strong>Not Legal Advice</strong>
+        This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.
+      </div>
+    </div>
+    ${footer}
+  </div>
 </body>
 </html>`;
 

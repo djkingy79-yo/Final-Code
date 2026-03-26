@@ -3431,6 +3431,70 @@ def _strip_report_placeholders(text: str) -> str:
         cleaned_lines.append(line)
     cleaned = "\n".join(cleaned_lines)
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    # Sanitise "we/us/our" language — convert to third-person educational tone
+    we_us_replacements = [
+        (r'\bWe are arguing\b', 'The applicant argues'),
+        (r'\bwe are arguing\b', 'the applicant argues'),
+        (r'\bWe are aiming\b', 'The appeal aims'),
+        (r'\bwe are aiming\b', 'the appeal aims'),
+        (r'\bWe are filing\b', 'The legal professional is filing'),
+        (r'\bwe are filing\b', 'the legal professional is filing'),
+        (r'\bWe are taking\b', 'The legal professional is taking'),
+        (r'\bwe are taking\b', 'the legal professional is taking'),
+        (r'\bWe succeed\b', 'The appeal succeeds'),
+        (r'\bwe succeed\b', 'the appeal succeeds'),
+        (r'\bwe will gather\b', 'the legal professional will gather'),
+        (r'\bWe will gather\b', 'The legal professional will gather'),
+        (r'\bwe will craft\b', 'the legal professional will craft'),
+        (r'\bWe will craft\b', 'The legal professional will craft'),
+        (r'\bwe will file\b', 'the legal professional will file'),
+        (r'\bWe will file\b', 'The legal professional will file'),
+        (r'\bwe will prepare\b', 'the legal professional will prepare'),
+        (r'\bWe will prepare\b', 'The legal professional will prepare'),
+        (r'\bwe will submit\b', 'the legal professional will submit'),
+        (r'\bWe will submit\b', 'The legal professional will submit'),
+        (r'\bwe will seek\b', 'the applicant will seek'),
+        (r'\bWe will seek\b', 'The applicant will seek'),
+        (r'\bwe will argue\b', 'the applicant will argue'),
+        (r'\bWe will argue\b', 'The applicant will argue'),
+        (r'\bwe will demonstrate\b', 'the appeal will demonstrate'),
+        (r'\bWe will demonstrate\b', 'The appeal will demonstrate'),
+        (r'\bwe will show\b', 'the appeal will show'),
+        (r'\bWe will show\b', 'The appeal will show'),
+        (r'\bcontact with us\b', 'contact with the legal professional'),
+        (r'\bContact us\b', 'Contact the legal professional'),
+        (r'\bcontact us\b', 'contact the legal professional'),
+        (r'\bour submissions\b', 'the submissions'),
+        (r'\bOur submissions\b', 'The submissions'),
+        (r'\bour claims\b', "the applicant's claims"),
+        (r'\bOur claims\b', "The applicant's claims"),
+        (r'\bour arguments\b', "the applicant's arguments"),
+        (r'\bOur arguments\b', "The applicant's arguments"),
+        (r'\bour position\b', "the applicant's position"),
+        (r'\bOur position\b', "The applicant's position"),
+        (r'\bour case\b', "the applicant's case"),
+        (r'\bOur case\b', "The applicant's case"),
+        (r'\bour strategy\b', 'the legal strategy'),
+        (r'\bOur strategy\b', 'The legal strategy'),
+        (r'\bour analysis\b', 'this analysis'),
+        (r'\bOur analysis\b', 'This analysis'),
+        (r'\bon our behalf\b', 'on behalf of the applicant'),
+        (r'\bback our\b', "support the applicant's"),
+        (r'\bensuring our\b', 'ensuring the'),
+        (r', we are\b', ', the legal professional is'),
+        (r', we will\b', ', the legal professional will'),
+        (r', we have\b', ', the legal professional has'),
+        (r'\bWe have identified\b', 'This analysis has identified'),
+        (r'\bwe have identified\b', 'this analysis has identified'),
+        (r'\bWe have reviewed\b', 'This analysis has reviewed'),
+        (r'\bwe have reviewed\b', 'this analysis has reviewed'),
+        (r'\bWe have analysed\b', 'This analysis has examined'),
+        (r'\bwe have analysed\b', 'this analysis has examined'),
+        (r'\bWe have analyzed\b', 'This analysis has examined'),
+        (r'\bwe have analyzed\b', 'this analysis has examined'),
+    ]
+    for pattern, replacement in we_us_replacements:
+        cleaned = re.sub(pattern, replacement, cleaned)
     return cleaned
 
 
@@ -3592,6 +3656,19 @@ MANDATORY GUARDRAILS:
 - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis.
 - DO NOT include witness contradiction sections or witness credibility scoring sections.
 
+LANGUAGE RULES — ABSOLUTE AND NON-NEGOTIABLE:
+- This report is an EDUCATIONAL TOOL. It is NOT written by a legal team speaking on behalf of the applicant.
+- NEVER use the words "we", "us", "our", or "them" when referring to the legal team, analysis team, or report authors.
+- Instead of "we are arguing" write "the applicant argues" or "this analysis identifies".
+- Instead of "we will file" write "the legal professional will file" or "the applicant should file".
+- Instead of "our submissions" write "the submissions" or "the applicant's submissions".
+- Instead of "contact us" write "contact the legal professional" or "contact the assisting legal practitioner".
+- Instead of "we are aiming to show" write "the appeal aims to demonstrate" or "the applicant seeks to establish".
+- Instead of "our claims" write "the applicant's claims" or "the claims advanced".
+- The report must read as a neutral educational analysis document, NOT as a first-person legal team communication.
+- Use third-person references throughout: "the applicant", "the defendant", "the legal professional", "this analysis", "the appeal".
+- Violations of this rule make the report legally problematic and unprofessional.
+
 CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
 - DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
 - NEVER create filler sections with titles like "URGENCY PRIORITY", "RELEVANCE", "KEY TAKEAWAY", "SUMMARY", "OVERVIEW" as standalone sections. These are padding. Instead, weave relevance and urgency INTO the substantive analysis.
@@ -3651,7 +3728,7 @@ Overall assessment: Strong / Moderate / Needs Further Development.
 2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors.
 
 ## 7. CLIENT PLAIN-ENGLISH GUIDE
-Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position.
+Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). NEVER use "we", "us", "our".
 
 ## 8. WHAT THE PAID REPORTS ADD
 The Full Detailed Report ($150) includes:
@@ -3797,6 +3874,7 @@ THIS MUST BE THE FINAL SECTION. Translate the entire technical analysis into pla
 - What needs to happen next and in what order
 - What are the realistic possible outcomes
 - What the client should do right now
+CRITICAL: This section is an educational tool. Use ONLY third-person language ("the applicant", "the legal professional", "this analysis"). NEVER use "we", "us", "our", or "them" when referring to the legal team or analysis authors.
 
 IMPORTANT:
 - Use markdown headings and tables exactly where specified.
@@ -4018,12 +4096,13 @@ Overall appeal risk assessment:
 ## 20. CLIENT PLAIN-ENGLISH BRIEF
 THIS MUST BE THE FINAL SECTION. Write this as if explaining directly to the defendant in everyday language:
 - What the appeal is about and why it matters
-- What are the strongest arguments in their favour (reference specific facts they know)
+- What are the strongest arguments in the applicant's favour (reference specific facts)
 - What are the realistic chances of success
-- What the different possible outcomes mean for them personally
-- What they need to do right now, this week, and this month
+- What the different possible outcomes mean for the applicant personally
+- What the applicant needs to do right now, this week, and this month
 - What to expect at the hearing
 - Honest assessment of risks alongside the opportunities
+CRITICAL: This section is an educational tool. Use ONLY third-person language ("the applicant", "the legal professional", "this analysis"). NEVER use "we", "us", "our", or "them" when referring to the legal team.
 
 IMPORTANT:
 - Use markdown headings and tables exactly where specified.
