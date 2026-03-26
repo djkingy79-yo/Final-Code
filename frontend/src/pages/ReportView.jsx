@@ -321,6 +321,15 @@ const MarkdownBlock = ({ text, testId }) => (
             <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
           </div>
         ),
+        thead: ({ children }) => (
+          <thead style={{ background: '#1e3a8a' }}>{children}</thead>
+        ),
+        th: ({ children }) => (
+          <th style={{ background: '#1e3a8a', color: '#ffffff', fontWeight: 700, fontSize: '0.8rem', padding: '10px 12px', border: '1px solid #cbd5e1', verticalAlign: 'top', minWidth: '90px' }}>{children}</th>
+        ),
+        td: ({ children }) => (
+          <td style={{ color: '#0f172a', padding: '10px 12px', border: '1px solid #cbd5e1', fontSize: '0.9rem', verticalAlign: 'top', minWidth: '90px' }}>{children}</td>
+        ),
         strong: ({ children }) => {
           const childText = typeof children === 'string' ? children : (Array.isArray(children) ? children.join('') : '');
           if (/^Strength Rating$/i.test(childText)) {
@@ -557,9 +566,9 @@ const ReportView = () => {
     .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
     .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
     .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; background: #fff; }
-    .summary-grid .item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 2px; }
-    .summary-grid .item-value { font-size: 13px; font-weight: 600; color: #0f172a; font-family: 'Crimson Pro', serif; }
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .report-header .case-info-grid .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+    .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
     .toc { padding: 14px 32px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
     .toc-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin-bottom: 6px; }
     .toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
@@ -623,13 +632,13 @@ const ReportView = () => {
           <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
         </div>
       </div>
-    </div>
-    <div class="summary-grid">
-      <div><div class="item-label">Defendant</div><div class="item-value">${defendantName}</div></div>
-      <div><div class="item-label">Offence</div><div class="item-value">${offenceLabel}</div></div>
-      <div><div class="item-label">Sentence</div><div class="item-value">${sentenceSummary}</div></div>
-      <div><div class="item-label">Documents</div><div class="item-value">${documentsCount} files analysed</div></div>
-      <div><div class="item-label">Timeline Events</div><div class="item-value">${eventsCount} events</div></div>
+      <div class="case-info-grid">
+        <div><div class="ci-label">Defendant</div><div class="ci-value">${defendantName}</div></div>
+        <div><div class="ci-label">Offence</div><div class="ci-value">${offenceLabel}</div></div>
+        <div><div class="ci-label">Sentence</div><div class="ci-value">${sentenceSummary}</div></div>
+        <div><div class="ci-label">Documents</div><div class="ci-value">${documentsCount} files analysed</div></div>
+        <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
+      </div>
     </div>
     ${sections.length > 1 ? `<div class="toc"><div class="toc-title">Contents (${sections.length} Sections)</div><div class="toc-grid">${sections.map((s, i) => `<a href="#print-section-${i+1}"><strong>${i+1}.</strong> ${s.title}</a>`).join('')}</div></div>` : ''}
     <div class="sections">
@@ -848,34 +857,32 @@ const ReportView = () => {
                 <p className="text-xs text-white/80 font-semibold">Identified</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 flex-wrap text-sm text-white/90">
+            <div className="flex items-center gap-3 flex-wrap text-sm text-white/90 mb-5">
               <span className={`${theme.priceBadge} px-3 py-1 rounded-full text-sm font-bold text-white`}>{theme.price}</span>
               <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Generated: {formatDate(report?.generated_at)}</span>
             </div>
-          </div>
 
-          {/* ===== CASE OVERVIEW GRID ===== */}
-          <div className="bg-white/95 border-b border-slate-200 p-5 sm:p-6" data-testid="report-top-summary-box">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 text-sm sm:text-base" style={{ fontFamily: "Crimson Pro, serif" }}>
-              <div className="lg:col-span-1">
-                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Defendant</p>
-                <p className="font-semibold text-slate-900" data-testid="report-summary-accused">{defendantName}</p>
+            {/* Case Overview Grid — INSIDE the coloured box */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-white/20 pt-4" data-testid="report-top-summary-box">
+              <div>
+                <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Defendant</p>
+                <p className="font-bold text-white" data-testid="report-summary-accused">{defendantName}</p>
               </div>
-              <div className="lg:col-span-1">
-                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Offence</p>
-                <p className="font-semibold text-slate-900" data-testid="report-summary-offence">{offenceLabel}</p>
+              <div>
+                <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Offence</p>
+                <p className="font-bold text-white" data-testid="report-summary-offence">{offenceLabel}</p>
               </div>
-              <div className="sm:col-span-2 lg:col-span-2">
-                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Sentence</p>
-                <p className="font-semibold text-slate-900" data-testid="report-summary-sentence">{sentenceSummary}</p>
+              <div className="col-span-2 sm:col-span-1">
+                <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Sentence</p>
+                <p className="font-bold text-white" data-testid="report-summary-sentence">{sentenceSummary}</p>
               </div>
-              <div className="lg:col-span-1">
-                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Documents</p>
-                <p className="font-semibold text-slate-900">{documentsCount} files analysed</p>
+              <div>
+                <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Documents</p>
+                <p className="font-bold text-white">{documentsCount} files analysed</p>
               </div>
-              <div className="lg:col-span-1">
-                <p className="text-xs text-slate-700 uppercase tracking-wide mb-1">Timeline Events</p>
-                <p className="font-semibold text-slate-900">{eventsCount} events</p>
+              <div>
+                <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Timeline Events</p>
+                <p className="font-bold text-white">{eventsCount} events</p>
               </div>
             </div>
           </div>
@@ -1063,8 +1070,13 @@ const ReportView = () => {
           padding: 10px 12px;
           font-size: 0.9rem;
           vertical-align: top;
-          color: #0f172a;
           min-width: 90px;
+        }
+        .legal-report th {
+          color: #ffffff !important;
+        }
+        .legal-report td {
+          color: #0f172a;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;
