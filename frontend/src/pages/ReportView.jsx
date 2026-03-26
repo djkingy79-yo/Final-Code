@@ -88,7 +88,58 @@ const sanitiseReportOutput = (text = "") => {
     if (/\bDO NOT UNDO\.?\b/i.test(line)) return false;
     return true;
   });
-  return filtered.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  let cleaned = filtered.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  // Strip "you/your" language — third-person only
+  const youReplacements = [
+    [/\byour opportunity\b/gi, 'the opportunity'],
+    [/\byour conviction\b/gi, 'the conviction'],
+    [/\bgiven to you\b/gi, 'imposed'],
+    [/\byour sentence\b/gi, 'the sentence'],
+    [/\byour appeal\b/gi, 'the appeal'],
+    [/\byour case\b/gi, 'the case'],
+    [/\byour trial\b/gi, 'the trial'],
+    [/\byour lawyer\b/gi, 'the legal representative'],
+    [/\byour barrister\b/gi, 'the barrister'],
+    [/\byour solicitor\b/gi, 'the solicitor'],
+    [/\byour legal team\b/gi, 'the legal team'],
+    [/\byour legal representative\b/gi, 'the legal representative'],
+    [/\byour defence\b/gi, 'the defence'],
+    [/\byour rights\b/gi, "the rights of the applicant"],
+    [/\byour circumstances\b/gi, 'the circumstances'],
+    [/\byour prospects\b/gi, 'the prospects'],
+    [/\byour grounds\b/gi, 'the grounds'],
+    [/\bYou may\b/g, 'The applicant may'],
+    [/\byou may\b/g, 'the applicant may'],
+    [/\bYou can\b/g, 'The applicant can'],
+    [/\byou can\b/g, 'the applicant can'],
+    [/\bYou should\b/g, 'The applicant should'],
+    [/\byou should\b/g, 'the applicant should'],
+    [/\bYou must\b/g, 'The applicant must'],
+    [/\byou must\b/g, 'the applicant must'],
+    [/\bYou will\b/g, 'The applicant will'],
+    [/\byou will\b/g, 'the applicant will'],
+    [/\bYou need\b/g, 'The applicant needs'],
+    [/\byou need\b/g, 'the applicant needs'],
+    [/\bYou have\b/g, 'The applicant has'],
+    [/\byou have\b/g, 'the applicant has'],
+    [/\bYou are\b/g, 'The applicant is'],
+    [/\byou are\b/g, 'the applicant is'],
+    [/\bYou were\b/g, 'The applicant was'],
+    [/\byou were\b/g, 'the applicant was'],
+    [/\bfor you\b/gi, 'for the applicant'],
+    [/\bto you\b/gi, 'to the applicant'],
+    [/\bagainst you\b/gi, 'against the applicant'],
+    [/\bif you\b/gi, 'if the applicant'],
+    [/\bwhen you\b/gi, 'when the applicant'],
+    [/\byour\b/g, "the applicant's"],
+    [/\bYour\b/g, "The applicant's"],
+  ];
+  for (const [pattern, replacement] of youReplacements) {
+    cleaned = cleaned.replace(pattern, replacement);
+  }
+  // Strip placeholder filler text
+  cleaned = cleaned.replace(/(?:The |This )?(?:comparative sentencing |sentencing )?table (?:below )?will (?:reference|provide|include|contain|show|list|detail|present|outline|cover)\b/gi, 'The table references');
+  return cleaned;
 };
 
 const extractOffenceFromAnalysis = (analysis = "") => {

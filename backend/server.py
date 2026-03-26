@@ -3534,6 +3534,87 @@ def _strip_report_placeholders(text: str) -> str:
     cleaned = re.sub(r'\bour assessment\b', 'this assessment', cleaned, flags=re.I)
     cleaned = re.sub(r'\bour examination\b', 'this examination', cleaned, flags=re.I)
     
+    # Strip "you/your" language — third-person only
+    you_your_replacements = [
+        (r'\byour opportunity\b', 'the opportunity'),
+        (r'\bYour opportunity\b', 'The opportunity'),
+        (r'\byour conviction\b', 'the conviction'),
+        (r'\bYour conviction\b', 'The conviction'),
+        (r'\bgiven to you\b', 'imposed'),
+        (r'\bGiven to you\b', 'Imposed'),
+        (r'\byour sentence\b', 'the sentence'),
+        (r'\bYour sentence\b', 'The sentence'),
+        (r'\byour appeal\b', 'the appeal'),
+        (r'\bYour appeal\b', 'The appeal'),
+        (r'\byour case\b', 'the case'),
+        (r'\bYour case\b', 'The case'),
+        (r'\byour trial\b', 'the trial'),
+        (r'\bYour trial\b', 'The trial'),
+        (r'\byour lawyer\b', 'the legal representative'),
+        (r'\bYour lawyer\b', 'The legal representative'),
+        (r'\byour barrister\b', 'the barrister'),
+        (r'\bYour barrister\b', 'The barrister'),
+        (r'\byour solicitor\b', 'the solicitor'),
+        (r'\bYour solicitor\b', 'The solicitor'),
+        (r'\byour legal team\b', 'the legal team'),
+        (r'\bYour legal team\b', 'The legal team'),
+        (r'\byour legal representative\b', 'the legal representative'),
+        (r'\bYour legal representative\b', 'The legal representative'),
+        (r'\byour defence\b', 'the defence'),
+        (r'\bYour defence\b', 'The defence'),
+        (r'\byour rights\b', 'the rights of the applicant'),
+        (r'\bYour rights\b', 'The rights of the applicant'),
+        (r'\byour circumstances\b', 'the circumstances'),
+        (r'\bYour circumstances\b', 'The circumstances'),
+        (r'\byour situation\b', 'the situation'),
+        (r'\bYour situation\b', 'The situation'),
+        (r'\byour matter\b', 'this matter'),
+        (r'\bYour matter\b', 'This matter'),
+        (r'\byour prospects\b', 'the prospects'),
+        (r'\bYour prospects\b', 'The prospects'),
+        (r'\byour grounds\b', 'the grounds'),
+        (r'\bYour grounds\b', 'The grounds'),
+        (r'\byour documents\b', 'the documents'),
+        (r'\bYour documents\b', 'The documents'),
+        (r'\byou may\b', 'the applicant may'),
+        (r'\bYou may\b', 'The applicant may'),
+        (r'\byou can\b', 'the applicant can'),
+        (r'\bYou can\b', 'The applicant can'),
+        (r'\byou should\b', 'the applicant should'),
+        (r'\bYou should\b', 'The applicant should'),
+        (r'\byou must\b', 'the applicant must'),
+        (r'\bYou must\b', 'The applicant must'),
+        (r'\byou will\b', 'the applicant will'),
+        (r'\bYou will\b', 'The applicant will'),
+        (r'\byou need\b', 'the applicant needs'),
+        (r'\bYou need\b', 'The applicant needs'),
+        (r'\byou have\b', 'the applicant has'),
+        (r'\bYou have\b', 'The applicant has'),
+        (r'\byou are\b', 'the applicant is'),
+        (r'\bYou are\b', 'The applicant is'),
+        (r'\byou were\b', 'the applicant was'),
+        (r'\bYou were\b', 'The applicant was'),
+        (r'\bfor you\b', 'for the applicant'),
+        (r'\bFor you\b', 'For the applicant'),
+        (r'\bto you\b', 'to the applicant'),
+        (r'\bTo you\b', 'To the applicant'),
+        (r'\bagainst you\b', 'against the applicant'),
+        (r'\bAgainst you\b', 'Against the applicant'),
+        (r'\bif you\b', 'if the applicant'),
+        (r'\bIf you\b', 'If the applicant'),
+        (r'\bwhen you\b', 'when the applicant'),
+        (r'\bWhen you\b', 'When the applicant'),
+    ]
+    for pattern, replacement in you_your_replacements:
+        cleaned = re.sub(pattern, replacement, cleaned)
+    # Catch remaining "your" as possessive — broad catch-all
+    cleaned = re.sub(r'\byour\b', "the applicant's", cleaned)
+    cleaned = re.sub(r'\bYour\b', "The applicant's", cleaned)
+    
+    # Strip placeholder/future-tense filler text
+    cleaned = re.sub(r'(?:The |This )?(?:comparative sentencing |sentencing )?table (?:below )?will (?:reference|provide|include|contain|show|list|detail|present|outline|cover)\b', 'The table references', cleaned, flags=re.I)
+    cleaned = re.sub(r'(?:Details|Information|Data|Analysis|Content),?\s*(?:including [^,]+,?\s*)?will be provided\b', 'Details are provided', cleaned, flags=re.I)
+    
     # Fix broken markdown links: <Text> [Text](url) → just [Text](url)
     cleaned = re.sub(r'<([^>]+)>\s*\[([^\]]+)\]\(([^)]+)\)', r'[\2](\3)', cleaned)
     # Fix raw angle-bracket links: <Text> without markdown
@@ -3703,15 +3784,23 @@ MANDATORY GUARDRAILS:
 LANGUAGE RULES — ABSOLUTE AND NON-NEGOTIABLE:
 - This report is an EDUCATIONAL TOOL. It is NOT written by a legal team speaking on behalf of the applicant.
 - NEVER use the words "we", "us", "our", or "them" when referring to the legal team, analysis team, or report authors.
+- NEVER use the words "you" or "your" when addressing the reader or the applicant. WRONG: "The appeal is your opportunity to challenge your conviction." RIGHT: "The appeal represents an opportunity for the applicant to challenge the conviction."
 - Instead of "we are arguing" write "the applicant argues" or "this analysis identifies".
 - Instead of "we will file" write "the legal professional will file" or "the applicant should file".
 - Instead of "our submissions" write "the submissions" or "the applicant's submissions".
 - Instead of "contact us" write "contact the legal professional" or "contact the assisting legal practitioner".
 - Instead of "we are aiming to show" write "the appeal aims to demonstrate" or "the applicant seeks to establish".
 - Instead of "our claims" write "the applicant's claims" or "the claims advanced".
-- The report must read as a neutral educational analysis document, NOT as a first-person legal team communication.
+- Instead of "your appeal" write "the appeal". Instead of "your conviction" write "the conviction". Instead of "your sentence" write "the sentence".
+- Instead of "you should" write "the applicant should". Instead of "you may" write "the applicant may". Instead of "for you" write "for the applicant".
+- The report must read as a neutral educational analysis document, NOT as a first-person legal team communication and NOT as a second-person advisory letter.
 - Use third-person references throughout: "the applicant", "the defendant", "the legal professional", "this analysis", "the appeal".
 - Violations of this rule make the report legally problematic and unprofessional.
+
+NO PLACEHOLDER TEXT — ABSOLUTE RULE:
+- NEVER write future-tense placeholder text like "The table will reference...", "Details will be provided...", "This section will include...", "Content will be added...", or "Analysis will cover...".
+- Every sentence must contain ACTUAL analysis, ACTUAL data, or ACTUAL legal content. If a table cannot be populated with real data from the case material, populate it with the best available comparable cases from Australian jurisprudence.
+- If information is unavailable, state that explicitly ("No sentencing comparisons could be identified from the supplied material") rather than promising future content.
 
 CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
 - DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
@@ -3774,7 +3863,7 @@ Overall assessment: Strong / Moderate / Needs Further Development.
 2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors.
 
 ## 7. CLIENT PLAIN-ENGLISH GUIDE
-Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). NEVER use "we", "us", "our".
+Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). ABSOLUTE BAN on "we", "us", "our", "you", "your". WRONG: "your conviction" RIGHT: "the conviction". WRONG: "you should" RIGHT: "the applicant should".
 
 ## 8. APPEAL OUTLOOK
 Brief assessment of realistic prospects for each ground. State the overall strength rating (Strong / Moderate / Needs Further Development) and explain for each ground.
@@ -3852,6 +3941,7 @@ For EACH ground listed in GROUNDS TO COVER (ALL of them — no omissions):
 Write as "Ground X: [Exact Title]" then 800+ words of flowing paragraphs covering: legal threshold and test, supporting material from case files, viability rating (Strong/Moderate/Weak) with detailed reasoning, predicted Crown response, aggressive defence rebuttal strategy, and practical appeal impact if established.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
+CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...".
 Markdown table with 8+ comparable cases, then Detailed Outcome Analysis paragraph for each row.
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
 Include AustLII search URL.
@@ -3897,7 +3987,7 @@ Step-by-step guide specific to {state_info.get('name', 'NSW')} with forms table.
 72-hour / 7-day / 28-day actions. Each action: what to do, who to contact, objective.
 
 ## 15. CLIENT PLAIN-ENGLISH BRIEF
-1000+ words explaining in plain English: what the appeal is about, what EACH ground means, chances of success for each, what happens next, realistic outcomes, and what the client should do now. Cover EVERY ground individually. CRITICAL: Use ONLY third-person language.
+1000+ words explaining in plain English: what the appeal is about, what EACH ground means, chances of success for each, what happens next, realistic outcomes, and what the applicant should do now. Cover EVERY ground individually. CRITICAL: Use ONLY third-person language. ABSOLUTE BAN on "you", "your", "we", "us", "our". Use "the applicant", "the legal professional".
 
 IMPORTANT:
 - No cost discussion. No witness contradiction section.
@@ -3979,6 +4069,8 @@ For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIM
 - Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers)
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+CRITICAL: This section MUST contain an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...". If exact data cannot be found, use the best available comparable cases from Australian jurisprudence.
+
 Markdown table with at least 12 comparable sentencing outcomes:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
 Include AustLII search link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
@@ -4036,24 +4128,15 @@ For each priority ground (minimum 200 words each):
 - **How establishing this ground leads to a specific appeal outcome** (what order to seek)
 
 ## 12. SUBMISSIONS BLUEPRINT
-Written submission strategy:
-- Recommended argument sequence and why
-- Authority placement for maximum impact
-- Framing of each ground in written submissions
-- Key passages to quote from case material
+Written submission strategy (write as flowing paragraphs, NOT bullet lists):
+Discuss the recommended argument sequence and why this ordering maximises impact. Explain the authority placement strategy for each ground. Describe how each ground should be framed in written submissions with key passages to quote from case material.
 
-Oral submission strategy:
-- Likely bench questions for each ground and prepared responses
-- Time allocation per ground
-- Opening and closing lines
-- How to handle judicial scepticism on weaker grounds
+Oral submission strategy (write as flowing paragraphs, NOT bullet lists):
+Discuss the likely bench questions for each ground with prepared responses. Cover time allocation per ground, opening and closing lines, and how to handle judicial scepticism on weaker grounds.
 
 ## 13. HEARING PREPARATION NOTES
-For each ground:
-- Key talking points (dot points for quick reference)
-- Anticipated questions from the bench and suggested answers
-- Authority to cite first and why
-- Visual aids or demonstratives to prepare
+For each ground, write detailed flowing paragraphs (NOT bullet lists or dot points):
+Cover the key arguments and talking points for each ground, the anticipated questions from the bench with suggested responses, which authority to cite first and why, and any visual aids or demonstratives to prepare.
 - Concessions to make strategically vs points to contest
 
 ## 14. CONFERENCE PREPARATION PACK
@@ -4118,7 +4201,7 @@ Overall appeal risk assessment:
 - Worst case scenario and mitigation
 
 ## 20. CLIENT PLAIN-ENGLISH BRIEF
-THIS MUST BE THE FINAL SECTION. Write this as if explaining directly to the defendant in everyday language:
+THIS MUST BE THE FINAL SECTION. Write this as if explaining the case to the defendant in everyday language, BUT STRICTLY IN THIRD PERSON:
 - What the appeal is about and why it matters
 - What are the strongest arguments in the applicant's favour (reference specific facts)
 - What are the realistic chances of success
@@ -4126,7 +4209,7 @@ THIS MUST BE THE FINAL SECTION. Write this as if explaining directly to the defe
 - What the applicant needs to do right now, this week, and this month
 - What to expect at the hearing
 - Honest assessment of risks alongside the opportunities
-CRITICAL: This section is an educational tool. Use ONLY third-person language ("the applicant", "the legal professional", "this analysis"). NEVER use "we", "us", "our", or "them" when referring to the legal team.
+CRITICAL: This section is an educational tool. Use ONLY third-person language ("the applicant", "the legal professional", "this analysis"). NEVER use "we", "us", "our", "you", "your", or "them" when referring to the legal team or the applicant. WRONG: "The appeal is your opportunity to challenge your conviction." RIGHT: "The appeal represents an opportunity for the applicant to challenge the conviction."
 
 IMPORTANT:
 - Use markdown headings and tables exactly where specified.
@@ -4281,6 +4364,7 @@ For EACH ground, write 800+ words as flowing paragraphs (NOT bullet points) cove
 7. APPEAL IMPACT: If this ground succeeds, what happens? (conviction quashed? sentence reduced? retrial?)
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
+CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text.
 Write a markdown table with 8+ rows. After the table, write a Detailed Outcome Analysis PARAGRAPH for each case.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
@@ -4345,7 +4429,7 @@ Step-by-step guide with forms table. Each step: what to do in plain English, req
 Each action: what to do, who to contact, objective, and deadline.
 
 ## 15. CLIENT PLAIN-ENGLISH BRIEF (1500+ words)
-THIS IS NOT GENERIC WAFFLE. For EACH of the {len(grounds)} grounds, explain in plain English:
+THIS IS NOT GENERIC WAFFLE. For EACH of the {len(grounds)} grounds, explain in plain English using ONLY third-person language:
 - What this ground means in simple terms
 - Why it matters for the appeal
 - What the chances of success are
@@ -4353,9 +4437,9 @@ THIS IS NOT GENERIC WAFFLE. For EACH of the {len(grounds)} grounds, explain in p
 
 Then cover:
 - The overall appeal: what it is, why it's happening, and the timeline
-- The realistic possible outcomes and what each means for the client
-- Exactly what the client should do right now, this week, and this month
-- NEVER use "we", "us", "our". Use "the applicant", "the legal professional".
+- The realistic possible outcomes and what each means for the applicant
+- Exactly what the applicant should do right now, this week, and this month
+- ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional". WRONG: "your opportunity" RIGHT: "the opportunity for the applicant"
 
 Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
@@ -4433,6 +4517,7 @@ For EACH ground, write 1200+ words as flowing paragraphs (NOT bullet points) cov
 9. KEY AUTHORITY: Name the single most important case, provide the citation, and explain in 3-4 sentences exactly how it applies to this ground in this case.
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...".
 Markdown table with 12+ rows. After the table, write a DETAILED PARAGRAPH for EACH of the 12+ cases (200+ words each) explaining: original sentencing reasoning, appeal court's reasoning, how the reduction was achieved, which grounds succeeded, and how this specifically compares to the current case.
 
 STOP after section 5."""),
@@ -4495,19 +4580,11 @@ NOW GENERATE ONLY SECTIONS 12-14. Write 5000+ WORDS for this pass. These are the
 ## 12. SUBMISSIONS BLUEPRINT (1500+ words)
 **Written Submission Strategy**: Write ACTUAL DRAFT PARAGRAPHS that could be filed with the court. For each major ground, write 2-3 paragraphs of draft submission text. Include argument sequence, authority placement, and framing. Write the opening paragraph and closing paragraph of the written submissions.
 
-**Oral Submission Strategy**: For each ground, write:
-- The opening line to say to the bench
-- 3-4 likely bench questions with prepared response lines (word for word)
-- Time allocation recommendation (e.g., "Ground 1: 15 minutes")
-- How to handle judicial scepticism on weaker grounds
+**Oral Submission Strategy** (write as flowing paragraphs, NOT bullet lists): For each ground, discuss the opening line to say to the bench, the likely bench questions with prepared response lines, time allocation recommendations, and how to handle judicial scepticism on weaker grounds. Write this as continuous prose.
 
 ## 13. HEARING PREPARATION NOTES (1200+ words — NEW SECTION NOT IN $150 REPORT)
-For EACH of the {len(grounds)} grounds:
-- Key talking points for quick reference (5-6 per ground)
-- Top 3 anticipated bench questions with WORD-FOR-WORD suggested answers
-- First authority to cite and why (2-3 sentences)
-- Concessions to make strategically vs points to contest
-- What visual aids or demonstratives to prepare
+For EACH of the {len(grounds)} grounds, write detailed flowing paragraphs (NOT bullet lists or dot points):
+Cover the key arguments and talking points for each ground, the top 3 anticipated bench questions with suggested answers woven into the prose, which authority to cite first and why, concessions to make strategically vs points to contest, and any visual aids or demonstratives to prepare. Write as continuous analytical prose.
 
 ## 14. CONFERENCE PREPARATION PACK (1200+ words — NEW SECTION NOT IN $150 REPORT)
 For briefing a barrister — write as an actual document:
@@ -4584,7 +4661,7 @@ Overall appeal risk assessment (500+ words):
 - Whether grounds should be argued independently or as a package
 
 ## 20. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
-THIS IS THE FINAL SECTION. Write in plain, everyday English that the defendant can understand.
+THIS IS THE FINAL SECTION. Write in plain, everyday English that explains the case in THIRD PERSON.
 
 For EACH of the {len(grounds)} grounds individually:
 - What this ground means in simple terms (2-3 sentences)
@@ -4595,10 +4672,10 @@ For EACH of the {len(grounds)} grounds individually:
 Then cover:
 - The overall appeal: what it is, why it's happening, and the realistic timeline
 - Each possible outcome and what it means personally for the applicant
-- Exactly what the client should do right now, this week, and this month
+- Exactly what the applicant should do right now, this week, and this month
 - What to expect at the hearing — how long, who's there, what happens
 - Honest assessment of risks alongside the opportunities
-- NEVER use "we", "us", "our". Use "the applicant", "the legal professional", "this analysis".
+- ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional", "this analysis". WRONG: "The appeal is your opportunity." RIGHT: "The appeal represents an opportunity for the applicant."
 
 Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
@@ -5174,6 +5251,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story.append(Spacer(1, 5*mm))
     
     # Case Info Table — skip N/A fields
+    # Get grounds for PDF header
+    pdf_grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
     case_data_rows = [
         ['Case Title:', case.get('title', 'N/A')],
         ['Defendant:', case.get('defendant_name', 'N/A')],
@@ -5184,6 +5263,9 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         case_data_rows.append(['Court:', case['court']])
     if case.get('state'):
         case_data_rows.append(['Jurisdiction:', case['state'].upper()])
+    if case.get('sentence') and case.get('sentence') != 'N/A':
+        case_data_rows.append(['Sentence:', case['sentence']])
+    case_data_rows.append(['Grounds:', f"{len(pdf_grounds)} identified"])
     case_data_rows.append(['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'])
     
     case_table = Table(case_data_rows, colWidths=[40*mm, 120*mm])
@@ -5421,6 +5503,9 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         case_info.append(('Court:', case['court']))
     if case.get('state'):
         case_info.append(('Jurisdiction:', case['state'].upper()))
+    if case.get('sentence') and case.get('sentence') != 'N/A':
+        case_info.append(('Sentence:', case['sentence']))
+    case_info.append(('Grounds:', f"{len(grounds)} identified"))
     case_info.append(('Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'))
     
     case_table = doc.add_table(rows=len(case_info), cols=2)

@@ -1098,24 +1098,26 @@ const LandingPage = () => {
 
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Explore</p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-700">
+            <div className="grid gap-y-1 text-xs text-slate-700">
               <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-it-works">How It Works</Link>
-              <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
               <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
-              <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-framework">Legal Framework</Link>
               <Link to="/forms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-forms">Forms & Templates</Link>
-              <Link to="/glossary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-glossary">Legal Glossary</Link>
               <Link to="/lawyers" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/faq" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-faq">FAQ</Link>
               <Link to="/contact" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-contact">Contact</Link>
-              <Link to="/about" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-about">About</Link>
               <Link to="/success-stories" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
 
-          <div className="text-center md:text-right">
+          <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Legal</p>
-            <Link to="/terms" className="text-sm text-slate-700 hover:text-blue-700">Terms & Privacy</Link>
+            <div className="grid gap-y-1 text-xs text-slate-700">
+              <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+              <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-framework">Legal Framework</Link>
+              <Link to="/glossary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-glossary">Legal Glossary</Link>
+              <Link to="/faq" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-faq">FAQ</Link>
+              <Link to="/about" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-about">About</Link>
+              <Link to="/terms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-terms">Terms & Privacy</Link>
+            </div>
             <p className="text-xs text-red-600 font-medium mt-3">
               Australian Law Only • Not legal advice
             </p>

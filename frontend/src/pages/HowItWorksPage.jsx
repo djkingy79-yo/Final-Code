@@ -211,7 +211,7 @@ const HowItWorksPage = () => {
         "Three report tiers to choose from (see pricing below)",
         "Each report generates with professional formatting: tables, links, case citations",
         "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice, Filing Guide",
-        "Reports can be exported as PDF, Word document, or printed directly",
+        "Reports can be exported as PDF or Word document for legal consultations",
       ],
       proTips: [
         "Start with the FREE Quick Summary to get an overview before committing to a paid report",
@@ -238,11 +238,11 @@ const HowItWorksPage = () => {
         "'Synthesised from N reports' badge showing how many reports were combined",
         "Clean professional layout with readable headings and tables",
         "Tables with formatted headers for sentencing comparisons and case law",
-        "Export to PDF, Word document, or print for legal consultations",
+        "Export to PDF or Word document for legal consultations",
         "All legislation links are clickable and open to official government sources",
       ],
       proTips: [
-        "Print the Barrister View to take to a legal consultation",
+        "Export the Barrister View as PDF or Word to take to a legal consultation",
         "Export as Word to allow your lawyer to edit and add their own notes",
         "The Barrister View is designed to impress — use it when presenting your case",
       ],
@@ -337,7 +337,7 @@ const HowItWorksPage = () => {
         "Capstone synthesis combining all three reports into one brief",
         "Barrister-ready format with table of contents",
         "All grounds, strategies, and authorities consolidated",
-        "Export to PDF, Word, or print for legal consultations",
+        "Export to PDF or Word document for legal consultations",
       ],
     },
   ];
@@ -584,7 +584,7 @@ const HowItWorksPage = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {reportPricing.map((tier) => (
               <div
                 key={tier.title}
@@ -599,9 +599,9 @@ const HowItWorksPage = () => {
                 <div className="p-5">
                   <ul className="space-y-2.5">
                     {tier.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-base">
+                      <li key={i} className="flex items-start gap-2 text-sm">
                         <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700">{feature}</span>
+                        <span className="text-slate-700 break-words">{feature}</span>
                       </li>
                     ))}
                   </ul>
