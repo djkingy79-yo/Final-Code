@@ -941,69 +941,6 @@ const ReportView = () => {
             ))}
           </div>
 
-          {/* ===== REPORT COMPARISON TABLE ===== */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-8 mt-2" data-testid="report-comparison-table">
-            <h2 className="text-xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              Report Tier Comparison
-            </h2>
-            <p className="text-sm text-slate-700 mb-4">
-              Compare what is included in each report level:
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr>
-                    <th className="text-left p-3 bg-slate-100 text-slate-900 font-bold border border-slate-200 w-1/3">Subject Matter</th>
-                    <th className="text-center p-3 bg-green-600 text-white font-bold border border-slate-200">FREE Report</th>
-                    <th className="text-center p-3 bg-blue-700 text-white font-bold border border-slate-200">$150 AUD<br/><span className="font-normal text-xs">Full Detailed</span></th>
-                    <th className="text-center p-3 bg-purple-700 text-white font-bold border border-slate-200">$200 AUD<br/><span className="font-normal text-xs">Extensive Log</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ["Case Snapshot / Executive Brief", true, true, true],
-                    ["Primary Issues Identified", true, true, true],
-                    ["All Grounds Listed (titles + strength)", true, true, true],
-                    ["Ground-by-Ground Deep Analysis", false, true, true],
-                    ["Crown Response & Rebuttal Strategy", false, true, true],
-                    ["Forensic Case Chronology", false, true, true],
-                    ["Document Evidence Digest", false, true, true],
-                    ["Sentencing Comparison Table", "3 cases", "8+ cases", "12+ cases"],
-                    ["Precedent Outcome Matrix", false, "10-12 cases", "15+ cases"],
-                    ["Outcome Options Matrix", false, true, true],
-                    ["Statutory & Doctrinal Framework", false, true, true],
-                    ["Argument Strategy per Ground", false, true, true],
-                    ["Submissions Blueprint", false, true, true],
-                    ["How to Start Your Appeal + Forms", false, true, true],
-                    ["Evidentiary Gaps Checklist", false, true, true],
-                    ["Prioritised Action Plan", false, true, true],
-                    ["Client Plain-English Brief", true, true, true],
-                    ["1,200+ Words per Ground Analysis", false, false, true],
-                    ["Hearing Preparation Notes", false, false, true],
-                    ["Conference Preparation Pack", false, false, true],
-                    ["Court Pathway Operations Playbook", false, false, true],
-                    ["Similar Case Search Options", false, false, true],
-                    ["Risk Assessment + Contingency", false, false, true],
-                    ["Fallback Positions per Ground", false, false, true],
-                  ].map(([label, free, full, ext], idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
-                      <td className="p-3 border border-slate-200 text-slate-900 font-medium">{label}</td>
-                      <td className="p-3 border border-slate-200 text-center">
-                        {free === true ? <span className="text-green-600 font-bold text-lg">&#9745;</span> : free === false ? <span className="text-slate-300">—</span> : <span className="text-green-700 font-semibold text-xs">{free}</span>}
-                      </td>
-                      <td className="p-3 border border-slate-200 text-center">
-                        {full === true ? <span className="text-blue-700 font-bold text-lg">&#9745;</span> : full === false ? <span className="text-slate-300">—</span> : <span className="text-blue-700 font-semibold text-xs">{full}</span>}
-                      </td>
-                      <td className="p-3 border border-slate-200 text-center">
-                        {ext === true ? <span className="text-purple-700 font-bold text-lg">&#9745;</span> : ext === false ? <span className="text-slate-300">—</span> : <span className="text-purple-700 font-semibold text-xs">{ext}</span>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           {/* ===== DISCLAIMER FOOTER ===== */}
           <div className="bg-white border-t border-slate-200 p-5 sm:p-6" data-testid="report-footer">
             <div className="flex items-start gap-3 mb-3">

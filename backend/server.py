@@ -4192,26 +4192,18 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
         raise HTTPException(status_code=500, detail="AI service not configured")
 
     async def _subprocess_llm(prompt_text):
-        """Run LLM call directly — retries across multiple models."""
+        """Run LLM call directly — retries across multiple models with exponential backoff."""
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
-        # gpt-4o has intermittent refusals — retry with fallback models
-        if report_type == "extensive_log":
-            models = [
-                ("openai", "gpt-4o"),
-                ("openai", "gpt-4o"),
-                ("openai", "gpt-4o-mini"),
-                ("openai", "gpt-4o-mini"),
-            ]
-            call_timeout = 180  # Shorter timeout per pass (each pass = 3 sections only)
-        else:
-            models = [
-                ("openai", "gpt-4o"),
-                ("openai", "gpt-4o"),
-                ("anthropic", "claude-sonnet-4-20250514"),
-                ("openai", "gpt-4o-mini"),
-            ]
-            call_timeout = 420
+        models = [
+            ("openai", "gpt-4o"),
+            ("openai", "gpt-4o"),
+            ("openai", "gpt-4o"),
+            ("anthropic", "claude-sonnet-4-20250514"),
+            ("openai", "gpt-4o-mini"),
+            ("openai", "gpt-4o-mini"),
+        ]
+        call_timeout = 300 if report_type == "extensive_log" else 420
         
         last_err = None
         for idx, (provider, model_name) in enumerate(models):
@@ -4230,12 +4222,15 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
                     last_err = f"Short response ({len(result)} chars)"
                 logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}): {last_err}")
             except asyncio.TimeoutError:
-                last_err = f"Timeout after 180s with {provider}/{model_name}"
+                last_err = f"Timeout after {call_timeout}s with {provider}/{model_name}"
                 logger.warning(last_err)
             except Exception as e:
                 last_err = str(e)[:200]
                 logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) failed: {last_err}")
-            await asyncio.sleep(3 + idx * 2)
+            # Exponential backoff: 5s, 10s, 20s, 30s, 45s, 60s
+            delay = min(60, 5 * (2 ** idx))
+            logger.info(f"Retrying in {delay}s...")
+            await asyncio.sleep(delay)
         
         raise Exception(f"All LLM attempts failed. Last error: {last_err}")
 

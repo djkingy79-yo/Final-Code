@@ -850,27 +850,6 @@ const CaseDetail = ({ user }) => {
             </div>
 
             <div className="flex gap-2 flex-wrap">
-              {/* Print button for all tab sections */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openTabPrintPreview("print")}
-                className="rounded-xl"
-                data-testid={`print-${activeTab}-btn`}
-              >
-                <Printer className="w-4 h-4 mr-2" />
-                Print {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openTabPrintPreview("pdf")}
-                className="rounded-xl"
-                data-testid={`pdf-${activeTab}-btn`}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                PDF View
-              </Button>
               {activeTab === "timeline" && (
                 <>
                   <Button 
