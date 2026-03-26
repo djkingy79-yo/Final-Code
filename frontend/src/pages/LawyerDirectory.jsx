@@ -322,57 +322,37 @@ const LawyerDirectory = () => {
               <Gavel className="w-6 h-6 text-red-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-1">Important</h3>
-              <p className="text-blue-800 text-sm">
+              <h3 className="font-semibold text-blue-900 text-xs mb-1">Important</h3>
+              <p className="text-blue-800 text-[11px]">
                 This directory provides links to legal resources for informational purposes only. 
-                We do not endorse any specific lawyer or firm. Always conduct your own research and 
-                meet with potential lawyers before engaging their services. Many offer free initial consultations.
+                We do not endorse any specific lawyer or firm.
               </p>
             </div>
           </div>
         </div>
 
         {/* National Resources */}
-        <div className="mb-12">
-          <div className="rounded-2xl overflow-hidden mb-6 relative h-32">
-            <img 
-              src="https://images.unsplash.com/photo-1662516201865-8633915e668a?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=150&fit=crop"
-              alt="National Resources"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-900/50 flex items-center px-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl bg-blue-100/20 flex items-center justify-center">
-                  <Globe className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                    National Resources
-                  </h2>
-                  <p className="text-blue-200 text-sm">
-                    Australia-wide legal services and organisations
-                  </p>
-                </div>
-              </div>
+        <div className="mb-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-3">
+            <Globe className="w-5 h-5 text-blue-700" />
+            <div>
+              <h2 className="text-sm font-bold text-blue-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                National Resources
+              </h2>
+              <p className="text-blue-700 text-[10px]">Australia-wide legal services</p>
             </div>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-3">
             {nationalResources.map((resource, index) => (
-              <a
-                key={index}
-                href={resource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <div className="bg-white border border-slate-200 rounded-xl p-5 h-full hover:shadow-lg hover:border-blue-500/50 transition-all group">
+              <a key={index} href={resource.url} target="_blank" rel="noopener noreferrer" className="block">
+                <div className="bg-white border border-slate-200 rounded-lg p-3 h-full hover:shadow-md hover:border-blue-300 transition-all group">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{resource.name}</h3>
-                      <p className="text-sm text-slate-700 mt-1">{resource.description}</p>
+                      <h3 className="font-semibold text-slate-900 text-xs group-hover:text-blue-600">{resource.name}</h3>
+                      <p className="text-[11px] text-slate-700 mt-1">{resource.description}</p>
                     </div>
-                    <ExternalLink className="w-4 h-4 text-slate-700 group-hover:text-blue-600 flex-shrink-0 transition-colors" />
+                    <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-blue-600 flex-shrink-0" />
                   </div>
                 </div>
               </a>
@@ -381,60 +361,45 @@ const LawyerDirectory = () => {
         </div>
 
         {/* State Resources */}
-        <div className="rounded-2xl overflow-hidden mb-6 relative h-32">
-          <img 
-            src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=150&fit=crop"
-            alt="State Resources"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/90 to-emerald-900/50 flex items-center px-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-emerald-100/20 flex items-center justify-center">
-                <MapPin className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                  Resources by State
-                </h2>
-                <p className="text-emerald-200 text-sm">
-                  State-specific legal services and specialists
-                </p>
-              </div>
-            </div>
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-3">
+          <MapPin className="w-5 h-5 text-emerald-700" />
+          <div>
+            <h2 className="text-sm font-bold text-emerald-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Resources by State
+            </h2>
+            <p className="text-emerald-700 text-[10px]">State-specific legal services and specialists</p>
           </div>
         </div>
         
         <div className="space-y-6">
           {filteredResources.map((state, index) => (
-            <div key={index} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-              <div className={`${state.color} text-white px-6 py-4`}>
-                <h3 className="text-xl font-bold flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                  <Badge variant="outline" className="bg-white/20 border-white/40 text-white text-sm px-3">
+            <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all`}>
+              <div className={`${state.color} text-white px-4 py-2`}>
+                <h3 className="text-sm font-bold flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <Badge variant="outline" className="bg-white/20 border-white/40 text-white text-[10px] px-2 py-0">
                     {state.code}
                   </Badge>
                   {state.state}
                 </h3>
               </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-4">
+                <div className="grid md:grid-cols-3 gap-4">
                   {/* Legal Aid */}
-                  <div className="bg-slate-100/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-blue-700" />
-                      </div>
+                  <div className="bg-slate-50 p-3 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 text-xs mb-2 flex items-center gap-1.5">
+                      <Building2 className="w-3 h-3 text-blue-700" />
                       Legal Aid
                     </h4>
                     <a
                       href={state.legalAid.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-xs font-medium flex items-center gap-1"
                     >
                       {state.legalAid.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-slate-700 mt-2">{state.legalAid.description}</p>
+                    <p className="text-[10px] text-slate-700 mt-1">{state.legalAid.description}</p>
                     {state.legalAid.phone && (
                       <p className="text-xs text-slate-900 mt-3 flex items-center gap-2 font-medium">
                         <Phone className="w-3 h-3 text-emerald-600" />
@@ -444,43 +409,39 @@ const LawyerDirectory = () => {
                   </div>
 
                   {/* Bar Association */}
-                  <div className="bg-slate-100/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <Gavel className="w-4 h-4 text-purple-700" />
-                      </div>
+                  <div className="bg-slate-50 p-3 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 text-xs mb-2 flex items-center gap-1.5">
+                      <Gavel className="w-3 h-3 text-purple-700" />
                       Find a Barrister
                     </h4>
                     <a
                       href={state.barAssociation.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-xs font-medium flex items-center gap-1"
                     >
                       {state.barAssociation.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-slate-700 mt-2">{state.barAssociation.description}</p>
+                    <p className="text-[10px] text-slate-700 mt-1">{state.barAssociation.description}</p>
                   </div>
 
                   {/* Law Society */}
-                  <div className="bg-slate-100/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                        <Users className="w-4 h-4 text-emerald-700" />
-                      </div>
+                  <div className="bg-slate-50 p-3 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 text-xs mb-2 flex items-center gap-1.5">
+                      <Users className="w-3 h-3 text-emerald-700" />
                       Find a Solicitor
                     </h4>
                     <a
                       href={state.lawSociety.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-xs font-medium flex items-center gap-1"
                     >
                       {state.lawSociety.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-slate-700 mt-2">{state.lawSociety.description}</p>
+                    <p className="text-[10px] text-slate-700 mt-1">{state.lawSociety.description}</p>
                   </div>
                 </div>
 

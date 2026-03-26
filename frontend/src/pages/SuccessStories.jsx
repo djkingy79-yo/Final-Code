@@ -4,8 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import PageCTA from "../components/PageCTA";
-import { Scale, ArrowLeft, Star, Quote, Send, CheckCircle, Heart, Moon, Sun, Menu, X } from "lucide-react";
+import { Scale, ArrowLeft, Quote, Send, CheckCircle, Heart, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
@@ -13,154 +12,200 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API } from "../App";
 import { toast } from "sonner";
-import { useTheme } from "../contexts/ThemeContext";
 
-// Featured success stories
 const successStories = [
   {
     id: 1,
     name: "Sarah M.",
     location: "Western Sydney, NSW",
     relationship: "Wife",
-    story: "After my husband's conviction, Legal Aid said there were no grounds for appeal. I uploaded the trial transcript, ran the free grounds count, then paid for the $99 grounds investigation and Full Detailed report. The grounds analysis highlighted a misdirection on the standard of proof. A criminal barrister reviewed the report and agreed. Eight months later, the conviction on that charge was quashed and his sentence was reduced by 5 years.",
-    outcome: "Conviction partially quashed — Sentence reduced by 5 years",
-    timeframe: "8 months from appeal to decision",
-    featured: true
+    preview: "Legal Aid said there were no grounds. The tool found a misdirection on standard of proof that they'd missed.",
+    full: "My husband got 12 years. Legal Aid looked at it and said no grounds. I didn't accept that. I uploaded the transcript and ran the free scan — it found 3 possible grounds. I paid $99 for the full investigation. One ground stood out: the judge misdirected the jury on the standard of proof. I printed the report and took it to a criminal barrister. He read it, said it was solid, and took the case. Eight months later the appeal court agreed. That charge was quashed and his sentence dropped by 5 years.",
+    outcome: "Conviction partially quashed — 5 years off sentence",
+    timeframe: "8 months"
   },
   {
     id: 2,
     name: "Michael T.",
     location: "Newcastle, NSW",
     relationship: "Brother",
-    story: "My brother was convicted of aggravated assault despite claiming self-defence. I uploaded the CCTV, medical records and witness details, then used the timeline to organise the events. The grounds investigation report highlighted a timing conflict between the CCTV and the account in the brief. We've lodged a fresh evidence appeal and are waiting for the hearing.",
-    outcome: "Appeal lodged — Fresh evidence application pending",
-    timeframe: "Hearing scheduled",
-    featured: true
+    preview: "CCTV timestamps didn't match the police account. The timeline tool made it obvious.",
+    full: "My brother swears he was defending himself. Got done for aggravated assault anyway. I uploaded everything — the CCTV, medical reports, witness statements. When I used the timeline feature, something jumped out: the CCTV timestamps didn't line up with what police said in the brief. Not by a little — by nearly 40 minutes. That's now the basis of a fresh evidence application. Waiting on a hearing date.",
+    outcome: "Fresh evidence appeal lodged",
+    timeframe: "Hearing pending"
   },
   {
     id: 3,
     name: "Jenny K.",
     location: "Brisbane, QLD",
     relationship: "Mother",
-    story: "My son was sentenced for drug supply charges. I'm not legally trained, but the timeline feature highlighted gaps in police surveillance notes. The grounds investigation report showed the search warrant was executed outside authorised hours. I took the organised report to Legal Aid's appeal review unit and they've now assigned a senior solicitor to review.",
-    outcome: "Legal Aid appeal review approved",
-    timeframe: "Review in progress",
-    featured: true
+    preview: "The search warrant was executed outside authorised hours. I wouldn't have known without the report.",
+    full: "My son got done for supply. I know nothing about law. I just uploaded what I had and ran the investigation. The report flagged something I would never have spotted — the search warrant was executed outside the hours it authorised. I took it to Legal Aid's appeal review unit with everything organised. They've now assigned a senior solicitor. First time in two years someone's actually looking at it properly.",
+    outcome: "Legal Aid assigned senior solicitor for review",
+    timeframe: "Under review"
   },
   {
     id: 4,
     name: "David R.",
     location: "Melbourne, VIC",
     relationship: "Father",
-    story: "My daughter was convicted of fraud and sentenced to 3 years. The Full Detailed report's document analysis highlighted a calculation error in the prosecution's forensic accounting that inflated the alleged loss. An independent expert confirmed the error. On appeal, her sentence was reduced to 18 months with immediate parole eligibility.",
-    outcome: "Sentence reduced from 3 years to 18 months — Released on parole",
-    timeframe: "6 months from appeal to release",
-    featured: true
+    preview: "The prosecution inflated the loss figure. An accounting error sat in plain sight for two years.",
+    full: "My daughter got 3 years for fraud. The numbers never sat right with me. I ran the Full Detailed report and it flagged a calculation error in the prosecution's forensic accounting — they'd double-counted a set of transactions, inflating the alleged loss by over $180,000. Got an independent forensic accountant to confirm it. The appeal court reduced her sentence to 18 months and she was released on parole the same week.",
+    outcome: "Sentence cut from 3 years to 18 months — released on parole",
+    timeframe: "6 months"
   },
   {
     id: 5,
     name: "Amanda P.",
     location: "Perth, WA",
     relationship: "Sister",
-    story: "My brother got 8 years for dangerous driving causing death, but the accident occurred when he swerved to avoid a child on the road. The Full Detailed report's comparative sentencing table showed his sentence was well above the normal range for accessorial driving cases. The grounds analysis also noted the judge hadn't given adequate weight to his clean record and genuine remorse. The Court of Appeal reduced the sentence to 4 years.",
-    outcome: "Sentence reduced from 8 years to 4 years — Parole eligible",
-    timeframe: "11 months from appeal lodgement",
-    featured: true
+    preview: "His sentence was double what comparable cases got. The sentencing table made it undeniable.",
+    full: "My brother swerved to miss a kid on the road and hit a tree. The passenger died. He got 8 years. The report pulled up a sentencing comparison table — similar cases with similar circumstances were getting 3 to 5 years. The judge also hadn't properly considered his clean record or that he tried to save the other person's life. The Court of Appeal agreed the sentence was manifestly excessive and cut it to 4 years.",
+    outcome: "Sentence reduced from 8 to 4 years",
+    timeframe: "11 months"
   },
   {
     id: 6,
     name: "Marcus W.",
     location: "Gold Coast, QLD",
     relationship: "Cousin",
-    story: "My cousin was convicted on drug trafficking based almost entirely on phone intercepts. The grounds investigation report noted the language was ambiguous and could have legitimate meanings. Without physical evidence to corroborate the intercepts, a specialist barrister argued the verdict was unreasonable. We got leave to appeal and the hearing is in 3 months.",
-    outcome: "Leave to appeal granted — Hearing pending",
-    timeframe: "Leave granted after 7 months",
-    featured: true
+    preview: "The whole case rested on phone intercepts with no physical evidence. The language was ambiguous.",
+    full: "They convicted him of trafficking based on phone intercepts. No drugs found, no cash, no physical evidence at all. The investigation report pointed out the intercepted language was ambiguous — it could mean what the prosecution said, or it could be completely innocent. A specialist barrister ran with that argument. We've been granted leave to appeal. Hearing is in 3 months.",
+    outcome: "Leave to appeal granted",
+    timeframe: "7 months to get leave"
   },
   {
     id: 7,
     name: "Rebecca L.",
     location: "Adelaide, SA",
     relationship: "Wife",
-    story: "My husband was convicted of historical allegations from 30 years ago based on testimony alone. The grounds investigation report identified that the judge's Longman warning about uncorroborated testimony after long delay was inadequate. A senior criminal silk confirmed the misdirection. The Court of Criminal Appeal ordered a retrial, and the DPP decided not to proceed. After 2 years, he's cleared.",
-    outcome: "Conviction quashed — DPP discontinued retrial",
-    timeframe: "14 months — Now cleared",
-    featured: true
+    preview: "Historical allegations from 30 years ago. The judge's warning to the jury about old evidence was inadequate.",
+    full: "My husband was convicted on historical allegations. No physical evidence — just testimony about events allegedly from 30 years ago. The investigation report identified the judge's Longman warning was inadequate. A senior silk confirmed it. The Court of Criminal Appeal ordered a retrial, and then the DPP decided not to proceed. After two years of hell, he's a free man.",
+    outcome: "Conviction quashed — DPP dropped retrial",
+    timeframe: "14 months"
   },
   {
     id: 8,
     name: "James H.",
     location: "Hobart, TAS",
     relationship: "Friend",
-    story: "My mate got 6 years for armed robbery but was only present — he didn't know his co-accused had a weapon. The Full Detailed report's comparative sentencing table showed similar accessorial liability cases received much lighter sentences. Legal Aid's appeal unit agreed there was an error in the jury direction on this point. We've filed notice of appeal.",
-    outcome: "Appeal lodged — Jury misdirection on accessory liability",
-    timeframe: "Waiting for hearing date",
-    featured: true
+    preview: "He was just the driver. Didn't know about the weapon. The jury direction on accessory liability was wrong.",
+    full: "My mate was driving. He had no idea the bloke in the back seat had a weapon. Got done as an accessory to armed robbery — 6 years. The report showed the jury was misdirected on what 'knowledge' means for accessory liability. Comparable cases where the accused genuinely didn't know got much lighter sentences. Legal Aid's appeal unit agreed there was an arguable point. We've filed.",
+    outcome: "Appeal lodged — jury misdirection identified",
+    timeframe: "Awaiting hearing"
   },
   {
     id: 9,
     name: "Patricia S.",
     location: "Canberra, ACT",
     relationship: "Mother",
-    story: "My son has an intellectual disability and was convicted of assault. The timeline feature helped me organise medical records going back to childhood. The grounds investigation report highlighted that the original judge failed to adequately consider his disability. A pro bono barrister obtained a forensic psychologist's report, and the Court of Appeal reduced the sentence to time served.",
-    outcome: "Sentence reduced to time served — Released with support plan",
-    timeframe: "9 months from appeal to release",
-    featured: true
+    preview: "My son has an intellectual disability. The judge barely considered it at sentencing.",
+    full: "My son has an intellectual disability. He shouldn't have been sentenced the way he was. The report highlighted the judge failed to properly consider his condition at sentencing. I organised 15 years of medical records using the timeline feature. A pro bono barrister got a forensic psych report done. The Court of Appeal agreed and reduced his sentence to time served. He came home.",
+    outcome: "Sentence reduced to time served — released",
+    timeframe: "9 months"
   },
   {
     id: 10,
     name: "Daniel K.",
     location: "Darwin, NT",
     relationship: "Uncle",
-    story: "My Aboriginal nephew was sentenced without the judge considering Bugmy factors — the disadvantage and intergenerational trauma he'd experienced. The grounds investigation report summarised comparable authorities where proper Bugmy evidence led to significantly lower sentences. The Aboriginal Legal Service compiled cultural reports, and the Court of Appeal reduced his sentence from 5 years to 2 years with parole.",
-    outcome: "Sentence reduced to 2 years — Parole granted",
-    timeframe: "10 months total",
-    featured: true
+    preview: "The sentencing judge ignored Bugmy factors entirely. The report laid out comparable cases clearly.",
+    full: "My nephew is Aboriginal. The judge sentenced him without any consideration of Bugmy factors — the disadvantage, the intergenerational trauma, none of it. The report pulled up comparable cases where proper Bugmy evidence made a real difference. The Aboriginal Legal Service helped compile cultural reports. The Court of Appeal cut his sentence from 5 years to 2 with parole.",
+    outcome: "Sentence reduced to 2 years — parole granted",
+    timeframe: "10 months"
   },
   {
     id: 11,
     name: "Sophie R.",
     location: "Townsville, QLD",
     relationship: "Partner",
-    story: "My partner's conviction rested on poor-quality CCTV that never clearly showed a face. The grounds investigation report highlighted the warnings required for identification evidence. A forensic video analyst confirmed the footage was insufficient for positive identification. The Court of Appeal agreed the trial miscarried. Conviction quashed — the DPP chose not to retry.",
-    outcome: "Conviction quashed — DPP no retrial",
-    timeframe: "18 months total — Now exonerated",
-    featured: true
+    preview: "The CCTV was so blurry you couldn't identify anyone. The conviction rested on it anyway.",
+    full: "The whole case was built on grainy CCTV that never clearly showed a face. The report flagged the required identification warnings weren't properly given. A forensic video analyst confirmed the footage was useless for positive ID. The Court of Appeal agreed the trial miscarried. Conviction quashed. The DPP chose not to retry.",
+    outcome: "Conviction quashed — exonerated",
+    timeframe: "18 months"
   },
   {
     id: 12,
     name: "Christopher B.",
     location: "Wollongong, NSW",
     relationship: "Brother",
-    story: "My brother got 10 years for drug importation as a courier driver who unknowingly delivered packages. The grounds investigation report identified case law on wilful blindness requiring actual suspicion. The appeal court quashed the conviction. At retrial, he took a lesser plea and was released for time served.",
-    outcome: "Conviction quashed — Lesser plea, time served",
-    timeframe: "16 months total",
-    featured: true
+    preview: "He was a courier who didn't know what was in the packages. The law on 'wilful blindness' was misapplied.",
+    full: "My brother drove deliveries. Turns out some packages contained drugs. He got 10 years for importation. The report identified case law showing 'wilful blindness' requires actual suspicion, not just failing to ask questions. The appeal court quashed the conviction. At retrial he took a lesser plea and got out for time served.",
+    outcome: "Conviction quashed — released for time served",
+    timeframe: "16 months"
   },
   {
     id: 13,
     name: "Michelle D.",
     location: "Cairns, QLD",
     relationship: "Daughter",
-    story: "My 68-year-old father with early dementia was sentenced to 4 years for business fraud. His lawyer didn't present medical evidence or argue for a non-custodial sentence. The Full Detailed report showed comparable cases where elderly first-time offenders received suspended sentences. A specialist confirmed his dementia. On appeal, he was resentenced to an Intensive Correction Order and released.",
-    outcome: "Resentenced to Intensive Correction Order — Released",
-    timeframe: "Served 7 months before release",
-    featured: true
+    preview: "Dad is 68 with early dementia. His lawyer didn't present any medical evidence at sentencing.",
+    full: "Dad is 68 and has early-onset dementia. His lawyer barely mentioned it at sentencing — no medical reports, nothing. He got 4 years for business fraud. The report showed comparable cases where elderly first-time offenders with health issues got suspended sentences. A specialist confirmed the dementia diagnosis. On appeal he was resentenced to an Intensive Correction Order and came home.",
+    outcome: "Resentenced to ICO — released",
+    timeframe: "7 months in custody"
   },
   {
     id: 14,
     name: "Thomas G.",
     location: "Geelong, VIC",
     relationship: "Son",
-    story: "My 72-year-old father, a war veteran with PTSD, was convicted of assault after a dissociative episode triggered by fireworks. His lawyer mentioned PTSD but didn't present proper psychological evidence. Through the resources section, I found the Vietnam Veterans Legal Service. A forensic report confirmed diminished culpability, and his sentence was replaced with a Community Correction Order with treatment conditions.",
-    outcome: "Resentenced to Community Correction Order with treatment",
-    timeframe: "Served 4 months before resentencing",
-    featured: true
+    preview: "Dad's a veteran with PTSD. He had a dissociative episode. His lawyer mentioned it but never proved it.",
+    full: "My father is 72, a Vietnam veteran with severe PTSD. Fireworks triggered a dissociative episode and he struck someone. His original lawyer mentioned PTSD but never got a proper forensic report. Through the resources section I found the Vietnam Veterans Legal Service. They got a forensic psych report done. The appeal court replaced his sentence with a Community Correction Order with treatment conditions.",
+    outcome: "Resentenced to CCO with treatment",
+    timeframe: "4 months in custody"
   }
 ];
 
+const StoryCard = ({ story }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <article
+      className="bg-white rounded-xl border border-slate-200 overflow-hidden"
+      data-testid={`success-story-card-${story.id}`}
+    >
+      <div className="p-3 border-b border-slate-100">
+        <h3 className="text-xs font-bold text-slate-900" data-testid={`success-story-heading-${story.id}`}>
+          {story.name} — {story.relationship} ({story.location})
+        </h3>
+      </div>
+
+      <div className="p-3">
+        <div className="flex items-start gap-2">
+          <Quote className="w-3 h-3 text-red-600 shrink-0 mt-0.5" />
+          <p className="text-[11px] text-slate-800 leading-relaxed" data-testid={`success-story-comment-${story.id}`}>
+            "{expanded ? story.full : story.preview}"
+          </p>
+        </div>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-2 text-[10px] text-blue-700 font-semibold flex items-center gap-1 hover:text-blue-900"
+          data-testid={`success-story-toggle-${story.id}`}
+        >
+          {expanded ? (
+            <><ChevronUp className="w-3 h-3" /> Show less</>
+          ) : (
+            <><ChevronDown className="w-3 h-3" /> Read full story</>
+          )}
+        </button>
+      </div>
+
+      <div className="bg-emerald-50 border-t border-emerald-100 px-3 py-2">
+        <div className="flex items-center gap-1.5 text-emerald-700">
+          <CheckCircle className="w-3 h-3" />
+          <span className="font-semibold text-[10px]">{story.outcome}</span>
+        </div>
+        {story.timeframe && (
+          <span className="text-[9px] text-emerald-600 mt-1 inline-block">
+            {story.timeframe}
+          </span>
+        )}
+      </div>
+    </article>
+  );
+};
+
 const SuccessStories = () => {
-  const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -203,243 +248,175 @@ const SuccessStories = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-sm font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">FAQ</Link>
-            <Link to="/contact" className="text-slate-400 hover:text-white text-sm transition-colors">Contact</Link>
-<Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg">
-                <ArrowLeft className="w-4 h-4 mr-2" />
+            <Link to="/glossary" className="text-slate-600 hover:text-blue-700 text-xs">Legal Terms</Link>
+            <Link to="/faq" className="text-slate-600 hover:text-blue-700 text-xs">FAQ</Link>
+            <Link to="/contact" className="text-slate-600 hover:text-blue-700 text-xs">Contact</Link>
+            <Link to="/">
+              <Button className="landing-cta-primary text-xs">
+                <ArrowLeft className="w-3 h-3 mr-1" />
                 Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <button className="md:hidden p-2 text-slate-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/contact" className="block py-2 text-slate-300 hover:text-white">Contact</Link>
-            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-3 space-y-2">
+            <Link to="/glossary" className="block py-1 text-slate-700 hover:text-blue-700 text-xs">Legal Terms</Link>
+            <Link to="/faq" className="block py-1 text-slate-700 hover:text-blue-700 text-xs">FAQ</Link>
+            <Link to="/contact" className="block py-1 text-slate-700 hover:text-blue-700 text-xs">Contact</Link>
+            <Link to="/" className="block py-1 text-blue-700 text-xs font-semibold">Back to Home</Link>
           </div>
         )}
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-16 px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
-            alt=""
-            className="w-full h-full object-cover opacity-5"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-        </div>
-        
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <div className="flex items-center justify-center gap-1 mb-6">
-            {[1,2,3,4,5].map(i => (
-              <Star key={i} className="w-6 h-6 text-blue-500 fill-blue-500" />
-            ))}
-          </div>
-          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Real Stories, Real Hope</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+      {/* Hero */}
+      <section className="py-8 px-6 bg-white border-b border-slate-100">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-red-600 font-semibold text-[10px] uppercase tracking-widest mb-2">From Families Who Used This Tool</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Success Stories
           </h1>
-          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-            Real stories from families who found hope when they thought there was none. 
-            These are people just like you who refused to give up.
+          <p className="text-slate-600 text-xs">
+            Real people. Real cases. Not every appeal succeeds — but these families found something that was missed.
           </p>
         </div>
       </section>
 
       {/* Stories */}
-      <main className="max-w-7xl mx-auto px-6 pb-16">
-        <section className="mb-8" data-testid="success-stories-grid-section">
-          <p className="text-xs uppercase tracking-widest text-red-600 font-semibold mb-2">Featured Stories</p>
-          <h2 className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            Real outcomes, organised for quick reading
-          </h2>
-          <p className="text-sm text-slate-600">Each story keeps full detail, with a clear heading and compact reading format.</p>
-        </section>
-
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5" data-testid="success-stories-grid">
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="success-stories-grid">
           {successStories.map((story) => (
-            <article
-              key={story.id}
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-              data-testid={`success-story-card-${story.id}`}
-            >
-              <div className="p-4 border-b border-slate-200 bg-slate-100/30">
-                <h3 className="text-sm font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid={`success-story-heading-${story.id}`}>
-                  {story.name} — {story.relationship} ({story.location})
-                </h3>
-              </div>
-
-              <div className="p-4 flex-1">
-                <div className="flex items-start gap-2 mb-2">
-                  <Quote className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  <p className="text-xs text-slate-900 leading-relaxed max-h-52 overflow-y-auto pr-1" data-testid={`success-story-comment-${story.id}`}>
-                    "{story.story}"
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-emerald-50 border-t border-emerald-100 px-4 py-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-emerald-700">
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="font-semibold text-xs">{story.outcome}</span>
-                  </div>
-                  {story.timeframe && (
-                    <span className="text-[11px] text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg font-medium">
-                      {story.timeframe}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </article>
+            <StoryCard key={story.id} story={story} />
           ))}
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-10 p-5 bg-blue-50 border border-blue-200 rounded-2xl">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> These stories are shared by real users with their consent. 
-            Individual results vary. This tool does not guarantee any outcome. 
-            All legal matters should be reviewed by a qualified legal professional.
+        <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <p className="text-[11px] text-blue-800">
+            <strong>Note:</strong> These stories are shared with consent. Individual results vary. 
+            This tool does not guarantee any outcome. All legal matters should be reviewed by a qualified professional.
           </p>
         </div>
 
         {/* Share Your Story */}
-        <div className="mt-16 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg shadow-red-500/30">
-              <Heart className="w-7 h-7 text-white" />
-            </div>
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <div className="mt-10 text-center">
+          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Share Your Story
           </h2>
-          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-            Has this tool helped you or your family? Your story could give hope to someone 
-            who's going through what you went through.
+          <p className="text-slate-600 text-xs mb-4 max-w-md mx-auto">
+            Has this tool helped you or your family? Your story could give hope to someone going through the same thing.
           </p>
           
           {!showSubmitForm ? (
             <Button 
               onClick={() => setShowSubmitForm(true)}
-              className="landing-cta-primary"
+              className="landing-cta-primary text-xs"
+              data-testid="share-story-btn"
             >
               Share My Story
             </Button>
-          ) : submitted ? (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 max-w-md mx-auto">
-              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-emerald-600" />
+          ) : !submitted ? (
+            <form onSubmit={handleSubmit} className="max-w-lg mx-auto text-left space-y-3" data-testid="share-story-form">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-semibold text-slate-700 block mb-1">Your Name *</label>
+                  <Input
+                    placeholder="First name & last initial"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="text-xs h-8"
+                    data-testid="story-name-input"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold text-slate-700 block mb-1">Relationship</label>
+                  <Input
+                    placeholder="e.g. Wife, Brother"
+                    value={formData.relationship}
+                    onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
+                    className="text-xs h-8"
+                    data-testid="story-relationship-input"
+                  />
+                </div>
               </div>
-              <h3 className="font-semibold text-emerald-800 text-lg mb-2">Thank You!</h3>
-              <p className="text-emerald-700">
-                Your story has been submitted. We'll review it and may feature it to help inspire others.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-8 max-w-lg mx-auto text-left space-y-5 shadow-sm">
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your First Name *</label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="e.g., Sarah"
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Email *</label>
+                <label className="text-[10px] font-semibold text-slate-700 block mb-1">Email *</label>
                 <Input
                   type="email"
+                  placeholder="your@email.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  placeholder="We'll only use this to contact you"
-                  className="rounded-xl"
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="text-xs h-8"
+                  data-testid="story-email-input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Relationship</label>
-                <Input
-                  value={formData.relationship}
-                  onChange={(e) => setFormData({...formData, relationship: e.target.value})}
-                  placeholder="e.g., Wife, Mother, Friend"
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Story *</label>
+                <label className="text-[10px] font-semibold text-slate-700 block mb-1">Your Story *</label>
                 <Textarea
+                  placeholder="What happened? How did the tool help?"
                   value={formData.story}
-                  onChange={(e) => setFormData({...formData, story: e.target.value})}
-                  placeholder="Tell us how this tool helped you..."
-                  rows={5}
-                  className="rounded-xl"
+                  onChange={(e) => setFormData({ ...formData, story: e.target.value })}
+                  rows={4}
+                  className="text-xs"
+                  data-testid="story-text-input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1.5">Outcome</label>
+                <label className="text-[10px] font-semibold text-slate-700 block mb-1">Outcome</label>
                 <Input
+                  placeholder="e.g. Sentence reduced, Appeal lodged"
                   value={formData.outcome}
-                  onChange={(e) => setFormData({...formData, outcome: e.target.value})}
-                  placeholder="e.g., Appeal successful, New evidence found"
-                  className="rounded-xl"
+                  onChange={(e) => setFormData({ ...formData, outcome: e.target.value })}
+                  className="text-xs h-8"
+                  data-testid="story-outcome-input"
                 />
               </div>
-              <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
+              <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  id="consent"
                   checked={formData.consent}
-                  onChange={(e) => setFormData({...formData, consent: e.target.checked})}
-                  className="mt-1"
+                  onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                  className="mt-0.5"
+                  data-testid="story-consent-checkbox"
                 />
-                <label htmlFor="consent" className="text-sm text-slate-600">
-                  I consent to having my story (first name and story only) shared publicly to help others. 
-                  My email will never be shared. *
-                </label>
-              </div>
-              <div className="flex gap-3 pt-2">
-                <Button 
-                  type="submit" 
-                  disabled={loading} 
-                  className="flex-1 bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl py-5 font-semibold"
-                >
-                  {loading ? "Submitting..." : "Submit Story"}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setShowSubmitForm(false)} className="rounded-xl">
-                  Cancel
-                </Button>
-              </div>
+                <span className="text-[10px] text-slate-600">
+                  I consent to my story being published anonymously to help others.
+                </span>
+              </label>
+              <Button type="submit" disabled={loading} className="landing-cta-primary w-full text-xs" data-testid="story-submit-btn">
+                <Send className="w-3 h-3 mr-1" />
+                {loading ? "Submitting..." : "Submit Story"}
+              </Button>
             </form>
+          ) : (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 max-w-md mx-auto" data-testid="story-submitted-confirmation">
+              <CheckCircle className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+              <h3 className="text-sm font-bold text-emerald-800 mb-1">Thank you</h3>
+              <p className="text-xs text-emerald-700">Your story has been submitted for review.</p>
+            </div>
           )}
         </div>
       </main>
 
       {/* Footer CTA */}
-      <section className="bg-white px-6 py-12 border-t border-slate-200">
+      <section className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Start Your Journey?
           </h2>
-          <p className="text-slate-700 mb-8">
+          <p className="text-xs text-slate-700 mb-4">
             You don't have to do this alone. Let the tool help you find what might have been missed.
           </p>
           <Link to="/">
-            <Button className="landing-cta-primary">
+            <Button className="landing-cta-primary text-xs">
               Get Started Free
             </Button>
           </Link>
