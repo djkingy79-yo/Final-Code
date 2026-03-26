@@ -8,7 +8,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://grounds-analyser.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://case-synthesis-lab.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = "testuser999@test.com"

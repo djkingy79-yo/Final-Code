@@ -374,7 +374,7 @@ const MarkdownBlock = ({ text, testId }) => (
         ),
         table: ({ children }) => (
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '1rem 0' }} data-testid={`${testId}-table-wrapper`}>
-            <table style={{ width: 'max-content', minWidth: '100%', borderCollapse: 'collapse' }}>{children}</table>
+            <table style={{ width: '100%', minWidth: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>{children}</table>
           </div>
         ),
         thead: ({ children }) => (
@@ -463,6 +463,7 @@ const REPORT_THEME = {
   quick_summary: {
     label: "Quick Summary Report",
     headerBg: "bg-emerald-600",
+    previewColor: "#059669",
     accentBg: "bg-emerald-600",
     accentText: "text-emerald-800",
     priceBadge: "bg-emerald-500",
@@ -477,6 +478,7 @@ const REPORT_THEME = {
   full_detailed: {
     label: "Full Detailed Report",
     headerBg: "bg-blue-700",
+    previewColor: "#1d4ed8",
     accentBg: "bg-blue-600",
     accentText: "text-blue-900",
     priceBadge: "bg-blue-500",
@@ -490,17 +492,18 @@ const REPORT_THEME = {
   },
   extensive_log: {
     label: "Extensive Log Report",
-    headerBg: "bg-purple-700",
-    accentBg: "bg-purple-600",
-    accentText: "text-purple-900",
-    priceBadge: "bg-purple-500",
+    headerBg: "bg-slate-800",
+    previewColor: "#1e293b",
+    accentBg: "bg-slate-700",
+    accentText: "text-slate-900",
+    priceBadge: "bg-slate-700",
     price: "$200 AUD",
-    borderColor: "border-purple-300",
-    lightBg: "from-purple-50 via-white to-indigo-50",
-    sectionBorder: "border-purple-500",
-    tocBg: "bg-purple-50/80",
-    tocBorder: "border-purple-200",
-    sectionNumberBg: "bg-purple-200 text-purple-900",
+    borderColor: "border-slate-300",
+    lightBg: "from-slate-50 via-white to-blue-50",
+    sectionBorder: "border-slate-700",
+    tocBg: "bg-slate-50/90",
+    tocBorder: "border-slate-200",
+    sectionNumberBg: "bg-slate-200 text-slate-900",
   },
 };
 
@@ -614,7 +617,7 @@ const ReportView = () => {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
-    .report-header { background: ${theme.headerBg.includes('emerald') ? '#059669' : theme.headerBg.includes('blue') ? '#1d4ed8' : '#7e22ce'}; color: #fff; padding: 28px 32px; }
+    .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
@@ -632,9 +635,9 @@ const ReportView = () => {
     .toc-grid a:hover { color: #1d4ed8; }
     .sections { padding: 24px 32px; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
-    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid ${theme.headerBg.includes('emerald') ? '#059669' : theme.headerBg.includes('blue') ? '#1d4ed8' : '#7e22ce'}; padding-left: 12px; margin-bottom: 12px; }
-    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: ${theme.headerBg.includes('emerald') ? '#d1fae5' : theme.headerBg.includes('blue') ? '#dbeafe' : '#ede9fe'}; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; }
+    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid ${theme.previewColor}; padding-left: 12px; margin-bottom: 12px; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 1.2rem 0 0.6rem; }
     .section-body h2 { font-size: 1.4rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
@@ -645,7 +648,7 @@ const ReportView = () => {
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
     .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; }
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; font-size: 12px; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
@@ -653,7 +656,7 @@ const ReportView = () => {
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
     .disclaimer-text { font-size: 11px; color: #334155; }
     .disclaimer-text strong { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 2px; }
-    .created-by { text-align: center; padding: 20px 32px 4px; font-size: 16px; font-weight: 700; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; font-family: 'Crimson Pro', serif; }
+    .created-by { text-align: center; padding: 20px 32px 4px; font-size: 16px; font-weight: 700; color: #0f172a; font-family: 'Crimson Pro', serif; }
     .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
     .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
@@ -716,7 +719,7 @@ const ReportView = () => {
             <th style="text-align:left;padding:8px 12px;background:#f1f5f9;border:1px solid #e2e8f0;font-weight:700;color:#0f172a;">Subject Matter</th>
             <th style="text-align:center;padding:8px 12px;background:#059669;color:#fff;border:1px solid #e2e8f0;font-weight:700;">FREE</th>
             <th style="text-align:center;padding:8px 12px;background:#1d4ed8;color:#fff;border:1px solid #e2e8f0;font-weight:700;">$150 Full Detailed</th>
-            <th style="text-align:center;padding:8px 12px;background:#7e22ce;color:#fff;border:1px solid #e2e8f0;font-weight:700;">$200 Extensive</th>
+            <th style="text-align:center;padding:8px 12px;background:#1e293b;color:#fff;border:1px solid #e2e8f0;font-weight:700;">$200 Extensive</th>
           </tr>
         </thead>
         <tbody>
@@ -744,7 +747,7 @@ const ReportView = () => {
             ["Similar Case Search","—","—","&#9745;"],
             ["Risk Assessment + Contingency","—","—","&#9745;"],
             ["Fallback Positions per Ground","—","—","&#9745;"],
-          ].map(([label, f, d, e], i) => `<tr style="background:${i%2===0?'#fff':'#f8fafc'}"><td style="padding:6px 12px;border:1px solid #e2e8f0;color:#0f172a;font-weight:500;">${label}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${f==='—'?'#cbd5e1':'#059669'};font-weight:700;">${f}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${d==='—'?'#cbd5e1':'#1d4ed8'};font-weight:700;">${d}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${e==='—'?'#cbd5e1':'#7e22ce'};font-weight:700;">${e}</td></tr>`).join('')}
+          ].map(([label, f, d, e], i) => `<tr style="background:${i%2===0?'#fff':'#f8fafc'}"><td style="padding:6px 12px;border:1px solid #e2e8f0;color:#0f172a;font-weight:500;">${label}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${f==='—'?'#cbd5e1':'#059669'};font-weight:700;">${f}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${d==='—'?'#cbd5e1':'#1d4ed8'};font-weight:700;">${d}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${e==='—'?'#cbd5e1':'#1e293b'};font-weight:700;">${e}</td></tr>`).join('')}
         </tbody>
       </table>
     </div>
@@ -1035,11 +1038,12 @@ const ReportView = () => {
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
         .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
-          width: max-content;
+          width: 100%;
           min-width: 100%;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
+          table-layout: fixed;
         }
         .legal-report th {
           background: #1e3a8a;

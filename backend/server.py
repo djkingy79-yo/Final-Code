@@ -134,7 +134,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 # ============ REUSABLE LLM HELPER ============
-async def call_llm_with_fallback(system_prompt: str, user_prompt: str, session_id: str = "default") -> str:
+async def call_llm_with_fallback(
+    system_prompt: str,
+    user_prompt: str,
+    session_id: str = "default",
+    max_tokens: int = 16384,
+    timeout_seconds: int = 120,
+) -> str:
     """Call LLM with model fallback: gpt-4o (x2) -> Claude -> gpt-4o-mini."""
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     api_key = os.environ.get('EMERGENT_LLM_KEY')
@@ -150,8 +156,8 @@ async def call_llm_with_fallback(system_prompt: str, user_prompt: str, session_i
     last_err = None
     for idx, (provider, model_name) in enumerate(models):
         try:
-            chat = LlmChat(api_key=api_key, session_id=session_id, system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
-            result = await asyncio.wait_for(chat.send_message(UserMessage(text=user_prompt)), timeout=120)
+            chat = LlmChat(api_key=api_key, session_id=session_id, system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=max_tokens)
+            result = await asyncio.wait_for(chat.send_message(UserMessage(text=user_prompt)), timeout=timeout_seconds)
             if result and len(result.strip()) > 50 and "I'm sorry" not in result[:80]:
                 logger.info(f"LLM success ({session_id}) with {provider}/{model_name} on attempt {idx+1}")
                 return result
@@ -306,7 +312,7 @@ class Report(BaseModel):
     report_id: str = Field(default_factory=lambda: f"rpt_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
-    report_type: str  # quick_summary, full_detailed, extensive_log
+    report_type: str  # quick_summary, full_detailed, extensive_log, barrister_view
     title: str
     content: dict  # JSON structure with report sections
     grounds_of_merit: List[dict] = []
@@ -447,6 +453,8 @@ FEATURE_PRICES = {
 async def get_current_user(request: Request) -> User:
     """Get current user from session token (cookie or header)"""
     session_token = request.cookies.get("session_token")
+    if not session_token:
+        session_token = request.query_params.get("session_token")
     if not session_token:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
@@ -1488,7 +1496,6 @@ async def analyze_timeline(case_id: str, request: Request):
     ).to_list(100)
     
     from emergentintegrations.llm.chat import LlmChat, UserMessage
-    emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
     
     system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law. Use Australian English spelling throughout.
 Analyse this timeline of events and provide detailed insights for an appeal case.
@@ -1958,7 +1965,6 @@ async def analyze_witness_contradictions(case_id: str, request: Request):
         doc_context += f"Content:\n{content}\n"
     
     from emergentintegrations.llm.chat import LlmChat, UserMessage
-    emergent_api_key = os.environ.get('EMERGENT_LLM_KEY')
     
     system_prompt = """You are a legal analyst finding contradictions in witness statements. Use Australian English spelling throughout. Find:
 1. DIRECT CONTRADICTIONS - witnesses contradict each other
@@ -4276,7 +4282,6 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
 
     async def _subprocess_llm(prompt_text):
         """Run LLM call directly — retries across multiple models with exponential backoff."""
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
         
         models = [
             ("openai", "gpt-4o"),
@@ -4764,6 +4769,233 @@ REPORT TO EXPAND:
         "event_count": len(timeline)
     }
 
+
+BARRISTER_SOURCE_TYPES = ["quick_summary", "full_detailed", "extensive_log"]
+
+
+def _generated_at_sort_value(report: dict) -> str:
+    return str(report.get("generated_at") or "")
+
+
+async def _get_latest_standard_reports(case_id: str, user_id: str) -> List[dict]:
+    reports = await db.reports.find(
+        {
+            "case_id": case_id,
+            "user_id": user_id,
+            "report_type": {"$in": BARRISTER_SOURCE_TYPES},
+            "status": "completed",
+            "content.aggressive_mode": {"$ne": True},
+        },
+        {"_id": 0},
+    ).sort("generated_at", -1).to_list(50)
+
+    latest_by_type = {}
+    for report in reports:
+        report_type = report.get("report_type")
+        if report_type not in latest_by_type:
+            latest_by_type[report_type] = report
+
+    missing_types = [report_type for report_type in BARRISTER_SOURCE_TYPES if report_type not in latest_by_type]
+    if missing_types:
+        missing_labels = ", ".join(missing_types)
+        raise HTTPException(status_code=409, detail=f"Barrister View remains locked until all 3 standard reports are completed. Missing: {missing_labels}")
+
+    selected = [latest_by_type[report_type] for report_type in BARRISTER_SOURCE_TYPES]
+    selected.sort(key=_generated_at_sort_value, reverse=True)
+    return selected
+
+
+def _build_barrister_source_signature(reports: List[dict]) -> str:
+    ordered = sorted(
+        reports,
+        key=lambda report: BARRISTER_SOURCE_TYPES.index(report.get("report_type")) if report.get("report_type") in BARRISTER_SOURCE_TYPES else 99,
+    )
+    return "|".join(
+        f"{report.get('report_type')}::{report.get('report_id')}::{report.get('generated_at')}"
+        for report in ordered
+    )
+
+
+def _build_barrister_report_source_text(reports: List[dict]) -> str:
+    type_labels = {
+        "quick_summary": "Quick Summary",
+        "full_detailed": "Full Detailed Report",
+        "extensive_log": "Extensive Log Report",
+    }
+    blocks = []
+    per_report_limit = 55000
+    for report in sorted(
+        reports,
+        key=lambda item: BARRISTER_SOURCE_TYPES.index(item.get("report_type")) if item.get("report_type") in BARRISTER_SOURCE_TYPES else 99,
+    ):
+        analysis = _strip_report_placeholders((report.get("content") or {}).get("analysis", ""))
+        analysis = re.sub(r"\n{3,}", "\n\n", analysis).strip()
+        blocks.append(
+            f"===== {type_labels.get(report.get('report_type'), report.get('report_type', 'Report'))} =====\n"
+            f"Report ID: {report.get('report_id')}\n"
+            f"Generated: {report.get('generated_at')}\n\n"
+            f"{analysis[:per_report_limit]}"
+        )
+    return "\n\n".join(blocks)
+
+
+async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    documents = await db.documents.find(
+        {"case_id": case_id},
+        {"_id": 0, "file_data": 0, "filename": 1, "category": 1},
+    ).to_list(300)
+    timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(400)
+    grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
+    source_reports = await _get_latest_standard_reports(case_id, user_id)
+
+    report_source_text = _build_barrister_report_source_text(source_reports)
+    timeline_text = "\n".join(
+        f"- {event.get('event_date', '')}: {event.get('title', '')} — {event.get('description', '')[:200]}"
+        for event in timeline[:25]
+    ) or "- No timeline events recorded"
+    grounds_text = "\n".join(
+        f"- {ground.get('title', 'Untitled ground')} [{ground.get('ground_type', 'other')} / {ground.get('strength', 'unrated')}] — {ground.get('description', '')[:220]}"
+        for ground in grounds[:20]
+    ) or "- No structured grounds recorded"
+    documents_text = "\n".join(
+        f"- {document.get('filename', 'Untitled document')} ({document.get('category', 'other')})"
+        for document in documents[:30]
+    ) or "- No documents uploaded"
+
+    case_profile = f"""
+CASE TITLE: {case.get('title', 'Unknown case')}
+DEFENDANT: {case.get('defendant_name', 'Not recorded')}
+CASE NUMBER: {case.get('case_number', 'Not recorded')}
+COURT: {case.get('court', 'Not recorded')}
+JURISDICTION: {(case.get('state') or 'nsw').upper()}
+OFFENCE: {case.get('offence_type') or case.get('offence_category') or 'Not recorded'}
+SENTENCE: {case.get('sentence', 'Not recorded')}
+DOCUMENT COUNT: {len(documents)}
+TIMELINE EVENT COUNT: {len(timeline)}
+GROUNDS COUNT: {len(grounds)}
+""".strip()
+
+    system_prompt = """You are a senior Australian criminal appeal barrister preparing a polished barrister brief for a criminal appeal matter. The output must read like one coherent legal document written by a careful appellate specialist.
+
+MANDATORY RULES:
+- Australian English only.
+- Strict third-person educational tone only.
+- Never use first-person or second-person language, including: we, us, our, you, your.
+- Do not mention that reports were merged, combined, synthesised, tiered, paid, unlocked, or generated by AI.
+- Do not include bullet-heavy exposition. Detailed reasoning must be written in flowing paragraphs.
+- Minimal bullet points are permitted only for short authority lists, procedural checklists, or document inventories where compact presentation improves clarity.
+- No duplication. If the same issue appears across multiple source reports, discuss it once in the most logical section.
+- No placeholders, meta-commentary, drafting notes, or future-tense filler such as 'will be provided'.
+- If the materials are uncertain on a point, say that the available materials indicate or suggest the point rather than asserting unsupported fact.
+- Use markdown headings only, with ## for main sections and ### for sub-sections.
+- Write a professional barrister-ready brief with strong structure, clean transitions, and substantial case-specific detail.
+"""
+
+    user_prompt = f"""Prepare a single, cohesive Barrister Brief for the case below.
+
+Required section order:
+## Executive Summary
+## Case Background and Procedural History
+## Conviction, Offence and Sentence Analysis
+## Evidence and Factual Issues
+## Grounds of Merit
+## Statutory Framework
+## Authorities and Comparative Cases
+## Sentencing Comparison and Relief Pathways
+## Proposed Submissions and Hearing Strategy
+## Filing Position, Risks and Next Steps
+## Plain-English Brief
+
+Drafting priorities:
+1. Produce one refined document, not three stacked reports.
+2. Remove repetition completely.
+3. Carry forward the strongest and most detailed material from all source reports.
+4. Keep detailed analysis in paragraph form.
+5. Refer to Australian criminal appeal practice and terminology.
+
+CASE PROFILE
+{case_profile}
+
+STRUCTURED GROUNDS
+{grounds_text}
+
+TIMELINE SNAPSHOT
+{timeline_text}
+
+DOCUMENT INVENTORY
+{documents_text}
+
+SOURCE REPORTS
+{report_source_text}
+"""
+
+    response = await call_llm_with_fallback(
+        system_prompt,
+        user_prompt,
+        session_id=f"barrister-{case_id}",
+        max_tokens=16384,
+        timeout_seconds=180,
+    )
+
+    anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
+    response = _strip_report_placeholders(response)
+    response = _dedupe_report_content(response, "extensive_log", anchor_terms)
+    response = re.sub(r"\n{3,}", "\n\n", response).strip()
+
+    return {
+        "analysis": response,
+        "case_data": case,
+        "document_count": len(documents),
+        "event_count": len(timeline),
+        "grounds_of_merit": grounds,
+        "source_reports": [
+            {
+                "report_id": report.get("report_id"),
+                "report_type": report.get("report_type"),
+                "title": report.get("title"),
+                "generated_at": report.get("generated_at"),
+            }
+            for report in source_reports
+        ],
+        "source_signature": _build_barrister_source_signature(source_reports),
+    }
+
+
+async def _run_barrister_report_generation(report_id: str, case_id: str, user_id: str):
+    try:
+        analysis_result = await generate_barrister_brief(case_id, user_id)
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {
+                "$set": {
+                    "status": "completed",
+                    "title": "Barrister Brief",
+                    "content": {
+                        "analysis": analysis_result["analysis"],
+                        "case_title": analysis_result["case_data"].get("title", ""),
+                        "defendant": analysis_result["case_data"].get("defendant_name", ""),
+                        "document_count": analysis_result["document_count"],
+                        "event_count": analysis_result["event_count"],
+                        "source_signature": analysis_result["source_signature"],
+                        "source_reports": analysis_result["source_reports"],
+                        "aggressive_mode": False,
+                    },
+                    "grounds_of_merit": analysis_result["grounds_of_merit"],
+                }
+            },
+        )
+        logger.info(f"Barrister brief {report_id} generated successfully")
+    except Exception as exc:
+        logger.error(f"Barrister brief {report_id} generation failed: {exc}")
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$set": {"status": "failed", "error": str(exc)}},
+        )
+
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
     """Background task that generates the AI report and updates the DB record."""
     try:
@@ -4905,11 +5137,70 @@ async def get_reports(case_id: str, request: Request):
     )
     
     reports = await db.reports.find(
-        {"case_id": case_id, "user_id": user.user_id, "content.aggressive_mode": {"$ne": True}},
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "content.aggressive_mode": {"$ne": True},
+            "report_type": {"$ne": "barrister_view"},
+        },
         {"_id": 0}
     ).sort("generated_at", -1).to_list(100)
     
     return reports
+
+
+@api_router.get("/cases/{case_id}/reports/barrister-view", response_model=dict)
+async def get_or_generate_barrister_view(case_id: str, request: Request, regenerate: bool = False):
+    """Return the current barrister brief or start a fresh synthesis when required."""
+    user = await get_current_user(request)
+    source_reports = await _get_latest_standard_reports(case_id, user.user_id)
+    source_signature = _build_barrister_source_signature(source_reports)
+
+    existing_reports = await db.reports.find(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "report_type": "barrister_view",
+            "content.source_signature": source_signature,
+        },
+        {"_id": 0},
+    ).sort("generated_at", -1).to_list(10)
+
+    current_report = existing_reports[0] if existing_reports else None
+    if current_report and not regenerate and current_report.get("status") in {"generating", "completed"}:
+        return current_report
+
+    report_id = f"rpt_{uuid.uuid4().hex[:12]}"
+    placeholder = {
+        "report_id": report_id,
+        "case_id": case_id,
+        "user_id": user.user_id,
+        "report_type": "barrister_view",
+        "title": "Barrister Brief",
+        "content": {
+            "analysis": "",
+            "document_count": len(source_reports),
+            "event_count": 0,
+            "source_signature": source_signature,
+            "source_reports": [
+                {
+                    "report_id": report.get("report_id"),
+                    "report_type": report.get("report_type"),
+                    "title": report.get("title"),
+                    "generated_at": report.get("generated_at"),
+                }
+                for report in source_reports
+            ],
+            "aggressive_mode": False,
+        },
+        "grounds_of_merit": [],
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "status": "generating",
+    }
+    await db.reports.insert_one({k: v for k, v in placeholder.items()})
+
+    asyncio.create_task(_run_barrister_report_generation(report_id, case_id, user.user_id))
+    return placeholder
 
 
 @api_router.get("/reports/embedded-legacy", response_model=dict)
@@ -5108,7 +5399,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         spaceBefore=10,
         spaceAfter=4,
         fontName='Helvetica-Bold',
-        textColor=colors.HexColor('#92400e')
+        textColor=colors.HexColor('#1e3a8a')
     ))
 
     def format_inline(text: str) -> str:
@@ -5244,7 +5535,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     report_type_labels = {
         'quick_summary': 'Quick Case Summary',
         'full_detailed': 'Full Detailed Legal Analysis ($150 AUD)',
-        'extensive_log': 'Extensive Case Log & Analysis ($200 AUD)'
+        'extensive_log': 'Extensive Case Log & Analysis ($200 AUD)',
+        'barrister_view': 'Barrister Brief'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
     story.append(Paragraph(title, styles['ReportTitle']))
@@ -5449,7 +5741,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     h2_style = styles['Heading 2']
     h2_style.font.size = Pt(14)
     h2_style.font.bold = True
-    h2_style.font.color.rgb = RGBColor(146, 64, 14)
+    h2_style.font.color.rgb = RGBColor(30, 58, 138)
     
     # Header
     header_para = doc.add_paragraph()
@@ -5484,7 +5776,8 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     report_type_labels = {
         'quick_summary': 'Quick Case Summary',
         'full_detailed': 'Full Detailed Legal Analysis', 
-        'extensive_log': 'Extensive Case Log & Analysis'
+        'extensive_log': 'Extensive Case Log & Analysis',
+        'barrister_view': 'Barrister Brief'
     }
     report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
     title = doc.add_heading(report_title, 0)
@@ -5568,7 +5861,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 cases_para = doc.add_paragraph()
                 cases_run = cases_para.add_run('Similar Cases:')
                 cases_run.font.bold = True
-                cases_run.font.color.rgb = RGBColor(146, 64, 14)
+                cases_run.font.color.rgb = RGBColor(30, 58, 138)
                 
                 for case_ref in ground.get('similar_cases', []):
                     case_text = f"{case_ref.get('case_name', '')} {case_ref.get('citation', '')}"
