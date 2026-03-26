@@ -867,55 +867,55 @@ const LandingPage = () => {
             </div>
 
             {/* Paid Features */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-400 dark:border-red-600 rounded-xl p-6 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <div className="bg-white border-2 border-blue-300 rounded-xl p-6 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-700 text-white text-sm font-bold px-4 py-1 rounded-full">
                 UNLOCK FULL ANALYSIS
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
               
-              <ul className="space-y-4 text-sm text-foreground mb-6">
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
+              <ul className="space-y-4 text-sm text-slate-900 mb-6">
+                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong>Unlock Grounds of Merit</strong>
-                      <span className="text-blue-700 dark:text-blue-400 font-bold">$99</span>
+                      <strong className="text-slate-900">Unlock Grounds of Merit</strong>
+                      <span className="text-blue-700 font-bold text-base">$99</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
+                    <p className="text-sm text-slate-700 mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
+                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong>Full Detailed Report</strong>
-                      <span className="text-blue-700 dark:text-blue-400 font-bold">$150</span>
+                      <strong className="text-slate-900">Full Detailed Report</strong>
+                      <span className="text-blue-700 font-bold text-base">$150</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">15 sections: grounds portfolio, 8+ sentencing comparisons, outcome options matrix, submissions blueprint, filing guide with forms, and client brief</p>
+                    <p className="text-sm text-slate-700 mt-1">15 sections: grounds portfolio, 8+ sentencing comparisons, outcome options matrix, submissions blueprint, filing guide with forms, and client brief</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
+                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong>Extensive Log Report</strong>
-                      <span className="text-blue-700 dark:text-blue-400 font-bold">$200</span>
+                      <strong className="text-slate-900">Extensive Log Report</strong>
+                      <span className="text-blue-700 font-bold text-base">$200</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">20 sections: everything in Full Detailed plus hearing preparation notes, barrister conference pack, court pathway playbook, tailored case search, and risk assessment</p>
+                    <p className="text-sm text-slate-700 mt-1">20 sections: everything in Full Detailed plus hearing preparation notes, barrister conference pack, court pathway playbook, tailored case search, and risk assessment</p>
                   </div>
                 </li>
               </ul>
-              <div className="bg-white dark:bg-white rounded-lg p-3 text-center text-sm text-muted-foreground mb-4">
-                <p><strong className="text-foreground">Compare:</strong> A junior lawyer charges $1,000+ just to review a case</p>
-                <p className="text-xs text-muted-foreground mt-1">Barristers charge triple that. A full legal report? Thousands.</p>
+              <div className="bg-white border border-slate-200 rounded-lg p-4 text-center text-sm text-slate-700 mb-4">
+                <p><strong className="text-slate-900">Compare:</strong> A junior lawyer charges $1,000+ just to review a case</p>
+                <p className="text-xs text-slate-600 mt-1">Barristers charge triple that. A full legal report? Thousands.</p>
               </div>
-              <p className="text-xs text-muted-foreground text-center">
+              <p className="text-xs text-slate-600 text-center">
                 Secure payment via PayID bank transfer
               </p>
             </div>
@@ -928,14 +928,14 @@ const LandingPage = () => {
       </section>
 
       {/* Report Tier Comparison */}
-      <section className="py-16 px-6 bg-muted/30 dark:bg-muted/10" data-testid="tier-comparison-section">
+      <section className="py-16 px-6 bg-white" data-testid="tier-comparison-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <p className="text-red-400 text-sm uppercase tracking-widest mb-2">Compare report tiers</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-blue-700 text-sm uppercase tracking-widest mb-2 font-semibold">Compare report tiers</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               What's in Each Report?
             </h2>
-            <p className="text-muted-foreground text-base mt-2 max-w-2xl mx-auto">
+            <p className="text-slate-700 text-base mt-2 max-w-2xl mx-auto">
               Side-by-side comparison of every section across all three report tiers
             </p>
           </div>
@@ -944,14 +944,14 @@ const LandingPage = () => {
             <table className="w-full text-base border-collapse" data-testid="tier-comparison-table">
               <thead>
                 <tr>
-                  <th className="text-left p-4 bg-white border border-slate-700 font-semibold text-slate-100" style={{ minWidth: '240px' }}>Section</th>
-                  <th className="p-4 bg-emerald-500/15 text-center font-semibold text-emerald-200 border border-emerald-400/20" style={{ minWidth: '130px' }}>
+                  <th className="text-left p-4 bg-blue-700 border border-slate-200 font-semibold text-white" style={{ minWidth: '240px' }}>Section</th>
+                  <th className="p-4 bg-emerald-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
                     Quick Summary<br /><span className="text-sm font-normal">FREE (7 sections)</span>
                   </th>
-                  <th className="p-4 bg-blue-500/15 text-center font-semibold text-blue-200 border border-blue-400/20" style={{ minWidth: '130px' }}>
+                  <th className="p-4 bg-blue-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
                     Full Detailed<br /><span className="text-sm font-normal">$150 (15 sections)</span>
                   </th>
-                  <th className="p-4 bg-purple-500/15 text-center font-semibold text-purple-200 border border-purple-400/20" style={{ minWidth: '130px' }}>
+                  <th className="p-4 bg-purple-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
                     Extensive Log<br /><span className="text-sm font-normal">$200 (20 sections)</span>
                   </th>
                 </tr>
@@ -985,51 +985,51 @@ const LandingPage = () => {
                   { section: "Risk Assessment + Contingency Planning", qs: false, fd: false, el: true, exclusive: true },
                   { section: "Client Plain-English Brief", qs: true, fd: true, el: true },
                 ].map((row, i) => (
-                  <tr key={i} className={`border-b border-slate-800 ${row.exclusive ? 'bg-purple-500/10' : ''}`}>
-                    <td className="p-3 text-slate-100 font-semibold text-sm">
+                  <tr key={i} className={`border-b border-slate-200 ${row.exclusive ? 'bg-purple-50' : ''}`}>
+                    <td className="p-3 text-slate-900 font-semibold text-sm">
                       {row.section}
-                      {row.exclusive && <span className="ml-2 text-purple-300 text-xs font-bold">EXCLUSIVE</span>}
+                      {row.exclusive && <span className="ml-2 text-purple-700 text-xs font-bold">EXCLUSIVE</span>}
                     </td>
                     <td className="p-2.5 text-center">
                       {row.qs ? (
                         <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                       ) : (
-                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                        <span className="text-slate-500">&mdash;</span>
                       )}
                     </td>
                     <td className="p-2.5 text-center">
                       {row.fd ? (
                         <div>
                           <svg className="w-5 h-5 text-blue-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                          {row.fdNote && <span className="text-sm text-blue-300 block">{row.fdNote}</span>}
+                          {row.fdNote && <span className="text-sm text-blue-700 block">{row.fdNote}</span>}
                         </div>
                       ) : (
-                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                        <span className="text-slate-500">&mdash;</span>
                       )}
                     </td>
                     <td className="p-2.5 text-center">
                       {row.el ? (
                         <div>
                           <svg className="w-5 h-5 text-purple-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                          {row.elNote && <span className="text-sm text-purple-300 block">{row.elNote}</span>}
+                          {row.elNote && <span className="text-sm text-purple-700 block">{row.elNote}</span>}
                         </div>
                       ) : (
-                        <span className="text-slate-300 dark:text-slate-600">&mdash;</span>
+                        <span className="text-slate-500">&mdash;</span>
                       )}
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t-2 border-border bg-slate-50 dark:bg-white/50">
-                  <td className="p-3 text-foreground font-semibold text-sm">Target word count</td>
-                  <td className="p-3 text-center text-sm font-semibold text-green-400">2,000–3,000</td>
-                  <td className="p-3 text-center text-sm font-semibold text-blue-400">7,000–9,000</td>
-                  <td className="p-3 text-center text-sm font-semibold text-purple-400">15,000–20,000</td>
+                <tr className="border-t-2 border-slate-200 bg-white">
+                  <td className="p-3 text-slate-900 font-semibold text-sm">Target word count</td>
+                  <td className="p-3 text-center text-sm font-semibold text-emerald-700">2,000–3,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-blue-700">7,000–9,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-purple-700">15,000–20,000</td>
                 </tr>
-                <tr className="border-t border-border bg-white/40">
-                  <td className="p-3 text-foreground font-semibold text-sm">Aggressive mode depth</td>
-                  <td className="p-3 text-center text-sm text-green-300">~2× depth</td>
-                  <td className="p-3 text-center text-sm text-blue-300">~2× depth</td>
-                  <td className="p-3 text-center text-sm text-purple-300">~2× depth</td>
+                <tr className="border-t border-slate-200 bg-white">
+                  <td className="p-3 text-slate-900 font-semibold text-sm">Aggressive mode depth</td>
+                  <td className="p-3 text-center text-sm text-emerald-700">~2× depth</td>
+                  <td className="p-3 text-center text-sm text-blue-700">~2× depth</td>
+                  <td className="p-3 text-center text-sm text-purple-700">~2× depth</td>
                 </tr>
               </tbody>
             </table>
@@ -1053,13 +1053,13 @@ const LandingPage = () => {
                 body: "Comparable authorities show materially lower non‑parole periods for similar factual matrices. R v Loveridge [2014] NSWCCA 120 (7 year NPP) and R v Pham [2015] HCA 39 indicate the sentencing range applied here may be outside proportionate bounds.",
               }
             ].map((card, idx) => (
-              <div key={idx} className="bg-white border border-slate-700 rounded-2xl p-6 shadow-xl">
-                <p className="text-xs uppercase tracking-widest text-blue-300 mb-2">{card.label}</p>
-                <h3 className="text-lg font-bold text-slate-100 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xl">
+                <p className="text-xs uppercase tracking-widest text-blue-700 mb-2">{card.label}</p>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Report Snapshot
                 </h3>
-                <p className="text-sm text-slate-400 mb-4">{card.meta}</p>
-                <p className="text-sm text-slate-200 leading-relaxed">{card.body}</p>
+                <p className="text-sm text-slate-700 mb-2">{card.meta}</p>
+                <p className="text-sm text-slate-800 leading-relaxed">{card.body}</p>
               </div>
             ))}
           </div>
@@ -1095,13 +1095,13 @@ const LandingPage = () => {
           <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Case Manager
           </h3>
-          <p className="text-blue-300 text-sm font-medium mb-4">Founded by Debra King</p>
-          <p className="text-slate-300 text-sm mb-6 max-w-2xl mx-auto">
+          <p className="text-blue-700 text-sm font-semibold mb-4">Founded by Debra King</p>
+          <p className="text-slate-700 text-sm mb-6 max-w-2xl mx-auto">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about">
-            <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg">
+            <Button className="landing-cta-primary">
               Read My Full Story
             </Button>
           </Link>
