@@ -32,7 +32,13 @@ Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO
 - **Print/PDF preview rebuilt**: Professional layout matching on-screen view — coloured headers, numbered sections, styled borders, table of contents, disclaimer footer.
 - **CLIENT PLAIN-ENGLISH BRIEF** prompts updated across all 3 report tiers to enforce educational tool third-person language.
 - **Extensive Log timeout fix**: Reduced per-pass LLM timeout from 420s to 180s, cut retries from 6 to 4 with gpt-4o-mini fallback. Skipped expansion step for extensive_log (7 passes already produce 70k+ chars). Added partial-save after each pass so server restarts don't lose work. Added startup cleanup for orphaned "generating" reports.
-- **Progress indicator improved**: Shows contextual messages during generation ("Reading documents..." → "Writing analysis..." → "Completing final sections...").
+- **Progress indicator improved**: Shows contextual messages during generation ("Reading documents..." -> "Writing analysis..." -> "Completing final sections...").
+- **Report content depth enforced**: Full Detailed target 10k-15k words, Extensive Log target 25k-35k words. MATERIAL COUNTS (doc/timeline/ground counts) added to all prompts.
+- **ALL grounds enforcement**: Every report prompt now has GROUNDS TO COVER with "MUST INCLUDE ALL" and explicit counts.
+- **Comparison table**: Added to end of ALL report views and print/PDF — 3 columns (FREE / $150 / $200) with 24 subject matter rows and checkmarks.
+- **Disclaimer with hazard symbol**: Present on all on-screen reports AND print/PDF views.
+- **Prompt instruction stripping**: Headings like "OUTCOME OPTIONS — keep ALL pathways in this ONE section" cleaned in both backend and frontend.
+- **Pricing updated**: $150 AUD Full Detailed, $200 AUD Extensive Log throughout all prompts and UI.
 
 ## Prioritised Backlog
 ### P1
