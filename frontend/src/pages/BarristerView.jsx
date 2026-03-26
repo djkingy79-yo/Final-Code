@@ -261,34 +261,34 @@ export default function BarristerView() {
 </body>
 </html>`;
 
-    const previewBlob = new Blob([html], { type: "text/html" });
-    const previewUrl = window.URL.createObjectURL(previewBlob);
-    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
+    localStorage.setItem(
+      "document-preview-payload",
+      JSON.stringify({
+        html,
+        mode,
+        title,
+        source: "barrister",
+        createdAt: Date.now(),
+      })
+    );
 
+    const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
+    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
     if (!previewWindow) {
       window.location.assign(previewUrl);
-      toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
-      return;
     }
 
-    previewWindow.focus();
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (mode === "print") {
-      if (isIOS) {
-        toast.success("Print preview opened — use Safari Share / Print.");
-        return;
-      }
-      window.setTimeout(() => previewWindow.print(), 900);
-      toast.success("Print dialogue opening.");
-      return;
-    }
-
-    toast.success("PDF preview opened.");
+    toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
   };
 
   const handleExportPDF = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        openBarristerPreview("pdf");
+        return;
+      }
       const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`, {
         responseType: "blob",
         timeout: 60000,

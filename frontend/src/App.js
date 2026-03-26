@@ -40,6 +40,7 @@ import LegalFrameworkPage from "./pages/LegalFrameworkPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import DocumentPreviewPage from "./pages/DocumentPreviewPage";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -247,6 +248,10 @@ function AppRouter() {
       <Route
         path="/terms"
         element={<TermsOfService />}
+      />
+      <Route
+        path="/document-preview"
+        element={<DocumentPreviewPage />}
       />
       <Route
         path="/admin/stats"

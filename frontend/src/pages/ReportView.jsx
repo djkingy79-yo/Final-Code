@@ -764,32 +764,34 @@ const ReportView = () => {
 </body>
 </html>`;
 
-    const previewBlob = new Blob([html], { type: "text/html" });
-    const previewUrl = window.URL.createObjectURL(previewBlob);
+    localStorage.setItem(
+      "document-preview-payload",
+      JSON.stringify({
+        html,
+        mode,
+        title,
+        source: "report",
+        createdAt: Date.now(),
+      })
+    );
+
+    const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
     const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
 
     if (!previewWindow) {
       window.location.assign(previewUrl);
-      toast.success("Preview opened — use Print / Save as PDF to download.");
-      return;
     }
 
-    previewWindow.focus();
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (mode === "print") {
-      if (isIOS) {
-        toast.success("Print preview opened — use Safari Share / Print.");
-        return;
-      }
-      setTimeout(() => previewWindow.print(), 900);
-      toast.success("Print dialogue opening...");
-      return;
-    }
-    toast.success("PDF preview opened — use Print / Save as PDF to download.");
+    toast.success(mode === "print" ? "Preview opened — use Print." : "PDF preview opened.");
   };
 
   const handleExportPDF = async () => {
     try {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        openReportPreview("pdf");
+        return;
+      }
       toast.info("Generating PDF...");
       const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
       const blob = new Blob([response.data], { type: "application/pdf" });
