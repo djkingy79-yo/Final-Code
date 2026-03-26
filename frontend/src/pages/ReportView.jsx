@@ -40,12 +40,17 @@ const cleanSentence = (s) => {
   let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*\(http.*$/, "").replace(/\s*https?:.*$/, "");
   c = c.trim();
   // Truncate overly long sentences — extract just the core penalty
-  if (c.length > 80) {
+  if (c.length > 120) {
     const nppMatch = c.match(/(\d+\s*(?:years?|months?)\s*(?:imprisonment|gaol|jail|custody|in prison)[^,]*(?:,?\s*(?:with\s+a?\s*)?(?:non[- ]?parole|NPP)\s*(?:period\s*(?:of|set at)?\s*)?(?:over\s+)?\d+\s*(?:years?|months?))?)/i);
     if (nppMatch?.[1]) {
       c = nppMatch[1].replace(/\s*for\s+(?:murdering|killing|assaulting|robbing)[^,]*/i, "").trim();
     }
-    if (c.length > 80) c = c.substring(0, 77) + "...";
+    // Check for life sentence
+    const lifeMatch = c.match(/(life\s+(?:imprisonment|sentence)(?:\s+with(?:out)?\s+(?:parole|a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?))?)/i);
+    if (lifeMatch?.[1]) {
+      c = lifeMatch[1];
+    }
+    if (c.length > 120) c = c.substring(0, 117) + "...";
   }
   return c.trim();
 };

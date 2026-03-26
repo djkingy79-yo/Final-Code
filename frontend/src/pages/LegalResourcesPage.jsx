@@ -976,11 +976,11 @@ const LegalResourcesPage = () => {
 
         {/* ============ NEW SECTION: Legal Profession Bodies ============ */}
         <div id="profession" className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            <Gavel className="w-7 h-7 text-red-600" />
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <Gavel className="w-6 h-6 text-red-600" />
             Legal Profession Bodies
           </h2>
-          <p className="text-slate-700">
+          <p className="text-slate-700 text-xs">
             Law societies, bar associations, and professional conduct bodies that regulate the legal profession.
           </p>
 

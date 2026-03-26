@@ -366,26 +366,27 @@ const FAQPage = () => {
           <div className="space-y-8">
             {filteredFaqs.map((category, categoryIndex) => (
               <div key={categoryIndex}>
-                {/* Category Header with Image */}
-                <div className="rounded-2xl overflow-hidden mb-6 relative h-32">
-                  <img 
-                    src={category.image}
-                    alt={category.category}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center px-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${colorClasses[category.color]}`} data-testid={`faq-category-icon-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
-                        <category.icon className="w-7 h-7" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                          {category.category}
-                        </h2>
-                        <p className="text-slate-700 text-sm">
-                          {category.questions.length} questions
-                        </p>
-                      </div>
+                {/* Category Header */}
+                <div className={`rounded-2xl overflow-hidden mb-6 h-24 flex items-center px-6 ${
+                  category.color === 'blue' ? 'bg-blue-700' :
+                  category.color === 'red' ? 'bg-red-700' :
+                  category.color === 'green' ? 'bg-emerald-700' :
+                  category.color === 'purple' ? 'bg-purple-700' :
+                  category.color === 'orange' ? 'bg-amber-700' :
+                  category.color === 'teal' ? 'bg-teal-700' :
+                  'bg-slate-700'
+                }`} data-testid={`faq-category-header-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20" data-testid={`faq-category-icon-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                      <category.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                        {category.category}
+                      </h2>
+                      <p className="text-white/80 text-xs">
+                        {category.questions.length} questions
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -435,16 +436,16 @@ const FAQPage = () => {
             Still have questions?
           </h3>
           <p className="text-xs text-slate-700 mb-3">
-            Can't find what you're looking for? The FAQ and Legal Glossary may help.
+            Can't find what you're looking for? The Legal Glossary may help.
           </p>
-          <div className="flex gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             <Link to="/contact" data-testid="faq-contact-link">
-              <Button className="landing-cta-primary text-xs px-4 py-2" data-testid="faq-contact-btn">
+              <Button className="bg-blue-700 text-white hover:bg-blue-800 text-xs px-4 py-2" data-testid="faq-contact-btn">
                 Contact Us
               </Button>
             </Link>
             <Link to="/glossary" data-testid="faq-glossary-link">
-              <Button variant="outline" className="text-xs px-4 py-2 border-slate-300" data-testid="faq-glossary-btn">
+              <Button variant="outline" className="text-xs px-4 py-2 border-blue-300 text-blue-700 hover:bg-blue-100" data-testid="faq-glossary-btn">
                 Legal Glossary
               </Button>
             </Link>

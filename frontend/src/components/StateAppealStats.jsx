@@ -362,17 +362,17 @@ const StateAppealStats = () => {
               <div className="space-y-2">
                 {data.topGrounds.map((g, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${
-                      i === 0 ? 'bg-red-600' : i === 1 ? 'bg-blue-600' : 'bg-slate-500'
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 ${
+                      i === 0 ? 'bg-red-600' : i === 1 ? 'bg-blue-600' : i === 2 ? 'bg-purple-600' : i === 3 ? 'bg-emerald-600' : i === 4 ? 'bg-orange-500' : 'bg-slate-600'
                     }`}>{i + 1}</span>
-                    <div className="flex-1 min-w-0 text-base">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-base text-slate-900 font-semibold truncate">{g.ground}</span>
-                        <span className="text-base text-slate-600 font-bold shrink-0">{g.pct}%</span>
+                        <span className="text-sm text-slate-900 font-semibold truncate">{g.ground}</span>
+                        <span className="text-sm text-slate-600 font-bold shrink-0">{g.pct}%</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-slate-100 mt-1 overflow-hidden">
                         <div className={`h-full rounded-full transition-all ${
-                          i === 0 ? 'bg-red-500' : i === 1 ? 'bg-blue-500' : 'bg-slate-400'
+                          i === 0 ? 'bg-red-500' : i === 1 ? 'bg-blue-500' : i === 2 ? 'bg-purple-500' : i === 3 ? 'bg-emerald-500' : i === 4 ? 'bg-orange-400' : 'bg-slate-400'
                         }`} style={{ width: `${g.pct * 2}%` }}></div>
                       </div>
                     </div>
