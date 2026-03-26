@@ -764,22 +764,24 @@ const ReportView = () => {
 </body>
 </html>`;
 
-    const previewWindow = window.open("", "_blank", "width=1200,height=800");
+    const previewBlob = new Blob([html], { type: "text/html" });
+    const previewUrl = window.URL.createObjectURL(previewBlob);
+    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
+
     if (!previewWindow) {
-      const blob = new Blob([html], { type: "text/html" });
-      const url = window.URL.createObjectURL(blob);
-      window.location.href = url;
+      window.location.assign(previewUrl);
       toast.success("Preview opened — use Print / Save as PDF to download.");
       return;
     }
 
-    previewWindow.document.open();
-    previewWindow.document.write(html);
-    previewWindow.document.close();
     previewWindow.focus();
-
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (mode === "print") {
-      setTimeout(() => previewWindow.print(), 700);
+      if (isIOS) {
+        toast.success("Print preview opened — use Safari Share / Print.");
+        return;
+      }
+      setTimeout(() => previewWindow.print(), 900);
       toast.success("Print dialogue opening...");
       return;
     }
@@ -788,13 +790,6 @@ const ReportView = () => {
 
   const handleExportPDF = async () => {
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`);
-        window.open(url, "_blank", "noopener,noreferrer");
-        toast.success("PDF opened — use Share to save or print.");
-        return;
-      }
       toast.info("Generating PDF...");
       const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
       const blob = new Blob([response.data], { type: "application/pdf" });
@@ -808,13 +803,6 @@ const ReportView = () => {
 
   const handleExportDOCX = async () => {
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        const url = buildAuthUrl(`${API}/cases/${caseId}/reports/${reportId}/export-docx`);
-        window.open(url, "_blank", "noopener,noreferrer");
-        toast.success("Word document opened — use Share to save.");
-        return;
-      }
       toast.info("Generating Word document...");
       const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-docx`, { responseType: "blob", timeout: 60000 });
       const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });

@@ -261,19 +261,24 @@ export default function BarristerView() {
 </body>
 </html>`;
 
-    const previewWindow = window.open("", "_blank", "width=1200,height=900");
+    const previewBlob = new Blob([html], { type: "text/html" });
+    const previewUrl = window.URL.createObjectURL(previewBlob);
+    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
+
     if (!previewWindow) {
-      toast.error("Preview window was blocked.");
+      window.location.assign(previewUrl);
+      toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
       return;
     }
 
-    previewWindow.document.open();
-    previewWindow.document.write(html);
-    previewWindow.document.close();
     previewWindow.focus();
-
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (mode === "print") {
-      window.setTimeout(() => previewWindow.print(), 700);
+      if (isIOS) {
+        toast.success("Print preview opened — use Safari Share / Print.");
+        return;
+      }
+      window.setTimeout(() => previewWindow.print(), 900);
       toast.success("Print dialogue opening.");
       return;
     }
@@ -284,11 +289,6 @@ export default function BarristerView() {
   const handleExportPDF = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.open(buildAuthUrl(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`), "_blank", "noopener,noreferrer");
-        return;
-      }
       const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`, {
         responseType: "blob",
         timeout: 60000,
@@ -304,11 +304,6 @@ export default function BarristerView() {
   const handleExportDOCX = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.open(buildAuthUrl(`${API}/cases/${caseId}/reports/${report.report_id}/export-docx`), "_blank", "noopener,noreferrer");
-        return;
-      }
       const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-docx`, {
         responseType: "blob",
         timeout: 60000,
@@ -454,30 +449,31 @@ export default function BarristerView() {
               </p>
             </div>
 
-            <div className="bg-slate-900 text-white px-6 sm:px-10 py-8 sm:py-10" data-testid="barrister-hero">
-              <div className="flex flex-wrap items-center gap-3 mb-5">
-                <Badge className="bg-blue-600 text-white" data-testid="barrister-hero-badge">
-                  <Scale className="w-3.5 h-3.5 mr-1.5" /> BARRISTER BRIEF
-                </Badge>
-                <Badge variant="outline" className="border-slate-400 text-slate-100" data-testid="barrister-source-badge">
-                  Synthesised from {sourceReports.length || 3} completed reports
-                </Badge>
-              </div>
+            <div className="px-6 sm:px-10 py-6 sm:py-7 border-b border-slate-200 bg-white" data-testid="barrister-hero">
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <Badge className="bg-blue-700 text-white" data-testid="barrister-hero-badge">
+                      <Scale className="w-3.5 h-3.5 mr-1.5" /> BARRISTER BRIEF
+                    </Badge>
+                    <span className="text-sm font-medium text-slate-600" data-testid="barrister-source-badge">
+                      Built from all {sourceReports.length || 3} completed reports
+                    </span>
+                  </div>
 
-              <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight" data-testid="barrister-title">
-                {caseData?.title || "Barrister Brief"}
-              </h1>
-              <p className="mt-3 text-base sm:text-lg text-slate-200 max-w-3xl" data-testid="barrister-subtitle">
-                Single consolidated appeal brief grounded in the completed standard reports, rewritten as one professional document for counsel review.
-              </p>
+                  <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-none" data-testid="barrister-title">
+                    {caseData?.title || "Barrister Brief"}
+                  </h1>
+                </div>
 
-              <div className="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-4" data-testid="barrister-summary-grid">
-                <SummaryMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
-                <SummaryMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
-                <SummaryMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
-                <SummaryMetric label="Offence" value={caseData?.offence_type || formatTitle(caseData?.offence_category)} testId="barrister-summary-offence" />
-                <SummaryMetric label="Grounds" value={`${grounds.length}`} testId="barrister-summary-grounds" />
-                <SummaryMetric label="Generated" value={formatDate(report?.generated_at)} testId="barrister-summary-generated" />
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4 lg:min-w-[320px]" data-testid="barrister-summary-grid">
+                  <CompactMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
+                  <CompactMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
+                  <CompactMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
+                  <CompactMetric label="Offence" value={caseData?.offence_type || formatTitle(caseData?.offence_category)} testId="barrister-summary-offence" />
+                  <CompactMetric label="Grounds" value={`${grounds.length}`} testId="barrister-summary-grounds" />
+                  <CompactMetric label="Generated" value={formatDate(report?.generated_at)} testId="barrister-summary-generated" />
+                </div>
               </div>
             </div>
 
@@ -490,8 +486,8 @@ export default function BarristerView() {
               </div>
             </div>
 
-            <div className="px-6 sm:px-10 py-6 bg-slate-50 border-b border-slate-200" data-testid="barrister-meta-strip">
-              <div className="grid md:grid-cols-3 gap-4 text-sm text-slate-700">
+            <div className="px-6 sm:px-10 py-4 bg-slate-50 border-b border-slate-200" data-testid="barrister-meta-strip">
+              <div className="grid md:grid-cols-3 gap-3 text-sm text-slate-700">
                 <div className="flex items-center gap-2" data-testid="barrister-meta-documents">
                   <FolderOpen className="w-4 h-4 text-blue-700" /> {documents.length} documents analysed
                 </div>
@@ -632,9 +628,9 @@ export default function BarristerView() {
   );
 }
 
-const SummaryMetric = ({ label, value, testId }) => (
-  <div className="rounded-2xl border border-white/10 bg-white/5 p-4" data-testid={testId}>
-    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300 mb-1">{label}</p>
-    <p className="text-sm font-semibold text-white break-words">{value}</p>
+const CompactMetric = ({ label, value, testId }) => (
+  <div className="min-w-0" data-testid={testId}>
+    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 mb-1">{label}</p>
+    <p className="text-sm font-semibold text-slate-900 break-words leading-snug">{value}</p>
   </div>
 );
