@@ -28,6 +28,9 @@ Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO
 - PageCTA inline variant fixed for light mode
 - SuccessStories footer CTA and Share My Story button fixed
 - CaseDetail gradient button replaced with solid blue
+- **Report language sanitisation**: "we/us/our" eliminated from AI prompts + post-processing in backend (_strip_report_placeholders) and frontend (cleanAIContent). Replaced with "the applicant", "the legal professional", "this analysis".
+- **Print/PDF preview rebuilt**: Professional layout matching on-screen view — coloured headers, numbered sections, styled borders, table of contents, disclaimer footer.
+- **CLIENT PLAIN-ENGLISH BRIEF** prompts updated across all 3 report tiers to enforce educational tool third-person language.
 
 ## Prioritised Backlog
 ### P1
