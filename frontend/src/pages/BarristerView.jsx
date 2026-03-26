@@ -655,21 +655,21 @@ const BarristerView = ({ user }) => {
   };
 
   const MERGE_CATEGORIES = [
-    { id: "EXECUTIVE", title: "Executive Summary & Case Overview", patterns: [/EXECUTIVE/i, /CASE\s*OVERVIEW/i, /CASE\s*SNAPSHOT/i, /^OVERVIEW$/i, /PRELIMINARY\s*ANALYSIS/i] },
-    { id: "CHRONOLOGY", title: "Forensic Case Chronology", patterns: [/CHRONOLOG/i, /TIMELINE/i, /KEY.*EVENT/i] },
-    { id: "EVIDENCE", title: "Document & Evidence Analysis", patterns: [/EVIDENCE/i, /DOCUMENT.*DIGEST/i, /DOCUMENT.*ANALYSIS/i, /EVIDENTIARY.*GAP/i, /REMEDIATION/i] },
-    { id: "GROUNDS", title: "Grounds of Merit — Detailed Analysis", patterns: [/GROUNDS.*MERIT/i, /GROUNDS.*ANALYSIS/i, /GROUNDS.*DEEP/i, /DETAILED.*GROUNDS/i, /GROUND\s*\d/i] },
-    { id: "SENTENCING", title: "Comparative Sentencing Analysis", patterns: [/COMPARATIVE.*SENTENC/i, /SENTENCING.*TABLE/i, /SENTENCING.*ANALYSIS/i] },
-    { id: "COMMON_GROUNDS", title: "Common Appeal Grounds for This Offence", patterns: [/COMMON.*APPEAL/i, /APPEAL.*GROUNDS.*OFFENCE/i] },
-    { id: "OUTCOME", title: "Outcome Options & Pathways", patterns: [/OUTCOME/i, /OPTIONS/i, /PATHWAY/i, /APPEAL.*PATHWAY/i, /COURT.*PATHWAY/i, /OPERATIONS.*PLAYBOOK/i] },
-    { id: "PRECEDENT", title: "Precedent Matrix & Case Authorities", patterns: [/PRECEDENT/i, /MATRIX/i, /SIMILAR.*CASE/i] },
-    { id: "STATUTORY", title: "Statutory & Legislative Framework", patterns: [/STATUTORY/i, /DOCTRINAL/i, /LEGISLAT/i, /FRAMEWORK.*MAP/i] },
-    { id: "STRATEGY", title: "How to Argue This Appeal", patterns: [/HOW\s*TO\s*ARGUE/i, /ARGUMENT.*STRATEGY/i, /^STRATEGY$/i] },
-    { id: "SUBMISSIONS", title: "Submissions Blueprint", patterns: [/SUBMISSION/i, /BLUEPRINT/i] },
-    { id: "HEARING", title: "Hearing Preparation Notes", patterns: [/HEARING.*PREP/i, /HEARING.*NOTE/i, /CONFERENCE.*PREP/i, /BARRISTER.*PACK/i] },
-    { id: "FORMS", title: "Filing Guide & Required Forms", patterns: [/FORM/i, /HOW\s*TO\s*START/i, /FILING/i] },
-    { id: "ACTION", title: "Prioritised Action Plan & Risk Assessment", patterns: [/ACTION.*PLAN/i, /PRIORITISED/i, /RISK.*ASSESS/i, /CONTINGENCY/i] },
-    { id: "PLAIN_ENGLISH", title: "Plain-English Brief", patterns: [/PLAIN.*ENGLISH/i, /CLIENT.*GUIDE/i, /CLIENT.*BRIEF/i] },
+    { id: "EXECUTIVE", title: "Executive Summary & Case Overview", patterns: [/EXECUTIVE/i, /CASE\s*OVERVIEW/i, /CASE\s*SNAPSHOT/i, /^OVERVIEW$/i, /PRELIMINARY/i, /INTRODUCTION/i, /NATURE.*OFFENCE/i, /NATURE.*CONVICTION/i, /CONVICTION.*ANALYSIS/i, /CONVICTION.*OVERVIEW/i] },
+    { id: "CHRONOLOGY", title: "Forensic Case Chronology", patterns: [/CHRONOLOG/i, /TIMELINE/i, /KEY.*EVENT/i, /CASE.*HISTORY/i] },
+    { id: "EVIDENCE", title: "Document & Evidence Analysis", patterns: [/EVIDENCE.*ANALYSIS/i, /DOCUMENT.*DIGEST/i, /DOCUMENT.*ANALYSIS/i, /EVIDENTIARY.*GAP/i, /REMEDIATION/i, /EVIDENCE.*REVIEW/i, /EVIDENCE.*DIGEST/i] },
+    { id: "GROUNDS", title: "Grounds of Merit — Detailed Analysis", patterns: [/GROUNDS.*MERIT/i, /GROUNDS.*ANALYSIS/i, /GROUNDS.*DEEP/i, /DETAILED.*GROUNDS/i, /GROUND\s*\d/i, /APPEAL.*GROUNDS/i, /MERIT.*ANALYSIS/i] },
+    { id: "SENTENCING", title: "Comparative Sentencing Analysis", patterns: [/COMPARATIVE.*SENTENC/i, /SENTENCING.*TABLE/i, /SENTENCING.*ANALYSIS/i, /SENTENCING.*COMPARISON/i, /RELIEF.*PATHWAY/i] },
+    { id: "COMMON_GROUNDS", title: "Common Appeal Grounds for This Offence", patterns: [/COMMON.*APPEAL/i, /APPEAL.*GROUNDS.*OFFENCE/i, /TYPICAL.*GROUNDS/i] },
+    { id: "OUTCOME", title: "Outcome Options & Pathways", patterns: [/OUTCOME/i, /OPTIONS.*MATRIX/i, /POSSIBLE.*RESULT/i] },
+    { id: "PRECEDENT", title: "Precedent Matrix & Case Authorities", patterns: [/PRECEDENT/i, /MATRIX/i, /SIMILAR.*CASE/i, /CASE.*AUTHORIT/i, /AUTHORITIES/i] },
+    { id: "STATUTORY", title: "Statutory & Legislative Framework", patterns: [/STATUTORY/i, /DOCTRINAL/i, /LEGISLAT/i, /FRAMEWORK.*MAP/i, /LEGAL.*FRAMEWORK/i] },
+    { id: "STRATEGY", title: "How to Argue This Appeal", patterns: [/HOW\s*TO\s*ARGUE/i, /ARGUMENT.*STRATEGY/i, /^STRATEGY$/i, /STRATEGIC.*RECOMMEND/i, /ADVOCACY/i] },
+    { id: "SUBMISSIONS", title: "Submissions Blueprint", patterns: [/SUBMISSION/i, /BLUEPRINT/i, /WRITTEN.*SUBMISSION/i, /ORAL.*SUBMISSION/i] },
+    { id: "HEARING", title: "Hearing Preparation Notes", patterns: [/HEARING.*PREP/i, /HEARING.*NOTE/i, /CONFERENCE.*PREP/i, /BARRISTER.*PACK/i, /CONFERENCE.*PACK/i] },
+    { id: "FORMS", title: "Filing Guide & Required Forms", patterns: [/FORM/i, /HOW\s*TO\s*START/i, /FILING/i, /LODGE.*APPEAL/i, /STEPS.*LODGE/i, /APPEAL.*PROCESS/i, /REQUIRED.*DOCUMENT/i, /NOTICE.*APPEAL/i, /PATHWAY/i, /COURT.*PATHWAY/i, /OPERATIONS.*PLAYBOOK/i] },
+    { id: "ACTION", title: "Prioritised Action Plan & Risk Assessment", patterns: [/ACTION.*PLAN/i, /PRIORITISED/i, /RISK.*ASSESS/i, /CONTINGENCY/i, /NEXT.*STEP/i, /IMMEDIATE.*ACTION/i] },
+    { id: "PLAIN_ENGLISH", title: "Plain-English Brief", patterns: [/PLAIN.*ENGLISH/i, /CLIENT.*GUIDE/i, /CLIENT.*BRIEF/i, /LAYPERSON/i, /SIMPLE.*EXPLANATION/i] },
   ];
 
   const classifySection = (title) => {
@@ -789,7 +789,8 @@ const BarristerView = ({ user }) => {
       });
     });
 
-    // Build final sections in category order, picking BEST content per category
+    // Build final sections in category order — USE ONLY THE SINGLE BEST ENTRY per category
+    // NO supplementing, NO appending from lesser reports. This eliminates all duplication.
     const finalSections = [];
     
     MERGE_CATEGORIES.forEach((cat) => {
@@ -799,67 +800,19 @@ const BarristerView = ({ user }) => {
       // Sort: prefer highest weight (most detailed report), then longest content
       entries.sort((a, b) => (b.weight - a.weight) || (b.length - a.length));
       
-      // Take the best entry as the primary content
+      // Use ONLY the single best entry — no merging, no appending
       const best = entries[0];
       
-      // If there are entries from multiple reports, check if lower reports add significant unique content
-      let mergedContent = best.content;
-      
-      if (entries.length > 1) {
-        // Check if other entries have substantial content not in the best entry
-        const bestWords = new Set(best.content.toLowerCase().split(/\s+/));
-        
-        for (let i = 1; i < entries.length; i++) {
-          const other = entries[i];
-          if (other.length < 200) continue; // skip very short sections
-          
-          // Check word overlap - if less than 60% overlap, it has unique content worth adding
-          const otherWords = other.content.toLowerCase().split(/\s+/);
-          const overlap = otherWords.filter(w => bestWords.has(w)).length / otherWords.length;
-          
-          if (overlap < 0.55 && other.content.length > 300) {
-            // Add unique content as a supplement, separated clearly
-            mergedContent += "\n\n" + other.content;
-            // Add the new words to the set to avoid tripling
-            otherWords.forEach(w => bestWords.add(w));
-          }
-        }
-      }
-      
-      if (mergedContent.length >= 100) {
+      if (best.content.length >= 100) {
         finalSections.push({
           number: String(finalSections.length + 1),
           title: cat.title,
-          content: mergedContent,
+          content: best.content,
         });
       }
     });
 
-    // Add uncategorised sections that are substantial and unique
-    if (uncategorised.length > 0) {
-      // Deduplicate uncategorised by similarity
-      const usedTitles = new Set(MERGE_CATEGORIES.map(c => c.title.toUpperCase()));
-      const addedContent = new Set();
-      
-      uncategorised
-        .sort((a, b) => (b.weight - a.weight) || (b.length - a.length))
-        .forEach((entry) => {
-          // Skip if title matches an existing category
-          if (usedTitles.has(entry.title.toUpperCase())) return;
-          // Skip very short content
-          if (entry.length < 200) return;
-          // Skip if content is too similar to already added
-          const fingerprint = entry.content.substring(0, 150).toLowerCase();
-          if (addedContent.has(fingerprint)) return;
-          
-          addedContent.add(fingerprint);
-          finalSections.push({
-            number: String(finalSections.length + 1),
-            title: entry.title,
-            content: entry.content,
-          });
-        });
-    }
+    // DO NOT add uncategorised sections — they create scattered duplicates
 
     return { sections: finalSections, totalReports: availableReports.length };
   };
