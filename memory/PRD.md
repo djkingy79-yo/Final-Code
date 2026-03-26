@@ -1,41 +1,61 @@
 # Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
+Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The product combines secure document management, AI-powered case analysis, tiered report generation, and a locked Barrister View intended to act as the capstone synthesis of all three standard reports.
 
-## Core Requirements
-- **Report Tiers:** Free (Base) → $150 (2x depth, 10-15k words) → $200 (3x depth, 25-35k words)
-- **Barrister View:** Locked until all 3 standard reports are generated/paid. Synthesis of all reports — ONE section per topic, NO duplicates.
-- **Report Language:** STRICT third-person educational tool. NO "we/us/our/you/your"
-- **Branding:** "Created and Designed by Deb King" header + bold disclaimer on all reports/exports
-- **UI/UX:** Forced light mode. High contrast. Australian spelling mandatory.
+## Core Product Requirements
+- **Report tiers:** Free (Base), $150 Full Detailed, and $200 Extensive Log must scale materially in depth.
+- **Barrister View:** Must remain locked until all 3 standard reports are completed; output must be one cohesive barrister-ready brief with no duplicated or scattered analysis.
+- **Report language:** Strict third-person educational tone only. No "we", "us", "our", "you", or "your".
+- **Branding:** All report surfaces and exports must display "Created and Designed by Deb King" plus a strong legal disclaimer.
+- **UI/UX:** Forced light mode, high contrast, Australian spelling, and a blue/slate/navy palette only.
 
 ## Tech Stack
 - React frontend + FastAPI backend + MongoDB
 - OpenAI GPT-4o via Emergent LLM Key
-- Emergent Auth (Google social login)
+- Emergent-managed Google Auth
 
-## What's Been Implemented
-- Full case CRUD with document upload (OCR), timeline, grounds, notes
-- AI-powered grounds identification ($99 unlock)
-- Multi-pass report generation (1/5/7 passes) with partial DB saving
-- PDF and DOCX exports with Grounds count and Sentence in header
-- **Barrister View** — category-based merge with 15 categories, ONLY single best entry per category (no supplement/append), expanded patterns to catch all title variants
-- Aggressive "you/your" and "we/us/our" language stripping (backend + frontend, 70+ patterns)
-- **FAQ page** — clear text headings with icons between question groups (not colored bars)
-- **Tables mobile-readable** — word-break instead of fixed minWidth
-- All pages: Landing, FAQ, How It Works, Legal Resources, About, Contact
-- Footer: EXPLORE and LEGAL columns
-
-## Pending/Backlog
-- P1: Backend refactoring (decompose server.py monolith ~5800 lines)
-- P1: Native mobile app build (Capacitor configured)
-- P2: Real-time collaboration/chat in Notes
-- P2: Case sharing between users
-
-## Architecture
+## Current Architecture
 ```
-/app/backend/server.py — Core API, AI prompts, exports (5800+ lines)
-/app/frontend/src/pages/ — CaseDetail, ReportView, BarristerView, HowItWorksPage, LandingPage, FAQPage
-/app/frontend/src/components/ — ReportsSection, NotesSection, DocumentsSection
+/app/backend/server.py                     # Core API, AI prompt engine, exports, barrister synthesis
+/app/frontend/src/pages/CaseDetail.jsx     # Main case workspace
+/app/frontend/src/pages/ReportView.jsx     # Standard report viewing, print, PDF/DOCX actions
+/app/frontend/src/pages/BarristerView.jsx  # Rebuilt barrister brief page driven by backend synthesis
+/app/frontend/src/components/ReportsSection.jsx
+/app/frontend/src/index.css                # Global + print styling
 ```
+
+## What Has Been Implemented
+- Full case CRUD with document upload/OCR, timeline, grounds, and notes
+- Multi-pass AI generation for the three standard report tiers with partial DB saving
+- Export header improvements including Grounds count and Sentence
+- Strong backend/frontend stripping of forbidden first/second-person report language
+- FAQ and supporting public pages in the updated light visual system
+- **2026-03-26:** Barrister View rewritten so it no longer merges content in the frontend
+- **2026-03-26:** New backend Barrister synthesis flow added at `GET /api/cases/{case_id}/reports/barrister-view`
+- **2026-03-26:** Barrister brief is now generated and stored as a dedicated `barrister_view` report using backend LLM synthesis from the 3 latest completed standard reports
+- **2026-03-26:** Barrister page rebuilt into a professional document-style layout with Deb King branding, disclaimer, clean section rendering, and export actions
+- **2026-03-26:** ReportView print/table styling tightened for professional print/PDF presentation
+- **2026-03-26:** Extensive Log visual theme corrected from purple to slate/navy
+- **2026-03-26:** Download links opened in a new tab/window now support `session_token` query-param authentication
+
+## Verified Status
+- P0 Barrister View backend synthesis: implemented and verified
+- P0 Print/PDF presentation fixes: implemented and verified
+- Latest rigorous verification: `/app/test_reports/iteration_91.json` — backend 100%, frontend 100%
+
+## Prioritised Next Actions
+### P1
+- Run user review on live Barrister brief quality with real completed cases and refine prompt depth if needed
+- Continue export polish if any jurisdiction-specific formatting preferences emerge from review
+- Resume deferred backend refactor to decompose `server.py`
+- Progress Capacitor/native mobile wrapper once the web report presentation is signed off
+
+### P2
+- Real-time collaboration/chat enhancements in Notes
+- Case sharing between registered users
+
+## Notes for Next Agent
+- Do **not** restore frontend report-merging logic for Barrister View.
+- Barrister View now depends on backend synthesis and stores a dedicated `barrister_view` report record.
+- Keep Australian spelling and strict tone constraints across UI and generated outputs.
