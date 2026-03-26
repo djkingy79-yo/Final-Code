@@ -49,6 +49,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Reworked Barrister and ReportView mobile preview/export flows to use blob-based preview pages instead of `document.write` blank popups
 - **2026-03-26:** Removed iOS blank-tab export behaviour by switching PDF/DOCX export paths to blob download/share handling
 - **2026-03-26:** Compacted the Barrister top layout so the analysis starts higher on mobile and print-preview screens
+- **2026-03-26:** Replaced popup/blob preview with a dedicated in-app `/document-preview` route using stored preview payloads, fixing the mobile blank PDF/print preview behaviour for Barrister and standard report pages
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
