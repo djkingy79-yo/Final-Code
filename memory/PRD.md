@@ -44,6 +44,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Generated a completed Barrister Brief for case `case_db8d84fecfc4` as report `rpt_3b5271d6f2ab`
 - **2026-03-26:** Reworked Barrister synthesis into grouped deep-generation passes plus expansion logic so the Barrister brief carries materially more detail from all 3 standard reports
 - **2026-03-26:** Regenerated the Barrister Brief for case `case_db8d84fecfc4` as report `rpt_d707334d7843` with 25,019 characters and all 11 required sections
+- **2026-03-26:** Strengthened Barrister generation again to force one dedicated subsection per ground and regenerated case `case_db8d84fecfc4` as report `rpt_703bad1e2169` with 31,131 characters and 5 explicit ground subsections
+- **2026-03-26:** Tightened backend PDF export formatting for report headings and bullet/list rendering to improve readability and reduce broken PDF text flow
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
