@@ -347,7 +347,7 @@ const BarristerView = ({ user }) => {
     // Strip text after common analysis phrases
     c = c.replace(/,\s*(which|that|this|is crucial|meaning|indicating|suggesting|reflecting|demonstrating|as per|pursuant|under s\.).*/si, "");
     c = c.trim();
-    if (c.length > 150) c = c.substring(0, 147) + "...";
+    if (c.length > 80) c = c.substring(0, 77) + "...";
     return c.trim();
   };
 
@@ -654,134 +654,31 @@ const BarristerView = ({ user }) => {
     return score;
   };
 
-  const selectDistinctParagraphs = (entries, anchorSet) => {
-    const rawParagraphs = [];
-    entries.forEach((entry) => {
-      const paragraphs = splitParagraphs(entry.section.content);
-      paragraphs.forEach((paragraph, index) => {
-        rawParagraphs.push({
-          text: paragraph,
-          score: scoreParagraph(paragraph, anchorSet),
-          source: entry.reportLabel,
-          reportRank: entry.reportRank,
-          paragraphIndex: index
-        });
-      });
-    });
-
-    if (!rawParagraphs.length) {
-      return entries[0]?.section.content || "";
-    }
-
-    const sourceCount = new Set(entries.map((entry) => entry.reportLabel)).size;
-    const maxParagraphs = Math.max(6, Math.min(12, Math.ceil(sourceCount * 2.5)));
-    const qualityThreshold = 1.2;
-    const preferred = rawParagraphs.filter((p) => p.score >= qualityThreshold);
-    const pool = preferred.length >= 4 ? preferred : rawParagraphs;
-
-    pool.sort((a, b) => (b.score - a.score) || (b.text.length - a.text.length));
-
-    const selected = [];
-    const selectedSets = [];
-
-    const isTooSimilar = (candidate) => {
-      const candidateSet = toWordSet(candidate.text);
-      return selectedSets.some((set) => jaccardSimilarity(candidateSet, set) > 0.68);
-    };
-
-    for (const paragraph of pool) {
-      if (selected.length >= maxParagraphs) break;
-      if (isTooSimilar(paragraph)) continue;
-      selected.push(paragraph);
-      selectedSets.push(toWordSet(paragraph.text));
-    }
-
-    const coveredSources = new Set(selected.map((item) => item.source));
-    if (coveredSources.size < sourceCount) {
-      const allSources = Array.from(new Set(entries.map((entry) => entry.reportLabel)));
-      allSources.forEach((source) => {
-        if (coveredSources.has(source)) return;
-        const candidate = pool.find((item) => item.source === source && !isTooSimilar(item));
-        if (candidate) {
-          selected.push(candidate);
-          coveredSources.add(source);
-          selectedSets.push(toWordSet(candidate.text));
-        }
-      });
-    }
-
-    selected.sort((a, b) => (a.reportRank - b.reportRank) || (a.paragraphIndex - b.paragraphIndex));
-
-    return selected.map((item) => item.text).join("\n\n");
-  };
-
-  const buildSynthesisSection = (reports) => {
-    if (!reports?.length) return null;
-    const paragraphs = [];
-    reports.forEach((report, reportIndex) => {
-      const analysis = report?.content?.analysis || "";
-      splitParagraphs(analysis).forEach((paragraph, paragraphIndex) => {
-        paragraphs.push({
-          text: paragraph,
-          score: scoreParagraph(paragraph, anchorSet || new Set()),
-          reportRank: reportIndex,
-          paragraphIndex
-        });
-      });
-    });
-
-    if (!paragraphs.length) return null;
-
-    paragraphs.sort((a, b) => (b.score - a.score) || (b.text.length - a.text.length));
-    const selected = [];
-    const selectedSets = [];
-
-    const isTooSimilar = (candidate) => {
-      const candidateSet = toWordSet(candidate.text);
-      return selectedSets.some((set) => jaccardSimilarity(candidateSet, set) > 0.7);
-    };
-
-    for (const paragraph of paragraphs) {
-      if (selected.length >= 10) break;
-      if (isTooSimilar(paragraph)) continue;
-      selected.push(paragraph.text);
-      selectedSets.push(toWordSet(paragraph.text));
-    }
-
-    if (!selected.length) return null;
-
-    return {
-      title: "Barrister Synthesis",
-      content: selected.join("\n\n"),
-      sources: ["All Reports"]
-    };
-  };
-
-  const SECTION_PRIORITY = [
-    [/BARRISTER SYNTHESIS/],
-    [/EXECUTIVE/, /SUMMARY/],
-    [/CHRONOLOGY/, /TIMELINE/],
-    [/DOCUMENT/],
-    [/GROUNDS OF MERIT/, /GROUNDS/],
-    [/SENTENCING/, /COMPARATIVE/],
-    [/COMMON APPEAL GROUNDS/, /APPEAL GROUNDS/],
-    [/OUTCOME/, /OPTIONS/],
-    [/EVIDENTIARY/, /GAPS/],
-    [/PRECEDENT/, /MATRIX/],
-    [/STATUTORY/, /DOCTRINAL/, /LEGISLATION/],
-    [/ARGUE/, /STRATEGY/, /SUBMISSIONS/],
-    [/HEARING/, /CONFERENCE/],
-    [/FORMS/, /APPEAL/, /PATHWAY/],
-    [/ACTION PLAN/, /PRIORITISED/],
-    [/RISK/],
-    [/CLIENT/, /PLAIN-ENGLISH/]
+  const MERGE_CATEGORIES = [
+    { id: "EXECUTIVE", title: "Executive Summary & Case Overview", patterns: [/EXECUTIVE/i, /CASE\s*OVERVIEW/i, /CASE\s*SNAPSHOT/i, /^OVERVIEW$/i, /PRELIMINARY\s*ANALYSIS/i] },
+    { id: "CHRONOLOGY", title: "Forensic Case Chronology", patterns: [/CHRONOLOG/i, /TIMELINE/i, /KEY.*EVENT/i] },
+    { id: "EVIDENCE", title: "Document & Evidence Analysis", patterns: [/EVIDENCE/i, /DOCUMENT.*DIGEST/i, /DOCUMENT.*ANALYSIS/i, /EVIDENTIARY.*GAP/i, /REMEDIATION/i] },
+    { id: "GROUNDS", title: "Grounds of Merit — Detailed Analysis", patterns: [/GROUNDS.*MERIT/i, /GROUNDS.*ANALYSIS/i, /GROUNDS.*DEEP/i, /DETAILED.*GROUNDS/i, /GROUND\s*\d/i] },
+    { id: "SENTENCING", title: "Comparative Sentencing Analysis", patterns: [/COMPARATIVE.*SENTENC/i, /SENTENCING.*TABLE/i, /SENTENCING.*ANALYSIS/i] },
+    { id: "COMMON_GROUNDS", title: "Common Appeal Grounds for This Offence", patterns: [/COMMON.*APPEAL/i, /APPEAL.*GROUNDS.*OFFENCE/i] },
+    { id: "OUTCOME", title: "Outcome Options & Pathways", patterns: [/OUTCOME/i, /OPTIONS/i, /PATHWAY/i, /APPEAL.*PATHWAY/i, /COURT.*PATHWAY/i, /OPERATIONS.*PLAYBOOK/i] },
+    { id: "PRECEDENT", title: "Precedent Matrix & Case Authorities", patterns: [/PRECEDENT/i, /MATRIX/i, /SIMILAR.*CASE/i] },
+    { id: "STATUTORY", title: "Statutory & Legislative Framework", patterns: [/STATUTORY/i, /DOCTRINAL/i, /LEGISLAT/i, /FRAMEWORK.*MAP/i] },
+    { id: "STRATEGY", title: "How to Argue This Appeal", patterns: [/HOW\s*TO\s*ARGUE/i, /ARGUMENT.*STRATEGY/i, /^STRATEGY$/i] },
+    { id: "SUBMISSIONS", title: "Submissions Blueprint", patterns: [/SUBMISSION/i, /BLUEPRINT/i] },
+    { id: "HEARING", title: "Hearing Preparation Notes", patterns: [/HEARING.*PREP/i, /HEARING.*NOTE/i, /CONFERENCE.*PREP/i, /BARRISTER.*PACK/i] },
+    { id: "FORMS", title: "Filing Guide & Required Forms", patterns: [/FORM/i, /HOW\s*TO\s*START/i, /FILING/i] },
+    { id: "ACTION", title: "Prioritised Action Plan & Risk Assessment", patterns: [/ACTION.*PLAN/i, /PRIORITISED/i, /RISK.*ASSESS/i, /CONTINGENCY/i] },
+    { id: "PLAIN_ENGLISH", title: "Plain-English Brief", patterns: [/PLAIN.*ENGLISH/i, /CLIENT.*GUIDE/i, /CLIENT.*BRIEF/i] },
   ];
 
-  const getSectionPriority = (title) => {
-    if (!title) return 999;
+  const classifySection = (title) => {
+    if (!title) return null;
     const upper = title.toUpperCase();
-    const index = SECTION_PRIORITY.findIndex((patterns) => patterns.some((pattern) => pattern.test(upper)));
-    return index === -1 ? 999 : index;
+    for (const cat of MERGE_CATEGORIES) {
+      if (cat.patterns.some(p => p.test(upper))) return cat.id;
+    }
+    return null;
   };
 
   // Parse and structure the analysis for legal brief format
@@ -795,80 +692,176 @@ const BarristerView = ({ user }) => {
     let currentSection = null;
     let currentContent = [];
     
-    const sectionPatterns = [
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:CASE OVERVIEW|OVERVIEW)/i, title: "CASE OVERVIEW", icon: "file" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:EVIDENCE|DOCUMENT)/i, title: "EVIDENCE ANALYSIS", icon: "search" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:GROUNDS|MERIT)/i, title: "GROUNDS OF MERIT", icon: "scale" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:LEGAL|LAW|FRAMEWORK)/i, title: "LEGAL FRAMEWORK", icon: "book" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:STRATEGIC|RECOMMEND|STRATEGY)/i, title: "STRATEGIC RECOMMENDATIONS", icon: "target" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:SIMILAR|PRECEDENT)/i, title: "SIMILAR CASES & PRECEDENT", icon: "archive" },
-      { pattern: /^(?:#{1,3}\s+)?(?:\d+\.\s*)?(?:CONCLUSION)/i, title: "CONCLUSION", icon: "flag" },
-      // Only split on main ## numbered sections (e.g., "## 1. EXECUTIVE BRIEF")
-      { pattern: /^##\s+\d+\.\s+(.{4,70})$/i, title: null, icon: "chevron" },
-    ];
-    
-    // Helper to clean leading numbers from titles
     const cleanTitle = (raw) => (raw || "ANALYSIS").replace(/^\d+\.\s*/, "").replace(/\*\*/g, "").replace(/^#+\s*/, "").replace(/[\-:]+$/, "").trim();
     
-    for (const line of lines) {
-      let foundSection = false;
-      
-      for (const { pattern, title, icon } of sectionPatterns) {
-        if (pattern.test(line)) {
-          if (currentSection) {
-            const cleanedContent = cleanAIContent(sanitiseReportOutput(currentContent.join('\n').trim()));
-            if (cleanedContent && cleanedContent.length >= 80) {
-              sections.push({
-                number: String(sections.length + 1),
-                title: currentSection,
-                content: cleanedContent,
-                icon: icon
-              });
-            }
-          }
-          
-          if (title) {
-            currentSection = title;
-          } else {
-            const match = line.match(/\*\*([^*]+)\*\*/) || line.match(/^#{1,3}\s+(?:\d+\.\s*)?(.+)$/) || line.match(/^\d+\.\s+(.+)$/);
-            currentSection = cleanTitle(match ? (match[1] || match[2]) : line);
-          }
-          currentContent = [];
-          foundSection = true;
-          break;
+    const pushSection = () => {
+      if (currentSection && currentContent.length > 0) {
+        const cleanedContent = cleanAIContent(sanitiseReportOutput(currentContent.join('\n').trim()));
+        if (cleanedContent && cleanedContent.length >= 60) {
+          sections.push({ title: currentSection, content: cleanedContent });
         }
       }
+    };
+    
+    for (const line of lines) {
+      // Detect section headers: ## N. TITLE or **TITLE** or # TITLE
+      const headerMatch = line.match(/^#{1,3}\s+(?:\d+\.\s*)?(.{4,100})$/) || 
+                          line.match(/^\*\*(\d+\.\s*.{4,100})\*\*$/) ||
+                          line.match(/^(\d+)\.\s+([A-Z][A-Z\s&\-–—:]{3,80})$/);
       
-      if (!foundSection && currentSection) {
+      if (headerMatch) {
+        pushSection();
+        const rawTitle = headerMatch[2] || headerMatch[1];
+        currentSection = cleanTitle(rawTitle);
+        currentContent = [];
+      } else if (currentSection) {
         currentContent.push(line);
-      } else if (!foundSection && !currentSection && line.trim()) {
+      } else if (line.trim() && line.trim().length > 20) {
+        // First content before any heading
         if (!currentSection) {
           currentSection = "PRELIMINARY ANALYSIS";
           currentContent = [line];
         }
       }
     }
-    
-    if (currentSection && currentContent.length > 0) {
-      const cleanedContent = cleanAIContent(currentContent.join('\n').trim());
-      if (cleanedContent && cleanedContent.length >= 80) {
-        sections.push({
-          number: String(sections.length + 1),
-          title: currentSection,
-          content: cleanedContent
-        });
-      }
-    }
+    pushSection();
     
     if (sections.length === 0) {
-      sections.push({
-        number: "1",
-        title: "ANALYSIS",
-        content: cleanAIContent(sanitiseReportOutput(analysis))
-      });
+      sections.push({ title: "ANALYSIS", content: cleanAIContent(sanitiseReportOutput(analysis)) });
     }
     
     return { sections };
+  };
+
+  // Merge all reports — CATEGORY-BASED: group by topic, pick best content
+  const mergeAllReports = () => {
+    const availableReports = (allReports || []).filter((r) => !r.content?.aggressive_mode);
+
+    if (!availableReports.length && report?.content) {
+      const parsed = parseAnalysis(report.content);
+      return {
+        sections: parsed.sections.map((s, i) => ({ ...s, number: String(i + 1) })),
+        totalReports: parsed.sections.length ? 1 : 0,
+      };
+    }
+
+    // Report type weights: higher = more detailed = preferred
+    const typeWeight = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
+
+    // Collect all sections from all reports with their source weight
+    const categoryBuckets = new Map(); // categoryId -> [{content, title, weight, length}]
+    const uncategorised = []; // sections that don't match any category
+
+    const sortedReports = [...availableReports].sort((a, b) =>
+      (typeWeight[b.report_type] || 0) - (typeWeight[a.report_type] || 0)
+    );
+
+    // Also include primary report if not in the list
+    const existingIds = new Set(availableReports.map(r => r.report_id));
+    const allToProcess = [...sortedReports];
+    if (report?.content?.analysis && !existingIds.has(report.report_id)) {
+      allToProcess.push(report);
+    }
+
+    allToProcess.forEach((reportItem) => {
+      const weight = typeWeight[reportItem.report_type] || 0;
+      const parsed = parseAnalysis(reportItem.content);
+      
+      parsed.sections.forEach((section) => {
+        const catId = classifySection(section.title);
+        
+        if (catId) {
+          if (!categoryBuckets.has(catId)) categoryBuckets.set(catId, []);
+          categoryBuckets.get(catId).push({
+            content: section.content,
+            title: section.title,
+            weight,
+            length: section.content.length,
+          });
+        } else {
+          uncategorised.push({
+            content: section.content,
+            title: section.title,
+            weight,
+            length: section.content.length,
+          });
+        }
+      });
+    });
+
+    // Build final sections in category order, picking BEST content per category
+    const finalSections = [];
+    
+    MERGE_CATEGORIES.forEach((cat) => {
+      const entries = categoryBuckets.get(cat.id);
+      if (!entries || entries.length === 0) return;
+      
+      // Sort: prefer highest weight (most detailed report), then longest content
+      entries.sort((a, b) => (b.weight - a.weight) || (b.length - a.length));
+      
+      // Take the best entry as the primary content
+      const best = entries[0];
+      
+      // If there are entries from multiple reports, check if lower reports add significant unique content
+      let mergedContent = best.content;
+      
+      if (entries.length > 1) {
+        // Check if other entries have substantial content not in the best entry
+        const bestWords = new Set(best.content.toLowerCase().split(/\s+/));
+        
+        for (let i = 1; i < entries.length; i++) {
+          const other = entries[i];
+          if (other.length < 200) continue; // skip very short sections
+          
+          // Check word overlap - if less than 60% overlap, it has unique content worth adding
+          const otherWords = other.content.toLowerCase().split(/\s+/);
+          const overlap = otherWords.filter(w => bestWords.has(w)).length / otherWords.length;
+          
+          if (overlap < 0.55 && other.content.length > 300) {
+            // Add unique content as a supplement, separated clearly
+            mergedContent += "\n\n" + other.content;
+            // Add the new words to the set to avoid tripling
+            otherWords.forEach(w => bestWords.add(w));
+          }
+        }
+      }
+      
+      if (mergedContent.length >= 100) {
+        finalSections.push({
+          number: String(finalSections.length + 1),
+          title: cat.title,
+          content: mergedContent,
+        });
+      }
+    });
+
+    // Add uncategorised sections that are substantial and unique
+    if (uncategorised.length > 0) {
+      // Deduplicate uncategorised by similarity
+      const usedTitles = new Set(MERGE_CATEGORIES.map(c => c.title.toUpperCase()));
+      const addedContent = new Set();
+      
+      uncategorised
+        .sort((a, b) => (b.weight - a.weight) || (b.length - a.length))
+        .forEach((entry) => {
+          // Skip if title matches an existing category
+          if (usedTitles.has(entry.title.toUpperCase())) return;
+          // Skip very short content
+          if (entry.length < 200) return;
+          // Skip if content is too similar to already added
+          const fingerprint = entry.content.substring(0, 150).toLowerCase();
+          if (addedContent.has(fingerprint)) return;
+          
+          addedContent.add(fingerprint);
+          finalSections.push({
+            number: String(finalSections.length + 1),
+            title: entry.title,
+            content: entry.content,
+          });
+        });
+    }
+
+    return { sections: finalSections, totalReports: availableReports.length };
   };
 
   // Calculate case strength score
@@ -903,83 +896,6 @@ const BarristerView = ({ user }) => {
       </div>
     );
   }
-
-  // Merge all reports — collect distinct content from standard reports
-  const mergeAllReports = () => {
-    const availableReports = (allReports || []).filter((r) => !r.content?.aggressive_mode);
-
-    if (!availableReports.length && report?.content) {
-      const parsed = parseAnalysis(report.content);
-      return {
-        sections: parsed.sections || [],
-        totalReports: parsed.sections?.length ? 1 : 0,
-      };
-    }
-
-    const sectionBuckets = new Map(); // normalTitle -> { title, entries, sources }
-    const reportOrder = [];
-
-    const sortedReports = [...availableReports].sort((a, b) => {
-      const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
-      return (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0);
-    });
-
-    const registerSections = (reportItem, reportLabel, reportRank) => {
-      if (!reportItem?.content?.analysis) return;
-      const parsed = parseAnalysis(reportItem.content);
-      parsed.sections.forEach((section, sectionIndex) => {
-        const normalTitle = section.title.toUpperCase().replace(/[^A-Z]/g, '');
-        if (!sectionBuckets.has(normalTitle)) {
-          sectionBuckets.set(normalTitle, { title: section.title, entries: [], sources: new Set() });
-          reportOrder.push(normalTitle);
-        }
-        const bucket = sectionBuckets.get(normalTitle);
-        bucket.entries.push({ section, reportLabel, reportRank, sectionIndex });
-        bucket.sources.add(reportLabel);
-      });
-    };
-
-    sortedReports.forEach((reportItem, index) => {
-      const reportLabel = `${reportItem.report_type === 'quick_summary' ? 'Summary' : reportItem.report_type === 'full_detailed' ? 'Full' : 'Extensive'}`;
-      registerSections(reportItem, reportLabel, index);
-    });
-
-    const existingIds = new Set(availableReports.map((item) => item.report_id));
-    if (report?.content?.analysis && !existingIds.has(report.report_id)) {
-      const reportLabel = `${report.report_type === 'quick_summary' ? 'Summary' : report.report_type === 'full_detailed' ? 'Full' : 'Extensive'}`;
-      registerSections(report, reportLabel, sortedReports.length + 1);
-    }
-
-    const merged = reportOrder
-      .map((key) => {
-        const bucket = sectionBuckets.get(key);
-        if (!bucket) return null;
-        const mergedContent = selectDistinctParagraphs(bucket.entries, anchorSet || new Set());
-        if (!mergedContent || mergedContent.length < 120) return null;
-        return {
-          title: bucket.title,
-          content: mergedContent,
-          sources: Array.from(bucket.sources)
-        };
-      })
-      .filter(Boolean);
-
-    const synthesisSection = buildSynthesisSection(sortedReports);
-    if (synthesisSection) {
-      merged.unshift(synthesisSection);
-    }
-
-    const ordered = [...merged].sort((a, b) => {
-      const aIndex = getSectionPriority(a.title);
-      const bIndex = getSectionPriority(b.title);
-      if (aIndex === bIndex) return 0;
-      return aIndex - bIndex;
-    });
-
-    const renumbered = ordered.map((section, index) => ({ ...section, number: String(index + 1) }));
-
-    return { sections: renumbered, totalReports: availableReports.length };
-  };
 
   const parsedContent = mergeAllReports();
   const reportCount = allReports.length;
@@ -1309,11 +1225,11 @@ const BarristerView = ({ user }) => {
                     <span className="text-sm text-slate-700">Critical Timeline Events</span>
                   </div>
                 )}
-                {/* AI Analysis sections from merged reports */}
+                {/* Merged AI Analysis sections */}
                 {parsedContent.sections.map((section, idx) => (
                   <div key={idx} className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
                     <span className="text-sm font-bold text-blue-600 w-6">{section.number}</span>
-                    <span className="text-sm text-slate-700 truncate">{section.title}</span>
+                    <span className="text-sm text-slate-700">{section.title}</span>
                   </div>
                 ))}
                 <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
@@ -1817,7 +1733,7 @@ const BarristerView = ({ user }) => {
                   className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
-                  Comprehensive Analysis
+                  Detailed Report Analysis
                 </h2>
                 {parsedContent.totalReports > 1 && (
                   <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-medium">
@@ -1834,7 +1750,7 @@ const BarristerView = ({ user }) => {
                         {section.number}.
                       </span>
                       <h3 
-                        className="text-2xl font-bold text-slate-100 uppercase tracking-wide"
+                        className="text-xl font-bold text-slate-900 uppercase tracking-wide"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
                         {section.title}
