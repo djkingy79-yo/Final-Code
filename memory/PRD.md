@@ -56,6 +56,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Removed the public-page legal image additions after user rejection and restored the clean public-page layout
 - **2026-03-26:** Fixed report/progress data linkage for case `case_76056187ad4f` by restoring the extensive report purple theme, improving sentence extraction, switching progress analysis to `grounds_of_merit`, and syncing all completed standard reports to the real 4-ground data
 - **2026-03-26:** Fixed Barrister recovery for case `case_76056187ad4f` by hardening stale/failed generation handling and completing stuck report `rpt_dcb21f0efc62` successfully
+- **2026-03-26:** Completed full app health check (`/app/test_reports/iteration_92.json`) with public routes, auth protection, navigation, and backend APIs passing
+- **2026-03-26:** Deployment-readiness check passed with no blockers detected for the current FastAPI + React + MongoDB configuration
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
