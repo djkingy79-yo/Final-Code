@@ -35,13 +35,21 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - Timeline analysis, document OCR, progress tracking
 - 20+ informational pages (Legal Framework, Glossary, Forms, Resources, etc.)
 - Force-light CSS enforcement across entire app
-- Dark mode toggle removed from ALL pages (26 Mar 2026)
-- Report Snapshot cards deleted from Landing Page (26 Mar 2026)
-- How It Works page fixed: white step headers, live screenshots, smaller captions, preview cards removed (26 Mar 2026)
-- LawyerDirectory: theme toggle removed, "Prepare Before You Meet a Lawyer" CTA deleted (26 Mar 2026)
-- SuccessStories: footer CTA text fixed for visibility (26 Mar 2026)
-- PageCTA inline variant: fixed for light mode visibility (26 Mar 2026)
-- CaseDetail: gradient button replaced with solid blue (26 Mar 2026)
+
+### 26 Mar 2026 Session:
+- Dark mode toggle removed from ALL 30+ pages
+- ALL CSS variable classes (text-muted-foreground, bg-muted, dark:*) replaced with explicit light-mode equivalents across entire codebase
+- Report Snapshot cards deleted from Landing Page
+- How It Works page: white step headers with coloured accents, mobile-width mockup screenshots (390px), smaller captions, preview blocks removed
+- 7 realistic mockup screenshots created showing actual case data (grounds, reports, progress) at mobile viewport width
+- LawyerDirectory: theme toggle removed, "Prepare Before You Meet a Lawyer" CTA deleted
+- SuccessStories: footer CTA text fixed for visibility, Share My Story button fixed
+- PageCTA inline variant: fixed for light mode visibility (blue-50 background)
+- CaseDetail: gradient button replaced with solid blue
+- LandingPage footer: replaced CSS variables with explicit colours (text-slate-600, bg-white)
+- HowItWorksPage footer: fixed border colour and text colour
+- FAQ: answer text reduced to text-xs
+- Legal Resources: deleted "This page now combines" text, removed Unified State View banner, made Innocence heading bigger (text-2xl), reduced Grants text size
 
 ## Prioritised Backlog
 ### P1

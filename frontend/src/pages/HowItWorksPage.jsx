@@ -469,7 +469,7 @@ const HowItWorksPage = () => {
                       <img
                         src={step.visual.image}
                         alt={step.visual.alt}
-                        className="w-full h-56 sm:h-72 object-cover object-top"
+                        className="w-full h-auto max-h-[500px] object-contain rounded-lg"
                         loading="lazy"
                         decoding="async"
                       />
@@ -653,9 +653,9 @@ const HowItWorksPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-800 mt-8">
+      <footer className="bg-white px-6 py-8 border-t border-slate-200 mt-8">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-red-400 text-xs font-medium">
+          <p className="text-red-600 text-xs font-medium">
             This is NOT legal advice. Appeal Case Manager is an AI-powered research tool. All findings must be verified by a qualified Australian legal professional.
           </p>
         </div>

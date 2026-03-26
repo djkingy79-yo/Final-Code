@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390">
+<title>Mobile Mockups</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #0f172a; }
+
+.mockup { width: 390px; margin: 0 auto 40px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+
+/* Shared header */
+.m-header { background: white; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+.m-header .back { color: #2563eb; font-size: 13px; font-weight: 500; }
+.m-header .badge { background: #dc2626; color: white; font-size: 9px; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
+.m-header .path { color: #64748b; font-size: 11px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-header .btn-green { background: #22c55e; color: white; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; border: none; }
+
+/* Case info bar */
+.m-case { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+.m-case h2 { font-size: 17px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; }
+.m-case .meta { color: #64748b; font-size: 11px; margin-top: 2px; }
+.m-case .tags { display: flex; gap: 4px; margin-top: 6px; }
+.tag { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+.tag-nsw { background: #dbeafe; color: #1d4ed8; }
+.tag-hom { background: #fecaca; color: #dc2626; }
+.tag-mur { background: #fef3c7; color: #92400e; }
+.tag-qld { background: #dcfce7; color: #166534; }
+.tag-ass { background: #fef3c7; color: #92400e; }
+
+/* Tabs */
+.m-tabs { display: flex; overflow-x: auto; border-bottom: 1px solid #e2e8f0; padding: 0 8px; }
+.m-tabs .tab { padding: 10px 10px; font-size: 11px; color: #64748b; border-bottom: 2px solid transparent; white-space: nowrap; }
+.m-tabs .tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 600; }
+.m-tabs .cnt { background: #f1f5f9; color: #64748b; font-size: 9px; padding: 1px 5px; border-radius: 6px; margin-left: 2px; }
+.m-tabs .tab.active .cnt { background: #dbeafe; color: #2563eb; }
+
+/* Content area */
+.m-content { padding: 16px; min-height: 300px; }
+
+/* ---- Dashboard ---- */
+.dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.dash-stat { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+.dash-stat .num { font-size: 24px; font-weight: 800; color: #0f172a; }
+.dash-stat .lbl { font-size: 11px; color: #64748b; }
+.case-row { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.case-row h3 { font-size: 14px; font-weight: 700; color: #0f172a; }
+.case-row .sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+.case-row .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.case-row .pct { font-size: 18px; font-weight: 800; color: #2563eb; }
+.case-row .pct-lbl { font-size: 10px; color: #64748b; }
+
+/* ---- Documents ---- */
+.doc-item { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
+.doc-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; }
+.doc-icon.pdf { background: #fef2f2; color: #dc2626; }
+.doc-icon.doc { background: #eff6ff; color: #2563eb; }
+.doc-item .name { font-size: 13px; font-weight: 600; color: #0f172a; }
+.doc-item .info { font-size: 10px; color: #64748b; margin-top: 1px; }
+.doc-item .status { font-size: 9px; color: #166534; background: #dcfce7; padding: 1px 6px; border-radius: 6px; display: inline-block; margin-top: 2px; }
+
+/* ---- Grounds ---- */
+.g-summary { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px; }
+.g-summary .big { font-size: 42px; font-weight: 800; color: #16a34a; }
+.g-summary .label { font-size: 14px; color: #166534; font-weight: 600; }
+.g-summary .sub { font-size: 11px; color: #64748b; margin-top: 4px; }
+.g-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 4px solid; }
+.g-card.r { border-left-color: #dc2626; }
+.g-card.y { border-left-color: #f59e0b; }
+.g-card.p { border-left-color: #8b5cf6; }
+.g-num { font-size: 10px; font-weight: 700; color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px; }
+.g-num.r { background: #dc2626; }
+.g-num.y { background: #f59e0b; }
+.g-num.p { background: #8b5cf6; }
+.g-card h4 { font-size: 14px; font-weight: 700; color: #0f172a; }
+.g-card .desc { font-size: 11px; color: #475569; margin-top: 4px; line-height: 1.5; }
+.g-card .str { display: inline-block; font-size: 10px; font-weight: 600; margin-top: 6px; padding: 2px 8px; border-radius: 6px; }
+.str.high { background: #dcfce7; color: #166534; }
+.str.med { background: #fef3c7; color: #92400e; }
+.g-card .evidence { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-top: 8px; font-size: 10px; color: #475569; line-height: 1.4; }
+.g-card .evidence strong { color: #0f172a; }
+.blur { filter: blur(5px); user-select: none; pointer-events: none; }
+.paid-hdr { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+.paid-badge { background: #2563eb; color: white; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; }
+.cta-btn { display: block; width: 100%; text-align: center; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; border: none; color: white; margin-top: 12px; }
+.cta-btn.orange { background: #f59e0b; }
+.cta-btn.blue { background: #2563eb; }
+
+/* ---- Reports ---- */
+.rpt-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+.rpt-card .type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; }
+.rpt-card .type.q { color: #16a34a; }
+.rpt-card .type.d { color: #2563eb; }
+.rpt-card .type.e { color: #7c3aed; }
+.rpt-card h4 { font-size: 15px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; margin-top: 4px; }
+.rpt-card .meta { font-size: 10px; color: #64748b; margin-top: 4px; display: flex; gap: 8px; }
+.rpt-card .st { float: right; font-size: 10px; font-weight: 600; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; }
+.rpt-card .btns { display: flex; gap: 8px; margin-top: 10px; }
+.rpt-card .btn { padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; border: none; }
+.rpt-card .btn.pri { background: #2563eb; color: white; }
+.rpt-card .btn.sec { background: white; color: #2563eb; border: 1px solid #bfdbfe; }
+.bv-notice { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 12px; text-align: center; margin-top: 12px; }
+.bv-notice strong { color: #92400e; font-size: 13px; }
+.bv-notice p { color: #92400e; font-size: 11px; margin-top: 4px; }
+
+/* ---- Barrister ---- */
+.bv-badge { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #92400e; margin-bottom: 10px; }
+.bv-section { margin-bottom: 16px; }
+.bv-section h3 { font-size: 14px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+.bv-section p { font-size: 12px; color: #334155; line-height: 1.6; }
+
+/* ---- Progress ---- */
+.pg-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+.pg-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.pg-icon { width: 36px; height: 36px; background: #eff6ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.pg-pct { margin-left: auto; text-align: right; }
+.pg-pct .val { font-size: 24px; font-weight: 800; color: #2563eb; }
+.pg-pct .lbl { font-size: 10px; color: #64748b; }
+.pg-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.pg-fill { height: 100%; background: #22c55e; border-radius: 3px; }
+.ms { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+.ms:last-child { border-bottom: none; }
+.ms-chk { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.ms-chk.done { background: #dcfce7; color: #16a34a; }
+.ms-chk.pending { background: #f1f5f9; color: #94a3b8; }
+.ms h5 { font-size: 13px; font-weight: 600; color: #0f172a; }
+.ms .sub { font-size: 10px; color: #64748b; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<!-- 1: DASHBOARD -->
+<div id="mockup-dashboard" class="mockup">
+  <div style="padding:16px;">
+    <h1 style="font-size:20px;font-weight:800;color:#0f172a;font-family:Georgia,serif;">My Cases</h1>
+    <div class="dash-row" style="margin-top:12px;">
+      <div class="dash-stat"><div class="num">2</div><div class="lbl">Total Cases</div></div>
+      <div class="dash-stat"><div class="num">34</div><div class="lbl">Documents</div></div>
+      <div class="dash-stat"><div class="num">6</div><div class="lbl">Grounds Found</div></div>
+      <div class="dash-stat"><div class="num">5</div><div class="lbl">Reports</div></div>
+    </div>
+    <div class="case-row">
+      <h3>R v Johnson [2023] NSWCCA 45</h3>
+      <div class="sub">Sarah Johnson &bull; Supreme Court of NSW</div>
+      <div class="bottom">
+        <div class="tags"><span class="tag tag-nsw">NSW</span> <span class="tag tag-hom">Homicide</span></div>
+        <div style="text-align:right"><div class="pct">72%</div><div class="pct-lbl">Progress</div></div>
+      </div>
+    </div>
+    <div class="case-row">
+      <h3>R v Martinez [2024] QCA 112</h3>
+      <div class="sub">Carlos Martinez &bull; QLD Court of Appeal</div>
+      <div class="bottom">
+        <div class="tags"><span class="tag tag-qld">QLD</span> <span class="tag tag-ass">Assault</span></div>
+        <div style="text-align:right"><div class="pct">35%</div><div class="pct-lbl">Progress</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2: DOCUMENTS -->
+<div id="mockup-documents" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">R v Johnson [2023] NSWCCA 45</span>
+    <button class="btn-green">Export</button>
+  </div>
+  <div class="m-case">
+    <h2>R v Johnson [2023] NSWCCA 45</h2>
+    <div class="meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-hom">Homicide</span><span class="tag tag-mur">Murder</span></div>
+  </div>
+  <div class="m-tabs">
+    <div class="tab active">Documents <span class="cnt">18</span></div>
+    <div class="tab">Timeline <span class="cnt">26</span></div>
+    <div class="tab">Grounds <span class="cnt">3</span></div>
+    <div class="tab">Notes <span class="cnt">5</span></div>
+    <div class="tab">Reports <span class="cnt">3</span></div>
+  </div>
+  <div class="m-content">
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px;">18 Documents <span style="font-weight:400;color:#64748b;font-size:11px;">&bull; 42 pages analysed</span></div>
+    <div class="doc-item"><div class="doc-icon pdf">PDF</div><div><div class="name">Sentencing Remarks - Johnson.pdf</div><div class="info">24 pages &bull; 15 Jan 2024</div><div class="status">AI Processed</div></div></div>
+    <div class="doc-item"><div class="doc-icon pdf">PDF</div><div><div class="name">Trial Transcript Day 1-3.pdf</div><div class="info">186 pages &bull; 15 Jan 2024</div><div class="status">AI Processed</div></div></div>
+    <div class="doc-item"><div class="doc-icon pdf">PDF</div><div><div class="name">Police Evidence Brief.pdf</div><div class="info">45 pages &bull; 16 Jan 2024</div><div class="status">AI Processed</div></div></div>
+    <div class="doc-item"><div class="doc-icon doc">DOC</div><div><div class="name">Character References.docx</div><div class="info">8 pages &bull; 16 Jan 2024</div><div class="status">AI Processed</div></div></div>
+    <div class="doc-item"><div class="doc-icon pdf">PDF</div><div><div class="name">Forensic Report - Pathology.pdf</div><div class="info">12 pages &bull; 17 Jan 2024</div><div class="status">AI Processed</div></div></div>
+    <div class="doc-item"><div class="doc-icon pdf">PDF</div><div><div class="name">Defence Counsel Submissions.pdf</div><div class="info">18 pages &bull; 17 Jan 2024</div><div class="status">AI Processed</div></div></div>
+  </div>
+</div>
+
+<!-- 3: GROUNDS FREE -->
+<div id="mockup-grounds-free" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">R v Johnson [2023] NSWCCA 45</span>
+  </div>
+  <div class="m-case">
+    <h2>R v Johnson [2023] NSWCCA 45</h2>
+    <div class="meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-hom">Homicide</span></div>
+  </div>
+  <div class="m-tabs">
+    <div class="tab">Documents <span class="cnt">18</span></div>
+    <div class="tab">Timeline <span class="cnt">26</span></div>
+    <div class="tab active">Grounds <span class="cnt">3</span></div>
+    <div class="tab">Notes</div>
+    <div class="tab">Reports <span class="cnt">3</span></div>
+  </div>
+  <div class="m-content">
+    <div class="g-summary">
+      <div class="big">3</div>
+      <div class="label">Grounds of Merit Identified</div>
+      <div class="sub">FREE analysis &mdash; pay $99 to reveal titles and details</div>
+    </div>
+    <div class="g-card r">
+      <span class="g-num r">Ground 1</span>
+      <h4 class="blur">Misdirection on Intent</h4>
+      <div class="desc blur">The trial judge's directions to the jury regarding the element of intent...</div>
+      <span class="str high blur">Strong</span>
+    </div>
+    <div class="g-card y">
+      <span class="g-num y">Ground 2</span>
+      <h4 class="blur">Unreasonable Verdict</h4>
+      <div class="desc blur">Having regard to the whole of the evidence, a reasonable jury...</div>
+      <span class="str med blur">Moderate</span>
+    </div>
+    <div class="g-card p">
+      <span class="g-num p">Ground 3</span>
+      <h4 class="blur">Sentencing Error</h4>
+      <div class="desc blur">The sentence imposed was manifestly excessive having regard to...</div>
+      <span class="str high blur">Strong</span>
+    </div>
+    <button class="cta-btn orange">Investigate Grounds &mdash; $99 AUD</button>
+  </div>
+</div>
+
+<!-- 4: GROUNDS PAID -->
+<div id="mockup-grounds-paid" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">R v Johnson [2023] NSWCCA 45</span>
+  </div>
+  <div class="m-case">
+    <h2>R v Johnson [2023] NSWCCA 45</h2>
+    <div class="meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-hom">Homicide</span></div>
+  </div>
+  <div class="m-tabs">
+    <div class="tab">Docs <span class="cnt">18</span></div>
+    <div class="tab">Timeline</div>
+    <div class="tab active">Grounds <span class="cnt">3</span></div>
+    <div class="tab">Notes</div>
+    <div class="tab">Reports</div>
+  </div>
+  <div class="m-content">
+    <div class="paid-hdr">
+      <div><strong style="color:#1e40af;font-size:12px;">Full Analysis Unlocked</strong><br><span style="font-size:10px;color:#64748b;">3 grounds with detailed analysis</span></div>
+      <span class="paid-badge">PAID $99</span>
+    </div>
+    <div class="g-card r">
+      <span class="g-num r">Ground 1</span>
+      <h4>Misdirection on Intent</h4>
+      <div class="desc">The trial judge's summing-up at pp 214-218 did not explain the distinction between intention and recklessness as elements of murder.</div>
+      <div class="evidence"><strong>Evidence:</strong> Transcript pp 214-218; Defence Submissions Day 9; R v Andar [2015] HCA 40</div>
+      <span class="str high">Strong &mdash; High likelihood</span>
+    </div>
+    <div class="g-card y">
+      <span class="g-num y">Ground 2</span>
+      <h4>Unreasonable Verdict</h4>
+      <div class="desc">A reasonable jury properly instructed could not have been satisfied of guilt beyond reasonable doubt given the forensic evidence.</div>
+      <div class="evidence"><strong>Evidence:</strong> Forensic Report pp 8-12; Witness Statement (Dr. Chen); M v The Queen [1994] HCA 63</div>
+      <span class="str med">Moderate &mdash; Needs strong argument</span>
+    </div>
+    <div class="g-card p">
+      <span class="g-num p">Ground 3</span>
+      <h4>Manifestly Excessive Sentence</h4>
+      <div class="desc">The 22-year NPP is outside the range for comparable NSW offences. Median NPP for similar cases is 14-18 years.</div>
+      <div class="evidence"><strong>Evidence:</strong> R v Loveridge [2014] NSWCCA 120; 15 comparable cases analysed</div>
+      <span class="str high">Strong &mdash; Clear disparity</span>
+    </div>
+  </div>
+</div>
+
+<!-- 5: REPORTS -->
+<div id="mockup-reports" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">R v Johnson [2023] NSWCCA 45</span>
+  </div>
+  <div class="m-case">
+    <h2>R v Johnson [2023] NSWCCA 45</h2>
+    <div class="meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-hom">Homicide</span></div>
+  </div>
+  <div class="m-tabs">
+    <div class="tab">Docs</div>
+    <div class="tab">Timeline</div>
+    <div class="tab">Grounds <span class="cnt">3</span></div>
+    <div class="tab">Notes</div>
+    <div class="tab active">Reports <span class="cnt">3</span></div>
+  </div>
+  <div class="m-content">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px;">3 Reports Generated</div>
+    <div class="rpt-card">
+      <span class="st">Complete</span>
+      <div class="type q">Quick Summary</div>
+      <h4>Case Snapshot &mdash; R v Johnson</h4>
+      <div class="meta"><span>20 Jan 2024</span><span>12 pages</span><span>3 grounds</span></div>
+      <div class="btns"><button class="btn pri">View Report</button><button class="btn sec">Export PDF</button></div>
+    </div>
+    <div class="rpt-card">
+      <span class="st">Complete</span>
+      <div class="type d">Full Detailed</div>
+      <h4>Ground Analysis &mdash; R v Johnson</h4>
+      <div class="meta"><span>21 Jan 2024</span><span>38 pages</span><span>3 grounds + evidence</span></div>
+      <div class="btns"><button class="btn pri">View Report</button><button class="btn sec">Export PDF</button></div>
+    </div>
+    <div class="rpt-card">
+      <span class="st">Complete</span>
+      <div class="type e">Extensive Log</div>
+      <h4>Sentencing Comparison &mdash; R v Johnson</h4>
+      <div class="meta"><span>22 Jan 2024</span><span>64 pages</span><span>15 comparable cases</span></div>
+      <div class="btns"><button class="btn pri">View Report</button><button class="btn sec">Export PDF</button></div>
+    </div>
+    <div class="bv-notice">
+      <strong>Barrister View Available</strong>
+      <p>3 reports complete. Synthesise into one executive brief.</p>
+      <button class="cta-btn blue" style="margin-top:8px;width:auto;display:inline-block;padding:8px 20px;font-size:12px;">Open Barrister View</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6: BARRISTER VIEW -->
+<div id="mockup-barrister" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">Barrister View</span>
+    <button class="btn-green">Export PDF</button>
+  </div>
+  <div style="padding:16px;">
+    <div class="bv-badge">Synthesised from 3 Reports</div>
+    <h1 style="font-size:20px;font-weight:800;color:#0f172a;font-family:Georgia,serif;">Barrister Executive Brief</h1>
+    <p style="color:#64748b;font-size:11px;margin-bottom:16px;">R v Johnson [2023] NSWCCA 45 &bull; 23 Jan 2024</p>
+    <div class="bv-section">
+      <h3>1. Case Overview</h3>
+      <p>Sarah Johnson was convicted of murder on 12 March 2023 and sentenced to 30 years imprisonment with a 22-year non-parole period. Three viable grounds of appeal have been identified through analysis of the trial record, sentencing remarks, and relevant authorities.</p>
+    </div>
+    <div class="bv-section">
+      <h3>2. Primary Ground: Misdirection on Intent</h3>
+      <p>The strongest ground concerns the trial judge's failure to give an adequate Andar direction. The summing-up at pp 214-218 conflated intention and recklessness despite specific defence request. Supported by R v Andar [2015] HCA 40.</p>
+    </div>
+    <div class="bv-section">
+      <h3>3. Sentencing Disparity</h3>
+      <p>Comparative analysis of 15 NSW cases reveals the 22-year NPP falls significantly outside the established range of 14-18 years. R v Loveridge [2014] NSWCCA 120 provides direct authority.</p>
+    </div>
+    <div class="bv-section">
+      <h3>4. Recommended Strategy</h3>
+      <p>Lead with Ground 1 (misdirection) as the primary ground, supported by Ground 3 (manifestly excessive sentence). Ground 2 (unreasonable verdict) should be preserved but presents a higher burden.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 7: PROGRESS -->
+<div id="mockup-progress" class="mockup">
+  <div class="m-header">
+    <span class="back">&larr;</span>
+    <span class="badge">CS</span>
+    <span class="path">R v Johnson [2023] NSWCCA 45</span>
+  </div>
+  <div class="m-case">
+    <h2>R v Johnson [2023] NSWCCA 45</h2>
+    <div class="meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-hom">Homicide</span></div>
+  </div>
+  <div class="m-tabs">
+    <div class="tab">Docs</div>
+    <div class="tab">Timeline</div>
+    <div class="tab">Grounds <span class="cnt">3</span></div>
+    <div class="tab">Notes</div>
+    <div class="tab">Reports</div>
+    <div class="tab active">Progress</div>
+  </div>
+  <div class="m-content">
+    <div class="pg-card">
+      <div class="pg-top">
+        <div class="pg-icon">&#128202;</div>
+        <div><strong style="font-size:13px;">AI Case Progress</strong><br><span style="font-size:10px;color:#64748b;">Updated 23 Jan 2024</span></div>
+        <div class="pg-pct"><div class="val">72%</div><div class="lbl">Progress</div></div>
+      </div>
+      <div class="pg-bar"><div class="pg-fill" style="width:72%"></div></div>
+    </div>
+    <div class="pg-card">
+      <strong style="font-size:13px;display:block;margin-bottom:8px;">Case Milestones</strong>
+      <div class="ms"><div class="ms-chk done">&#10003;</div><div><h5>Case Created</h5><div class="sub">Case file set up with court details</div></div></div>
+      <div class="ms"><div class="ms-chk done">&#10003;</div><div><h5>Documents Uploaded (18)</h5><div class="sub">Transcripts, remarks, forensic reports</div></div></div>
+      <div class="ms"><div class="ms-chk done">&#10003;</div><div><h5>Grounds Identified (3)</h5><div class="sub">3 potential grounds for appeal found</div></div></div>
+      <div class="ms"><div class="ms-chk done">&#10003;</div><div><h5>Reports Generated (3)</h5><div class="sub">Quick, Detailed, and Extensive complete</div></div></div>
+      <div class="ms"><div class="ms-chk pending">&#9675;</div><div><h5>Barrister Review</h5><div class="sub">Have a barrister review the brief</div></div></div>
+      <div class="ms"><div class="ms-chk pending">&#9675;</div><div><h5>Lodge Appeal</h5><div class="sub">Submit within applicable time limit</div></div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
