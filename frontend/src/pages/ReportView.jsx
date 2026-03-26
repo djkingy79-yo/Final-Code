@@ -317,8 +317,8 @@ const MarkdownBlock = ({ text, testId }) => (
           <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline underline-offset-2 hover:text-blue-500 break-words font-medium">{children}</a>
         ),
         table: ({ children }) => (
-          <div className="legal-report-table-wrap" data-testid={`${testId}-table-wrapper`}>
-            <table>{children}</table>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '1rem 0' }} data-testid={`${testId}-table-wrapper`}>
+            <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
           </div>
         ),
       }}
@@ -506,17 +506,18 @@ const ReportView = () => {
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: ${theme.headerBg.includes('emerald') ? '#d1fae5' : theme.headerBg.includes('blue') ? '#dbeafe' : '#ede9fe'}; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; font-size: 12px; font-weight: 700; flex-shrink: 0; }
     .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
-    .section-body h1, .section-body h2, .section-body h3 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 1.2rem 0 0.6rem; }
-    .section-body h2 { font-size: 1.3rem; }
-    .section-body h3 { font-size: 1.1rem; }
+    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 1.2rem 0 0.6rem; }
+    .section-body h2 { font-size: 1.4rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
+    .section-body h3 { font-size: 1.2rem; color: #1e40af; }
+    .section-body h4 { font-size: 1.05rem; color: #334155; }
     .section-body p { margin-bottom: 0.7rem; }
     .section-body strong { color: #0f172a; font-weight: 700; }
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
-    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; word-wrap: break-word; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
+    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; font-size: 12px; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
@@ -542,6 +543,7 @@ const ReportView = () => {
 <body>
   ${notice}
   <div class="report-container">
+    <div class="created-by">Created and Designed by Deb King</div>
     <div class="report-header">
       <div class="header-row">
         <div>
@@ -759,6 +761,13 @@ const ReportView = () => {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <div className={`bg-white rounded-xl border ${theme.borderColor} overflow-hidden shadow-xl`} data-testid="report-content">
 
+          {/* ===== CREATED BY — TOP ===== */}
+          <div className="text-center py-3 bg-white border-b border-slate-200">
+            <p className="text-base font-bold text-slate-800" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Created and Designed by Deb King
+            </p>
+          </div>
+
           {/* ===== COLOUR-CODED REPORT HEADER (matches landing page) ===== */}
           <div className={`${theme.headerBg} text-white p-6 sm:p-8`} data-testid="report-colour-header">
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -958,21 +967,22 @@ const ReportView = () => {
         }
         .legal-report h1,
         .legal-report h2,
-        .legal-report h3 {
+        .legal-report h3,
+        .legal-report h4 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #1e3a8a;
           margin: 1.6rem 0 0.8rem;
         }
-        .legal-report h2 { font-size: 1.5rem; }
-        .legal-report h3 { font-size: 1.25rem; }
+        .legal-report h2 { font-size: 1.6rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 6px; }
+        .legal-report h3 { font-size: 1.35rem; color: #1e40af; }
+        .legal-report h4 { font-size: 1.15rem; color: #334155; font-family: 'Manrope', sans-serif; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
         .legal-report li { margin-bottom: 0.55rem; }
-        .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0; }
         .legal-report table {
           width: 100%;
-          min-width: 600px;
+          min-width: 700px;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
@@ -981,7 +991,7 @@ const ReportView = () => {
           background: #1e3a8a;
           color: #ffffff !important;
           font-weight: 700;
-          white-space: nowrap;
+          font-size: 0.8rem;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
@@ -989,7 +999,7 @@ const ReportView = () => {
           font-size: 0.9rem;
           vertical-align: top;
           color: #0f172a;
-          min-width: 80px;
+          min-width: 90px;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

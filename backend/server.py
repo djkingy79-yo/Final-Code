@@ -3783,10 +3783,21 @@ MATERIAL COUNTS (use these exact numbers in the report):
 - Total timeline events: {len(timeline)}
 - Total grounds identified: {len(grounds)}
 
-Target range 10000-15000 words. This report must feel premium, strategic, and hearing-ready.
+Target range 10000-15000 words. This report must feel premium, strategic, and hearing-ready. This is a $150 AUD paid product — it must deliver AT LEAST twice the depth and detail of the free Quick Summary.
 
-CRITICAL — NO REPETITION FROM QUICK SUMMARY:
-The user already has a Quick Summary covering the case overview, top grounds preview, and basic sentencing comparison. This Full Detailed report must ADVANCE beyond that with deep analysis, complete ground-by-ground strategy, expanded sentencing tables, full outcome matrices, and hearing preparation content NOT present in the Quick Summary. Do NOT rewrite the case overview — jump straight into deep strategic analysis.
+CRITICAL — THIS REPORT MUST BE DRAMATICALLY DIFFERENT FROM THE FREE REPORT:
+The client already has the Quick Summary (free report). If this $150 report looks similar to the free one, the product is worthless and the client will demand a refund. YOU MUST:
+1. Write minimum 500 WORDS per ground (the free report has only 2-3 sentences per ground)
+2. Include full Crown response predictions and detailed rebuttal strategies for every ground
+3. Include a Forensic Case Chronology with 10+ dated events (the free report has none)
+4. Include Document Evidence Digest analysing each uploaded document (the free report has none)
+5. Include 8+ sentencing comparison cases in the table (the free report has only 3)
+6. Include a complete Outcome Options Matrix with detailed analysis (the free report has none)
+7. Include a Submissions Blueprint with oral and written strategies (the free report has none)
+8. Include a step-by-step "How to Start Your Appeal" guide with forms (the free report has none)
+9. Write a 72-hour / 7-day / 28-day action plan (the free report has none)
+10. EVERY section must name specific people, dates, documents, and legislation from THIS case
+Do NOT pad sections with generic legal explanations — every paragraph must reference specific case facts.
 
 SECTION ORDERING: Analysis first, then Strategy, then Practical steps, then Client brief at the end.
 
@@ -3809,7 +3820,7 @@ For EACH ground listed in GROUNDS TO COVER above (no omissions), provide:
 - Viability rating (Strong / Moderate / Weak) with reasoning
 - Likely Crown response and aggressive defence reply strategy
 - **How this ground could assist in a successful appeal** — explain the practical impact if established (e.g., conviction quashed, sentence reduced, retrial ordered)
-- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 500 words per ground.
+- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 600 words per ground. Include case-specific facts in every paragraph.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
 Provide a markdown table with at least 8 comparable sentencing outcomes.

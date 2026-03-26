@@ -1109,6 +1109,13 @@ const BarristerView = ({ user }) => {
             style={{ minHeight: '100vh' }}
             data-testid="barrister-report"
           >
+            {/* Created By — TOP */}
+            <div className="text-center py-3 bg-white border-b border-slate-200">
+              <p className="text-base font-bold text-slate-800" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Created and Designed by Deb King
+              </p>
+            </div>
+
             {/* Cover Header — light mode professional */}
             <div className="bg-slate-800 text-white p-8 sm:p-12 relative overflow-hidden">
               
@@ -1792,8 +1799,8 @@ const BarristerView = ({ user }) => {
                           components={{
                             a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline hover:text-blue-300 break-words">{children}</a>,
                             table: ({ children }) => (
-                              <div className="legal-report-table-wrap">
-                                <table>{children}</table>
+                              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '0.8rem 0' }}>
+                                <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
                               </div>
                             ),
                           }}
@@ -1900,21 +1907,23 @@ const BarristerView = ({ user }) => {
         }
         .legal-report h1,
         .legal-report h2,
-        .legal-report h3 {
+        .legal-report h3,
+        .legal-report h4 {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
-          color: #0f172a;
+          color: #1e3a8a;
           margin: 1.4rem 0 0.7rem;
         }
-        .legal-report h2 { font-size: 1.25rem; }
-        .legal-report h3 { font-size: 1.1rem; }
+        .legal-report h2 { font-size: 1.5rem; border-bottom: 2px solid #1e3a5f; padding-bottom: 4px; }
+        .legal-report h3 { font-size: 1.25rem; color: #1e40af; }
+        .legal-report h4 { font-size: 1.1rem; color: #334155; font-family: 'Manrope', sans-serif; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.2rem; margin: 0.6rem 0; }
         .legal-report li { margin-bottom: 0.45rem; }
         .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
-          min-width: 600px;
+          min-width: 700px;
           border-collapse: collapse;
           margin: 0.8rem 0;
           background: #ffffff;
@@ -1923,7 +1932,7 @@ const BarristerView = ({ user }) => {
           background: #1e3a8a;
           color: #ffffff !important;
           font-weight: 700;
-          white-space: nowrap;
+          font-size: 0.8rem;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
@@ -1931,7 +1940,7 @@ const BarristerView = ({ user }) => {
           font-size: 0.9rem;
           vertical-align: top;
           color: #0f172a;
-          min-width: 80px;
+          min-width: 90px;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;
