@@ -58,9 +58,9 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
-        image: "https://images.unsplash.com/photo-1565094003921-5abbacc16740?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxhdXN0cmFsaWFuJTIwaGlnaCUyMGNvdXJ0JTIwYnVpbGRpbmclMjBqdXN0aWNlfGVufDB8fHx8MTc3MzQyMDYzOXww&ixlib=rb-4.1.0&q=85",
-        alt: "Australian High Court building",
-        caption: "Your case starts with a clean dashboard setup and proper court details."
+        image: "/images/howto/live-step2-new-case.png",
+        alt: "New case form on dashboard",
+        caption: "Create a case from the dashboard — this is the live New Case form."
       },
       whatYouSee: [
         "A clean form asking for: Case title, Defendant name, Court, State/Territory",
@@ -91,9 +91,9 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
-        image: "https://images.unsplash.com/photo-1596784326488-23581279e33d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwxfHxkb2N1bWVudCUyMHVwbG9hZCUyMGxhcHRvcHxlbnwwfHx8Ymx1ZXwxNzc0MzYzNTk3fDA&ixlib=rb-4.1.0&q=85",
-        alt: "Document upload screen on laptop",
-        caption: "Drop files in one place — transcripts, sentencing remarks, exhibits, and expert reports."
+        image: "/images/howto/live-step3-documents.png",
+        alt: "Documents tab with uploaded files",
+        caption: "Upload transcripts and exhibits in the Documents tab — this is the live screen."
       },
       whatYouSee: [
         "A drag-and-drop upload area — drop multiple files at once",
@@ -129,9 +129,9 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
-        image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-        alt: "Legal documents and notes",
-        caption: "Grounds count appears after the AI scans every document in your case file."
+        image: "/images/howto/live-step5-grounds.png",
+        alt: "Grounds tab with identified grounds",
+        caption: "The Grounds tab shows how many appeal grounds were found (titles hidden on Free)."
       },
       whatYouSee: [
         "The total number of potential appeal grounds identified (e.g., '5 Grounds Found')",
@@ -168,9 +168,9 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
-        image: "https://images.unsplash.com/photo-1769029265788-d7921a103403?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHxjb3VydHJvb20lMjBnYXZlbHxlbnwwfHx8fDE3NzQzNjM1OTZ8MA&ixlib=rb-4.1.0&q=85",
-        alt: "Courtroom gavel",
-        caption: "Investigate Grounds unlocks the full legal reasoning and case‑specific evidence links."
+        image: "/images/howto/live-step4-investigate.png",
+        alt: "Investigate grounds paywall",
+        caption: "Investigate Grounds opens the paid analysis screen ($99 AUD) with full ground details."
       },
       whatYouSee: [
         "Detailed analysis of EACH ground with legal basis and relevant legislation",
@@ -208,9 +208,9 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
-        image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-        alt: "Report paperwork on desk",
-        caption: "Reports include sentencing tables, grounds analysis, and court-ready formatting."
+        image: "/images/howto/live-step8-reports.png",
+        alt: "Report selection modal",
+        caption: "Choose the report tier inside the Reports tab — this is the live selection screen."
       },
       preview: {
         title: "Extensive Log — Grounds of Merit",
@@ -240,9 +240,9 @@ const HowItWorksPage = () => {
       textColor: "text-slate-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
-        image: "https://images.unsplash.com/photo-1589307904488-7d60ff29c975?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-        alt: "Barrister desk with legal brief",
-        caption: "Barrister View combines every report into a court‑ready briefing pack."
+        image: "/images/howto/live-step9-barrister.png",
+        alt: "Barrister View screen",
+        caption: "Barrister View (unlocked after 3 reports) combines all reports into one brief."
       },
       preview: {
         title: "Barrister View — Executive Brief",
@@ -252,7 +252,7 @@ const HowItWorksPage = () => {
       whatYouSee: [
         "Table of Contents with clickable section headings",
         "'Synthesised from N reports' badge showing how many reports were combined",
-        "Clean professional layout with Crimson Pro serif font",
+        "Clean professional layout with readable headings and tables",
         "Tables with formatted headers for sentencing comparisons and case law",
         "Export to PDF, Word document, or print for legal consultations",
         "All legislation links are clickable and open to official government sources",
@@ -274,9 +274,9 @@ const HowItWorksPage = () => {
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
-        image: "https://images.unsplash.com/photo-1698768383340-9145c3c9889a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwxfHx0aW1lbGluZSUyMGNhbGVuZGFyJTIwbm90ZXN8ZW58MHx8fGJsdWV8MTc3NDM2MzU5OHww&ixlib=rb-4.1.0&q=85",
-        alt: "Calendar timeline",
-        caption: "Progress tracking keeps deadlines visible and your next steps clear."
+        image: "/images/howto/live-step7-progress.png",
+        alt: "Progress tab with checklist",
+        caption: "The Progress tab shows deadlines and next steps — this is the live screen."
       },
       whatYouSee: [
         "Deadline Tracker — shows key dates and how many days remain",
@@ -354,7 +354,7 @@ const HowItWorksPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-brand">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" data-testid="how-it-works-brand">
               Appeal Case Manager
             </span>
           </Link>
@@ -393,7 +393,7 @@ const HowItWorksPage = () => {
               <PlayCircle className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-title">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-slate-900" data-testid="how-it-works-title">
             How It Works — Step by Step
           </h1>
           <p className="text-slate-700 max-w-3xl mx-auto text-base md:text-lg mb-6" data-testid="how-it-works-hero-description">
@@ -414,7 +414,7 @@ const HowItWorksPage = () => {
       </section>
 
       {/* Step Navigation Tabs */}
-      <div className="sticky top-[72px] z-30 bg-white border-b border-border shadow-sm">
+      <div className="sticky top-[72px] z-30 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 overflow-x-auto">
           <div className="flex items-center gap-1 py-2 min-w-max">
             {detailedSteps.map((step, idx) => {
@@ -461,18 +461,18 @@ const HowItWorksPage = () => {
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm uppercase tracking-wide text-white/90">Step {step.num} of 7</p>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }}>
+                    <p className="text-xs uppercase tracking-wide text-white/90">Step {step.num} of 7</p>
+                    <h2 className="text-3xl sm:text-4xl font-bold text-white">
                       {step.title}
                     </h2>
-                    <p className="text-base text-white/90 mt-1">{step.subtitle}</p>
+                    <p className="text-sm text-white/90 mt-1">{step.subtitle}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-5 sm:p-6 space-y-5 bg-card">
+              <div className="p-5 sm:p-6 space-y-5 bg-white">
                 {/* Description */}
-                <p className="text-base text-foreground leading-relaxed" style={{ fontFamily: "Crimson Pro, serif" }}>
+                <p className="text-sm text-slate-700 leading-relaxed">
                   {step.description}
                 </p>
 
@@ -487,7 +487,7 @@ const HowItWorksPage = () => {
                         decoding="async"
                       />
                     </div>
-                    <div className="text-base text-slate-700">
+                    <div className="text-sm text-slate-700">
                       {step.visual.caption}
                     </div>
                   </div>
@@ -495,8 +495,8 @@ const HowItWorksPage = () => {
 
                 {step.preview && (
                   <div className="mt-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-xl" data-testid={`how-it-works-step-${step.num}-preview`}>
-                    <p className="text-xs uppercase tracking-widest text-slate-600 mb-2">{step.preview.title}</p>
-                    <p className="text-sm text-slate-700 mb-3">{step.preview.subtitle}</p>
+                    <p className="text-sm uppercase tracking-widest text-slate-700 mb-2">{step.preview.title}</p>
+                    <p className="text-xs text-slate-700 mb-3">{step.preview.subtitle}</p>
                     <p className="text-sm text-slate-900 leading-relaxed">{step.preview.body}</p>
                   </div>
                 )}
@@ -505,7 +505,7 @@ const HowItWorksPage = () => {
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Eye className={`w-4 h-4 ${step.textColor}`} />
-                    <h3 className="font-bold text-foreground text-sm uppercase tracking-wide">What You'll See on Screen</h3>
+                    <h3 className="font-bold text-slate-900 text-base uppercase tracking-wide">What You'll See on Screen</h3>
                   </div>
                   <ul className="space-y-2.5">
                     {step.whatYouSee.map((item, i) => (
@@ -513,7 +513,7 @@ const HowItWorksPage = () => {
                         <div className={`w-6 h-6 rounded-full ${step.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                           <span className="text-white text-sm font-bold">{i + 1}</span>
                         </div>
-                        <span className="text-base text-slate-700">{item}</span>
+                        <span className="text-sm text-slate-700">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -521,18 +521,18 @@ const HowItWorksPage = () => {
 
                 {/* What to Upload (Step 2 only) */}
                 {step.whatToUpload && (
-                  <div className="border border-border rounded-xl overflow-hidden">
-                    <div className="bg-muted/50 px-4 py-3 border-b border-border">
-                      <h3 className="font-bold text-foreground text-sm uppercase tracking-wide flex items-center gap-2">
+                  <div className="border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                      <h3 className="font-bold text-slate-900 text-base uppercase tracking-wide flex items-center gap-2">
                         <Upload className="w-4 h-4" /> Recommended Documents to Upload
                       </h3>
                     </div>
-                    <div className="divide-y divide-border">
+                    <div className="divide-y divide-slate-200">
                       {step.whatToUpload.map((doc, i) => (
                         <div key={i} className="flex items-center justify-between px-4 py-3">
                           <div>
-                            <span className="font-semibold text-foreground text-sm">{doc.name}</span>
-                            <p className="text-sm text-slate-600">{doc.desc}</p>
+                            <span className="font-semibold text-slate-900 text-sm">{doc.name}</span>
+                            <p className="text-sm text-slate-700">{doc.desc}</p>
                           </div>
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                             doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700" :
@@ -552,7 +552,7 @@ const HowItWorksPage = () => {
                 <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-amber-500" />
-                    <h3 className="font-bold text-foreground text-sm uppercase tracking-wide">Pro Tips</h3>
+                    <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide">Pro Tips</h3>
                   </div>
                   <ul className="space-y-2">
                     {step.proTips.map((tip, i) => (
@@ -568,8 +568,8 @@ const HowItWorksPage = () => {
                 {step.interactive?.link && (
                   <div className="bg-blue-50 rounded-xl p-5 border border-blue-200 text-center">
                     <MousePointerClick className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                    <p className="text-sm font-semibold text-foreground mb-1">{step.interactive.label}</p>
-                    <p className="text-sm text-slate-600 mb-3">{step.interactive.text}</p>
+                    <p className="text-sm font-semibold text-slate-900 mb-1">{step.interactive.label}</p>
+                    <p className="text-sm text-slate-700 mb-3">{step.interactive.text}</p>
                     <Link to={step.interactive.link}>
                       <Button className="landing-cta-primary" data-testid={`how-it-works-step-${idx + 1}-cta`}>
                         {step.interactive.btnText} <ArrowRight className="w-4 h-4 ml-2" />
@@ -581,12 +581,12 @@ const HowItWorksPage = () => {
                 {/* Interactive Analysis Items */}
                 {step.interactive?.items && (
                   <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
-                    <p className="font-bold text-foreground text-sm uppercase tracking-wide mb-3">{step.interactive.label}</p>
+                    <p className="font-bold text-slate-900 text-sm uppercase tracking-wide mb-3">{step.interactive.label}</p>
                     <div className="grid sm:grid-cols-2 gap-2">
                       {step.interactive.items.map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-border">
+                        <div key={i} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-slate-200">
                           <Gavel className={`w-3.5 h-3.5 ${step.textColor} flex-shrink-0`} />
-                          <span className="text-xs text-foreground">{item}</span>
+                          <span className="text-xs text-slate-900">{item}</span>
                         </div>
                       ))}
                     </div>
@@ -601,7 +601,7 @@ const HowItWorksPage = () => {
         <section className="pt-4" data-testid="how-it-works-pricing-section">
           <div className="text-center mb-8">
             <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Report Pricing</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
               Choose the right report for your needs
             </h2>
           </div>
@@ -616,7 +616,7 @@ const HowItWorksPage = () => {
                 <div className={`${tier.color} text-white p-5 text-center`}>
                   {tier.popular && <span className="bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">MOST POPULAR</span>}
                   <h3 className="text-lg font-bold">{tier.title}</h3>
-                  <p className="text-3xl font-black mt-1" style={{ fontFamily: "Crimson Pro, serif" }}>{tier.price}</p>
+                  <p className="text-3xl font-black mt-1">{tier.price}</p>
                 </div>
                 <div className="p-5">
                   <ul className="space-y-2.5">
@@ -635,7 +635,7 @@ const HowItWorksPage = () => {
 
         {/* CTA */}
         <section className="rounded-2xl border-2 border-blue-200 bg-white p-6 sm:p-8 text-center" data-testid="how-it-works-start-case-section">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
             Ready to begin your appeal?
           </h2>
           <p className="text-base text-slate-700 mb-5 max-w-xl mx-auto">
@@ -657,15 +657,15 @@ const HowItWorksPage = () => {
 
         {/* Quick FAQ */}
         <section className="space-y-3" data-testid="how-it-works-faq">
-          <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>Common Questions</h2>
+          <h2 className="text-xl font-bold text-slate-900">Common Questions</h2>
           {[
             { q: "Do I need a lawyer to use this?", a: "No — Appeal Case Manager is designed for self-represented appellants. However, we strongly recommend consulting a qualified legal professional before taking any action. This tool helps you understand your options and prepare materials." },
             { q: "How long does report generation take?", a: "Quick Summary: 30-60 seconds. Full Detailed: 1-3 minutes. Extensive Log: 2-5 minutes. Complex cases with many documents may take slightly longer." },
             { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. We do not share your case information with anyone. You can delete your case and all associated data at any time." },
             { q: "Can I use this for any Australian state?", a: "Yes — Appeal Case Manager covers all 8 Australian jurisdictions: NSW, VIC, QLD, SA, WA, TAS, NT, and ACT, plus Commonwealth/Federal offences." },
           ].map((faq, i) => (
-            <div key={i} className="bg-card border border-border rounded-xl p-4">
-              <h3 className="font-semibold text-foreground text-sm">{faq.q}</h3>
+            <div key={i} className="bg-card border border-slate-200 rounded-xl p-4">
+              <h3 className="font-semibold text-slate-900 text-sm">{faq.q}</h3>
               <p className="text-base text-slate-700 mt-1">{faq.a}</p>
             </div>
           ))}

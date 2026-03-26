@@ -19,7 +19,7 @@ const HowToUsePage = () => {
       title: "Create Your Account",
       icon: Users,
       color: "blue",
-      image: "/images/howto/step1-signin.png",
+      image: "/images/howto/live-step1-signin.png",
       description: "Sign up for free using your email or Google account. Your data is secure and private.",
       instructions: [
         "Click 'Sign In' or 'Get Started Free' on the homepage",
@@ -34,7 +34,7 @@ const HowToUsePage = () => {
       title: "Your Dashboard",
       icon: FileText,
       color: "emerald",
-      image: "/images/howto/step2-dashboard.png",
+      image: "/images/howto/live-step2-new-case.png",
       description: "Your dashboard shows all your cases, document counts, and quick access to tools.",
       instructions: [
         "Click '+ New Case' in the top right to create a new case",
@@ -50,7 +50,7 @@ const HowToUsePage = () => {
       title: "Upload Your Documents",
       icon: Upload,
       color: "blue",
-      image: "/images/howto/step3-case-detail.png",
+      image: "/images/howto/live-step3-documents.png",
       description: "Upload all relevant case documents — transcripts, evidence, statements, court records.",
       instructions: [
         "Open your case and go to the 'Documents' tab",
@@ -67,7 +67,7 @@ const HowToUsePage = () => {
       title: "Review the AI Timeline",
       icon: Clock,
       color: "purple",
-      image: "/images/howto/step4-timeline.png",
+      image: "/images/howto/live-step4-timeline.png",
       description: "The system automatically creates a chronological timeline of key events from your documents.",
       instructions: [
         "Go to the 'Timeline' tab in your case",
@@ -83,7 +83,7 @@ const HowToUsePage = () => {
       title: "Analyse Potential Grounds",
       icon: BarChart3,
       color: "red",
-      image: "/images/howto/step5-grounds.png",
+      image: "/images/howto/live-step5-grounds.png",
       description: "The AI identifies potential grounds of appeal based on your documents.",
       instructions: [
         "Go to the 'Grounds' tab in your case",
@@ -99,7 +99,7 @@ const HowToUsePage = () => {
       title: "Review Legal Framework",
       icon: Search,
       color: "blue",
-      image: "/images/howto/step6-legal.png",
+      image: "/images/howto/live-step6-legal.png",
       description: "Explore the applicable legislation, appeal procedures, and court forms for your jurisdiction.",
       instructions: [
         "Go to the 'Legal' tab in your case",
@@ -115,7 +115,7 @@ const HowToUsePage = () => {
       title: "Track Your Progress",
       icon: CheckCircle,
       color: "teal",
-      image: "/images/howto/step7-progress.png",
+      image: "/images/howto/live-step7-progress.png",
       description: "Use the Appeal Checklist to track what's been done and what's next.",
       instructions: [
         "Go to the 'Progress' tab",
@@ -131,7 +131,7 @@ const HowToUsePage = () => {
       title: "Generate Reports",
       icon: FileCheck,
       color: "indigo",
-      image: "/images/howto/step8-reports.png",
+      image: "/images/howto/live-step8-reports.png",
       description: "Create professional reports summarising your case and findings.",
       instructions: [
         "Go to the 'Reports' tab",
