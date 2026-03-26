@@ -148,7 +148,7 @@ code, .mono {
 }
 
 .sidebar-item.active {
-  @apply bg-indigo-950 text-white dark:bg-white dark:text-slate-900;
+  @apply bg-blue-700 text-white;
 }
 
 /* Button animations */

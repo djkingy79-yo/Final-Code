@@ -711,25 +711,25 @@ const CaseDetail = ({ user }) => {
               variant="ghost" 
               size="sm" 
               onClick={() => navigate("/dashboard")}
-              className="rounded-xl shrink-0"
+              className="rounded-xl shrink-0 text-slate-700 hover:text-slate-900"
               data-testid="back-btn"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               <span className="hidden sm:inline">Back</span>
             </Button>
             <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-lg gradient-blue flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center shrink-0">
                 <Scale className="w-4 h-4 text-white" />
               </div>
-              <span className="text-muted-foreground hidden sm:inline">/</span>
-              <span className="font-medium text-foreground truncate text-sm sm:text-base">{caseData?.title}</span>
+              <span className="text-slate-500 hidden sm:inline">/</span>
+              <span className="font-medium text-slate-900 truncate text-sm sm:text-base">{caseData?.title}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => navigate("/help")}
-                className="text-muted-foreground hover:text-foreground rounded-xl hidden sm:flex"
+                className="text-slate-700 hover:text-slate-900 rounded-xl hidden sm:flex"
                 data-testid="help-btn"
               >
                 <HelpCircle className="w-4 h-4 mr-1" />
@@ -757,7 +757,7 @@ const CaseDetail = ({ user }) => {
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4">
             <h1 
-              className="text-3xl md:text-4xl font-bold text-foreground tracking-tight"
+              className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
               style={{ fontFamily: 'Crimson Pro, serif' }}
               data-testid="case-title"
             >
@@ -767,17 +767,17 @@ const CaseDetail = ({ user }) => {
               variant="outline"
               size="sm"
               onClick={handleOpenEditCase}
-              className="shrink-0 rounded-xl"
+              className="shrink-0 rounded-xl landing-cta-secondary"
               data-testid="edit-case-btn"
             >
               <Pencil className="w-4 h-4 mr-1.5" />
               Edit
             </Button>
           </div>
-          <div className="flex flex-wrap items-center gap-4 mt-3 text-muted-foreground">
-            <span className="font-medium text-foreground">{caseData?.defendant_name}</span>
+          <div className="flex flex-wrap items-center gap-4 mt-3 text-slate-700">
+            <span className="font-medium text-slate-900">{caseData?.defendant_name}</span>
             {caseData?.case_number && (
-              <span className="font-mono text-sm bg-muted px-2 py-1 rounded-lg">
+              <span className="font-mono text-sm bg-white border border-slate-200 px-2 py-1 rounded-lg">
                 {caseData.case_number}
               </span>
             )}
@@ -785,7 +785,7 @@ const CaseDetail = ({ user }) => {
           </div>
           {caseData?.sentence && (
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 rounded-lg">
+              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 rounded-lg">
                 Sentence: {caseData.sentence}
               </Badge>
             </div>
@@ -794,22 +794,22 @@ const CaseDetail = ({ user }) => {
           {caseData?.offence_category && (
             <div className="flex flex-wrap items-center gap-2 mt-3">
               {caseData?.state && (
-                <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800 uppercase rounded-lg">
+                <Badge variant="outline" className="bg-blue-700 text-white border-blue-700 uppercase rounded-lg">
                   {caseData.state}
                 </Badge>
               )}
-              <Badge variant="outline" className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800 capitalize rounded-lg">
+              <Badge variant="outline" className="bg-blue-700 text-white border-blue-700 capitalize rounded-lg">
                 {caseData.offence_category.replace(/_/g, ' ')}
               </Badge>
               {caseData?.offence_type && (
-                <Badge variant="outline" className="bg-muted text-muted-foreground border-border rounded-lg">
+                <Badge variant="outline" className="bg-white border border-slate-200 text-slate-900 rounded-lg">
                   {caseData.offence_type}
                 </Badge>
               )}
             </div>
           )}
           {caseData?.summary && (
-            <p className="mt-4 text-muted-foreground max-w-3xl">{caseData.summary}</p>
+            <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
           )}
         </div>
 
@@ -817,7 +817,7 @@ const CaseDetail = ({ user }) => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex flex-col gap-4">
             <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-              <TabsList className="bg-muted rounded-xl p-1 inline-flex min-w-max">
+              <TabsList className="bg-white border border-slate-200 rounded-xl p-1 inline-flex min-w-max">
                 <TabsTrigger value="documents" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-documents">
                   <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   <span className="hidden sm:inline">Documents</span><span className="sm:hidden">Docs</span> ({documents.length})
@@ -877,7 +877,7 @@ const CaseDetail = ({ user }) => {
                     onClick={handleGenerateTimeline}
                     disabled={generatingTimeline}
                     variant="outline"
-                    className="bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40 rounded-xl"
+                    className="landing-cta-secondary"
                     data-testid="generate-timeline-btn"
                   >
                     {generatingTimeline ? (
@@ -889,7 +889,7 @@ const CaseDetail = ({ user }) => {
                   </Button>
                   <Button 
                     onClick={() => setShowEventDialog(true)}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+                    className="landing-cta-primary"
                     data-testid="add-event-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -902,7 +902,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleAutoIdentifyGrounds}
                     disabled={autoIdentifying}
-                    className="bg-blue-600 text-white hover:bg-blue-500 rounded-xl"
+                    className="landing-cta-primary"
                     data-testid="auto-identify-btn"
                   >
                     {autoIdentifying ? (
@@ -917,7 +917,7 @@ const CaseDetail = ({ user }) => {
                       setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
                       setShowGroundDialog(true);
                     }}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+                    className="landing-cta-secondary"
                     data-testid="add-ground-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -991,13 +991,13 @@ const CaseDetail = ({ user }) => {
           {/* Grounds of Merit Tab */}
           <TabsContent value="grounds" className="space-y-4" data-tab-content>
             {autoIdentifying && (
-              <div className="border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg overflow-hidden p-4" data-testid="ai-grounds-progress">
+              <div className="border border-blue-200 bg-blue-50 rounded-lg overflow-hidden p-4" data-testid="ai-grounds-progress">
                 <div className="flex items-center gap-3 mb-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">AI Scan in Progress — Identifying Grounds of Appeal</p>
+                  <Loader2 className="w-5 h-5 animate-spin text-blue-700 flex-shrink-0" />
+                  <p className="text-sm font-semibold text-slate-900">AI Scan in Progress — Identifying Grounds of Appeal</p>
                 </div>
-                <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">Analysing your case documents for potential appeal grounds. Please allow time for this process.</p>
-                <div className="w-full h-2 bg-blue-200 dark:bg-blue-800 rounded-full overflow-hidden">
+                <p className="text-xs text-slate-700 mb-3">Analysing your case documents for potential appeal grounds. Please allow time for this process.</p>
+                <div className="w-full h-2 bg-blue-100 rounded-full overflow-hidden">
                   <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
                 </div>
               </div>

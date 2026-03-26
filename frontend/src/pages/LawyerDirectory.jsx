@@ -233,27 +233,28 @@ const LawyerDirectory = () => {
     : lawyerResources.filter(r => r.code.toLowerCase() === selectedState.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="lawyer-directory-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="lawyer-directory-brand-text">
               Appeal Case Manager
             </span>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
+              data-testid="lawyer-directory-theme-toggle"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="lawyer-directory-back-link">
+              <Button className="landing-cta-primary" data-testid="lawyer-directory-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
@@ -268,7 +269,7 @@ const LawyerDirectory = () => {
           <img 
             src="https://images.unsplash.com/photo-1521791055366-0d553872125f?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt="Legal Professionals"
-            className="w-full h-full object-cover opacity-10 dark:opacity-5"
+            className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -277,13 +278,13 @@ const LawyerDirectory = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <Users className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Find a Criminal Appeal Lawyer
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
+          <p className="text-lg text-slate-700 max-w-2xl mx-auto mb-2">
             Connect with qualified criminal law specialists, Legal Aid services, and pro bono resources across Australia.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-700">
             <strong>{lawyerResources.length} states</strong> + National resources
           </p>
         </div>
@@ -298,7 +299,7 @@ const LawyerDirectory = () => {
               className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 selectedState === "all"
                   ? "bg-red-600 text-white shadow-lg"
-                  : "bg-card border border-border text-muted-foreground hover:border-blue-500"
+                  : "bg-card border border-slate-200 text-slate-700 hover:border-blue-500"
               }`}
             >
               All States
@@ -310,7 +311,7 @@ const LawyerDirectory = () => {
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   selectedState === resource.code.toLowerCase()
                     ? `${resource.color} text-white shadow-lg`
-                    : "bg-card border border-border text-muted-foreground hover:border-blue-500"
+                    : "bg-card border border-slate-200 text-slate-700 hover:border-blue-500"
                 }`}
               >
                 {resource.code}
@@ -322,14 +323,14 @@ const LawyerDirectory = () => {
 
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Important Notice */}
-        <div className="mb-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+        <div className="mb-10 p-5 bg-blue-50 border border-blue-200 rounded-xl">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
               <Gavel className="w-6 h-6 text-red-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">Important</h3>
-              <p className="text-blue-800 dark:text-blue-300 text-sm">
+              <h3 className="font-semibold text-blue-900 mb-1">Important</h3>
+              <p className="text-blue-800 text-sm">
                 This directory provides links to legal resources for informational purposes only. 
                 We do not endorse any specific lawyer or firm. Always conduct your own research and 
                 meet with potential lawyers before engaging their services. Many offer free initial consultations.
@@ -372,13 +373,13 @@ const LawyerDirectory = () => {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="bg-card border border-border rounded-xl p-5 h-full hover:shadow-lg hover:border-blue-500/50 transition-all group">
+                <div className="bg-card border border-slate-200 rounded-xl p-5 h-full hover:shadow-lg hover:border-blue-500/50 transition-all group">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-blue-600 transition-colors">{resource.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{resource.description}</p>
+                      <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{resource.name}</h3>
+                      <p className="text-sm text-slate-700 mt-1">{resource.description}</p>
                     </div>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-blue-600 flex-shrink-0 transition-colors" />
+                    <ExternalLink className="w-4 h-4 text-slate-700 group-hover:text-blue-600 flex-shrink-0 transition-colors" />
                   </div>
                 </div>
               </a>
@@ -412,7 +413,7 @@ const LawyerDirectory = () => {
         
         <div className="space-y-6">
           {filteredResources.map((state, index) => (
-            <div key={index} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+            <div key={index} className="bg-card border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
               <div className={`${state.color} text-white px-6 py-4`}>
                 <h3 className="text-xl font-bold flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   <Badge variant="outline" className="bg-white/20 border-white/40 text-white text-sm px-3">
@@ -425,9 +426,9 @@ const LawyerDirectory = () => {
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Legal Aid */}
                   <div className="bg-muted/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <Building2 className="w-4 h-4 text-blue-700" />
                       </div>
                       Legal Aid
                     </h4>
@@ -435,14 +436,14 @@ const LawyerDirectory = () => {
                       href={state.legalAid.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
                     >
                       {state.legalAid.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-muted-foreground mt-2">{state.legalAid.description}</p>
+                    <p className="text-xs text-slate-700 mt-2">{state.legalAid.description}</p>
                     {state.legalAid.phone && (
-                      <p className="text-xs text-foreground mt-3 flex items-center gap-2 font-medium">
+                      <p className="text-xs text-slate-900 mt-3 flex items-center gap-2 font-medium">
                         <Phone className="w-3 h-3 text-emerald-600" />
                         {state.legalAid.phone}
                       </p>
@@ -451,9 +452,9 @@ const LawyerDirectory = () => {
 
                   {/* Bar Association */}
                   <div className="bg-muted/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                        <Gavel className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                        <Gavel className="w-4 h-4 text-purple-700" />
                       </div>
                       Find a Barrister
                     </h4>
@@ -461,19 +462,19 @@ const LawyerDirectory = () => {
                       href={state.barAssociation.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
                     >
                       {state.barAssociation.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-muted-foreground mt-2">{state.barAssociation.description}</p>
+                    <p className="text-xs text-slate-700 mt-2">{state.barAssociation.description}</p>
                   </div>
 
                   {/* Law Society */}
                   <div className="bg-muted/30 p-4 rounded-xl">
-                    <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                        <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                        <Users className="w-4 h-4 text-emerald-700" />
                       </div>
                       Find a Solicitor
                     </h4>
@@ -481,19 +482,19 @@ const LawyerDirectory = () => {
                       href={state.lawSociety.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium flex items-center gap-1"
+                      className="text-blue-700 hover:underline text-sm font-medium flex items-center gap-1"
                     >
                       {state.lawSociety.name}
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <p className="text-xs text-muted-foreground mt-2">{state.lawSociety.description}</p>
+                    <p className="text-xs text-slate-700 mt-2">{state.lawSociety.description}</p>
                   </div>
                 </div>
 
                 {/* Specialists */}
                 {state.specialists.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-border">
-                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                  <div className="mt-6 pt-4 border-t border-slate-200">
+                    <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-3">
                       Criminal Law Specialists
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -503,7 +504,7 @@ const LawyerDirectory = () => {
                           href={specialist.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs bg-muted hover:bg-blue-100 dark:hover:bg-blue-900/30 text-foreground px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
+                          className="text-xs bg-white border border-slate-200 hover:border-blue-300 hover:bg-slate-50 text-slate-900 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                         >
                           {specialist.name}
                           <ExternalLink className="w-3 h-3" />
@@ -524,18 +525,18 @@ const LawyerDirectory = () => {
             alt="Get Started"
             className="w-full h-48 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center justify-center">
             <div className="text-center px-6">
-              <Gavel className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <Gavel className="w-12 h-12 text-blue-700 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Prepare Before You Meet a Lawyer
               </h3>
-              <p className="text-slate-300 mb-6 max-w-md mx-auto">
+              <p className="text-slate-700 mb-6 max-w-md mx-auto">
                 Use our tool to organise your case documents and identify potential grounds for appeal. 
                 Having organised information can save time and money.
               </p>
               <Link to="/">
-                <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-8 shadow-lg">
+                <Button className="landing-cta-primary" data-testid="lawyer-directory-cta">
                   Get Started Free
                 </Button>
               </Link>

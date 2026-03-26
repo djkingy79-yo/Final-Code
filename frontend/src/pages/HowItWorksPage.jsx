@@ -53,8 +53,8 @@ const HowItWorksPage = () => {
       title: "Create Your Case",
       subtitle: "Set up your appeal case in under 2 minutes",
       color: "bg-blue-600",
-      lightColor: "bg-blue-50 dark:bg-blue-900/20",
-      borderColor: "border-blue-200 dark:border-blue-800",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
@@ -86,8 +86,8 @@ const HowItWorksPage = () => {
       title: "Upload Case Documents",
       subtitle: "Drag and drop your transcripts, exhibits, and evidence",
       color: "bg-emerald-600",
-      lightColor: "bg-emerald-50 dark:bg-emerald-900/20",
-      borderColor: "border-emerald-200 dark:border-emerald-800",
+      lightColor: "bg-emerald-50",
+      borderColor: "border-emerald-200",
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
@@ -124,8 +124,8 @@ const HowItWorksPage = () => {
       title: "Find Grounds — FREE",
       subtitle: "AI scans your documents and tells you how many appeal grounds exist",
       color: "bg-purple-600",
-      lightColor: "bg-purple-50 dark:bg-purple-900/20",
-      borderColor: "border-purple-200 dark:border-purple-800",
+      lightColor: "bg-purple-50",
+      borderColor: "border-purple-200",
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
@@ -163,8 +163,8 @@ const HowItWorksPage = () => {
       title: "Investigate Grounds — $99 AUD",
       subtitle: "Get the detailed legal analysis behind each ground",
       color: "bg-indigo-600",
-      lightColor: "bg-indigo-50 dark:bg-indigo-900/20",
-      borderColor: "border-indigo-200 dark:border-indigo-800",
+      lightColor: "bg-indigo-50",
+      borderColor: "border-indigo-200",
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
@@ -203,8 +203,8 @@ const HowItWorksPage = () => {
       title: "Generate Premium Reports",
       subtitle: "Choose your report tier — from quick overview to barrister-level depth",
       color: "bg-red-600",
-      lightColor: "bg-red-50 dark:bg-red-900/20",
-      borderColor: "border-red-200 dark:border-red-800",
+      lightColor: "bg-red-50",
+      borderColor: "border-red-200",
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
@@ -236,9 +236,9 @@ const HowItWorksPage = () => {
       title: "Present in Barrister View",
       subtitle: "Court-ready presentation format for legal professionals",
       color: "bg-slate-700",
-      lightColor: "bg-slate-50 dark:bg-white/50",
-      borderColor: "border-slate-200 dark:border-slate-700",
-      textColor: "text-slate-700 dark:text-slate-300",
+      lightColor: "bg-slate-50",
+      borderColor: "border-slate-200",
+      textColor: "text-slate-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
         image: "https://images.unsplash.com/photo-1589307904488-7d60ff29c975?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
@@ -270,8 +270,8 @@ const HowItWorksPage = () => {
       title: "Track Progress & Take Action",
       subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
       color: "bg-amber-600",
-      lightColor: "bg-amber-50 dark:bg-amber-900/20",
-      borderColor: "border-amber-200 dark:border-amber-800",
+      lightColor: "bg-amber-50",
+      borderColor: "border-amber-200",
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
@@ -318,7 +318,7 @@ const HowItWorksPage = () => {
     {
       title: "Full Detailed Report",
       price: "$150 AUD",
-      color: "bg-blue-900",
+      color: "bg-blue-700",
       badge: "bg-blue-500",
       popular: true,
       features: [
@@ -333,7 +333,7 @@ const HowItWorksPage = () => {
     {
       title: "Extensive Log Report",
       price: "$200 AUD",
-      color: "bg-purple-900",
+      color: "bg-purple-700",
       badge: "bg-purple-500",
       features: [
         "20 sections — everything in Full Detailed, plus 5 exclusives:",
@@ -355,59 +355,59 @@ const HowItWorksPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "Crimson Pro, serif" }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-brand">
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/how-to-use" className="text-slate-400 hover:text-white text-sm transition-colors">How To Use</Link>
-            <Link to="/legal-framework" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Framework</Link>
-            <Link to="/forms" className="text-slate-400 hover:text-white text-sm transition-colors">Forms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white transition-colors" data-testid="how-it-works-theme-toggle">
+            <Link to="/how-to-use" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-how-to-use">How To Use</Link>
+            <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-legal-framework">Legal Framework</Link>
+            <Link to="/forms" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-forms">Forms</Link>
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="how-it-works-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg" data-testid="how-it-works-back-btn">
+              <Button className="landing-cta-primary" data-testid="how-it-works-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="how-it-works-mobile-menu-btn">
+          <button className="md:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="how-it-works-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/how-to-use" className="block py-2 text-slate-300 hover:text-white">How To Use</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
-            <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
-            <Link to="/" className="block py-2 text-blue-400 hover:text-blue-300">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-it-works-mobile-how-to-use">How To Use</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-it-works-mobile-legal-framework">Legal Framework</Link>
+            <Link to="/forms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="how-it-works-mobile-forms">Forms</Link>
+            <Link to="/" className="block py-2 text-blue-700 hover:text-blue-800" data-testid="how-it-works-mobile-back">Back to Home</Link>
           </div>
         )}
       </header>
 
       {/* Hero */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gradient-to-b from-black via-slate-950 to-blue-950 text-white">
+      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
+            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="how-it-works-hero-icon">
               <PlayCircle className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-title">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="how-it-works-title">
             How It Works — Step by Step
           </h1>
-          <p className="text-slate-300 max-w-3xl mx-auto text-base md:text-lg mb-6" data-testid="how-it-works-hero-description">
+          <p className="text-slate-700 max-w-3xl mx-auto text-base md:text-lg mb-6" data-testid="how-it-works-hero-description">
             Follow this detailed guide to go from uploading your first document to having a barrister-ready appeal report. Every screen explained.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2 text-sm text-slate-400">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
               <Clock className="w-4 h-4" /> 7 simple steps
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-400">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-400">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
               <Shield className="w-4 h-4" /> Quick Summary is FREE
             </div>
           </div>
@@ -415,7 +415,7 @@ const HowItWorksPage = () => {
       </section>
 
       {/* Step Navigation Tabs */}
-      <div className="sticky top-[72px] z-30 bg-white dark:bg-white border-b border-border shadow-sm">
+      <div className="sticky top-[72px] z-30 bg-white border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 overflow-x-auto">
           <div className="flex items-center gap-1 py-2 min-w-max">
             {detailedSteps.map((step, idx) => {
@@ -430,7 +430,7 @@ const HowItWorksPage = () => {
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                     activeStep === idx
                       ? `${step.color} text-white`
-                      : "text-muted-foreground hover:bg-muted"
+                      : "text-slate-700 hover:bg-muted"
                   }`}
                   data-testid={`how-it-works-step-tab-${idx + 1}`}
                 >
@@ -456,17 +456,17 @@ const HowItWorksPage = () => {
               data-testid={`how-it-works-step-${idx + 1}`}
             >
               {/* Step Header */}
-              <div className={`bg-gradient-to-r ${step.color === "bg-blue-600" ? "from-blue-600 to-blue-500" : step.color === "bg-emerald-600" ? "from-emerald-600 to-green-500" : step.color === "bg-purple-600" ? "from-purple-600 to-indigo-500" : step.color === "bg-red-600" ? "from-red-600 to-red-500" : step.color === "bg-slate-700" ? "from-slate-700 to-slate-600" : "from-amber-600 to-amber-500"} text-white p-5 sm:p-6`}>
+              <div className={`${step.color} text-white p-5 sm:p-6`}>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm uppercase tracking-wide text-slate-600">Step {step.num} of 7</p>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
+                    <p className="text-sm uppercase tracking-wide text-white/90">Step {step.num} of 7</p>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }}>
                       {step.title}
                     </h2>
-                    <p className="text-base text-slate-700 mt-1">{step.subtitle}</p>
+                    <p className="text-base text-white/90 mt-1">{step.subtitle}</p>
                   </div>
                 </div>
               </div>
@@ -536,10 +536,10 @@ const HowItWorksPage = () => {
                             <p className="text-sm text-slate-600">{doc.desc}</p>
                           </div>
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                            doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
-                            doc.priority === "HIGH" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" :
-                            doc.priority === "MEDIUM" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" :
-                            "bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300"
+                            doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700" :
+                            doc.priority === "HIGH" ? "bg-amber-100 text-amber-700" :
+                            doc.priority === "MEDIUM" ? "bg-blue-100 text-blue-700" :
+                            "bg-blue-100 text-blue-700"
                           }`}>
                             {doc.priority}
                           </span>
@@ -585,7 +585,7 @@ const HowItWorksPage = () => {
                     <p className="font-bold text-foreground text-sm uppercase tracking-wide mb-3">{step.interactive.label}</p>
                     <div className="grid sm:grid-cols-2 gap-2">
                       {step.interactive.items.map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 bg-white dark:bg-white rounded-lg px-3 py-2 border border-border">
+                        <div key={i} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-border">
                           <Gavel className={`w-3.5 h-3.5 ${step.textColor} flex-shrink-0`} />
                           <span className="text-xs text-foreground">{item}</span>
                         </div>
@@ -601,7 +601,7 @@ const HowItWorksPage = () => {
         {/* REPORT PRICING */}
         <section className="pt-4" data-testid="how-it-works-pricing-section">
           <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Report Pricing</p>
+            <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Report Pricing</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground" style={{ fontFamily: "Crimson Pro, serif" }}>
               Choose the right report for your needs
             </h2>
@@ -624,7 +624,7 @@ const HowItWorksPage = () => {
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-base">
                         <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground">{feature}</span>
+                        <span className="text-slate-700">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -635,8 +635,8 @@ const HowItWorksPage = () => {
         </section>
 
         {/* CTA */}
-        <section className="rounded-2xl border-2 border-blue-300 dark:border-blue-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 sm:p-8 text-center" data-testid="how-it-works-start-case-section">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
+        <section className="rounded-2xl border-2 border-blue-200 bg-white p-6 sm:p-8 text-center" data-testid="how-it-works-start-case-section">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
             Ready to begin your appeal?
           </h2>
           <p className="text-base text-slate-700 mb-5 max-w-xl mx-auto">
@@ -644,12 +644,12 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link to="/dashboard">
-              <Button className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-6 h-11" data-testid="how-it-works-start-case-btn">
+              <Button className="landing-cta-primary" data-testid="how-it-works-start-case-btn">
                 Start Your Case Now <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
             <Link to="/forms">
-              <Button variant="outline" className="rounded-xl px-6 h-11" data-testid="how-it-works-view-forms-btn">
+              <Button variant="outline" className="landing-cta-secondary" data-testid="how-it-works-view-forms-btn">
                 <Download className="w-4 h-4 mr-2" /> View Form Templates
               </Button>
             </Link>

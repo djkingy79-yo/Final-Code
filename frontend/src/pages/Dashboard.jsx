@@ -211,10 +211,10 @@ const Dashboard = ({ user }) => {
       <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
         {/* Logo */}
         <div className="flex items-center gap-3 p-6 pb-4">
-          <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center">
             <Scale className="w-5 h-5 text-white" />
           </div>
-          <span className="text-lg font-bold text-foreground tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <span className="text-lg font-bold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Manager
           </span>
         </div>
@@ -223,7 +223,7 @@ const Dashboard = ({ user }) => {
         <nav className="flex-1 overflow-y-auto px-4 pb-4">
           {navGroups.map((group, gi) => (
             <div key={gi} className={gi > 0 ? "mt-6" : ""}>
-              <p className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <p className="px-3 mb-2 text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 {group.title}
               </p>
               <div className="space-y-1">
@@ -249,24 +249,24 @@ const Dashboard = ({ user }) => {
         <div className="p-4 border-t border-border space-y-3">
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors text-muted-foreground text-sm"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 transition-colors text-slate-700 text-sm"
             data-testid="sidebar-theme-toggle"
           >
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             <span className="font-medium">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
           </button>
           
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+          <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl">
             {user?.picture ? (
               <img src={user.picture} alt={user.name} className="w-9 h-9 rounded-full" />
             ) : (
-              <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-primary" />
+              <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-blue-700" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
-              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              <p className="text-sm font-medium text-slate-900 truncate">{user?.name}</p>
+              <p className="text-xs text-slate-700 truncate">{user?.email}</p>
             </div>
           </div>
           
@@ -274,7 +274,7 @@ const Dashboard = ({ user }) => {
             onClick={handleLogout}
             variant="ghost"
             size="sm"
-            className="w-full text-muted-foreground hover:text-foreground hover:bg-muted text-sm"
+            className="w-full text-slate-700 hover:text-slate-900 hover:bg-slate-100 text-sm"
             data-testid="logout-btn"
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -305,12 +305,12 @@ const Dashboard = ({ user }) => {
               </button>
               <div>
                 <h1 
-                  className="text-2xl font-bold text-foreground tracking-tight"
+                  className="text-2xl font-bold text-slate-900 tracking-tight"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   My Cases
                 </h1>
-                <p className="text-sm text-muted-foreground hidden sm:block">
+                <p className="text-sm text-slate-700 hidden sm:block">
                   Manage your criminal appeal cases
                 </p>
               </div>
@@ -330,7 +330,7 @@ const Dashboard = ({ user }) => {
               )}
               <Button
                 onClick={() => setShowNewCaseDialog(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/30 px-6 py-4 text-lg font-semibold"
+                className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/30 px-6 py-4 text-lg font-semibold"
                 data-testid="new-case-btn"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -347,7 +347,7 @@ const Dashboard = ({ user }) => {
           <section>
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-red-600" />
-              <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Overview
               </h2>
             </div>
@@ -360,8 +360,8 @@ const Dashboard = ({ user }) => {
                     <FolderOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">{cases.length}</p>
-                    <p className="text-xs text-muted-foreground">Total Cases</p>
+                    <p className="text-2xl font-bold text-slate-900">{cases.length}</p>
+                    <p className="text-xs text-slate-700">Total Cases</p>
                   </div>
                 </div>
               </div>
@@ -372,10 +372,10 @@ const Dashboard = ({ user }) => {
                     <FileText className="w-5 h-5 text-red-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p className="text-2xl font-bold text-slate-900">
                       {cases.reduce((sum, c) => sum + (c.document_count || 0), 0)}
                     </p>
-                    <p className="text-xs text-muted-foreground">Documents</p>
+                    <p className="text-xs text-slate-700">Documents</p>
                   </div>
                 </div>
               </div>
@@ -386,10 +386,10 @@ const Dashboard = ({ user }) => {
                     <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p className="text-2xl font-bold text-slate-900">
                       {cases.reduce((sum, c) => sum + (c.event_count || 0), 0)}
                     </p>
-                    <p className="text-xs text-muted-foreground">Timeline Events</p>
+                    <p className="text-xs text-slate-700">Timeline Events</p>
                   </div>
                 </div>
               </div>
@@ -401,8 +401,8 @@ const Dashboard = ({ user }) => {
                     <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground mb-1">AI-Powered Analysis</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-sm font-medium text-slate-900 mb-1">AI-Powered Analysis</p>
+                    <p className="text-xs text-slate-700 leading-relaxed">
                       Covers all criminal offences across Australian courts
                     </p>
                   </div>
@@ -424,11 +424,11 @@ const Dashboard = ({ user }) => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <Gavel className="w-5 h-5 text-red-600" />
-                <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Your Cases
                 </h2>
                 {cases.length > 0 && (
-                  <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-slate-700 bg-muted px-2 py-0.5 rounded-full">
                     {filteredCases.length} of {cases.length}
                   </span>
                 )}
@@ -436,7 +436,7 @@ const Dashboard = ({ user }) => {
               
               {/* Search */}
               <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-700" />
                 <Input
                   type="text"
                   placeholder="Search cases..."
@@ -462,18 +462,18 @@ const Dashboard = ({ user }) => {
             ) : filteredCases.length === 0 ? (
               <div className="text-center py-16 card-elevated rounded-2xl">
                 <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-5">
-                  <FolderOpen className="w-8 h-8 text-muted-foreground" />
+                  <FolderOpen className="w-8 h-8 text-slate-700" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {searchQuery ? "No cases found" : "No cases yet"}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-5 max-w-sm mx-auto">
+                <p className="text-sm text-slate-700 mb-5 max-w-sm mx-auto">
                   {searchQuery ? "Try a different search term" : "Create your first case to start analysing appeal grounds"}
                 </p>
                 {!searchQuery && (
                   <Button
                     onClick={() => setShowNewCaseDialog(true)}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+                    className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl"
                     data-testid="empty-new-case-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -493,12 +493,12 @@ const Dashboard = ({ user }) => {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
                         <h3 
-                          className="text-base font-semibold text-foreground group-hover:text-red-600 transition-colors truncate"
+                          className="text-base font-semibold text-slate-900 group-hover:text-red-600 transition-colors truncate"
                           style={{ fontFamily: 'Crimson Pro, serif' }}
                         >
                           {caseItem.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground mt-0.5">{caseItem.defendant_name}</p>
+                        <p className="text-sm text-slate-700 mt-0.5">{caseItem.defendant_name}</p>
                       </div>
                       <Button 
                         variant="destructive" 
@@ -512,10 +512,10 @@ const Dashboard = ({ user }) => {
                     </div>
                     
                     {caseItem.case_number && (
-                      <p className="text-xs text-muted-foreground font-mono mb-3 truncate">{caseItem.case_number}</p>
+                      <p className="text-xs text-slate-700 font-mono mb-3 truncate">{caseItem.case_number}</p>
                     )}
                     
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 text-xs text-slate-700">
                       <div className="flex items-center gap-1.5">
                         <FileText className="w-3.5 h-3.5" />
                         <span>{caseItem.document_count || 0} docs</span>
@@ -527,10 +527,10 @@ const Dashboard = ({ user }) => {
                     </div>
                     
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-slate-700">
                         {formatDate(caseItem.updated_at)}
                       </p>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-red-600 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-red-600 transition-colors" />
                     </div>
                   </div>
                 ))}
@@ -551,7 +551,7 @@ const Dashboard = ({ user }) => {
           <div className="space-y-4 py-4">
             {/* Required Fields */}
             <div className="space-y-4">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Required Information</p>
+              <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Required Information</p>
               <div>
                 <Label htmlFor="title">Case Title *</Label>
                 <Input
@@ -605,7 +605,7 @@ const Dashboard = ({ user }) => {
                 </div>
               </div>
               {newCase.offence_category && (
-                <p className="text-xs text-muted-foreground px-1">
+                <p className="text-xs text-slate-700 px-1">
                   {offenceCategories.find(c => c.id === newCase.offence_category)?.description}
                 </p>
               )}
@@ -613,7 +613,7 @@ const Dashboard = ({ user }) => {
 
             {/* Optional Fields */}
             <div className="space-y-4 pt-4 border-t border-border">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Optional Details</p>
+              <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Optional Details</p>
               <div>
                 <Label htmlFor="offence_type">Specific Offence</Label>
                 <select
@@ -695,7 +695,7 @@ const Dashboard = ({ user }) => {
             </Button>
             <Button 
               onClick={handleCreateCase}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+              className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl"
               data-testid="create-case-submit"
             >
               Create Case

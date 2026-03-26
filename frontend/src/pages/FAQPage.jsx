@@ -240,37 +240,38 @@ const FAQPage = () => {
   const totalQuestions = faqs.reduce((sum, cat) => sum + cat.questions.length, 0);
 
   const colorClasses = {
-    blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
-    red: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
-    blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
-    purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
-    emerald: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
-    slate: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300",
-    orange: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400",
+    blue_mapped: "bg-blue-700 text-white",
+    red: "bg-red-600 text-white",
+    blue: "bg-blue-700 text-white",
+    purple: "bg-purple-700 text-white",
+    emerald: "bg-emerald-700 text-white",
+    slate: "bg-slate-700 text-white",
+    orange: "bg-orange-600 text-white",
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="faq-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-brand-text">
               Appeal Case Manager
             </span>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
+              data-testid="faq-theme-toggle"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="faq-back-link">
+              <Button className="landing-cta-primary" data-testid="faq-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
@@ -285,28 +286,28 @@ const FAQPage = () => {
           <img 
             src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt="Lady Justice"
-            className="w-full h-full object-cover opacity-10 dark:opacity-5"
+            className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
+          <div className="w-20 h-20 rounded-2xl bg-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30" data-testid="faq-hero-icon">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
             Frequently Asked Questions
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
+          <p className="text-lg text-slate-700 max-w-2xl mx-auto mb-2" data-testid="faq-hero-subtitle">
             Find answers to common questions about criminal appeals and using the Appeal Case Manager.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-700" data-testid="faq-hero-count">
             <strong>{totalQuestions} answers</strong> across {faqs.length} categories
           </p>
           
           {/* Search */}
           <div className="max-w-xl mx-auto mt-8 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-700" />
             <Input
               type="text"
               placeholder="Search for any question..."
@@ -327,9 +328,10 @@ const FAQPage = () => {
               onClick={() => setActiveCategory("all")}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeCategory === "all"
-                  ? "bg-red-600 text-white shadow-lg"
-                  : "bg-card border border-border text-muted-foreground hover:border-blue-500"
+                  ? "bg-blue-700 text-white shadow-lg"
+                  : "bg-card border border-border text-slate-700 hover:border-blue-500"
               }`}
+              data-testid="faq-filter-all"
             >
               All Questions ({totalQuestions})
             </button>
@@ -337,10 +339,11 @@ const FAQPage = () => {
               <button
                 key={cat.category}
                 onClick={() => setActiveCategory(cat.category)}
+                data-testid={`faq-filter-${cat.category.toLowerCase().replace(/\s+/g, '-')}`}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                   activeCategory === cat.category
-                    ? "bg-red-600 text-white shadow-lg"
-                    : "bg-card border border-border text-muted-foreground hover:border-blue-500"
+                    ? "bg-blue-700 text-white shadow-lg"
+                    : "bg-card border border-border text-slate-700 hover:border-blue-500"
                 }`}
               >
                 <cat.icon className="w-4 h-4" />
@@ -354,7 +357,7 @@ const FAQPage = () => {
       {/* FAQ Content */}
       <main className="max-w-5xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="faq-content-intro">
-          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Quick Answers</p>
+          <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Quick Answers</p>
           <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Browse by category or expand individual questions
           </h2>
@@ -362,9 +365,9 @@ const FAQPage = () => {
 
         {filteredFaqs.length === 0 ? (
           <Card className="p-12 text-center">
-            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <Search className="w-12 h-12 text-slate-700 mx-auto mb-4" />
             <p className="text-foreground font-semibold">No questions found matching "{searchQuery}"</p>
-            <p className="text-muted-foreground text-sm mt-2">Try a different search term</p>
+            <p className="text-slate-700 text-sm mt-2">Try a different search term</p>
           </Card>
         ) : (
           <div className="space-y-8">
@@ -377,16 +380,16 @@ const FAQPage = () => {
                     alt={category.category}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50 flex items-center px-6">
+                  <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center px-6">
                     <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${colorClasses[category.color]}`}>
+                      <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${colorClasses[category.color]}`} data-testid={`faq-category-icon-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
                         <category.icon className="w-7 h-7" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                        <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                           {category.category}
                         </h2>
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-slate-700 text-sm">
                           {category.questions.length} questions
                         </p>
                       </div>
@@ -409,18 +412,18 @@ const FAQPage = () => {
                           data-testid={`faq-${categoryIndex}-${questionIndex}`}
                         >
                           <span className="font-medium text-foreground pr-4">{item.q}</span>
-                          <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
+                          <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100' : 'bg-white border border-slate-200'}`}>
                             {isOpen ? (
                               <ChevronDown className="w-5 h-5 text-red-600" />
                             ) : (
-                              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                              <ChevronRight className="w-5 h-5 text-slate-700" />
                             )}
                           </div>
                         </button>
                         {isOpen && (
                           <div className="px-5 pb-4">
-                            <div className="bg-muted/50 rounded-xl p-4 border-l-4 border-blue-500">
-                              <p className="text-muted-foreground text-sm leading-relaxed">{item.a}</p>
+                            <div className="bg-white border border-slate-200/50 rounded-xl p-4 border-l-4 border-blue-500">
+                              <p className="text-slate-700 text-sm leading-relaxed">{item.a}</p>
                             </div>
                           </div>
                         )}
@@ -440,23 +443,23 @@ const FAQPage = () => {
             alt="Legal Help"
             className="w-full h-48 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center justify-center">
             <div className="text-center px-6">
-              <MessageCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <MessageCircle className="w-12 h-12 text-blue-700 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Still have questions?
               </h3>
-              <p className="text-slate-300 mb-6 max-w-md mx-auto">
+              <p className="text-slate-700 mb-6 max-w-md mx-auto">
                 Can't find what you're looking for? We're here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to="/contact">
-                  <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-6">
+                <Link to="/contact" data-testid="faq-contact-link">
+                  <Button className="landing-cta-primary" data-testid="faq-contact-btn">
                     Contact Us
                   </Button>
                 </Link>
-                <Link to="/glossary">
-                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-xl px-6">
+                <Link to="/glossary" data-testid="faq-glossary-link">
+                  <Button variant="outline" className="landing-cta-secondary" data-testid="faq-glossary-btn">
                     Legal Glossary
                   </Button>
                 </Link>

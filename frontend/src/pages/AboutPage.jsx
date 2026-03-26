@@ -16,43 +16,44 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-3" data-testid="about-home-link">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="about-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-brand-text">
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/success-stories" className="text-slate-400 hover:text-white text-sm transition-colors">Success Stories</Link>
-            <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">FAQ</Link>
+            <Link to="/success-stories" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-success-stories">Success Stories</Link>
+            <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-legal-terms">Legal Terms</Link>
+            <Link to="/faq" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-faq">FAQ</Link>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
+              data-testid="about-theme-toggle"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="about-back-link">
+              <Button className="landing-cta-primary" data-testid="about-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="md:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="about-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white">Success Stories</Link>
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
-            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="about-mobile-success-stories">Success Stories</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="about-mobile-legal-terms">Legal Terms</Link>
+            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="about-mobile-faq">FAQ</Link>
+            <Link to="/" className="block py-2 text-blue-700 hover:text-blue-800" data-testid="about-mobile-back-home">Back to Home</Link>
           </div>
         )}
       </header>
@@ -70,15 +71,15 @@ const AboutPage = () => {
         
         <div className="max-w-4xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="about-hero-icon">
               <Heart className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">My Story</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3" data-testid="about-hero-eyebrow">My Story</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-hero-title">
             Why I Built This App
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-slate-700 text-lg max-w-2xl mx-auto" data-testid="about-hero-subtitle">
             One woman's fight for justice — built from lived experience, driven by the belief that everyone deserves to know their rights.
           </p>
         </div>
@@ -87,16 +88,16 @@ const AboutPage = () => {
       {/* Business Info */}
       <section className="py-8 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center" data-testid="about-business-info">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Criminal Law Appeal Case Management
             </h2>
-            <p className="text-blue-400 font-medium">Founded by Debra King</p>
-            <p className="text-slate-400 text-sm mt-2">Glenmore Park, NSW, Australia</p>
+            <p className="text-blue-700 font-medium">Founded by Debra King</p>
+            <p className="text-slate-700 text-sm mt-2">Glenmore Park, NSW, Australia</p>
             
-            <div className="mt-6 inline-block bg-blue-900/30 border border-blue-700/50 rounded-xl px-6 py-3">
-              <p className="text-blue-300 text-sm font-medium">
-                <span className="text-blue-400">AUSTRALIAN LAW ONLY</span> — Covers all States & Territories
+            <div className="mt-6 inline-block bg-blue-50 border border-blue-200 rounded-xl px-6 py-3">
+              <p className="text-blue-800 text-sm font-medium">
+                <span className="text-blue-900">AUSTRALIAN LAW ONLY</span> — Covers all States & Territories
               </p>
             </div>
           </div>
@@ -104,18 +105,18 @@ const AboutPage = () => {
       </section>
 
       {/* My Story */}
-      <section className="py-12 px-6 bg-muted/50 dark:bg-muted/20">
+      <section className="py-12 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <Quote className="w-6 h-6 text-red-600 dark:text-blue-400" />
+            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+              <Quote className="w-6 h-6 text-red-600" />
             </div>
             <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
               My Journey
             </h2>
           </div>
 
-          <div className="space-y-6 text-muted-foreground leading-relaxed">
+          <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               I'm not a lawyer — I'm someone who knows firsthand how isolating and confusing the justice system can be.
               <strong className="text-foreground"> I served a considerable amount of time in prison.</strong> During that time, 
@@ -128,7 +129,7 @@ const AboutPage = () => {
               that offers little support once you're sentenced. I served my time not knowing what could have been challenged.
             </p>
 
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
               <p className="text-emerald-800 dark:text-emerald-200 font-medium">
                 <CheckCircle className="w-5 h-5 inline mr-2 -mt-0.5" />
                 <strong>It's now been eight years since I've been free from trouble.</strong>
@@ -163,53 +164,53 @@ const AboutPage = () => {
           </div>
 
           {/* Case Details Card */}
-          <div className="bg-slate-900 dark:bg-slate-950 rounded-2xl p-6 mb-8">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-8" data-testid="about-joshua-card">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <div>
-                <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   R v Joshua Homann
                 </h3>
-                <p className="text-slate-400 text-sm">Supreme Court of New South Wales</p>
+                <p className="text-slate-700 text-sm">Supreme Court of New South Wales</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-lg text-xs font-medium">Trial 2018</span>
-                <span className="px-3 py-1 bg-red-600/20 text-red-400 rounded-lg text-xs font-medium">Murder</span>
+                <span className="px-3 py-1 bg-blue-700 text-white rounded-lg text-xs font-semibold">Trial 2018</span>
+                <span className="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-semibold">Murder</span>
               </div>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6 text-sm">
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Sentence:</span>
-                  <span className="text-white font-semibold">30 years imprisonment</span>
+                  <span className="text-slate-600">Sentence:</span>
+                  <span className="text-slate-900 font-semibold">30 years imprisonment</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Non-Parole Period:</span>
-                  <span className="text-white font-semibold">22 years 6 months</span>
+                  <span className="text-slate-600">Non-Parole Period:</span>
+                  <span className="text-slate-900 font-semibold">22 years 6 months</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Time Served:</span>
-                  <span className="text-blue-400 font-semibold">10+ years</span>
+                  <span className="text-slate-600">Time Served:</span>
+                  <span className="text-blue-700 font-semibold">10+ years</span>
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Initial Advice:</span>
-                  <span className="text-red-400 font-semibold">"No appellant rights"</span>
+                  <span className="text-slate-600">Initial Advice:</span>
+                  <span className="text-red-700 font-semibold">"No appellant rights"</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Grounds Identified:</span>
-                  <span className="text-red-400 font-semibold">"No grounds of merit"</span>
+                  <span className="text-slate-600">Grounds Identified:</span>
+                  <span className="text-red-700 font-semibold">"No grounds of merit"</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Current Status:</span>
-                  <span className="text-emerald-400 font-semibold">APPEAL IN PROGRESS</span>
+                  <span className="text-slate-600">Current Status:</span>
+                  <span className="text-emerald-700 font-semibold">APPEAL IN PROGRESS</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="space-y-6 text-muted-foreground leading-relaxed">
+          <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               <strong className="text-foreground">Josh is my best mate.</strong> He was convicted in 2018 and sentenced to 
               30 years imprisonment with a non-parole period of 22 years and 6 months. For 10 years, he was told he had 
@@ -253,7 +254,7 @@ const AboutPage = () => {
               can help accomplish in a fraction of the time.
             </p>
 
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-400 dark:border-emerald-600 rounded-xl p-6 mt-8">
+            <div className="bg-emerald-50 border-2 border-emerald-400 dark:border-emerald-600 rounded-xl p-6 mt-8">
               <p className="text-emerald-800 dark:text-emerald-200 font-bold text-lg mb-2">
                 <CheckCircle className="w-6 h-6 inline mr-2 -mt-0.5" />
                 Josh now has a full appeal in progress
@@ -270,10 +271,10 @@ const AboutPage = () => {
       </section>
 
       {/* Brad Fletcher's Story */}
-      <section className="py-12 px-6 bg-muted/50 dark:bg-muted/20">
+      <section className="py-12 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -288,27 +289,27 @@ const AboutPage = () => {
                 <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Brad Fletcher
                 </h3>
-                <p className="text-muted-foreground text-sm">Matter Pending</p>
+                <p className="text-slate-700 text-sm">Matter Pending</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-medium">On Remand</span>
-                <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg text-xs font-medium">2+ Years</span>
+                <span className="px-3 py-1 bg-blue-700 text-white rounded-lg text-xs font-semibold">On Remand</span>
+                <span className="px-3 py-1 bg-blue-700 text-white rounded-lg text-xs font-semibold">2+ Years</span>
               </div>
             </div>
             
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-muted-foreground">Charge:</span>
+                <span className="text-slate-700">Charge:</span>
                 <span className="text-foreground font-semibold ml-2">Murder</span>
               </div>
               <div>
-                <span className="text-muted-foreground">Status:</span>
-                <span className="text-red-600 dark:text-blue-400 font-semibold ml-2">Awaiting Trial</span>
+                <span className="text-slate-700">Status:</span>
+                <span className="text-red-600 font-semibold ml-2">Awaiting Trial</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-6 text-muted-foreground leading-relaxed">
+          <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               <strong className="text-foreground">Brad is my best mate for life.</strong> He's been on remand for over 
               two years now, still waiting for his matter to be finalised. Two years of his life in limbo.
@@ -345,7 +346,7 @@ const AboutPage = () => {
             </h2>
           </div>
 
-          <div className="space-y-6 text-muted-foreground leading-relaxed">
+          <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               <strong className="text-foreground">Josh and Brad inspired me to build this.</strong> Watching them — and 
               so many others — struggle through a system that offers little help once you're sentenced or charged, 
@@ -364,12 +365,12 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="bg-gradient-to-r from-blue-500 to-red-600 rounded-2xl p-8 text-center mt-8">
-            <Award className="w-12 h-12 text-white mx-auto mb-4" />
-            <p className="text-white text-xl font-semibold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <div className="bg-white border border-blue-200 rounded-2xl p-8 text-center mt-8" data-testid="about-mission-quote">
+            <Award className="w-12 h-12 text-blue-700 mx-auto mb-4" />
+            <p className="text-slate-900 text-xl font-semibold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               "If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished."
             </p>
-            <p className="text-blue-100 text-sm">
+            <p className="text-slate-700 text-sm">
               People can change. I'm living proof of that — and I created this app to prove it.
             </p>
           </div>
@@ -377,36 +378,36 @@ const AboutPage = () => {
       </section>
 
       {/* Quote */}
-      <section className="py-16 px-6 bg-muted/50 dark:bg-muted/20">
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center">
           <Quote className="w-12 h-12 text-blue-500/30 mx-auto mb-4" />
-          <blockquote className="text-xl text-muted-foreground italic leading-relaxed">
+          <blockquote className="text-xl text-slate-700 italic leading-relaxed">
             "I just wanted to create something that could help others without them spending years working it out themselves. 
             Josh spent 10 years being told he had no options. Ten years. This app found multiple severe grounds in weeks. 
             That's why this exists."
           </blockquote>
           <p className="text-foreground font-semibold mt-4">— Debra King</p>
-          <p className="text-muted-foreground text-sm mt-1">Founder, Appeal Case Manager</p>
+          <p className="text-slate-700 text-sm mt-1">Founder, Appeal Case Manager</p>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-12 px-6 bg-slate-900 dark:bg-slate-950">
+      <section className="py-12 px-6 bg-white" data-testid="about-cta-section">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Explore Your Options?
           </h2>
-          <p className="text-slate-400 mb-8">
+          <p className="text-slate-700 mb-8">
             Whether you're helping yourself, a family member, or a client — this tool is here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/">
-              <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
+            <Link to="/" data-testid="about-cta-get-started-link">
+              <Button className="landing-cta-primary" data-testid="about-cta-get-started-btn">
                 Get Started Free
               </Button>
             </Link>
-            <Link to="/success-stories">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-xl px-8 py-5">
+            <Link to="/success-stories" data-testid="about-cta-success-stories-link">
+              <Button variant="outline" className="landing-cta-secondary" data-testid="about-cta-success-stories-btn">
                 Read Success Stories
               </Button>
             </Link>
@@ -415,15 +416,15 @@ const AboutPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-950 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-700 text-sm">
             © 2025 Appeal Case Manager. All rights reserved.
           </p>
-          <p className="text-slate-500 text-xs mt-2">
+          <p className="text-slate-600 text-xs mt-2">
             Created by Debra King — Glenmore Park, NSW
           </p>
-          <p className="text-red-500 text-xs mt-2 font-medium">
+          <p className="text-red-600 text-xs mt-2 font-medium">
             Australian Law Only • Not Legal Advice • Always consult a qualified legal professional
           </p>
         </div>

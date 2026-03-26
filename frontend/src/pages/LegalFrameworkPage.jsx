@@ -294,58 +294,58 @@ const LegalFrameworkPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-3" data-testid="legal-framework-home-link">
+            <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="legal-framework-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-framework-brand-text">
               Appeal Case Manager
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/caselaw-search" className="text-slate-400 hover:text-white text-sm transition-colors">Caselaw Search</Link>
-            <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors">Resources</Link>
-            <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <Link to="/caselaw-search" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="legal-framework-nav-caselaw">Caselaw Search</Link>
+            <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="legal-framework-nav-resources">Resources</Link>
+            <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="legal-framework-nav-glossary">Legal Terms</Link>
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="legal-framework-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Link to="/" data-testid="legal-framework-back-link">
+              <Button className="landing-cta-primary" data-testid="legal-framework-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
             </Link>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="md:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} data-testid="legal-framework-mobile-menu-btn">
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <Link to="/caselaw-search" className="block py-2 text-slate-300 hover:text-white">Caselaw Search</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white">Resources</Link>
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
-            <Link to="/" className="block py-2 text-blue-500 hover:text-blue-400">Back to Home</Link>
+          <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/caselaw-search" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="legal-framework-mobile-caselaw">Caselaw Search</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="legal-framework-mobile-resources">Resources</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="legal-framework-mobile-glossary">Legal Terms</Link>
+            <Link to="/" className="block py-2 text-blue-700 hover:text-blue-800" data-testid="legal-framework-mobile-back">Back to Home</Link>
           </div>
         )}
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+      <section className="py-12 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center">
               <BookOpen className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Legal Framework & Legislation
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="text-slate-700 max-w-2xl mx-auto">
             Direct links to criminal legislation, evidence acts, appeal provisions, and human rights laws across all Australian jurisdictions.
           </p>
         </div>
@@ -355,19 +355,19 @@ const LegalFrameworkPage = () => {
 
         {/* Criminal Law Section */}
           <div id="criminal" className="space-y-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
-              <h2 className="font-bold text-foreground mb-2">Criminal Law by Jurisdiction</h2>
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+              <h2 className="font-bold text-slate-900 mb-2">Criminal Law by Jurisdiction</h2>
+              <p className="text-sm text-slate-700">
                 Each state and territory has its own criminal legislation. The Commonwealth also has criminal laws for federal offences. 
                 Click on a jurisdiction to see all relevant acts.
               </p>
             </div>
 
             {Object.entries(criminalLegislation).map(([key, state]) => (
-              <div key={key} className="bg-card border border-border rounded-xl overflow-hidden">
+              <div key={key} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
                 <button
                   onClick={() => setExpandedState(expandedState === key ? null : key)}
-                  className="w-full px-5 py-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                  className="w-full px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold`}
@@ -375,10 +375,10 @@ const LegalFrameworkPage = () => {
                     >
                       {state.abbrev}
                     </div>
-                    <span className="font-semibold text-foreground">{state.name}</span>
-                    <span className="text-xs text-muted-foreground">({state.acts.length} acts)</span>
+                    <span className="font-semibold text-slate-900">{state.name}</span>
+                    <span className="text-xs text-slate-700">({state.acts.length} acts)</span>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${expandedState === key ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-slate-700 transition-transform ${expandedState === key ? 'rotate-180' : ''}`} />
                 </button>
                 {expandedState === key && (
                   <div className="px-5 pb-5 space-y-3">
@@ -388,14 +388,14 @@ const LegalFrameworkPage = () => {
                         href={act.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-3 bg-muted/50 hover:bg-muted rounded-lg transition-colors"
+                        className="block p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <span className="font-medium text-foreground text-sm">{act.name}</span>
-                            <p className="text-xs text-muted-foreground mt-1">{act.desc}</p>
+                            <span className="font-medium text-slate-900 text-sm">{act.name}</span>
+                            <p className="text-xs text-slate-700 mt-1">{act.desc}</p>
                           </div>
-                          <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <ExternalLink className="w-4 h-4 text-slate-700 shrink-0" />
                         </div>
                       </a>
                     ))}
@@ -407,9 +407,9 @@ const LegalFrameworkPage = () => {
 
         {/* Evidence Acts Section */}
           <div id="evidence" className="space-y-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
-              <h2 className="font-bold text-foreground mb-2">Evidence Acts</h2>
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+              <h2 className="font-bold text-slate-900 mb-2">Evidence Acts</h2>
+              <p className="text-sm text-slate-700">
                 Evidence Acts govern what evidence can be used in court, how it must be presented, and rules around witnesses, 
                 hearsay, admissions, and more. Understanding these is crucial for appeals based on improper evidence admission.
               </p>
@@ -422,38 +422,38 @@ const LegalFrameworkPage = () => {
                   href={act.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block p-4 bg-card border border-border rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
+                  className="block p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs font-bold text-muted-foreground uppercase">{key.toUpperCase()}</span>
-                      <p className="font-medium text-foreground text-sm mt-1">{act.name}</p>
+                      <span className="text-xs font-bold text-slate-700 uppercase">{key.toUpperCase()}</span>
+                      <p className="font-medium text-slate-900 text-sm mt-1">{act.name}</p>
                     </div>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                    <ExternalLink className="w-4 h-4 text-slate-700" />
                   </div>
                 </a>
               ))}
             </div>
 
             {/* Key Evidence Concepts */}
-            <div className="mt-8 bg-card border border-border rounded-xl p-6">
-              <h3 className="font-bold text-foreground mb-4">Key Evidence Concepts</h3>
+            <div className="mt-8 bg-white border border-slate-200 rounded-xl p-6">
+              <h3 className="font-bold text-slate-900 mb-4">Key Evidence Concepts</h3>
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Admissibility</h4>
-                  <p className="text-muted-foreground">Evidence must be relevant and not excluded by a rule (e.g., hearsay, opinion). Improperly admitted evidence is a common appeal ground.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Admissibility</h4>
+                  <p className="text-slate-700">Evidence must be relevant and not excluded by a rule (e.g., hearsay, opinion). Improperly admitted evidence is a common appeal ground.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Hearsay Rule</h4>
-                  <p className="text-muted-foreground">Generally, out-of-court statements cannot be used to prove what they assert. There are exceptions (e.g., business records, dying declarations).</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Hearsay Rule</h4>
+                  <p className="text-slate-700">Generally, out-of-court statements cannot be used to prove what they assert. There are exceptions (e.g., business records, dying declarations).</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Opinion Evidence</h4>
-                  <p className="text-muted-foreground">Witnesses generally can't give opinions, only facts. Expert witnesses are an exception but must be properly qualified.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Opinion Evidence</h4>
+                  <p className="text-slate-700">Witnesses generally can't give opinions, only facts. Expert witnesses are an exception but must be properly qualified.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-2">Tendency & Coincidence</h4>
-                  <p className="text-muted-foreground">Evidence of past conduct to show a person acted in a particular way. Strict rules apply, and improper admission is an appeal ground.</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">Tendency & Coincidence</h4>
+                  <p className="text-slate-700">Evidence of past conduct to show a person acted in a particular way. Strict rules apply, and improper admission is an appeal ground.</p>
                 </div>
               </div>
             </div>
@@ -461,30 +461,30 @@ const LegalFrameworkPage = () => {
 
         {/* Appeal Legislation Section */}
           <div id="appeals" className="space-y-4">
-            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4 mb-6">
-              <h2 className="font-bold text-foreground mb-2">Appeal Legislation</h2>
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
+              <h2 className="font-bold text-slate-900 mb-2">Appeal Legislation</h2>
+              <p className="text-sm text-slate-700">
                 These acts govern how criminal appeals work — the grounds you can rely on, time limits, procedures, and the powers of the appeal court.
               </p>
             </div>
 
             {Object.entries(appealActs).map(([key, acts]) => (
               <div key={key} className="space-y-2">
-                <h3 className="font-semibold text-foreground uppercase text-sm">{key.toUpperCase()}</h3>
+                <h3 className="font-semibold text-slate-900 uppercase text-sm">{key.toUpperCase()}</h3>
                 {acts.map((act, i) => (
                   <a 
                     key={i}
                     href={act.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-4 bg-card border border-border rounded-xl hover:border-purple-500 hover:shadow-md transition-all"
+                    className="block p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-500 hover:shadow-md transition-all"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-medium text-foreground text-sm">{act.name}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{act.desc}</p>
+                        <p className="font-medium text-slate-900 text-sm">{act.name}</p>
+                        <p className="text-xs text-slate-700 mt-1">{act.desc}</p>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <ExternalLink className="w-4 h-4 text-slate-700 shrink-0" />
                     </div>
                   </a>
                 ))}
@@ -492,19 +492,19 @@ const LegalFrameworkPage = () => {
             ))}
 
             {/* Appeal Basics */}
-            <div className="mt-8 bg-card border border-border rounded-xl p-6">
-              <h3 className="font-bold text-foreground mb-4">Appeal Basics</h3>
-              <div className="space-y-4 text-sm text-muted-foreground">
+            <div className="mt-8 bg-white border border-slate-200 rounded-xl p-6">
+              <h3 className="font-bold text-slate-900 mb-4">Appeal Basics</h3>
+              <div className="space-y-4 text-sm text-slate-700">
                 <div>
-                  <h4 className="font-semibold text-foreground">Time Limits</h4>
+                  <h4 className="font-semibold text-slate-900">Time Limits</h4>
                   <p>Generally 28 days from conviction/sentence to file Notice of Intention to Appeal. Extensions possible but not guaranteed.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Leave to Appeal</h4>
+                  <h4 className="font-semibold text-slate-900">Leave to Appeal</h4>
                   <p>Some appeals (especially sentence appeals) require the court's permission. The court grants leave if there's an arguable case.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Grounds</h4>
+                  <h4 className="font-semibold text-slate-900">Grounds</h4>
                   <p>You must identify specific legal errors — not just disagree with the outcome. Common grounds: misdirection, procedural unfairness, manifestly excessive sentence.</p>
                 </div>
               </div>
@@ -513,9 +513,9 @@ const LegalFrameworkPage = () => {
 
         {/* Human Rights Section */}
           <div id="rights" className="space-y-6">
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 mb-6">
-              <h2 className="font-bold text-foreground mb-2">Human Rights & Fair Trial</h2>
-              <p className="text-sm text-muted-foreground">
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
+              <h2 className="font-bold text-slate-900 mb-2">Human Rights & Fair Trial</h2>
+              <p className="text-sm text-slate-700">
                 Australia has signed international treaties protecting your rights. While not always directly enforceable, 
                 courts must consider these when interpreting Australian law. Some states also have their own human rights legislation.
               </p>
@@ -523,24 +523,24 @@ const LegalFrameworkPage = () => {
 
             {/* International */}
             <div>
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <Globe className="w-5 h-5 text-blue-600" />
                 International Human Rights
               </h3>
               <div className="space-y-4">
                 {humanRights.international.map((treaty, i) => (
-                  <div key={i} className="bg-card border border-border rounded-xl overflow-hidden">
-                    <div className="px-5 py-4 bg-blue-50 dark:bg-blue-900/20 border-b border-border flex items-center justify-between">
-                      <h4 className="font-semibold text-foreground">{treaty.name}</h4>
+                  <div key={i} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="px-5 py-4 bg-blue-50 border-b border-slate-200 flex items-center justify-between">
+                      <h4 className="font-semibold text-slate-900">{treaty.name}</h4>
                       <a href={treaty.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm flex items-center gap-1">
                         View Full Text <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                     <div className="p-5 space-y-2">
                       {treaty.articles.map((art, j) => (
-                        <div key={j} className="flex items-start gap-3 p-2 bg-muted/50 rounded-lg">
-                          <span className="text-xs font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded">{art.num}</span>
-                          <span className="text-sm text-muted-foreground">{art.desc}</span>
+                        <div key={j} className="flex items-start gap-3 p-2 bg-slate-50 rounded-lg">
+                          <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded">{art.num}</span>
+                          <span className="text-sm text-slate-700">{art.desc}</span>
                         </div>
                       ))}
                     </div>
@@ -551,27 +551,27 @@ const LegalFrameworkPage = () => {
 
             {/* Australian */}
             <div>
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <Shield className="w-5 h-5 text-emerald-600" />
                 Australian Human Rights Laws
               </h3>
               <div className="space-y-4">
                 {humanRights.australian.map((act, i) => (
-                  <div key={i} className="bg-card border border-border rounded-xl overflow-hidden">
-                    <div className="px-5 py-4 bg-emerald-50 dark:bg-emerald-900/20 border-b border-border flex items-center justify-between">
-                      <h4 className="font-semibold text-foreground">{act.name}</h4>
+                  <div key={i} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="px-5 py-4 bg-emerald-50 border-b border-slate-200 flex items-center justify-between">
+                      <h4 className="font-semibold text-slate-900">{act.name}</h4>
                       <a href={act.url} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline text-sm flex items-center gap-1">
                         View Act <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
                     <div className="p-5">
-                      <p className="text-sm text-muted-foreground mb-3">{act.desc}</p>
+                      <p className="text-sm text-slate-700 mb-3">{act.desc}</p>
                       {act.articles && (
                         <div className="space-y-2">
                           {act.articles.map((art, j) => (
-                            <div key={j} className="flex items-start gap-3 p-2 bg-muted/50 rounded-lg">
-                              <span className="text-xs font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded">{art.num}</span>
-                              <span className="text-sm text-muted-foreground">{art.desc}</span>
+                            <div key={j} className="flex items-start gap-3 p-2 bg-slate-50 rounded-lg">
+                              <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded">{art.num}</span>
+                              <span className="text-sm text-slate-700">{art.desc}</span>
                             </div>
                           ))}
                         </div>
@@ -588,7 +588,7 @@ const LegalFrameworkPage = () => {
       {/* Footer */}
       <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800 mt-12">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-700 text-sm">
             All legislation links go to official government sources.
           </p>
           <p className="text-red-400 text-xs mt-2 font-medium">
