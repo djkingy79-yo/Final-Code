@@ -3760,14 +3760,16 @@ MATERIAL COUNTS (use these exact numbers in the report):
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a PAID Full Detailed Report ($150 AUD). The user has ALREADY received a FREE Quick Summary that covered: case snapshot, primary issues identified, top potential grounds (preview), key legislation & similar cases (preview), sentencing overview (3 comparator cases), and appeal outlook.
+You are generating a PAID Full Detailed Report ($150 AUD). This report is the PRIMARY product the client is paying for.
 
-THIS REPORT MUST BUILD ON — NOT REPEAT — THE QUICK SUMMARY. Do NOT re-state the same overview-level analysis. Instead:
-- Where the Quick Summary previewed 3-5 grounds, THIS report must provide FULL analysis with Crown response, rebuttal strategy, and appeal impact for EVERY viable ground.
-- You MUST include every ground listed in GROUNDS TO COVER (no omissions) with a minimum of 500 words per ground.
-- Where the Quick Summary listed 3 sentencing comparators, THIS report must provide 8+ with detailed outcome analysis paragraphs.
-- Where the Quick Summary gave a 2-paragraph appeal outlook, THIS report must provide full outcome pathway analysis, submissions blueprint, and actionable steps.
-- Every section must deliver NEW insights, deeper strategy, and hearing-ready material that was NOT in the Quick Summary.
+CRITICAL RULES FOR THIS REPORT:
+1. The client ALREADY has a FREE Quick Summary. If ANY section in this report resembles the Quick Summary, the product is WORTHLESS.
+2. Every section must be 3x MORE detailed than the equivalent free report section.
+3. Every paragraph must cite SPECIFIC case facts: names (Joshua Homann, Kirralee Paepaerei, Justice McCallum), dates (21 September 2015, 25 May 2018), section numbers (s.23A Crimes Act 1900 (NSW)), and document names.
+4. NEVER write generic legal explanations. WRONG: "The appeal process involves reviewing the original decision." RIGHT: "Homann's appeal to the NSWCCA challenges the 30-year sentence imposed by Justice McCallum on 25 May 2018 for the murder of Kirralee Paepaerei, arguing that the non-parole period of 22 years and 6 months is manifestly excessive when compared with..."
+5. EVERY ground listed in GROUNDS TO COVER MUST be covered in FULL in Sections 4, 7, 11, and 15. If there are 5 grounds, write 5 full analyses. NO OMISSIONS.
+6. Write in FLOWING PARAGRAPHS, not bullet points. Bullet points are ONLY acceptable inside tables or checklists.
+7. Each section heading must be followed by AT LEAST 4-6 detailed paragraphs of substantive analysis.
 
 Include assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
 CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
@@ -3775,7 +3777,7 @@ CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop.
 
 {case_context}
 
-GROUNDS TO COVER (MUST INCLUDE ALL — if 9 grounds, write 9 full analyses):
+GROUNDS TO COVER — YOU MUST INCLUDE EVERY SINGLE ONE (if 5 grounds, write 5 full analyses):
 {grounds_enumerated}
 
 MATERIAL COUNTS (use these exact numbers in the report):
@@ -3783,128 +3785,90 @@ MATERIAL COUNTS (use these exact numbers in the report):
 - Total timeline events: {len(timeline)}
 - Total grounds identified: {len(grounds)}
 
-Target range 12000-18000 words. This report must feel premium, strategic, and hearing-ready. This is a $150 AUD paid product — it must deliver AT LEAST twice the depth and detail of the free Quick Summary.
+TARGET: 15,000-20,000 words minimum. This is a $150 AUD paid product. It must be AT LEAST 3x the depth of the free Quick Summary in EVERY section.
 
-CRITICAL — THIS REPORT MUST BE DRAMATICALLY DIFFERENT FROM THE FREE REPORT:
-The client already has the Quick Summary (free report). If this $150 report looks similar to the free one, the product is worthless and the client will demand a refund. YOU MUST:
-1. Write minimum 500 WORDS per ground (the free report has only 2-3 sentences per ground)
-2. Include full Crown response predictions and detailed rebuttal strategies for every ground
-3. Include a Forensic Case Chronology with 10+ dated events (the free report has none)
-4. Include Document Evidence Digest analysing each uploaded document (the free report has none)
-5. Include 8+ sentencing comparison cases in the table (the free report has only 3)
-6. Include a complete Outcome Options Matrix with detailed analysis (the free report has none)
-7. Include a Submissions Blueprint with oral and written strategies (the free report has none)
-8. Include a step-by-step "How to Start Your Appeal" guide with forms (the free report has none)
-9. Write a 72-hour / 7-day / 28-day action plan (the free report has none)
-10. EVERY section must name specific people, dates, documents, and legislation from THIS case
-Do NOT pad sections with generic legal explanations — every paragraph must reference specific case facts.
+ANTI-LAZINESS RULES — VIOLATIONS MAKE THE REPORT WORTHLESS:
+1. Section 1 (Executive Brief): MUST be 4-6 paragraphs with strategic assessment, NOT just a case snapshot rehash. Name the strongest ground, the weakest ground, the most likely outcome, and the recommended immediate action.
+2. Section 2 (Forensic Chronology): MUST have 12+ dated events in FULL PARAGRAPH FORMAT (not bullet points). Each entry: date, what happened, source document, legal significance. Write 3-4 sentences per event minimum.
+3. Section 3 (Document Evidence Digest): MUST analyse EVERY uploaded document individually with key extracts, reliability, and appellate relevance. One paragraph per document minimum.
+4. Section 4 (Grounds Portfolio): MUST cover EVERY ground with 800+ words each. Include: legal threshold, case-specific facts, viability rating with reasoning, Crown response prediction (what will the prosecution argue?), defence rebuttal strategy, practical impact if ground succeeds. Write as flowing prose, NOT bullets.
+5. Section 7 (Outcome Options): MUST write 300+ words for EACH outcome pathway (conviction quashed, retrial, downgrade, sentence reduction, appeal dismissed). Reference which specific grounds support each outcome.
+6. Section 11 (How to Argue): MUST cover EVERY ground — if there are 5 grounds, write 5 complete argument strategies with lead proposition, supporting authority, prosecution answer, and rebuttal. 400+ words per ground.
+7. Section 12 (Submissions Blueprint): Write ACTUAL draft submission paragraphs ready for court. Include specific argument sequences, authority placement, and time allocation. NOT bullet point summaries.
+8. Section 15 (Client Brief): MUST cover EVERY ground and EVERY outcome in plain English. Explain what each ground means in simple terms and what happens if it succeeds. 1000+ words minimum for this section.
 
 SECTION ORDERING: Analysis first, then Strategy, then Practical steps, then Client brief at the end.
 
 Use this exact structure:
 
 ## 1. EXECUTIVE BRIEF
-High-impact summary: strongest grounds, jurisdiction posture, likely pathways to relief, urgency items, and recommended next steps. Include a clear case snapshot paragraph (defendant, offence, sentence, court, judge) and a short list of primary issues at the end of this section.
+High-impact strategic summary: 4-6 paragraphs covering strongest grounds, jurisdiction posture, likely pathways to relief, urgency items, recommended strategy, and risk factors. Include case snapshot (defendant, offence, sentence, court, judge) and primary issues. This section must ADD strategic value beyond the free report.
 
-MANDATORY: Start this section with a summary line: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use the EXACT counts from the supplied case data.
+MANDATORY: Start with: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use EXACT counts.
 
 ## 2. FORENSIC CASE CHRONOLOGY
-Chronological reconstruction of the case with event date, source anchor (which document/evidence), and legal significance of each event. Include at least 10 dated entries from the supplied material.
+Full chronological reconstruction with 12+ dated entries. Each entry must be a FULL PARAGRAPH (3-4 sentences minimum) with: exact date, what occurred, which document/evidence supports it, and legal significance for the appeal. Write this as a narrative, NOT as bullet points.
 
 ## 3. DOCUMENT EVIDENCE DIGEST
-For each document/source uploaded: key extracts, reliability context, probative value, and appellate relevance.
+For EACH document uploaded: title, key extracts (quote directly), reliability context, probative value, and specific appellate relevance. One detailed paragraph per document minimum.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
-For EACH ground listed in GROUNDS TO COVER above (no omissions), provide:
-- Legal threshold and supporting material from the case
-- Viability rating (Strong / Moderate / Weak) with reasoning
-- Likely Crown response and aggressive defence reply strategy
-- **How this ground could assist in a successful appeal** — explain the practical impact if established (e.g., conviction quashed, sentence reduced, retrial ordered)
-- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 600 words per ground. Include case-specific facts in every paragraph.
+For EACH ground listed in GROUNDS TO COVER (ALL of them — no omissions):
+Write as "Ground X: [Exact Title]" then 800+ words of flowing paragraphs covering: legal threshold and test, supporting material from case files, viability rating (Strong/Moderate/Weak) with detailed reasoning, predicted Crown response, aggressive defence rebuttal strategy, and practical appeal impact if established.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
-Provide a markdown table with at least 8 comparable sentencing outcomes.
-Required columns:
+Markdown table with 8+ comparable cases, then Detailed Outcome Analysis paragraph for each row.
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
-Include AustLII search URL: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
-After the table, provide a **Detailed Outcome Analysis** paragraph for each row explaining how the reduction was achieved and what grounds succeeded.
+Include AustLII search URL.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
-Provide a markdown table:
+Markdown table with 8+ rows:
 | Common Ground | Frequency in Comparable Appeals | Typical Success Pattern | Best Supporting Evidence |
 
 ## 7. OUTCOME OPTIONS AVAILABLE
-First, provide a markdown table:
-| Option | Legal Threshold | Likelihood in This Matter | Core Evidence Trigger | Practical Result |
-Then provide detailed analysis for each pathway (keep ALL outcomes within THIS section — do NOT create separate headings for each outcome):
-- **Conviction quashed** — detailed outcome analysis referencing ALL relevant grounds of merit identified above
-- **Retrial ordered** — what happens next, timeframes, what changes
-- **Conviction substituted/downgraded** (e.g., murder to manslaughter) — sentence impact, legal basis
-- **Sentence reduced as manifestly excessive** — show before/after: Original sentence/NPP → Revised sentence/NPP
-- **Appeal dismissed** — consequences and further options (special leave to High Court)
+First, markdown table. Then 300+ words for EACH pathway referencing specific grounds from Section 4:
+- **Conviction quashed** — which grounds support this, legal threshold, likelihood
+- **Retrial ordered** — implications, timeframes, changes
+- **Conviction substituted/downgraded** — legal basis, sentence impact
+- **Sentence reduced as manifestly excessive** — before/after with specific numbers
+- **Appeal dismissed** — consequences, further options (High Court)
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
-Specific missing material from the case file and exact remediation steps with urgency priority (Critical / Important / Helpful).
+Specific missing material with urgency priority (Critical/Important/Helpful) and exact remediation steps.
 
 ## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
-For each case: citation, factual similarity to this matter, hearing outcome, extracted legal principle.
-Include AustLII link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
+For each: citation, factual similarity, hearing outcome, extracted legal principle.
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
-Section-level mapping of all key Acts and appellate principles applicable. For each provision include the section number, Act name with year, and relevance to this case.
-Link: [AustLII Legislation](https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/)
+APPLY each provision to THIS case — section number, Act name with year, specific relevance to Homann's appeal.
 
 ## 11. HOW TO ARGUE EACH TOP GROUND
-For each priority ground:
-- Lead proposition (1-2 lines stating the core argument)
-- Supporting authority cluster (statute + 2-3 precedent anchors)
-- Expected prosecution answer
-- Rebuttal strategy for hearing
-- **How establishing this ground could lead to a successful appeal outcome**
+For EACH ground (ALL of them — no omissions), write 400+ words covering:
+- Lead proposition (core argument in 2 sentences)
+- Supporting authority cluster (statute + 2-3 precedent anchors with citations)
+- Expected prosecution answer (what will the Crown argue?)
+- Rebuttal strategy with specific authority
+- How establishing this ground leads to successful appeal outcome
 
 ## 12. SUBMISSIONS BLUEPRINT
-Written submission strategy: argument sequence, authority placement, framing of each ground.
-Oral submission strategy: likely bench questions, response lines, time allocation per ground.
+Write ACTUAL draft submission text ready for court. Not bullet point summaries.
+Written submission strategy: full argument sequence paragraphs, authority placement, framing of each ground.
+Oral submission strategy: likely bench questions with response lines, time allocation per ground.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
-Step-by-step guide specific to {state_info.get('name', 'NSW')}:
-1. Obtain trial transcripts and exhibits from court registry
-2. Identify and finalise grounds of appeal
-3. Lodge Notice of Intention to Appeal (within time limit)
-4. Prepare detailed written submissions
-5. Serve documents on the Crown/DPP
-6. Attend the appeal hearing
-For each step: what to do in plain English, required form name, time limit/deadline, and link to relevant court registry.
-Then list all required forms in a table:
-| Form/Document | Purpose | Where to Obtain | Filing Deadline |
-Links: [Legal Aid {state_info.get('name', 'NSW')}]({state_info.get('legal_aid_url', 'https://www.legalaid.nsw.gov.au/')}) | [AustLII](https://www.austlii.edu.au/) | [Court Forms]({state_info.get('court_forms_url', '#')})
+Step-by-step guide specific to {state_info.get('name', 'NSW')} with forms table.
 
 ## 14. PRIORITISED ACTION PLAN
-72-hour actions (urgent filings, time-sensitive steps).
-7-day actions (evidence gathering, legal research).
-28-day actions (submission drafting, hearing preparation).
-Each action must specify what to do, who to contact, and the objective.
+72-hour / 7-day / 28-day actions. Each action: what to do, who to contact, objective.
 
 ## 15. CLIENT PLAIN-ENGLISH BRIEF
-THIS MUST BE THE FINAL SECTION. Translate the entire technical analysis into plain English that the defendant can understand:
-- What is the appeal about in simple terms
-- What are the chances of success and why
-- What needs to happen next and in what order
-- What are the realistic possible outcomes
-- What the client should do right now
-CRITICAL: This section is an educational tool. Use ONLY third-person language ("the applicant", "the legal professional", "this analysis"). NEVER use "we", "us", "our", or "them" when referring to the legal team or analysis authors.
+1000+ words explaining in plain English: what the appeal is about, what EACH ground means, chances of success for each, what happens next, realistic outcomes, and what the client should do now. Cover EVERY ground individually. CRITICAL: Use ONLY third-person language.
 
 IMPORTANT:
-- Use markdown headings and tables exactly where specified.
-- Include working hyperlinks to AustLII and court websites.
 - No cost discussion. No witness contradiction section.
-- Quote supplied case material where possible.
-- Keep analysis jurisdiction-specific to {state_info.get('name', 'NSW')} and relevant Commonwealth law.
-- Every section must contain substantive content — no placeholders, no vague one-liners.
-- NEVER use continuation markers like "... (continue)" or similar truncation. Write the ACTUAL content.
-- Do NOT insert meta-commentary about the document itself. Only output the report content.
-- Keep ALL outcome pathways within SECTION 7 — do NOT create separate ## headings for each outcome.
-- Keep ALL action items (72-hour, 7-day, 28-day) within SECTION 14 — do NOT create separate ## headings for each timeframe."""
+- Every section must have substantive content — no placeholders.
+- Keep ALL outcomes within SECTION 7. Keep ALL timeframes within SECTION 14.
+- NEVER truncate. Write the ACTUAL full content."""
 
     else:  # extensive_log
         system_prompt = f"""{base_system}
@@ -4246,51 +4210,124 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
         if report_type == "full_detailed":
             # Five-pass generation for full_detailed (3 sections per pass)
             passes = [
-                ("PASS 1/5", """
+                ("PASS 1/5", f"""
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions — DO the analysis. This is a PAID $150 report — it MUST be dramatically more detailed than the free Quick Summary.
+NOW GENERATE ONLY SECTIONS 1-3. Write 4000+ WORDS for this pass. DO NOT BE LAZY. This is a $150 paid report.
 
-## 1. EXECUTIVE BRIEF
-## 2. FORENSIC CASE CHRONOLOGY
-## 3. DOCUMENT EVIDENCE DIGEST
+## 1. EXECUTIVE BRIEF (800+ words)
+Write 4-6 FULL paragraphs — NOT a rehash of the case snapshot. Include:
+- Paragraph 1: Document/timeline/grounds counts, then strategic overview of the appeal's overall strength
+- Paragraph 2: The 2 strongest grounds and why they have the best chance of success — name specific legal tests
+- Paragraph 3: The most likely outcome pathway and what the client should prepare for
+- Paragraph 4: Key risks and vulnerabilities the prosecution will exploit
+- Paragraph 5: Recommended immediate actions with specific deadlines
+- Paragraph 6: Primary issues identified (list 6-8 specific legal issues with document references)
 
-Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
-                ("PASS 2/5", """
+## 2. FORENSIC CASE CHRONOLOGY (1200+ words)
+Write 12+ dated events as FULL PARAGRAPHS (3-4 sentences each). NOT bullet points. Format each as:
+"On [DATE], [WHAT HAPPENED]. This is evidenced by [SOURCE DOCUMENT]. The legal significance is [SIGNIFICANCE]. This event [IMPACT ON APPEAL]."
+Cover: the offence date, arrest, charges, key witness statements, psychiatric assessments, trial dates, sentencing, appeal filing.
 
-NOW GENERATE ONLY SECTIONS 4-6. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Section 4 MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" with 600+ words per ground including Crown response predictions, defence rebuttal, and how establishing this ground assists a successful appeal. For the sentencing table, include full case citations and SPECIFIC factual comparisons to THIS case — not generic descriptions. Include 8+ rows in the sentencing comparison table.
+## 3. DOCUMENT EVIDENCE DIGEST (800+ words)
+For EACH of the {len(documents)} uploaded documents, write a FULL PARAGRAPH analysing: document title, key extracts (quote directly where possible), reliability, probative value, and specific appellate relevance. If there are 10 documents, write 10 paragraphs.
+
+STOP after section 3. Write ALL content — do NOT truncate or summarise."""),
+                ("PASS 2/5", f"""
+
+NOW GENERATE ONLY SECTIONS 4-6. Write 5000+ WORDS for this pass. Section 4 is the MOST IMPORTANT section — do NOT rush it.
 
 ## 4. GROUNDS OF MERIT PORTFOLIO
-## 5. COMPARATIVE SENTENCING TABLE (8+ CASES with full citations and specific factual parallels)
+You MUST write about EVERY ground listed below. If there are 5 grounds, write 5 complete analyses. NO OMISSIONS.
+GROUNDS TO COVER:
+{grounds_enumerated}
+
+For EACH ground, write 800+ words as flowing paragraphs (NOT bullet points) covering:
+1. "Ground X: [Exact Title from above]" as the heading
+2. The legal test/threshold for this ground (cite the specific statutory provision and leading case)
+3. How the case facts satisfy this test (reference specific evidence, dates, witnesses)
+4. Viability rating: Strong / Moderate / Weak — with 3-4 sentences explaining WHY
+5. PREDICTED CROWN RESPONSE: What will the prosecution argue against this ground? (3-4 sentences)
+6. DEFENCE REBUTTAL: How should the defence counter the Crown's argument? (3-4 sentences)
+7. APPEAL IMPACT: If this ground succeeds, what happens? (conviction quashed? sentence reduced? retrial?)
+
+## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
+Write a markdown table with 8+ rows. After the table, write a Detailed Outcome Analysis PARAGRAPH for each case.
+
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
+Markdown table with 8+ rows.
 
-Write ALL 3 sections. STOP after section 6."""),
-                ("PASS 3/5", """
+STOP after section 6."""),
+                ("PASS 3/5", f"""
 
-NOW GENERATE ONLY SECTIONS 7-9. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Apply every legal concept to THIS case's specific facts. Do NOT describe what analysis should be done — DO it. Include detailed analysis for EVERY outcome pathway.
+NOW GENERATE ONLY SECTIONS 7-9. Write 4000+ WORDS for this pass.
 
-## 7. OUTCOME OPTIONS AVAILABLE — keep ALL outcome pathways in this ONE section
-## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
-## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES with full citations and factual parallels)
+## 7. OUTCOME OPTIONS AVAILABLE
+First provide the summary table, then write 300+ WORDS for EACH of these 5 pathways:
+- **Conviction quashed**: Which of the {len(grounds)} grounds support this? What is the legal threshold (e.g., miscarriage of justice under s.6(1) Criminal Appeal Act)? How likely given this case's facts?
+- **Retrial ordered**: What triggers a retrial vs outright quashing? What changes at retrial? Timeframes?
+- **Conviction substituted/downgraded**: Could murder be reduced to manslaughter? Under what legal basis? Sentence impact?
+- **Sentence reduced as manifestly excessive**: Show the exact before/after — Original sentence/NPP → what a reduced sentence might look like, with percentage reduction
+- **Appeal dismissed**: What happens? Consequences? Can the client seek special leave to the High Court?
 
-Write ALL 3 sections. STOP after section 9."""),
-                ("PASS 4/5", """
+## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (600+ words)
+List 8+ specific gaps with urgency ratings and exact remediation steps.
 
-NOW GENERATE ONLY SECTIONS 10-12. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally. For submissions, write draft paragraphs ready for court. Write actual hearing-ready submission text.
+## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
+Full citations, factual similarities, outcomes, and extracted principles for each case.
 
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case)
+STOP after section 9."""),
+                ("PASS 4/5", f"""
+
+NOW GENERATE ONLY SECTIONS 10-12. Write 4000+ WORDS for this pass. Sections 11 and 12 are critical — do NOT write thin bullet-point summaries.
+
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (800+ words)
+For EACH relevant statutory provision, write a paragraph APPLYING it to THIS case. Not generic descriptions of what the Act covers.
+
 ## 11. HOW TO ARGUE EACH TOP GROUND
-## 12. SUBMISSIONS BLUEPRINT
+You MUST cover EVERY ground — ALL {len(grounds)} of them. For EACH ground, write 400+ words covering:
+GROUNDS TO COVER:
+{grounds_enumerated}
 
-Write ALL 3 sections. STOP after section 12."""),
-                ("PASS 5/5", """
+For each ground:
+- **Lead Proposition**: The core argument in 2 sentences
+- **Supporting Authority Cluster**: Specific statute section + 2-3 precedent cases with citations
+- **Expected Prosecution Answer**: What the Crown will argue (3-4 sentences, be specific)
+- **Rebuttal Strategy**: How to counter the Crown's argument at hearing (3-4 sentences)
+- **If Established**: What outcome this ground achieves
 
-NOW GENERATE ONLY SECTIONS 13-15. Write thorough, CASE-SPECIFIC legal analysis. MINIMUM 3000 WORDS for this pass. Include specific court forms, filing deadlines, and explain everything in plain English for the client. The Client Brief must cover EVERY ground and EVERY outcome in accessible language.
+## 12. SUBMISSIONS BLUEPRINT (800+ words)
+Write ACTUAL DRAFT SUBMISSION TEXT ready for court — not bullet point summaries.
+**Written Submission Strategy**: Full argument sequence paragraphs that could be filed with the court. Include specific argument structure, authority placement, and framing of each ground.
+**Oral Submission Strategy**: Likely bench questions with prepared response lines. Time allocation per ground. Opening and closing strategies.
 
-## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
-## 14. PRIORITISED ACTION PLAN — keep ALL timeframes (72-hour, 7-day, 28-day) in this ONE section
-## 15. CLIENT PLAIN-ENGLISH BRIEF
+STOP after section 12."""),
+                ("PASS 5/5", f"""
 
-Write ALL 3 sections. Do NOT truncate any section."""),
+NOW GENERATE ONLY SECTIONS 13-15. Write 4000+ WORDS for this pass. Section 15 is critical — it must be thorough and cover EVERY ground.
+
+## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS (800+ words)
+Step-by-step guide with forms table. Each step: what to do in plain English, required form, deadline, and link.
+
+## 14. PRIORITISED ACTION PLAN (600+ words)
+72-hour actions (urgent filings, time-sensitive steps) — at least 5 specific actions.
+7-day actions (evidence gathering, legal research) — at least 5 specific actions.
+28-day actions (submission drafting, hearing preparation) — at least 5 specific actions.
+Each action: what to do, who to contact, objective, and deadline.
+
+## 15. CLIENT PLAIN-ENGLISH BRIEF (1500+ words)
+THIS IS NOT GENERIC WAFFLE. For EACH of the {len(grounds)} grounds, explain in plain English:
+- What this ground means in simple terms
+- Why it matters for the appeal
+- What the chances of success are
+- What happens if it succeeds
+
+Then cover:
+- The overall appeal: what it is, why it's happening, and the timeline
+- The realistic possible outcomes and what each means for the client
+- Exactly what the client should do right now, this week, and this month
+- NEVER use "we", "us", "our". Use "the applicant", "the legal professional".
+
+Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
             
             parts = []
@@ -4811,7 +4848,10 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
 
     def format_inline(text: str) -> str:
         clean = (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        clean = re.sub(r"\*\*(.*?)\*\*", r"<b>\\1</b>", clean)
+        # Convert markdown bold
+        clean = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", clean)
+        # Convert markdown links [text](url) to just text
+        clean = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", clean)
         return clean
 
     def render_table(lines):
@@ -4822,24 +4862,44 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 continue
             if all(set(p) <= set("-:") for p in parts):
                 continue
-            rows.append([re.sub(r"\*\*(.*?)\*\*", r"\\1", p) for p in parts])
+            # Escape special characters in table cells for reportlab
+            safe_parts = []
+            for p in parts:
+                cell = re.sub(r"\*\*(.*?)\*\*", r"\1", p)
+                cell = cell.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                safe_parts.append(cell)
+            rows.append(safe_parts)
         if not rows:
             return
         col_count = max(len(r) for r in rows)
         rows = [r + [""] * (col_count - len(r)) for r in rows]
-        col_width = doc.width / col_count
-        table = Table(rows, colWidths=[col_width] * col_count, repeatRows=1)
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white])
-        ]))
-        story.append(table)
-        story.append(Spacer(1, 4*mm))
+        try:
+            col_width = doc.width / col_count
+            para_rows = []
+            cell_style = ParagraphStyle(name='CellText', fontSize=8, leading=10, wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=8, leading=10, fontName='Helvetica-Bold', textColor=colors.white)
+            for ri, row in enumerate(rows):
+                style = header_style if ri == 0 else cell_style
+                para_rows.append([Paragraph(c[:200], style) for c in row])
+            table = Table(para_rows, colWidths=[col_width] * col_count, repeatRows=1)
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white]),
+                ('LEFTPADDING', (0, 0), (-1, -1), 4),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+                ('TOPPADDING', (0, 0), (-1, -1), 3),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+            ]))
+            story.append(table)
+            story.append(Spacer(1, 4*mm))
+        except Exception as e:
+            logger.warning(f"PDF table render failed: {e}")
+            for row in rows:
+                story.append(Paragraph(" | ".join(row), styles['ReportBodyText']))
 
     def render_markdown(text: str):
         lines = (text or "").splitlines()
@@ -4850,8 +4910,14 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             if buffer:
                 paragraph = " ".join(buffer).strip()
                 if paragraph:
-                    story.append(Paragraph(format_inline(paragraph), styles['ReportBodyText']))
-                    story.append(Spacer(1, 2*mm))
+                    try:
+                        story.append(Paragraph(format_inline(paragraph), styles['ReportBodyText']))
+                        story.append(Spacer(1, 2*mm))
+                    except Exception as e:
+                        logger.warning(f"PDF paragraph failed: {e}")
+                        # Fallback: strip all XML-like content
+                        safe = re.sub(r'<[^>]+>', '', paragraph)
+                        story.append(Paragraph(safe, styles['ReportBodyText']))
             buffer.clear()
 
         for line in lines:
@@ -4876,10 +4942,21 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 story.append(Paragraph(format_inline(stripped[4:].strip()), styles['SubHeader']))
                 story.append(Spacer(1, 1*mm))
                 continue
+            if stripped.startswith("#### "):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped[5:].strip()), styles['SubHeader']))
+                story.append(Spacer(1, 1*mm))
+                continue
             if stripped.startswith("- ") or stripped.startswith("• "):
                 flush_paragraph()
                 bullet_text = stripped[2:].strip()
-                story.append(Paragraph(f"• {format_inline(bullet_text)}", styles['BulletText']))
+                story.append(Paragraph(f"&bull; {format_inline(bullet_text)}", styles['BulletText']))
+                story.append(Spacer(1, 1*mm))
+                continue
+            # Handle numbered lists
+            if re.match(r'^\d+\.\s', stripped):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped), styles['BulletText']))
                 story.append(Spacer(1, 1*mm))
                 continue
             buffer.append(stripped)
@@ -5031,7 +5108,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ))
     
     # Build PDF
-    doc.build(story)
+    try:
+        doc.build(story)
+    except Exception as e:
+        logger.error(f"PDF build failed: {e}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
     buffer.seek(0)
     
     # Create filename
