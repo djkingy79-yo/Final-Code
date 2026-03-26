@@ -1125,8 +1125,8 @@ const FormTemplates = () => {
                 Need Help With Your Forms?
               </h3>
               <p className="text-slate-300 mb-6 max-w-md mx-auto">
-                Our FAQ section has guides on filling out these forms, and our Lawyer Directory 
-                can help you find legal assistance.
+                The FAQ section has guides on filling out these forms, and the Lawyer Directory 
+                can help find legal assistance.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/faq">

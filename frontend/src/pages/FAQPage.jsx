@@ -92,7 +92,7 @@ const faqs = [
       },
       {
         q: "What file formats are supported?",
-        a: "You can upload PDF, DOCX, DOC, TXT, and image files (JPG, PNG). For scanned documents, our OCR technology extracts the text automatically. Maximum file size is 50MB per document."
+        a: "You can upload PDF, DOCX, DOC, TXT, and image files (JPG, PNG). For scanned documents, the OCR technology extracts the text automatically. Maximum file size is 50MB per document."
       },
       {
         q: "How does the OCR (text extraction) work?",
@@ -140,7 +140,7 @@ const faqs = [
       },
       {
         q: "Is my payment secure?",
-        a: "Yes. All payments are processed via PayID bank transfer — Australia's instant payment system. Your funds go directly to our verified account."
+        a: "Yes. All payments are processed via PayID bank transfer — Australia's instant payment system. Funds go directly to the verified account."
       },
       {
         q: "Can I get a refund?",
@@ -160,19 +160,19 @@ const faqs = [
     questions: [
       {
         q: "Is my case information confidential?",
-        a: "Yes. Your case data is stored securely and is only accessible to you. We do not share individual case information with anyone. Aggregated, anonymised statistics may be used to improve the service."
+        a: "Yes. Case data is stored securely and is only accessible to the account holder. Individual case information is not shared with anyone. Aggregated, anonymised statistics may be used to improve the service."
       },
       {
         q: "Who can see my documents?",
-        a: "Only you can see your uploaded documents and case details. Our system processes documents automatically - no humans review your files unless you specifically request support assistance."
+        a: "Only you can see your uploaded documents and case details. The system processes documents automatically - no humans review your files unless you specifically request support assistance."
       },
       {
         q: "Can I delete my data?",
-        a: "Yes. You can delete individual documents, notes, or entire cases at any time. Deleted data is permanently removed from our systems within 30 days."
+        a: "Yes. Individual documents, notes, or entire cases can be deleted at any time. Deleted data is permanently removed from the systems within 30 days."
       },
       {
         q: "Where is my data stored?",
-        a: "Your data is stored on secure servers with industry-standard encryption. We take data security seriously and implement best practices to protect your information."
+        a: "Data is stored on secure servers with industry-standard encryption. Data security is taken seriously and best practices are implemented to protect all information."
       }
     ]
   },
@@ -184,7 +184,7 @@ const faqs = [
     questions: [
       {
         q: "How do I find a criminal appeal lawyer?",
-        a: "Check our Lawyer Directory page for links to criminal appeal specialists in each state. You can also contact your state's Legal Aid office, Law Society, or Bar Association for referrals."
+        a: "Check the Lawyer Directory page for links to criminal appeal specialists in each state. You can also contact your state's Legal Aid office, Law Society, or Bar Association for referrals."
       },
       {
         q: "What is Legal Aid and am I eligible?",
@@ -288,10 +288,10 @@ const FAQPage = () => {
           <div className="w-20 h-20 rounded-2xl bg-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30" data-testid="faq-hero-icon">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
             Frequently Asked Questions
           </h1>
-          <p className="text-lg text-slate-700 max-w-2xl mx-auto mb-2" data-testid="faq-hero-subtitle">
+          <p className="text-sm text-slate-700 max-w-2xl mx-auto mb-2" data-testid="faq-hero-subtitle">
             Find answers to common questions about criminal appeals and using the Appeal Case Manager.
           </p>
           <p className="text-sm text-slate-700" data-testid="faq-hero-count">
@@ -306,7 +306,7 @@ const FAQPage = () => {
               placeholder="Search for any question..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-6 text-base rounded-xl border-2 focus:border-blue-500"
+              className="pl-12 py-4 text-sm rounded-xl border-2 focus:border-blue-500"
               data-testid="faq-search"
             />
           </div>
@@ -379,7 +379,7 @@ const FAQPage = () => {
                         <category.icon className="w-7 h-7" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                        <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                           {category.category}
                         </h2>
                         <p className="text-slate-700 text-sm">
@@ -404,7 +404,7 @@ const FAQPage = () => {
                           className="w-full px-5 py-4 flex items-center justify-between text-left"
                           data-testid={`faq-${categoryIndex}-${questionIndex}`}
                         >
-                          <span className="font-medium text-slate-900 pr-4">{item.q}</span>
+                          <span className="font-medium text-sm text-slate-900 pr-4">{item.q}</span>
                           <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100' : 'bg-white border border-slate-200'}`}>
                             {isOpen ? (
                               <ChevronDown className="w-5 h-5 text-red-600" />
@@ -435,7 +435,7 @@ const FAQPage = () => {
             Still have questions?
           </h3>
           <p className="text-xs text-slate-700 mb-3">
-            Can't find what you're looking for? We're here to help.
+            Can't find what you're looking for? The FAQ and Legal Glossary may help.
           </p>
           <div className="flex gap-2 justify-center">
             <Link to="/contact" data-testid="faq-contact-link">

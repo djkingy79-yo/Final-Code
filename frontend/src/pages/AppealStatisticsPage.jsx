@@ -451,11 +451,11 @@ const AppealStatisticsPage = () => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-bold bg-blue-700 text-white px-3 py-1 rounded-full">#{index + 1}</span>
-                    <span className="font-semibold text-slate-900">{ground.ground}</span>
+                    <span className="font-semibold text-sm text-slate-900">{ground.ground}</span>
                   </div>
                   <span className="text-lg font-bold text-red-600">{ground.percentage}%</span>
                 </div>
-                <p className="text-sm text-slate-700 ml-10">{ground.description}</p>
+                <p className="text-xs text-slate-700 ml-10">{ground.description}</p>
                 {/* Progress Bar */}
                 <div className="mt-3 ml-10 h-2 bg-slate-200 rounded-full overflow-hidden">
                   <div 

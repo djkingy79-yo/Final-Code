@@ -1160,11 +1160,25 @@ const CaseDetail = ({ user }) => {
               </Card>
             )}
 
-            {/* Deadline Tracker */}
-            <DeadlineTracker caseId={caseId} />
+            {/* Deadline Tracker — collapsed by default */}
+            <details className="border border-slate-200 rounded-lg bg-white">
+              <summary className="px-4 py-3 cursor-pointer text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Deadline Tracker
+              </summary>
+              <div className="border-t border-slate-200">
+                <DeadlineTracker caseId={caseId} />
+              </div>
+            </details>
             
-            {/* Appeal Checklist */}
-            <AppealChecklist caseId={caseId} />
+            {/* Appeal Checklist — collapsed by default */}
+            <details className="border border-slate-200 rounded-lg bg-white">
+              <summary className="px-4 py-3 cursor-pointer text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Appeal Checklist
+              </summary>
+              <div className="border-t border-slate-200">
+                <AppealChecklist caseId={caseId} />
+              </div>
+            </details>
             
             {/* Quick Links */}
             <Card>
