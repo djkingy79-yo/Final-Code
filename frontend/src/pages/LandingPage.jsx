@@ -77,6 +77,11 @@ const LandingPage = () => {
                 <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-about">About</Link>
                 <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-to-use">How To Use</Link>
                 <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-professional-summary">For Legal Professionals</Link>
+                <Link to="/caselaw-search" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-caselaw-search">Case Law Search</Link>
+                <Link to="/compare" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-compare">Compare Cases</Link>
+                <Link to="/statistics" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-statistics">Statistics</Link>
+                <Link to="/resources" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-resources">Resources Hub</Link>
+                <Link to="/help" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-help">Help</Link>
                 <Link to="/terms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-terms">Terms & Privacy</Link>
                 <Link to="/success-stories" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-success-stories">Success Stories</Link>
               </div>
@@ -111,6 +116,11 @@ const LandingPage = () => {
             <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
             <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
             <Link to="/professional-summary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>
+            <Link to="/caselaw-search" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-caselaw-search">Case Law Search</Link>
+            <Link to="/compare" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-compare">Compare Cases</Link>
+            <Link to="/statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-statistics">Statistics</Link>
+            <Link to="/resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-resources">Resources Hub</Link>
+            <Link to="/help" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-help">Help</Link>
             <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
             <div className="border-t border-slate-700 pt-3 mt-3">
               <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>

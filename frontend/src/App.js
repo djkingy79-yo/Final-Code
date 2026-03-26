@@ -46,6 +46,34 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
 
+const PUBLIC_PAGE_PATHS = new Set([
+  "/",
+  "/help",
+  "/resources",
+  "/professional-summary",
+  "/terms",
+  "/contact",
+  "/glossary",
+  "/success-stories",
+  "/statistics",
+  "/faq",
+  "/lawyers",
+  "/forms",
+  "/compare",
+  "/about",
+  "/legal-resources",
+  "/how-to-use",
+  "/how-it-works",
+  "/appeal-statistics",
+  "/caselaw-search",
+  "/legal-framework",
+]);
+
+const PUBLIC_PAGE_IMAGES = [
+  "https://images.unsplash.com/photo-1590034437106-e19f87938ad9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDB8MHwxfHNlYXJjaHwxfHxsZWdhbCUyMGJyaWVmJTIwY291cnRob3VzZSUyMGFwcGVhbCUyMGRvY3VtZW50c3xlbnwwfHx8Ymx1ZXwxNzc0NTU3MDI4fDA&ixlib=rb-4.1.0&q=85",
+  "https://images.pexels.com/photos/5668474/pexels-photo-5668474.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+];
+
 // Configure axios with timeout and credentials
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 30000; // 30 second timeout for most requests
@@ -357,6 +385,34 @@ function AppRouter() {
   );
 }
 
+function PublicPageImagePair() {
+  const location = useLocation();
+
+  if (!PUBLIC_PAGE_PATHS.has(location.pathname)) {
+    return null;
+  }
+
+  return (
+    <section className="bg-white px-6 pb-10" data-testid="public-page-image-pair">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-5">
+        {PUBLIC_PAGE_IMAGES.map((src, index) => (
+          <div key={src} className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50" data-testid={`public-page-image-card-${index + 1}`}>
+            <div className="aspect-[16/10] overflow-hidden">
+              <img
+                src={src}
+                alt={index === 0 ? "Courthouse statue and appeal setting" : "Judge reviewing legal case documents"}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -364,6 +420,7 @@ function App() {
         <BrowserRouter>
           <ScrollToTopOnNav />
           <AppRouter />
+          <PublicPageImagePair />
           <FastScrollTop />
           <Toaster position="top-right" richColors />
           <InstallPrompt />
