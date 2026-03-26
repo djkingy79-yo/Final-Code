@@ -451,8 +451,8 @@ export default function BarristerView() {
             </div>
 
             <div className="px-6 sm:px-10 py-6 sm:py-7 border-b border-slate-200 bg-white" data-testid="barrister-hero">
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-                <div className="min-w-0 flex-1">
+              <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8">
+                <div className="min-w-0 flex-1 xl:pr-6">
                   <div className="flex flex-wrap items-center gap-3 mb-3">
                     <Badge className="bg-blue-700 text-white" data-testid="barrister-hero-badge">
                       <Scale className="w-3.5 h-3.5 mr-1.5" /> BARRISTER BRIEF
@@ -462,12 +462,12 @@ export default function BarristerView() {
                     </span>
                   </div>
 
-                  <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-none" data-testid="barrister-title">
+                  <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.05] break-words max-w-3xl" data-testid="barrister-title">
                     {caseData?.title || "Barrister Brief"}
                   </h1>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-6 gap-y-4 lg:min-w-[320px]" data-testid="barrister-summary-grid">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4 w-full xl:w-auto xl:min-w-[320px]" data-testid="barrister-summary-grid">
                   <CompactMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
                   <CompactMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
                   <CompactMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
