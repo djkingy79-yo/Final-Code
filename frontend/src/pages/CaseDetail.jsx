@@ -680,9 +680,8 @@ const CaseDetail = ({ user }) => {
           <p className="mt-2 text-slate-600">{loadError}</p>
           <div className="mt-6 flex gap-3 justify-center">
             <Button 
-              variant="outline" 
               onClick={() => navigate("/dashboard")}
-              className="rounded-xl"
+              className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
               data-testid="back-to-dashboard-btn"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -690,7 +689,7 @@ const CaseDetail = ({ user }) => {
             </Button>
             <Button 
               onClick={fetchCaseData}
-              className="rounded-xl"
+              className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
               data-testid="retry-load-btn"
             >
               Try Again
@@ -764,10 +763,9 @@ const CaseDetail = ({ user }) => {
               {caseData?.title}
             </h1>
             <Button
-              variant="outline"
               size="sm"
               onClick={handleOpenEditCase}
-              className="shrink-0 rounded-xl landing-cta-secondary"
+              className="shrink-0 rounded-xl bg-blue-700 text-white hover:bg-blue-600"
               data-testid="edit-case-btn"
             >
               <Pencil className="w-4 h-4 mr-1.5" />
@@ -855,8 +853,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleGenerateTimeline}
                     disabled={generatingTimeline}
-                    variant="outline"
-                    className="landing-cta-secondary"
+                    className="bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="generate-timeline-btn"
                   >
                     {generatingTimeline ? (
@@ -868,7 +865,7 @@ const CaseDetail = ({ user }) => {
                   </Button>
                   <Button 
                     onClick={() => setShowEventDialog(true)}
-                    className="landing-cta-primary"
+                    className="bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="add-event-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -881,7 +878,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleAutoIdentifyGrounds}
                     disabled={autoIdentifying}
-                    className="landing-cta-primary"
+                    className="bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="auto-identify-btn"
                   >
                     {autoIdentifying ? (
@@ -896,7 +893,7 @@ const CaseDetail = ({ user }) => {
                       setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
                       setShowGroundDialog(true);
                     }}
-                    className="landing-cta-secondary"
+                    className="bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="add-ground-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -940,7 +937,7 @@ const CaseDetail = ({ user }) => {
                 <p className="text-slate-600 mb-4">Build a chronological timeline of case events.</p>
                 <Button 
                   onClick={() => setShowEventDialog(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+                  className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add First Event
@@ -1009,8 +1006,7 @@ const CaseDetail = ({ user }) => {
                       setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
                       setShowGroundDialog(true);
                     }}
-                    variant="outline"
-                    className="rounded-xl"
+                    className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Manually
@@ -1164,17 +1160,15 @@ const CaseDetail = ({ user }) => {
               <CardContent className="p-4">
                 <div className="flex flex-wrap gap-3">
                   <Button 
-                    variant="outline" 
                     onClick={() => navigate('/resources')}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-blue-700 text-white hover:bg-blue-600"
                   >
                     <HelpCircle className="w-4 h-4" />
                     Resource Directory
                   </Button>
                   <Button 
-                    variant="outline" 
                     onClick={() => navigate('/help')}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-blue-700 text-white hover:bg-blue-600"
                   >
                     <HelpCircle className="w-4 h-4" />
                     Help & Glossary
@@ -1680,7 +1674,7 @@ const CaseDetail = ({ user }) => {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEditCaseDialog(false)} className="rounded-xl">Cancel</Button>
-            <Button onClick={handleSaveCase} disabled={savingCase} className="rounded-xl" data-testid="save-case-btn">
+            <Button onClick={handleSaveCase} disabled={savingCase} className="rounded-xl bg-blue-700 text-white hover:bg-blue-600" data-testid="save-case-btn">
               {savingCase ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : "Save Changes"}
             </Button>
           </DialogFooter>

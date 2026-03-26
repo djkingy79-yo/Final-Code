@@ -106,7 +106,7 @@ const AdminDashboard = () => {
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
               onClick={() => navigate("/")}
-              className="text-blue-600 hover:underline"
+              className="inline-flex items-center rounded-xl bg-blue-700 px-4 py-2 font-semibold text-white hover:bg-blue-600"
             >
               Go to Home
             </button>
@@ -389,11 +389,10 @@ const AdminDashboard = () => {
                 <CardDescription>Bank transfers awaiting verification</CardDescription>
               </div>
               <Button 
-                variant="outline" 
                 size="sm" 
                 onClick={fetchPendingPayments}
                 disabled={refreshingPayments}
-                className="shrink-0"
+                className="shrink-0 bg-blue-700 text-white hover:bg-blue-600"
                 data-testid="refresh-payments-btn"
               >
                 {refreshingPayments ? (
@@ -450,7 +449,7 @@ const AdminDashboard = () => {
                     <Button
                       onClick={() => confirmPayment(payment.reference)}
                       disabled={confirmingRef === payment.reference}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white shrink-0"
+                      className="bg-blue-700 hover:bg-blue-600 text-white shrink-0"
                       data-testid={`confirm-payment-${payment.reference}`}
                     >
                       {confirmingRef === payment.reference ? (

@@ -250,7 +250,7 @@ const DocumentsSection = ({
             <Button 
               type="submit" 
               disabled={searching || !searchQuery.trim()}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="doc-search-btn"
             >
               {searching ? (
@@ -319,9 +319,29 @@ const DocumentsSection = ({
       
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
+        {documents.length > 0 && (
+          <Button
+            onClick={handleExtractAllText}
+            disabled={extractingText}
+            className="bg-blue-700 text-white hover:bg-blue-600"
+            data-testid="extract-all-text-to-case-btn"
+          >
+            {extractingText ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Extracting...
+              </>
+            ) : (
+              <>
+                <FileText className="w-4 h-4 mr-2" />
+                Extract All Text to Case
+              </>
+            )}
+          </Button>
+        )}
         <Button 
           onClick={() => setShowUploadDialog(true)}
-          className="bg-slate-900 text-white hover:bg-slate-800"
+          className="bg-blue-700 text-white hover:bg-blue-600"
           data-testid="upload-doc-btn"
         >
           <Upload className="w-4 h-4 mr-2" />
@@ -339,7 +359,7 @@ const DocumentsSection = ({
           <p className="text-slate-600 mb-4">Upload briefs, case notes, and evidence to build your case.</p>
           <Button 
             onClick={() => setShowUploadDialog(true)}
-            className="bg-slate-900 text-white hover:bg-slate-800"
+            className="bg-blue-700 text-white hover:bg-blue-600"
           >
             <Upload className="w-4 h-4 mr-2" />
             Upload First Document
@@ -386,10 +406,9 @@ const DocumentsSection = ({
                 <div className="flex items-center gap-2">
                   {!doc.content_text && (
                     <Button
-                      variant="outline"
                       size="sm"
                       onClick={() => handleOcrDocument(doc.document_id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity bg-blue-700 text-white hover:bg-blue-600"
                     >
                       <ScanLine className="w-4 h-4 mr-1" />
                       OCR
@@ -510,7 +529,7 @@ const DocumentsSection = ({
             <Button 
               onClick={handleUploadDocuments} 
               disabled={uploading || uploadFiles.length === 0}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="upload-submit-btn"
             >
               {uploading ? (
