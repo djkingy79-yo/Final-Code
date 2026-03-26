@@ -1914,11 +1914,10 @@ const BarristerView = ({ user }) => {
         .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
-          min-width: 720px;
+          min-width: 600px;
           border-collapse: collapse;
           margin: 0.8rem 0;
           background: #ffffff;
-          min-width: 600px;
         }
         .legal-report th {
           background: #1e3a8a;
