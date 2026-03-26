@@ -39,6 +39,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Extensive Log visual theme corrected from purple to slate/navy
 - **2026-03-26:** Download links opened in a new tab/window now support `session_token` query-param authentication
 - **2026-03-26:** How It Works pricing-card header text forced to white bold for all report tiers on mobile and desktop
+- **2026-03-26:** Fixed Barrister View backend generation crash caused by invalid Mongo projection in `generate_barrister_brief()`
+- **2026-03-26:** Fixed Barrister endpoint loop so failed/stale jobs no longer recreate endless `generating` placeholders
+- **2026-03-26:** Generated a completed Barrister Brief for case `case_db8d84fecfc4` as report `rpt_3b5271d6f2ab`
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
