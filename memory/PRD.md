@@ -39,6 +39,13 @@ Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO
 - **Disclaimer with hazard symbol**: Present on all on-screen reports AND print/PDF views.
 - **Prompt instruction stripping**: Headings like "OUTCOME OPTIONS — keep ALL pathways in this ONE section" cleaned in both backend and frontend.
 - **Pricing updated**: $150 AUD Full Detailed, $200 AUD Extensive Log throughout all prompts and UI.
+- **\1 artifact stripping**: Added to backend _strip_report_placeholders and frontend cleanAIContent (both ReportView + BarristerView).
+- **Prompt instruction stripping**: Backend + frontend strip "keep ALL outcome pathways..." and similar leaked AI instructions from headings.
+- **BarristerView overhaul**: Header fixed (shows BARRISTER BRIEF, grounds/docs counts, Created By Deb King). Removed dark gradient. Print preview upgraded to professional styled layout.
+- **Barrister View padlock**: Lock icon shown when not all 3 reports generated.
+- **Bold disclaimer on ALL reports**: "NOT LEGAL ADVICE" in red bold + "Created and Designed by Deb King" on all 4 report types (on-screen + print/PDF).
+- **Table overflow fix**: table-layout:fixed + word-wrap:break-word on all tables (on-screen + print CSS).
+- **"You/your" language ban**: Added "your legal team" → "the legal professional", "you've been" → "the applicant has been" replacements.
 
 ## Prioritised Backlog
 ### P1
