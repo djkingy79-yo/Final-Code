@@ -408,6 +408,18 @@ const AboutPage = () => {
         </div>
       </section>
 
+      {/* Acknowledgement */}
+      <section className="px-6 pb-10 bg-white" data-testid="about-acknowledgement-section">
+        <div className="max-w-4xl mx-auto">
+          <div className="border border-blue-200 rounded-2xl bg-blue-50 px-6 py-8 text-center" data-testid="about-acknowledgement-quote-card">
+            <Quote className="w-10 h-10 text-blue-700 mx-auto mb-4" />
+            <blockquote className="text-lg sm:text-xl font-semibold text-slate-900 leading-relaxed" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-acknowledgement-quote">
+              “This journey wouldn't have been possible without your support, motivation and encouragement ~ To my dear friends Renee Yates & Nigel Willett.”
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-6xl mx-auto text-center">

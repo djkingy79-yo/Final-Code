@@ -55,6 +55,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
 - **2026-03-26:** Added Grounds tab export actions for unlocked users: Print View, PDF View, and Word View, including full deep investigation analysis in the generated grounds export document
+- **2026-03-26:** Added the requested acknowledgement quote above the About page footer for Renee Yates and Nigel Willett
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
