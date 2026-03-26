@@ -36,6 +36,12 @@ Create an app to sort, store and organise documents, briefs, case notes, and pub
 
 ## Features Implemented
 
+### Landing Page UI Corrections ✅ (Mar 2026)
+- [x] Blue primary CTAs with white text across the landing page
+- [x] Restored white text on coloured headers (report tier table, stats header)
+- [x] State appeal stats header updated for contrast
+- [x] Added data-testid attributes to landing-page navigation cards and CTAs
+
 ### Core Features ✅
 - [x] Google OAuth authentication
 - [x] Multi-case dashboard with search

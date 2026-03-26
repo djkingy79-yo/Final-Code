@@ -963,8 +963,7 @@ select {
 }
 
 .landing-page p,
-.landing-page li,
-.landing-page span {
+.landing-page li {
   color: #0f172a;
 }
 
@@ -996,18 +995,6 @@ select {
 }
 
 .landing-page [class*="dark:text" ] {
-  color: #0f172a !important;
-}
-
-.landing-page h1.text-white,
-.landing-page h2.text-white,
-.landing-page h3.text-white,
-.landing-page p.text-white,
-.landing-page span.text-white {
-  color: #0f172a !important;
-}
-
-.landing-page [class*="text-white/"] {
   color: #0f172a !important;
 }
 
@@ -1203,8 +1190,7 @@ select {
 }
 
 .landing-page p,
-.landing-page li,
-.landing-page span {
+.landing-page li {
   color: #0f172a;
 }
 
@@ -1236,18 +1222,6 @@ select {
 }
 
 .landing-page [class*="dark:text" ] {
-  color: #0f172a !important;
-}
-
-.landing-page h1.text-white,
-.landing-page h2.text-white,
-.landing-page h3.text-white,
-.landing-page p.text-white,
-.landing-page span.text-white {
-  color: #0f172a !important;
-}
-
-.landing-page [class*="text-white/"] {
   color: #0f172a !important;
 }
 
@@ -1400,10 +1374,6 @@ select {
 .force-light ol li::marker {
   color: #1e3a8a;
   font-weight: 700;
-}
-
-.landing-page .text-white {
-  color: #0f172a !important;
 }
 
 .notice-white {

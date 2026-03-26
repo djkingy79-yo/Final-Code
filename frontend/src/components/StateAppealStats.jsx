@@ -296,17 +296,17 @@ const StateAppealStats = () => {
         {/* Stats Panel */}
         <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-lg" data-testid={`state-panel-${selected}`}>
           {/* Header */}
-          <div className="bg-slate-900 dark:bg-slate-950 px-6 py-4">
+          <div className="bg-blue-700 px-6 py-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
                 <h3 className="text-white font-bold text-xl" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {data.name}
                 </h3>
-                <p className="text-slate-300 text-sm">{data.court}</p>
+                <p className="text-blue-100 text-sm">{data.court}</p>
               </div>
-              <div className="flex items-center gap-1.5 bg-emerald-600/20 border border-emerald-500/30 rounded-lg px-3 py-1.5">
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-300 font-bold text-sm">{data.successRate}% success rate</span>
+              <div className="flex items-center gap-1.5 bg-emerald-600 border border-emerald-700 rounded-lg px-3 py-1.5">
+                <TrendingUp className="w-4 h-4 text-white" />
+                <span className="text-white font-bold text-sm">{data.successRate}% success rate</span>
               </div>
             </div>
           </div>

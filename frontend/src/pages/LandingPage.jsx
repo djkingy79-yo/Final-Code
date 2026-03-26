@@ -45,7 +45,7 @@ const LandingPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Appeal Case Manager
             </span>
           </div>
@@ -165,7 +165,7 @@ const LandingPage = () => {
                 All Australian States & Territories • All Criminal Offences
               </p>
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-6"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-6"
                 style={{ fontFamily: 'Crimson Pro, serif' }}
               >
                 Criminal Law Appeal Case Management
@@ -176,26 +176,26 @@ const LandingPage = () => {
               
               {/* State Badges — DO NOT UNDO */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">NSW</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">VIC</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">QLD</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">SA</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">WA</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">TAS</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">NT</span>
-                <span className="text-xs bg-white/30 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-white/25">ACT</span>
-                <span className="text-xs bg-red-600/50 text-white px-3 py-1.5 rounded-lg font-bold backdrop-blur-sm border border-red-400/30">Federal</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">NSW</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">VIC</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">QLD</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">SA</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">WA</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">TAS</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">NT</span>
+                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">ACT</span>
+                <span className="text-xs bg-red-50 text-red-700 px-3 py-1.5 rounded-lg font-bold border border-red-200">Federal</span>
               </div>
               
               {/* Offence Types */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Homicide</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Assault</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Sexual Offences</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Drug Offences</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Robbery</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">Fraud</span>
-                <span className="text-xs bg-white/20 text-white px-3 py-1.5 rounded font-medium border border-white/15">+ More</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Homicide</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Assault</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Sexual Offences</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Drug Offences</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Robbery</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Fraud</span>
+                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">+ More</span>
               </div>
               
               {/* CTA Buttons — DO NOT UNDO */}
@@ -208,10 +208,10 @@ const LandingPage = () => {
                   Get Started Free
                   <ChevronRight className="w-5 h-5" />
                 </Button>
-                <Link to="/professional-summary">
+                <Link to="/professional-summary" data-testid="hero-legal-professionals-link">
                   <Button
-                    variant="outline"
-                    className="landing-cta-secondary w-full sm:w-auto"
+                    className="landing-cta-primary w-full sm:w-auto"
+                    data-testid="hero-legal-professionals-btn"
                   >
                     For Legal Professionals
                   </Button>
@@ -385,37 +385,37 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <p className="text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Everything At Your Fingertips</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Complete Criminal Appeal Platform
             </h2>
-            <p className="text-slate-300 text-lg max-w-3xl mx-auto">
+            <p className="text-slate-700 text-lg max-w-3xl mx-auto">
               From document management to legal research, everything you need to build and understand your appeal — all in one place.
             </p>
           </div>
 
           {/* Stats Row — Real Australian Criminal Appeal Data */}
           <div className="text-center mb-4">
-            <p className="text-blue-300 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
+            <p className="text-blue-700 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-testid="landing-statistics-row">
             <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
-              <div className="text-slate-300 text-sm">Criminal Appeals Filed Annually</div>
+              <div className="text-slate-700 text-sm">Criminal Appeals Filed Annually</div>
             </div>
             <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-emerald-400 mb-1">~40%</div>
-              <div className="text-slate-300 text-sm">Appeals Heard Result in Change</div>
+              <div className="text-slate-700 text-sm">Appeals Heard Result in Change</div>
             </div>
             <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">98%</div>
-              <div className="text-slate-300 text-sm">Resolved Within 12 Months</div>
+              <div className="text-slate-700 text-sm">Resolved Within 12 Months</div>
             </div>
             <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-red-400 mb-1">1 in 80</div>
-              <div className="text-slate-300 text-sm">Convicted Australians Appeal</div>
+              <div className="text-slate-700 text-sm">Convicted Australians Appeal</div>
             </div>
           </div>
-          <p className="text-xs text-slate-400 text-center mb-12" data-testid="landing-stats-source">
+          <p className="text-xs text-slate-600 text-center mb-12" data-testid="landing-stats-source">
             Sources: public annual reports and criminal appeal statistics from state courts (figures aggregated nationally).
           </p>
 
@@ -428,9 +428,9 @@ const LandingPage = () => {
                 <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Briefcase className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Case Management</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Case Management</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Create unlimited cases, upload documents with OCR, track deadlines with calendar view, and organise everything in one secure place.
               </p>
               <div className="text-blue-400 text-xs font-medium">
@@ -444,9 +444,9 @@ const LandingPage = () => {
                 <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">AI-Powered Analysis</h3>
+                <h3 className="font-bold text-slate-900 text-lg">AI-Powered Analysis</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Automatically identify potential appeal grounds, generate case timelines, and get AI-driven insights based on Australian law.
               </p>
               <div className="text-emerald-400 text-xs font-medium">
@@ -455,14 +455,14 @@ const LandingPage = () => {
             </div>
 
             {/* Legal Research Hub */}
-            <Link to="/legal-framework" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/legal-framework" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-legal-framework-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Legal Research Hub</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Legal Research Hub</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Access legislation for all 8 states, search live court databases, explore legal frameworks, and understand Human Rights laws.
               </p>
               <div className="text-purple-400 text-xs font-medium">
@@ -471,14 +471,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Forms & Templates */}
-            <Link to="/forms" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/forms" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-forms-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Forms & Templates</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Forms & Templates</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 30+ downloadable legal forms including Notice of Appeal, Extension of Time, Transcript Requests, and state-specific templates.
               </p>
               <div className="text-blue-400 text-xs font-medium">
@@ -487,14 +487,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Legal Contacts Directory */}
-            <Link to="/legal-resources" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/legal-resources" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-legal-resources-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Users className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Contacts Directory</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Contacts Directory</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 100+ legal contacts: Legal Aid offices, Law Societies, Complaints Bodies, Courts, Community Legal Centres, Pro Bono services.
               </p>
               <div className="text-teal-400 text-xs font-medium">
@@ -503,14 +503,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Legal Glossary */}
-            <Link to="/glossary" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/glossary" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-glossary-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Book className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Legal Glossary</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Legal Glossary</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 84+ legal terms explained in plain English including 23 specific Appeal Grounds, evidence law, and sentencing principles.
               </p>
               <div className="text-indigo-400 text-xs font-medium">
@@ -519,14 +519,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Appeal Statistics */}
-            <Link to="/appeal-statistics" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/appeal-statistics" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-appeal-statistics-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Appeal Statistics</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Appeal Statistics</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 National and state-by-state data on criminal appeals: success rates, common grounds, timelines, and access to justice analysis.
               </p>
               <div className="text-red-400 text-xs font-medium">
@@ -535,14 +535,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Success Stories */}
-            <Link to="/success-stories" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/success-stories" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-success-stories-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Success Stories</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Success Stories</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Real stories from families who found hope through the appeal process: convictions quashed, sentences reduced, new hearings ordered.
               </p>
               <div className="text-pink-400 text-xs font-medium">
@@ -551,14 +551,14 @@ const LandingPage = () => {
             </Link>
 
             {/* Lawyer Directory */}
-            <Link to="/lawyers" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/lawyers" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-lawyers-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Scale className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Lawyer Directory</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Lawyer Directory</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Find criminal appeal specialists, barristers, and solicitors organised by state with expertise areas and contact info.
               </p>
               <div className="text-cyan-400 text-xs font-medium">
@@ -572,9 +572,9 @@ const LandingPage = () => {
                 <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Download className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Reports & Export</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Reports & Export</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Generate premium reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Barrister View for conference-ready presentations.
               </p>
               <div className="text-orange-400 text-xs font-medium">
@@ -583,14 +583,14 @@ const LandingPage = () => {
             </div>
 
             {/* How To Use Guide */}
-            <Link to="/how-to-use" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/how-to-use" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-how-to-use-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-lime-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <HelpCircle className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">Step-by-Step Guide</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Step-by-Step Guide</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Complete tutorial with real app screenshots showing exactly how to use every feature from account creation to report generation.
               </p>
               <div className="text-lime-400 text-xs font-medium">
@@ -599,14 +599,14 @@ const LandingPage = () => {
             </Link>
 
             {/* FAQ */}
-            <Link to="/faq" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/faq" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block" data-testid="feature-faq-link">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MessageCircle className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-bold text-white text-lg">FAQ & Support</h3>
+                <h3 className="font-bold text-slate-900 text-lg">FAQ & Support</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-3">
+              <p className="text-slate-700 text-sm mb-3">
                 Answers to common questions about using the platform, appeal processes, pricing, legal disclaimers, and technical support.
               </p>
               <div className="text-blue-400 text-xs font-medium">
@@ -618,16 +618,17 @@ const LandingPage = () => {
 
           {/* Bottom CTA */}
           <div className="mt-12 text-center">
-            <div className="inline-block bg-gradient-to-r from-blue-500/10 to-orange-500/10 border border-blue-500/30 rounded-2xl p-8">
-              <p className="text-white font-bold text-xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="inline-block bg-blue-50 border border-blue-200 rounded-2xl p-8">
+              <p className="text-slate-900 font-bold text-xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 All This For Free To Get Started
               </p>
-              <p className="text-slate-300 mb-4">
+              <p className="text-slate-700 mb-4">
                 No credit card • No commitment • Pay only for premium AI analysis when you need it
               </p>
               <Button
                 onClick={() => setShowAuthModal(true)}
-                className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-8 py-3 font-semibold text-lg"
+                className="landing-cta-primary"
+                data-testid="landing-create-account-btn"
               >
                 Create Free Account
               </Button>
@@ -701,8 +702,8 @@ const LandingPage = () => {
 
           <div className="mt-10 flex flex-col items-center gap-4">
             <p className="text-muted-foreground text-sm">Need the full walkthrough with screenshots and step‑by‑step guidance?</p>
-            <Link to="/how-it-works">
-              <Button className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-8 py-4 text-base font-semibold" data-testid="landing-how-it-works-cta">
+            <Link to="/how-it-works" data-testid="landing-how-it-works-link">
+              <Button className="landing-cta-primary" data-testid="landing-how-it-works-cta">
                 View How It Works
               </Button>
             </Link>
@@ -729,7 +730,7 @@ const LandingPage = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Legal Frameworks Card */}
-            <Link to="/legal-framework" className="group">
+            <Link to="/legal-framework" className="group" data-testid="landing-resource-legal-framework-link">
               <div className="bg-card border-2 border-border hover:border-blue-600 dark:hover:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -751,7 +752,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Live Caselaw Search Card */}
-            <Link to="/caselaw-search" className="group">
+            <Link to="/caselaw-search" className="group" data-testid="landing-resource-caselaw-link">
               <div className="bg-card border-2 border-border hover:border-red-600 dark:hover:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -772,7 +773,7 @@ const LandingPage = () => {
               </div>
             </Link>
 
-            <Link to="/how-it-works" className="group">
+            <Link to="/how-it-works" className="group" data-testid="landing-resource-how-it-works-link">
               <div className="bg-card border-2 border-border hover:border-indigo-600 dark:hover:border-indigo-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -861,6 +862,7 @@ const LandingPage = () => {
                 onClick={() => setShowAuthModal(true)}
                 variant="outline"
                 className="landing-cta-primary w-full"
+                data-testid="free-tier-get-started-btn"
               >
                 Get Started Free
               </Button>
@@ -1092,7 +1094,7 @@ const LandingPage = () => {
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <p className="text-blue-500 text-xs uppercase tracking-widest mb-4">About</p>
-          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Case Manager
           </h3>
           <p className="text-blue-700 text-sm font-semibold mb-4">Founded by Debra King</p>
@@ -1100,8 +1102,8 @@ const LandingPage = () => {
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
-          <Link to="/about">
-            <Button className="landing-cta-primary">
+          <Link to="/about" data-testid="about-story-link">
+            <Button className="landing-cta-primary" data-testid="about-story-button">
               Read My Full Story
             </Button>
           </Link>
