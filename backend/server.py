@@ -4909,6 +4909,10 @@ async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
         f"- {ground.get('title', 'Untitled ground')} [{ground.get('ground_type', 'other')} / {ground.get('strength', 'unrated')}] — {ground.get('description', '')[:220]}"
         for ground in grounds[:20]
     ) or "- No structured grounds recorded"
+    grounds_heading_text = "\n".join(
+        f"### Ground {idx}: {ground.get('title', 'Untitled ground')}"
+        for idx, ground in enumerate(grounds[:20], start=1)
+    ) or "### Ground 1: Grounds identified from source reports"
     documents_text = "\n".join(
         f"- {document.get('filename', 'Untitled document')} ({document.get('category', 'other')})"
         for document in documents[:30]
@@ -4951,6 +4955,9 @@ MANDATORY RULES:
 STRUCTURED GROUNDS
 {grounds_text}
 
+MANDATORY GROUND LIST
+{grounds_heading_text}
+
 TIMELINE SNAPSHOT
 {timeline_text}
 
@@ -4961,7 +4968,7 @@ DOCUMENT INVENTORY
     section_groups = [
         {
             "slug": "foundations",
-            "target_chars": 8500,
+            "target_chars": 12000,
             "source_limits": {"quick_summary": 12000, "full_detailed": 18000, "extensive_log": 22000},
             "required_headings": [
                 "## Executive Summary",
@@ -4973,19 +4980,19 @@ DOCUMENT INVENTORY
         },
         {
             "slug": "legal-analysis",
-            "target_chars": 10500,
-            "source_limits": {"quick_summary": 9000, "full_detailed": 22000, "extensive_log": 26000},
+            "target_chars": 20000,
+            "source_limits": {"quick_summary": 9000, "full_detailed": 26000, "extensive_log": 30000},
             "required_headings": [
                 "## Grounds of Merit",
                 "## Statutory Framework",
                 "## Authorities and Comparative Cases",
                 "## Sentencing Comparison and Relief Pathways",
             ],
-            "instructions": "Write these sections at barrister depth. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter. The sentencing comparison must be detailed and specific, not a summary paragraph.",
+            "instructions": "Write these sections at barrister depth. Under ## Grounds of Merit, create one dedicated ### subsection for every item in the mandatory ground list and do not omit, merge, or collapse any listed ground. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, fallback positions, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter. The sentencing comparison must be detailed and specific, not a summary paragraph.",
         },
         {
             "slug": "strategy",
-            "target_chars": 8500,
+            "target_chars": 12000,
             "source_limits": {"quick_summary": 7000, "full_detailed": 16000, "extensive_log": 22000},
             "required_headings": [
                 "## Proposed Submissions and Hearing Strategy",
@@ -5033,11 +5040,11 @@ SOURCE REPORTS
 
     response = "\n\n".join(part for part in section_outputs if part).strip()
 
-    target_length = 22000
+    target_length = 45000
     if len(response) < target_length:
         expansion_source_text = _build_barrister_group_source_text(
             source_reports,
-            {"quick_summary": 7000, "full_detailed": 18000, "extensive_log": 22000},
+            {"quick_summary": 8000, "full_detailed": 22000, "extensive_log": 26000},
         )
         expansion_prompt = f"""Expand the Barrister Brief below to at least {target_length} characters.
 
@@ -5045,6 +5052,10 @@ Keep every existing heading exactly as written.
 Do not remove or shorten any existing material.
 Add more factual depth, procedural detail, case-specific analysis, statutory interpretation, authority comparison, sentencing detail, and hearing strategy under the existing sections only.
 The result must read like a deeply detailed barrister brief, not a summary.
+Every ground in the mandatory ground list must remain in the final text with its own dedicated discussion.
+
+MANDATORY GROUND LIST
+{grounds_heading_text}
 
 SOURCE REPORTS
 {expansion_source_text}
@@ -5063,6 +5074,45 @@ CURRENT BARRISTER BRIEF
         expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
         if len(expanded_response) > len(response):
             response = expanded_response
+
+    if len(response) < 38000 and grounds:
+        ground_expansion_prompt = f"""Rewrite only the ## Grounds of Merit section of the Barrister Brief below.
+
+Requirements:
+- Keep the heading exactly as ## Grounds of Merit.
+- Include every ground from the mandatory ground list below.
+- Create one dedicated ### subsection per listed ground.
+- Make this rewritten grounds section extremely detailed, with factual support, legal reasoning, strategic use, weaknesses, fallback positions, and any key authority or statutory link relevant to that ground.
+- Minimum target length for this rewritten section alone: 18000 characters.
+
+MANDATORY GROUND LIST
+{grounds_heading_text}
+
+STRUCTURED GROUNDS
+{grounds_text}
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+        rewritten_grounds = await call_llm_with_fallback(
+            system_prompt,
+            ground_expansion_prompt,
+            session_id=f"barrister-{case_id}-grounds-expand",
+            max_tokens=16384,
+            timeout_seconds=180,
+        )
+        rewritten_grounds = _strip_report_placeholders(rewritten_grounds)
+        rewritten_grounds = re.sub(r"\n{3,}", "\n\n", rewritten_grounds).strip()
+        if rewritten_grounds.startswith("## Grounds of Merit"):
+            response = re.sub(
+                r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework)",
+                rewritten_grounds + "\n\n",
+                response,
+                count=1,
+            )
 
     response = _strip_report_placeholders(response)
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
@@ -5540,6 +5590,14 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#1e3a8a')
     ))
+    styles.add(ParagraphStyle(
+        name='NumberedSectionHeader',
+        fontSize=15,
+        spaceBefore=16,
+        spaceAfter=8,
+        fontName='Helvetica-Bold',
+        textColor=colors.HexColor('#0f172a')
+    ))
 
     def format_inline(text: str) -> str:
         clean = (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -5632,6 +5690,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 story.append(Paragraph(format_inline(stripped[3:].strip()), styles['SectionHeader']))
                 story.append(Spacer(1, 2*mm))
                 continue
+            if re.match(r'^\d+\.\s+[A-Z][A-Z0-9\s/&()\-]{4,}$', stripped):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped), styles['NumberedSectionHeader']))
+                story.append(Spacer(1, 2*mm))
+                continue
             if stripped.startswith("### "):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped[4:].strip()), styles['SubHeader']))
@@ -5642,10 +5705,15 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 story.append(Paragraph(format_inline(stripped[5:].strip()), styles['SubHeader']))
                 story.append(Spacer(1, 1*mm))
                 continue
+            if re.match(r'^Ground\s+\d+\s*:', stripped, re.I):
+                flush_paragraph()
+                story.append(Paragraph(format_inline(stripped), styles['GroundTitle']))
+                story.append(Spacer(1, 1*mm))
+                continue
             if stripped.startswith("- ") or stripped.startswith("• "):
                 flush_paragraph()
                 bullet_text = stripped[2:].strip()
-                story.append(Paragraph(f"&bull; {format_inline(bullet_text)}", styles['BulletText']))
+                story.append(Paragraph(format_inline(f"- {bullet_text}"), styles['BulletText']))
                 story.append(Spacer(1, 1*mm))
                 continue
             # Handle numbered lists
@@ -5749,31 +5817,32 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 story.append(Paragraph("<b>Relevant Law Sections:</b>", styles['ReportBodyText']))
                 for section in ground.get('law_sections', []):
                     section_text = f"• s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', 'NSW')})"
-                    story.append(Paragraph(section_text, styles['LawSection']))
+                    story.append(Paragraph(section_text.replace('•', '-'), styles['LawSection']))
             
             # Similar Cases
             if ground.get('similar_cases'):
                 story.append(Paragraph("<b>Similar Cases:</b>", styles['ReportBodyText']))
                 for case_ref in ground.get('similar_cases', []):
                     case_text = f"• {case_ref.get('case_name', '')} {case_ref.get('citation', '')}"
-                    story.append(Paragraph(case_text, styles['LawSection']))
+                    story.append(Paragraph(case_text.replace('•', '-'), styles['LawSection']))
             
             # Supporting Evidence
             if ground.get('supporting_evidence'):
                 story.append(Paragraph("<b>Supporting Evidence:</b>", styles['ReportBodyText']))
                 for evidence in ground.get('supporting_evidence', []):
-                    story.append(Paragraph(f"• {evidence}", styles['LawSection']))
+                    story.append(Paragraph(f"- {evidence}", styles['LawSection']))
             
             story.append(Spacer(1, 5*mm))
     
     # Legal Framework Reference
     story.append(Paragraph("LEGAL FRAMEWORK REFERENCE", styles['SectionHeader']))
+    story.append(Spacer(1, 2*mm))
     legal_refs = [
-        "• Crimes Act 1900 (NSW) - Primary criminal law for NSW",
-        "• Criminal Appeal Act 1912 (NSW) - Governs appeals in NSW",
-        "• Criminal Code Act 1995 (Cth) - Federal criminal law",
-        "• Evidence Act 1995 (NSW & Cth) - Evidence admissibility",
-        "• Sentencing Act 1995 (NSW) - Sentencing guidelines"
+        "- Crimes Act 1900 (NSW) - Primary criminal law for NSW",
+        "- Criminal Appeal Act 1912 (NSW) - Governs appeals in NSW",
+        "- Criminal Code Act 1995 (Cth) - Federal criminal law",
+        "- Evidence Act 1995 (NSW & Cth) - Evidence admissibility",
+        "- Sentencing Act 1995 (NSW) - Sentencing guidelines"
     ]
     for ref in legal_refs:
         story.append(Paragraph(ref, styles['LawSection']))
