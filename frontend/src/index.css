@@ -868,6 +868,24 @@ select {
   padding: 0.75rem 0.9rem;
 }
 
+/* Landing notice banner */
+.landing-notice-banner {
+  background: #b91c1c !important;
+}
+
+.landing-notice-banner,
+.landing-notice-banner * {
+  color: #ffffff !important;
+}
+
+.landing-notice-link {
+  color: #ffffff !important;
+}
+
+.landing-notice-link:hover {
+  color: #ffffff !important;
+}
+
 /* Colour reset removed — preserving original report colours */
 
 /* Report pages — force white + remove dark */
@@ -912,6 +930,29 @@ select {
 .landing-page {
   background: #ffffff;
   color: #0f172a;
+}
+
+/* Landing tables - higher contrast */
+.landing-page table thead th {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.landing-page table tbody td {
+  color: #0f172a !important;
+  font-size: 1rem;
+}
+
+.landing-page table tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Remove grey blocks on landing */
+.landing-page .bg-muted,
+.landing-page .bg-card {
+  background-color: #ffffff !important;
 }
 
 .landing-page h1,
@@ -1049,8 +1090,17 @@ select {
   background-color: #ffffff !important;
 }
 
-.force-light [class*="bg-gradient-to-"] {
-  background-image: none !important;
+.force-light [class*="bg-slate-50"],
+.force-light [class*="bg-slate-100"],
+.force-light [class*="bg-slate-200"],
+.force-light [class*="bg-slate-300"],
+.force-light [class*="bg-gray-50"],
+.force-light [class*="bg-gray-100"],
+.force-light [class*="bg-gray-200"] {
+  background-color: #ffffff !important;
+}
+
+.force-light .bg-muted {
   background-color: #ffffff !important;
 }
 
@@ -1123,6 +1173,29 @@ select {
 .landing-page {
   background: #ffffff;
   color: #0f172a;
+}
+
+/* Landing tables - higher contrast */
+.landing-page table thead th {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.landing-page table tbody td {
+  color: #0f172a !important;
+  font-size: 1rem;
+}
+
+.landing-page table tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Remove grey blocks on landing */
+.landing-page .bg-muted,
+.landing-page .bg-card {
+  background-color: #ffffff !important;
 }
 
 .landing-page h1,

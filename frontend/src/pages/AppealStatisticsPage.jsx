@@ -450,19 +450,19 @@ const AppealStatisticsPage = () => {
 
           <div className="space-y-4">
             {groundsData.map((ground, index) => (
-              <div key={index} className="bg-card border border-border rounded-xl p-4">
+              <div key={index} className="bg-white border border-slate-200 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-bold bg-muted px-2 py-1 rounded">#{index + 1}</span>
+                    <span className="text-sm font-bold bg-blue-700 text-white px-3 py-1 rounded-full">#{index + 1}</span>
                     <span className="font-semibold text-foreground">{ground.ground}</span>
                   </div>
                   <span className="text-lg font-bold text-red-600">{ground.percentage}%</span>
                 </div>
-                <p className="text-sm text-muted-foreground ml-10">{ground.description}</p>
+                <p className="text-sm text-slate-700 ml-10">{ground.description}</p>
                 {/* Progress Bar */}
-                <div className="mt-3 ml-10 h-2 bg-muted rounded-full overflow-hidden">
+                <div className="mt-3 ml-10 h-2 bg-slate-200 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-red-600 rounded-full transition-all duration-500"
+                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
                     style={{ width: `${ground.percentage}%` }}
                   />
                 </div>
@@ -485,15 +485,15 @@ const AppealStatisticsPage = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             {complaintsData.map((complaint, index) => (
-              <div key={index} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
-                  <span className="text-xl font-bold text-red-600 dark:text-red-400">{complaint.percentage}%</span>
+              <div key={index} className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-blue-700 flex items-center justify-center shrink-0">
+                  <span className="text-xl font-bold text-white">{complaint.percentage}%</span>
                 </div>
                 <div>
                   <p className="font-semibold text-foreground">{complaint.type}</p>
-                  <div className="mt-1 h-1.5 bg-muted rounded-full w-32 overflow-hidden">
+                  <div className="mt-1 h-1.5 bg-slate-200 rounded-full w-32 overflow-hidden">
                     <div 
-                      className="h-full bg-red-500 rounded-full"
+                      className="h-full bg-blue-600 rounded-full"
                       style={{ width: `${complaint.percentage * 2.5}%` }}
                     />
                   </div>
@@ -616,7 +616,7 @@ const StatCard = ({ icon: Icon, label, value, subtext, color }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
+    <div className="bg-white border border-slate-200 rounded-xl p-4">
       <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
         <Icon className="w-5 h-5" />
       </div>

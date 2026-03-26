@@ -130,12 +130,12 @@ const LandingPage = () => {
       </header>
 
       {/* Single Clear Disclaimer */}
-      <div className="bg-red-700 py-3">
+      <div className="bg-red-700 py-3 landing-notice-banner">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-white text-center text-sm md:text-base font-medium">
             <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5" />
             <strong>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
-            <Link to="/terms" className="underline ml-2 hover:text-blue-200">Read full terms</Link>
+            <Link to="/terms" className="landing-notice-link underline ml-2">Read full terms</Link>
           </p>
         </div>
       </div>
@@ -168,9 +168,9 @@ const LandingPage = () => {
                 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-6"
                 style={{ fontFamily: 'Crimson Pro, serif' }}
               >
-                Criminal Appeal Research Tool
+                Criminal Law Appeal Case Management
               </h1>
-              <p className="text-lg md:text-xl text-white/90 mb-6 max-w-xl leading-relaxed">
+              <p className="text-lg md:text-xl text-slate-700 mb-6 max-w-xl leading-relaxed">
                 Organise case documents, generate timelines, and produce premium appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions.
               </p>
               
