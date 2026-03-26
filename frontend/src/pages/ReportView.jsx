@@ -117,6 +117,20 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
   // Strip bracket placeholder notes — BOTH square [] and round () brackets
   cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
+
+  // Strip prompt instruction text from section headings (e.g. "— keep ALL outcome pathways in this ONE section")
+  cleaned = cleaned.replace(/\s*—\s*keep ALL[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\s*—\s*DETAILED PATHWAY ANALYSIS[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\s*—\s*keep ALL timeframes[^\n]*/gi, "");
+  cleaned = cleaned.replace(/\s*—\s*keep ALL timeframes in this ONE section/gi, "");
+  // Strip parenthesised word counts from headings like "(900+ words per ground, flowing paragraphs)"
+  cleaned = cleaned.replace(/\s*\(\d+\+?\s*words[^)]*\)/gi, "");
+  // Strip "— DEEP ANALYSIS" from headings
+  cleaned = cleaned.replace(/(GROUNDS OF MERIT)\s*—\s*DEEP ANALYSIS/gi, "$1");
+  // Remove parenthesised instructions like "(12+ CASES with full citations...)"
+  cleaned = cleaned.replace(/\s*\(\d+\+?\s*CASES[^)]*\)/gi, "");
+  // Clean "keep ALL ... in this ONE section" remnants
+  cleaned = cleaned.replace(/\s*—?\s*keep ALL[^.\n]*/gi, "");
   cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[Repeat[^\]]*\]/gi, "");
   cleaned = cleaned.replace(/\[Follow[^\]]*\]/gi, "");
@@ -540,6 +554,46 @@ const ReportView = () => {
         </div>
       `).join('')}
     </div>
+    <div style="margin:24px 32px;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
+      <h2 style="font-family:'Crimson Pro',serif;font-size:18px;font-weight:700;color:#0f172a;padding:14px 20px;margin:0;background:#f8fafc;border-bottom:1px solid #e2e8f0;">Report Tier Comparison</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 12px;background:#f1f5f9;border:1px solid #e2e8f0;font-weight:700;color:#0f172a;">Subject Matter</th>
+            <th style="text-align:center;padding:8px 12px;background:#059669;color:#fff;border:1px solid #e2e8f0;font-weight:700;">FREE</th>
+            <th style="text-align:center;padding:8px 12px;background:#1d4ed8;color:#fff;border:1px solid #e2e8f0;font-weight:700;">$150 Full Detailed</th>
+            <th style="text-align:center;padding:8px 12px;background:#7e22ce;color:#fff;border:1px solid #e2e8f0;font-weight:700;">$200 Extensive</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${[
+            ["Case Snapshot / Executive Brief","&#9745;","&#9745;","&#9745;"],
+            ["Primary Issues Identified","&#9745;","&#9745;","&#9745;"],
+            ["All Grounds Listed","&#9745;","&#9745;","&#9745;"],
+            ["Ground-by-Ground Deep Analysis","—","&#9745;","&#9745;"],
+            ["Crown Response & Rebuttal","—","&#9745;","&#9745;"],
+            ["Forensic Case Chronology","—","&#9745;","&#9745;"],
+            ["Document Evidence Digest","—","&#9745;","&#9745;"],
+            ["Sentencing Comparison Table","3 cases","8+ cases","12+ cases"],
+            ["Precedent Outcome Matrix","—","10-12","15+"],
+            ["Outcome Options Matrix","—","&#9745;","&#9745;"],
+            ["Statutory Framework","—","&#9745;","&#9745;"],
+            ["Submissions Blueprint","—","&#9745;","&#9745;"],
+            ["How to Start Appeal + Forms","—","&#9745;","&#9745;"],
+            ["Evidentiary Gaps Checklist","—","&#9745;","&#9745;"],
+            ["Action Plan","—","&#9745;","&#9745;"],
+            ["Plain-English Brief","&#9745;","&#9745;","&#9745;"],
+            ["900+ Words per Ground","—","—","&#9745;"],
+            ["Hearing Preparation Notes","—","—","&#9745;"],
+            ["Conference Preparation Pack","—","—","&#9745;"],
+            ["Court Pathway Playbook","—","—","&#9745;"],
+            ["Similar Case Search","—","—","&#9745;"],
+            ["Risk Assessment + Contingency","—","—","&#9745;"],
+            ["Fallback Positions per Ground","—","—","&#9745;"],
+          ].map(([label, f, d, e], i) => `<tr style="background:${i%2===0?'#fff':'#f8fafc'}"><td style="padding:6px 12px;border:1px solid #e2e8f0;color:#0f172a;font-weight:500;">${label}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${f==='—'?'#cbd5e1':'#059669'};font-weight:700;">${f}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${d==='—'?'#cbd5e1':'#1d4ed8'};font-weight:700;">${d}</td><td style="text-align:center;padding:6px;border:1px solid #e2e8f0;color:${e==='—'?'#cbd5e1':'#7e22ce'};font-weight:700;">${e}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
     <div class="disclaimer">
       <div class="disclaimer-icon">&#9888;</div>
       <div class="disclaimer-text">
@@ -787,6 +841,69 @@ const ReportView = () => {
                 </button>
               </article>
             ))}
+          </div>
+
+          {/* ===== REPORT COMPARISON TABLE ===== */}
+          <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-8 mt-2" data-testid="report-comparison-table">
+            <h2 className="text-xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Report Tier Comparison
+            </h2>
+            <p className="text-sm text-slate-700 mb-4">
+              Compare what is included in each report level:
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left p-3 bg-slate-100 text-slate-900 font-bold border border-slate-200 w-1/3">Subject Matter</th>
+                    <th className="text-center p-3 bg-green-600 text-white font-bold border border-slate-200">FREE Report</th>
+                    <th className="text-center p-3 bg-blue-700 text-white font-bold border border-slate-200">$150 AUD<br/><span className="font-normal text-xs">Full Detailed</span></th>
+                    <th className="text-center p-3 bg-purple-700 text-white font-bold border border-slate-200">$200 AUD<br/><span className="font-normal text-xs">Extensive Log</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Case Snapshot / Executive Brief", true, true, true],
+                    ["Primary Issues Identified", true, true, true],
+                    ["All Grounds Listed (titles + strength)", true, true, true],
+                    ["Ground-by-Ground Deep Analysis", false, true, true],
+                    ["Crown Response & Rebuttal Strategy", false, true, true],
+                    ["Forensic Case Chronology", false, true, true],
+                    ["Document Evidence Digest", false, true, true],
+                    ["Sentencing Comparison Table", "3 cases", "8+ cases", "12+ cases"],
+                    ["Precedent Outcome Matrix", false, "10-12 cases", "15+ cases"],
+                    ["Outcome Options Matrix", false, true, true],
+                    ["Statutory & Doctrinal Framework", false, true, true],
+                    ["Argument Strategy per Ground", false, true, true],
+                    ["Submissions Blueprint", false, true, true],
+                    ["How to Start Your Appeal + Forms", false, true, true],
+                    ["Evidentiary Gaps Checklist", false, true, true],
+                    ["Prioritised Action Plan", false, true, true],
+                    ["Client Plain-English Brief", true, true, true],
+                    ["900+ Words per Ground Analysis", false, false, true],
+                    ["Hearing Preparation Notes", false, false, true],
+                    ["Conference Preparation Pack", false, false, true],
+                    ["Court Pathway Operations Playbook", false, false, true],
+                    ["Similar Case Search Options", false, false, true],
+                    ["Risk Assessment + Contingency", false, false, true],
+                    ["Fallback Positions per Ground", false, false, true],
+                  ].map(([label, free, full, ext], idx) => (
+                    <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
+                      <td className="p-3 border border-slate-200 text-slate-900 font-medium">{label}</td>
+                      <td className="p-3 border border-slate-200 text-center">
+                        {free === true ? <span className="text-green-600 font-bold text-lg">&#9745;</span> : free === false ? <span className="text-slate-300">—</span> : <span className="text-green-700 font-semibold text-xs">{free}</span>}
+                      </td>
+                      <td className="p-3 border border-slate-200 text-center">
+                        {full === true ? <span className="text-blue-700 font-bold text-lg">&#9745;</span> : full === false ? <span className="text-slate-300">—</span> : <span className="text-blue-700 font-semibold text-xs">{full}</span>}
+                      </td>
+                      <td className="p-3 border border-slate-200 text-center">
+                        {ext === true ? <span className="text-purple-700 font-bold text-lg">&#9745;</span> : ext === false ? <span className="text-slate-300">—</span> : <span className="text-purple-700 font-semibold text-xs">{ext}</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* ===== DISCLAIMER FOOTER ===== */}

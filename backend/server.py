@@ -3431,6 +3431,12 @@ def _strip_report_placeholders(text: str) -> str:
         cleaned_lines.append(line)
     cleaned = "\n".join(cleaned_lines)
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    # Strip prompt instruction text from section headings
+    cleaned = re.sub(r'\s*—\s*keep ALL[^\n]*', '', cleaned)
+    cleaned = re.sub(r'\s*—\s*DETAILED PATHWAY ANALYSIS[^\n]*', '', cleaned)
+    cleaned = re.sub(r'\s*\(\d+\+?\s*words[^)]*\)', '', cleaned)  # e.g. "(900+ words per ground, flowing paragraphs)"
+    cleaned = re.sub(r'\s*\(\d+\+?\s*CASES[^)]*\)', '', cleaned)  # e.g. "(12+ CASES with full citations)"
+    cleaned = re.sub(r'(GROUNDS OF MERIT)\s*—\s*DEEP ANALYSIS', r'\1', cleaned)
     # Sanitise "we/us/our" language — convert to third-person educational tone
     we_us_replacements = [
         (r'\bWe are arguing\b', 'The applicant argues'),
@@ -3701,6 +3707,8 @@ Write MINIMUM 2000 words (target range 2000-3000 words). This is an OVERVIEW but
 ## 1. CASE SNAPSHOT
 3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
 
+MANDATORY: Start this section with a summary line: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use the EXACT counts from the supplied case data.
+
 ## 2. PRIMARY ISSUES IDENTIFIED
 6-10 bullet points. Each bullet must include:
 - Issue label
@@ -3731,7 +3739,7 @@ Overall assessment: Strong / Moderate / Needs Further Development.
 Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). NEVER use "we", "us", "our".
 
 ## 8. WHAT THE PAID REPORTS ADD
-The Full Detailed Report ($150) includes:
+The Full Detailed Report ($150 AUD) includes:
 - Deep-dive analysis of every ground with Crown response and rebuttal strategies
 - Comparative sentencing table with 8+ cases and reduction pathways
 - Complete outcome options matrix (quash, retrial, downgrade, sentence reduction)
@@ -3740,7 +3748,7 @@ The Full Detailed Report ($150) includes:
 - Evidentiary gaps checklist and prioritised action plan
 - Client plain-English brief with realistic next steps
 
-The Extensive Report ($200) adds on top of the Full Detailed:
+The Extensive Report ($200 AUD) adds on top of the Full Detailed:
 - 300+ word analysis per ground with specific case law citations
 - 12+ sentencing comparisons and 15+ precedent cases
 - Hearing preparation notes with anticipated questions and responses
@@ -3754,8 +3762,13 @@ IMPORTANT:
 - No witness contradiction or witness credibility section.
 - Be specific to the supplied material throughout — do not write generic legal advice.
 
-GROUNDS TO COVER (MUST INCLUDE ALL):
-{grounds_enumerated}"""
+GROUNDS TO COVER (MUST INCLUDE ALL — list every single one below):
+{grounds_enumerated}
+
+MATERIAL COUNTS (use these exact numbers in the report):
+- Total documents analysed: {len(documents)}
+- Total timeline events: {len(timeline)}
+- Total grounds identified: {len(grounds)}"""
 
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}
@@ -3778,7 +3791,12 @@ CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop.
 GROUNDS TO COVER (MUST INCLUDE ALL — if 9 grounds, write 9 full analyses):
 {grounds_enumerated}
 
-Target range 7000-9000 words. This report must feel premium, strategic, and hearing-ready.
+MATERIAL COUNTS (use these exact numbers in the report):
+- Total documents analysed: {len(documents)}
+- Total timeline events: {len(timeline)}
+- Total grounds identified: {len(grounds)}
+
+Target range 10000-15000 words. This report must feel premium, strategic, and hearing-ready.
 
 CRITICAL — NO REPETITION FROM QUICK SUMMARY:
 The user already has a Quick Summary covering the case overview, top grounds preview, and basic sentencing comparison. This Full Detailed report must ADVANCE beyond that with deep analysis, complete ground-by-ground strategy, expanded sentencing tables, full outcome matrices, and hearing preparation content NOT present in the Quick Summary. Do NOT rewrite the case overview — jump straight into deep strategic analysis.
@@ -3789,6 +3807,8 @@ Use this exact structure:
 
 ## 1. EXECUTIVE BRIEF
 High-impact summary: strongest grounds, jurisdiction posture, likely pathways to relief, urgency items, and recommended next steps. Include a clear case snapshot paragraph (defendant, offence, sentence, court, judge) and a short list of primary issues at the end of this section.
+
+MANDATORY: Start this section with a summary line: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use the EXACT counts from the supplied case data.
 
 ## 2. FORENSIC CASE CHRONOLOGY
 Chronological reconstruction of the case with event date, source anchor (which document/evidence), and legal significance of each event. Include at least 10 dated entries from the supplied material.
@@ -3913,7 +3933,12 @@ CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE,
 GROUNDS TO COVER (MUST INCLUDE ALL — if 9 grounds, write 9 full analyses):
 {grounds_enumerated}
 
-Target range 15000-20000 words. Every section must reference specific facts, documents, and dates from this case.
+MATERIAL COUNTS (use these exact numbers in the report):
+- Total documents analysed: {len(documents)}
+- Total timeline events: {len(timeline)}
+- Total grounds identified: {len(grounds)}
+
+Target range 25000-35000 words. Every section must reference specific facts, documents, and dates from this case.
 
 CRITICAL — NO REPETITION FROM FULL DETAILED REPORT:
 The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (900+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
@@ -3924,6 +3949,8 @@ Use this exact structure:
 
 ## 1. EXECUTIVE BRIEF
 Confident assessment of the appeal: strongest grounds with specific evidence anchors, jurisdiction posture, pathways to relief, urgency items, and a clear one-paragraph statement of the case. Include a case snapshot paragraph (defendant, offence, sentence, court, judge) and a short list of primary issues at the end.
+
+MANDATORY: Start this section with a summary line: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use the EXACT counts from the supplied case data.
 
 ## 2. FORENSIC CASE CHRONOLOGY
 Comprehensive chronological reconstruction with at least 15 dated entries. For each entry:
@@ -4379,8 +4406,8 @@ Write ALL 3 sections. Do NOT truncate any section."""),
 
     min_lengths = {
         "quick_summary": 9000,
-        "full_detailed": 50000,
-        "extensive_log": 95000
+        "full_detailed": 60000,
+        "extensive_log": 120000
     }
     target_length = min_lengths.get(report_type, 12000)
     if aggressive_mode:

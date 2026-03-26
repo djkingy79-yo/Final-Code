@@ -237,7 +237,9 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
       setEditingNote(null);
       setNewNote({ title: "", content: "", category: "general" });
     } catch (error) {
-      toast.error(editingNote ? "Failed to update note" : "Failed to create note");
+      const msg = error?.response?.data?.detail || (editingNote ? "Failed to update note" : "Failed to create note");
+      toast.error(msg);
+      console.error("Note save error:", error?.response?.data || error.message);
     } finally {
       setSaving(false);
     }
