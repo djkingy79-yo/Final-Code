@@ -301,19 +301,12 @@ const ReportView = () => {
       setReport(reportRes.data);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
-      const requiredCombos = [
-        { type: "quick_summary", aggressive: false },
-        { type: "quick_summary", aggressive: true },
-        { type: "full_detailed", aggressive: false },
-        { type: "full_detailed", aggressive: true },
-        { type: "extensive_log", aggressive: false },
-        { type: "extensive_log", aggressive: true },
-      ];
-      const hasAll = requiredCombos.every((combo) =>
+      const requiredTypes = ["quick_summary", "full_detailed", "extensive_log"];
+      const hasAll = requiredTypes.every((type) =>
         (reportsRes.data || []).some((item) =>
-          item.report_type === combo.type &&
-          Boolean(item.content?.aggressive_mode) === combo.aggressive &&
-          item.status === "completed"
+          item.report_type === type &&
+          item.status === "completed" &&
+          !item.content?.aggressive_mode
         )
       );
       setHasAllReports(hasAll);
@@ -525,7 +518,7 @@ const ReportView = () => {
                   </Button>
                 ) : (
                   <Button variant="outline" size="sm" disabled className="text-slate-700 border-slate-200 bg-white opacity-80 cursor-not-allowed" data-testid="barrister-view-locked">
-                    <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 6 reports
+                    <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 3 reports
                   </Button>
                 )
               )}
@@ -563,9 +556,6 @@ const ReportView = () => {
             </div>
             <div className="flex items-center gap-3 flex-wrap text-sm text-white/90">
               <span className={`${theme.priceBadge} px-3 py-1 rounded-full text-sm font-bold text-white`}>{theme.price}</span>
-              {report?.content?.aggressive_mode && (
-                <span className="bg-red-500 px-3 py-1 rounded-full text-sm font-bold text-white" data-testid="report-aggressive-mode-badge">Aggressive Mode</span>
-              )}
               <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Generated: {formatDate(report?.generated_at)}</span>
             </div>
           </div>

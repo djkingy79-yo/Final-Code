@@ -14,7 +14,6 @@ import {
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Switch } from "./ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -84,22 +83,14 @@ const ReportsSection = ({
   const [expandedReports, setExpandedReports] = useState({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pendingReportType, setPendingReportType] = useState(null);
-  const [aggressiveMode, setAggressiveMode] = useState(false);
 
-  const requiredReportCombos = [
-    { type: "quick_summary", aggressive: false },
-    { type: "quick_summary", aggressive: true },
-    { type: "full_detailed", aggressive: false },
-    { type: "full_detailed", aggressive: true },
-    { type: "extensive_log", aggressive: false },
-    { type: "extensive_log", aggressive: true },
-  ];
+  const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
 
-  const hasAllReports = requiredReportCombos.every((combo) =>
+  const hasAllReports = requiredReportTypes.every((type) =>
     reports.some((report) =>
-      report.report_type === combo.type &&
-      Boolean(report.content?.aggressive_mode) === combo.aggressive &&
-      report.status === "completed"
+      report.report_type === type &&
+      report.status === "completed" &&
+      !report.content?.aggressive_mode
     )
   );
 
@@ -200,7 +191,7 @@ const ReportsSection = ({
     try {
       const response = await axios.post(
         `${API}/cases/${caseId}/reports/generate`,
-        { report_type: reportType, aggressive_mode: aggressiveMode },
+        { report_type: reportType },
         { timeout: 120000 }
       );
       
@@ -215,7 +206,6 @@ const ReportsSection = ({
         toast.success("Report generated successfully");
         if (onReportsChange) onReportsChange();
         setGeneratingReport(false);
-        setAggressiveMode(false);
       }
     } catch (error) {
       const isTimeout = error?.code === "ECONNABORTED" || error?.message?.toLowerCase().includes("timeout");
@@ -225,7 +215,7 @@ const ReportsSection = ({
           const latestRes = await axios.get(`${API}/cases/${caseId}/reports`);
           const latestReport = (latestRes.data || []).find((report) =>
             report.report_type === reportType &&
-            Boolean(report.content?.aggressive_mode) === aggressiveMode
+            !report.content?.aggressive_mode
           );
           if (latestReport?.report_id) {
             if (latestReport.status === "completed") {
@@ -260,7 +250,6 @@ const ReportsSection = ({
     if (pollingRef.current) { clearInterval(pollingRef.current); pollingRef.current = null; }
     if (elapsedRef.current) { clearInterval(elapsedRef.current); elapsedRef.current = null; }
     setGeneratingReport(false);
-    setAggressiveMode(false);
     setGenElapsed(0);
   };
 
@@ -495,9 +484,6 @@ const ReportsSection = ({
                       </div>
                       <div className="flex items-center gap-2">
                         {rTheme.price && <span className={`${rTheme.badge} px-3 py-1 rounded-full text-xs font-bold text-white`}>{rTheme.price}</span>}
-                        {report?.content?.aggressive_mode && (
-                          <span className="bg-red-500 px-2 py-0.5 rounded-full text-xs font-bold" data-testid={`aggressive-report-badge-${report.report_id}`}>Aggressive</span>
-                        )}
                         <Button
                           variant="destructive"
                           size="icon"
@@ -549,7 +535,7 @@ const ReportsSection = ({
                               data-testid={`barrister-view-locked-${report.report_id}`}
                             >
                               <Presentation className="w-4 h-4 mr-1.5" />
-                              Barrister View - unlock after all 6 reports
+                              Barrister View - unlock after all 3 reports
                             </Button>
                           )
                         )}
@@ -610,7 +596,6 @@ const ReportsSection = ({
         open={showReportDialog}
         onOpenChange={(open) => {
           setShowReportDialog(open);
-          if (!open) setAggressiveMode(false);
         }}
       >
         <DialogContent className="sm:max-w-lg bg-white text-slate-900 border border-slate-200 max-h-[90vh] overflow-y-auto" data-testid="report-type-dialog">
@@ -649,21 +634,6 @@ const ReportsSection = ({
               </div>
             ))}
 
-            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4" data-testid="aggressive-mode-container">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-base font-semibold text-rose-700">Aggressive Mode</p>
-                  <p className="text-sm text-slate-700">
-                    Uses stronger advocacy language with primary and fallback orders sought.
-                  </p>
-                </div>
-                <Switch
-                  checked={aggressiveMode}
-                  onCheckedChange={setAggressiveMode}
-                  data-testid="aggressive-mode-switch"
-                />
-              </div>
-            </div>
 
             {/* DO NOT UNDO - Report generation time warning */}
             <div className="rounded-xl border border-blue-200 bg-blue-50 p-4" data-testid="report-generation-warning">

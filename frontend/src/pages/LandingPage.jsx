@@ -1027,12 +1027,6 @@ const LandingPage = () => {
                   <td className="p-3 text-center text-sm font-semibold text-blue-700">7,000–9,000</td>
                   <td className="p-3 text-center text-sm font-semibold text-purple-700">15,000–20,000</td>
                 </tr>
-                <tr className="border-t border-slate-200 bg-white">
-                  <td className="p-3 text-slate-900 font-semibold text-sm">Aggressive mode depth</td>
-                  <td className="p-3 text-center text-sm text-emerald-700">~2× depth</td>
-                  <td className="p-3 text-center text-sm text-blue-700">~2× depth</td>
-                  <td className="p-3 text-center text-sm text-purple-700">~2× depth</td>
-                </tr>
               </tbody>
             </table>
           </div>

@@ -227,7 +227,6 @@ const HowItWorksPage = () => {
         "Start with the FREE Quick Summary to get an overview before committing to a paid report",
         "Full Detailed Reports include legislation links and comparative sentencing tables",
         "Extensive Log Reports are designed to be handed directly to a barrister",
-        "Use 'Aggressive Mode' for maximum detail and length in your report",
       ],
     },
     {

@@ -4437,16 +4437,15 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         "full_detailed": "Full Detailed Legal Analysis",
         "extensive_log": "Extensive Case Log & Analysis"
     }
+    aggressive_mode = False
     title = report_titles.get(report_type, "Report")
-    if report_request.aggressive_mode:
-        title = f"{title} (Aggressive)"
     placeholder = {
         "report_id": report_id,
         "case_id": case_id,
         "user_id": user.user_id,
         "report_type": report_type,
         "title": title,
-        "content": {"analysis": "", "aggressive_mode": report_request.aggressive_mode},
+        "content": {"analysis": "", "aggressive_mode": aggressive_mode},
         "grounds_of_merit": [],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "generating",
@@ -4456,7 +4455,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
 
     # Fire-and-forget background task
     asyncio.create_task(
-        _run_report_generation(report_id, case_id, user.user_id, report_type, report_request.aggressive_mode)
+        _run_report_generation(report_id, case_id, user.user_id, report_type, aggressive_mode)
     )
 
     return placeholder
@@ -4487,7 +4486,7 @@ async def get_reports(case_id: str, request: Request):
     )
     
     reports = await db.reports.find(
-        {"case_id": case_id, "user_id": user.user_id},
+        {"case_id": case_id, "user_id": user.user_id, "content.aggressive_mode": {"$ne": True}},
         {"_id": 0}
     ).sort("generated_at", -1).to_list(100)
     

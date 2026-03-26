@@ -73,15 +73,11 @@ const BarristerView = ({ user }) => {
       // Collect all reports with analysis content, sorted by detail level (extensive > full > quick)
       const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
       const completed = (allReportsRes.data || [])
-        .filter(r => r.content?.analysis && r.content.analysis.length > 200 && r.status !== "failed")
+        .filter(r => r.content?.analysis && r.content.analysis.length > 200 && r.status !== "failed" && !r.content?.aggressive_mode)
         .sort((a, b) => {
-          // Aggressive reports first within same type
-          const aAgg = a.content?.aggressive_mode ? 1 : 0;
-          const bAgg = b.content?.aggressive_mode ? 1 : 0;
           const typeA = typeOrder[a.report_type] || 0;
           const typeB = typeOrder[b.report_type] || 0;
-          if (typeB !== typeA) return typeB - typeA;
-          return bAgg - aAgg;
+          return typeB - typeA;
         });
       setAllReports(completed);
     } catch (error) {
@@ -722,35 +718,22 @@ const BarristerView = ({ user }) => {
     );
   }
 
-  // Merge all reports — collect distinct content from ALL reports (normal + aggressive)
+  // Merge all reports — collect distinct content from standard reports
   const mergeAllReports = () => {
-    const availableReports = allReports?.length ? allReports : [];
+    const availableReports = (allReports || []).filter((r) => !r.content?.aggressive_mode);
 
     if (!availableReports.length && report?.content) {
       const parsed = parseAnalysis(report.content);
-      const isAggressive = Boolean(report?.content?.aggressive_mode);
       return {
         sections: parsed.sections || [],
-        normalCount: isAggressive ? 0 : 1,
-        aggressiveCount: isAggressive ? 1 : 0,
-        totalReports: parsed.sections?.length ? 1 : 0
+        totalReports: parsed.sections?.length ? 1 : 0,
       };
     }
 
     const sectionBuckets = new Map(); // normalTitle -> { title, entries, sources }
     const reportOrder = [];
 
-    // Count report types for display
-    const normalCount = availableReports.filter(r => !r.content?.aggressive_mode).length;
-    const aggressiveCount = availableReports.filter(r => r.content?.aggressive_mode).length;
-
-    // Parse EVERY report — aggressive first (they should be richer), then normal
     const sortedReports = [...availableReports].sort((a, b) => {
-      // aggressive > normal
-      const aAgg = a.content?.aggressive_mode ? 1 : 0;
-      const bAgg = b.content?.aggressive_mode ? 1 : 0;
-      if (bAgg !== aAgg) return bAgg - aAgg;
-      // then by tier: extensive > full > quick
       const typeOrder = { extensive_log: 3, full_detailed: 2, quick_summary: 1 };
       return (typeOrder[b.report_type] || 0) - (typeOrder[a.report_type] || 0);
     });
@@ -771,13 +754,13 @@ const BarristerView = ({ user }) => {
     };
 
     sortedReports.forEach((reportItem, index) => {
-      const reportLabel = `${reportItem.report_type === 'quick_summary' ? 'Summary' : reportItem.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${reportItem.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
+      const reportLabel = `${reportItem.report_type === 'quick_summary' ? 'Summary' : reportItem.report_type === 'full_detailed' ? 'Full' : 'Extensive'}`;
       registerSections(reportItem, reportLabel, index);
     });
 
     const existingIds = new Set(availableReports.map((item) => item.report_id));
     if (report?.content?.analysis && !existingIds.has(report.report_id)) {
-      const reportLabel = `${report.report_type === 'quick_summary' ? 'Summary' : report.report_type === 'full_detailed' ? 'Full' : 'Extensive'}${report.content?.aggressive_mode ? ' (Aggressive)' : ''}`;
+      const reportLabel = `${report.report_type === 'quick_summary' ? 'Summary' : report.report_type === 'full_detailed' ? 'Full' : 'Extensive'}`;
       registerSections(report, reportLabel, sortedReports.length + 1);
     }
 
@@ -809,7 +792,7 @@ const BarristerView = ({ user }) => {
 
     const renumbered = ordered.map((section, index) => ({ ...section, number: String(index + 1) }));
 
-    return { sections: renumbered, normalCount, aggressiveCount, totalReports: availableReports.length };
+    return { sections: renumbered, totalReports: availableReports.length };
   };
 
   const parsedContent = mergeAllReports();
@@ -1104,7 +1087,7 @@ const BarristerView = ({ user }) => {
                 </h2>
                 {parsedContent.totalReports > 0 && (
                   <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
-                    Synthesised from {parsedContent.totalReports} reports{parsedContent.aggressiveCount > 0 ? ` (${parsedContent.normalCount} standard + ${parsedContent.aggressiveCount} aggressive)` : ''}
+                    Synthesised from {parsedContent.totalReports} reports
                   </span>
                 )}
               </div>
@@ -1650,7 +1633,7 @@ const BarristerView = ({ user }) => {
                 </h2>
                 {parsedContent.totalReports > 1 && (
                   <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
-                    Synthesised from {parsedContent.totalReports} reports{parsedContent.aggressiveCount > 0 ? ` (${parsedContent.normalCount} standard + ${parsedContent.aggressiveCount} aggressive)` : ''}
+                    Synthesised from {parsedContent.totalReports} reports
                   </span>
                 )}
               </div>
