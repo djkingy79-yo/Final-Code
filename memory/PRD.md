@@ -53,6 +53,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Added Barrister comparison-table enrichment and regenerated case `case_db8d84fecfc4` as report `rpt_d287912f2a53` with 40,923 characters, 4 comparison tables, and deeper all-report synthesis
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
+- **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
+- **2026-03-26:** Added Grounds tab export actions for unlocked users: Print View, PDF View, and Word View, including full deep investigation analysis in the generated grounds export document
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
