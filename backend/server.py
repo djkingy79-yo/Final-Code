@@ -4771,6 +4771,19 @@ REPORT TO EXPAND:
 
 
 BARRISTER_SOURCE_TYPES = ["quick_summary", "full_detailed", "extensive_log"]
+BARRISTER_GENERATION_TIMEOUT_MINUTES = 6
+
+
+def _coerce_utc_datetime(value):
+    if isinstance(value, datetime):
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+    if isinstance(value, str) and value:
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+        except ValueError:
+            return None
+    return None
 
 
 def _generated_at_sort_value(report: dict) -> str:
@@ -4846,7 +4859,7 @@ async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
 
     documents = await db.documents.find(
         {"case_id": case_id},
-        {"_id": 0, "file_data": 0, "filename": 1, "category": 1},
+        {"_id": 0}
     ).to_list(300)
     timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(400)
     grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
@@ -5167,8 +5180,26 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
     ).sort("generated_at", -1).to_list(10)
 
     current_report = existing_reports[0] if existing_reports else None
-    if current_report and not regenerate and current_report.get("status") in {"generating", "completed"}:
-        return current_report
+    if current_report and not regenerate:
+        current_status = current_report.get("status")
+        if current_status == "completed":
+            return current_report
+        if current_status == "failed":
+            return current_report
+        if current_status == "generating":
+            generated_at = _coerce_utc_datetime(current_report.get("generated_at"))
+            stale_cutoff = datetime.now(timezone.utc) - timedelta(minutes=BARRISTER_GENERATION_TIMEOUT_MINUTES)
+            if generated_at and generated_at >= stale_cutoff:
+                return current_report
+
+            timeout_message = "Barrister brief generation timed out. Please generate again."
+            await db.reports.update_one(
+                {"report_id": current_report.get("report_id")},
+                {"$set": {"status": "failed", "error": timeout_message}},
+            )
+            current_report["status"] = "failed"
+            current_report["error"] = timeout_message
+            return current_report
 
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
     placeholder = {
