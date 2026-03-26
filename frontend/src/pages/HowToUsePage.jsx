@@ -165,7 +165,7 @@ const HowToUsePage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="how-to-use-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="how-to-use-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" data-testid="how-to-use-brand-text">
               Appeal Case Manager
             </span>
           </Link>
@@ -207,7 +207,7 @@ const HowToUsePage = () => {
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900">
             How to Use the App
           </h1>
           <p className="text-slate-700 max-w-2xl mx-auto">
@@ -250,12 +250,12 @@ const HowToUsePage = () => {
                   <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}>
                     <Icon className={`w-6 h-6 ${colors.text}`} />
                   </div>
-                  <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP {step.num}</span>
+                  <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP {step.num}</span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-900">
                   {step.title}
                 </h3>
-                <p className="text-slate-700">{step.description}</p>
+                <p className="text-sm text-slate-700 leading-relaxed">{step.description}</p>
 
                 {/* Screenshot */}
                 <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-lg">
@@ -270,7 +270,7 @@ const HowToUsePage = () => {
                 {/* Instructions */}
                 <div className={`grid ${isEven ? 'md:grid-cols-2' : 'md:grid-cols-2'} gap-6`}>
                   <div>
-                    <h4 className="font-semibold text-slate-900 text-sm mb-3">Instructions:</h4>
+                    <h4 className="text-base font-semibold text-slate-900 mb-3">Instructions:</h4>
                     <ul className="space-y-2 text-sm text-slate-700">
                       {step.instructions.map((inst, i) => (
                         <li key={i} className="flex items-start gap-2">
@@ -292,17 +292,17 @@ const HowToUsePage = () => {
         {/* Additional Steps */}
         <div className="mt-20 space-y-12">
           {/* Barrister View */}
-          <div className="bg-card border border-border rounded-2xl p-8" data-testid="howto-barrister-view">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8" data-testid="howto-barrister-view">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                <Presentation className="w-6 h-6 text-slate-700" />
+                <Presentation className="w-6 h-6 text-blue-700" />
               </div>
-              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP 9</span>
+              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 9</span>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
               Use Barrister View
             </h3>
-            <p className="text-slate-700 mb-4">Present your case professionally with the clean Barrister View.</p>
+            <p className="text-sm text-slate-700 mb-4">Present your case professionally with the clean Barrister View.</p>
             <ul className="space-y-2 text-sm text-slate-700 mb-4">
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Click 'Barrister View' from your case reports</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Opens a clean, professional presentation format</li>
@@ -315,17 +315,17 @@ const HowToUsePage = () => {
           </div>
 
           {/* Export */}
-          <div className="bg-card border border-border rounded-2xl p-8" data-testid="howto-export">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8" data-testid="howto-export">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
                 <Download className="w-6 h-6 text-pink-700" />
               </div>
-              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded">STEP 10</span>
+              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 10</span>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
               Export & Share
             </h3>
-            <p className="text-slate-700 mb-4">Export your case data for use outside the app.</p>
+            <p className="text-sm text-slate-700 mb-4">Export your case data for use outside the app.</p>
             <ul className="space-y-2 text-sm text-slate-700 mb-4">
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Creates a ZIP file with all documents and reports</li>
@@ -341,7 +341,7 @@ const HowToUsePage = () => {
 
         {/* What's Next */}
         <div className="mt-16 bg-white rounded-2xl p-8 border border-emerald-200">
-          <h2 className="text-xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
             What Happens Next?
           </h2>
           <div className="grid md:grid-cols-2 gap-6 text-sm">
@@ -357,9 +357,9 @@ const HowToUsePage = () => {
             <div>
               <h3 className="font-semibold text-slate-900 mb-2">Getting Legal Help</h3>
               <ul className="text-slate-700 space-y-1">
-                <li>- Apply to <Link to="/legal-resources" className="text-blue-600 hover:underline">Legal Aid</Link> in your state</li>
-                <li>- Contact <Link to="/legal-resources" className="text-blue-600 hover:underline">Pro Bono services</Link></li>
-                <li>- Find a lawyer via your <Link to="/legal-resources" className="text-blue-600 hover:underline">Law Society</Link></li>
+                <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline">Legal Aid</Link> in your state</li>
+                <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline">Pro Bono services</Link></li>
+                <li>- Find a lawyer via your <Link to="/legal-resources" className="text-blue-700 hover:underline">Law Society</Link></li>
                 <li>- Use the Barrister View when meeting with counsel</li>
               </ul>
             </div>
