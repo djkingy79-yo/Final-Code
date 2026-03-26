@@ -5339,9 +5339,10 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
         logger.info(f"Barrister brief {report_id} generated successfully")
     except Exception as exc:
         logger.error(f"Barrister brief {report_id} generation failed: {exc}")
+        friendly_error = "Barrister brief generation was interrupted by a temporary AI service error. Please generate again."
         await db.reports.update_one(
             {"report_id": report_id},
-            {"$set": {"status": "failed", "error": str(exc)}},
+            {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}},
         )
 
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
@@ -5545,6 +5546,16 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
         if current_status == "completed":
             return current_report
         if current_status == "failed":
+            temporary_error = str(current_report.get("technical_error") or current_report.get("error") or "")
+            if re.search(r"502|BadGateway|OpenAIException|temporary AI service error|timed out", temporary_error, re.I):
+                await db.reports.update_one(
+                    {"report_id": current_report.get("report_id")},
+                    {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+                )
+                current_report["status"] = "generating"
+                current_report["error"] = None
+                asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
+                return current_report
             return current_report
         if current_status == "generating":
             generated_at = _coerce_utc_datetime(current_report.get("generated_at"))
@@ -5555,10 +5566,15 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
             timeout_message = "Barrister brief generation timed out. Please generate again."
             await db.reports.update_one(
                 {"report_id": current_report.get("report_id")},
-                {"$set": {"status": "failed", "error": timeout_message}},
+                {"$set": {"status": "failed", "error": timeout_message, "technical_error": timeout_message}},
             )
-            current_report["status"] = "failed"
-            current_report["error"] = timeout_message
+            await db.reports.update_one(
+                {"report_id": current_report.get("report_id")},
+                {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+            )
+            current_report["status"] = "generating"
+            current_report["error"] = None
+            asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
             return current_report
 
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
