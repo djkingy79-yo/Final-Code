@@ -4836,7 +4836,7 @@ def _build_barrister_report_source_text(reports: List[dict]) -> str:
         "extensive_log": "Extensive Log Report",
     }
     blocks = []
-    per_report_limit = 55000
+    per_report_limit = 75000
     for report in sorted(
         reports,
         key=lambda item: BARRISTER_SOURCE_TYPES.index(item.get("report_type")) if item.get("report_type") in BARRISTER_SOURCE_TYPES else 99,
@@ -4848,6 +4848,42 @@ def _build_barrister_report_source_text(reports: List[dict]) -> str:
             f"Report ID: {report.get('report_id')}\n"
             f"Generated: {report.get('generated_at')}\n\n"
             f"{analysis[:per_report_limit]}"
+        )
+    return "\n\n".join(blocks)
+
+
+def _trim_text_preserving_ends(text: str, max_chars: int) -> str:
+    if not text or len(text) <= max_chars:
+        return text
+    head_chars = int(max_chars * 0.65)
+    tail_chars = max_chars - head_chars
+    return (
+        text[:head_chars].rstrip()
+        + "\n\n[Additional detailed source material omitted here for prompt length control]\n\n"
+        + text[-tail_chars:].lstrip()
+    )
+
+
+def _build_barrister_group_source_text(reports: List[dict], max_chars_by_type: dict) -> str:
+    type_labels = {
+        "quick_summary": "Quick Summary",
+        "full_detailed": "Full Detailed Report",
+        "extensive_log": "Extensive Log Report",
+    }
+    blocks = []
+    for report in sorted(
+        reports,
+        key=lambda item: BARRISTER_SOURCE_TYPES.index(item.get("report_type")) if item.get("report_type") in BARRISTER_SOURCE_TYPES else 99,
+    ):
+        report_type = report.get("report_type")
+        analysis = _strip_report_placeholders((report.get("content") or {}).get("analysis", ""))
+        analysis = re.sub(r"\n{3,}", "\n\n", analysis).strip()
+        limited_analysis = _trim_text_preserving_ends(analysis, max_chars_by_type.get(report_type, 18000))
+        blocks.append(
+            f"===== {type_labels.get(report_type, report_type or 'Report')} =====\n"
+            f"Report ID: {report.get('report_id')}\n"
+            f"Generated: {report.get('generated_at')}\n\n"
+            f"{limited_analysis}"
         )
     return "\n\n".join(blocks)
 
@@ -4865,7 +4901,6 @@ async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
     grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
     source_reports = await _get_latest_standard_reports(case_id, user_id)
 
-    report_source_text = _build_barrister_report_source_text(source_reports)
     timeline_text = "\n".join(
         f"- {event.get('event_date', '')}: {event.get('title', '')} — {event.get('description', '')[:200]}"
         for event in timeline[:25]
@@ -4906,31 +4941,11 @@ MANDATORY RULES:
 - If the materials are uncertain on a point, say that the available materials indicate or suggest the point rather than asserting unsupported fact.
 - Use markdown headings only, with ## for main sections and ### for sub-sections.
 - Write a professional barrister-ready brief with strong structure, clean transitions, and substantial case-specific detail.
+- This must be materially more detailed than a summary. It must preserve the strongest factual analysis, legal reasoning, statutory interpretation, sentencing comparison, and strategic detail from the source reports.
+- Each section must be dense, specific, and useful to counsel. Generic high-level summaries are unacceptable.
 """
 
-    user_prompt = f"""Prepare a single, cohesive Barrister Brief for the case below.
-
-Required section order:
-## Executive Summary
-## Case Background and Procedural History
-## Conviction, Offence and Sentence Analysis
-## Evidence and Factual Issues
-## Grounds of Merit
-## Statutory Framework
-## Authorities and Comparative Cases
-## Sentencing Comparison and Relief Pathways
-## Proposed Submissions and Hearing Strategy
-## Filing Position, Risks and Next Steps
-## Plain-English Brief
-
-Drafting priorities:
-1. Produce one refined document, not three stacked reports.
-2. Remove repetition completely.
-3. Carry forward the strongest and most detailed material from all source reports.
-4. Keep detailed analysis in paragraph form.
-5. Refer to Australian criminal appeal practice and terminology.
-
-CASE PROFILE
+    shared_context = f"""CASE PROFILE
 {case_profile}
 
 STRUCTURED GROUNDS
@@ -4941,22 +4956,115 @@ TIMELINE SNAPSHOT
 
 DOCUMENT INVENTORY
 {documents_text}
-
-SOURCE REPORTS
-{report_source_text}
 """
 
-    response = await call_llm_with_fallback(
-        system_prompt,
-        user_prompt,
-        session_id=f"barrister-{case_id}",
-        max_tokens=16384,
-        timeout_seconds=180,
-    )
+    section_groups = [
+        {
+            "slug": "foundations",
+            "target_chars": 8500,
+            "source_limits": {"quick_summary": 12000, "full_detailed": 18000, "extensive_log": 22000},
+            "required_headings": [
+                "## Executive Summary",
+                "## Case Background and Procedural History",
+                "## Conviction, Offence and Sentence Analysis",
+                "## Evidence and Factual Issues",
+            ],
+            "instructions": "Write these sections in full depth. Set out the procedural history carefully, explain the conviction/sentence context, identify factual tensions in the evidence, and draw in the strongest details from the source reports rather than compressing them into a short overview.",
+        },
+        {
+            "slug": "legal-analysis",
+            "target_chars": 10500,
+            "source_limits": {"quick_summary": 9000, "full_detailed": 22000, "extensive_log": 26000},
+            "required_headings": [
+                "## Grounds of Merit",
+                "## Statutory Framework",
+                "## Authorities and Comparative Cases",
+                "## Sentencing Comparison and Relief Pathways",
+            ],
+            "instructions": "Write these sections at barrister depth. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter. The sentencing comparison must be detailed and specific, not a summary paragraph.",
+        },
+        {
+            "slug": "strategy",
+            "target_chars": 8500,
+            "source_limits": {"quick_summary": 7000, "full_detailed": 16000, "extensive_log": 22000},
+            "required_headings": [
+                "## Proposed Submissions and Hearing Strategy",
+                "## Filing Position, Risks and Next Steps",
+                "## Plain-English Brief",
+            ],
+            "instructions": "Write these sections as a serious counsel-facing strategy brief. Include detailed proposed submission themes, hearing structure, fallback positions, risk analysis, filing considerations, and a clear but still detailed plain-English explanation. Do not shorten the analysis into generic advice.",
+        },
+    ]
 
-    anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
+    section_outputs = []
+    for group in section_groups:
+        headings_text = "\n".join(group["required_headings"])
+        group_source_text = _build_barrister_group_source_text(source_reports, group["source_limits"])
+        group_prompt = f"""Prepare only the following Barrister Brief sections, using the exact headings below and in the exact order:
+
+{headings_text}
+
+Depth requirements:
+- Minimum target length for this response: {group['target_chars']} characters.
+- Preserve as much useful detail as possible from the source reports.
+- Use flowing paragraphs with concrete facts, authorities, procedural detail, and strategy.
+- Avoid generic summary language.
+- Do not repeat material unless needed for legal continuity.
+
+Specific drafting instruction:
+{group['instructions']}
+
+{shared_context}
+
+SOURCE REPORTS
+{group_source_text}
+"""
+
+        group_response = await call_llm_with_fallback(
+            system_prompt,
+            group_prompt,
+            session_id=f"barrister-{case_id}-{group['slug']}",
+            max_tokens=12000,
+            timeout_seconds=180,
+        )
+        group_response = _strip_report_placeholders(group_response)
+        group_response = re.sub(r"\n{3,}", "\n\n", group_response).strip()
+        section_outputs.append(group_response)
+
+    response = "\n\n".join(part for part in section_outputs if part).strip()
+
+    target_length = 22000
+    if len(response) < target_length:
+        expansion_source_text = _build_barrister_group_source_text(
+            source_reports,
+            {"quick_summary": 7000, "full_detailed": 18000, "extensive_log": 22000},
+        )
+        expansion_prompt = f"""Expand the Barrister Brief below to at least {target_length} characters.
+
+Keep every existing heading exactly as written.
+Do not remove or shorten any existing material.
+Add more factual depth, procedural detail, case-specific analysis, statutory interpretation, authority comparison, sentencing detail, and hearing strategy under the existing sections only.
+The result must read like a deeply detailed barrister brief, not a summary.
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+        expanded_response = await call_llm_with_fallback(
+            system_prompt,
+            expansion_prompt,
+            session_id=f"barrister-{case_id}-expand",
+            max_tokens=16384,
+            timeout_seconds=180,
+        )
+        expanded_response = _strip_report_placeholders(expanded_response)
+        expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
+        if len(expanded_response) > len(response):
+            response = expanded_response
+
     response = _strip_report_placeholders(response)
-    response = _dedupe_report_content(response, "extensive_log", anchor_terms)
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
 
     return {
