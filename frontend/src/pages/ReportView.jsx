@@ -39,6 +39,14 @@ const cleanSentence = (s) => {
   if (!s) return s;
   let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*\(http.*$/, "").replace(/\s*https?:.*$/, "");
   c = c.trim();
+  // Truncate overly long sentences — extract just the core penalty
+  if (c.length > 80) {
+    const nppMatch = c.match(/(\d+\s*(?:years?|months?)\s*(?:imprisonment|gaol|jail|custody|in prison)[^,]*(?:,?\s*(?:with\s+a?\s*)?(?:non[- ]?parole|NPP)\s*(?:period\s*(?:of|set at)?\s*)?(?:over\s+)?\d+\s*(?:years?|months?))?)/i);
+    if (nppMatch?.[1]) {
+      c = nppMatch[1].replace(/\s*for\s+(?:murdering|killing|assaulting|robbing)[^,]*/i, "").trim();
+    }
+    if (c.length > 80) c = c.substring(0, 77) + "...";
+  }
   return c.trim();
 };
 
@@ -961,27 +969,27 @@ const ReportView = () => {
         .legal-report strong { color: #0f172a; font-weight: 700; }
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
         .legal-report li { margin-bottom: 0.55rem; }
-        .legal-report-table-wrap { overflow-x: auto; }
+        .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1rem 0; }
         .legal-report table {
           width: 100%;
+          min-width: 600px;
           border-collapse: collapse;
-          margin: 1rem 0;
+          margin: 0;
           background: #ffffff;
-          table-layout: fixed;
         }
         .legal-report th {
           background: #1e3a8a;
           color: #ffffff !important;
           font-weight: 700;
+          white-space: nowrap;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
-          padding: 12px 12px;
-          font-size: 1.02rem;
+          padding: 10px 12px;
+          font-size: 0.9rem;
           vertical-align: top;
           color: #0f172a;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
+          min-width: 80px;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

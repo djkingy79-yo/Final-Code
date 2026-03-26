@@ -1918,21 +1918,21 @@ const BarristerView = ({ user }) => {
           border-collapse: collapse;
           margin: 0.8rem 0;
           background: #ffffff;
-          table-layout: fixed;
+          min-width: 600px;
         }
         .legal-report th {
           background: #1e3a8a;
           color: #ffffff !important;
           font-weight: 700;
+          white-space: nowrap;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
           padding: 10px 12px;
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           vertical-align: top;
           color: #0f172a;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
+          min-width: 80px;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

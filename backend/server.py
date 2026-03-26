@@ -3741,24 +3741,8 @@ Overall assessment: Strong / Moderate / Needs Further Development.
 ## 7. CLIENT PLAIN-ENGLISH GUIDE
 Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). NEVER use "we", "us", "our".
 
-## 8. WHAT THE PAID REPORTS ADD
-The Full Detailed Report ($150 AUD) includes:
-- Deep-dive analysis of every ground with Crown response and rebuttal strategies
-- Comparative sentencing table with 8+ cases and reduction pathways
-- Complete outcome options matrix (quash, retrial, downgrade, sentence reduction)
-- Step-by-step guide on how to start the appeal with required forms and deadlines
-- Submissions blueprint and argument strategy for hearing
-- Evidentiary gaps checklist and prioritised action plan
-- Client plain-English brief with realistic next steps
-
-The Extensive Report ($200 AUD) adds on top of the Full Detailed:
-- 300+ word analysis per ground with specific case law citations
-- 12+ sentencing comparisons and 15+ precedent cases
-- Hearing preparation notes with anticipated questions and responses
-- Conference preparation pack for barrister briefing
-- Court pathway operations playbook across all court levels
-- Fallback positions and alternative argument strategies for each ground
-- Tailored AustLII search strings for further research
+## 8. APPEAL OUTLOOK
+Brief assessment of realistic prospects for each ground. State the overall strength rating (Strong / Moderate / Needs Further Development) and explain for each ground.
 
 IMPORTANT:
 - No cost estimates or funding discussion.
@@ -4889,33 +4873,37 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story = []
     
     # Header
-    story.append(Paragraph("Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW", styles['ReportSubtitle']))
+    story.append(Paragraph("APPEAL CASE MANAGER", styles['ReportTitle']))
+    story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
+    story.append(Paragraph("Created and Designed by Deb King — GLENMORE PARK NSW", styles['ReportSubtitle']))
+    story.append(Spacer(1, 8*mm))
     story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
-    story.append(Paragraph(f"Defendant: {case.get('defendant_name', 'Unknown')}", styles['ReportSubtitle']))
     story.append(Spacer(1, 10*mm))
     
     # Report Title
     report_type_labels = {
         'quick_summary': 'Quick Case Summary',
-        'full_detailed': 'Full Detailed Legal Analysis',
-        'extensive_log': 'Extensive Case Log & Analysis'
+        'full_detailed': 'Full Detailed Legal Analysis ($150 AUD)',
+        'extensive_log': 'Extensive Case Log & Analysis ($200 AUD)'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
-    if report.get('content', {}).get('aggressive_mode'):
-        title = f"{title} (Aggressive)"
     story.append(Paragraph(title, styles['ReportTitle']))
     story.append(Spacer(1, 5*mm))
     
-    # Case Info Table
-    case_data_table = [
+    # Case Info Table — skip N/A fields
+    case_data_rows = [
         ['Case Title:', case.get('title', 'N/A')],
         ['Defendant:', case.get('defendant_name', 'N/A')],
-        ['Case Number:', case.get('case_number', 'N/A') or 'N/A'],
-        ['Court:', case.get('court', 'N/A') or 'N/A'],
-        ['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A']
     ]
+    if case.get('case_number') and case.get('case_number') != 'N/A':
+        case_data_rows.append(['Case Number:', case['case_number']])
+    if case.get('court') and case.get('court') != 'N/A':
+        case_data_rows.append(['Court:', case['court']])
+    if case.get('state'):
+        case_data_rows.append(['Jurisdiction:', case['state'].upper()])
+    case_data_rows.append(['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'])
     
-    case_table = Table(case_data_table, colWidths=[40*mm, 120*mm])
+    case_table = Table(case_data_rows, colWidths=[40*mm, 120*mm])
     case_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
@@ -5002,16 +4990,26 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     analysis_text = _strip_report_placeholders(report.get('content', {}).get('analysis', 'No analysis available.'))
     render_markdown(analysis_text)
 
-    # Footer disclaimer
+    # Footer — Created By + Bold Disclaimer
     story.append(Spacer(1, 15*mm))
     story.append(Paragraph(
-        "Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW",
-        ParagraphStyle(
-            name='Disclaimer',
-            fontSize=8,
-            textColor=colors.grey,
-            alignment=TA_CENTER
-        )
+        "Created and Designed by Deb King",
+        ParagraphStyle(name='CreatedBy', fontSize=14, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#1e3a5f'), spaceAfter=6)
+    ))
+    story.append(Paragraph(
+        "Criminal Law Appeal Case Management — GLENMORE PARK NSW",
+        ParagraphStyle(name='Footer1', fontSize=9, alignment=TA_CENTER, textColor=colors.HexColor('#475569'), spaceAfter=10)
+    ))
+    story.append(Spacer(1, 5*mm))
+    story.append(Paragraph(
+        "NOT LEGAL ADVICE",
+        ParagraphStyle(name='DisclaimerTitle', fontSize=14, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), spaceAfter=4)
+    ))
+    story.append(Paragraph(
+        "This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. "
+        "All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional "
+        "before any action is taken. No solicitor-client relationship is formed through the provision of this report.",
+        ParagraphStyle(name='DisclaimerBody', fontSize=10, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#1e293b'), leading=14)
     ))
     
     # Build PDF
@@ -5094,9 +5092,16 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
 
     sub_header = doc.add_paragraph()
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    sub_run = sub_header.add_run("Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW")
+    sub_run = sub_header.add_run("Criminal Law Appeal Case Management")
     sub_run.font.size = Pt(11)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
+
+    created_by = doc.add_paragraph()
+    created_by.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cb_run = created_by.add_run("Created and Designed by Deb King — GLENMORE PARK NSW")
+    cb_run.font.size = Pt(11)
+    cb_run.font.bold = True
+    cb_run.font.color.rgb = RGBColor(30, 58, 95)
 
     case_line = doc.add_paragraph()
     case_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -5113,24 +5118,26 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         'extensive_log': 'Extensive Case Log & Analysis'
     }
     report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
-    if report.get('content', {}).get('aggressive_mode'):
-        report_title = f"{report_title} (Aggressive)"
     title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     
     doc.add_paragraph()
     
-    # Case Information Table
-    case_table = doc.add_table(rows=5, cols=2)
-    case_table.style = 'Table Grid'
-    
+    # Case Information Table — skip N/A fields
     case_info = [
         ('Case Title:', case.get('title', 'N/A')),
         ('Defendant:', case.get('defendant_name', 'N/A')),
-        ('Case Number:', case.get('case_number', 'N/A') or 'N/A'),
-        ('Court:', case.get('court', 'N/A') or 'N/A'),
-        ('Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A')
     ]
+    if case.get('case_number') and case.get('case_number') != 'N/A':
+        case_info.append(('Case Number:', case['case_number']))
+    if case.get('court') and case.get('court') != 'N/A':
+        case_info.append(('Court:', case['court']))
+    if case.get('state'):
+        case_info.append(('Jurisdiction:', case['state'].upper()))
+    case_info.append(('Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'))
+    
+    case_table = doc.add_table(rows=len(case_info), cols=2)
+    case_table.style = 'Table Grid'
     
     for i, (label, value) in enumerate(case_info):
         row = case_table.rows[i]
@@ -5295,14 +5302,42 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     
     # Footer disclaimer
     doc.add_paragraph()
-    disclaimer = doc.add_paragraph()
-    disclaimer.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    disclaimer_run = disclaimer.add_run(
-        "Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"
+    
+    # Created By
+    created_para = doc.add_paragraph()
+    created_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    created_run = created_para.add_run("Created and Designed by Deb King")
+    created_run.font.size = Pt(14)
+    created_run.font.bold = True
+    created_run.font.color.rgb = RGBColor(30, 58, 95)
+    
+    footer_para = doc.add_paragraph()
+    footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    footer_run = footer_para.add_run("Criminal Law Appeal Case Management — GLENMORE PARK NSW")
+    footer_run.font.size = Pt(9)
+    footer_run.font.color.rgb = RGBColor(100, 116, 139)
+    
+    doc.add_paragraph()
+    
+    # Bold Disclaimer
+    disc_title = doc.add_paragraph()
+    disc_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    disc_run = disc_title.add_run("NOT LEGAL ADVICE")
+    disc_run.font.size = Pt(14)
+    disc_run.font.bold = True
+    disc_run.font.color.rgb = RGBColor(220, 38, 38)
+    
+    disc_body = doc.add_paragraph()
+    disc_body.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    disc_body_run = disc_body.add_run(
+        "This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon "
+        "as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian "
+        "legal professional before any action is taken. No solicitor-client relationship is formed through the provision "
+        "of this report."
     )
-    disclaimer_run.font.size = Pt(9)
-    disclaimer_run.font.italic = True
-    disclaimer_run.font.color.rgb = RGBColor(100, 116, 139)
+    disc_body_run.font.size = Pt(10)
+    disc_body_run.font.bold = True
+    disc_body_run.font.color.rgb = RGBColor(30, 41, 59)
     
     # Save to buffer
     buffer = BytesIO()
