@@ -288,6 +288,7 @@ const HowItWorksPage = () => {
     {
       title: "Quick Summary",
       price: "FREE",
+      headerColor: "#059669",
       color: "bg-emerald-600",
       badge: "bg-green-500",
       features: [
@@ -301,6 +302,7 @@ const HowItWorksPage = () => {
       price: "$150 AUD",
       color: "bg-blue-700",
       badge: "bg-blue-500",
+      headerColor: "#1d4ed8",
       popular: true,
       features: [
         "15 sections — 3x the depth of Quick Summary",
@@ -317,6 +319,7 @@ const HowItWorksPage = () => {
       price: "$200 AUD",
       color: "bg-purple-700",
       badge: "bg-purple-500",
+      headerColor: "#7e22ce",
       features: [
         "20 sections — everything in Full Detailed plus 5 exclusives",
         "1,200+ words per ground with fallback positions and key authority",
@@ -330,8 +333,9 @@ const HowItWorksPage = () => {
     {
       title: "Barrister View",
       price: "UNLOCKS",
-      color: "bg-slate-800",
-      badge: "bg-blue-600",
+      color: "bg-indigo-700",
+      badge: "bg-indigo-400",
+      headerColor: "#1e293b",
       features: [
         "Unlocks after all 3 reports are generated",
         "Capstone synthesis combining all three reports into one brief",
@@ -591,7 +595,7 @@ const HowItWorksPage = () => {
                 className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-slate-200"} bg-white`}
                 data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
               >
-                <div className={`${tier.color} text-white p-5 text-center`}>
+                <div className="text-white p-5 text-center" style={{ backgroundColor: tier.headerColor || undefined }} >
                   {tier.popular && <span className="bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">MOST POPULAR</span>}
                   <h3 className="text-lg font-bold">{tier.title}</h3>
                   <p className="text-3xl font-black mt-1">{tier.price}</p>
