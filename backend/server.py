@@ -4888,6 +4888,54 @@ def _build_barrister_group_source_text(reports: List[dict], max_chars_by_type: d
     return "\n\n".join(blocks)
 
 
+def _dedupe_barrister_ground_subsections(text: str) -> str:
+    section_match = re.search(r"(## Grounds of Merit\n)([\s\S]*?)(?=\n## Statutory Framework)", text)
+    if not section_match:
+        return text
+
+    grounds_body = section_match.group(2).strip()
+    block_pattern = re.compile(r"(### Ground \d+: [^\n]+\n[\s\S]*?)(?=(?:\n### Ground \d+: )|\Z)")
+    blocks = [block.strip() for block in block_pattern.findall(grounds_body)]
+    if not blocks:
+        return text
+
+    deduped_blocks = []
+    seen_titles = set()
+    for block in blocks:
+        heading = block.split("\n", 1)[0].strip()
+        title_match = re.match(r"^### Ground \d+: (.+)$", heading)
+        title = (title_match.group(1).strip().lower() if title_match else heading.lower())
+        if title in seen_titles:
+            continue
+        seen_titles.add(title)
+        deduped_blocks.append(block)
+
+    renumbered_blocks = []
+    for index, block in enumerate(deduped_blocks, start=1):
+        heading, remainder = (block.split("\n", 1) + [""])[:2]
+        title_match = re.match(r"^### Ground \d+: (.+)$", heading.strip())
+        title = title_match.group(1).strip() if title_match else heading.replace("### ", "").strip()
+        rebuilt = f"### Ground {index}: {title}"
+        if remainder.strip():
+            rebuilt += f"\n{remainder.strip()}"
+        renumbered_blocks.append(rebuilt.strip())
+
+    replacement = "\n\n".join(renumbered_blocks)
+    return text[:section_match.start(2)] + replacement + text[section_match.end(2):]
+
+
+def _normalise_barrister_table_titles(text: str) -> str:
+    replacements = {
+        "### Table: Comparative Authorities": "### Comparative Authorities Table",
+        "### Table: Sentencing Comparison": "### Sentencing Comparison Table",
+        "### Table: Evidentiary Pressure Points": "### Evidentiary Pressure Points Table",
+        "### Table: Relief Pathways": "### Relief Pathways Matrix",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    return text
+
+
 async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
     if not case:
@@ -4988,7 +5036,7 @@ DOCUMENT INVENTORY
                 "## Authorities and Comparative Cases",
                 "## Sentencing Comparison and Relief Pathways",
             ],
-            "instructions": "Write these sections at barrister depth. Under ## Grounds of Merit, create one dedicated ### subsection for every item in the mandatory ground list and do not omit, merge, or collapse any listed ground. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, fallback positions, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter. The sentencing comparison must be detailed and specific, not a summary paragraph.",
+            "instructions": "Write these sections at barrister depth. Under ## Grounds of Merit, create one dedicated ### subsection for every item in the mandatory ground list and do not omit, merge, or collapse any listed ground. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, fallback positions, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter, including a markdown comparative authorities table where useful. The sentencing comparison must be detailed and specific, not a summary paragraph, and should include a markdown sentencing comparison table where useful.",
         },
         {
             "slug": "strategy",
@@ -5063,17 +5111,20 @@ SOURCE REPORTS
 CURRENT BARRISTER BRIEF
 {response}
 """
-        expanded_response = await call_llm_with_fallback(
-            system_prompt,
-            expansion_prompt,
-            session_id=f"barrister-{case_id}-expand",
-            max_tokens=16384,
-            timeout_seconds=180,
-        )
-        expanded_response = _strip_report_placeholders(expanded_response)
-        expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
-        if len(expanded_response) > len(response):
-            response = expanded_response
+        try:
+            expanded_response = await call_llm_with_fallback(
+                system_prompt,
+                expansion_prompt,
+                session_id=f"barrister-{case_id}-expand",
+                max_tokens=16384,
+                timeout_seconds=180,
+            )
+            expanded_response = _strip_report_placeholders(expanded_response)
+            expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
+            if len(expanded_response) > len(response):
+                response = expanded_response
+        except Exception as exc:
+            logger.warning(f"Barrister whole-brief expansion skipped for {case_id}: {exc}")
 
     if len(response) < 38000 and grounds:
         ground_expansion_prompt = f"""Rewrite only the ## Grounds of Merit section of the Barrister Brief below.
@@ -5097,24 +5148,111 @@ SOURCE REPORTS
 CURRENT BARRISTER BRIEF
 {response}
 """
-        rewritten_grounds = await call_llm_with_fallback(
+        try:
+            rewritten_grounds = await call_llm_with_fallback(
+                system_prompt,
+                ground_expansion_prompt,
+                session_id=f"barrister-{case_id}-grounds-expand",
+                max_tokens=16384,
+                timeout_seconds=180,
+            )
+            rewritten_grounds = _strip_report_placeholders(rewritten_grounds)
+            rewritten_grounds = re.sub(r"\n{3,}", "\n\n", rewritten_grounds).strip()
+            if rewritten_grounds.startswith("## Grounds of Merit"):
+                response = re.sub(
+                    r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework)",
+                    rewritten_grounds + "\n\n",
+                    response,
+                    count=1,
+                )
+        except Exception as exc:
+            logger.warning(f"Barrister grounds expansion skipped for {case_id}: {exc}")
+
+    try:
+        comparison_tables_prompt = f"""Produce only the following markdown blocks, in this exact order, with no introduction or conclusion:
+
+### Evidentiary Pressure Points Table
+Create a markdown table with columns: Issue | Supporting Material | Why it matters on appeal | Vulnerability in the prosecution case
+
+### Comparative Authorities Table
+Create a markdown table with columns: Authority | Principle | Relevance to this case | Strategic use in submissions
+
+### Sentencing Comparison Table
+Create a markdown table with columns: Comparator | Key facts | Sentence outcome | Relevance to this appeal
+
+### Relief Pathways Matrix
+Create a markdown table with columns: Relief pathway | Legal basis | Best supporting features | Main risk or limitation
+
+Requirements:
+- Use all 3 source reports and the current barrister brief.
+- Make the rows detailed and case-specific.
+- Do not repeat the main narrative prose.
+- Output only the 4 titled blocks above.
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+        comparison_tables = await call_llm_with_fallback(
             system_prompt,
-            ground_expansion_prompt,
-            session_id=f"barrister-{case_id}-grounds-expand",
-            max_tokens=16384,
+            comparison_tables_prompt,
+            session_id=f"barrister-{case_id}-comparison-tables",
+            max_tokens=12000,
             timeout_seconds=180,
         )
-        rewritten_grounds = _strip_report_placeholders(rewritten_grounds)
-        rewritten_grounds = re.sub(r"\n{3,}", "\n\n", rewritten_grounds).strip()
-        if rewritten_grounds.startswith("## Grounds of Merit"):
+        comparison_tables = _strip_report_placeholders(comparison_tables)
+        comparison_tables = re.sub(r"\n{3,}", "\n\n", comparison_tables).strip()
+
+        evidence_table_match = re.search(
+            r"(### Evidentiary Pressure Points Table[\s\S]*?)(?=\n### Comparative Authorities Table|$)",
+            comparison_tables,
+        )
+        authorities_table_match = re.search(
+            r"(### Comparative Authorities Table[\s\S]*?)(?=\n### Sentencing Comparison Table|$)",
+            comparison_tables,
+        )
+        sentencing_table_match = re.search(
+            r"(### Sentencing Comparison Table[\s\S]*?)(?=\n### Relief Pathways Matrix|$)",
+            comparison_tables,
+        )
+        relief_table_match = re.search(r"(### Relief Pathways Matrix[\s\S]*)$", comparison_tables)
+
+        if evidence_table_match and "### Evidentiary Pressure Points Table" not in response:
             response = re.sub(
-                r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework)",
-                rewritten_grounds + "\n\n",
+                r"(## Evidence and Factual Issues\n[\s\S]*?)(?=\n## Grounds of Merit)",
+                lambda match: match.group(1).rstrip() + "\n\n" + evidence_table_match.group(1).strip() + "\n\n",
                 response,
                 count=1,
             )
 
+        if authorities_table_match and "### Comparative Authorities Table" not in response:
+            response = re.sub(
+                r"(## Authorities and Comparative Cases\n[\s\S]*?)(?=\n## Sentencing Comparison and Relief Pathways)",
+                lambda match: match.group(1).rstrip() + "\n\n" + authorities_table_match.group(1).strip() + "\n\n",
+                response,
+                count=1,
+            )
+
+        sentencing_blocks = []
+        if sentencing_table_match and "### Sentencing Comparison Table" not in response:
+            sentencing_blocks.append(sentencing_table_match.group(1).strip())
+        if relief_table_match and "### Relief Pathways Matrix" not in response:
+            sentencing_blocks.append(relief_table_match.group(1).strip())
+        if sentencing_blocks:
+            response = re.sub(
+                r"(## Sentencing Comparison and Relief Pathways\n[\s\S]*?)(?=\n## Proposed Submissions and Hearing Strategy)",
+                lambda match: match.group(1).rstrip() + "\n\n" + "\n\n".join(sentencing_blocks) + "\n\n",
+                response,
+                count=1,
+            )
+    except Exception as exc:
+        logger.warning(f"Barrister comparison table enrichment skipped for {case_id}: {exc}")
+
     response = _strip_report_placeholders(response)
+    response = _normalise_barrister_table_titles(response)
+    response = _dedupe_barrister_ground_subsections(response)
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
 
     return {
