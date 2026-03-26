@@ -3498,7 +3498,7 @@ def _strip_report_placeholders(text: str) -> str:
     return cleaned
 
 
-async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False) -> dict:
+async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use OpenAI GPT-5.2 to analyse case and generate report"""
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     
@@ -4171,17 +4171,15 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
         """Run LLM call directly — retries across multiple models."""
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
-        # gpt-4o has intermittent refusals — retry multiple times
-        # Same model order for all report types
+        # gpt-4o has intermittent refusals — retry with fallback models
         if report_type == "extensive_log":
             models = [
-                ("openai", "gpt-4o"),
-                ("openai", "gpt-4o"),
                 ("openai", "gpt-4o"),
                 ("openai", "gpt-4o"),
                 ("openai", "gpt-4o-mini"),
                 ("openai", "gpt-4o-mini"),
             ]
+            call_timeout = 180  # Shorter timeout per pass (each pass = 3 sections only)
         else:
             models = [
                 ("openai", "gpt-4o"),
@@ -4189,6 +4187,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
                 ("anthropic", "claude-sonnet-4-20250514"),
                 ("openai", "gpt-4o-mini"),
             ]
+            call_timeout = 420
         
         last_err = None
         for idx, (provider, model_name) in enumerate(models):
@@ -4196,7 +4195,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
                 chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
                 result = await asyncio.wait_for(
                     chat.send_message(UserMessage(text=prompt_text)),
-                    timeout=420
+                    timeout=call_timeout
                 )
                 if result and len(result.strip()) > 200 and "I'm sorry" not in result[:100] and "I can't assist" not in result[:100]:
                     logger.info(f"LLM success with {provider}/{model_name} on attempt {idx+1}")
@@ -4354,6 +4353,12 @@ Write ALL 3 sections. Do NOT truncate any section."""),
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
                 logger.info(f"Extensive log {label} response: {len(part)} chars")
+                # Save partial progress after each pass so server restarts don't lose work
+                partial_response = "\n\n".join(parts)
+                await db.reports.update_one(
+                    {"report_id": report_id},
+                    {"$set": {"content.partial_analysis": partial_response, "content.passes_completed": len(parts)}}
+                )
             
             response = "\n\n".join(parts)
             logger.info(f"Extensive log combined: {len(response)} chars")
@@ -4381,7 +4386,8 @@ Write ALL 3 sections. Do NOT truncate any section."""),
     if aggressive_mode:
         target_length = int(target_length * 2.0)
 
-    if len(response) < target_length:
+    # Skip expansion for extensive_log — 7 passes already produce massive content
+    if len(response) < target_length and report_type != "extensive_log":
         try:
             expansion_prompt = f"""{case_context}
 
@@ -4432,7 +4438,7 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
             "full_detailed": "Full Detailed Legal Analysis",
             "extensive_log": "Extensive Case Log & Analysis"
         }
-        analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode)
+        analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode, report_id=report_id)
         title = report_titles.get(report_type, "Report")
         if aggressive_mode:
             title = f"{title} (Aggressive)"
@@ -5354,6 +5360,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def cleanup_orphaned_reports():
+    """Auto-fail reports stuck in 'generating' from server restarts."""
+    fifteen_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=15)).isoformat()
+    result = await db.reports.update_many(
+        {"status": "generating", "generated_at": {"$lt": fifteen_min_ago}},
+        {"$set": {"status": "failed", "error": "Generation interrupted by server restart. Please try again."}}
+    )
+    if result.modified_count > 0:
+        logger.info(f"Cleaned up {result.modified_count} orphaned generating reports on startup")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

@@ -31,6 +31,8 @@ Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO
 - **Report language sanitisation**: "we/us/our" eliminated from AI prompts + post-processing in backend (_strip_report_placeholders) and frontend (cleanAIContent). Replaced with "the applicant", "the legal professional", "this analysis".
 - **Print/PDF preview rebuilt**: Professional layout matching on-screen view — coloured headers, numbered sections, styled borders, table of contents, disclaimer footer.
 - **CLIENT PLAIN-ENGLISH BRIEF** prompts updated across all 3 report tiers to enforce educational tool third-person language.
+- **Extensive Log timeout fix**: Reduced per-pass LLM timeout from 420s to 180s, cut retries from 6 to 4 with gpt-4o-mini fallback. Skipped expansion step for extensive_log (7 passes already produce 70k+ chars). Added partial-save after each pass so server restarts don't lose work. Added startup cleanup for orphaned "generating" reports.
+- **Progress indicator improved**: Shows contextual messages during generation ("Reading documents..." → "Writing analysis..." → "Completing final sections...").
 
 ## Prioritised Backlog
 ### P1

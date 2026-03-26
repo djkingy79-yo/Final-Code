@@ -350,10 +350,20 @@ const ReportsSection = ({
           <div className="flex flex-wrap items-center gap-4 mb-3">
             <Loader2 className="w-6 h-6 animate-spin text-blue-700 flex-shrink-0" />
             <div>
-              <p className="text-lg font-bold text-slate-900">Searching case materials...</p>
-              <p className="text-sm text-slate-700">We are reading documents, timeline events, and grounds. Larger cases can take 10-25 minutes.</p>
+              <p className="text-lg font-bold text-slate-900">Analysing case materials...</p>
+              <p className="text-sm text-slate-700">
+                {genElapsed < 30
+                  ? "Reading documents, timeline events, and grounds..."
+                  : genElapsed < 120
+                  ? "AI is writing detailed legal analysis sections..."
+                  : genElapsed < 300
+                  ? "Building multi-section report — this takes time for thorough analysis..."
+                  : "Completing final sections. Large reports (Extensive Log) can take 5-15 minutes."}
+              </p>
             </div>
-            <span className="ml-auto text-sm font-mono text-blue-700">{genElapsed}s</span>
+            <span className="ml-auto text-sm font-mono text-blue-700">
+              {genElapsed < 60 ? `${genElapsed}s` : `${Math.floor(genElapsed / 60)}m ${genElapsed % 60}s`}
+            </span>
           </div>
           <div className="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
             <div
