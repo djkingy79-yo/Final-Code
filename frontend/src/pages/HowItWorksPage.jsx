@@ -646,7 +646,7 @@ const HowItWorksPage = () => {
           ].map((faq, i) => (
             <div key={i} className="bg-white border border-slate-200 rounded-xl p-4">
               <h3 className="font-semibold text-slate-900 text-sm">{faq.q}</h3>
-              <p className="text-base text-slate-700 mt-1">{faq.a}</p>
+              <p className="text-xs text-slate-700 mt-1">{faq.a}</p>
             </div>
           ))}
         </section>

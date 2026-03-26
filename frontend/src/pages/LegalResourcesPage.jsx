@@ -113,7 +113,7 @@ const LegalResourcesPage = () => {
               <option value="NT">NT</option>
               <option value="ACT">ACT</option>
             </select>
-            <p className="text-xs text-slate-700" data-testid="legal-resources-state-filter-help">
+            <p className="text-[11px] text-slate-700" data-testid="legal-resources-state-filter-help">
               Services are automatically shown in state order.
             </p>
           </div>
@@ -160,8 +160,8 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <Scale className="w-6 h-6 text-blue-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Legal Aid</h3>
-                <p className="text-slate-700 text-sm mb-3">
+                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Legal Aid</h3>
+                <p className="text-slate-700 text-xs mb-2">
                   Government-funded legal assistance available in every state. While overburdened, they can provide 
                   representation for serious criminal matters and appeals if you meet the eligibility criteria.
                 </p>
@@ -178,8 +178,8 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-emerald-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Pro Bono Legal Services</h3>
-                <p className="text-slate-700 text-sm mb-3">
+                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Pro Bono Legal Services</h3>
+                <p className="text-slate-700 text-xs mb-2">
                   Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
                   This is not widely advertised but is a genuine option.
                 </p>
@@ -196,8 +196,8 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
                   <MapPin className="w-6 h-6 text-purple-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Community Legal Centres</h3>
-                <p className="text-slate-700 text-sm mb-3">
+                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Community Legal Centres</h3>
+                <p className="text-slate-700 text-xs mb-2">
                   Independent, non-profit organisations providing free legal advice and assistance. They often help with 
                   matters Legal Aid cannot cover and can refer you to specialist services.
                 </p>
@@ -214,7 +214,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <FileText className="w-6 h-6 text-red-600" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
+                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
                 <p className="text-slate-700 text-xs mb-3">
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
@@ -230,8 +230,8 @@ const LegalResourcesPage = () => {
 
             {/* Key Message */}
             <div className="bg-white border border-blue-200 rounded-2xl p-6 text-center" data-testid="legal-resources-dont-give-up">
-              <h3 className="text-slate-900 text-lg font-bold mb-2">Don't Give Up</h3>
-              <p className="text-slate-700 text-sm">
+              <h3 className="text-slate-900 text-sm font-bold mb-2">Don't Give Up</h3>
+              <p className="text-slate-700 text-xs">
                 The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services 
                 and community legal centres. Many people have found help when they thought there was none.
               </p>
@@ -245,7 +245,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Legal Aid Services
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 Government-funded legal assistance available in every state and territory. While overburdened, 
                 they can provide representation for serious criminal matters and appeals if you meet eligibility criteria.
               </p>
@@ -326,7 +326,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Law Societies
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 Professional bodies representing solicitors in each state. They offer referral services to help you find a lawyer, 
                 and can assist with complaints about legal practitioners.
               </p>
@@ -401,7 +401,7 @@ const LegalResourcesPage = () => {
 
             {/* Bar Associations */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Bar Associations (Barristers)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -440,7 +440,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Complaints Bodies & Legal Services Commissioners
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 If you have a complaint about a lawyer's conduct, fees, or service, these independent bodies can investigate 
                 and take action. The OLCR (Office of the Legal Services Commissioner) in NSW handles complaints about lawyers.
               </p>
@@ -501,7 +501,7 @@ const LegalResourcesPage = () => {
             {/* What you can complain about */}
             <div className="bg-white border border-slate-200 rounded-xl p-6 mt-6">
               <h3 className="font-bold text-slate-900 mb-4">What Can You Complain About?</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="grid md:grid-cols-2 gap-3 text-xs">
                 <div>
                   <h4 className="font-semibold text-slate-900 mb-2">Professional Misconduct</h4>
                   <ul className="text-slate-700 space-y-1">
@@ -531,7 +531,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Courts of Australia
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 Direct links to court websites for each state and territory, plus federal courts. 
                 Find court locations, forms, fees, and case information.
               </p>
@@ -539,7 +539,7 @@ const LegalResourcesPage = () => {
 
             {/* Federal Courts */}
             <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 <Scale className="w-5 h-5 text-red-600" />
                 Federal Courts
               </h3>
@@ -565,7 +565,7 @@ const LegalResourcesPage = () => {
 
             {/* State/Territory Courts */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 State & Territory Courts
               </h3>
               
@@ -662,7 +662,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Community Legal Centres
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 Independent, non-profit organisations providing free legal advice and assistance. 
                 They often help with matters Legal Aid cannot cover and can refer you to specialist services.
               </p>
@@ -706,7 +706,7 @@ const LegalResourcesPage = () => {
 
             {/* Specialist Services */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Specialist Legal Services
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -753,7 +753,7 @@ const LegalResourcesPage = () => {
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Pro Bono Legal Services
               </h2>
-              <p className="text-slate-700 text-sm">
+              <p className="text-slate-700 text-xs">
                 Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
                 This is not widely advertised but is a genuine option for serious matters.
               </p>
@@ -797,7 +797,7 @@ const LegalResourcesPage = () => {
 
             {/* Innocence Projects */}
             <div className="mt-8">
-              <h3 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Innocence & Wrongful Conviction Projects
               </h3>
               <div className="bg-white border border-slate-200 rounded-xl p-6">
@@ -807,14 +807,14 @@ const LegalResourcesPage = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-white border border-slate-200 rounded-lg p-4">
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">University Law Clinics</h4>
-                    <p className="text-xs text-slate-700">
+                    <p className="text-[11px] text-slate-700">
                       Many university law schools run clinics that take on appeals and wrongful conviction cases. 
                       Contact your local university's law faculty.
                     </p>
                   </div>
                   <div className="bg-white border border-slate-200 rounded-lg p-4">
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">Innocence Projects</h4>
-                    <p className="text-xs text-slate-700">
+                    <p className="text-[11px] text-slate-700">
                       Some Australian universities have innocence projects that investigate potential wrongful convictions.
                     </p>
                   </div>
@@ -835,7 +835,7 @@ const LegalResourcesPage = () => {
 
           {/* Attorneys-General */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Attorneys-General Departments
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -843,7 +843,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">CTH</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">Commonwealth Attorney-General</p>
-                  <p className="text-xs text-slate-700">ag.gov.au</p>
+                  <p className="text-[11px] text-slate-700">ag.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -851,7 +851,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-blue-500 rounded text-white text-xs font-bold flex items-center justify-center">NSW</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">NSW Department of Justice</p>
-                  <p className="text-xs text-slate-700">justice.nsw.gov.au</p>
+                  <p className="text-[11px] text-slate-700">justice.nsw.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -859,7 +859,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-indigo-600 rounded text-white text-xs font-bold flex items-center justify-center">VIC</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">VIC Dept of Justice</p>
-                  <p className="text-xs text-slate-700">justice.vic.gov.au</p>
+                  <p className="text-[11px] text-slate-700">justice.vic.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -867,7 +867,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-red-600 rounded text-white text-xs font-bold flex items-center justify-center">QLD</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">QLD Dept of Justice</p>
-                  <p className="text-xs text-slate-700">justice.qld.gov.au</p>
+                  <p className="text-[11px] text-slate-700">justice.qld.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -875,7 +875,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-red-600 rounded text-white text-xs font-bold flex items-center justify-center">WA</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">WA Dept of Justice</p>
-                  <p className="text-xs text-slate-700">wa.gov.au/justice</p>
+                  <p className="text-[11px] text-slate-700">wa.gov.au/justice</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -883,7 +883,7 @@ const LegalResourcesPage = () => {
                 <span className="w-8 h-8 bg-purple-600 rounded text-white text-xs font-bold flex items-center justify-center">SA</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">SA Attorney-General's Dept</p>
-                  <p className="text-xs text-slate-700">agd.sa.gov.au</p>
+                  <p className="text-[11px] text-slate-700">agd.sa.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -892,7 +892,7 @@ const LegalResourcesPage = () => {
 
           {/* Ombudsmen */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Ombudsmen & Integrity Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -950,7 +950,7 @@ const LegalResourcesPage = () => {
 
           {/* Human Rights & Discrimination */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Human Rights Commissions
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -995,7 +995,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Councils & Societies */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Law Councils & Societies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1053,7 +1053,7 @@ const LegalResourcesPage = () => {
 
           {/* Bar Associations */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Bar Associations (Barristers)
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1095,10 +1095,10 @@ const LegalResourcesPage = () => {
 
           {/* Legal Practice Boards & Conduct */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Legal Practice Boards & Professional Conduct
             </h3>
-            <p className="text-slate-700 text-sm mb-4">
+            <p className="text-slate-700 text-xs mb-3">
               If you have a complaint about a lawyer's conduct, these bodies can investigate:
             </p>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1155,7 +1155,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Reform */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Law Reform & Research Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1356,7 +1356,7 @@ const LegalResourcesPage = () => {
       {/* Footer */}
       <footer className="bg-white px-6 py-8 border-t border-slate-200 mt-12">
         <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-700 text-sm">
+          <p className="text-slate-700 text-xs">
             All contact information is publicly available. Links open in a new tab to official websites.
           </p>
           <p className="text-red-600 text-xs mt-2 font-medium">
@@ -1422,24 +1422,24 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
 
   return (
     <div
-      className={`bg-white border ${highlight ? 'border-blue-400 border-2' : 'border-slate-200'} rounded-xl p-5 hover:shadow-md transition-shadow`}
+      className={`bg-white border ${highlight ? 'border-blue-400 border-2' : 'border-slate-200'} rounded-xl p-4 hover:shadow-md transition-shadow`}
       style={{ order: stateOrder[normalisedState] ?? 99 }}
     >
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 ${colorClasses[color]} rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <div className={`w-8 h-8 ${colorClasses[color]} rounded-md flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
             {state.slice(0, 3)}
           </div>
-          <h3 className="font-bold text-slate-900 text-sm leading-tight">{title}</h3>
+          <h3 className="font-bold text-slate-900 text-xs leading-tight">{title}</h3>
         </div>
       </div>
-      <p className="text-slate-700 text-[11px] uppercase tracking-wide mb-1.5">How they can help with legal advice</p>
-      <p className="text-slate-700 text-xs mb-3">{description}</p>
-      <div className="space-y-2 text-sm">
+      <p className="text-slate-500 text-[10px] uppercase tracking-wide mb-1">How they can help</p>
+      <p className="text-slate-700 text-[11px] mb-2 leading-relaxed">{description}</p>
+      <div className="space-y-1.5 text-xs">
         {phone && phone !== "N/A" && (
           <a href={`tel:${phone.replace(/[^0-9]/g, '')}`} className="flex items-center gap-2 text-slate-700 hover:text-slate-900" data-testid={`legal-resource-phone-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-            <Phone className="w-4 h-4 text-emerald-600" />
-            <span>{phone}</span>
+            <Phone className="w-3 h-3 text-emerald-600" />
+            <span className="text-[11px]">{phone}</span>
           </a>
         )}
         {website && (

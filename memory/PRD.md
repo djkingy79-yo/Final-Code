@@ -1,55 +1,33 @@
 # Appeal Case Manager — PRD
 
 ## Original Problem Statement
-Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features: secure document management, AI-powered case analysis, tiered reporting system (Free, Paid), Barrister View, and PayID integration. Core requirement: hyper-detailed, case-specific legal reports.
+Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features: secure document management, AI-powered case analysis, tiered reporting system (Free, Paid), Barrister View, and PayID integration.
 
-## User Persona
-- Debra King (founder) — non-lawyer building a legal tech tool for self-represented appellants in Australia
-- Strict aesthetic requirement: professional law app, NO dark mode, white backgrounds, black body text, coloured headings, large readable fonts
-
-## Core Requirements
-- **Report Tiers:** Free (shows number of grounds), $99 AUD (shows titles), Quick Summary, Full Detailed ($150), Extensive Log ($200)
-- **Barrister View:** Capstone report synthesising 3 standard reports
-- **UI/UX Rule:** Forced light mode globally. High contrast only. No dark mode toggle. No grey/muted text. Australian spelling throughout.
-- **Aggressive Mode:** DELETED by user request
+## UI/UX Rule
+Forced light mode globally. High contrast only. No dark mode toggle. No grey/muted text. Australian spelling. White backgrounds, black body text, coloured headings.
 
 ## Tech Stack
-- Frontend: React + Tailwind + Shadcn UI
-- Backend: FastAPI + MongoDB
-- LLM: OpenAI GPT-4o / GPT-4o-mini via Emergent LLM Key
-- Auth: Emergent-managed Google Auth
+React + Tailwind + Shadcn UI / FastAPI + MongoDB / OpenAI GPT-4o via Emergent LLM Key / Emergent Google Auth
 
-## Key DB Schema
-- `reports`: {report_id, case_id, user_id, report_type, status, content}
-- `cases`: {case_id, user_id, title, defendant_name, case_number, court, sentence, state}
+## Case Tabs (CORRECT ORDER)
+Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO Contradictions tab**
 
-## Key API Endpoints
-- `POST /api/cases/{id}/reports/generate`
-- `GET /api/cases/{id}/reports/{id}/export-pdf`
-
-## What's Been Implemented
+## What's Been Implemented (26 Mar 2026)
 - Full CRUD for cases, documents, reports
 - AI-powered grounds identification (Free + $99 tier)
 - 3 report tiers: Quick Summary, Full Detailed, Extensive Log
 - Barrister View (unlocks after 3 reports)
-- Timeline analysis, document OCR, progress tracking
-- 20+ informational pages (Legal Framework, Glossary, Forms, Resources, etc.)
-- Force-light CSS enforcement across entire app
-
-### 26 Mar 2026 Session:
 - Dark mode toggle removed from ALL 30+ pages
-- ALL CSS variable classes (text-muted-foreground, bg-muted, dark:*) replaced with explicit light-mode equivalents across entire codebase
+- ALL CSS variables replaced with explicit light-mode colours
+- 7 mobile-width (390px) mockup screenshots with real case data for How It Works page
+- Mockup tabs corrected: no Contradictions, shows Legal Framework
 - Report Snapshot cards deleted from Landing Page
-- How It Works page: white step headers with coloured accents, mobile-width mockup screenshots (390px), smaller captions, preview blocks removed
-- 7 realistic mockup screenshots created showing actual case data (grounds, reports, progress) at mobile viewport width
-- LawyerDirectory: theme toggle removed, "Prepare Before You Meet a Lawyer" CTA deleted
-- SuccessStories: footer CTA text fixed for visibility, Share My Story button fixed
-- PageCTA inline variant: fixed for light mode visibility (blue-50 background)
-- CaseDetail: gradient button replaced with solid blue
-- LandingPage footer: replaced CSS variables with explicit colours (text-slate-600, bg-white)
-- HowItWorksPage footer: fixed border colour and text colour
-- FAQ: answer text reduced to text-xs
-- Legal Resources: deleted "This page now combines" text, removed Unified State View banner, made Innocence heading bigger (text-2xl), reduced Grants text size
+- How It Works FAQ answers reduced to text-xs
+- Legal Resources: all text sizes reduced, ResourceCard made compact, intro text deleted, banner removed, Innocence heading made bigger
+- LandingPage footer fixed with explicit colours
+- PageCTA inline variant fixed for light mode
+- SuccessStories footer CTA and Share My Story button fixed
+- CaseDetail gradient button replaced with solid blue
 
 ## Prioritised Backlog
 ### P1
@@ -59,6 +37,3 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 ### P2
 - Real-time collaboration/chat
 - Case sharing between registered users
-
-### P3
-- Ongoing UI/UX high-contrast audit (recurring)
