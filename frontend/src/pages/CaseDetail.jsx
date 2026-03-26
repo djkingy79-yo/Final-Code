@@ -785,7 +785,7 @@ const CaseDetail = ({ user }) => {
           </div>
           {caseData?.sentence && (
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 rounded-lg">
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 rounded-lg">
                 Sentence: {caseData.sentence}
               </Badge>
             </div>

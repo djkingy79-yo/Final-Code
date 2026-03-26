@@ -252,10 +252,10 @@ const HowItWorksPage = () => {
       icon: ListChecks,
       title: "Track Progress & Take Action",
       subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
-      color: "bg-amber-600",
-      lightColor: "bg-amber-50",
-      borderColor: "border-amber-200",
-      textColor: "text-amber-600",
+      color: "bg-slate-700",
+      lightColor: "bg-slate-50",
+      borderColor: "border-slate-200",
+      textColor: "text-slate-700",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
         alt: "Progress tab with milestones and completion tracking",
@@ -330,8 +330,8 @@ const HowItWorksPage = () => {
     {
       title: "Barrister View",
       price: "UNLOCKS",
-      color: "bg-amber-700",
-      badge: "bg-amber-500",
+      color: "bg-slate-800",
+      badge: "bg-blue-600",
       features: [
         "Unlocks after all 3 reports are generated",
         "Capstone synthesis combining all three reports into one brief",

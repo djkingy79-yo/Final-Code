@@ -902,16 +902,16 @@ const LandingPage = () => {
                     <p className="text-sm text-slate-700 mt-1">20 sections: everything in Full Detailed plus hearing preparation notes, barrister conference pack, court pathway playbook, tailored case search, and risk assessment</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
-                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <svg className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-amber-900">Barrister View</strong>
-                      <span className="text-amber-700 font-bold text-xs">UNLOCKS AFTER ALL 3</span>
+                      <strong className="text-slate-900">Barrister View</strong>
+                      <span className="text-blue-700 font-bold text-xs">UNLOCKS AFTER ALL 3</span>
                     </div>
-                    <p className="text-sm text-amber-800 mt-1">Capstone synthesis combining all three reports into a single barrister-ready brief with all grounds, strategies, and authorities consolidated</p>
+                    <p className="text-sm text-slate-700 mt-1">Capstone synthesis combining all three reports into a single barrister-ready brief with all grounds, strategies, and authorities consolidated</p>
                   </div>
                 </li>
               </ul>

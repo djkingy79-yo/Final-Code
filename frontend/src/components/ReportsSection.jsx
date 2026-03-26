@@ -741,22 +741,22 @@ const ReportsSection = ({
             <div
               className={`p-4 border-2 rounded-xl transition-all ${
                 hasAllReports
-                  ? 'border-amber-400 bg-amber-50/50 cursor-pointer hover:shadow-md hover:border-amber-500'
+                  ? 'border-blue-400 bg-blue-50/50 cursor-pointer hover:shadow-md hover:border-blue-500'
                   : 'border-slate-200 bg-slate-50 opacity-70 cursor-not-allowed'
-              } ${selectedReportType === 'barrister_view' ? 'ring-2 ring-amber-200 border-amber-500' : ''}`}
+              } ${selectedReportType === 'barrister_view' ? 'ring-2 ring-blue-200 border-blue-500' : ''}`}
               onClick={() => {
                 if (hasAllReports) setSelectedReportType('barrister_view');
               }}
               data-testid="report-type-barrister"
             >
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${hasAllReports ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-400'}`}>
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${hasAllReports ? 'bg-blue-100 text-blue-700' : 'bg-slate-200 text-slate-400'}`}>
                   {hasAllReports ? <Crown className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <h4 className={`font-bold text-base ${hasAllReports ? 'text-amber-900' : 'text-slate-400'}`}>Barrister View</h4>
-                    <Badge variant="outline" className={`px-3 py-1 text-xs font-bold ${hasAllReports ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-400 border-slate-200'}`}>
+                    <h4 className={`font-bold text-base ${hasAllReports ? 'text-slate-900' : 'text-slate-400'}`}>Barrister View</h4>
+                    <Badge variant="outline" className={`px-3 py-1 text-xs font-bold ${hasAllReports ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-400 border-slate-200'}`}>
                       {hasAllReports ? 'UNLOCKED' : 'LOCKED'}
                     </Badge>
                   </div>
@@ -776,7 +776,7 @@ const ReportsSection = ({
                   {hasAllReports && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                       {["All-in-one brief", "Barrister-ready format", "Complete case synthesis"].map((f, i) => (
-                        <span key={i} className="flex items-center gap-1 text-xs text-amber-700">
+                        <span key={i} className="flex items-center gap-1 text-xs text-blue-700">
                           <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
                           {f}
                         </span>
