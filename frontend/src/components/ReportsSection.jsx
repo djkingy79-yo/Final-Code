@@ -468,23 +468,40 @@ const ReportsSection = ({
             if (reportStatus === 'failed') {
               return (
                 <Card key={report.report_id} className="overflow-hidden border border-red-200 bg-red-50 shadow-sm">
-                  <div className="px-5 py-4 flex items-center justify-between">
+                  <div className="px-5 py-4 flex items-center justify-between flex-wrap gap-3">
                     <div className="flex items-center gap-3">
                       <AlertCircle className="w-5 h-5 text-red-600" />
                       <div>
                         <p className="text-sm font-semibold text-red-900">Report generation failed</p>
-                        <p className="text-xs text-red-600">Please delete and try again.</p>
+                        <p className="text-xs text-red-600">{report.error || "Generation was interrupted. Delete and retry."}</p>
                       </div>
                     </div>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => handleDeleteReport(report.report_id)}
-                      className="bg-red-600 hover:bg-red-700 text-white rounded-full"
-                      data-testid={`delete-report-btn-${report.report_id}`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          await handleDeleteReport(report.report_id);
+                          setTimeout(() => {
+                            setSelectedReportType(report.report_type);
+                            setShowReportDialog(true);
+                          }, 500);
+                        }}
+                        className="border-red-300 text-red-700 hover:bg-red-100"
+                        data-testid={`retry-report-btn-${report.report_id}`}
+                      >
+                        Retry
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleDeleteReport(report.report_id)}
+                        className="bg-red-600 hover:bg-red-700 text-white rounded-full"
+                        data-testid={`delete-report-btn-${report.report_id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               );

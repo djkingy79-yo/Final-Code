@@ -4300,6 +4300,13 @@ Write ALL 3 sections. Do NOT truncate any section."""),
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
                 logger.info(f"Full detailed {label} response: {len(part)} chars")
+                # Partial save after each pass to prevent data loss on server restart
+                if report_id:
+                    partial_content = "\n\n".join(parts)
+                    await db.reports.update_one(
+                        {"report_id": report_id},
+                        {"$set": {"content.analysis": partial_content, "content.partial": True}}
+                    )
             
             response = "\n\n".join(parts)
             logger.info(f"Full detailed combined: {len(response)} chars")
@@ -4404,15 +4411,15 @@ Write ALL 3 sections. Do NOT truncate any section."""),
 
     min_lengths = {
         "quick_summary": 9000,
-        "full_detailed": 60000,
+        "full_detailed": 35000,
         "extensive_log": 120000
     }
     target_length = min_lengths.get(report_type, 12000)
     if aggressive_mode:
         target_length = int(target_length * 2.0)
 
-    # Skip expansion for extensive_log — 7 passes already produce massive content
-    if len(response) < target_length and report_type != "extensive_log":
+    # Skip expansion for full_detailed and extensive_log — multi-pass already produces substantial content
+    if len(response) < target_length and report_type not in ("extensive_log", "full_detailed"):
         try:
             expansion_prompt = f"""{case_context}
 
@@ -5439,14 +5446,29 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def cleanup_orphaned_reports():
-    """Auto-fail reports stuck in 'generating' from server restarts."""
-    fifteen_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=15)).isoformat()
-    result = await db.reports.update_many(
-        {"status": "generating", "generated_at": {"$lt": fifteen_min_ago}},
-        {"$set": {"status": "failed", "error": "Generation interrupted by server restart. Please try again."}}
-    )
-    if result.modified_count > 0:
-        logger.info(f"Cleaned up {result.modified_count} orphaned generating reports on startup")
+    """Auto-fail or recover reports stuck in 'generating' from server restarts."""
+    five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+    
+    # First, try to recover reports with partial content
+    async for report in db.reports.find({"status": "generating", "generated_at": {"$lt": five_min_ago}}):
+        partial = report.get("content", {}).get("analysis", "") or report.get("content", {}).get("partial_analysis", "")
+        if partial and len(partial) > 5000:
+            # Has substantial partial content — complete it
+            await db.reports.update_one(
+                {"report_id": report["report_id"]},
+                {"$set": {
+                    "status": "completed",
+                    "content.analysis": partial,
+                    "content.partial": False
+                }}
+            )
+            logger.info(f"Recovered partial report {report['report_id']} ({len(partial)} chars)")
+        else:
+            await db.reports.update_one(
+                {"report_id": report["report_id"]},
+                {"$set": {"status": "failed", "error": "Generation interrupted by server restart. Please try again."}}
+            )
+            logger.info(f"Failed orphaned report {report['report_id']}")
 
 
 @app.on_event("shutdown")
