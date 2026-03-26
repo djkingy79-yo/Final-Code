@@ -45,10 +45,10 @@ const AdminStats = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading admin statistics...</p>
+          <p className="text-slate-600">Loading admin statistics...</p>
         </div>
       </div>
     );
@@ -56,15 +56,15 @@ const AdminStats = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-10 h-10 text-red-600 dark:text-red-400" />
+          <div className="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Shield className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Access Denied
           </h2>
-          <p className="text-muted-foreground mb-6">{error}</p>
+          <p className="text-slate-600 mb-6">{error}</p>
           <Button 
             onClick={() => navigate("/dashboard")} 
             className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold"
@@ -79,9 +79,9 @@ const AdminStats = () => {
   const maxDailyCount = Math.max(...(stats?.daily_stats?.map(d => d.count) || [1]));
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -124,7 +124,7 @@ const AdminStats = () => {
           <img 
             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -135,8 +135,8 @@ const AdminStats = () => {
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest">Admin Only</p>
-              <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <p className="text-red-600 font-semibold text-xs uppercase tracking-widest">Admin Only</p>
+              <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Site Analytics
               </h1>
             </div>
@@ -147,43 +147,43 @@ const AdminStats = () => {
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
-                  <Eye className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                  <Eye className="w-7 h-7 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground font-medium">Total Page Views</p>
-                  <p className="text-3xl font-bold text-foreground">{stats?.total_visits?.toLocaleString() || 0}</p>
+                  <p className="text-sm text-slate-600 font-medium">Total Page Views</p>
+                  <p className="text-3xl font-bold text-slate-900">{stats?.total_visits?.toLocaleString() || 0}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center">
-                  <Users className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
+                  <Users className="w-7 h-7 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground font-medium">Registered Users</p>
-                  <p className="text-3xl font-bold text-foreground">{stats?.total_users?.toLocaleString() || 0}</p>
+                  <p className="text-sm text-slate-600 font-medium">Registered Users</p>
+                  <p className="text-3xl font-bold text-slate-900">{stats?.total_users?.toLocaleString() || 0}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
-                  <FolderOpen className="w-7 h-7 text-red-600 dark:text-blue-400" />
+                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                  <FolderOpen className="w-7 h-7 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground font-medium">Total Cases Created</p>
-                  <p className="text-3xl font-bold text-foreground">{stats?.total_cases?.toLocaleString() || 0}</p>
+                  <p className="text-sm text-slate-600 font-medium">Total Cases Created</p>
+                  <p className="text-3xl font-bold text-slate-900">{stats?.total_cases?.toLocaleString() || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -191,11 +191,11 @@ const AdminStats = () => {
         </div>
 
         {/* Daily Stats Chart */}
-        <Card className="bg-card border-border shadow-sm">
+        <Card className="bg-white border-slate-200 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-indigo-600" />
               </div>
               Last 7 Days Activity
             </CardTitle>
@@ -204,8 +204,8 @@ const AdminStats = () => {
             <div className="space-y-4">
               {stats?.daily_stats?.map((day, index) => (
                 <div key={day.date} className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground w-28 font-medium">{day.date}</span>
-                  <div className="flex-1 bg-muted rounded-full h-8 overflow-hidden">
+                  <span className="text-sm text-slate-600 w-28 font-medium">{day.date}</span>
+                  <div className="flex-1 bg-slate-100 rounded-full h-8 overflow-hidden">
                     <div 
                       className="bg-gradient-to-r from-blue-500 to-red-600 h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500"
                       style={{ 
@@ -218,7 +218,7 @@ const AdminStats = () => {
                       )}
                     </div>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground w-20 text-right">
+                  <span className="text-sm font-medium text-slate-600 w-20 text-right">
                     {day.count} visits
                   </span>
                 </div>
@@ -227,13 +227,13 @@ const AdminStats = () => {
           </CardContent>
         </Card>
 
-        <p className="text-center text-sm text-muted-foreground mt-8">
+        <p className="text-center text-sm text-slate-600 mt-8">
           Stats update in real-time as visitors access the site
         </p>
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 dark:bg-slate-950 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-slate-400 text-sm">
             © 2025 Appeal Case Manager. Admin Dashboard.

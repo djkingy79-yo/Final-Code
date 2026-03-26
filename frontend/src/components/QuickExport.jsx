@@ -123,15 +123,15 @@ const QuickExport = ({ caseId, caseTitle }) => {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                <FolderArchive className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                <FolderArchive className="w-5 h-5 text-emerald-600" />
               </div>
               Export Appeal Package
             </DialogTitle>
           </DialogHeader>
 
           <div className="py-4">
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-slate-600 mb-4">
               Generate a comprehensive ZIP package with all case materials and editable legal templates.
             </p>
 
@@ -146,8 +146,8 @@ const QuickExport = ({ caseId, caseTitle }) => {
                     key={item.key}
                     className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
                       options[item.key]
-                        ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700"
-                        : "bg-card border-border hover:bg-muted/50"
+                        ? "bg-emerald-50 border-emerald-300"
+                        : "bg-white border-slate-200 hover:bg-slate-50"
                     }`}
                   >
                     <Checkbox
@@ -155,8 +155,8 @@ const QuickExport = ({ caseId, caseTitle }) => {
                       onCheckedChange={() => toggleOption(item.key)}
                       className="data-[state=checked]:bg-emerald-600"
                     />
-                    <item.icon className={`w-5 h-5 ${options[item.key] ? "text-emerald-600" : "text-muted-foreground"}`} />
-                    <span className="flex-1 font-medium text-foreground">{item.label}</span>
+                    <item.icon className={`w-5 h-5 ${options[item.key] ? "text-emerald-600" : "text-slate-600"}`} />
+                    <span className="flex-1 font-medium text-slate-900">{item.label}</span>
                     <Badge variant="outline" className="text-xs">
                       {item.count ?? 0}
                     </Badge>
@@ -166,19 +166,19 @@ const QuickExport = ({ caseId, caseTitle }) => {
             )}
 
             {/* Templates Info */}
-            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-              <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <h4 className="text-sm font-semibold text-blue-800 mb-2 flex items-center gap-2">
                 <FileCode className="w-4 h-4" />
                 Included Templates
               </h4>
-              <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+              <ul className="text-xs text-blue-700 space-y-1">
                 <li>• Notice of Intention to Appeal</li>
                 <li>• Application for Leave to Appeal</li>
                 <li>• Written Submissions Template</li>
                 <li>• Fresh Evidence Affidavit</li>
                 <li>• Chronology of Proceedings</li>
               </ul>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 italic">
+              <p className="text-xs text-blue-600 mt-2 italic">
                 All templates are pre-filled with your case details
               </p>
             </div>

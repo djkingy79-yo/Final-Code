@@ -664,8 +664,8 @@ const CaseDetail = ({ user }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-muted-foreground mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading case...</p>
+          <Loader2 className="w-12 h-12 animate-spin text-slate-600 mx-auto" />
+          <p className="mt-4 text-slate-600">Loading case...</p>
         </div>
       </div>
     );
@@ -676,8 +676,8 @@ const CaseDetail = ({ user }) => {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center max-w-md">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-          <h2 className="mt-4 text-xl font-semibold text-foreground">Error Loading Case</h2>
-          <p className="mt-2 text-muted-foreground">{loadError}</p>
+          <h2 className="mt-4 text-xl font-semibold text-slate-900">Error Loading Case</h2>
+          <p className="mt-2 text-slate-600">{loadError}</p>
           <div className="mt-6 flex gap-3 justify-center">
             <Button 
               variant="outline" 
@@ -941,24 +941,24 @@ const CaseDetail = ({ user }) => {
           {/* Timeline Tab */}
           <TabsContent value="timeline" className="space-y-4" data-tab-content>
             {generatingTimeline && (
-              <div className="border border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 rounded-lg overflow-hidden p-4" data-testid="ai-timeline-progress">
+              <div className="border border-purple-200 bg-purple-50 rounded-lg overflow-hidden p-4" data-testid="ai-timeline-progress">
                 <div className="flex items-center gap-3 mb-2">
                   <Loader2 className="w-5 h-5 animate-spin text-purple-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-purple-900 dark:text-purple-200">AI Scan in Progress — Generating Timeline</p>
+                  <p className="text-sm font-semibold text-purple-900">AI Scan in Progress — Generating Timeline</p>
                 </div>
-                <p className="text-xs text-purple-700 dark:text-purple-300 mb-3">Analysing your documents for dates and events. This may take 30-60 seconds.</p>
-                <div className="w-full h-2 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
+                <p className="text-xs text-purple-700 mb-3">Analysing your documents for dates and events. This may take 30-60 seconds.</p>
+                <div className="w-full h-2 bg-purple-200 rounded-full overflow-hidden">
                   <div className="h-full w-3/4 bg-purple-600 rounded-full animate-pulse"></div>
                 </div>
               </div>
             )}
             {timeline.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
-                <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <Clock className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   No events yet
                 </h3>
-                <p className="text-muted-foreground mb-4">Build a chronological timeline of case events.</p>
+                <p className="text-slate-600 mb-4">Build a chronological timeline of case events.</p>
                 <Button 
                   onClick={() => setShowEventDialog(true)}
                   className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
@@ -1004,11 +1004,11 @@ const CaseDetail = ({ user }) => {
             )}
             {grounds.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
-                <Gavel className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <Gavel className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   No grounds of merit identified
                 </h3>
-                <p className="text-muted-foreground mb-4 max-w-md mx-auto">
+                <p className="text-slate-600 mb-4 max-w-md mx-auto">
                   Use AI to automatically analyse your case materials and identify potential grounds for appeal, 
                   or add grounds manually.
                 </p>
@@ -1097,7 +1097,7 @@ const CaseDetail = ({ user }) => {
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div>
                     <h3 className="font-semibold text-base">AI Case Progress Analysis</h3>
-                    <p className="text-xs text-muted-foreground">Get an AI-powered assessment of your appeal progress, next steps, and strategic recommendations</p>
+                    <p className="text-xs text-slate-600">Get an AI-powered assessment of your appeal progress, next steps, and strategic recommendations</p>
                   </div>
                   <Button 
                     onClick={handleGenerateProgressAnalysis} 
@@ -1123,13 +1123,13 @@ const CaseDetail = ({ user }) => {
 
             {/* AI Scan in Progress indicator */}
             {generatingProgress && (
-              <div className="border border-purple-200 bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 rounded-lg overflow-hidden p-4" data-testid="ai-progress-generating">
+              <div className="border border-purple-200 bg-purple-50 rounded-lg overflow-hidden p-4" data-testid="ai-progress-generating">
                 <div className="flex items-center gap-3 mb-2">
                   <Loader2 className="w-5 h-5 animate-spin text-purple-600 flex-shrink-0" />
-                  <p className="text-sm font-semibold text-purple-900 dark:text-purple-200">AI Scan in Progress — Analysing Case Progress</p>
+                  <p className="text-sm font-semibold text-purple-900">AI Scan in Progress — Analysing Case Progress</p>
                 </div>
-                <p className="text-xs text-purple-700 dark:text-purple-300 mb-3">Reviewing your case data, documents, and appeal status. This may take 30-60 seconds.</p>
-                <div className="w-full h-2 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
+                <p className="text-xs text-purple-700 mb-3">Reviewing your case data, documents, and appeal status. This may take 30-60 seconds.</p>
+                <div className="w-full h-2 bg-purple-200 rounded-full overflow-hidden">
                   <div className="h-full w-3/4 bg-purple-600 rounded-full animate-pulse"></div>
                 </div>
               </div>
@@ -1137,8 +1137,8 @@ const CaseDetail = ({ user }) => {
 
             {/* AI Progress Analysis Results */}
             {progressAnalysis && (
-              <Card className="border-purple-200 dark:border-purple-800">
-                <CardContent className="p-4 prose prose-sm dark:prose-invert max-w-none">
+              <Card className="border-purple-200">
+                <CardContent className="p-4 prose prose-sm max-w-none">
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -1146,13 +1146,13 @@ const CaseDetail = ({ user }) => {
                         <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">{children}</a>
                       ),
                       table: ({ children }) => (
-                        <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300 dark:border-slate-600">{children}</table></div>
+                        <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300">{children}</table></div>
                       ),
                       th: ({ children }) => (
-                        <th className="border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 px-3 py-2 text-left text-sm font-semibold">{children}</th>
+                        <th className="border border-slate-300 bg-slate-100 px-3 py-2 text-left text-sm font-semibold">{children}</th>
                       ),
                       td: ({ children }) => (
-                        <td className="border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm">{children}</td>
+                        <td className="border border-slate-300 px-3 py-2 text-sm">{children}</td>
                       ),
                     }}
                   >{progressAnalysis.analysis || progressAnalysis.content || ""}</ReactMarkdown>

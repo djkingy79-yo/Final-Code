@@ -89,10 +89,10 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading analytics...</p>
+          <p className="text-slate-600">Loading analytics...</p>
         </div>
       </div>
     );
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
             <p className="text-red-600 font-medium mb-4">{error}</p>
@@ -120,12 +120,12 @@ const AdminDashboard = () => {
 
   const StatCard = ({ title, value, icon: Icon, subtitle, trend, color = "blue" }) => {
     const colorClasses = {
-      blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
-      emerald: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
-      blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-red-600 dark:text-blue-400",
-      purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400",
-      pink: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400",
-      indigo: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400",
+      blue: "bg-blue-100 text-blue-600",
+      emerald: "bg-emerald-100 text-emerald-600",
+      blue_mapped: "bg-blue-100 text-red-600",
+      purple: "bg-purple-100 text-purple-600",
+      pink: "bg-pink-100 text-pink-600",
+      indigo: "bg-indigo-100 text-indigo-600",
     };
 
     return (
@@ -133,10 +133,10 @@ const AdminDashboard = () => {
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">{title}</p>
-              <p className="text-3xl font-bold text-foreground">{value.toLocaleString()}</p>
+              <p className="text-sm text-slate-600 mb-1">{title}</p>
+              <p className="text-3xl font-bold text-slate-900">{value.toLocaleString()}</p>
               {subtitle && (
-                <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+                <p className="text-xs text-slate-600 mt-1">{subtitle}</p>
               )}
               {trend && (
                 <div className="flex items-center gap-1 mt-2 text-xs">
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-slate-900 text-white py-8 px-6">
         <div className="max-w-7xl mx-auto">
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         
         {/* Live Visitor Stats - Prominent Section */}
-        <Card className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-indigo-200 dark:border-indigo-800">
+        <Card className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Eye className="w-5 h-5 text-indigo-600" />
@@ -183,25 +183,25 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-indigo-200 dark:border-indigo-700">
+              <div className="bg-white rounded-xl p-4 text-center border border-indigo-200">
                 <Eye className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">{stats.visits?.total || 0}</p>
-                <p className="text-xs text-indigo-600 dark:text-indigo-400">Total Visitors</p>
+                <p className="text-2xl font-bold text-indigo-700">{stats.visits?.total || 0}</p>
+                <p className="text-xs text-indigo-600">Total Visitors</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-emerald-200 dark:border-emerald-700">
+              <div className="bg-white rounded-xl p-4 text-center border border-emerald-200">
                 <Users className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{stats.visits?.last_7d || 0}</p>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400">Last 7 Days</p>
+                <p className="text-2xl font-bold text-emerald-700">{stats.visits?.last_7d || 0}</p>
+                <p className="text-xs text-emerald-600">Last 7 Days</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-blue-200 dark:border-blue-700">
+              <div className="bg-white rounded-xl p-4 text-center border border-blue-200">
                 <TrendingUp className="w-6 h-6 text-red-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{stats.visits?.last_30d || 0}</p>
-                <p className="text-xs text-red-600 dark:text-blue-400">Last 30 Days</p>
+                <p className="text-2xl font-bold text-blue-700">{stats.visits?.last_30d || 0}</p>
+                <p className="text-xs text-red-600">Last 30 Days</p>
               </div>
-              <div className="bg-white dark:bg-slate-800 rounded-xl p-4 text-center border border-purple-200 dark:border-purple-700">
+              <div className="bg-white rounded-xl p-4 text-center border border-purple-200">
                 <Activity className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">{stats.users?.total || 0}</p>
-                <p className="text-xs text-purple-600 dark:text-purple-400">Registered Users</p>
+                <p className="text-2xl font-bold text-purple-700">{stats.users?.total || 0}</p>
+                <p className="text-xs text-purple-600">Registered Users</p>
               </div>
             </div>
           </CardContent>
@@ -247,42 +247,42 @@ const AdminDashboard = () => {
             <CardContent className="pt-6 text-center">
               <Calendar className="w-8 h-8 text-indigo-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.deadlines_tracked}</p>
-              <p className="text-xs text-muted-foreground">Deadlines Tracked</p>
+              <p className="text-xs text-slate-600">Deadlines Tracked</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <BarChart3 className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.reports_generated}</p>
-              <p className="text-xs text-muted-foreground">Reports Generated</p>
+              <p className="text-xs text-slate-600">Reports Generated</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <MessageCircle className="w-8 h-8 text-blue-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.contact_messages}</p>
-              <p className="text-xs text-muted-foreground">Contact Messages</p>
+              <p className="text-xs text-slate-600">Contact Messages</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <Heart className="w-8 h-8 text-pink-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.success_stories}</p>
-              <p className="text-xs text-muted-foreground">Success Stories</p>
+              <p className="text-xs text-slate-600">Success Stories</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <Activity className="w-8 h-8 text-red-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.engagement.notes_created}</p>
-              <p className="text-xs text-muted-foreground">Notes Created</p>
+              <p className="text-xs text-slate-600">Notes Created</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <TrendingUp className="w-8 h-8 text-purple-600 mx-auto mb-2" />
               <p className="text-2xl font-bold">{stats.users.new_30d}</p>
-              <p className="text-xs text-muted-foreground">Users (30d)</p>
+              <p className="text-xs text-slate-600">Users (30d)</p>
             </CardContent>
           </Card>
         </div>
@@ -297,10 +297,10 @@ const AdminDashboard = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm text-muted-foreground">Email/Password</span>
+                    <span className="text-sm text-slate-600">Email/Password</span>
                     <span className="font-semibold">{stats.users.by_auth_type.email}</span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-blue-600"
                       style={{ width: `${(stats.users.by_auth_type.email / stats.users.total) * 100}%` }}
@@ -309,10 +309,10 @@ const AdminDashboard = () => {
                 </div>
                 <div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm text-muted-foreground">Google OAuth</span>
+                    <span className="text-sm text-slate-600">Google OAuth</span>
                     <span className="font-semibold">{stats.users.by_auth_type.google}</span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-emerald-600"
                       style={{ width: `${(stats.users.by_auth_type.google / stats.users.total) * 100}%` }}
@@ -332,11 +332,11 @@ const AdminDashboard = () => {
                 {Object.entries(stats.cases.by_state).map(([state, count]) => (
                   <div key={state} className="flex justify-between items-center">
                     <span className="text-sm font-medium">{state}</span>
-                    <span className="text-sm text-muted-foreground">{count} cases</span>
+                    <span className="text-sm text-slate-600">{count} cases</span>
                   </div>
                 ))}
                 {Object.keys(stats.cases.by_state).length === 0 && (
-                  <p className="text-sm text-muted-foreground">No cases yet</p>
+                  <p className="text-sm text-slate-600">No cases yet</p>
                 )}
               </div>
             </CardContent>
@@ -354,7 +354,7 @@ const AdminDashboard = () => {
                 <p className="text-sm font-medium mb-2">New Users</p>
                 <div className="flex items-end gap-1 h-24">
                   {stats.daily_stats.slice(-14).map((day, idx) => (
-                    <div key={idx} className="flex-1 bg-blue-200 dark:bg-blue-800 rounded-t"
+                    <div key={idx} className="flex-1 bg-blue-200 rounded-t"
                          style={{ height: `${Math.max((day.users / Math.max(...stats.daily_stats.map(d => d.users))) * 100, 5)}%` }}
                          title={`${day.date}: ${day.users} users`}
                     />
@@ -365,7 +365,7 @@ const AdminDashboard = () => {
                 <p className="text-sm font-medium mb-2">New Cases</p>
                 <div className="flex items-end gap-1 h-24">
                   {stats.daily_stats.slice(-14).map((day, idx) => (
-                    <div key={idx} className="flex-1 bg-emerald-200 dark:bg-emerald-800 rounded-t"
+                    <div key={idx} className="flex-1 bg-emerald-200 rounded-t"
                          style={{ height: `${Math.max((day.cases / Math.max(...stats.daily_stats.map(d => d.cases))) * 100, 5)}%` }}
                          title={`${day.date}: ${day.cases} cases`}
                     />
@@ -373,7 +373,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-4 text-center">Last 14 days</p>
+            <p className="text-xs text-slate-600 mt-4 text-center">Last 14 days</p>
           </CardContent>
         </Card>
 
@@ -406,7 +406,7 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             {pendingPayments.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-8 text-slate-600">
                 <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-600 opacity-50" />
                 <p>No pending payments to verify</p>
               </div>
@@ -415,11 +415,11 @@ const AdminDashboard = () => {
                 {pendingPayments.map((payment) => (
                   <div 
                     key={payment.reference} 
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className="font-mono font-bold text-foreground">{payment.reference}</span>
+                        <span className="font-mono font-bold text-slate-900">{payment.reference}</span>
                         <Badge variant={payment.status === "pending_verification" ? "default" : "secondary"}>
                           {payment.status === "pending_verification" ? (
                             <><Clock className="w-3 h-3 mr-1" /> Awaiting Verification</>
@@ -428,22 +428,22 @@ const AdminDashboard = () => {
                           )}
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-muted-foreground">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-slate-600">
                         <div>
                           <span className="text-xs opacity-75">Amount:</span>
-                          <p className="font-semibold text-foreground">${payment.amount} AUD</p>
+                          <p className="font-semibold text-slate-900">${payment.amount} AUD</p>
                         </div>
                         <div>
                           <span className="text-xs opacity-75">Feature:</span>
-                          <p className="text-foreground">{payment.feature_type?.replace(/_/g, ' ')}</p>
+                          <p className="text-slate-900">{payment.feature_type?.replace(/_/g, ' ')}</p>
                         </div>
                         <div>
                           <span className="text-xs opacity-75">Case:</span>
-                          <p className="text-foreground truncate">{payment.case_id?.slice(0, 8)}...</p>
+                          <p className="text-slate-900 truncate">{payment.case_id?.slice(0, 8)}...</p>
                         </div>
                         <div>
                           <span className="text-xs opacity-75">Created:</span>
-                          <p className="text-foreground">{new Date(payment.created_at).toLocaleDateString()}</p>
+                          <p className="text-slate-900">{new Date(payment.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
                     </div>
@@ -463,7 +463,7 @@ const AdminDashboard = () => {
                 ))}
               </div>
             )}
-            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-xs text-blue-800 dark:text-blue-200">
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
               <strong>How to verify:</strong> Check your bank statement for incoming transfers with the reference code shown. 
               Once you confirm receipt, click "Confirm Payment" to unlock the feature for the user.
             </div>

@@ -215,7 +215,7 @@ const LandingPage = () => {
                 <img 
                   src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/6fe186d3d7a5b01e3d3c6076c0a6aefc22c07aea5667124e0978d927d9c58335.png" 
                   alt="Barrister desk with gavel, authorities bundle, and appeal brief"
-                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100 dark:bg-white"
+                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
                   loading="eager"
                   decoding="async"
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80'; }}
@@ -223,12 +223,12 @@ const LandingPage = () => {
                 {/* Floating Card - hidden (avoids misleading counts) */}
                 <div className="hidden" data-testid="hero-grounds-floating-card">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                      <BarChart3 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                      <BarChart3 className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground text-sm">3 Grounds Found</p>
-                      <p className="text-xs text-muted-foreground">Strong appeal potential</p>
+                      <p className="font-semibold text-slate-900 text-sm">3 Grounds Found</p>
+                      <p className="text-xs text-slate-600">Strong appeal potential</p>
                     </div>
                   </div>
                 </div>
@@ -250,11 +250,11 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-gradient-to-b from-background to-muted/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-indigo-600 dark:text-indigo-400 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Your Complete Appeal Research Companion
             </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
               This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions. 
               Whether you're representing yourself or working with a lawyer, get the tools you need to understand your case.
             </p>
@@ -262,42 +262,42 @@ const LandingPage = () => {
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {/* Organise */}
-            <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-7 h-7 text-blue-600" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Organise Everything
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Upload all your case documents, create a timeline of events, and keep everything in one secure place. 
                 OCR extracts text from scanned documents automatically.
               </p>
             </div>
 
             {/* Analyse */}
-            <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-7 h-7 text-emerald-600" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 AI-Powered Analysis
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Automatically identify potential grounds for appeal based on Australian law. 
                 The AI scans your case for procedural errors, misdirections, and legal issues.
               </p>
             </div>
 
             {/* Generate Reports */}
-            <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <FileCheck className="w-7 h-7 text-red-600 dark:text-blue-400" />
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <FileCheck className="w-7 h-7 text-red-600" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Generate Reports
               </h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Create detailed reports with legal citations, case law references, and structured analysis. 
                 Export to PDF or present in Barrister View for legal meetings.
               </p>
@@ -305,46 +305,46 @@ const LandingPage = () => {
           </div>
 
           {/* Key Features Highlight */}
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-2xl p-8 border border-indigo-200 dark:border-indigo-800">
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 border border-indigo-200">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Built for Australian Law</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Built for Australian Law</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>All 8 states & territories + Commonwealth</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Covers all criminal offence types</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Direct links to legislation & case law</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Progress tracker for appeal process</span>
                   </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Free to Get Started</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Free to Get Started</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>No credit card required to begin</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Upload unlimited documents for free</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Pay only for detailed AI analysis reports</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>A fraction of what lawyers charge</span>
                   </li>
                 </ul>
@@ -359,7 +359,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* COMPLETE APP CAPABILITIES - At A Glance */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-white dark:bg-white relative overflow-hidden">
+      <section className="py-16 px-6 bg-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -637,7 +637,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 2: SEE IT IN ACTION (with Features merged) */}
       {/* ============================================ */}
-      <section className="py-20 px-6 bg-background relative">
+      <section className="py-20 px-6 bg-white relative">
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl" />
@@ -649,49 +649,49 @@ const LandingPage = () => {
                 <Scale className="w-8 h-8 text-white" />
               </div>
             </div>
-            <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               How The Process Works
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-slate-600 max-w-2xl mx-auto">
               Here's what you can expect when using the tool — from uploading documents to generating reports.
             </p>
           </div>
 
           {/* Simple 1–4 step summary (details moved to How It Works page) */}
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-6 text-center shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Upload className="w-7 h-7 text-blue-400" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 1 — Upload</h3>
-              <p className="text-muted-foreground">Create a case and upload your documents. The system organises them instantly.</p>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 1 — Upload</h3>
+              <p className="text-slate-600">Create a case and upload your documents. The system organises them instantly.</p>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 text-center shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="w-7 h-7 text-emerald-400" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 2 — Free Grounds Count</h3>
-              <p className="text-muted-foreground">Get the number of potential grounds. Titles and full analysis unlock for $99.</p>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 2 — Free Grounds Count</h3>
+              <p className="text-slate-600">Get the number of potential grounds. Titles and full analysis unlock for $99.</p>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 text-center shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <FileCheck className="w-7 h-7 text-red-400" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 3 — Paid Reports</h3>
-              <p className="text-muted-foreground">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 3 — Paid Reports</h3>
+              <p className="text-slate-600">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
             </div>
-            <div className="bg-card border border-border rounded-2xl p-6 text-center shadow-lg">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Presentation className="w-7 h-7 text-indigo-300" />
               </div>
-              <h3 className="font-bold text-foreground text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 4 — Barrister View</h3>
-              <p className="text-muted-foreground">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 4 — Barrister View</h3>
+              <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col items-center gap-4">
-            <p className="text-muted-foreground text-sm">Need the full walkthrough with screenshots and step‑by‑step guidance?</p>
+            <p className="text-slate-600 text-sm">Need the full walkthrough with screenshots and step‑by‑step guidance?</p>
             <Link to="/how-it-works" data-testid="landing-how-it-works-link">
               <Button className="landing-cta-primary" data-testid="landing-how-it-works-cta">
                 View How It Works
@@ -706,14 +706,14 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 3: LEGAL RESOURCES & RESEARCH */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-muted/50 dark:bg-muted/20 border-t border-border">
+      <section className="py-16 px-6 bg-slate-50 border-t border-slate-200">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-blue-700 dark:text-blue-400 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Resources, Contacts & Research In One Flow
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-slate-600 max-w-2xl mx-auto">
               Access legal contacts, legislation, case law, legal frameworks, and process guidance in one organised structure.
             </p>
           </div>
@@ -721,20 +721,20 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-3 gap-6">
             {/* Legal Frameworks Card */}
             <Link to="/legal-framework" className="group" data-testid="landing-resource-legal-framework-link">
-              <div className="bg-card border-2 border-border hover:border-blue-600 dark:hover:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
+              <div className="bg-white border-2 border-slate-200 hover:border-blue-600:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Scale className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     Legal Frameworks
                   </h3>
                 </div>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-slate-600 mb-4">
                   Complete overview of Australian criminal law by state — Crimes Acts, Criminal Codes, Evidence Acts, 
                   Human Rights legislation, and the specific legal framework that applies to your case.
                 </p>
-                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
+                <div className="flex items-center gap-2 text-blue-600 font-medium">
                   <span>View Legal Frameworks</span>
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -743,20 +743,20 @@ const LandingPage = () => {
 
             {/* Live Caselaw Search Card */}
             <Link to="/caselaw-search" className="group" data-testid="landing-resource-caselaw-link">
-              <div className="bg-card border-2 border-border hover:border-red-600 dark:hover:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
+              <div className="bg-white border-2 border-slate-200 hover:border-red-600:border-blue-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <FileText className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     Live Caselaw Search
                   </h3>
                 </div>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-slate-600 mb-4">
                   Direct access to official court databases across all Australian jurisdictions. Search real judgments 
                   from the High Court, Federal Court, and every state and territory Supreme Court.
                 </p>
-                <div className="flex items-center gap-2 text-red-600 dark:text-blue-400 font-medium">
+                <div className="flex items-center gap-2 text-red-600 font-medium">
                   <span>Search Case Law</span>
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -764,19 +764,19 @@ const LandingPage = () => {
             </Link>
 
             <Link to="/how-it-works" className="group" data-testid="landing-resource-how-it-works-link">
-              <div className="bg-card border-2 border-border hover:border-indigo-600 dark:hover:border-indigo-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
+              <div className="bg-white border-2 border-slate-200 hover:border-indigo-600:border-indigo-400 rounded-xl p-8 h-full transition-all hover:shadow-lg">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <PlayCircle className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     How It Works
                   </h3>
                 </div>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-slate-600 mb-4">
                   See the full workflow in action with report prices directly underneath and a direct button to start your case.
                 </p>
-                <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium">
+                <div className="flex items-center gap-2 text-indigo-600 font-medium">
                   <span>See Workflow + Prices</span>
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -791,26 +791,26 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 5: PRICING */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-background border-t border-border">
+      <section className="py-16 px-6 bg-white border-t border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-blue-700 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Pricing</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Pricing</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Simple, Affordable Access
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-slate-600 max-w-2xl mx-auto">
               Basic features are free. Pay only for detailed analysis when you need it — a fraction of what lawyers charge.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Free Tier */}
-            <div className="bg-muted/50 dark:bg-muted/20 border border-border rounded-xl p-6">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>Free</h3>
-                <span className="text-2xl font-bold text-foreground">$0</span>
+                <h3 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Free</h3>
+                <span className="text-2xl font-bold text-slate-900">$0</span>
               </div>
-              <ul className="space-y-3 text-sm text-muted-foreground mb-6">
+              <ul className="space-y-3 text-sm text-slate-600 mb-6">
                 <li className="flex items-start gap-2">
                   <svg className="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -913,7 +913,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <p className="text-center text-xs text-muted-foreground mt-6">
+          <p className="text-center text-xs text-slate-600 mt-6">
             * Premium features are per-case. Pay once, access that analysis forever.
           </p>
         </div>
@@ -1073,41 +1073,41 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border bg-muted/50 dark:bg-muted/20">
+      <footer className="py-8 px-6 border-t border-slate-200 bg-white">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 items-start">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2">
-              <Scale className="w-5 h-5 text-muted-foreground" />
-              <span className="text-foreground text-sm font-semibold">Appeal Case Manager</span>
+              <Scale className="w-5 h-5 text-slate-700" />
+              <span className="text-slate-900 text-sm font-semibold">Appeal Case Manager</span>
             </div>
-            <span className="text-muted-foreground text-xs mt-1">Founded by Debra King</span>
-            <span className="text-muted-foreground text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
+            <span className="text-slate-600 text-xs mt-1">Founded by Debra King</span>
+            <span className="text-slate-600 text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Explore</p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
-              <Link to="/how-it-works" className="hover:text-foreground" data-testid="footer-how-it-works">How It Works</Link>
-              <Link to="/appeal-statistics" className="hover:text-foreground" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
-              <Link to="/legal-resources" className="hover:text-foreground" data-testid="footer-legal-resources">Resources & Contacts</Link>
-              <Link to="/legal-framework" className="hover:text-foreground" data-testid="footer-legal-framework">Legal Framework</Link>
-              <Link to="/forms" className="hover:text-foreground" data-testid="footer-forms">Forms & Templates</Link>
-              <Link to="/glossary" className="hover:text-foreground" data-testid="footer-glossary">Legal Glossary</Link>
-              <Link to="/lawyers" className="hover:text-foreground" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/faq" className="hover:text-foreground" data-testid="footer-faq">FAQ</Link>
-              <Link to="/contact" className="hover:text-foreground" data-testid="footer-contact">Contact</Link>
-              <Link to="/about" className="hover:text-foreground" data-testid="footer-about">About</Link>
-              <Link to="/success-stories" className="hover:text-foreground" data-testid="footer-success-stories">Success Stories</Link>
+            <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Explore</p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-slate-700">
+              <Link to="/how-it-works" className="hover:text-blue-700" data-testid="footer-how-it-works">How It Works</Link>
+              <Link to="/appeal-statistics" className="hover:text-blue-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+              <Link to="/legal-resources" className="hover:text-blue-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
+              <Link to="/legal-framework" className="hover:text-blue-700" data-testid="footer-legal-framework">Legal Framework</Link>
+              <Link to="/forms" className="hover:text-blue-700" data-testid="footer-forms">Forms & Templates</Link>
+              <Link to="/glossary" className="hover:text-blue-700" data-testid="footer-glossary">Legal Glossary</Link>
+              <Link to="/lawyers" className="hover:text-blue-700" data-testid="footer-lawyers">Lawyer Directory</Link>
+              <Link to="/faq" className="hover:text-blue-700" data-testid="footer-faq">FAQ</Link>
+              <Link to="/contact" className="hover:text-blue-700" data-testid="footer-contact">Contact</Link>
+              <Link to="/about" className="hover:text-blue-700" data-testid="footer-about">About</Link>
+              <Link to="/success-stories" className="hover:text-blue-700" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
 
           <div className="text-center md:text-right">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground font-semibold mb-2">Legal</p>
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">Terms & Privacy</Link>
-            <p className="text-xs text-red-600 dark:text-red-400 font-medium mt-3">
+            <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Legal</p>
+            <Link to="/terms" className="text-sm text-slate-700 hover:text-blue-700">Terms & Privacy</Link>
+            <p className="text-xs text-red-600 font-medium mt-3">
               Australian Law Only • Not legal advice
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-slate-600 mt-1">
               All results must be verified by a qualified legal professional
             </p>
           </div>
@@ -1119,7 +1119,7 @@ const LandingPage = () => {
 
 // Simple Feature Card Component - Enhanced
 const SectionBackToTop = ({ onClick, testId }) => (
-  <div className="py-4 text-center border-t border-border/40 bg-background/60" data-testid={testId}>
+  <div className="py-4 text-center border-t border-slate-200 bg-white" data-testid={testId}>
     <button
       onClick={onClick}
       className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
@@ -1132,12 +1132,12 @@ const SectionBackToTop = ({ onClick, testId }) => (
 );
 
 const FeatureCard = ({ icon: Icon, title, desc }) => (
-  <div className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
-    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-red-600/20 dark:from-blue-500/10 dark:to-red-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-      <Icon className="w-6 h-6 text-red-600 dark:text-blue-500" />
+  <div className="bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 group">
+    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-red-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+      <Icon className="w-6 h-6 text-red-600" />
     </div>
-    <h3 className="font-semibold text-foreground text-base mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>{title}</h3>
-    <p className="text-muted-foreground text-sm">{desc}</p>
+    <h3 className="font-semibold text-slate-900 text-base mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>{title}</h3>
+    <p className="text-slate-600 text-sm">{desc}</p>
   </div>
 );
 

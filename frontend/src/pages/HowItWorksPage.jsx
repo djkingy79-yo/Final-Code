@@ -58,9 +58,9 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
-        image: "/images/howto/step2-dashboard.png",
-        alt: "New case form on dashboard",
-        caption: "Create a case from the dashboard — this is the live New Case form."
+        image: "/images/howto/live-dashboard.png",
+        alt: "Dashboard with cases showing real data",
+        caption: "Your dashboard shows all cases with progress tracking."
       },
       whatYouSee: [
         "A clean form asking for: Case title, Defendant name, Court, State/Territory",
@@ -91,9 +91,9 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
-        image: "/images/howto/step3-case-detail.png",
-        alt: "Documents tab with uploaded files",
-        caption: "Upload transcripts and exhibits in the Documents tab — this is the live screen."
+        image: "/images/howto/live-documents.png",
+        alt: "Documents tab with 18 uploaded case files",
+        caption: "Upload transcripts, sentencing remarks, and evidence — all processed by AI."
       },
       whatYouSee: [
         "A drag-and-drop upload area — drop multiple files at once",
@@ -129,9 +129,9 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
-        image: "/images/howto/step5-grounds.png",
-        alt: "Grounds tab with identified grounds",
-        caption: "The Grounds tab shows how many appeal grounds were found (titles hidden on Free)."
+        image: "/images/howto/live-grounds-free.png",
+        alt: "Grounds tab showing 3 grounds found with titles blurred",
+        caption: "AI identifies 3 grounds — titles hidden until you pay $99 to investigate."
       },
       whatYouSee: [
         "The total number of potential appeal grounds identified (e.g., '5 Grounds Found')",
@@ -168,9 +168,9 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
-        image: "/images/howto/step5-grounds.png",
-        alt: "Investigate grounds paywall",
-        caption: "Investigate Grounds opens the paid analysis screen ($99 AUD) with full ground details."
+        image: "/images/howto/live-grounds-paid.png",
+        alt: "Full ground analysis with titles, evidence, and strength ratings",
+        caption: "Investigate Grounds reveals full titles, supporting evidence, and case law."
       },
       whatYouSee: [
         "Detailed analysis of EACH ground with legal basis and relevant legislation",
@@ -208,14 +208,9 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
-        image: "/images/howto/step8-reports.png",
-        alt: "Report selection modal",
-        caption: "Choose the report tier inside the Reports tab — this is the live selection screen."
-      },
-      preview: {
-        title: "Extensive Log — Grounds of Merit",
-        subtitle: "Sample excerpt from generated report",
-        body: "Ground 2: Misdirection on intent. The summing-up between pages 214–218 fails to distinguish intent from recklessness in the context of the accused’s statements, leaving the jury without a lawful pathway to consider manslaughter. This ground is strengthened by the sentencing remarks and the expert chronology extracted from the trial transcript."
+        image: "/images/howto/live-reports.png",
+        alt: "Reports tab showing 3 generated reports with export options",
+        caption: "Three report tiers generated — Quick Summary, Full Detailed, and Extensive Log."
       },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
@@ -240,14 +235,9 @@ const HowItWorksPage = () => {
       textColor: "text-slate-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
-        image: "/images/howto/step8-reports.png",
-        alt: "Barrister View screen",
-        caption: "Barrister View (unlocked after 3 reports) combines all reports into one brief."
-      },
-      preview: {
-        title: "Barrister View — Executive Brief",
-        subtitle: "Sample excerpt from generated brief",
-        body: "Executive Brief: The appeal rests on three strong grounds—misdirection on intent, inconsistent jury directions, and disproportionate sentencing. The case chronology and comparative sentencing analysis indicate a viable pathway to sentence reduction or retrial."
+        image: "/images/howto/live-barrister.png",
+        alt: "Barrister Executive Brief synthesised from 3 reports",
+        caption: "Barrister View synthesises all 3 reports into one court-ready brief."
       },
       whatYouSee: [
         "Table of Contents with clickable section headings",
@@ -274,9 +264,9 @@ const HowItWorksPage = () => {
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
-        image: "/images/howto/step7-progress.png",
-        alt: "Progress tab with checklist",
-        caption: "The Progress tab shows deadlines and next steps — this is the live screen."
+        image: "/images/howto/live-progress.png",
+        alt: "Progress tab with milestones and 72% completion",
+        caption: "Track every milestone from case creation to lodging the appeal."
       },
       whatYouSee: [
         "Deadline Tracker — shows key dates and how many days remain",
@@ -426,7 +416,7 @@ const HowItWorksPage = () => {
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                     activeStep === idx
                       ? `${step.color} text-white`
-                      : "text-slate-700 hover:bg-muted"
+                      : "text-slate-700 hover:bg-slate-100"
                   }`}
                   data-testid={`how-it-works-step-tab-${idx + 1}`}
                 >
@@ -479,7 +469,7 @@ const HowItWorksPage = () => {
                       <img
                         src={step.visual.image}
                         alt={step.visual.alt}
-                        className="w-full h-48 sm:h-56 object-cover"
+                        className="w-full h-56 sm:h-72 object-cover object-top"
                         loading="lazy"
                         decoding="async"
                       />
@@ -600,7 +590,7 @@ const HowItWorksPage = () => {
             {reportPricing.map((tier) => (
               <div
                 key={tier.title}
-                className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-border"} bg-card`}
+                className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-slate-200"} bg-white`}
                 data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
               >
                 <div className={`${tier.color} text-white p-5 text-center`}>
@@ -654,7 +644,7 @@ const HowItWorksPage = () => {
             { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. We do not share your case information with anyone. You can delete your case and all associated data at any time." },
             { q: "Can I use this for any Australian state?", a: "Yes — Appeal Case Manager covers all 8 Australian jurisdictions: NSW, VIC, QLD, SA, WA, TAS, NT, and ACT, plus Commonwealth/Federal offences." },
           ].map((faq, i) => (
-            <div key={i} className="bg-card border border-slate-200 rounded-xl p-4">
+            <div key={i} className="bg-white border border-slate-200 rounded-xl p-4">
               <h3 className="font-semibold text-slate-900 text-sm">{faq.q}</h3>
               <p className="text-base text-slate-700 mt-1">{faq.a}</p>
             </div>

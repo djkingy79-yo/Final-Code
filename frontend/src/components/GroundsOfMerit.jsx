@@ -112,7 +112,7 @@ const GroundsOfMerit = ({
   const formatAnalysis = (analysis) => {
     if (!analysis) return null;
     return (
-      <div className="legal-report prose prose-sm dark:prose-invert max-w-none">
+      <div className="legal-report prose prose-sm max-w-none">
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
@@ -314,13 +314,13 @@ const GroundsOfMerit = ({
 
                   {/* DO NOT UNDO — AI Investigation Progress Bar shown on THIS ground */}
                   {investigating === ground.ground_id && (
-                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg" data-testid={`ai-investigate-progress-${ground.ground_id}`}>
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`ai-investigate-progress-${ground.ground_id}`}>
                       <div className="flex items-center gap-3 mb-2">
                         <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
-                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">AI Scan in Progress — Investigating This Ground</p>
+                        <p className="text-sm font-semibold text-blue-900">AI Scan in Progress — Investigating This Ground</p>
                       </div>
-                      <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">Deep analysis can take 1-3 minutes. Searching documents, case law, and legislation.</p>
-                      <div className="w-full h-2 bg-blue-200 dark:bg-blue-800 rounded-full overflow-hidden">
+                      <p className="text-xs text-blue-700 mb-3">Deep analysis can take 1-3 minutes. Searching documents, case law, and legislation.</p>
+                      <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
                         <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
                       </div>
                     </div>
@@ -328,8 +328,8 @@ const GroundsOfMerit = ({
 
                   {/* DO NOT UNDO — Caselaw Search Box for each ground */}
                   {searchOpen[ground.ground_id] && (
-                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
-                      <p className="text-xs font-semibold text-green-800 dark:text-green-200 mb-2">Search AustLII for cases related to this ground</p>
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
+                      <p className="text-xs font-semibold text-green-800 mb-2">Search AustLII for cases related to this ground</p>
                       <div className="flex gap-2">
                         <Input
                           placeholder={ground.title || "Search caselaw..."}

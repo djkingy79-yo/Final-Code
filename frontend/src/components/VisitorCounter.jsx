@@ -52,8 +52,8 @@ const VisitorCounter = ({ variant = "full" }) => {
   if (loading) {
     return (
       <div className="animate-pulse flex gap-4">
-        <div className="h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded"></div>
-        <div className="h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded"></div>
+        <div className="h-8 w-24 bg-slate-200 rounded"></div>
+        <div className="h-8 w-24 bg-slate-200 rounded"></div>
       </div>
     );
   }
@@ -63,7 +63,7 @@ const VisitorCounter = ({ variant = "full" }) => {
     return (
       <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
         <Eye className="w-4 h-4 text-emerald-500" />
-        <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+        <span className="text-sm font-semibold text-emerald-600">
           {formatNumber(stats.total_visitors)} visitors
         </span>
       </div>
@@ -73,7 +73,7 @@ const VisitorCounter = ({ variant = "full" }) => {
   // Badge variant - small inline badge
   if (variant === "badge") {
     return (
-      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1 text-xs text-slate-600">
         <Eye className="w-3 h-3" />
         {formatNumber(stats.total_visitors)}
       </span>
@@ -84,39 +84,39 @@ const VisitorCounter = ({ variant = "full" }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" data-testid="visitor-counter">
       {/* Total Visitors */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800 text-center">
-        <Eye className="w-6 h-6 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300" style={{ fontFamily: 'Crimson Pro, serif' }}>
+      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center">
+        <Eye className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
           {formatNumber(stats.total_visitors)}
         </p>
-        <p className="text-xs text-blue-600 dark:text-blue-400">Total Visitors</p>
+        <p className="text-xs text-blue-600">Total Visitors</p>
       </div>
 
       {/* Today's Visitors */}
-      <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-800 text-center">
-        <Users className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300" style={{ fontFamily: 'Crimson Pro, serif' }}>
+      <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border border-emerald-200 text-center">
+        <Users className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-emerald-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
           {formatNumber(stats.today_visitors)}
         </p>
-        <p className="text-xs text-emerald-600 dark:text-emerald-400">Today</p>
+        <p className="text-xs text-emerald-600">Today</p>
       </div>
 
       {/* Registered Users */}
-      <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800 text-center">
-        <UserCheck className="w-6 h-6 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-purple-700 dark:text-purple-300" style={{ fontFamily: 'Crimson Pro, serif' }}>
+      <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200 text-center">
+        <UserCheck className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-purple-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
           {formatNumber(stats.registered_users)}
         </p>
-        <p className="text-xs text-purple-600 dark:text-purple-400">Users</p>
+        <p className="text-xs text-purple-600">Users</p>
       </div>
 
       {/* Cases Created */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800 text-center">
-        <Briefcase className="w-6 h-6 text-red-600 dark:text-blue-400 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300" style={{ fontFamily: 'Crimson Pro, serif' }}>
+      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center">
+        <Briefcase className="w-6 h-6 text-red-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
           {formatNumber(stats.cases_created)}
         </p>
-        <p className="text-xs text-red-600 dark:text-blue-400">Cases</p>
+        <p className="text-xs text-red-600">Cases</p>
       </div>
     </div>
   );

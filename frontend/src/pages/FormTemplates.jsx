@@ -753,9 +753,9 @@ const FormTemplates = () => {
   const displayStates = selectedState === "all" ? STATES : STATES.filter(s => s.code === selectedState);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -782,7 +782,7 @@ const FormTemplates = () => {
           <img 
             src="https://images.unsplash.com/photo-1568667256549-094345857637?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt="Legal Documents"
-            className="w-full h-full object-cover opacity-10 dark:opacity-5"
+            className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -791,20 +791,20 @@ const FormTemplates = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <FileText className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Legal Form Templates
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-2">
             Download legal form templates for criminal appeals. Select your state for jurisdiction-specific forms.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-600">
             <strong>{FORM_CATEGORIES.reduce((sum, cat) => sum + cat.forms.length, 0)} templates</strong> across {FORM_CATEGORIES.length} categories
           </p>
           
           {/* Search */}
           <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto mt-8">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
               <Input
                 type="text"
                 placeholder="Search forms..."
@@ -831,12 +831,12 @@ const FormTemplates = () => {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Disclaimer */}
-        <div className="mb-8 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+        <div className="mb-8 p-5 bg-blue-50 border border-blue-200 rounded-xl">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
               <Gavel className="w-5 h-5 text-red-600" />
             </div>
-            <div className="text-sm text-blue-800 dark:text-blue-200">
+            <div className="text-sm text-blue-800">
               <strong>Important:</strong> These templates are provided for general guidance only. 
               Legal requirements vary by jurisdiction and may change. Always verify current requirements 
               with the relevant court and consider seeking legal advice before lodging any documents.
@@ -845,22 +845,22 @@ const FormTemplates = () => {
         </div>
 
         {/* KEY PROCEDURAL REQUIREMENTS - CRITICAL INFORMATION */}
-        <div className="mb-8 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-400 dark:border-red-600 rounded-xl p-6">
-          <h2 className="text-2xl font-bold text-red-900 dark:text-red-200 mb-4 flex items-center gap-2">
+        <div className="mb-8 bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400 rounded-xl p-6">
+          <h2 className="text-2xl font-bold text-red-900 mb-4 flex items-center gap-2">
             <AlertTriangle className="w-7 h-7" />
             Key Procedural Requirements - READ FIRST
           </h2>
           
           <div className="space-y-6">
             {/* Time Limits */}
-            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-red-600">
-              <h3 className="text-lg font-bold text-red-900 dark:text-red-200 mb-3 flex items-center gap-2">
+            <div className="bg-white/70 rounded-lg p-5 border-l-4 border-red-600">
+              <h3 className="text-lg font-bold text-red-900 mb-3 flex items-center gap-2">
                 <Clock className="w-5 h-5" />
                 ⏰ Time Limits - CRITICAL
               </h3>
-              <div className="space-y-2 text-sm text-red-900 dark:text-red-100">
+              <div className="space-y-2 text-sm text-red-900">
                 <p className="font-bold text-base">
-                  You typically have <strong className="text-red-700 dark:text-red-400 text-lg">28 DAYS</strong> from conviction or sentence to file a <strong>Notice of Intention to Appeal</strong>.
+                  You typically have <strong className="text-red-700 text-lg">28 DAYS</strong> from conviction or sentence to file a <strong>Notice of Intention to Appeal</strong>.
                 </p>
                 <div className="ml-4 space-y-1 text-sm mt-3">
                   <p>• <strong>NSW:</strong> 28 days (Criminal Appeal Act 1912, s 11)</p>
@@ -872,18 +872,18 @@ const FormTemplates = () => {
                   <p>• <strong>NT:</strong> 28 days (Criminal Code Act 1983, s 411)</p>
                   <p>• <strong>ACT:</strong> 28 days (Crimes (Sentencing) Act 2005, s 140)</p>
                 </div>
-                <p className="mt-3 bg-red-100 dark:bg-red-900/40 p-3 rounded border border-red-300 dark:border-red-700">
+                <p className="mt-3 bg-red-100 p-3 rounded border border-red-300">
                   <strong>⚠️ WARNING:</strong> Missing the 28-day deadline doesn't mean you lose your right to appeal, but you <strong>MUST file an Extension of Time application</strong> explaining the delay. Courts are strict about time limits.
                 </p>
               </div>
             </div>
 
             {/* Extensions of Time */}
-            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-orange-500">
-              <h3 className="text-lg font-bold text-orange-900 dark:text-orange-200 mb-3">
+            <div className="bg-white/70 rounded-lg p-5 border-l-4 border-orange-500">
+              <h3 className="text-lg font-bold text-orange-900 mb-3">
                 📄 Extensions of Time - If You've Missed the Deadline
               </h3>
-              <div className="space-y-2 text-sm text-orange-900 dark:text-orange-100">
+              <div className="space-y-2 text-sm text-orange-900">
                 <p><strong>If the 28-day time limit has lapsed:</strong></p>
                 <ol className="ml-6 list-decimal space-y-2 mt-2">
                   <li>
@@ -899,18 +899,18 @@ const FormTemplates = () => {
                   </li>
                   <li>File it <strong>as soon as possible</strong> — the longer the delay, the harder it is to get an extension</li>
                 </ol>
-                <p className="mt-3 bg-orange-100 dark:bg-orange-900/40 p-3 rounded border border-orange-300 dark:border-orange-700">
+                <p className="mt-3 bg-orange-100 p-3 rounded border border-orange-300">
                   <strong>Important:</strong> Courts will consider: (1) length of delay, (2) reason for delay, (3) merit of the appeal, (4) prejudice to the prosecution.
                 </p>
               </div>
             </div>
 
             {/* Transcripts and Exhibits */}
-            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-3">
+            <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
+              <h3 className="text-lg font-bold text-blue-900 mb-3">
                 📝 Transcripts and Exhibits - Essential Documents
               </h3>
-              <div className="space-y-3 text-sm text-blue-900 dark:text-blue-100">
+              <div className="space-y-3 text-sm text-blue-900">
                 <p><strong>You will almost certainly need:</strong></p>
                 
                 <div className="space-y-3">
@@ -922,7 +922,7 @@ const FormTemplates = () => {
                       <li>Sentencing remarks</li>
                       <li>Opening and closing addresses</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 p-2 rounded">
                       <strong>How to get them:</strong> Use the "Request for Court Transcripts" form in the Appeal Documents section. Submit to the court where your trial occurred. <strong>Allow 4-8 weeks</strong> for preparation. Fees apply (typically $300-$1,500+ depending on length of trial).
                     </p>
                   </div>
@@ -934,7 +934,7 @@ const FormTemplates = () => {
                       <li>Documents admitted into evidence</li>
                       <li>Photos, videos, forensic reports</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 p-2 rounded">
                       <strong>How to get them:</strong> Use the "Request for Exhibits" form. Contact the court registry. Note: Some exhibits may have been destroyed after retention periods.
                     </p>
                   </div>
@@ -947,24 +947,24 @@ const FormTemplates = () => {
                       <li>ERISP (interview recordings)</li>
                       <li>CCTV, body-worn camera footage</li>
                     </ul>
-                    <p className="mt-2 text-xs bg-blue-100 dark:bg-blue-900/40 p-2 rounded">
+                    <p className="mt-2 text-xs bg-blue-100 p-2 rounded">
                       <strong>How to get them:</strong> FOI request to police or use "Authority to Release - Police Records" form. This can take 30+ days.
                     </p>
                   </div>
                 </div>
 
-                <p className="mt-4 bg-blue-200 dark:bg-blue-900/60 p-3 rounded border border-blue-400 dark:border-red-600 font-medium">
+                <p className="mt-4 bg-blue-200 p-3 rounded border border-blue-400 font-medium">
                   ⚡ <strong>PRO TIP:</strong> Request transcripts and exhibits <strong>immediately</strong> — even before finalising your grounds of appeal. You can't properly identify appeal grounds without reviewing what was said and done at trial.
                 </p>
               </div>
             </div>
 
             {/* Process Overview */}
-            <div className="bg-white/70 dark:bg-slate-900/40 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-3">
+            <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
+              <h3 className="text-lg font-bold text-blue-900 mb-3">
                 🔄 Standard Appeal Process
               </h3>
-              <div className="space-y-2 text-sm text-blue-900 dark:text-blue-100">
+              <div className="space-y-2 text-sm text-blue-900">
                 <ol className="ml-6 list-decimal space-y-2">
                   <li><strong>Within 28 days:</strong> File Notice of Intention to Appeal</li>
                   <li><strong>Immediately:</strong> Request court transcripts and exhibits</li>
@@ -990,7 +990,7 @@ const FormTemplates = () => {
             className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
               selectedState === "all" 
                 ? "bg-red-600 text-white shadow-lg" 
-                : "bg-card text-muted-foreground hover:bg-muted border border-border"
+                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
             }`}
           >
             All States
@@ -1002,7 +1002,7 @@ const FormTemplates = () => {
               className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 selectedState === state.code
                   ? `${state.color} text-white shadow-lg`
-                  : "bg-card text-muted-foreground hover:bg-muted border border-border"
+                  : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
               }`}
             >
               {state.code.toUpperCase()}
@@ -1020,13 +1020,13 @@ const FormTemplates = () => {
               )}
               className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
                 expandedCategories.includes(cat.id)
-                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                  : "border-border hover:border-blue-500/50"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-slate-200 hover:border-blue-500/50"
               }`}
             >
               <cat.icon className={`w-8 h-8 mx-auto mb-2 ${cat.color}`} />
-              <p className="text-sm font-medium text-foreground text-center">{cat.name}</p>
-              <p className="text-xs text-muted-foreground text-center">{cat.forms.length} forms</p>
+              <p className="text-sm font-medium text-slate-900 text-center">{cat.name}</p>
+              <p className="text-xs text-slate-600 text-center">{cat.forms.length} forms</p>
             </button>
           ))}
         </div>
@@ -1034,16 +1034,16 @@ const FormTemplates = () => {
         {/* Form Categories */}
         {filteredCategories.length === 0 ? (
           <Card className="p-12 text-center">
-            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-foreground font-semibold">No forms found matching your search.</p>
-            <p className="text-muted-foreground text-sm mt-2">Try a different search term</p>
+            <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-900 font-semibold">No forms found matching your search.</p>
+            <p className="text-slate-600 text-sm mt-2">Try a different search term</p>
           </Card>
         ) : (
           <div className="space-y-6">
             {filteredCategories.map(category => (
-              <div key={category.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+              <div key={category.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <button 
-                  className="w-full px-6 py-5 flex items-center justify-between hover:bg-muted/50 transition-colors"
+                  className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
                   onClick={() => setExpandedCategories(prev => 
                     prev.includes(category.id) 
                       ? prev.filter(c => c !== category.id)
@@ -1052,26 +1052,26 @@ const FormTemplates = () => {
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      category.color.includes('blue') ? 'bg-blue-100 dark:bg-blue-900/30' :
-                      category.color.includes('blue') ? 'bg-blue-100 dark:bg-blue-900/30' :
-                      category.color.includes('emerald') ? 'bg-emerald-100 dark:bg-emerald-900/30' :
-                      category.color.includes('purple') ? 'bg-purple-100 dark:bg-purple-900/30' :
-                      'bg-slate-100 dark:bg-slate-800'
+                      category.color.includes('blue') ? 'bg-blue-100' :
+                      category.color.includes('blue') ? 'bg-blue-100' :
+                      category.color.includes('emerald') ? 'bg-emerald-100' :
+                      category.color.includes('purple') ? 'bg-purple-100' :
+                      'bg-slate-100'
                     }`}>
                       <category.icon className={`w-6 h-6 ${category.color}`} />
                     </div>
                     <div className="text-left">
-                      <h3 className="font-semibold text-foreground text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      <h3 className="font-semibold text-slate-900 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         {category.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground">{category.forms.length} templates available</p>
+                      <p className="text-sm text-slate-600">{category.forms.length} templates available</p>
                     </div>
                   </div>
-                  <div className={`p-2 rounded-lg transition-colors ${expandedCategories.includes(category.id) ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
+                  <div className={`p-2 rounded-lg transition-colors ${expandedCategories.includes(category.id) ? 'bg-blue-100' : 'bg-slate-100'}`}>
                     {expandedCategories.includes(category.id) ? (
                       <ChevronDown className="w-5 h-5 text-red-600" />
                     ) : (
-                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      <ChevronRight className="w-5 h-5 text-slate-600" />
                     )}
                   </div>
                 </button>
@@ -1080,11 +1080,11 @@ const FormTemplates = () => {
                   <div className="px-6 pb-6">
                     <div className="space-y-3">
                       {category.forms.map(form => (
-                        <div key={form.id} className="p-4 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors">
+                        <div key={form.id} className="p-4 bg-slate-100/30 rounded-xl hover:bg-slate-50 transition-colors">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
-                              <h4 className="font-medium text-foreground">{form.name}</h4>
-                              <p className="text-sm text-muted-foreground mt-1">{form.description}</p>
+                              <h4 className="font-medium text-slate-900">{form.name}</h4>
+                              <p className="text-sm text-slate-600 mt-1">{form.description}</p>
                             </div>
                             <div className="flex flex-wrap gap-2">
                               {displayStates.map(state => (
@@ -1093,7 +1093,7 @@ const FormTemplates = () => {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleDownload(form.id, state.name)}
-                                  className="text-xs rounded-lg hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700 dark:hover:bg-blue-900/20"
+                                  className="text-xs rounded-lg hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700:bg-blue-900/20"
                                 >
                                   <Download className="w-3 h-3 mr-1" />
                                   {state.code.toUpperCase()}

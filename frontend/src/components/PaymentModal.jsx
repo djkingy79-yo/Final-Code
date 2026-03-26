@@ -152,20 +152,20 @@ export default function PaymentModal({
 
         <div className="space-y-4 py-2">
           <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 text-center border border-slate-200">
-            <p className="text-sm text-muted-foreground mb-1">One-time payment</p>
-            <p className="text-3xl sm:text-4xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              ${price?.toFixed(2)} <span className="text-base font-normal text-muted-foreground">AUD</span>
+            <p className="text-sm text-slate-600 mb-1">One-time payment</p>
+            <p className="text-3xl sm:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              ${price?.toFixed(2)} <span className="text-base font-normal text-slate-600">AUD</span>
             </p>
           </div>
 
           <details className="group">
-            <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-foreground py-2">
+            <summary className="flex items-center justify-between cursor-pointer text-sm font-medium text-slate-900 py-2">
               <span>What you get ({featureInfo.benefits.length} features)</span>
-              <span className="text-muted-foreground group-open:rotate-180 transition-transform">&#x25BC;</span>
+              <span className="text-slate-600 group-open:rotate-180 transition-transform">&#x25BC;</span>
             </summary>
             <ul className="space-y-1 pt-2">
               {featureInfo.benefits.map((benefit, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
                   <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
                   <span className="text-xs sm:text-sm">{benefit}</span>
                 </li>
@@ -190,7 +190,7 @@ export default function PaymentModal({
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center justify-between bg-white rounded-lg p-3">
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-muted-foreground">PayID (Email)</p>
+                      <p className="text-xs text-slate-600">PayID (Email)</p>
                       <p className="font-mono font-bold text-emerald-700 text-sm truncate">{PAYID_INFO.payid}</p>
                     </div>
                     <Button size="sm" variant="outline" onClick={() => copyToClipboard(PAYID_INFO.payid, "payid-preview")} className="shrink-0 ml-2 h-10 px-3">
@@ -199,7 +199,7 @@ export default function PaymentModal({
                   </div>
                   
                   <div className="bg-white rounded-lg p-3">
-                    <p className="text-xs text-muted-foreground">Account Name (verify this matches)</p>
+                    <p className="text-xs text-slate-600">Account Name (verify this matches)</p>
                     <p className="font-semibold text-emerald-700 text-sm">{PAYID_INFO.account_name}</p>
                   </div>
                   
@@ -223,14 +223,14 @@ export default function PaymentModal({
                 )}
               </Button>
               
-              <p className="text-xs text-center text-muted-foreground">
+              <p className="text-xs text-center text-slate-600">
                 Click above to get your unique reference code to include in the transfer
               </p>
             </>
           ) : (
             <div className="space-y-4">
               <div className="bg-white border-2 border-emerald-500 rounded-xl p-4">
-                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2 text-base">
+                <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2 text-base">
                   <CheckCircle className="w-5 h-5 text-emerald-600" />
                   Transfer These Details
                 </h4>
@@ -238,8 +238,8 @@ export default function PaymentModal({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-muted-foreground">PayID (Email)</p>
-                      <p className="font-mono font-semibold text-foreground text-sm truncate">{payidDetails.payid}</p>
+                      <p className="text-xs text-slate-600">PayID (Email)</p>
+                      <p className="font-mono font-semibold text-slate-900 text-sm truncate">{payidDetails.payid}</p>
                     </div>
                     <Button size="sm" variant="ghost" onClick={() => copyToClipboard(payidDetails.payid, "payid")} className="shrink-0 ml-2 h-10 w-10 p-0">
                       {copied === "payid" ? <CheckCircle className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
@@ -314,7 +314,7 @@ export default function PaymentModal({
             </div>
           )}
 
-          <p className="text-xs text-muted-foreground text-center pt-2">
+          <p className="text-xs text-slate-600 text-center pt-2">
             Questions? <a href="mailto:djkingy79@gmail.com" className="text-red-600 hover:underline">djkingy79@gmail.com</a>
           </p>
         </div>

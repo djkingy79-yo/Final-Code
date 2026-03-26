@@ -246,7 +246,7 @@ const Dashboard = ({ user }) => {
         </nav>
 
         {/* User Section - Bottom */}
-        <div className="p-4 border-t border-border space-y-3">
+        <div className="p-4 border-t border-slate-200 space-y-3">
 <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl">
             {user?.picture ? (
               <img src={user.picture} alt={user.name} className="w-9 h-9 rounded-full" />
@@ -311,7 +311,7 @@ const Dashboard = ({ user }) => {
                 <Link to="/admin/dashboard">
                   <Button
                     variant="outline"
-                    className="rounded-xl border-blue-500/40 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    className="rounded-xl border-blue-500/40 text-blue-700 hover:bg-blue-50:bg-blue-900/20"
                     data-testid="admin-dashboard-shortcut-btn"
                   >
                     <Shield className="w-4 h-4 mr-2" />
@@ -347,8 +347,8 @@ const Dashboard = ({ user }) => {
               {/* Stats Cards - 3 columns on large */}
               <div className="card-elevated p-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <FolderOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <FolderOpen className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-slate-900">{cases.length}</p>
@@ -359,8 +359,8 @@ const Dashboard = ({ user }) => {
               
               <div className="card-elevated p-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-red-600 dark:text-blue-400" />
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-red-600" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-slate-900">
@@ -373,8 +373,8 @@ const Dashboard = ({ user }) => {
               
               <div className="card-elevated p-5">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-slate-900">
@@ -388,8 +388,8 @@ const Dashboard = ({ user }) => {
               {/* Info Card - Combined */}
               <div className="card-elevated p-5 lg:row-span-1">
                 <div className="flex items-start gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  <div className="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900 mb-1">AI-Powered Analysis</p>
@@ -402,9 +402,9 @@ const Dashboard = ({ user }) => {
             </div>
             
             {/* Privacy Notice - Compact */}
-            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-              <Shield className="w-5 h-5 text-red-600 dark:text-blue-400 shrink-0" />
-              <p className="text-xs text-blue-800 dark:text-blue-200">
+            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
+              <Shield className="w-5 h-5 text-red-600 shrink-0" />
+              <p className="text-xs text-blue-800">
                 <strong>Privacy:</strong> Ensure you have lawful authority to upload court documents or personal information.
               </p>
             </div>
@@ -419,7 +419,7 @@ const Dashboard = ({ user }) => {
                   Your Cases
                 </h2>
                 {cases.length > 0 && (
-                  <span className="text-xs text-slate-700 bg-muted px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
                     {filteredCases.length} of {cases.length}
                   </span>
                 )}
@@ -444,15 +444,15 @@ const Dashboard = ({ user }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="card-elevated p-5 animate-pulse">
-                    <div className="h-5 bg-muted rounded w-3/4 mb-3"></div>
-                    <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
-                    <div className="h-4 bg-muted rounded w-full"></div>
+                    <div className="h-5 bg-slate-100 rounded w-3/4 mb-3"></div>
+                    <div className="h-4 bg-slate-100 rounded w-1/2 mb-2"></div>
+                    <div className="h-4 bg-slate-100 rounded w-full"></div>
                   </div>
                 ))}
               </div>
             ) : filteredCases.length === 0 ? (
               <div className="text-center py-16 card-elevated rounded-2xl">
-                <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-5">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
                   <FolderOpen className="w-8 h-8 text-slate-700" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -477,7 +477,7 @@ const Dashboard = ({ user }) => {
                 {filteredCases.map((caseItem) => (
                   <div 
                     key={caseItem.case_id} 
-                    className="card-elevated p-5 group cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+                    className="card-elevated p-5 group cursor-pointer hover:border-blue-300:border-blue-700 transition-colors"
                     onClick={() => navigate(`/cases/${caseItem.case_id}`)}
                     data-testid={`case-card-${caseItem.case_id}`}
                   >
@@ -517,7 +517,7 @@ const Dashboard = ({ user }) => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200">
                       <p className="text-xs text-slate-700">
                         {formatDate(caseItem.updated_at)}
                       </p>
@@ -572,7 +572,7 @@ const Dashboard = ({ user }) => {
                     id="offence_category"
                     value={newCase.offence_category}
                     onChange={(e) => setNewCase({ ...newCase, offence_category: e.target.value, offence_type: "" })}
-                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-offence-category"
                   >
                     {offenceCategories.map(cat => (
@@ -586,7 +586,7 @@ const Dashboard = ({ user }) => {
                     id="state"
                     value={newCase.state}
                     onChange={(e) => setNewCase({ ...newCase, state: e.target.value })}
-                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-state"
                   >
                     {australianStates.map(state => (
@@ -603,7 +603,7 @@ const Dashboard = ({ user }) => {
             </div>
 
             {/* Optional Fields */}
-            <div className="space-y-4 pt-4 border-t border-border">
+            <div className="space-y-4 pt-4 border-t border-slate-200">
               <p className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Optional Details</p>
               <div>
                 <Label htmlFor="offence_type">Specific Offence</Label>
@@ -611,7 +611,7 @@ const Dashboard = ({ user }) => {
                   id="offence_type"
                   value={newCase.offence_type}
                   onChange={(e) => setNewCase({ ...newCase, offence_type: e.target.value })}
-                  className="w-full h-10 px-3 mt-1.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                   data-testid="new-case-offence-type"
                 >
                   <option value="">Select specific offence...</option>

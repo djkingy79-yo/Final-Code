@@ -15,9 +15,9 @@ const ContactsPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -78,11 +78,11 @@ const ContactsPage = () => {
 
         {/* Legal Aid Section */}
           <div id="legal-aid" className="space-y-6">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Legal Aid Services
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Government-funded legal assistance available in every state and territory.
               </p>
             </div>
@@ -157,18 +157,18 @@ const ContactsPage = () => {
 
         {/* Law Societies Section */}
           <div id="law-societies" className="space-y-6">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Law Societies & Bar Associations
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Professional bodies representing solicitors and barristers. They offer referral services and handle complaints.
               </p>
             </div>
 
             {/* Solicitors */}
             <div>
-              <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Law Societies (Solicitors)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -241,7 +241,7 @@ const ContactsPage = () => {
 
             {/* Bar Associations */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Bar Associations (Barristers)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -275,11 +275,11 @@ const ContactsPage = () => {
 
         {/* Complaints Section */}
           <div id="complaints" className="space-y-6">
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Complaints Bodies & Legal Services Commissioners
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 If you have a complaint about a lawyer's conduct, fees, or service, these independent bodies can investigate.
               </p>
             </div>
@@ -339,18 +339,18 @@ const ContactsPage = () => {
 
         {/* Courts Section */}
           <div id="courts" className="space-y-6">
-            <div className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-slate-100 border border-slate-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Courts of Australia
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Direct links to court websites for filing, forms, and case information.
               </p>
             </div>
 
             {/* Federal Courts */}
             <div>
-              <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Federal Courts
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -375,7 +375,7 @@ const ContactsPage = () => {
 
             {/* State Courts - NSW */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-4">
+              <h3 className="text-lg font-bold text-blue-600 mb-4">
                 New South Wales Courts
               </h3>
               <div className="grid md:grid-cols-3 gap-3">
@@ -387,7 +387,7 @@ const ContactsPage = () => {
 
             {/* VIC */}
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-4">
+              <h3 className="text-lg font-bold text-purple-600 mb-4">
                 Victoria Courts
               </h3>
               <div className="grid md:grid-cols-3 gap-3">
@@ -399,7 +399,7 @@ const ContactsPage = () => {
 
             {/* QLD */}
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-red-600 dark:text-red-400 mb-4">
+              <h3 className="text-lg font-bold text-red-600 mb-4">
                 Queensland Courts
               </h3>
               <div className="grid md:grid-cols-3 gap-3">
@@ -411,7 +411,7 @@ const ContactsPage = () => {
 
             {/* Other States */}
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-slate-600 dark:text-slate-400 mb-4">
+              <h3 className="text-lg font-bold text-slate-600 mb-4">
                 Other State & Territory Courts
               </h3>
               <div className="grid md:grid-cols-3 gap-3">
@@ -426,11 +426,11 @@ const ContactsPage = () => {
 
         {/* Community Legal Section */}
           <div id="community" className="space-y-6">
-            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Community Legal Centres
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Independent, non-profit organisations providing free legal advice and assistance.
               </p>
             </div>
@@ -473,7 +473,7 @@ const ContactsPage = () => {
 
             {/* Specialist Services */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Specialist Legal Services
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -515,11 +515,11 @@ const ContactsPage = () => {
 
         {/* Pro Bono Section */}
           <div id="pro-bono" className="space-y-6">
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Pro Bono Legal Services
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-600 text-sm">
                 Many law firms and barristers provide free legal services for those who cannot afford representation.
               </p>
             </div>
@@ -594,25 +594,25 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
   };
 
   return (
-    <div className={`bg-card border ${highlight ? 'border-blue-400 dark:border-red-600 border-2' : 'border-border'} rounded-xl p-5 hover:shadow-md transition-shadow`}>
+    <div className={`bg-white border ${highlight ? 'border-blue-400 border-2' : 'border-slate-200'} rounded-xl p-5 hover:shadow-md transition-shadow`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 ${colorClasses[color]} rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0`}>
             {state.slice(0, 3)}
           </div>
-          <h3 className="font-bold text-foreground text-sm leading-tight">{title}</h3>
+          <h3 className="font-bold text-slate-900 text-sm leading-tight">{title}</h3>
         </div>
       </div>
-      <p className="text-muted-foreground text-xs mb-3">{description}</p>
+      <p className="text-slate-600 text-xs mb-3">{description}</p>
       <div className="space-y-2 text-sm">
         {phone && phone !== "N/A" && (
-          <a href={`tel:${phone.replace(/[^0-9]/g, '')}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+          <a href={`tel:${phone.replace(/[^0-9]/g, '')}`} className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <Phone className="w-4 h-4 text-emerald-600" />
             <span>{phone}</span>
           </a>
         )}
         {website && (
-          <a href={website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          <a href={website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
             <Globe className="w-4 h-4" />
             <span className="text-xs truncate">Visit Website</span>
             <ExternalLink className="w-3 h-3" />
@@ -629,11 +629,11 @@ const SmallResourceCard = ({ title, website }) => (
     href={website} 
     target="_blank" 
     rel="noopener noreferrer"
-    className="flex items-center gap-2 p-3 bg-muted/50 hover:bg-muted rounded-lg text-sm transition-colors group"
+    className="flex items-center gap-2 p-3 bg-slate-50 hover:bg-slate-100 rounded-lg text-sm transition-colors group"
   >
-    <Gavel className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0" />
-    <span className="text-foreground truncate">{title}</span>
-    <ExternalLink className="w-3 h-3 text-muted-foreground ml-auto shrink-0" />
+    <Gavel className="w-4 h-4 text-slate-600 group-hover:text-slate-900 shrink-0" />
+    <span className="text-slate-900 truncate">{title}</span>
+    <ExternalLink className="w-3 h-3 text-slate-600 ml-auto shrink-0" />
   </a>
 );
 

@@ -238,7 +238,7 @@ const SuccessStories = () => {
           <img 
             src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -249,11 +249,11 @@ const SuccessStories = () => {
               <Star key={i} className="w-6 h-6 text-blue-500 fill-blue-500" />
             ))}
           </div>
-          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Real Stories, Real Hope</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Real Stories, Real Hope</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Success Stories
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
             Real stories from families who found hope when they thought there was none. 
             These are people just like you who refused to give up.
           </p>
@@ -263,43 +263,43 @@ const SuccessStories = () => {
       {/* Stories */}
       <main className="max-w-7xl mx-auto px-6 pb-16">
         <section className="mb-8" data-testid="success-stories-grid-section">
-          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-2">Featured Stories</p>
-          <h2 className="text-2xl font-bold text-foreground mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-xs uppercase tracking-widest text-red-600 font-semibold mb-2">Featured Stories</p>
+          <h2 className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Real outcomes, organised for quick reading
           </h2>
-          <p className="text-sm text-muted-foreground">Each story keeps full detail, with a clear heading and compact reading format.</p>
+          <p className="text-sm text-slate-600">Each story keeps full detail, with a clear heading and compact reading format.</p>
         </section>
 
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5" data-testid="success-stories-grid">
           {successStories.map((story) => (
             <article
               key={story.id}
-              className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col"
               data-testid={`success-story-card-${story.id}`}
             >
-              <div className="p-4 border-b border-border bg-muted/30">
-                <h3 className="text-sm font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid={`success-story-heading-${story.id}`}>
+              <div className="p-4 border-b border-slate-200 bg-slate-100/30">
+                <h3 className="text-sm font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid={`success-story-heading-${story.id}`}>
                   {story.name} — {story.relationship} ({story.location})
                 </h3>
               </div>
 
               <div className="p-4 flex-1">
                 <div className="flex items-start gap-2 mb-2">
-                  <Quote className="w-4 h-4 text-red-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                  <p className="text-xs text-foreground leading-relaxed max-h-52 overflow-y-auto pr-1" data-testid={`success-story-comment-${story.id}`}>
+                  <Quote className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <p className="text-xs text-slate-900 leading-relaxed max-h-52 overflow-y-auto pr-1" data-testid={`success-story-comment-${story.id}`}>
                     "{story.story}"
                   </p>
                 </div>
               </div>
 
-              <div className="bg-emerald-50 dark:bg-emerald-900/20 border-t border-emerald-100 dark:border-emerald-800 px-4 py-3">
+              <div className="bg-emerald-50 border-t border-emerald-100 px-4 py-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                  <div className="flex items-center gap-2 text-emerald-700">
                     <CheckCircle className="w-4 h-4" />
                     <span className="font-semibold text-xs">{story.outcome}</span>
                   </div>
                   {story.timeframe && (
-                    <span className="text-[11px] text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2.5 py-1 rounded-lg font-medium">
+                    <span className="text-[11px] text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg font-medium">
                       {story.timeframe}
                     </span>
                   )}
@@ -310,8 +310,8 @@ const SuccessStories = () => {
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+        <div className="mt-10 p-5 bg-blue-50 border border-blue-200 rounded-2xl">
+          <p className="text-sm text-blue-800">
             <strong>Note:</strong> These stories are shared by real users with their consent. 
             Individual results vary. This tool does not guarantee any outcome. 
             All legal matters should be reviewed by a qualified legal professional.
@@ -325,10 +325,10 @@ const SuccessStories = () => {
               <Heart className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Share Your Story
           </h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
+          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
             Has this tool helped you or your family? Your story could give hope to someone 
             who's going through what you went through.
           </p>
@@ -341,19 +341,19 @@ const SuccessStories = () => {
               Share My Story
             </Button>
           ) : submitted ? (
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-8 max-w-md mx-auto">
-              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 max-w-md mx-auto">
+              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-emerald-600" />
               </div>
-              <h3 className="font-semibold text-emerald-800 dark:text-emerald-200 text-lg mb-2">Thank You!</h3>
-              <p className="text-emerald-700 dark:text-emerald-300">
+              <h3 className="font-semibold text-emerald-800 text-lg mb-2">Thank You!</h3>
+              <p className="text-emerald-700">
                 Your story has been submitted. We'll review it and may feature it to help inspire others.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-card border border-border rounded-2xl p-8 max-w-lg mx-auto text-left space-y-5 shadow-sm">
+            <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-8 max-w-lg mx-auto text-left space-y-5 shadow-sm">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Your First Name *</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your First Name *</label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -362,7 +362,7 @@ const SuccessStories = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Your Email *</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Email *</label>
                 <Input
                   type="email"
                   value={formData.email}
@@ -372,7 +372,7 @@ const SuccessStories = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Your Relationship</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Relationship</label>
                 <Input
                   value={formData.relationship}
                   onChange={(e) => setFormData({...formData, relationship: e.target.value})}
@@ -381,7 +381,7 @@ const SuccessStories = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Your Story *</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Your Story *</label>
                 <Textarea
                   value={formData.story}
                   onChange={(e) => setFormData({...formData, story: e.target.value})}
@@ -391,7 +391,7 @@ const SuccessStories = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Outcome</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1.5">Outcome</label>
                 <Input
                   value={formData.outcome}
                   onChange={(e) => setFormData({...formData, outcome: e.target.value})}
@@ -399,7 +399,7 @@ const SuccessStories = () => {
                   className="rounded-xl"
                 />
               </div>
-              <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
                 <input
                   type="checkbox"
                   id="consent"
@@ -407,7 +407,7 @@ const SuccessStories = () => {
                   onChange={(e) => setFormData({...formData, consent: e.target.checked})}
                   className="mt-1"
                 />
-                <label htmlFor="consent" className="text-sm text-muted-foreground">
+                <label htmlFor="consent" className="text-sm text-slate-600">
                   I consent to having my story (first name and story only) shared publicly to help others. 
                   My email will never be shared. *
                 </label>

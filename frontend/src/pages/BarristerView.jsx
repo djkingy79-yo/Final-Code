@@ -968,7 +968,7 @@ const BarristerView = ({ user }) => {
           
           {/* ===== COVER PAGE ===== */}
           <div 
-            className="bg-white dark:bg-slate-800 shadow-2xl rounded-xl overflow-hidden mb-8 print:shadow-none print:rounded-none"
+            className="bg-white shadow-2xl rounded-xl overflow-hidden mb-8 print:shadow-none print:rounded-none"
             style={{ minHeight: '100vh' }}
             data-testid="barrister-report"
           >
@@ -1068,81 +1068,81 @@ const BarristerView = ({ user }) => {
 
             {/* Confidentiality Notice — DO NOT UNDO */}
             <div className="px-8 sm:px-12 py-3 bg-red-600/10 border-b border-red-600/20">
-              <p className="text-xs text-red-600 dark:text-red-400 text-center font-medium tracking-wide">
+              <p className="text-xs text-red-600 text-center font-medium tracking-wide">
                 CONFIDENTIAL — This document contains privileged legal analysis prepared for educational and research purposes. Not legal advice. Consult a qualified practitioner.
               </p>
             </div>
 
             {/* ===== TABLE OF CONTENTS ===== */}
-            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50" data-testid="barrister-toc">
+            <div className="p-8 sm:p-12 border-b border-slate-200 bg-slate-50" data-testid="barrister-toc">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-slate-600" />
                 </div>
                 <h2 
-                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Table of Contents
                 </h2>
                 {parsedContent.totalReports > 0 && (
-                  <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-medium">
                     Synthesised from {parsedContent.totalReports} reports
                   </span>
                 )}
               </div>
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-1">
                 {/* Fixed structural sections */}
-                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">I</span>
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Executive Summary</span>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                  <span className="text-sm font-bold text-blue-600 w-6">I</span>
+                  <span className="text-sm text-slate-700">Executive Summary</span>
                 </div>
-                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">II</span>
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Hearing Strategy Snapshot</span>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                  <span className="text-sm font-bold text-blue-600 w-6">II</span>
+                  <span className="text-sm text-slate-700">Hearing Strategy Snapshot</span>
                 </div>
-                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">III</span>
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Authorities & Precedent Pack</span>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                  <span className="text-sm font-bold text-blue-600 w-6">III</span>
+                  <span className="text-sm text-slate-700">Authorities & Precedent Pack</span>
                 </div>
-                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">IV</span>
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Comparative Sentencing & Relief Pathways</span>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                  <span className="text-sm font-bold text-blue-600 w-6">IV</span>
+                  <span className="text-sm text-slate-700">Comparative Sentencing & Relief Pathways</span>
                 </div>
                 {grounds.length > 0 && (
-                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">V</span>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">Grounds of Merit ({grounds.length} grounds)</span>
+                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                    <span className="text-sm font-bold text-blue-600 w-6">V</span>
+                    <span className="text-sm text-slate-700">Grounds of Merit ({grounds.length} grounds)</span>
                   </div>
                 )}
                 {keyEvents.length > 0 && (
-                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">VI</span>
-                    <span className="text-sm text-slate-700 dark:text-slate-300">Critical Timeline Events</span>
+                  <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                    <span className="text-sm font-bold text-blue-600 w-6">VI</span>
+                    <span className="text-sm text-slate-700">Critical Timeline Events</span>
                   </div>
                 )}
                 {/* AI Analysis sections from merged reports */}
                 {parsedContent.sections.map((section, idx) => (
-                  <div key={idx} className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">{section.number}</span>
-                    <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{section.title}</span>
+                  <div key={idx} className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                    <span className="text-sm font-bold text-blue-600 w-6">{section.number}</span>
+                    <span className="text-sm text-slate-700 truncate">{section.title}</span>
                   </div>
                 ))}
-                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 w-6">*</span>
-                  <span className="text-sm text-slate-700 dark:text-slate-300">Legal Reference Framework</span>
+                <div className="flex items-baseline gap-2 py-1.5 border-b border-slate-200">
+                  <span className="text-sm font-bold text-blue-600 w-6">*</span>
+                  <span className="text-sm text-slate-700">Legal Reference Framework</span>
                 </div>
               </div>
             </div>
 
             {/* ===== EXECUTIVE SUMMARY SECTION ===== */}
-            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700">
+            <div className="p-8 sm:p-12 border-b border-slate-200">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                  <Target className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                  <Target className="w-5 h-5 text-indigo-600" />
                 </div>
                 <h2 
-                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Executive Summary
@@ -1150,7 +1150,7 @@ const BarristerView = ({ user }) => {
               </div>
 
               <div
-                className="mb-6 rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-gradient-to-r from-indigo-50 via-white to-blue-50 dark:from-indigo-900/20 dark:via-slate-800 dark:to-blue-900/10 p-5"
+                className="mb-6 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 via-white to-blue-50 p-5"
                 data-testid="barrister-top-summary-box"
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -1184,52 +1184,52 @@ const BarristerView = ({ user }) => {
               
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Grounds Overview */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-emerald-200 dark:border-emerald-800">
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
                   <div className="flex items-center gap-2 mb-4">
                     <Gavel className="w-5 h-5 text-emerald-600" />
-                    <h3 className="font-semibold text-slate-900 dark:text-white">Grounds Identified</h3>
+                    <h3 className="font-semibold text-slate-900">Grounds Identified</h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Strong Grounds</span>
+                      <span className="text-sm text-slate-600">Strong Grounds</span>
                       <span className="font-bold text-emerald-600 text-lg">{strongGrounds.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Moderate Grounds</span>
+                      <span className="text-sm text-slate-600">Moderate Grounds</span>
                       <span className="font-bold text-red-600 text-lg">{moderateGrounds.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Total Grounds</span>
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">{grounds.length}</span>
+                      <span className="text-sm text-slate-600">Total Grounds</span>
+                      <span className="font-bold text-slate-900 text-lg">{grounds.length}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Quick Stats */}
-                <div className="bg-gradient-to-br from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                <div className="bg-gradient-to-br from-blue-50 to-orange-50 rounded-xl p-6 border border-blue-200">
                   <div className="flex items-center gap-2 mb-4">
                     <BarChart3 className="w-5 h-5 text-red-600" />
-                    <h3 className="font-semibold text-slate-900 dark:text-white">Evidence Base</h3>
+                    <h3 className="font-semibold text-slate-900">Evidence Base</h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Documents</span>
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">{documents.length}</span>
+                      <span className="text-sm text-slate-600">Documents</span>
+                      <span className="font-bold text-slate-900 text-lg">{documents.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Timeline Events</span>
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">{timeline.length}</span>
+                      <span className="text-sm text-slate-600">Timeline Events</span>
+                      <span className="font-bold text-slate-900 text-lg">{timeline.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-300">Key Events</span>
-                      <span className="font-bold text-slate-900 dark:text-white text-lg">{keyEvents.length}</span>
+                      <span className="text-sm text-slate-600">Key Events</span>
+                      <span className="font-bold text-slate-900 text-lg">{keyEvents.length}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Report Metadata */}
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>Generated: {formatDate(report?.generated_at)}</span>
@@ -1246,13 +1246,13 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* ===== HEARING STRATEGY SNAPSHOT ===== */}
-            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 page-break-inside-avoid bg-gradient-to-r from-indigo-50/60 via-white to-blue-50/50 dark:from-indigo-900/20 dark:via-slate-800 dark:to-blue-900/10">
+            <div className="p-8 sm:p-12 border-b border-slate-200 page-break-inside-avoid bg-gradient-to-r from-indigo-50/60 via-white to-blue-50/50">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                  <Sword className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                  <Sword className="w-5 h-5 text-indigo-600" />
                 </div>
                 <h2
-                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Hearing Strategy Snapshot
@@ -1260,31 +1260,31 @@ const BarristerView = ({ user }) => {
               </div>
 
               <div className="grid md:grid-cols-3 gap-4 mb-6" data-testid="hearing-strategy-cards">
-                <div className="rounded-xl border border-indigo-200 dark:border-indigo-700 bg-white/80 dark:bg-slate-800/80 p-4">
-                  <p className="text-xs uppercase tracking-wide text-indigo-600 dark:text-indigo-300 mb-2">Lead Ground</p>
-                  <p className="font-semibold text-slate-900 dark:text-white text-sm">
+                <div className="rounded-xl border border-indigo-200 bg-white/80 p-4">
+                  <p className="text-xs uppercase tracking-wide text-indigo-600 mb-2">Lead Ground</p>
+                  <p className="font-semibold text-slate-900 text-sm">
                     {leadGround?.title || "Ground to be confirmed after document review"}
                   </p>
                 </div>
-                <div className="rounded-xl border border-blue-200 dark:border-blue-700 bg-white/80 dark:bg-slate-800/80 p-4">
-                  <p className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-2">Authorities Ready</p>
-                  <p className="font-semibold text-slate-900 dark:text-white text-sm">
+                <div className="rounded-xl border border-blue-200 bg-white/80 p-4">
+                  <p className="text-xs uppercase tracking-wide text-blue-700 mb-2">Authorities Ready</p>
+                  <p className="font-semibold text-slate-900 text-sm">
                     {keyAuthorities.length} statute references indexed for submissions
                   </p>
                 </div>
-                <div className="rounded-xl border border-emerald-200 dark:border-emerald-700 bg-white/80 dark:bg-slate-800/80 p-4">
-                  <p className="text-xs uppercase tracking-wide text-emerald-700 dark:text-emerald-300 mb-2">Orders Sought</p>
-                  <p className="font-semibold text-slate-900 dark:text-white text-sm">
+                <div className="rounded-xl border border-emerald-200 bg-white/80 p-4">
+                  <p className="text-xs uppercase tracking-wide text-emerald-700 mb-2">Orders Sought</p>
+                  <p className="font-semibold text-slate-900 text-sm">
                     Quash conviction / alternative resentencing pathway
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5" data-testid="hearing-strategy-checklist">
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <div className="rounded-xl border border-slate-200 bg-white p-5" data-testid="hearing-strategy-checklist">
+                <h3 className="font-semibold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Counsel Run-Sheet
                 </h3>
-                <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                <ul className="space-y-2 text-sm text-slate-700">
                   {strategicChecklist.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <ChevronRight className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
@@ -1296,13 +1296,13 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* ===== AUTHORITIES & PRECEDENT PACK ===== */}
-            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 page-break-inside-avoid">
+            <div className="p-8 sm:p-12 border-b border-slate-200 page-break-inside-avoid">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-purple-600" />
                 </div>
                 <h2
-                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Authorities & Precedent Pack
@@ -1310,40 +1310,40 @@ const BarristerView = ({ user }) => {
               </div>
 
               <div className="grid lg:grid-cols-2 gap-6" data-testid="authorities-precedents-section">
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="px-4 py-3 bg-slate-100 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600">
-                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Key Legislative Authorities</h3>
+                <div className="rounded-xl border border-slate-200 overflow-hidden">
+                  <div className="px-4 py-3 bg-slate-100 border-b border-slate-200">
+                    <h3 className="font-semibold text-slate-900 text-sm">Key Legislative Authorities</h3>
                   </div>
                   <div className="p-4 space-y-3">
                     {keyAuthorities.length > 0 ? keyAuthorities.map((law, idx) => (
-                      <div key={idx} className="rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                      <div key={idx} className="rounded-lg border border-slate-200 p-3 bg-white">
+                        <p className="text-sm font-semibold text-slate-900">
                           {law.section ? `s.${law.section} ` : ""}{law.act || "Legislation Reference"}
                         </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        <p className="text-xs text-slate-600 mt-1">
                           {law.jurisdiction ? `${law.jurisdiction} • ` : ""}Linked ground: {law.linked_ground}
                         </p>
                       </div>
                     )) : (
-                      <p className="text-sm text-slate-500 dark:text-slate-400">No legislation mapping available yet. Generate grounds analysis to populate this panel.</p>
+                      <p className="text-sm text-slate-500">No legislation mapping available yet. Generate grounds analysis to populate this panel.</p>
                     )}
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                  <div className="px-4 py-3 bg-slate-100 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600">
-                    <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Comparable Appeal Outcomes</h3>
+                <div className="rounded-xl border border-slate-200 overflow-hidden">
+                  <div className="px-4 py-3 bg-slate-100 border-b border-slate-200">
+                    <h3 className="font-semibold text-slate-900 text-sm">Comparable Appeal Outcomes</h3>
                   </div>
                   <div className="p-4 space-y-3">
                     {precedentRows.length > 0 ? precedentRows.map((item, idx) => (
-                      <div key={idx} className="rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{item.case_name || "Comparable case"}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{item.citation || "Citation pending"}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Outcome: {item.outcome || "Outcome not recorded"}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Ground link: {item.linked_ground}</p>
+                      <div key={idx} className="rounded-lg border border-slate-200 p-3 bg-white">
+                        <p className="text-sm font-semibold text-slate-900">{item.case_name || "Comparable case"}</p>
+                        <p className="text-xs text-slate-600 mt-1">{item.citation || "Citation pending"}</p>
+                        <p className="text-xs text-slate-600 mt-1">Outcome: {item.outcome || "Outcome not recorded"}</p>
+                        <p className="text-xs text-slate-600 mt-1">Ground link: {item.linked_ground}</p>
                       </div>
                     )) : (
-                      <p className="text-sm text-slate-500 dark:text-slate-400 italic">Precedent cases are detailed in the report sections below.</p>
+                      <p className="text-sm text-slate-500 italic">Precedent cases are detailed in the report sections below.</p>
                     )}
                   </div>
                 </div>
@@ -1351,61 +1351,61 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* ===== OUTCOME OPTIONS + COMPARATIVE SENTENCING ===== */}
-            <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 page-break-inside-avoid bg-gradient-to-r from-rose-50/40 via-white to-indigo-50/40 dark:from-rose-900/10 dark:via-slate-800 dark:to-indigo-900/10">
+            <div className="p-8 sm:p-12 border-b border-slate-200 page-break-inside-avoid bg-gradient-to-r from-rose-50/40 via-white to-indigo-50/40">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+                <div className="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-rose-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Comparative Sentencing & Relief Pathways
                 </h2>
               </div>
 
-              <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-x-auto mb-6" data-testid="comparative-sentencing-table-panel">
+              <div className="rounded-xl border border-slate-200 bg-white overflow-x-auto mb-6" data-testid="comparative-sentencing-table-panel">
                 <table className="w-full text-sm min-w-[640px]">
-                  <thead className="bg-slate-100 dark:bg-slate-700">
+                  <thead className="bg-slate-100">
                     <tr>
-                      <th className="text-left px-4 py-2 font-semibold text-slate-800 dark:text-slate-100">Comparative Track</th>
-                      <th className="text-left px-4 py-2 font-semibold text-slate-800 dark:text-slate-100">Original Sentence / NPP</th>
-                      <th className="text-left px-4 py-2 font-semibold text-slate-800 dark:text-slate-100">Revised Sentence / NPP</th>
-                      <th className="text-left px-4 py-2 font-semibold text-slate-800 dark:text-slate-100">Reduction</th>
+                      <th className="text-left px-4 py-2 font-semibold text-slate-800">Comparative Track</th>
+                      <th className="text-left px-4 py-2 font-semibold text-slate-800">Original Sentence / NPP</th>
+                      <th className="text-left px-4 py-2 font-semibold text-slate-800">Revised Sentence / NPP</th>
+                      <th className="text-left px-4 py-2 font-semibold text-slate-800">Reduction</th>
                     </tr>
                   </thead>
                   <tbody>
                     {comparativeSentenceRows.map((row) => (
-                      <tr key={row.case_label} className="border-t border-slate-200 dark:border-slate-700">
-                        <td className="px-4 py-2 text-slate-700 dark:text-slate-200 font-medium">{row.case_label}</td>
-                        <td className="px-4 py-2 text-slate-700 dark:text-slate-300">{row.original}</td>
-                        <td className="px-4 py-2 text-slate-700 dark:text-slate-300">{row.revised}</td>
-                        <td className="px-4 py-2 text-emerald-700 dark:text-emerald-300 font-semibold">{row.reduction}</td>
+                      <tr key={row.case_label} className="border-t border-slate-200">
+                        <td className="px-4 py-2 text-slate-700 font-medium">{row.case_label}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.original}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.revised}</td>
+                        <td className="px-4 py-2 text-emerald-700 font-semibold">{row.reduction}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden" data-testid="outcome-options-matrix-panel">
-                <div className="px-4 py-3 bg-slate-100 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600">
-                  <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Full Options Available Matrix</h3>
+              <div className="rounded-xl border border-slate-200 bg-white overflow-hidden" data-testid="outcome-options-matrix-panel">
+                <div className="px-4 py-3 bg-slate-100 border-b border-slate-200">
+                  <h3 className="font-semibold text-slate-900 text-sm">Full Options Available Matrix</h3>
                 </div>
-                <div className="divide-y divide-slate-200 dark:divide-slate-700">
+                <div className="divide-y divide-slate-200">
                   {outcomeOptions.map((item, idx) => (
                     <div key={item.option} className="grid md:grid-cols-4 gap-3 px-4 py-3">
                       <div>
                         <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Option {idx + 1}</p>
-                        <p className="font-semibold text-slate-900 dark:text-white text-sm">{item.option}</p>
+                        <p className="font-semibold text-slate-900 text-sm">{item.option}</p>
                       </div>
                       <div>
                         <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Legal Threshold</p>
-                        <p className="text-sm text-slate-700 dark:text-slate-300">{item.threshold}</p>
+                        <p className="text-sm text-slate-700">{item.threshold}</p>
                       </div>
                       <div>
                         <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Likelihood (Current Case)</p>
-                        <p className="text-sm text-slate-700 dark:text-slate-300">{item.likelihood}</p>
+                        <p className="text-sm text-slate-700">{item.likelihood}</p>
                       </div>
                       <div>
                         <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">Practical Result</p>
-                        <p className="text-sm text-slate-700 dark:text-slate-300">{item.result}</p>
+                        <p className="text-sm text-slate-700">{item.result}</p>
                       </div>
                     </div>
                   ))}
@@ -1415,19 +1415,19 @@ const BarristerView = ({ user }) => {
 
             {/* ===== GROUNDS OF MERIT SECTION ===== */}
             {grounds.length > 0 && (
-              <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 page-break-inside-avoid">
+              <div className="p-8 sm:p-12 border-b border-slate-200 page-break-inside-avoid">
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <Gavel className="w-5 h-5 text-red-600 dark:text-blue-400" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Gavel className="w-5 h-5 text-red-600" />
                   </div>
                   <div>
                     <h2 
-                      className="text-2xl font-bold text-slate-900 dark:text-white"
+                      className="text-2xl font-bold text-slate-900"
                       style={{ fontFamily: 'Crimson Pro, serif' }}
                     >
                       Grounds of Merit
                     </h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <p className="text-sm text-slate-500">
                       {grounds.length} potential ground{grounds.length !== 1 ? 's' : ''} for appeal identified
                     </p>
                   </div>
@@ -1441,17 +1441,17 @@ const BarristerView = ({ user }) => {
                     return (
                       <div 
                         key={ground.ground_id} 
-                        className={`rounded-xl border-2 ${strengthConfig.border} ${strengthConfig.bg} dark:bg-opacity-20 overflow-hidden`}
+                        className={`rounded-xl border-2 ${strengthConfig.border} ${strengthConfig.bg} overflow-hidden`}
                       >
                         {/* Ground Header */}
-                        <div className="p-5 sm:p-6 bg-white/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                        <div className="p-5 sm:p-6 bg-white/50 border-b border-slate-200">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                               <div className="flex flex-wrap items-center gap-2 mb-3">
                                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 text-white font-bold text-sm">
                                   {idx + 1}
                                 </span>
-                                <Badge variant="outline" className="bg-white dark:bg-slate-700">
+                                <Badge variant="outline" className="bg-white">
                                   {GROUND_TYPE_LABELS[ground.ground_type] || ground.ground_type}
                                 </Badge>
                                 <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${strengthConfig.bg}`}>
@@ -1462,7 +1462,7 @@ const BarristerView = ({ user }) => {
                                 </div>
                               </div>
                               <h3 
-                                className="text-xl font-bold text-slate-900 dark:text-white"
+                                className="text-xl font-bold text-slate-900"
                                 style={{ fontFamily: 'Crimson Pro, serif' }}
                               >
                                 {ground.title}
@@ -1479,7 +1479,7 @@ const BarristerView = ({ user }) => {
                           {/* Description */}
                           <div className="mb-5">
                             <p 
-                              className="text-slate-700 dark:text-slate-300 leading-relaxed"
+                              className="text-slate-700 leading-relaxed"
                               style={{ fontFamily: 'Crimson Pro, serif', fontSize: '1.05rem' }}
                             >
                               {ground.description}
@@ -1489,8 +1489,8 @@ const BarristerView = ({ user }) => {
                           <div className="grid md:grid-cols-2 gap-5">
                             {/* Legal References */}
                             {ground.law_sections && ground.law_sections.length > 0 && (
-                              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-                                <h4 className="text-sm font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2 mb-3">
+                              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                <h4 className="text-sm font-bold text-blue-800 flex items-center gap-2 mb-3">
                                   <BookOpen className="w-4 h-4" />
                                   Relevant Legislation
                                 </h4>
@@ -1498,11 +1498,11 @@ const BarristerView = ({ user }) => {
                                   {ground.law_sections.map((section, sidx) => (
                                     <li key={sidx} className="flex items-start gap-2">
                                       <ChevronRight className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                                      <span className="text-sm text-blue-900 dark:text-blue-200">
+                                      <span className="text-sm text-blue-900">
                                         <span className="font-mono font-semibold">s.{section.section}</span>
                                         {' '}{section.act}
                                         {section.jurisdiction && (
-                                          <span className="text-blue-600 dark:text-blue-400"> ({section.jurisdiction})</span>
+                                          <span className="text-blue-600"> ({section.jurisdiction})</span>
                                         )}
                                       </span>
                                     </li>
@@ -1513,8 +1513,8 @@ const BarristerView = ({ user }) => {
                             
                             {/* Similar Cases */}
                             {ground.similar_cases && ground.similar_cases.length > 0 && (
-                              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
-                                <h4 className="text-sm font-bold text-purple-800 dark:text-purple-300 flex items-center gap-2 mb-3">
+                              <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                                <h4 className="text-sm font-bold text-purple-800 flex items-center gap-2 mb-3">
                                   <Scale className="w-4 h-4" />
                                   Similar Cases
                                 </h4>
@@ -1522,10 +1522,10 @@ const BarristerView = ({ user }) => {
                                   {ground.similar_cases.slice(0, 3).map((caseRef, cidx) => (
                                     <li key={cidx} className="flex items-start gap-2">
                                       <Bookmark className="w-4 h-4 text-purple-500 shrink-0 mt-0.5" />
-                                      <span className="text-sm text-purple-900 dark:text-purple-200">
+                                      <span className="text-sm text-purple-900">
                                         <span className="font-semibold">{caseRef.case_name}</span>
                                         {caseRef.citation && (
-                                          <span className="text-purple-600 dark:text-purple-400"> [{caseRef.citation}]</span>
+                                          <span className="text-purple-600"> [{caseRef.citation}]</span>
                                         )}
                                       </span>
                                     </li>
@@ -1537,14 +1537,14 @@ const BarristerView = ({ user }) => {
                           
                           {/* Supporting Evidence */}
                           {ground.supporting_evidence && ground.supporting_evidence.length > 0 && (
-                            <div className="mt-5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4">
-                              <h4 className="text-sm font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-2 mb-3">
+                            <div className="mt-5 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                              <h4 className="text-sm font-bold text-emerald-800 flex items-center gap-2 mb-3">
                                 <FileText className="w-4 h-4" />
                                 Supporting Evidence
                               </h4>
                               <ul className="grid sm:grid-cols-2 gap-2">
                                 {ground.supporting_evidence.map((evidence, eidx) => (
-                                  <li key={eidx} className="flex items-start gap-2 text-sm text-emerald-900 dark:text-emerald-200">
+                                  <li key={eidx} className="flex items-start gap-2 text-sm text-emerald-900">
                                     <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                     {evidence}
                                   </li>
@@ -1562,13 +1562,13 @@ const BarristerView = ({ user }) => {
 
             {/* ===== KEY TIMELINE EVENTS ===== */}
             {keyEvents.length > 0 && (
-              <div className="p-8 sm:p-12 border-b border-slate-200 dark:border-slate-700 page-break-inside-avoid">
+              <div className="p-8 sm:p-12 border-b border-slate-200 page-break-inside-avoid">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <h2 
-                    className="text-2xl font-bold text-slate-900 dark:text-white"
+                    className="text-2xl font-bold text-slate-900"
                     style={{ fontFamily: 'Crimson Pro, serif' }}
                   >
                     Critical Timeline Events
@@ -1591,13 +1591,13 @@ const BarristerView = ({ user }) => {
                             {idx + 1}
                           </div>
                         </div>
-                        <div className="flex-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm">
+                        <div className="flex-1 bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
                           <div className="flex flex-wrap items-center gap-2 mb-2">
                             <Badge variant="outline" className="text-xs">
                               {formatShortDate(event.event_date)}
                             </Badge>
                             {event.significance === 'critical' && (
-                              <Badge className="bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                              <Badge className="bg-red-100 text-red-700">
                                 Critical
                               </Badge>
                             )}
@@ -1605,10 +1605,10 @@ const BarristerView = ({ user }) => {
                               {event.event_type?.replace(/_/g, ' ')}
                             </Badge>
                           </div>
-                          <h4 className="font-semibold text-slate-900 dark:text-white mb-1">
+                          <h4 className="font-semibold text-slate-900 mb-1">
                             {event.title}
                           </h4>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                          <p className="text-sm text-slate-600 line-clamp-2">
                             {event.description}
                           </p>
                         </div>
@@ -1622,17 +1622,17 @@ const BarristerView = ({ user }) => {
             {/* ===== AI ANALYSIS SECTIONS ===== */}
             <div className="p-8 sm:p-12">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-slate-600" />
                 </div>
                 <h2 
-                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  className="text-2xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Comprehensive Analysis
                 </h2>
                 {parsedContent.totalReports > 1 && (
-                  <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-lg font-medium">
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-medium">
                     Synthesised from {parsedContent.totalReports} reports
                   </span>
                 )}
@@ -1641,8 +1641,8 @@ const BarristerView = ({ user }) => {
               <div className="space-y-8">
                 {parsedContent.sections.map((section, idx) => (
                   <div key={idx} className="page-break-inside-avoid">
-                    <div className="flex flex-wrap items-baseline gap-4 mb-4 pb-3 border-b-2 border-blue-600 bg-gradient-to-r from-blue-50 via-white to-indigo-50 dark:from-blue-900/30 dark:via-slate-800 dark:to-indigo-900/30 rounded-xl px-4 py-3">
-                      <span className="text-3xl font-bold text-blue-600 bg-blue-100/80 dark:bg-blue-900/40 rounded-lg px-3 py-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <div className="flex flex-wrap items-baseline gap-4 mb-4 pb-3 border-b-2 border-blue-600 bg-gradient-to-r from-blue-50 via-white to-indigo-50 rounded-xl px-4 py-3">
+                      <span className="text-3xl font-bold text-blue-600 bg-blue-100/80 rounded-lg px-3 py-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         {section.number}.
                       </span>
                       <h3 
@@ -1653,7 +1653,7 @@ const BarristerView = ({ user }) => {
                       </h3>
                     </div>
                     {/* DO NOT UNDO — Markdown rendering for Barrister View analysis sections */}
-                    <div className="pl-4 sm:pl-12 border-l-2 border-slate-200 dark:border-slate-700">
+                    <div className="pl-4 sm:pl-12 border-l-2 border-slate-200">
                       <div className="legal-report">
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
@@ -1676,13 +1676,13 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* ===== LEGAL REFERENCE FRAMEWORK ===== */}
-            <div className="p-8 sm:p-12 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
+            <div className="p-8 sm:p-12 bg-slate-50 border-t border-slate-200">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-indigo-600" />
                 </div>
                 <h2 
-                  className="text-xl font-bold text-slate-900 dark:text-white"
+                  className="text-xl font-bold text-slate-900"
                   style={{ fontFamily: 'Crimson Pro, serif' }}
                 >
                   Legal Reference Framework
@@ -1691,10 +1691,10 @@ const BarristerView = ({ user }) => {
               
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
+                  <h4 className="font-semibold text-slate-900 mb-3">
                     Primary Legislation
                   </h4>
-                  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-2 text-sm text-slate-600">
                     <li className="flex items-start gap-2">
                       <Scale className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                       <span><strong>Crimes Act 1900 (NSW)</strong> — Primary criminal law</span>
@@ -1710,10 +1710,10 @@ const BarristerView = ({ user }) => {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
+                  <h4 className="font-semibold text-slate-900 mb-3">
                     Federal Legislation
                   </h4>
-                  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                  <ul className="space-y-2 text-sm text-slate-600">
                     <li className="flex items-start gap-2">
                       <Scale className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                       <span><strong>Criminal Code Act 1995 (Cth)</strong> — Federal offences</span>
@@ -1726,8 +1726,8 @@ const BarristerView = ({ user }) => {
                 </div>
               </div>
               
-              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-                <p className="text-sm text-blue-800 dark:text-blue-200 italic" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <p className="text-sm text-blue-800 italic" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   This document is prepared as an analytical aid and should be reviewed by qualified 
                   legal counsel before being relied upon in legal proceedings. The analysis is based 
                   on information provided and publicly available legal resources.
@@ -1843,9 +1843,9 @@ const BarristerView = ({ user }) => {
 };
 
 const SummaryMetric = ({ label, value, testId }) => (
-  <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 p-3" data-testid={testId}>
-    <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-1">{label}</p>
-    <p className="text-sm font-semibold text-slate-900 dark:text-white break-words">{value}</p>
+  <div className="rounded-xl border border-slate-200 bg-white/90 p-3" data-testid={testId}>
+    <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">{label}</p>
+    <p className="text-sm font-semibold text-slate-900 break-words">{value}</p>
   </div>
 );
 

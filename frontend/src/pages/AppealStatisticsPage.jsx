@@ -541,7 +541,7 @@ const AppealStatisticsPage = () => {
             Historical Trends
           </h2>
           
-          <div className="bg-card border border-slate-200 rounded-xl p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
                 <TrendingDown className="w-8 h-8 text-red-500 mx-auto mb-2" />
@@ -638,7 +638,7 @@ const StateDetailCard = ({ state }) => {
   };
 
   return (
-    <div className={`bg-card border-2 ${colorClasses[state.color]} rounded-2xl p-6`}>
+    <div className={`bg-white border-2 ${colorClasses[state.color]} rounded-2xl p-6`}>
       <div className="flex items-center gap-4 mb-6">
         <div className={`w-14 h-14 rounded-xl bg-${state.color}-600 flex items-center justify-center text-white text-xl font-bold`}
           style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : '#4f46e5' }}

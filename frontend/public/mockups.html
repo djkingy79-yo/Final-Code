@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Mockups</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8fafc; color: #0f172a; }
+
+.mockup { width: 1200px; margin: 0 auto; background: white; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin-bottom: 40px; }
+.mockup-header { background: white; border-bottom: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
+.mockup-header .back { color: #3b82f6; font-size: 14px; display: flex; align-items: center; gap: 4px; }
+.mockup-header .case-badge { background: #dc2626; color: white; font-size: 11px; padding: 2px 8px; border-radius: 12px; }
+.mockup-header .case-path { color: #64748b; font-size: 13px; flex: 1; }
+.mockup-header .help-btn { color: #64748b; font-size: 13px; margin-right: 8px; }
+.mockup-header .export-btn { background: #22c55e; color: white; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; }
+.mockup-header .bundle-btn { background: white; color: #64748b; padding: 6px 16px; border-radius: 8px; font-size: 13px; border: 1px solid #e2e8f0; }
+
+.case-info { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; }
+.case-title { font-size: 22px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; }
+.case-meta { color: #64748b; font-size: 13px; margin-top: 4px; }
+.case-tags { display: flex; gap: 6px; margin-top: 8px; }
+.tag { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.tag-nsw { background: #dbeafe; color: #1d4ed8; }
+.tag-homicide { background: #fecaca; color: #dc2626; }
+.tag-murder { background: #fef3c7; color: #92400e; }
+
+.tabs { display: flex; border-bottom: 1px solid #e2e8f0; padding: 0 24px; overflow-x: auto; }
+.tab { padding: 12px 16px; font-size: 13px; color: #64748b; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; }
+.tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 600; }
+.tab-count { background: #f1f5f9; color: #64748b; font-size: 11px; padding: 1px 6px; border-radius: 8px; margin-left: 4px; }
+.tab.active .tab-count { background: #dbeafe; color: #2563eb; }
+
+.content { padding: 24px; min-height: 350px; }
+
+/* Documents mockup */
+.doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.doc-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; display: flex; align-items: flex-start; gap: 12px; }
+.doc-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.doc-icon.pdf { background: #fef2f2; color: #dc2626; }
+.doc-icon.docx { background: #eff6ff; color: #2563eb; }
+.doc-name { font-weight: 600; font-size: 14px; color: #0f172a; }
+.doc-meta { color: #64748b; font-size: 12px; margin-top: 2px; }
+.doc-status { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 500; margin-top: 4px; }
+.doc-status.processed { background: #dcfce7; color: #166534; }
+
+/* Grounds mockup */
+.grounds-summary { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+.grounds-count { font-size: 48px; font-weight: 800; color: #16a34a; }
+.grounds-label { font-size: 16px; color: #166534; font-weight: 600; margin-top: 4px; }
+.ground-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
+.ground-card.g1 { border-left-color: #dc2626; }
+.ground-card.g2 { border-left-color: #f59e0b; }
+.ground-card.g3 { border-left-color: #8b5cf6; }
+.ground-num { font-size: 11px; font-weight: 700; color: white; padding: 2px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
+.ground-num.g1 { background: #dc2626; }
+.ground-num.g2 { background: #f59e0b; }
+.ground-num.g3 { background: #8b5cf6; }
+.ground-title { font-size: 16px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; }
+.ground-desc { font-size: 13px; color: #475569; margin-top: 6px; line-height: 1.5; }
+.ground-strength { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; margin-top: 8px; padding: 3px 10px; border-radius: 8px; }
+.ground-strength.high { background: #dcfce7; color: #166534; }
+.ground-strength.medium { background: #fef3c7; color: #92400e; }
+
+/* Paid grounds */
+.paid-header { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.paid-badge { background: #2563eb; color: white; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.ground-evidence { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; color: #475569; }
+.ground-evidence strong { color: #0f172a; }
+
+/* Reports mockup */
+.report-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.report-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.report-type { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.report-type.quick { color: #16a34a; }
+.report-type.detailed { color: #2563eb; }
+.report-type.extensive { color: #7c3aed; }
+.report-title { font-size: 18px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; }
+.report-meta { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: #64748b; }
+.report-status { padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.report-status.complete { background: #dcfce7; color: #166534; }
+.report-actions { display: flex; gap: 8px; margin-top: 12px; }
+.report-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+.report-btn.primary { background: #2563eb; color: white; }
+.report-btn.secondary { background: white; color: #2563eb; border: 1px solid #bfdbfe; }
+
+/* Progress mockup */
+.progress-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
+.progress-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.progress-icon { width: 40px; height: 40px; background: #eff6ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: 12px 0; }
+.progress-fill { height: 100%; border-radius: 4px; }
+.progress-fill.green { background: #22c55e; }
+.progress-fill.blue { background: #3b82f6; }
+.progress-fill.purple { background: #8b5cf6; }
+.milestone { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+.milestone:last-child { border-bottom: none; }
+.milestone-check { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.milestone-check.done { background: #dcfce7; color: #16a34a; }
+.milestone-check.pending { background: #f1f5f9; color: #94a3b8; }
+.milestone-title { font-size: 14px; font-weight: 600; color: #0f172a; }
+.milestone-desc { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+/* Barrister mockup */
+.barrister-badge { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 16px; }
+.barrister-section { margin-bottom: 20px; }
+.barrister-section h3 { font-size: 16px; font-weight: 700; color: #0f172a; font-family: Georgia, serif; margin-bottom: 8px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+.barrister-section p { font-size: 13px; color: #334155; line-height: 1.7; }
+.ai-btn { background: #2563eb; color: white; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; border: none; display: inline-flex; align-items: center; gap: 6px; }
+.ai-btn.orange { background: #f59e0b; }
+
+/* Dashboard mockup */
+.dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center; }
+.stat-num { font-size: 28px; font-weight: 800; color: #0f172a; }
+.stat-label { font-size: 12px; color: #64748b; margin-top: 4px; }
+.case-list-item { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
+.case-list-icon { width: 48px; height: 48px; background: #dbeafe; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.case-list-title { font-weight: 700; font-size: 15px; color: #0f172a; }
+.case-list-meta { font-size: 12px; color: #64748b; }
+.case-list-tags { display: flex; gap: 4px; margin-top: 4px; }
+.case-progress { margin-left: auto; text-align: right; }
+.case-progress-val { font-size: 20px; font-weight: 700; color: #2563eb; }
+.case-progress-label { font-size: 11px; color: #64748b; }
+</style>
+</head>
+<body>
+
+<!-- MOCKUP 1: Dashboard with cases -->
+<div id="mockup-dashboard" class="mockup" style="width:1200px;">
+  <div style="background: white; padding: 24px;">
+    <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; font-family: Georgia, serif;">My Cases</h1>
+    <div class="dash-stats" style="margin-top: 16px;">
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Total Cases</div></div>
+      <div class="stat-card"><div class="stat-num">34</div><div class="stat-label">Documents</div></div>
+      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Grounds Found</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Reports</div></div>
+    </div>
+    <div class="case-list-item">
+      <div class="case-list-icon" style="font-size: 20px;">&#9878;</div>
+      <div>
+        <div class="case-list-title">R v Johnson [2023] NSWCCA 45</div>
+        <div class="case-list-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+        <div class="case-list-tags">
+          <span class="tag tag-nsw">NSW</span>
+          <span class="tag tag-homicide">Homicide</span>
+        </div>
+      </div>
+      <div class="case-progress"><div class="case-progress-val">72%</div><div class="case-progress-label">Progress</div></div>
+    </div>
+    <div class="case-list-item">
+      <div class="case-list-icon" style="font-size: 20px;">&#9878;</div>
+      <div>
+        <div class="case-list-title">R v Martinez [2024] QCA 112</div>
+        <div class="case-list-meta">Carlos Martinez &bull; Queensland Court of Appeal</div>
+        <div class="case-list-tags">
+          <span class="tag" style="background:#dcfce7;color:#166534;">QLD</span>
+          <span class="tag" style="background:#fef3c7;color:#92400e;">Assault</span>
+        </div>
+      </div>
+      <div class="case-progress"><div class="case-progress-val">35%</div><div class="case-progress-label">Progress</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 2: Documents uploaded -->
+<div id="mockup-documents" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Quick Export</button>
+    <button class="bundle-btn">Bundle Docs</button>
+  </div>
+  <div class="case-info">
+    <div class="case-title">R v Johnson [2023] NSWCCA 45</div>
+    <div class="case-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="case-tags">
+      <span class="tag tag-nsw">NSW</span><span class="tag tag-homicide">Homicide</span><span class="tag tag-murder">Murder</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active">Documents <span class="tab-count">18</span></div>
+    <div class="tab">Timeline <span class="tab-count">26</span></div>
+    <div class="tab">Grounds <span class="tab-count">3</span></div>
+    <div class="tab">Notes <span class="tab-count">5</span></div>
+    <div class="tab">Reports <span class="tab-count">3</span></div>
+    <div class="tab">Legal Framework</div>
+    <div class="tab">Contradictions</div>
+    <div class="tab">Progress</div>
+  </div>
+  <div class="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <div><span style="font-size:14px;font-weight:700;color:#0f172a;">18 Documents</span> <span style="font-size:12px;color:#64748b;">&bull; 42 pages analysed</span></div>
+      <button class="ai-btn">+ Upload Documents</button>
+    </div>
+    <div class="doc-grid">
+      <div class="doc-card"><div class="doc-icon pdf">PDF</div><div><div class="doc-name">Sentencing Remarks - Johnson.pdf</div><div class="doc-meta">24 pages &bull; Uploaded 15 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+      <div class="doc-card"><div class="doc-icon pdf">PDF</div><div><div class="doc-name">Trial Transcript Day 1-3.pdf</div><div class="doc-meta">186 pages &bull; Uploaded 15 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+      <div class="doc-card"><div class="doc-icon pdf">PDF</div><div><div class="doc-name">Police Evidence Brief.pdf</div><div class="doc-meta">45 pages &bull; Uploaded 16 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+      <div class="doc-card"><div class="doc-icon docx">DOC</div><div><div class="doc-name">Character References.docx</div><div class="doc-meta">8 pages &bull; Uploaded 16 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+      <div class="doc-card"><div class="doc-icon pdf">PDF</div><div><div class="doc-name">Forensic Report - Pathology.pdf</div><div class="doc-meta">12 pages &bull; Uploaded 17 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+      <div class="doc-card"><div class="doc-icon pdf">PDF</div><div><div class="doc-name">Defence Counsel Submissions.pdf</div><div class="doc-meta">18 pages &bull; Uploaded 17 Jan 2024</div><span class="doc-status processed">AI Processed</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 3: Grounds (FREE - showing count and titles hidden) -->
+<div id="mockup-grounds-free" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Quick Export</button>
+  </div>
+  <div class="case-info">
+    <div class="case-title">R v Johnson [2023] NSWCCA 45</div>
+    <div class="case-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="case-tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-homicide">Homicide</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Documents <span class="tab-count">18</span></div>
+    <div class="tab">Timeline <span class="tab-count">26</span></div>
+    <div class="tab active">Grounds <span class="tab-count">3</span></div>
+    <div class="tab">Notes <span class="tab-count">5</span></div>
+    <div class="tab">Reports <span class="tab-count">3</span></div>
+    <div class="tab">Legal Framework</div>
+    <div class="tab">Contradictions</div>
+    <div class="tab">Progress</div>
+  </div>
+  <div class="content">
+    <div class="grounds-summary">
+      <div class="grounds-count">3</div>
+      <div class="grounds-label">Grounds of Merit Identified</div>
+      <div style="color:#64748b;font-size:13px;margin-top:8px;">FREE analysis complete &mdash; ground titles are hidden. Pay $99 AUD to reveal full details.</div>
+    </div>
+    <div class="ground-card g1">
+      <span class="ground-num g1">Ground 1</span>
+      <div class="ground-title" style="filter:blur(6px);user-select:none;">Misdirection on Intent</div>
+      <div class="ground-desc" style="filter:blur(6px);user-select:none;">The trial judge's directions to the jury regarding the element of intent...</div>
+      <div class="ground-strength high" style="filter:blur(4px);">Strong</div>
+    </div>
+    <div class="ground-card g2">
+      <span class="ground-num g2">Ground 2</span>
+      <div class="ground-title" style="filter:blur(6px);user-select:none;">Unreasonable Verdict</div>
+      <div class="ground-desc" style="filter:blur(6px);user-select:none;">Having regard to the whole of the evidence...</div>
+      <div class="ground-strength medium" style="filter:blur(4px);">Moderate</div>
+    </div>
+    <div class="ground-card g3">
+      <span class="ground-num g3">Ground 3</span>
+      <div class="ground-title" style="filter:blur(6px);user-select:none;">Sentencing Error</div>
+      <div class="ground-desc" style="filter:blur(6px);user-select:none;">The sentence imposed was manifestly excessive...</div>
+      <div class="ground-strength high" style="filter:blur(4px);">Strong</div>
+    </div>
+    <div style="text-align:center;margin-top:20px;">
+      <button class="ai-btn orange" style="font-size:15px;padding:12px 32px;">Investigate Grounds &mdash; $99 AUD</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 4: Grounds (PAID - full details revealed) -->
+<div id="mockup-grounds-paid" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Quick Export</button>
+  </div>
+  <div class="case-info">
+    <div class="case-title">R v Johnson [2023] NSWCCA 45</div>
+    <div class="case-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="case-tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-homicide">Homicide</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Documents <span class="tab-count">18</span></div>
+    <div class="tab">Timeline <span class="tab-count">26</span></div>
+    <div class="tab active">Grounds <span class="tab-count">3</span></div>
+    <div class="tab">Notes <span class="tab-count">5</span></div>
+    <div class="tab">Reports <span class="tab-count">3</span></div>
+    <div class="tab">Legal Framework</div>
+    <div class="tab">Contradictions</div>
+    <div class="tab">Progress</div>
+  </div>
+  <div class="content">
+    <div class="paid-header">
+      <div><strong style="color:#1e40af;font-size:14px;">Full Ground Analysis Unlocked</strong><br><span style="font-size:12px;color:#64748b;">3 grounds identified with detailed legal analysis</span></div>
+      <span class="paid-badge">PAID &mdash; $99 AUD</span>
+    </div>
+    <div class="ground-card g1">
+      <span class="ground-num g1">Ground 1</span>
+      <div class="ground-title">Misdirection on Intent</div>
+      <div class="ground-desc">The trial judge's summing-up at pp 214-218 of the transcript did not adequately explain the distinction between intention and recklessness as elements of murder. The defence submissions (Day 9, 14:22) specifically requested a clear Andar direction, which was not given.</div>
+      <div class="ground-evidence"><strong>Supporting Evidence:</strong> Trial Transcript pp 214-218; Defence Submissions Day 9; R v Andar [2015] HCA 40; Sentencing Remarks para 42-45</div>
+      <div class="ground-strength high">Strong &mdash; High likelihood of success</div>
+    </div>
+    <div class="ground-card g2">
+      <span class="ground-num g2">Ground 2</span>
+      <div class="ground-title">Unreasonable Verdict</div>
+      <div class="ground-desc">Having regard to the whole of the evidence, including the forensic pathology report and conflicting witness testimony on timing, a reasonable jury properly instructed could not have been satisfied of guilt beyond reasonable doubt.</div>
+      <div class="ground-evidence"><strong>Supporting Evidence:</strong> Forensic Report pp 8-12; Witness Statement (Dr. Chen); Trial Transcript Day 4; M v The Queen [1994] HCA 63</div>
+      <div class="ground-strength medium">Moderate &mdash; Requires strong argument</div>
+    </div>
+    <div class="ground-card g3">
+      <span class="ground-num g3">Ground 3</span>
+      <div class="ground-title">Manifestly Excessive Sentence</div>
+      <div class="ground-desc">The non-parole period of 22 years is outside the range for comparable offences in NSW. Analysis of 15 comparable authorities shows the median NPP for similar factual matrices is 14-18 years.</div>
+      <div class="ground-evidence"><strong>Supporting Evidence:</strong> Sentencing Remarks; R v Loveridge [2014] NSWCCA 120; Comparative sentencing data (15 cases analysed)</div>
+      <div class="ground-strength high">Strong &mdash; Clear sentencing disparity</div>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 5: Reports generated -->
+<div id="mockup-reports" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Quick Export</button>
+  </div>
+  <div class="case-info">
+    <div class="case-title">R v Johnson [2023] NSWCCA 45</div>
+    <div class="case-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="case-tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-homicide">Homicide</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Documents <span class="tab-count">18</span></div>
+    <div class="tab">Timeline <span class="tab-count">26</span></div>
+    <div class="tab">Grounds <span class="tab-count">3</span></div>
+    <div class="tab">Notes <span class="tab-count">5</span></div>
+    <div class="tab active">Reports <span class="tab-count">3</span></div>
+    <div class="tab">Legal Framework</div>
+    <div class="tab">Contradictions</div>
+    <div class="tab">Progress</div>
+  </div>
+  <div class="content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div><strong style="font-size:16px;">3 Reports Generated</strong></div>
+      <button class="ai-btn">+ Generate Report</button>
+    </div>
+    <div class="report-card">
+      <div class="report-header"><span class="report-type quick">Quick Summary</span><span class="report-status complete">Complete</span></div>
+      <div class="report-title">Case Snapshot &mdash; R v Johnson</div>
+      <div class="report-meta"><span>Generated 20 Jan 2024</span><span>12 pages</span><span>3 grounds covered</span></div>
+      <div class="report-actions"><button class="report-btn primary">View Report</button><button class="report-btn secondary">Export PDF</button></div>
+    </div>
+    <div class="report-card">
+      <div class="report-header"><span class="report-type detailed">Full Detailed</span><span class="report-status complete">Complete</span></div>
+      <div class="report-title">Ground Analysis &mdash; R v Johnson</div>
+      <div class="report-meta"><span>Generated 21 Jan 2024</span><span>38 pages</span><span>3 grounds with evidence</span></div>
+      <div class="report-actions"><button class="report-btn primary">View Report</button><button class="report-btn secondary">Export PDF</button></div>
+    </div>
+    <div class="report-card">
+      <div class="report-header"><span class="report-type extensive">Extensive Log</span><span class="report-status complete">Complete</span></div>
+      <div class="report-title">Sentencing Comparison &mdash; R v Johnson</div>
+      <div class="report-meta"><span>Generated 22 Jan 2024</span><span>64 pages</span><span>15 comparable cases</span></div>
+      <div class="report-actions"><button class="report-btn primary">View Report</button><button class="report-btn secondary">Export PDF</button></div>
+    </div>
+    <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:10px;padding:16px;margin-top:16px;text-align:center;">
+      <strong style="color:#92400e;font-size:14px;">Barrister View Available</strong>
+      <p style="color:#92400e;font-size:12px;margin-top:4px;">You have 3 reports. Barrister View synthesises all reports into one executive brief.</p>
+      <button class="ai-btn" style="margin-top:10px;background:#92400e;">Open Barrister View</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 6: Barrister View -->
+<div id="mockup-barrister" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45 / Barrister View</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Export PDF</button>
+  </div>
+  <div style="padding:24px;">
+    <div class="barrister-badge">Synthesised from 3 Reports</div>
+    <h1 style="font-size:26px;font-weight:800;color:#0f172a;font-family:Georgia,serif;margin-bottom:4px;">Barrister Executive Brief</h1>
+    <p style="color:#64748b;font-size:13px;margin-bottom:24px;">R v Johnson [2023] NSWCCA 45 &bull; Generated 23 Jan 2024</p>
+    <div class="barrister-section">
+      <h3>1. Case Overview</h3>
+      <p>The appellant, Sarah Johnson, was convicted of murder on 12 March 2023 and sentenced to 30 years imprisonment with a non-parole period of 22 years. The conviction arose from the death of the deceased on 15 August 2022. Three viable grounds of appeal have been identified through comprehensive analysis of the trial record, sentencing remarks, and relevant authorities.</p>
+    </div>
+    <div class="barrister-section">
+      <h3>2. Primary Ground: Misdirection on Intent</h3>
+      <p>The strongest ground concerns the trial judge's failure to give an adequate Andar direction on the distinction between intention and recklessness. The summing-up at pp 214-218 conflated these elements despite specific defence request. This ground has strong prospects, supported by R v Andar [2015] HCA 40 and the specific deficiency identified in the trial transcript.</p>
+    </div>
+    <div class="barrister-section">
+      <h3>3. Sentencing Disparity</h3>
+      <p>Comparative analysis of 15 comparable NSW cases reveals the 22-year NPP falls significantly outside the established range of 14-18 years for similar offences. R v Loveridge [2014] NSWCCA 120 and R v Pham [2015] HCA 39 provide direct authority for this submission.</p>
+    </div>
+    <div class="barrister-section">
+      <h3>4. Recommended Strategy</h3>
+      <p>Counsel is advised to lead with Ground 1 (misdirection) as the primary ground, supported by Ground 3 (manifestly excessive sentence) as an alternative. Ground 2 (unreasonable verdict) should be preserved but presents a higher evidentiary burden.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP 7: Progress & Tracking -->
+<div id="mockup-progress" class="mockup" style="width:1200px;">
+  <div class="mockup-header">
+    <span class="back">&larr; Back</span>
+    <span class="case-badge">CS</span>
+    <span class="case-path">/ R v Johnson [2023] NSWCCA 45</span>
+    <span style="flex:1"></span>
+    <button class="export-btn">Quick Export</button>
+  </div>
+  <div class="case-info">
+    <div class="case-title">R v Johnson [2023] NSWCCA 45</div>
+    <div class="case-meta">Sarah Johnson &bull; Supreme Court of NSW</div>
+    <div class="case-tags"><span class="tag tag-nsw">NSW</span><span class="tag tag-homicide">Homicide</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Documents <span class="tab-count">18</span></div>
+    <div class="tab">Timeline <span class="tab-count">26</span></div>
+    <div class="tab">Grounds <span class="tab-count">3</span></div>
+    <div class="tab">Notes <span class="tab-count">5</span></div>
+    <div class="tab">Reports <span class="tab-count">3</span></div>
+    <div class="tab">Legal Framework</div>
+    <div class="tab">Contradictions</div>
+    <div class="tab active">Progress</div>
+  </div>
+  <div class="content">
+    <div class="progress-card" style="margin-bottom:20px;">
+      <div class="progress-header">
+        <div class="progress-icon" style="font-size:20px;">&#128202;</div>
+        <div>
+          <strong style="font-size:16px;color:#0f172a;">AI Case Progress Analysis</strong>
+          <p style="font-size:12px;color:#64748b;margin-top:2px;">Last updated: 23 Jan 2024</p>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+          <div style="font-size:28px;font-weight:800;color:#2563eb;">72%</div>
+          <div style="font-size:11px;color:#64748b;">Overall Progress</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill green" style="width:72%"></div></div>
+    </div>
+    <div class="progress-card">
+      <strong style="font-size:14px;color:#0f172a;display:block;margin-bottom:12px;">Case Milestones</strong>
+      <div class="milestone"><div class="milestone-check done">&#10003;</div><div><div class="milestone-title">Case Created</div><div class="milestone-desc">Case file set up with court details and defendant information</div></div></div>
+      <div class="milestone"><div class="milestone-check done">&#10003;</div><div><div class="milestone-title">Documents Uploaded (18)</div><div class="milestone-desc">Transcripts, sentencing remarks, forensic reports processed</div></div></div>
+      <div class="milestone"><div class="milestone-check done">&#10003;</div><div><div class="milestone-title">Grounds Identified (3)</div><div class="milestone-desc">AI analysis found 3 potential grounds for appeal</div></div></div>
+      <div class="milestone"><div class="milestone-check done">&#10003;</div><div><div class="milestone-title">Reports Generated (3)</div><div class="milestone-desc">Quick Summary, Full Detailed, and Extensive Log complete</div></div></div>
+      <div class="milestone"><div class="milestone-check pending">&#9675;</div><div><div class="milestone-title">Barrister Review</div><div class="milestone-desc">Have a qualified barrister review the Barrister View brief</div></div></div>
+      <div class="milestone"><div class="milestone-check pending">&#9675;</div><div><div class="milestone-title">Lodge Appeal</div><div class="milestone-desc">Submit appeal documents within the applicable time limit</div></div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

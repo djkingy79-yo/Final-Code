@@ -98,7 +98,7 @@ const ResetPasswordPage = () => {
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Verifying reset token...</p>
+              <p className="text-slate-600">Verifying reset token...</p>
             </div>
           </CardContent>
         </Card>
@@ -113,11 +113,11 @@ const ResetPasswordPage = () => {
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-emerald-600" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Password Reset Successful!</h2>
-              <p className="text-muted-foreground mb-4">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">Password Reset Successful!</h2>
+              <p className="text-slate-600 mb-4">
                 Your password has been updated. You can now login with your new password.
               </p>
               <p className="text-sm text-slate-400">Redirecting to login...</p>
@@ -135,11 +135,11 @@ const ResetPasswordPage = () => {
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertCircle className="w-8 h-8 text-red-600" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Invalid Reset Link</h2>
-              <p className="text-muted-foreground mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">Invalid Reset Link</h2>
+              <p className="text-slate-600 mb-6">
                 {error || "This password reset link is invalid or has expired."}
               </p>
               <Button onClick={() => navigate("/forgot-password")} className="w-full">
@@ -169,7 +169,7 @@ const ResetPasswordPage = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">New Password</label>
+              <label className="text-sm font-medium text-slate-900 mb-1 block">New Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
@@ -184,16 +184,16 @@ const ResetPasswordPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">At least 6 characters</p>
+              <p className="text-xs text-slate-600 mt-1">At least 6 characters</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-foreground mb-1 block">Confirm Password</label>
+              <label className="text-sm font-medium text-slate-900 mb-1 block">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
@@ -208,9 +208,9 @@ const ResetPasswordPage = () => {
             </div>
 
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start gap-2">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
                 <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
 

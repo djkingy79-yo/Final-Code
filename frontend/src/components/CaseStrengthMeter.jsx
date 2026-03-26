@@ -34,13 +34,13 @@ const CaseStrengthMeter = ({ caseId }) => {
 
   if (loading) {
     return (
-      <Card className="bg-card border-border">
+      <Card className="bg-white border-slate-200">
         <CardContent className="p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-muted rounded w-1/3"></div>
-            <div className="h-24 bg-muted rounded-full w-24 mx-auto"></div>
-            <div className="h-4 bg-muted rounded"></div>
-            <div className="h-4 bg-muted rounded"></div>
+            <div className="h-4 bg-slate-100 rounded w-1/3"></div>
+            <div className="h-24 bg-slate-100 rounded-full w-24 mx-auto"></div>
+            <div className="h-4 bg-slate-100 rounded"></div>
+            <div className="h-4 bg-slate-100 rounded"></div>
           </div>
         </CardContent>
       </Card>
@@ -57,10 +57,10 @@ const CaseStrengthMeter = ({ caseId }) => {
   };
 
   const getScoreBg = (score) => {
-    if (score >= 75) return "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400";
-    if (score >= 50) return "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400";
-    if (score >= 25) return "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400";
-    return "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400";
+    if (score >= 75) return "bg-emerald-100 text-emerald-700";
+    if (score >= 50) return "bg-blue-100 text-blue-700";
+    if (score >= 25) return "bg-orange-100 text-orange-700";
+    return "bg-red-100 text-red-700";
   };
 
   const getProgressBg = (score) => {
@@ -98,7 +98,7 @@ const CaseStrengthMeter = ({ caseId }) => {
   ];
 
   return (
-    <Card className="bg-card border-border shadow-sm" data-testid="case-strength-meter">
+    <Card className="bg-white border-slate-200 shadow-sm" data-testid="case-strength-meter">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-red-600 flex items-center justify-center">
@@ -113,10 +113,10 @@ const CaseStrengthMeter = ({ caseId }) => {
           <div className="relative">
             {/* Outer ring */}
             <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${getScoreGradient(strength.overall_score)} p-1 shadow-lg`}>
-              <div className="w-full h-full rounded-full bg-card flex items-center justify-center">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                 <div className="text-center">
-                  <span className="text-4xl font-bold text-foreground">{strength.overall_score}</span>
-                  <span className="text-lg text-muted-foreground">/100</span>
+                  <span className="text-4xl font-bold text-slate-900">{strength.overall_score}</span>
+                  <span className="text-lg text-slate-600">/100</span>
                 </div>
               </div>
             </div>
@@ -138,34 +138,34 @@ const CaseStrengthMeter = ({ caseId }) => {
             <div key={index} className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <item.icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">{item.label}</span>
+                  <item.icon className="w-4 h-4 text-slate-600" />
+                  <span className="text-sm font-medium text-slate-900">{item.label}</span>
                 </div>
                 <span className={`text-sm font-bold ${getScoreBg(item.score).split(' ')[0]} px-2 py-0.5 rounded-md ${getScoreBg(item.score)}`}>
                   {item.score}%
                 </span>
               </div>
-              <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                 <div 
                   className={`h-full rounded-full transition-all duration-500 ${getProgressBg(item.score)}`}
                   style={{ width: `${item.score}%` }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground">{item.detail}</p>
+              <p className="text-xs text-slate-600">{item.detail}</p>
             </div>
           ))}
         </div>
 
         {/* Recommendations */}
         {strength.recommendations.length > 0 && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-            <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center gap-2">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p className="text-sm font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
               Recommendations to Improve
             </p>
             <ul className="space-y-2">
               {strength.recommendations.map((rec, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-blue-700 dark:text-blue-300">
+                <li key={i} className="flex items-start gap-2 text-sm text-blue-700">
                   <ChevronRight className="w-4 h-4 shrink-0 mt-0.5" />
                   {rec}
                 </li>
@@ -176,12 +176,12 @@ const CaseStrengthMeter = ({ caseId }) => {
 
         {/* Success indicator */}
         {strength.overall_score >= 75 && (
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 text-center">
-            <Shield className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
+            <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+            <p className="text-sm font-semibold text-emerald-800">
               Strong Appeal Potential
             </p>
-            <p className="text-xs text-emerald-700 dark:text-emerald-300 mt-1">
+            <p className="text-xs text-emerald-700 mt-1">
               Your case preparation is looking solid. Consider consulting with a barrister.
             </p>
           </div>

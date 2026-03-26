@@ -250,7 +250,7 @@ const FAQPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -322,7 +322,7 @@ const FAQPage = () => {
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 activeCategory === "all"
                   ? "bg-blue-700 text-white shadow-lg"
-                  : "bg-card border border-border text-slate-700 hover:border-blue-500"
+                  : "bg-white border border-slate-200 text-slate-700 hover:border-blue-500"
               }`}
               data-testid="faq-filter-all"
             >
@@ -336,7 +336,7 @@ const FAQPage = () => {
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                   activeCategory === cat.category
                     ? "bg-blue-700 text-white shadow-lg"
-                    : "bg-card border border-border text-slate-700 hover:border-blue-500"
+                    : "bg-white border border-slate-200 text-slate-700 hover:border-blue-500"
                 }`}
               >
                 <cat.icon className="w-4 h-4" />
@@ -351,7 +351,7 @@ const FAQPage = () => {
       <main className="max-w-5xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="faq-content-intro">
           <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Quick Answers</p>
-          <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Browse by category or expand individual questions
           </h2>
         </section>
@@ -359,7 +359,7 @@ const FAQPage = () => {
         {filteredFaqs.length === 0 ? (
           <Card className="p-12 text-center">
             <Search className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-            <p className="text-foreground font-semibold">No questions found matching "{searchQuery}"</p>
+            <p className="text-slate-900 font-semibold">No questions found matching "{searchQuery}"</p>
             <p className="text-slate-700 text-sm mt-2">Try a different search term</p>
           </Card>
         ) : (
@@ -397,14 +397,14 @@ const FAQPage = () => {
                     return (
                       <div 
                         key={questionIndex}
-                        className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
+                        className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
                       >
                         <button
                           onClick={() => toggleItem(categoryIndex, questionIndex)}
                           className="w-full px-5 py-4 flex items-center justify-between text-left"
                           data-testid={`faq-${categoryIndex}-${questionIndex}`}
                         >
-                          <span className="font-medium text-foreground pr-4">{item.q}</span>
+                          <span className="font-medium text-slate-900 pr-4">{item.q}</span>
                           <div className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isOpen ? 'bg-blue-100' : 'bg-white border border-slate-200'}`}>
                             {isOpen ? (
                               <ChevronDown className="w-5 h-5 text-red-600" />
@@ -416,7 +416,7 @@ const FAQPage = () => {
                         {isOpen && (
                           <div className="px-5 pb-4">
                             <div className="bg-white border border-slate-200/50 rounded-xl p-4 border-l-4 border-blue-500">
-                              <p className="text-slate-700 text-sm leading-relaxed">{item.a}</p>
+                              <p className="text-slate-700 text-xs leading-relaxed">{item.a}</p>
                             </div>
                           </div>
                         )}

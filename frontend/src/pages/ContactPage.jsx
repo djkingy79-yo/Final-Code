@@ -48,15 +48,15 @@ const ContactPage = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-card rounded-2xl shadow-xl border border-border p-8 text-center">
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 text-center">
+          <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-emerald-600" />
           </div>
-          <h2 className="text-3xl font-bold text-foreground mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Message Sent!
           </h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-slate-600 mb-8">
             Thanks for reaching out. Deb will get back to you as soon as possible.
           </p>
           <Link to="/">
@@ -70,9 +70,9 @@ const ContactPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -113,7 +113,7 @@ const ContactPage = () => {
           <img 
             src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -124,11 +124,11 @@ const ContactPage = () => {
               <MessageSquare className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Get in Touch</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Get in Touch</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Contact Deb
           </h1>
-          <p className="text-muted-foreground text-lg max-w-lg mx-auto">
+          <p className="text-slate-600 text-lg max-w-lg mx-auto">
             Have a question or need help? Send a message and I'll get back to you as soon as possible.
           </p>
           <Link
@@ -143,10 +143,10 @@ const ContactPage = () => {
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-6 pb-16">
-        <form onSubmit={handleSubmit} className="bg-card rounded-2xl shadow-xl border border-border p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
                 <User className="w-4 h-4 text-red-600" />
                 Your Name
               </label>
@@ -161,7 +161,7 @@ const ContactPage = () => {
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
                 <Mail className="w-4 h-4 text-red-600" />
                 Your Email
               </label>
@@ -177,7 +177,7 @@ const ContactPage = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
               <MessageSquare className="w-4 h-4 text-red-600" />
               Subject
             </label>
@@ -192,7 +192,7 @@ const ContactPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+            <label className="block text-sm font-medium text-slate-900 mb-2">Message</label>
             <Textarea
               value={formData.message}
               onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -224,8 +224,8 @@ const ContactPage = () => {
         </form>
 
         {/* Direct Contact Card */}
-        <div className="mt-8 bg-muted/50 dark:bg-muted/20 rounded-2xl border border-border p-6 text-center">
-          <p className="text-muted-foreground mb-2">
+        <div className="mt-8 bg-slate-50 rounded-2xl border border-slate-200 p-6 text-center">
+          <p className="text-slate-600 mb-2">
             You can also reach Deb directly at
           </p>
           <a 
@@ -239,7 +239,7 @@ const ContactPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 dark:bg-slate-950 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-slate-400 text-sm">
             © 2025 Appeal Case Manager. All rights reserved.

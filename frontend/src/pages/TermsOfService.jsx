@@ -22,9 +22,9 @@ const TermsOfService = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -63,7 +63,7 @@ const TermsOfService = () => {
           <img 
             src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -74,11 +74,11 @@ const TermsOfService = () => {
               <FileText className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Legal</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Legal</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Terms of Service & Privacy Policy
           </h1>
-          <p className="text-muted-foreground">Last updated: March 2025</p>
+          <p className="text-slate-600">Last updated: March 2025</p>
         </div>
       </section>
 
@@ -87,23 +87,23 @@ const TermsOfService = () => {
         <div className="space-y-6">
           
           {/* Section 1: Introduction */}
-          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <button 
               onClick={() => toggleSection('intro')}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-blue-600" />
                 </div>
-                <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   1. Introduction
                 </h2>
               </div>
-              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${expandedSections.intro ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform ${expandedSections.intro ? 'rotate-180' : ''}`} />
             </button>
             {expandedSections.intro && (
-              <div className="px-6 pb-6 text-muted-foreground">
+              <div className="px-6 pb-6 text-slate-600">
                 <p className="mb-3">
                   Welcome to Appeal Case Manager ("the Application", "we", "us", "our"). By accessing or using this Application, 
                   you ("User", "you", "your") agree to be bound by these Terms of Service and Privacy Policy. If you do not agree 
@@ -145,23 +145,23 @@ const TermsOfService = () => {
           </div>
 
           {/* Section 3: Service Description */}
-          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <button 
               onClick={() => toggleSection('service')}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-emerald-600" />
                 </div>
-                <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   3. Service Description
                 </h2>
               </div>
-              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${expandedSections.service ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform ${expandedSections.service ? 'rotate-180' : ''}`} />
             </button>
             {expandedSections.service && (
-              <div className="px-6 pb-6 text-muted-foreground">
+              <div className="px-6 pb-6 text-slate-600">
                 <p>
                   The Application provides AI-assisted document analysis and research support tools designed to help users 
                   organise case materials and identify potential issues in criminal appeal matters. The Application uses 
@@ -172,20 +172,20 @@ const TermsOfService = () => {
           </div>
 
           {/* Section 4: NOT LEGAL ADVICE - Always Visible */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl border-2 border-blue-300 dark:border-blue-700 shadow-lg p-6">
+          <div className="bg-blue-50 rounded-2xl border-2 border-blue-300 shadow-lg p-6">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
                 <AlertTriangle className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-blue-900 dark:text-blue-200 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   4. Important: Not Legal Advice
                 </h2>
-                <p className="mb-3 text-blue-800 dark:text-blue-300">
+                <p className="mb-3 text-blue-800">
                   <strong>The information, analysis, and reports generated by this Application do NOT constitute legal advice</strong> and 
                   should not be relied upon as a substitute for advice from a qualified Australian legal practitioner.
                 </p>
-                <p className="text-blue-800 dark:text-blue-300">
+                <p className="text-blue-800">
                   All information generated through this Application is for <strong>informational and research purposes only</strong>. 
                   Users must obtain independent legal advice from a qualified legal professional before making any decision or 
                   taking any action in relation to an appeal or criminal proceeding.
@@ -195,20 +195,20 @@ const TermsOfService = () => {
           </div>
 
           {/* Section 5: AI Technology Disclaimer */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800 p-6">
+          <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
                 <Eye className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-blue-900 dark:text-blue-200 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   5. AI Technology Disclaimer
                 </h2>
-                <p className="mb-3 text-blue-800 dark:text-blue-300">
+                <p className="mb-3 text-blue-800">
                   This Application uses artificial intelligence (AI) technology to analyse documents and generate reports. 
                   You acknowledge and agree that:
                 </p>
-                <ul className="list-disc list-inside space-y-2 text-blue-800 dark:text-blue-300">
+                <ul className="list-disc list-inside space-y-2 text-blue-800">
                   <li>AI technology can make mistakes and may produce inaccurate, incomplete, or misleading results</li>
                   <li>The AI may misinterpret documents, miss relevant information, or draw incorrect conclusions</li>
                   <li>No guarantee is made regarding the accuracy, reliability, or completeness of any AI-generated content</li>
@@ -220,23 +220,23 @@ const TermsOfService = () => {
           </div>
 
           {/* Section 6: User Responsibilities */}
-          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <button 
               onClick={() => toggleSection('user')}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-purple-600" />
                 </div>
-                <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   6. User Responsibilities
                 </h2>
               </div>
-              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${expandedSections.user ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform ${expandedSections.user ? 'rotate-180' : ''}`} />
             </button>
             {expandedSections.user && (
-              <div className="px-6 pb-6 text-muted-foreground">
+              <div className="px-6 pb-6 text-slate-600">
                 <p className="mb-3">By using this Application, you agree that:</p>
                 <ul className="list-disc list-inside space-y-2">
                   <li>You use this Application entirely at your own discretion and risk</li>
@@ -251,20 +251,20 @@ const TermsOfService = () => {
           </div>
 
           {/* Section 7: Confidentiality Warning */}
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800 p-6">
+          <div className="bg-red-50 rounded-2xl border border-red-200 p-6">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-red-500 flex items-center justify-center flex-shrink-0">
                 <Lock className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-red-900 dark:text-red-200 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-red-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   7. Confidentiality & Legal Privilege Warning
                 </h2>
-                <p className="mb-3 text-red-800 dark:text-red-300">
+                <p className="mb-3 text-red-800">
                   <strong>WARNING:</strong> Uploading legal documents to this Application may affect legal professional privilege 
                   or confidentiality protections. You should seek legal advice before uploading any privileged or confidential documents.
                 </p>
-                <p className="text-red-800 dark:text-red-300">
+                <p className="text-red-800">
                   The Application owner does not guarantee the security or confidentiality of uploaded documents and accepts 
                   no responsibility for any loss of privilege or breach of confidentiality arising from your use of this Application.
                 </p>
@@ -308,7 +308,7 @@ const TermsOfService = () => {
             )},
             { id: 'privacy', title: '10. Privacy Policy', icon: Eye, color: 'teal', content: (
               <>
-                <h3 className="font-semibold text-foreground mt-4 mb-2">10.1 Information We Collect</h3>
+                <h3 className="font-semibold text-slate-900 mt-4 mb-2">10.1 Information We Collect</h3>
                 <ul className="list-disc list-inside space-y-1">
                   <li>Account information (name, email address) provided through Google authentication</li>
                   <li>Documents and content you upload to the Application</li>
@@ -316,7 +316,7 @@ const TermsOfService = () => {
                   <li>Usage data and analytics to improve the service</li>
                 </ul>
 
-                <h3 className="font-semibold text-foreground mt-4 mb-2">10.2 How We Use Your Information</h3>
+                <h3 className="font-semibold text-slate-900 mt-4 mb-2">10.2 How We Use Your Information</h3>
                 <ul className="list-disc list-inside space-y-1">
                   <li>To provide and maintain the Application services</li>
                   <li>To process your documents through AI analysis</li>
@@ -324,14 +324,14 @@ const TermsOfService = () => {
                   <li>To improve and develop the Application</li>
                 </ul>
 
-                <h3 className="font-semibold text-foreground mt-4 mb-2">10.3 Third-Party Services</h3>
+                <h3 className="font-semibold text-slate-900 mt-4 mb-2">10.3 Third-Party Services</h3>
                 <p>
                   This Application uses third-party AI services (including OpenAI) to process and analyse your documents. 
                   By using this Application, you consent to your uploaded content being processed by these third-party services 
                   in accordance with their respective terms and privacy policies.
                 </p>
 
-                <h3 className="font-semibold text-foreground mt-4 mb-2">10.4 Data Security</h3>
+                <h3 className="font-semibold text-slate-900 mt-4 mb-2">10.4 Data Security</h3>
                 <p>
                   While we implement reasonable security measures, no method of electronic storage or transmission is 100% secure. 
                   We cannot guarantee the absolute security of your data. You upload documents at your own risk.
@@ -376,23 +376,23 @@ const TermsOfService = () => {
               </p>
             )}
           ].map((section) => (
-            <div key={section.id} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+            <div key={section.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
               <button 
                 onClick={() => toggleSection(section.id)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl bg-${section.color}-100 dark:bg-${section.color}-900/30 flex items-center justify-center`}>
-                    <section.icon className={`w-5 h-5 text-${section.color}-600 dark:text-${section.color}-400`} />
+                  <div className={`w-10 h-10 rounded-xl bg-${section.color}-100${section.color}-900/30 flex items-center justify-center`}>
+                    <section.icon className={`w-5 h-5 text-${section.color}-600${section.color}-400`} />
                   </div>
-                  <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     {section.title}
                   </h2>
                 </div>
-                <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${expandedSections[section.id] ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform ${expandedSections[section.id] ? 'rotate-180' : ''}`} />
               </button>
               {expandedSections[section.id] && (
-                <div className="px-6 pb-6 text-muted-foreground">
+                <div className="px-6 pb-6 text-slate-600">
                   {section.content}
                 </div>
               )}
@@ -416,7 +416,7 @@ const TermsOfService = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 dark:bg-slate-950 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-slate-400 text-sm">
             © 2025 Appeal Case Manager. All rights reserved.

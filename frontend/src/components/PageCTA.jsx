@@ -123,17 +123,17 @@ const PageCTA = ({
 
   // Default banner CTA
   return (
-    <div className={`bg-gradient-to-r from-blue-50 to-orange-50 dark:from-blue-900/20 dark:to-orange-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-xl p-6 ${className}`}>
+    <div className={`bg-gradient-to-r from-blue-50 to-orange-50 border-2 border-blue-300 rounded-xl p-6 ${className}`}>
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4 text-center sm:text-left">
           <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shrink-0">
             <Briefcase className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="font-bold text-blue-900 dark:text-blue-200 text-lg">
+            <p className="font-bold text-blue-900 text-lg">
               Start Working On Your Appeal
             </p>
-            <p className="text-blue-700 dark:text-blue-300 text-sm">
+            <p className="text-blue-700 text-sm">
               Upload documents • AI analysis • Generate reports • Track deadlines
             </p>
           </div>

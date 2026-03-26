@@ -36,7 +36,7 @@ const LegalResourcesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
       <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -86,13 +86,10 @@ const LegalResourcesPage = () => {
             One merged directory for legal resources and legal contacts across all Australian states and territories.
             Each listing explains what type of legal advice or support the service can help with.
           </p>
-          <p className="text-xs text-blue-700 mt-3" data-testid="legal-resources-merged-note">
-            This page now combines the previous Legal Contacts and Legal Resources information.
-          </p>
         </div>
       </section>
 
-      <section className="sticky top-[72px] z-30 bg-background/95 backdrop-blur border-b border-slate-200" data-testid="legal-resources-quick-nav-wrapper">
+      <section className="sticky top-[72px] z-30 bg-white backdrop-blur border-b border-slate-200" data-testid="legal-resources-quick-nav-wrapper">
         <div className="max-w-5xl mx-auto px-6 py-3">
           <div className="flex flex-wrap items-center gap-3 mb-2">
             <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide" htmlFor="state-filter-select">
@@ -143,16 +140,6 @@ const LegalResourcesPage = () => {
       <DirectoryFilterContext.Provider value={{ stateFilter }}>
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-12" data-state-condensed={stateFilter !== "all"}>
 
-        <section className="rounded-xl border border-blue-200 bg-blue-50 p-4" data-testid="legal-resources-unified-state-view-banner">
-          <p className="text-xs uppercase tracking-wide text-blue-700 font-semibold mb-1">Unified State View</p>
-          <p className="text-sm text-blue-900">
-            {stateFilter === "all"
-              ? "Showing all states and national services."
-              : stateFilter === "NATIONAL"
-              ? "Showing national and multi-state services only."
-              : `Showing ${stateFilter} services plus national/multi-state support so results stay easier to follow.`}
-          </p>
-        </section>
 
         {/* ============ SECTION: You Have Options ============ */}
         <div id="options" className="space-y-6">
@@ -228,7 +215,7 @@ const LegalResourcesPage = () => {
                   <FileText className="w-6 h-6 text-red-600" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
-                <p className="text-slate-700 text-sm mb-3">
+                <p className="text-slate-700 text-xs mb-3">
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
                 </p>
@@ -810,24 +797,24 @@ const LegalResourcesPage = () => {
 
             {/* Innocence Projects */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Innocence & Wrongful Conviction Projects
               </h3>
               <div className="bg-white border border-slate-200 rounded-xl p-6">
-                <p className="text-slate-700 text-sm mb-4">
+                <p className="text-slate-700 text-xs mb-4">
                   For cases involving potential wrongful convictions, these organisations may be able to assist:
                 </p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-white border border-slate-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-slate-900 mb-1">University Law Clinics</h4>
-                    <p className="text-sm text-slate-700">
+                    <h4 className="font-semibold text-slate-900 text-sm mb-1">University Law Clinics</h4>
+                    <p className="text-xs text-slate-700">
                       Many university law schools run clinics that take on appeals and wrongful conviction cases. 
                       Contact your local university's law faculty.
                     </p>
                   </div>
                   <div className="bg-white border border-slate-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-slate-900 mb-1">Innocence Projects</h4>
-                    <p className="text-sm text-slate-700">
+                    <h4 className="font-semibold text-slate-900 text-sm mb-1">Innocence Projects</h4>
+                    <p className="text-xs text-slate-700">
                       Some Australian universities have innocence projects that investigate potential wrongful convictions.
                     </p>
                   </div>

@@ -133,12 +133,12 @@ const CompareCasesPage = ({ user }) => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <Card className="max-w-md mx-auto">
           <CardContent className="p-8 text-center">
             <GitCompare className="w-12 h-12 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-foreground mb-2">Sign In Required</h2>
-            <p className="text-muted-foreground mb-4">Please sign in to compare cases and view patterns.</p>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In Required</h2>
+            <p className="text-slate-600 mb-4">Please sign in to compare cases and view patterns.</p>
             <Button onClick={() => navigate("/")} className="bg-red-600 text-white hover:bg-blue-700">
               Go to Home
             </Button>
@@ -185,9 +185,9 @@ const CompareCasesPage = ({ user }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -219,7 +219,7 @@ const CompareCasesPage = ({ user }) => {
           <img 
             src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -230,28 +230,28 @@ const CompareCasesPage = ({ user }) => {
               <GitCompare className="w-7 h-7 text-white" />
             </div>
             <div>
-              <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest">Analysis</p>
-              <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <p className="text-red-600 font-semibold text-xs uppercase tracking-widest">Analysis</p>
+              <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Compare Cases
               </h1>
             </div>
           </div>
-          <p className="text-muted-foreground max-w-2xl mt-2">
+          <p className="text-slate-600 max-w-2xl mt-2">
             Compare your own cases to find patterns, or explore anonymised insights from all cases on the platform.
           </p>
         </div>
       </section>
 
       {/* Tab Navigation */}
-      <div className="border-b border-border bg-card/50">
+      <div className="border-b border-slate-200 bg-white/50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex gap-1">
             <button
               onClick={() => setActiveTab("my-cases")}
               className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${
                 activeTab === "my-cases" 
-                  ? "border-blue-500 text-red-600 dark:text-blue-400" 
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  ? "border-blue-500 text-red-600" 
+                  : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -261,8 +261,8 @@ const CompareCasesPage = ({ user }) => {
               onClick={() => setActiveTab("patterns")}
               className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${
                 activeTab === "patterns" 
-                  ? "border-blue-500 text-red-600 dark:text-blue-400" 
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  ? "border-blue-500 text-red-600" 
+                  : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
               <BarChart3 className="w-4 h-4" />
@@ -276,7 +276,7 @@ const CompareCasesPage = ({ user }) => {
         {activeTab === "my-cases" ? (
           <div className="space-y-8">
             {/* Case Selection */}
-            <Card className="bg-card border-border">
+            <Card className="bg-white border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   <Gavel className="w-5 h-5 text-red-600" />
@@ -289,8 +289,8 @@ const CompareCasesPage = ({ user }) => {
               <CardContent>
                 {myCases.length === 0 ? (
                   <div className="text-center py-8">
-                    <FileText className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-                    <p className="text-muted-foreground">No cases found. Create a case first.</p>
+                    <FileText className="w-12 h-12 text-slate-600/50 mx-auto mb-3" />
+                    <p className="text-slate-600">No cases found. Create a case first.</p>
                     <Button onClick={() => navigate("/dashboard")} className="mt-4 bg-red-600 text-white hover:bg-blue-700">
                       Go to Dashboard
                     </Button>
@@ -303,18 +303,18 @@ const CompareCasesPage = ({ user }) => {
                         onClick={() => toggleCaseSelection(case_.case_id)}
                         className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
                           selectedCases.includes(case_.case_id)
-                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                            : "border-border hover:border-blue-300 bg-card"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-slate-200 hover:border-blue-300 bg-white"
                         }`}
                       >
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-semibold text-foreground truncate">{case_.title}</h3>
+                          <h3 className="font-semibold text-slate-900 truncate">{case_.title}</h3>
                           <Checkbox 
                             checked={selectedCases.includes(case_.case_id)}
                             className="data-[state=checked]:bg-red-600"
                           />
                         </div>
-                        <p className="text-sm text-muted-foreground mb-2">{case_.defendant_name}</p>
+                        <p className="text-sm text-slate-600 mb-2">{case_.defendant_name}</p>
                         <div className="flex flex-wrap gap-1">
                           <Badge variant="outline" className="text-xs">
                             {offenceLabels[case_.offence_category] || case_.offence_category}
@@ -323,7 +323,7 @@ const CompareCasesPage = ({ user }) => {
                             {case_.state?.toUpperCase()}
                           </Badge>
                         </div>
-                        <div className="flex gap-3 mt-3 text-xs text-muted-foreground">
+                        <div className="flex gap-3 mt-3 text-xs text-slate-600">
                           <span>{case_.document_count || 0} docs</span>
                           <span>{case_.event_count || 0} events</span>
                         </div>
@@ -362,26 +362,26 @@ const CompareCasesPage = ({ user }) => {
                 {/* Summary Cards */}
                 <div className="grid md:grid-cols-3 gap-6">
                   {comparisonResult.cases.map((case_, index) => (
-                    <Card key={case_.case_id} className="bg-card border-border">
+                    <Card key={case_.case_id} className="bg-white border-slate-200">
                       <CardContent className="p-5">
-                        <h3 className="font-semibold text-foreground mb-2 truncate">{case_.title}</h3>
-                        <p className="text-sm text-muted-foreground mb-3">{case_.defendant_name}</p>
+                        <h3 className="font-semibold text-slate-900 mb-2 truncate">{case_.title}</h3>
+                        <p className="text-sm text-slate-600 mb-3">{case_.defendant_name}</p>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Grounds:</span>
-                            <span className="font-medium text-foreground">{case_.grounds_count}</span>
+                            <span className="text-slate-600">Grounds:</span>
+                            <span className="font-medium text-slate-900">{case_.grounds_count}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Strong:</span>
+                            <span className="text-slate-600">Strong:</span>
                             <span className="font-medium text-emerald-600">{case_.ground_strengths.strong}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Documents:</span>
-                            <span className="font-medium text-foreground">{case_.documents_count}</span>
+                            <span className="text-slate-600">Documents:</span>
+                            <span className="font-medium text-slate-900">{case_.documents_count}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Events:</span>
-                            <span className="font-medium text-foreground">{case_.events_count}</span>
+                            <span className="text-slate-600">Events:</span>
+                            <span className="font-medium text-slate-900">{case_.events_count}</span>
                           </div>
                         </div>
                       </CardContent>
@@ -391,9 +391,9 @@ const CompareCasesPage = ({ user }) => {
 
                 {/* Common Grounds */}
                 {comparisonResult.ground_comparison.common_grounds.length > 0 && (
-                  <Card className="bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+                  <Card className="bg-emerald-50 border-emerald-200">
                     <CardContent className="p-5">
-                      <h3 className="font-semibold text-emerald-800 dark:text-emerald-200 mb-3 flex items-center gap-2">
+                      <h3 className="font-semibold text-emerald-800 mb-3 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5" />
                         Common Ground Types
                       </h3>
@@ -410,7 +410,7 @@ const CompareCasesPage = ({ user }) => {
 
                 {/* Insights */}
                 {comparisonResult.insights.length > 0 && (
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         <Sparkles className="w-5 h-5 text-red-600" />
@@ -420,7 +420,7 @@ const CompareCasesPage = ({ user }) => {
                     <CardContent>
                       <ul className="space-y-2">
                         {comparisonResult.insights.map((insight, i) => (
-                          <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                          <li key={i} className="flex items-start gap-2 text-slate-600">
                             <Info className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
                             {insight}
                           </li>
@@ -436,7 +436,7 @@ const CompareCasesPage = ({ user }) => {
           /* Patterns Tab */
           <div className="space-y-8">
             {/* Filters */}
-            <Card className="bg-card border-border">
+            <Card className="bg-white border-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   <Filter className="w-5 h-5 text-red-600" />
@@ -446,7 +446,7 @@ const CompareCasesPage = ({ user }) => {
               <CardContent>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Offence Category</label>
+                    <label className="text-sm font-medium text-slate-900 mb-1.5 block">Offence Category</label>
                     <Select 
                       value={patternFilters.offence_category || "all"} 
                       onValueChange={(v) => setPatternFilters({...patternFilters, offence_category: v === "all" ? "" : v})}
@@ -463,7 +463,7 @@ const CompareCasesPage = ({ user }) => {
                     </Select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">State</label>
+                    <label className="text-sm font-medium text-slate-900 mb-1.5 block">State</label>
                     <Select 
                       value={patternFilters.state || "all"} 
                       onValueChange={(v) => setPatternFilters({...patternFilters, state: v === "all" ? "" : v})}
@@ -480,7 +480,7 @@ const CompareCasesPage = ({ user }) => {
                     </Select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">Ground Type</label>
+                    <label className="text-sm font-medium text-slate-900 mb-1.5 block">Ground Type</label>
                     <Select 
                       value={patternFilters.ground_type || "all"} 
                       onValueChange={(v) => setPatternFilters({...patternFilters, ground_type: v === "all" ? "" : v})}
@@ -504,52 +504,52 @@ const CompareCasesPage = ({ user }) => {
             {loadingPatterns ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading patterns...</p>
+                <p className="text-slate-600">Loading patterns...</p>
               </div>
             ) : patterns ? (
               <div className="space-y-6">
                 {/* Overview Stats */}
                 <div className="grid md:grid-cols-4 gap-4">
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardContent className="p-5 text-center">
-                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <FileText className="w-6 h-6 text-blue-600" />
                       </div>
-                      <p className="text-2xl font-bold text-foreground">{patterns.total_cases_analyzed}</p>
-                      <p className="text-sm text-muted-foreground">Cases Analysed</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.total_cases_analyzed}</p>
+                      <p className="text-sm text-slate-600">Cases Analysed</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardContent className="p-5 text-center">
-                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <Gavel className="w-6 h-6 text-red-600 dark:text-blue-400" />
+                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <Gavel className="w-6 h-6 text-red-600" />
                       </div>
-                      <p className="text-2xl font-bold text-foreground">{patterns.total_grounds_analyzed}</p>
-                      <p className="text-sm text-muted-foreground">Grounds Identified</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.total_grounds_analyzed}</p>
+                      <p className="text-sm text-slate-600">Grounds Identified</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardContent className="p-5 text-center">
-                      <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <TrendingUp className="w-6 h-6 text-emerald-600" />
                       </div>
-                      <p className="text-2xl font-bold text-foreground">{patterns.success_indicators?.strong_grounds_count || 0}</p>
-                      <p className="text-sm text-muted-foreground">Strong Grounds</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.success_indicators?.strong_grounds_count || 0}</p>
+                      <p className="text-sm text-slate-600">Strong Grounds</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardContent className="p-5 text-center">
-                      <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <BarChart3 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                      <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <BarChart3 className="w-6 h-6 text-purple-600" />
                       </div>
-                      <p className="text-2xl font-bold text-foreground">{patterns.success_indicators?.avg_grounds_per_case || 0}</p>
-                      <p className="text-sm text-muted-foreground">Avg Grounds/Case</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.success_indicators?.avg_grounds_per_case || 0}</p>
+                      <p className="text-sm text-slate-600">Avg Grounds/Case</p>
                     </CardContent>
                   </Card>
                 </div>
 
                 {/* Ground Type Distribution */}
-                <Card className="bg-card border-border">
+                <Card className="bg-white border-slate-200">
                   <CardHeader>
                     <CardTitle className="text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
                       Ground Type Distribution
@@ -563,10 +563,10 @@ const CompareCasesPage = ({ user }) => {
                           const percentage = (count / maxCount) * 100;
                           return (
                             <div key={type} className="flex items-center gap-3">
-                              <div className="w-40 text-sm text-muted-foreground truncate">
+                              <div className="w-40 text-sm text-slate-600 truncate">
                                 {groundTypeLabels[type] || type}
                               </div>
-                              <div className="flex-1 bg-muted rounded-full h-7 overflow-hidden">
+                              <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
                                 <div 
                                   className="h-full bg-gradient-to-r from-blue-500 to-red-600 rounded-full flex items-center justify-end pr-3 transition-all duration-500"
                                   style={{ width: `${Math.max(percentage, 10)}%` }}
@@ -579,7 +579,7 @@ const CompareCasesPage = ({ user }) => {
                         })}
                       </div>
                     ) : (
-                      <p className="text-muted-foreground text-center py-8">No data available</p>
+                      <p className="text-slate-600 text-center py-8">No data available</p>
                     )}
                   </CardContent>
                 </Card>
@@ -606,7 +606,7 @@ const CompareCasesPage = ({ user }) => {
 
                 {/* Success Factors */}
                 {successFactors && successFactors.success_factors?.length > 0 && (
-                  <Card className="bg-card border-border">
+                  <Card className="bg-white border-slate-200">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         <TrendingUp className="w-5 h-5 text-emerald-600" />
@@ -616,12 +616,12 @@ const CompareCasesPage = ({ user }) => {
                     <CardContent>
                       <div className="space-y-4">
                         {successFactors.success_factors.map((factor, i) => (
-                          <div key={i} className="p-4 bg-muted/50 rounded-xl">
+                          <div key={i} className="p-4 bg-slate-50 rounded-xl">
                             <div className="flex items-center gap-2 mb-2">
                               <Badge className="bg-emerald-600 text-white">{factor.factor}</Badge>
                             </div>
-                            <p className="text-foreground font-medium mb-1">{factor.finding}</p>
-                            <p className="text-sm text-muted-foreground">{factor.recommendation}</p>
+                            <p className="text-slate-900 font-medium mb-1">{factor.finding}</p>
+                            <p className="text-sm text-slate-600">{factor.recommendation}</p>
                           </div>
                         ))}
                       </div>
@@ -631,8 +631,8 @@ const CompareCasesPage = ({ user }) => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <BarChart3 className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-                <p className="text-muted-foreground">No pattern data available</p>
+                <BarChart3 className="w-12 h-12 text-slate-600/50 mx-auto mb-3" />
+                <p className="text-slate-600">No pattern data available</p>
               </div>
             )}
           </div>
@@ -640,7 +640,7 @@ const CompareCasesPage = ({ user }) => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 dark:bg-slate-950 px-6 py-8 border-t border-slate-800">
+      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-slate-400 text-sm">
             © 2025 Appeal Case Manager. All rights reserved.

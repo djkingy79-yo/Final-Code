@@ -292,7 +292,7 @@ const LawyerDirectory = () => {
               className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 selectedState === "all"
                   ? "bg-red-600 text-white shadow-lg"
-                  : "bg-card border border-slate-200 text-slate-700 hover:border-blue-500"
+                  : "bg-white border border-slate-200 text-slate-700 hover:border-blue-500"
               }`}
             >
               All States
@@ -304,7 +304,7 @@ const LawyerDirectory = () => {
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   selectedState === resource.code.toLowerCase()
                     ? `${resource.color} text-white shadow-lg`
-                    : "bg-card border border-slate-200 text-slate-700 hover:border-blue-500"
+                    : "bg-white border border-slate-200 text-slate-700 hover:border-blue-500"
                 }`}
               >
                 {resource.code}
@@ -366,7 +366,7 @@ const LawyerDirectory = () => {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="bg-card border border-slate-200 rounded-xl p-5 h-full hover:shadow-lg hover:border-blue-500/50 transition-all group">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 h-full hover:shadow-lg hover:border-blue-500/50 transition-all group">
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{resource.name}</h3>
@@ -406,7 +406,7 @@ const LawyerDirectory = () => {
         
         <div className="space-y-6">
           {filteredResources.map((state, index) => (
-            <div key={index} className="bg-card border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+            <div key={index} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
               <div className={`${state.color} text-white px-6 py-4`}>
                 <h3 className="text-xl font-bold flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   <Badge variant="outline" className="bg-white/20 border-white/40 text-white text-sm px-3">
@@ -418,7 +418,7 @@ const LawyerDirectory = () => {
               <div className="p-6">
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Legal Aid */}
-                  <div className="bg-muted/30 p-4 rounded-xl">
+                  <div className="bg-slate-100/30 p-4 rounded-xl">
                     <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                         <Building2 className="w-4 h-4 text-blue-700" />
@@ -444,7 +444,7 @@ const LawyerDirectory = () => {
                   </div>
 
                   {/* Bar Association */}
-                  <div className="bg-muted/30 p-4 rounded-xl">
+                  <div className="bg-slate-100/30 p-4 rounded-xl">
                     <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
                         <Gavel className="w-4 h-4 text-purple-700" />
@@ -464,7 +464,7 @@ const LawyerDirectory = () => {
                   </div>
 
                   {/* Law Society */}
-                  <div className="bg-muted/30 p-4 rounded-xl">
+                  <div className="bg-slate-100/30 p-4 rounded-xl">
                     <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
                         <Users className="w-4 h-4 text-emerald-700" />

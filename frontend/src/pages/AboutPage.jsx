@@ -14,7 +14,7 @@ const AboutPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
       <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -57,7 +57,7 @@ const AboutPage = () => {
           <img 
             src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -104,7 +104,7 @@ const AboutPage = () => {
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
               <Quote className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               My Journey
             </h2>
           </div>
@@ -112,7 +112,7 @@ const AboutPage = () => {
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               I'm not a lawyer — I'm someone who knows firsthand how isolating and confusing the justice system can be.
-              <strong className="text-foreground"> I served a considerable amount of time in prison.</strong> During that time, 
+              <strong className="text-slate-900"> I served a considerable amount of time in prison.</strong> During that time, 
               I accepted my situation, believing I had no options. What I didn't know then was that I had appellant rights 
               — rights that were never properly explained to me.
             </p>
@@ -123,11 +123,11 @@ const AboutPage = () => {
             </p>
 
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <p className="text-emerald-800 dark:text-emerald-200 font-medium">
+              <p className="text-emerald-800 font-medium">
                 <CheckCircle className="w-5 h-5 inline mr-2 -mt-0.5" />
                 <strong>It's now been eight years since I've been free from trouble.</strong>
               </p>
-              <p className="text-emerald-700 dark:text-emerald-300 mt-2 text-sm">
+              <p className="text-emerald-700 mt-2 text-sm">
                 In that time, I've invested years of hard work, research, and determination into building this application. 
                 Every hour spent learning criminal law, every late night developing this tool — it was all driven by one goal: 
                 to ensure others don't have to go through what I went through.
@@ -148,10 +148,10 @@ const AboutPage = () => {
       <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <Gavel className="w-6 h-6 text-red-600 dark:text-red-400" />
+            <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+              <Gavel className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Joshua Homann — The Reason This App Exists
             </h2>
           </div>
@@ -205,13 +205,13 @@ const AboutPage = () => {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-foreground">Josh is my best mate.</strong> He was convicted in 2018 and sentenced to 
+              <strong className="text-slate-900">Josh is my best mate.</strong> He was convicted in 2018 and sentenced to 
               30 years imprisonment with a non-parole period of 22 years and 6 months. For 10 years, he was told he had 
               no appellant rights. No grounds of merit. No options. He believed it — and so did I, at first.
             </p>
 
             <p>
-              I've dedicated the last <strong className="text-foreground">five years</strong> to researching, analysing, and 
+              I've dedicated the last <strong className="text-slate-900">five years</strong> to researching, analysing, and 
               reporting on Josh's case. Five years of reading transcripts, studying legislation, examining evidence, and 
               learning criminal law from the ground up. Blood, sweat, and tears went into understanding every aspect of 
               what happened to him. I've become so knowledgeable on Murder, Manslaughter, and Mens Rea that I'm confident 
@@ -219,12 +219,12 @@ const AboutPage = () => {
               dedication to finding the truth.
             </p>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-              <p className="text-blue-800 dark:text-blue-200 font-medium mb-3">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <p className="text-blue-800 font-medium mb-3">
                 <AlertTriangle className="w-5 h-5 inline mr-2 -mt-0.5" />
                 <strong>Then I built this app.</strong>
               </p>
-              <p className="text-blue-700 dark:text-blue-300 text-sm">
+              <p className="text-blue-700 text-sm">
                 Using this very application, we analysed every document, every transcript, every piece of evidence. 
                 What we found was shocking — Josh had been severely let down by the system.
               </p>
@@ -240,19 +240,19 @@ const AboutPage = () => {
 
             <p>
               This app was born from that journey. But it's not just for people like Josh — it's designed to be a powerful 
-              tool for <strong className="text-foreground">lawyers and legal professionals</strong> too. When solicitors and 
+              tool for <strong className="text-slate-900">lawyers and legal professionals</strong> too. When solicitors and 
               barristers are overloaded with cases, when Legal Aid is stretched beyond capacity, when there simply aren't 
               enough hours in the day to give every case the attention it deserves — this app can help. It organises, 
               analyses, and identifies issues that might otherwise be missed. What took me five years to learn, this app 
               can help accomplish in a fraction of the time.
             </p>
 
-            <div className="bg-emerald-50 border-2 border-emerald-400 dark:border-emerald-600 rounded-xl p-6 mt-8">
-              <p className="text-emerald-800 dark:text-emerald-200 font-bold text-lg mb-2">
+            <div className="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-6 mt-8">
+              <p className="text-emerald-800 font-bold text-lg mb-2">
                 <CheckCircle className="w-6 h-6 inline mr-2 -mt-0.5" />
                 Josh now has a full appeal in progress
               </p>
-              <p className="text-emerald-700 dark:text-emerald-300">
+              <p className="text-emerald-700">
                 After 10 years of being told he had no options, Josh is currently in the process of a <strong>full case appeal 
                 for both conviction and sentence</strong>. From being denied a judge alone trial to failures in procedural 
                 fairness — the grounds identified are severe and deny him natural justice. This app made it possible to 
@@ -268,18 +268,18 @@ const AboutPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <Users className="w-6 h-6 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Brad Fletcher — Best Mate for Life
             </h2>
           </div>
 
           {/* Case Details Card */}
-          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
               <div>
-                <h3 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Brad Fletcher
                 </h3>
                 <p className="text-slate-700 text-sm">Matter Pending</p>
@@ -293,7 +293,7 @@ const AboutPage = () => {
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-slate-700">Charge:</span>
-                <span className="text-foreground font-semibold ml-2">Murder</span>
+                <span className="text-slate-900 font-semibold ml-2">Murder</span>
               </div>
               <div>
                 <span className="text-slate-700">Status:</span>
@@ -304,16 +304,16 @@ const AboutPage = () => {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-foreground">Brad is my best mate for life.</strong> He's been on remand for over 
+              <strong className="text-slate-900">Brad is my best mate for life.</strong> He's been on remand for over 
               two years now, still waiting for his matter to be finalised. Two years of his life in limbo.
             </p>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-              <p className="text-blue-800 dark:text-blue-200 font-medium mb-2">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <p className="text-blue-800 font-medium mb-2">
                 <AlertTriangle className="w-5 h-5 inline mr-2 -mt-0.5" />
                 <strong>Even before trial, we've already identified strong issues.</strong>
               </p>
-              <p className="text-blue-700 dark:text-blue-300 text-sm">
+              <p className="text-blue-700 text-sm">
                 During the proceedings, using this app to analyse the available materials, we've already found significant 
                 issues that are apparent. Problems that need to be documented and tracked from day one.
               </p>
@@ -331,17 +331,17 @@ const AboutPage = () => {
       <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Shield className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+              <Shield className="w-6 h-6 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Why This Matters
             </h2>
           </div>
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-foreground">Josh and Brad inspired me to build this.</strong> Watching them — and 
+              <strong className="text-slate-900">Josh and Brad inspired me to build this.</strong> Watching them — and 
               so many others — struggle through a system that offers little help once you're sentenced or charged, 
               I knew something had to change.
             </p>
@@ -352,7 +352,7 @@ const AboutPage = () => {
             </p>
 
             <p>
-              This app exists because <strong className="text-foreground">everyone deserves to know their rights</strong>. 
+              This app exists because <strong className="text-slate-900">everyone deserves to know their rights</strong>. 
               Everyone deserves the chance to identify if something went wrong in their case. Everyone deserves access 
               to the same tools that expensive law firms use.
             </p>
@@ -379,7 +379,7 @@ const AboutPage = () => {
             Josh spent 10 years being told he had no options. Ten years. This app found multiple severe grounds in weeks. 
             That's why this exists."
           </blockquote>
-          <p className="text-foreground font-semibold mt-4">— Debra King</p>
+          <p className="text-slate-900 font-semibold mt-4">— Debra King</p>
           <p className="text-slate-700 text-sm mt-1">Founder, Appeal Case Manager</p>
         </div>
       </section>

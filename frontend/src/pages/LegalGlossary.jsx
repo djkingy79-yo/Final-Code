@@ -628,21 +628,21 @@ const LegalGlossary = () => {
   };
 
   const colorClasses = {
-    blue_mapped: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-    red: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800",
-    emerald: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-    purple: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800",
-    blue: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-    slate: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-    orange: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800",
+    blue_mapped: "bg-blue-100 text-blue-700 border-blue-200",
+    red: "bg-red-100 text-red-700 border-red-200",
+    emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    purple: "bg-purple-100 text-purple-700 border-purple-200",
+    blue: "bg-blue-100 text-blue-700 border-blue-200",
+    slate: "bg-slate-100 text-slate-700 border-slate-200",
+    orange: "bg-orange-100 text-orange-700 border-orange-200",
   };
 
   const filteredTerms = getFilteredTerms();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -669,7 +669,7 @@ const LegalGlossary = () => {
           <img 
             src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt="Lady Justice"
-            className="w-full h-full object-cover opacity-10 dark:opacity-5"
+            className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -678,13 +678,13 @@ const LegalGlossary = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <BookOpen className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Legal Terms Explained
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Don't know your mens rea from your actus reus? No worries. Here's what all the legal jargon means in <strong>plain English</strong>.
           </p>
-          <p className="text-sm text-muted-foreground mt-4">
+          <p className="text-sm text-slate-600 mt-4">
             <strong>{getAllTerms().length} terms</strong> across {glossaryCategories.length} categories
           </p>
         </div>
@@ -693,15 +693,15 @@ const LegalGlossary = () => {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="glossary-content-intro">
-          <p className="text-xs uppercase tracking-widest text-red-600 dark:text-blue-500 font-semibold mb-1">Glossary Navigator</p>
-          <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-xs uppercase tracking-widest text-red-600 font-semibold mb-1">Glossary Navigator</p>
+          <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Scan terms quickly or read in full detail
           </h2>
         </section>
 
         {/* Search Bar */}
         <div className="relative mb-8 max-w-xl mx-auto">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
           <Input
             type="text"
             placeholder="Search for any legal term..."
@@ -718,7 +718,7 @@ const LegalGlossary = () => {
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "compact"
                 ? "bg-red-600 text-white border-red-600"
-                : "bg-card text-muted-foreground border-border hover:border-blue-500"
+                : "bg-white text-slate-600 border-slate-200 hover:border-blue-500"
             }`}
             data-testid="glossary-density-compact"
           >
@@ -729,7 +729,7 @@ const LegalGlossary = () => {
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "expanded"
                 ? "bg-red-600 text-white border-red-600"
-                : "bg-card text-muted-foreground border-border hover:border-blue-500"
+                : "bg-white text-slate-600 border-slate-200 hover:border-blue-500"
             }`}
             data-testid="glossary-density-expanded"
           >
@@ -743,15 +743,15 @@ const LegalGlossary = () => {
             onClick={() => setActiveCategory("all")}
             className={`p-4 rounded-xl border-2 transition-all ${
               activeCategory === "all" 
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" 
-                : "border-border hover:border-blue-500/50"
+                ? "border-blue-500 bg-blue-50" 
+                : "border-slate-200 hover:border-blue-500/50"
             }`}
           >
-            <BookOpen className={`w-6 h-6 mx-auto mb-2 ${activeCategory === "all" ? "text-red-600" : "text-muted-foreground"}`} />
-            <p className={`font-semibold text-sm ${activeCategory === "all" ? "text-blue-700 dark:text-blue-400" : "text-foreground"}`}>
+            <BookOpen className={`w-6 h-6 mx-auto mb-2 ${activeCategory === "all" ? "text-red-600" : "text-slate-600"}`} />
+            <p className={`font-semibold text-sm ${activeCategory === "all" ? "text-blue-700" : "text-slate-900"}`}>
               All Terms
             </p>
-            <p className="text-xs text-muted-foreground">{getAllTerms().length} terms</p>
+            <p className="text-xs text-slate-600">{getAllTerms().length} terms</p>
           </button>
           
           {glossaryCategories.map(cat => (
@@ -760,15 +760,15 @@ const LegalGlossary = () => {
               onClick={() => setActiveCategory(cat.id)}
               className={`p-4 rounded-xl border-2 transition-all ${
                 activeCategory === cat.id 
-                  ? `border-blue-500 bg-blue-50 dark:bg-blue-900/20` 
-                  : "border-border hover:border-blue-500/50"
+                  ? `border-blue-500 bg-blue-50` 
+                  : "border-slate-200 hover:border-blue-500/50"
               }`}
             >
-              <cat.icon className={`w-6 h-6 mx-auto mb-2 ${activeCategory === cat.id ? "text-red-600" : "text-muted-foreground"}`} />
-              <p className={`font-semibold text-sm ${activeCategory === cat.id ? "text-blue-700 dark:text-blue-400" : "text-foreground"}`}>
+              <cat.icon className={`w-6 h-6 mx-auto mb-2 ${activeCategory === cat.id ? "text-red-600" : "text-slate-600"}`} />
+              <p className={`font-semibold text-sm ${activeCategory === cat.id ? "text-blue-700" : "text-slate-900"}`}>
                 {cat.name}
               </p>
-              <p className="text-xs text-muted-foreground">{cat.terms.length} terms</p>
+              <p className="text-xs text-slate-600">{cat.terms.length} terms</p>
             </button>
           ))}
         </div>
@@ -799,7 +799,7 @@ const LegalGlossary = () => {
           {filteredTerms.map((item, index) => (
             <div 
               key={`${item.term}-${index}`}
-              className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
+              className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
             >
               <button
                 onClick={() => toggleExpand(item.term)}
@@ -807,11 +807,11 @@ const LegalGlossary = () => {
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className={`font-bold text-foreground ${viewDensity === "compact" ? "text-base" : "text-lg"}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <h3 className={`font-bold text-slate-900 ${viewDensity === "compact" ? "text-base" : "text-lg"}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
                       {item.term}
                     </h3>
                     {item.latin && (
-                      <span className="text-xs italic text-muted-foreground">({item.latin})</span>
+                      <span className="text-xs italic text-slate-600">({item.latin})</span>
                     )}
                     {activeCategory === "all" && (
                       <span className={`text-xs px-2 py-0.5 rounded-lg border ${colorClasses[item.color]}`}>
@@ -819,31 +819,31 @@ const LegalGlossary = () => {
                       </span>
                     )}
                   </div>
-                  <p className={`text-muted-foreground ${viewDensity === "compact" ? "text-sm" : "text-base"}`}>{item.simple}</p>
+                  <p className={`text-slate-600 ${viewDensity === "compact" ? "text-sm" : "text-base"}`}>{item.simple}</p>
                 </div>
-                <div className={`p-2 rounded-lg transition-colors ${expandedTerms[item.term] ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-muted'}`}>
+                <div className={`p-2 rounded-lg transition-colors ${expandedTerms[item.term] ? 'bg-blue-100' : 'bg-slate-100'}`}>
                   {expandedTerms[item.term] ? (
                     <ChevronDown className="w-5 h-5 text-red-600" />
                   ) : (
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-slate-600" />
                   )}
                 </div>
               </button>
               
               {expandedTerms[item.term] && (
                 <div className={`${viewDensity === "compact" ? "px-4 pb-4" : "px-5 pb-5"}`}>
-                  <div className={`bg-muted/50 rounded-xl border-l-4 border-blue-500 space-y-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}>
+                  <div className={`bg-slate-50 rounded-xl border-l-4 border-blue-500 space-y-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}>
                     <div>
-                      <h4 className="text-sm font-semibold text-foreground mb-2">Detailed Explanation</h4>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{item.detailed}</p>
+                      <h4 className="text-sm font-semibold text-slate-900 mb-2">Detailed Explanation</h4>
+                      <p className="text-slate-600 text-sm leading-relaxed">{item.detailed}</p>
                     </div>
                     {item.example && (
-                      <div className="pt-3 border-t border-border">
-                        <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <span className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-red-600 text-xs">Ex</span>
+                      <div className="pt-3 border-t border-slate-200">
+                        <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                          <span className="w-5 h-5 rounded bg-blue-100 flex items-center justify-center text-red-600 text-xs">Ex</span>
                           Example
                         </h4>
-                        <p className="text-muted-foreground text-sm italic">"{item.example}"</p>
+                        <p className="text-slate-600 text-sm italic">"{item.example}"</p>
                       </div>
                     )}
                   </div>
@@ -855,19 +855,19 @@ const LegalGlossary = () => {
 
         {filteredTerms.length === 0 && (
           <div className="text-center py-16">
-            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-foreground font-semibold">No terms found matching "{searchTerm}"</p>
-            <p className="text-muted-foreground text-sm mt-2">Try a different search term or browse categories above</p>
+            <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+            <p className="text-slate-900 font-semibold">No terms found matching "{searchTerm}"</p>
+            <p className="text-slate-600 text-sm mt-2">Try a different search term or browse categories above</p>
           </div>
         )}
 
         {/* Disclaimer */}
-        <div className="mt-12 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+        <div className="mt-12 p-6 bg-red-50 border border-red-200 rounded-xl">
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-red-800 dark:text-red-300">Important Disclaimer</h3>
-              <p className="text-red-700 dark:text-red-400 text-sm mt-1">
+              <h3 className="font-semibold text-red-800">Important Disclaimer</h3>
+              <p className="text-red-700 text-sm mt-1">
                 This glossary is for <strong>educational purposes only</strong> and does not constitute legal advice. 
                 Laws vary by jurisdiction and change over time. Always consult a qualified legal professional for advice about your specific situation.
               </p>

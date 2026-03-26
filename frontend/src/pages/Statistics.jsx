@@ -74,10 +74,10 @@ const Statistics = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading statistics...</p>
+          <p className="text-slate-600">Loading statistics...</p>
         </div>
       </div>
     );
@@ -87,9 +87,9 @@ const Statistics = () => {
   const maxStateCount = stats?.cases_by_state?.[0]?.count || 1;
 
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Header */}
-      <header className="bg-slate-900 dark:bg-slate-950 sticky top-0 z-50">
+      <header className="bg-slate-900 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
@@ -130,7 +130,7 @@ const Statistics = () => {
           <img 
             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
             alt=""
-            className="w-full h-full object-cover opacity-5 dark:opacity-[0.02]"
+            className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
@@ -141,11 +141,11 @@ const Statistics = () => {
               <BarChart3 className="w-8 h-8 text-white" />
             </div>
           </div>
-          <p className="text-red-600 dark:text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Analytics</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Analytics</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Case Statistics Dashboard
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
             Anonymised insights from cases managed through our platform. Understanding patterns can help inform your appeal strategy.
           </p>
         </div>
@@ -155,43 +155,43 @@ const Statistics = () => {
       <main className="max-w-6xl mx-auto px-6 pb-16">
         {/* Overview Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10">
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
-              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Gavel className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Gavel className="w-7 h-7 text-blue-600" />
               </div>
-              <p className="text-3xl font-bold text-foreground">{stats?.overview?.total_cases || 0}</p>
-              <p className="text-sm text-muted-foreground mt-1">Total Cases</p>
+              <p className="text-3xl font-bold text-slate-900">{stats?.overview?.total_cases || 0}</p>
+              <p className="text-sm text-slate-600 mt-1">Total Cases</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
-              <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-7 h-7 text-emerald-600" />
               </div>
-              <p className="text-3xl font-bold text-foreground">{stats?.overview?.total_documents || 0}</p>
-              <p className="text-sm text-muted-foreground mt-1">Documents Uploaded</p>
+              <p className="text-3xl font-bold text-slate-900">{stats?.overview?.total_documents || 0}</p>
+              <p className="text-sm text-slate-600 mt-1">Documents Uploaded</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
-              <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-7 h-7 text-red-600 dark:text-blue-400" />
+              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <TrendingUp className="w-7 h-7 text-red-600" />
               </div>
-              <p className="text-3xl font-bold text-foreground">{stats?.overview?.total_reports || 0}</p>
-              <p className="text-sm text-muted-foreground mt-1">Reports Generated</p>
+              <p className="text-3xl font-bold text-slate-900">{stats?.overview?.total_reports || 0}</p>
+              <p className="text-sm text-slate-600 mt-1">Reports Generated</p>
             </CardContent>
           </Card>
           
-          <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
-              <div className="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-7 h-7 text-purple-600 dark:text-purple-400" />
+              <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-7 h-7 text-purple-600" />
               </div>
-              <p className="text-3xl font-bold text-foreground">{stats?.overview?.total_grounds_identified || 0}</p>
-              <p className="text-sm text-muted-foreground mt-1">Grounds Identified</p>
+              <p className="text-3xl font-bold text-slate-900">{stats?.overview?.total_grounds_identified || 0}</p>
+              <p className="text-sm text-slate-600 mt-1">Grounds Identified</p>
             </CardContent>
           </Card>
         </div>
@@ -199,11 +199,11 @@ const Statistics = () => {
         {/* Charts Section */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-10">
           {/* Cases by Offence Type */}
-          <Card className="bg-card border-border shadow-sm">
+          <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <AlertTriangle className="w-4 h-4 text-red-600 dark:text-blue-400" />
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4 text-red-600" />
                 </div>
                 Cases by Offence Type
               </CardTitle>
@@ -213,8 +213,8 @@ const Statistics = () => {
                 <div className="space-y-3">
                   {stats.cases_by_offence.slice(0, 8).map((item, index) => (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="w-28 text-sm text-muted-foreground truncate">{item.category}</div>
-                      <div className="flex-1 bg-muted rounded-full h-7 overflow-hidden">
+                      <div className="w-28 text-sm text-slate-600 truncate">{item.category}</div>
+                      <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
                         <div 
                           className={`h-full ${getOffenceColor(item.key)} rounded-full flex items-center justify-end pr-3 transition-all duration-500`}
                           style={{ width: `${Math.max((item.count / maxOffenceCount) * 100, 15)}%` }}
@@ -227,21 +227,21 @@ const Statistics = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <BarChart3 className="w-6 h-6 text-muted-foreground" />
+                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <BarChart3 className="w-6 h-6 text-slate-600" />
                   </div>
-                  <p className="text-muted-foreground">No data available yet</p>
+                  <p className="text-slate-600">No data available yet</p>
                 </div>
               )}
             </CardContent>
           </Card>
 
           {/* Cases by State */}
-          <Card className="bg-card border-border shadow-sm">
+          <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-blue-600" />
                 </div>
                 Cases by State
               </CardTitle>
@@ -251,8 +251,8 @@ const Statistics = () => {
                 <div className="space-y-3">
                   {stats.cases_by_state.map((item, index) => (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="w-36 text-sm text-muted-foreground truncate">{item.state}</div>
-                      <div className="flex-1 bg-muted rounded-full h-7 overflow-hidden">
+                      <div className="w-36 text-sm text-slate-600 truncate">{item.state}</div>
+                      <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
                         <div 
                           className={`h-full ${getStateColor(item.key)} rounded-full flex items-center justify-end pr-3 transition-all duration-500`}
                           style={{ width: `${Math.max((item.count / maxStateCount) * 100, 15)}%` }}
@@ -265,10 +265,10 @@ const Statistics = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <MapPin className="w-6 h-6 text-muted-foreground" />
+                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <MapPin className="w-6 h-6 text-slate-600" />
                   </div>
-                  <p className="text-muted-foreground">No data available yet</p>
+                  <p className="text-slate-600">No data available yet</p>
                 </div>
               )}
             </CardContent>
@@ -278,11 +278,11 @@ const Statistics = () => {
         {/* Grounds Analysis */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-10">
           {/* Grounds by Type */}
-          <Card className="bg-card border-border shadow-sm">
+          <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-purple-600" />
                 </div>
                 Most Common Appeal Grounds
               </CardTitle>
@@ -291,9 +291,9 @@ const Statistics = () => {
               {stats?.grounds_by_type?.length > 0 ? (
                 <div className="space-y-2">
                   {stats.grounds_by_type.slice(0, 6).map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors">
-                      <span className="text-sm font-medium text-foreground">{item.type}</span>
-                      <span className="text-sm font-bold text-foreground bg-card px-3 py-1 rounded-lg border border-border">
+                    <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+                      <span className="text-sm font-medium text-slate-900">{item.type}</span>
+                      <span className="text-sm font-bold text-slate-900 bg-white px-3 py-1 rounded-lg border border-slate-200">
                         {item.count}
                       </span>
                     </div>
@@ -301,21 +301,21 @@ const Statistics = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Shield className="w-6 h-6 text-muted-foreground" />
+                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Shield className="w-6 h-6 text-slate-600" />
                   </div>
-                  <p className="text-muted-foreground">No data available yet</p>
+                  <p className="text-slate-600">No data available yet</p>
                 </div>
               )}
             </CardContent>
           </Card>
 
           {/* Grounds by Strength */}
-          <Card className="bg-card border-border shadow-sm">
+          <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-emerald-600" />
                 </div>
                 Ground Strength Distribution
               </CardTitle>
@@ -329,20 +329,20 @@ const Statistics = () => {
                         <div className={`w-20 h-20 ${getStrengthColor(item.strength)} rounded-2xl flex items-center justify-center mb-3 shadow-lg`}>
                           <span className="text-2xl font-bold text-white">{item.count}</span>
                         </div>
-                        <p className="text-sm font-medium text-foreground">{item.strength}</p>
+                        <p className="text-sm font-medium text-slate-900">{item.strength}</p>
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground text-center">
+                  <p className="text-xs text-slate-600 text-center">
                     Strong grounds have the highest likelihood of success on appeal
                   </p>
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-muted rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <TrendingUp className="w-6 h-6 text-muted-foreground" />
+                  <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="w-6 h-6 text-slate-600" />
                   </div>
-                  <p className="text-muted-foreground">No data available yet</p>
+                  <p className="text-slate-600">No data available yet</p>
                 </div>
               )}
             </CardContent>
@@ -384,8 +384,8 @@ const Statistics = () => {
         )}
 
         {/* Disclaimer */}
-        <div className="mt-10 p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
+        <div className="mt-10 p-5 bg-blue-50 border border-blue-200 rounded-2xl">
+          <p className="text-sm text-blue-800">
             <strong>Note:</strong> These statistics are based on cases managed through this platform and are provided 
             for informational purposes only. They do not represent official court statistics or predict appeal outcomes. 
             Every case is unique and should be assessed on its own merits by qualified legal professionals.
@@ -394,7 +394,7 @@ const Statistics = () => {
       </main>
 
       {/* Footer CTA */}
-      <section className="bg-slate-900 dark:bg-slate-950 px-6 py-12 border-t border-slate-800">
+      <section className="bg-slate-900 px-6 py-12 border-t border-slate-800">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Analyse Your Case?
