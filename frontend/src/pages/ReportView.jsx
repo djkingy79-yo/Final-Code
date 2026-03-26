@@ -648,8 +648,8 @@ const ReportView = () => {
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
-    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; }
+    .section-body table { width: 100%; min-width: 720px; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: auto; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: normal; overflow-wrap: normal; }
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; font-size: 12px; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
@@ -1029,17 +1029,20 @@ const ReportView = () => {
         .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
           width: 100%;
-          min-width: 100%;
+          min-width: 720px;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
-          table-layout: fixed;
+          table-layout: auto;
         }
         .legal-report th {
-          background: #1e3a8a;
+          background: #1d4ed8;
           color: #ffffff !important;
-          font-weight: 700;
+          font-weight: 800;
           font-size: 0.8rem;
+          white-space: normal;
+          word-break: normal;
+          overflow-wrap: normal;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
@@ -1074,7 +1077,7 @@ const ReportView = () => {
           .legal-report h3,
           .legal-report strong { color: #0f172a; }
           .legal-report table { background: #ffffff; }
-          .legal-report th { background: #1e3a8a; color: #ffffff !important; }
+          .legal-report th { background: #1d4ed8; color: #ffffff !important; }
           .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
           .legal-report blockquote { background: #eff6ff; color: #1e3a8a; border-left: 4px solid #1e3a8a; }
         }

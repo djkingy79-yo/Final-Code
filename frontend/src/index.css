@@ -385,28 +385,33 @@ code, .mono {
 /* Tables — Full professional legal formatting */
 .legal-report table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   margin: 1.25rem 0;
   font-size: 1rem;
-  table-layout: fixed;
+  table-layout: auto;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   overflow: hidden;
 }
 
 .legal-report thead {
-  background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+  background: #1d4ed8;
 }
 
 .legal-report thead th {
   color: #ffffff;
-  font-weight: 700;
+  background: #1d4ed8;
+  font-weight: 800;
   font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 0.8rem 1rem;
   text-align: left;
-  border-bottom: 2px solid #1e3a8a;
+  border-bottom: 2px solid #1d4ed8;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .legal-report tbody tr {
@@ -615,14 +620,15 @@ code, .mono {
   }
 
   .legal-report thead {
-    background: #e5e7eb !important;
+    background: #1d4ed8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .legal-report thead th {
-    color: black !important;
-    background: #e5e7eb !important;
+    color: white !important;
+    background: #1d4ed8 !important;
+    font-weight: 800 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -636,14 +642,14 @@ code, .mono {
   .legal-report table {
     page-break-inside: auto;
     width: 100%;
-    min-width: 0;
-    table-layout: fixed;
+    min-width: 720px;
+    table-layout: auto;
   }
 
   .legal-report td,
   .legal-report th {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    word-wrap: normal;
+    overflow-wrap: normal;
     min-width: 0;
   }
 

@@ -240,8 +240,9 @@ export default function BarristerView() {
     .preview-paper p { margin: 0 0 12px; line-height: 1.75; }
     .preview-paper ul, .preview-paper ol { margin: 0 0 14px; padding-left: 22px; }
     .preview-paper li { margin-bottom: 6px; }
-    .preview-paper table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 16px 0; font-size: 12px; }
-    .preview-paper th { background: #0f172a; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; }
+    .preview-paper .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .preview-paper table { width: 100%; min-width: 720px; border-collapse: collapse; table-layout: auto; margin: 16px 0; font-size: 12px; }
+    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; }
     .preview-paper td { padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; overflow-wrap: anywhere; }
     .preview-paper blockquote { margin: 16px 0; padding: 12px 16px; border-left: 4px solid #1d4ed8; background: #eff6ff; }
     .preview-paper a { color: #1d4ed8; text-decoration: underline; }
@@ -593,7 +594,8 @@ export default function BarristerView() {
         .legal-report li { margin-bottom: 0.45rem; }
         .legal-report table {
           width: 100%;
-          table-layout: fixed;
+          min-width: 720px;
+          table-layout: auto;
           border-collapse: collapse;
           margin: 0;
         }
@@ -606,9 +608,12 @@ export default function BarristerView() {
           font-size: 0.92rem;
         }
         .legal-report th {
-          background: #0f172a;
+          background: #1d4ed8;
           color: #ffffff;
-          font-weight: 700;
+          font-weight: 800;
+          white-space: normal;
+          word-break: normal;
+          overflow-wrap: normal;
         }
         .legal-report blockquote {
           margin: 1rem 0;
