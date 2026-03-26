@@ -1121,10 +1121,10 @@ const CaseDetail = ({ user }) => {
                         <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">{children}</a>
                       ),
                       table: ({ children }) => (
-                        <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300">{children}</table></div>
+                        <div className="overflow-x-auto my-4"><table className="w-full min-w-[560px] border-collapse border border-slate-300 table-auto">{children}</table></div>
                       ),
                       th: ({ children }) => (
-                        <th className="border border-slate-300 bg-slate-100 px-3 py-2 text-left text-sm font-semibold">{children}</th>
+                        <th className="border border-slate-300 bg-blue-700 px-3 py-2 text-left text-sm font-extrabold text-white whitespace-normal break-normal">{children}</th>
                       ),
                       td: ({ children }) => (
                         <td className="border border-slate-300 px-3 py-2 text-sm">{children}</td>

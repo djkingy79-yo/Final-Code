@@ -57,6 +57,10 @@ const cleanSentence = (s) => {
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
+  const byExactYears = analysis.match(/(\d+\s+years?\s+with\s+a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)/i);
+  if (byExactYears?.[1]) return cleanSentence(byExactYears[1]);
+  const byThirtyStyle = analysis.match(/(\d+\s+years?(?:\s+and\s+\d+\s+months?)?\s*(?:imprisonment|gaol|jail|custody)?\s*(?:with\s+(?:a\s+)?non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)?)/i);
+  if (byThirtyStyle?.[1] && /non[- ]?parole|imprisonment|gaol|custody/i.test(byThirtyStyle[1])) return cleanSentence(byThirtyStyle[1]);
   const combined = analysis.match(/sentenced?\s+to\s+([^\n\.]{10,180}?(?:non[- ]?parole\s+period|NPP)[^\n\.]{0,160})/i);
   if (combined?.[1]) return cleanSentence(combined[1]);
   // Match "sentenced to X years imprisonment" patterns
@@ -492,18 +496,18 @@ const REPORT_THEME = {
   },
   extensive_log: {
     label: "Extensive Log Report",
-    headerBg: "bg-slate-800",
-    previewColor: "#1e293b",
-    accentBg: "bg-slate-700",
-    accentText: "text-slate-900",
-    priceBadge: "bg-slate-700",
+    headerBg: "bg-purple-700",
+    previewColor: "#7e22ce",
+    accentBg: "bg-purple-600",
+    accentText: "text-purple-900",
+    priceBadge: "bg-purple-600",
     price: "$200 AUD",
-    borderColor: "border-slate-300",
-    lightBg: "from-slate-50 via-white to-blue-50",
-    sectionBorder: "border-slate-700",
-    tocBg: "bg-slate-50/90",
-    tocBorder: "border-slate-200",
-    sectionNumberBg: "bg-slate-200 text-slate-900",
+    borderColor: "border-purple-300",
+    lightBg: "from-purple-50 via-white to-fuchsia-50",
+    sectionBorder: "border-purple-600",
+    tocBg: "bg-purple-50/90",
+    tocBorder: "border-purple-200",
+    sectionNumberBg: "bg-purple-200 text-purple-900",
   },
 };
 

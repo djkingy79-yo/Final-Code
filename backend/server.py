@@ -2010,11 +2010,13 @@ async def generate_progress_analysis(case_id: str, request: Request):
     
     documents = await db.documents.find({"case_id": case_id}, {"_id": 0, "file_data": 0}).to_list(100)
     timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).to_list(100)
-    grounds = await db.grounds.find({"case_id": case_id}, {"_id": 0}).to_list(50)
+    grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(50)
     deadlines = await db.deadlines.find({"case_id": case_id}, {"_id": 0}).to_list(50)
     checklist = await db.checklist_items.find({"case_id": case_id}, {"_id": 0}).to_list(50)
-    reports = await db.reports.find({"case_id": case_id}, {"_id": 0, "content": 0}).to_list(20)
+    reports = await db.reports.find({"case_id": case_id, "status": "completed"}, {"_id": 0, "content": 0}).to_list(20)
     
+    completed_report_types = sorted({report.get("report_type") for report in reports if report.get("report_type") in {"quick_summary", "full_detailed", "extensive_log", "barrister_view"}})
+
     context = f"""CASE: {case.get('title', 'Unknown')}
 DEFENDANT: {case.get('defendant_name', 'Unknown')}
 STATE: {case.get('state', 'Unknown').upper()}
@@ -2024,7 +2026,8 @@ OFFENCE: {case.get('offence_type', 'Unknown')} ({case.get('offence_category', 'U
 DOCUMENTS UPLOADED: {len(documents)}
 TIMELINE EVENTS: {len(timeline)}
 GROUNDS IDENTIFIED: {len(grounds)}
-REPORTS GENERATED: {len(reports)}
+REPORTS GENERATED: {len(completed_report_types)}
+COMPLETED REPORT TYPES: {', '.join(completed_report_types) if completed_report_types else 'None'}
 DEADLINES SET: {len(deadlines)}
 CHECKLIST ITEMS: {len(checklist)} (Completed: {sum(1 for c in checklist if c.get('completed'))})
 """
@@ -4777,14 +4780,17 @@ REPORT TO EXPAND:
     response = _strip_report_placeholders(response)
     response = response.strip()
 
-    # Parse response to extract grounds of merit
-    grounds_of_merit = []
-    if "GROUNDS OF MERIT" in response or "Ground" in response:
-        grounds_of_merit = [{
-            "title": "AI-Identified Ground",
-            "description": "See full report for details",
-            "strength": "To be assessed by legal professional"
-        }]
+    # Preserve the actual grounds linked to the case so reports reflect the real ground count.
+    grounds_of_merit = [
+        {
+            "ground_id": ground.get("ground_id"),
+            "title": ground.get("title", "Untitled ground"),
+            "description": ground.get("description", ""),
+            "strength": ground.get("strength", "moderate"),
+            "ground_type": ground.get("ground_type", "other"),
+        }
+        for ground in grounds
+    ]
     
     if aggressive_mode:
         response += """
