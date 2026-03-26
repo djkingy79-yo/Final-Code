@@ -75,6 +75,9 @@ const LandingPage = () => {
                 <Link to="/faq" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-faq">FAQ</Link>
                 <Link to="/contact" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-contact">Contact</Link>
                 <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-about">About</Link>
+                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-to-use">How To Use</Link>
+                <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-professional-summary">For Legal Professionals</Link>
+                <Link to="/terms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-terms">Terms & Privacy</Link>
                 <Link to="/success-stories" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-success-stories">Success Stories</Link>
               </div>
             </div>
@@ -106,6 +109,8 @@ const LandingPage = () => {
             <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
             <Link to="/contact" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-contact">Contact</Link>
             <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
+            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
+            <Link to="/professional-summary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>
             <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
             <div className="border-t border-slate-700 pt-3 mt-3">
               <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>
@@ -1100,6 +1105,8 @@ const LandingPage = () => {
             <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Explore</p>
             <div className="grid gap-y-1 text-xs text-slate-700">
               <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-it-works">How It Works</Link>
+              <Link to="/how-to-use" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-to-use">How To Use</Link>
+              <Link to="/professional-summary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-professional-summary">For Legal Professionals</Link>
               <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
               <Link to="/forms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-forms">Forms & Templates</Link>
               <Link to="/lawyers" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-lawyers">Lawyer Directory</Link>
@@ -1115,6 +1122,7 @@ const LandingPage = () => {
               <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-framework">Legal Framework</Link>
               <Link to="/glossary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-glossary">Legal Glossary</Link>
               <Link to="/faq" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-faq">FAQ</Link>
+              <Link to="/contact" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-contact-legal">Contact</Link>
               <Link to="/about" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-about">About</Link>
               <Link to="/terms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-terms">Terms & Privacy</Link>
             </div>

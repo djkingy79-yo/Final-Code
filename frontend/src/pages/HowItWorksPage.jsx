@@ -224,10 +224,10 @@ const HowItWorksPage = () => {
       icon: Presentation,
       title: "Present in Barrister View",
       subtitle: "Court-ready presentation format for legal professionals",
-      color: "bg-slate-700",
-      lightColor: "bg-slate-50",
-      borderColor: "border-slate-200",
-      textColor: "text-slate-700",
+      color: "bg-blue-600",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      textColor: "text-blue-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
         alt: "Barrister Executive Brief synthesised from all reports",
@@ -252,10 +252,10 @@ const HowItWorksPage = () => {
       icon: ListChecks,
       title: "Track Progress & Take Action",
       subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
-      color: "bg-slate-700",
-      lightColor: "bg-slate-50",
-      borderColor: "border-slate-200",
-      textColor: "text-slate-700",
+      color: "bg-teal-600",
+      lightColor: "bg-teal-50",
+      borderColor: "border-teal-200",
+      textColor: "text-teal-700",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
         alt: "Progress tab with milestones and completion tracking",
@@ -333,9 +333,9 @@ const HowItWorksPage = () => {
     {
       title: "Barrister View",
       price: "UNLOCKS",
-      color: "bg-indigo-700",
-      badge: "bg-indigo-400",
-      headerColor: "#1e293b",
+      color: "bg-teal-600",
+      badge: "bg-teal-400",
+      headerColor: "#0f766e",
       features: [
         "Unlocks after all 3 reports are generated",
         "Capstone synthesis combining all three reports into one brief",
@@ -452,7 +452,7 @@ const HowItWorksPage = () => {
               data-testid={`how-it-works-step-${idx + 1}`}
             >
               {/* Step Header */}
-              <div className={`bg-white border-l-4 ${step.borderColor} p-5 sm:p-6`}>
+              <div className={`${step.lightColor} border-l-4 ${step.borderColor} p-5 sm:p-6`}>
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center`}>
                     <Icon className="w-6 h-6 text-white" />
@@ -474,7 +474,7 @@ const HowItWorksPage = () => {
                 </p>
 
                 {step.visual && (
-                  <div className={`rounded-xl border ${step.borderColor} p-4 flex items-center gap-3`} data-testid={`how-it-works-step-${step.num}-visual`}>
+                  <div className={`${step.lightColor} rounded-xl border ${step.borderColor} p-4 flex items-center gap-3`} data-testid={`how-it-works-step-${step.num}-visual`}>
                     <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center flex-shrink-0`}>
                       <Icon className="w-5 h-5 text-white" />
                     </div>
@@ -487,7 +487,7 @@ const HowItWorksPage = () => {
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Eye className={`w-4 h-4 ${step.textColor}`} />
-                    <h3 className="font-bold text-slate-900 text-base uppercase tracking-wide">What You'll See on Screen</h3>
+                    <h3 className={`font-bold text-base uppercase tracking-wide ${step.textColor}`}>What You'll See on Screen</h3>
                   </div>
                   <ul className="space-y-2.5">
                     {step.whatYouSee.map((item, i) => (
