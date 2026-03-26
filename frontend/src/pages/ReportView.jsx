@@ -374,17 +374,17 @@ const MarkdownBlock = ({ text, testId }) => (
         ),
         table: ({ children }) => (
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '1rem 0' }} data-testid={`${testId}-table-wrapper`}>
-            <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
+            <table style={{ width: 'max-content', minWidth: '100%', borderCollapse: 'collapse' }}>{children}</table>
           </div>
         ),
         thead: ({ children }) => (
           <thead style={{ background: '#1e3a8a' }}>{children}</thead>
         ),
         th: ({ children }) => (
-          <th style={{ background: '#1e3a8a', color: '#ffffff', fontWeight: 700, fontSize: '0.8rem', padding: '10px 12px', border: '1px solid #cbd5e1', verticalAlign: 'top', minWidth: '90px' }}>{children}</th>
+          <th style={{ background: '#1e3a8a', color: '#ffffff', fontWeight: 700, fontSize: '0.8rem', padding: '8px 10px', border: '1px solid #cbd5e1', verticalAlign: 'top', whiteSpace: 'normal', wordBreak: 'break-word' }}>{children}</th>
         ),
         td: ({ children }) => (
-          <td style={{ color: '#0f172a', padding: '10px 12px', border: '1px solid #cbd5e1', fontSize: '0.9rem', verticalAlign: 'top', minWidth: '90px' }}>{children}</td>
+          <td style={{ color: '#0f172a', padding: '8px 10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', verticalAlign: 'top', whiteSpace: 'normal', wordBreak: 'break-word' }}>{children}</td>
         ),
         strong: ({ children }) => {
           const childText = typeof children === 'string' ? children : (Array.isArray(children) ? children.join('') : '');
@@ -1035,8 +1035,8 @@ const ReportView = () => {
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
         .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
-          width: 100%;
-          min-width: 700px;
+          width: max-content;
+          min-width: 100%;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
@@ -1052,7 +1052,8 @@ const ReportView = () => {
           padding: 10px 12px;
           font-size: 0.9rem;
           vertical-align: top;
-          min-width: 90px;
+          white-space: normal;
+          word-break: break-word;
         }
         .legal-report th {
           color: #ffffff !important;

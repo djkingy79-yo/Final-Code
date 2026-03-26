@@ -1149,21 +1149,21 @@ const BarristerView = ({ user }) => {
                 </div>
 
                 {/* Prepared by section */}
-                <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Generated</p>
+                <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide text-blue-400 mb-1">Generated</p>
                     <p className="text-sm text-white font-medium">{formatDate(report?.generated_at)}</p>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Grounds Identified</p>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide text-blue-400 mb-1">Grounds Identified</p>
                     <p className="text-sm text-white font-medium">{grounds.length} grounds</p>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Documents Analysed</p>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide text-blue-400 mb-1">Documents Analysed</p>
                     <p className="text-sm text-white font-medium">{documents.length} documents</p>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Created By</p>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide text-blue-400 mb-1">Created By</p>
                     <p className="text-sm text-white font-medium">Deb King — GLENMORE PARK NSW</p>
                   </div>
                 </div>
@@ -1171,8 +1171,8 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* Confidentiality Notice — DO NOT UNDO */}
-            <div className="px-8 sm:px-12 py-3 bg-red-600/10 border-b border-red-600/20">
-              <p className="text-xs text-red-600 text-center font-medium tracking-wide">
+            <div className="px-6 sm:px-12 py-4 bg-red-50 border-y-2 border-red-600">
+              <p className="text-sm text-red-800 text-center font-bold tracking-wide leading-relaxed">
                 CONFIDENTIAL — This document contains privileged legal analysis prepared for educational and research purposes. Not legal advice. Consult a qualified practitioner.
               </p>
             </div>
@@ -1765,7 +1765,7 @@ const BarristerView = ({ user }) => {
                             a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline hover:text-blue-300 break-words">{children}</a>,
                             table: ({ children }) => (
                               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '0.8rem 0' }}>
-                                <table style={{ minWidth: '700px', width: '100%', borderCollapse: 'collapse' }}>{children}</table>
+                                <table style={{ width: 'max-content', minWidth: '100%', borderCollapse: 'collapse' }}>{children}</table>
                               </div>
                             ),
                           }}

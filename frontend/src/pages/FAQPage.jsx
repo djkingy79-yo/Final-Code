@@ -363,31 +363,37 @@ const FAQPage = () => {
             <p className="text-slate-700 text-sm mt-2">Try a different search term</p>
           </Card>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {filteredFaqs.map((category, categoryIndex) => (
               <div key={categoryIndex}>
-                {/* Category Header */}
-                <div className={`rounded-2xl overflow-hidden mb-6 h-24 flex items-center px-6 ${
-                  category.color === 'blue' ? 'bg-blue-700' :
-                  category.color === 'red' ? 'bg-red-700' :
-                  category.color === 'green' ? 'bg-emerald-700' :
-                  category.color === 'purple' ? 'bg-purple-700' :
-                  category.color === 'orange' ? 'bg-amber-700' :
-                  category.color === 'teal' ? 'bg-teal-700' :
-                  'bg-slate-700'
-                }`} data-testid={`faq-category-header-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-white/20" data-testid={`faq-category-icon-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
-                      <category.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                        {category.category}
-                      </h2>
-                      <p className="text-white/80 text-xs">
-                        {category.questions.length} questions
-                      </p>
-                    </div>
+                {/* Category Heading — clearly visible */}
+                <div className="flex items-center gap-3 mb-4 mt-2 pb-3 border-b-2 border-blue-600" data-testid={`faq-category-header-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                    category.color === 'blue' ? 'bg-blue-100' :
+                    category.color === 'red' ? 'bg-red-100' :
+                    category.color === 'purple' ? 'bg-purple-100' :
+                    category.color === 'emerald' ? 'bg-emerald-100' :
+                    category.color === 'orange' ? 'bg-amber-100' :
+                    category.color === 'teal' ? 'bg-teal-100' :
+                    'bg-slate-100'
+                  }`} data-testid={`faq-category-icon-${category.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                    <category.icon className={`w-5 h-5 ${
+                      category.color === 'blue' ? 'text-blue-700' :
+                      category.color === 'red' ? 'text-red-700' :
+                      category.color === 'purple' ? 'text-purple-700' :
+                      category.color === 'emerald' ? 'text-emerald-700' :
+                      category.color === 'orange' ? 'text-amber-700' :
+                      category.color === 'teal' ? 'text-teal-700' :
+                      'text-slate-700'
+                    }`} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      {category.category}
+                    </h2>
+                    <p className="text-slate-500 text-xs">
+                      {category.questions.length} questions
+                    </p>
                   </div>
                 </div>
                 
