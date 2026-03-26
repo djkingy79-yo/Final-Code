@@ -325,7 +325,7 @@ const LawyerDirectory = () => {
               <h3 className="font-semibold text-blue-900 text-xs mb-1">Important</h3>
               <p className="text-blue-800 text-[11px]">
                 This directory provides links to legal resources for informational purposes only. 
-                We do not endorse any specific lawyer or firm.
+                This directory does not endorse any specific lawyer or firm.
               </p>
             </div>
           </div>

@@ -58,8 +58,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
-        image: "/images/howto/live-dashboard.png",
-        alt: "Dashboard with cases showing real data",
+        alt: "Dashboard with cases and progress tracking",
         caption: "Your dashboard shows all cases with progress tracking."
       },
       whatYouSee: [
@@ -91,8 +90,7 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
-        image: "/images/howto/live-documents.png",
-        alt: "Documents tab with 18 uploaded case files",
+        alt: "Documents tab with uploaded case files",
         caption: "Upload transcripts, sentencing remarks, and evidence — all processed by AI."
       },
       whatYouSee: [
@@ -129,9 +127,8 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
-        image: "/images/howto/live-grounds-free.png",
-        alt: "Grounds tab showing 3 grounds found with titles blurred",
-        caption: "AI identifies 3 grounds — titles hidden until you pay $99 to investigate."
+        alt: "Grounds tab showing identified grounds with strength ratings",
+        caption: "AI identifies grounds — titles hidden until you pay $99 to investigate."
       },
       whatYouSee: [
         "The total number of potential appeal grounds identified (e.g., '5 Grounds Found')",
@@ -168,7 +165,6 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
-        image: "/images/howto/live-grounds-paid.png",
         alt: "Full ground analysis with titles, evidence, and strength ratings",
         caption: "Investigate Grounds reveals full titles, supporting evidence, and case law."
       },
@@ -208,9 +204,8 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
-        image: "/images/howto/live-reports.png",
-        alt: "Reports tab showing 3 generated reports with export options",
-        caption: "Three report tiers generated — Quick Summary, Full Detailed, and Extensive Log."
+        alt: "Reports tab showing generated reports with export options",
+        caption: "Three report tiers plus Barrister View — from free overview to hearing-ready briefs."
       },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
@@ -235,8 +230,7 @@ const HowItWorksPage = () => {
       textColor: "text-slate-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
-        image: "/images/howto/live-barrister.png",
-        alt: "Barrister Executive Brief synthesised from 3 reports",
+        alt: "Barrister Executive Brief synthesised from all reports",
         caption: "Barrister View synthesises all 3 reports into one court-ready brief."
       },
       whatYouSee: [
@@ -264,8 +258,7 @@ const HowItWorksPage = () => {
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
-        image: "/images/howto/live-progress.png",
-        alt: "Progress tab with milestones and 72% completion",
+        alt: "Progress tab with milestones and completion tracking",
         caption: "Track every milestone from case creation to lodging the appeal."
       },
       whatYouSee: [
@@ -298,10 +291,9 @@ const HowItWorksPage = () => {
       color: "bg-emerald-600",
       badge: "bg-green-500",
       features: [
-        "7 sections: case snapshot, issues, grounds count preview (no titles), legislation, sentencing overview, appeal outlook",
-        "1,500-2,200 words of real legal analysis",
+        "7 sections: case snapshot, issues, grounds preview, legislation, sentencing overview, appeal outlook",
+        "2,000-3,000 words of case-specific legal analysis",
         "Shows what the paid reports add so you can decide if you need more",
-        "Good starting point before investing in full analysis",
       ],
     },
     {
@@ -311,12 +303,13 @@ const HowItWorksPage = () => {
       badge: "bg-blue-500",
       popular: true,
       features: [
-        "15 sections covering every aspect of your appeal",
-        "Grounds portfolio with Crown response and rebuttal strategies",
+        "15 sections — 3x the depth of Quick Summary",
+        "800+ words per ground with Crown response and defence rebuttal",
         "Comparative sentencing table with 8+ cases and reduction analysis",
         "Outcome options matrix (quash, retrial, downgrade, sentence reduction)",
         "Submissions blueprint for written and oral advocacy",
         "Step-by-step filing guide with required forms and deadlines",
+        "Target: 15,000-20,000 words",
       ],
     },
     {
@@ -325,13 +318,26 @@ const HowItWorksPage = () => {
       color: "bg-purple-700",
       badge: "bg-purple-500",
       features: [
-        "20 sections — everything in Full Detailed, plus 5 exclusives:",
+        "20 sections — everything in Full Detailed plus 5 exclusives",
+        "1,200+ words per ground with fallback positions and key authority",
         "Hearing preparation notes with anticipated bench questions",
-        "Barrister conference preparation pack with authorities shortlist",
-        "Court pathway operations playbook for each court level",
-        "Tailored AustLII search strings for further research",
+        "Barrister conference pack with authorities shortlist and orders sought",
+        "Court pathway playbook with filing sequences for each court level",
         "Risk assessment with contingency planning per ground",
-        "300+ words per ground, 12+ sentencing comparisons, 15+ precedent cases",
+        "Target: 25,000-35,000+ words",
+      ],
+    },
+    {
+      title: "Barrister View",
+      price: "UNLOCKS",
+      color: "bg-amber-700",
+      badge: "bg-amber-500",
+      features: [
+        "Unlocks after all 3 reports are generated",
+        "Capstone synthesis combining all three reports into one brief",
+        "Barrister-ready format with table of contents",
+        "All grounds, strategies, and authorities consolidated",
+        "Export to PDF, Word, or print for legal consultations",
       ],
     },
   ];
@@ -464,19 +470,11 @@ const HowItWorksPage = () => {
                 </p>
 
                 {step.visual && (
-                  <div className="grid md:grid-cols-[1.2fr,1fr] gap-4 items-center" data-testid={`how-it-works-step-${step.num}-visual`}>
-                    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-lg bg-white">
-                      <img
-                        src={step.visual.image}
-                        alt={step.visual.alt}
-                        className="w-full h-auto max-h-[500px] object-contain rounded-lg"
-                        loading="lazy"
-                        decoding="async"
-                      />
+                  <div className={`rounded-xl border ${step.borderColor} p-4 flex items-center gap-3`} data-testid={`how-it-works-step-${step.num}-visual`}>
+                    <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center flex-shrink-0`}>
+                      <Icon className="w-5 h-5 text-white" />
                     </div>
-                    <div className="text-xs text-slate-500">
-                      {step.visual.caption}
-                    </div>
+                    <p className="text-sm text-slate-700">{step.visual.caption}</p>
                   </div>
                 )}
 
@@ -639,9 +637,9 @@ const HowItWorksPage = () => {
         <section className="space-y-3" data-testid="how-it-works-faq">
           <h2 className="text-xl font-bold text-slate-900">Common Questions</h2>
           {[
-            { q: "Do I need a lawyer to use this?", a: "No — Appeal Case Manager is designed for self-represented appellants. However, we strongly recommend consulting a qualified legal professional before taking any action. This tool helps you understand your options and prepare materials." },
+            { q: "Do I need a lawyer to use this?", a: "No — Appeal Case Manager is designed for self-represented appellants. However, consulting a qualified legal professional before taking any action is strongly recommended. This tool helps understand options and prepare materials." },
             { q: "How long does report generation take?", a: "Quick Summary: 30-60 seconds. Full Detailed: 1-3 minutes. Extensive Log: 2-5 minutes. Complex cases with many documents may take slightly longer." },
-            { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. We do not share your case information with anyone. You can delete your case and all associated data at any time." },
+            { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. Case information is never shared with anyone. Cases and all associated data can be deleted at any time." },
             { q: "Can I use this for any Australian state?", a: "Yes — Appeal Case Manager covers all 8 Australian jurisdictions: NSW, VIC, QLD, SA, WA, TAS, NT, and ACT, plus Commonwealth/Federal offences." },
           ].map((faq, i) => (
             <div key={i} className="bg-white border border-slate-200 rounded-xl p-4">

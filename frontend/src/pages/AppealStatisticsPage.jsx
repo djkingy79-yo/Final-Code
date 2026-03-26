@@ -361,7 +361,7 @@ const AppealStatisticsPage = () => {
                 <p className="font-bold text-base mb-2 text-blue-900">🎯 This Tool's Purpose</p>
                 <p className="text-blue-900">
                   <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
-                  and AI-powered analysis accessible and affordable, we aim to help those who have grounds for appeal 
+                  and AI-powered analysis accessible and affordable, the goal is to help those who have grounds for appeal 
                   but lack the resources to pursue justice through traditional means. Everyone deserves a fair chance to have 
                   errors in their case reviewed — not just those who can afford $20,000+ in legal fees.
                 </p>

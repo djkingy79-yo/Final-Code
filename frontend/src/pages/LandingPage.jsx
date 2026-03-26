@@ -794,11 +794,11 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-white border-t border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Pricing</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-2">Pricing</p>
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Simple, Affordable Access
             </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
+            <p className="text-slate-600 text-sm max-w-2xl mx-auto">
               Basic features are free. Pay only for detailed analysis when you need it — a fraction of what lawyers charge.
             </p>
           </div>
@@ -971,7 +971,7 @@ const LandingPage = () => {
                   { section: "What the Paid Reports Add", qs: true, fd: false, el: false },
                   { section: "Forensic Case Chronology", qs: false, fd: true, el: true },
                   { section: "Document Evidence Digest", qs: false, fd: true, el: true },
-                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, fdNote: "500+ words per ground", elNote: "900+ words per ground" },
+                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, fdNote: "800+ words per ground", elNote: "1,200+ words per ground" },
                   { section: "Comparative Sentencing Table", qs: false, fd: true, el: true, fdNote: "8+ cases", elNote: "12+ cases" },
                   { section: "Common Appeal Grounds for Offence Type", qs: false, fd: true, el: true },
                   { section: "Outcome Options Matrix", qs: false, fd: true, el: true, elNote: "Detailed pathways" },
@@ -1026,8 +1026,8 @@ const LandingPage = () => {
                 <tr className="border-t-2 border-slate-200 bg-white">
                   <td className="p-3 text-slate-900 font-semibold text-sm">Target word count</td>
                   <td className="p-3 text-center text-sm font-semibold text-emerald-700">2,000–3,000</td>
-                  <td className="p-3 text-center text-sm font-semibold text-blue-700">7,000–9,000</td>
-                  <td className="p-3 text-center text-sm font-semibold text-purple-700">15,000–20,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-blue-700">15,000–20,000</td>
+                  <td className="p-3 text-center text-sm font-semibold text-purple-700">25,000–35,000</td>
                 </tr>
               </tbody>
             </table>
@@ -1098,18 +1098,18 @@ const LandingPage = () => {
 
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Explore</p>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-slate-700">
-              <Link to="/how-it-works" className="hover:text-blue-700" data-testid="footer-how-it-works">How It Works</Link>
-              <Link to="/appeal-statistics" className="hover:text-blue-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
-              <Link to="/legal-resources" className="hover:text-blue-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
-              <Link to="/legal-framework" className="hover:text-blue-700" data-testid="footer-legal-framework">Legal Framework</Link>
-              <Link to="/forms" className="hover:text-blue-700" data-testid="footer-forms">Forms & Templates</Link>
-              <Link to="/glossary" className="hover:text-blue-700" data-testid="footer-glossary">Legal Glossary</Link>
-              <Link to="/lawyers" className="hover:text-blue-700" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/faq" className="hover:text-blue-700" data-testid="footer-faq">FAQ</Link>
-              <Link to="/contact" className="hover:text-blue-700" data-testid="footer-contact">Contact</Link>
-              <Link to="/about" className="hover:text-blue-700" data-testid="footer-about">About</Link>
-              <Link to="/success-stories" className="hover:text-blue-700" data-testid="footer-success-stories">Success Stories</Link>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-700">
+              <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-it-works">How It Works</Link>
+              <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+              <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
+              <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-framework">Legal Framework</Link>
+              <Link to="/forms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-forms">Forms & Templates</Link>
+              <Link to="/glossary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-glossary">Legal Glossary</Link>
+              <Link to="/lawyers" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-lawyers">Lawyer Directory</Link>
+              <Link to="/faq" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-faq">FAQ</Link>
+              <Link to="/contact" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-contact">Contact</Link>
+              <Link to="/about" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-about">About</Link>
+              <Link to="/success-stories" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
 

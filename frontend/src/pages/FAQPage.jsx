@@ -28,7 +28,7 @@ const faqs = [
       },
       {
         q: "Do I need legal experience to use this?",
-        a: "No. The tool is designed to be user-friendly and explains legal concepts in plain English. However, we strongly recommend consulting with a qualified criminal lawyer before lodging any appeal."
+        a: "No. The tool is designed to be user-friendly and explains legal concepts in plain English. However, consulting with a qualified criminal lawyer before lodging any appeal is strongly recommended."
       },
       {
         q: "Which Australian states and territories are covered?",

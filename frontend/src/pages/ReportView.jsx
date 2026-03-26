@@ -978,7 +978,7 @@ const ReportView = () => {
                     ["Evidentiary Gaps Checklist", false, true, true],
                     ["Prioritised Action Plan", false, true, true],
                     ["Client Plain-English Brief", true, true, true],
-                    ["900+ Words per Ground Analysis", false, false, true],
+                    ["1,200+ Words per Ground Analysis", false, false, true],
                     ["Hearing Preparation Notes", false, false, true],
                     ["Conference Preparation Pack", false, false, true],
                     ["Court Pathway Operations Playbook", false, false, true],

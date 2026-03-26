@@ -146,7 +146,7 @@ const Statistics = () => {
             Case Statistics Dashboard
           </h1>
           <p className="text-slate-600 text-lg max-w-2xl mx-auto">
-            Anonymised insights from cases managed through our platform. Understanding patterns can help inform your appeal strategy.
+            Anonymised insights from cases managed through the platform. Understanding patterns can help inform appeal strategy.
           </p>
         </div>
       </section>
@@ -400,7 +400,7 @@ const Statistics = () => {
             Ready to Analyse Your Case?
           </h2>
           <p className="text-slate-400 mb-8">
-            Let our AI help identify potential grounds for appeal in your case.
+            Let the AI help identify potential grounds for appeal in this case.
           </p>
           <Link to="/">
             <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
