@@ -38,6 +38,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** ReportView print/table styling tightened for professional print/PDF presentation
 - **2026-03-26:** Extensive Log visual theme corrected from purple to slate/navy
 - **2026-03-26:** Download links opened in a new tab/window now support `session_token` query-param authentication
+- **2026-03-26:** How It Works pricing-card header text forced to white bold for all report tiers on mobile and desktop
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified

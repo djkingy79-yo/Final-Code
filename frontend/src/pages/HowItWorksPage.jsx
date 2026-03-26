@@ -596,9 +596,9 @@ const HowItWorksPage = () => {
                 data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
               >
                 <div className="text-white p-5 text-center" style={{ backgroundColor: tier.headerColor || undefined }} >
-                  {tier.popular && <span className="bg-white/20 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">MOST POPULAR</span>}
-                  <h3 className="text-lg font-bold">{tier.title}</h3>
-                  <p className="text-3xl font-black mt-1">{tier.price}</p>
+                  {tier.popular && <span className="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full mb-2 inline-block" style={{ color: "#ffffff", fontWeight: 900 }}>MOST POPULAR</span>}
+                  <div className="text-lg font-black text-white" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.title}</div>
+                  <p className="text-3xl font-black text-white mt-1" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.price}</p>
                 </div>
                 <div className="p-5">
                   <ul className="space-y-2.5">
