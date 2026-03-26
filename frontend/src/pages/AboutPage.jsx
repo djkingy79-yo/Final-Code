@@ -30,14 +30,7 @@ const AboutPage = () => {
             <Link to="/success-stories" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-success-stories">Success Stories</Link>
             <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-legal-terms">Legal Terms</Link>
             <Link to="/faq" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="about-nav-faq">FAQ</Link>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
-              data-testid="about-theme-toggle"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/" data-testid="about-back-link">
+<Link to="/" data-testid="about-back-link">
               <Button className="landing-cta-primary" data-testid="about-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

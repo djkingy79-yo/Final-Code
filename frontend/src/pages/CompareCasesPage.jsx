@@ -198,13 +198,7 @@ const CompareCasesPage = ({ user }) => {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Button 
+<Button 
               onClick={() => navigate("/dashboard")} 
               variant="outline" 
               className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg"

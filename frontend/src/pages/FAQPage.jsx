@@ -263,14 +263,7 @@ const FAQPage = () => {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
-              data-testid="faq-theme-toggle"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/" data-testid="faq-back-link">
+<Link to="/" data-testid="faq-back-link">
               <Button className="landing-cta-primary" data-testid="faq-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

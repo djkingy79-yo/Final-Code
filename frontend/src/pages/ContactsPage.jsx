@@ -30,10 +30,7 @@ const ContactsPage = () => {
           <div className="hidden md:flex items-center gap-4">
             <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">FAQ</Link>
             <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors">Resources</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/">
+<Link to="/">
               <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

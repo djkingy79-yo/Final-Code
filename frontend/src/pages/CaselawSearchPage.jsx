@@ -237,10 +237,7 @@ const CaselawSearchPage = () => {
             <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-legislation">Legislation</Link>
             <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-resources">Resources</Link>
             <Link to="/glossary" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="caselaw-nav-legal-terms">Legal Terms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="caselaw-theme-toggle">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/" data-testid="caselaw-back-link">
+<Link to="/" data-testid="caselaw-back-link">
               <Button className="landing-cta-primary" data-testid="caselaw-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

@@ -174,10 +174,7 @@ const HowToUsePage = () => {
             <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-resources">Resources</Link>
             <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-legal-framework">Legal Framework</Link>
             <Link to="/faq" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-faq">FAQ</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="how-to-use-theme-toggle">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/" data-testid="how-to-use-back-link">
+<Link to="/" data-testid="how-to-use-back-link">
               <Button className="landing-cta-primary" data-testid="how-to-use-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

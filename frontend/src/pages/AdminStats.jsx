@@ -92,13 +92,7 @@ const AdminStats = () => {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Button 
+<Button 
               onClick={() => navigate("/dashboard")} 
               variant="outline" 
               className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg"
@@ -113,11 +107,7 @@ const AdminStats = () => {
         </div>
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-            <button onClick={toggleTheme} className="flex items-center gap-2 py-2 text-slate-300 hover:text-white w-full">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              {theme === "dark" ? "Light Mode" : "Dark Mode"}
-            </button>
-            <button 
+<button 
               onClick={() => navigate("/dashboard")} 
               className="flex items-center gap-2 py-2 text-blue-500 hover:text-blue-400 w-full"
             >

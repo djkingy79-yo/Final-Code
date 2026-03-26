@@ -1102,7 +1102,7 @@ const CaseDetail = ({ user }) => {
                   <Button 
                     onClick={handleGenerateProgressAnalysis} 
                     disabled={generatingProgress}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                     data-testid="ai-generate-progress-btn"
                   >
                     {generatingProgress ? (

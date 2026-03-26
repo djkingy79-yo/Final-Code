@@ -211,13 +211,7 @@ const SuccessStories = () => {
             <Link to="/glossary" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Terms</Link>
             <Link to="/faq" className="text-slate-400 hover:text-white text-sm transition-colors">FAQ</Link>
             <Link to="/contact" className="text-slate-400 hover:text-white text-sm transition-colors">Contact</Link>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white transition-colors"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-            <Link to="/">
+<Link to="/">
               <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
@@ -342,7 +336,7 @@ const SuccessStories = () => {
           {!showSubmitForm ? (
             <Button 
               onClick={() => setShowSubmitForm(true)}
-              className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20"
+              className="landing-cta-primary"
             >
               Share My Story
             </Button>
@@ -436,16 +430,16 @@ const SuccessStories = () => {
       </main>
 
       {/* Footer CTA */}
-      <section className="bg-white dark:bg-white px-6 py-12 border-t border-slate-800">
+      <section className="bg-white px-6 py-12 border-t border-slate-200">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Start Your Journey?
           </h2>
-          <p className="text-slate-400 mb-8">
+          <p className="text-slate-700 mb-8">
             You don't have to do this alone. Let the tool help you find what might have been missed.
           </p>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
+            <Button className="landing-cta-primary">
               Get Started Free
             </Button>
           </Link>

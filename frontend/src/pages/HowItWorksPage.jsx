@@ -58,7 +58,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
-        image: "/images/howto/live-step2-new-case.png",
+        image: "/images/howto/step2-dashboard.png",
         alt: "New case form on dashboard",
         caption: "Create a case from the dashboard — this is the live New Case form."
       },
@@ -91,7 +91,7 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
-        image: "/images/howto/live-step3-documents.png",
+        image: "/images/howto/step3-case-detail.png",
         alt: "Documents tab with uploaded files",
         caption: "Upload transcripts and exhibits in the Documents tab — this is the live screen."
       },
@@ -129,7 +129,7 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
-        image: "/images/howto/live-step5-grounds.png",
+        image: "/images/howto/step5-grounds.png",
         alt: "Grounds tab with identified grounds",
         caption: "The Grounds tab shows how many appeal grounds were found (titles hidden on Free)."
       },
@@ -168,7 +168,7 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
-        image: "/images/howto/live-step4-investigate.png",
+        image: "/images/howto/step5-grounds.png",
         alt: "Investigate grounds paywall",
         caption: "Investigate Grounds opens the paid analysis screen ($99 AUD) with full ground details."
       },
@@ -208,7 +208,7 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
-        image: "/images/howto/live-step8-reports.png",
+        image: "/images/howto/step8-reports.png",
         alt: "Report selection modal",
         caption: "Choose the report tier inside the Reports tab — this is the live selection screen."
       },
@@ -240,7 +240,7 @@ const HowItWorksPage = () => {
       textColor: "text-slate-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
-        image: "/images/howto/live-step9-barrister.png",
+        image: "/images/howto/step8-reports.png",
         alt: "Barrister View screen",
         caption: "Barrister View (unlocked after 3 reports) combines all reports into one brief."
       },
@@ -274,7 +274,7 @@ const HowItWorksPage = () => {
       textColor: "text-amber-600",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
-        image: "/images/howto/live-step7-progress.png",
+        image: "/images/howto/step7-progress.png",
         alt: "Progress tab with checklist",
         caption: "The Progress tab shows deadlines and next steps — this is the live screen."
       },
@@ -362,9 +362,6 @@ const HowItWorksPage = () => {
             <Link to="/how-to-use" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-how-to-use">How To Use</Link>
             <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-legal-framework">Legal Framework</Link>
             <Link to="/forms" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-it-works-nav-forms">Forms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors" data-testid="how-it-works-theme-toggle">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
             <Link to="/">
               <Button className="landing-cta-primary" data-testid="how-it-works-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -455,17 +452,17 @@ const HowItWorksPage = () => {
               data-testid={`how-it-works-step-${idx + 1}`}
             >
               {/* Step Header */}
-              <div className={`${step.color} text-white p-5 sm:p-6`}>
+              <div className={`bg-white border-l-4 ${step.borderColor} p-5 sm:p-6`}>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <div className={`w-12 h-12 rounded-xl ${step.color} flex items-center justify-center`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-white/90">Step {step.num} of 7</p>
-                    <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Step {step.num} of 7</p>
+                    <h2 className={`text-2xl sm:text-3xl font-bold ${step.textColor}`}>
                       {step.title}
                     </h2>
-                    <p className="text-sm text-white/90 mt-1">{step.subtitle}</p>
+                    <p className="text-sm text-slate-700 mt-1">{step.subtitle}</p>
                   </div>
                 </div>
               </div>
@@ -487,19 +484,12 @@ const HowItWorksPage = () => {
                         decoding="async"
                       />
                     </div>
-                    <div className="text-sm text-slate-700">
+                    <div className="text-xs text-slate-500">
                       {step.visual.caption}
                     </div>
                   </div>
                 )}
 
-                {step.preview && (
-                  <div className="mt-4 bg-white border border-slate-200 rounded-2xl p-5 shadow-xl" data-testid={`how-it-works-step-${step.num}-preview`}>
-                    <p className="text-sm uppercase tracking-widest text-slate-700 mb-2">{step.preview.title}</p>
-                    <p className="text-xs text-slate-700 mb-3">{step.preview.subtitle}</p>
-                    <p className="text-sm text-slate-900 leading-relaxed">{step.preview.body}</p>
-                  </div>
-                )}
 
                 {/* What You'll See */}
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>

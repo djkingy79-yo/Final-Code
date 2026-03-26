@@ -78,13 +78,6 @@ const LandingPage = () => {
                 <Link to="/success-stories" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-success-stories">Success Stories</Link>
               </div>
             </div>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
-              data-testid="theme-toggle"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
             <Button 
               onClick={() => setShowAuthModal(true)}
               data-testid="login-btn"
@@ -118,9 +111,6 @@ const LandingPage = () => {
               <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>
             </div>
             <div className="flex items-center gap-3 pt-2">
-              <button onClick={toggleTheme} className="p-2 text-slate-700 hover:text-blue-700" data-testid="mobile-theme-toggle">
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
               <Button onClick={() => setShowAuthModal(true)} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
                 Sign In
               </Button>
@@ -1031,35 +1021,6 @@ const LandingPage = () => {
             </table>
           </div>
 
-          <div className="mt-10 grid md:grid-cols-3 gap-6" data-testid="report-snapshot-section">
-            {[
-              {
-                label: "Quick Summary — Case Snapshot",
-                meta: "Generated excerpt (R v Homann)",
-                body: "On 12 March 2014 the accused was convicted of murder and sentenced to 30 years imprisonment with a 22‑year non‑parole period. The sentencing remarks identify contested intent, the forensic timeline, and the Crown’s reliance on prior admissions in the record.",
-              },
-              {
-                label: "Full Detailed — Ground Analysis",
-                meta: "Generated excerpt (Ground 4)",
-                body: "Ground 4: Misdirection on intent. The trial judge’s summing‑up at pp 214–218 of the transcript did not clarify the difference between intention and recklessness for murder. The defence submissions (Day 9, 14:22) demonstrate the jury was left without a clear pathway to the lesser verdict.",
-              },
-              {
-                label: "Extensive Log — Sentencing Comparison",
-                meta: "Generated excerpt (Comparative Table)",
-                body: "Comparable authorities show materially lower non‑parole periods for similar factual matrices. R v Loveridge [2014] NSWCCA 120 (7 year NPP) and R v Pham [2015] HCA 39 indicate the sentencing range applied here may be outside proportionate bounds.",
-              }
-            ].map((card, idx) => (
-              <div key={idx} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xl">
-                <p className="text-xs uppercase tracking-widest text-blue-700 mb-2">{card.label}</p>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                  Report Snapshot
-                </h3>
-                <p className="text-sm text-slate-700 mb-2">{card.meta}</p>
-                <p className="text-sm text-slate-800 leading-relaxed">{card.body}</p>
-              </div>
-            ))}
-          </div>
-
           <div className="mt-6 text-center">
             <Button
               onClick={() => setShowAuthModal(true)}
@@ -1073,21 +1034,9 @@ const LandingPage = () => {
       </section>
 
       {/* About Link Section */}
-      <section className="py-12 px-6 bg-white dark:bg-white relative overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/8b44435fd117a9b64ee15135358c94668930cdd6015f5bad0cab217fd77610b5.png" 
-            alt="Court corridor and custody bars symbolising the appeal journey"
-            className="w-full h-full object-contain sm:object-cover ios-image-safe image-safe opacity-30"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900" />
-        </div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <p className="text-blue-500 text-xs uppercase tracking-widest mb-4">About</p>
+      <section className="py-12 px-6 bg-blue-50 border-t border-blue-200">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-blue-700 text-xs uppercase tracking-widest mb-4">About</p>
           <h3 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Case Manager
           </h3>

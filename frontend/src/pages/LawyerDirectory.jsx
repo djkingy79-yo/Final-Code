@@ -246,13 +246,6 @@ const LawyerDirectory = () => {
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
-              data-testid="lawyer-directory-theme-toggle"
-            >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
             <Link to="/" data-testid="lawyer-directory-back-link">
               <Button className="landing-cta-primary" data-testid="lawyer-directory-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -519,30 +512,6 @@ const LawyerDirectory = () => {
         </div>
 
         {/* CTA with Image */}
-        <div className="mt-12 rounded-2xl overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=200&fit=crop"
-            alt="Get Started"
-            className="w-full h-48 object-cover"
-          />
-          <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center justify-center">
-            <div className="text-center px-6">
-              <Gavel className="w-12 h-12 text-blue-700 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Prepare Before You Meet a Lawyer
-              </h3>
-              <p className="text-slate-700 mb-6 max-w-md mx-auto">
-                Use our tool to organise your case documents and identify potential grounds for appeal. 
-                Having organised information can save time and money.
-              </p>
-              <Link to="/">
-                <Button className="landing-cta-primary" data-testid="lawyer-directory-cta">
-                  Get Started Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
