@@ -53,6 +53,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Added Barrister comparison-table enrichment and regenerated case `case_db8d84fecfc4` as report `rpt_d287912f2a53` with 40,923 characters, 4 comparison tables, and deeper all-report synthesis
 - **2026-03-26:** Fixed failed multi-pass report recovery for the third report by resuming from saved partial passes instead of restarting from zero, splitting the heaviest pass, and replacing raw 502 UI errors with a user-friendly retry message
 - **2026-03-26:** Updated the landing-page dropdown/mobile nav/footer to include the full public page set and refreshed How It Works styling so Step 6 is bright blue, Step 7 is bright teal, and the Barrister View pricing card uses the teal header treatment
+- **2026-03-26:** Removed the public-page legal image additions after user rejection and restored the clean public-page layout
 - **2026-03-26:** Fixed report/progress data linkage for case `case_76056187ad4f` by restoring the extensive report purple theme, improving sentence extraction, switching progress analysis to `grounds_of_merit`, and syncing all completed standard reports to the real 4-ground data
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
