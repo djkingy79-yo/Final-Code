@@ -3431,6 +3431,9 @@ def _strip_report_placeholders(text: str) -> str:
         cleaned_lines.append(line)
     cleaned = "\n".join(cleaned_lines)
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    # Strip \1 artifacts
+    cleaned = cleaned.replace("\\1", "")
+    cleaned = cleaned.replace("\x01", "")
     # Strip prompt instruction text from section headings
     cleaned = re.sub(r'\s*—\s*keep ALL[^\n]*', '', cleaned)
     cleaned = re.sub(r'\s*—\s*DETAILED PATHWAY ANALYSIS[^\n]*', '', cleaned)

@@ -633,6 +633,15 @@ code, .mono {
 
   .legal-report table {
     page-break-inside: auto;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .legal-report td,
+  .legal-report th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 200px;
   }
 
   .legal-report tr {

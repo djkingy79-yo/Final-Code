@@ -154,38 +154,97 @@ const BarristerView = ({ user }) => {
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
 
-    const footer = '<div class="footer">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</div>';
-
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
-    h1 { font-family: 'Crimson Pro', serif; font-size: 26px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 20px; margin-top: 18px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 16px; margin-top: 14px; color: #1e40af; }
-    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
-    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
-    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #cbd5e1; font-size: 12px; color: #475569; text-align: center; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 13px; color: #0f172a; }
-    th { background: #dbeafe; font-weight: 700; }
-    ul, ol { padding-left: 18px; }
-    li { margin-bottom: 4px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
+    .report-container { max-width: 900px; margin: 0 auto; }
+    .report-header { background: #1e3a5f; color: #fff; padding: 28px 32px; }
+    .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+    .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
+    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+    .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
+    .report-header .grounds-label { font-size: 11px; color: rgba(255,255,255,0.8); text-align: right; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; background: #fff; }
+    .summary-grid .item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 2px; }
+    .summary-grid .item-value { font-size: 13px; font-weight: 600; color: #0f172a; font-family: 'Crimson Pro', serif; }
+    .sections { padding: 24px 32px; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 700; color: #1e3a5f; margin: 1.5rem 0 0.8rem; border-bottom: 2px solid #1e3a5f; padding-bottom: 4px; }
+    h3 { font-family: 'Crimson Pro', serif; font-size: 17px; font-weight: 700; color: #1e40af; margin: 1rem 0 0.5rem; }
+    h4 { font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: #334155; margin: 0.8rem 0 0.4rem; }
+    p { margin-bottom: 0.7rem; }
+    strong { color: #0f172a; font-weight: 700; }
+    ul, ol { padding-left: 1.4rem; margin: 0.6rem 0; }
+    li { margin-bottom: 0.4rem; }
+    a { color: #1d4ed8; text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
+    th { background: #1e3a5f; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; word-wrap: break-word; }
+    td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
+    blockquote { border-left: 4px solid #1e3a5f; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
+    .created-by { text-align: center; padding: 20px 32px 4px; font-size: 16px; font-weight: 700; color: #1e3a5f; font-family: 'Crimson Pro', serif; }
+    .disclaimer { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
+    .disclaimer-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-text { font-size: 14px; color: #1e293b; font-weight: 700; }
+    .disclaimer-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
+    .footer { text-align: center; padding: 12px 32px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #475569; }
     .no-print { display: none !important; }
-    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .report-header, th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; }
+    }
   </style>
 </head>
 <body>
   ${notice}
-  <h1>${title}</h1>
-  <div class="meta">${meta}</div>
-  <hr />
-  ${contentEl.innerHTML}
-  ${footer}
+  <div class="report-container">
+    <div class="report-header">
+      <div class="header-row">
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">CONFIDENTIAL BARRISTER BRIEF</div>
+          <h1>${title}</h1>
+          <div class="meta-line">${meta}</div>
+          <div class="badge">Synthesised from ${allReports?.length || 3} Reports</div>
+          <div class="gen-date">Generated: ${formatDate(report?.generated_at)}</div>
+        </div>
+        <div>
+          <div class="grounds-count">${grounds.length}</div>
+          <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
+        </div>
+      </div>
+    </div>
+    <div class="summary-grid">
+      <div><div class="item-label">Defendant</div><div class="item-value">${caseData?.defendant_name || "Not specified"}</div></div>
+      <div><div class="item-label">Offence</div><div class="item-value">${formatOffenceLabel(caseData?.offence_category || caseData?.offence_type)}</div></div>
+      <div><div class="item-label">Sentence</div><div class="item-value">${cleanSentence(caseData?.sentence || extractSentenceSummary(caseData))}</div></div>
+      <div><div class="item-label">Documents</div><div class="item-value">${documents.length} files analysed</div></div>
+      <div><div class="item-label">Timeline Events</div><div class="item-value">${timeline.length} events</div></div>
+      <div><div class="item-label">Reports Synthesised</div><div class="item-value">${allReports?.length || 3} reports</div></div>
+    </div>
+    <div class="sections">
+      ${contentEl.innerHTML}
+    </div>
+    <div class="created-by">Created and Designed by Deb King</div>
+    <div class="disclaimer">
+      <div class="disclaimer-icon">&#9888;</div>
+      <div class="disclaimer-text">
+        <strong>NOT LEGAL ADVICE</strong>
+        This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken. No solicitor-client relationship is formed through the provision of this report.
+      </div>
+    </div>
+    <div class="footer">Criminal Law Appeal Case Management by Deb King — GLENMORE PARK NSW</div>
+  </div>
 </body>
 </html>`;
 
@@ -317,6 +376,9 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
     cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
     cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
+    // Strip \1 artifacts
+    cleaned = cleaned.replace(/\\1/g, "");
+    cleaned = cleaned.replace(/\x01/g, "");
     // Square bracket notes
     cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
     cleaned = cleaned.replace(/\[Continue[^\]]*\]/gi, "");
@@ -334,7 +396,7 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/\(Continue[^)]*\)/gi, "");
     cleaned = cleaned.replace(/\(Link formatting[^)]*\)/gi, "");
     cleaned = cleaned.replace(/\(Entries will[^)]*\)/gi, "");
-    // Strip AI meta-commentary about truncation or its own output
+    // Strip AI meta-commentary
     cleaned = cleaned.replace(/\n*This truncated document[^\n]*/gi, "");
     cleaned = cleaned.replace(/\n*This (?:document|report|analysis) (?:provides|covers|contains|demonstrates)[^\n]*(?:sections?|overview|summary)[^\n]*/gi, "");
     cleaned = cleaned.replace(/\n*Each section (?:demonstrates|provides|covers)[^\n]*/gi, "");
@@ -342,6 +404,81 @@ const BarristerView = ({ user }) => {
     cleaned = cleaned.replace(/\n*(?:The above|These) sections? (?:are|is|were|was) (?:crafted|designed|written|prepared|created)[^\n]*/gi, "");
     cleaned = cleaned.replace(/\n*(?:presenting|advances?) (?:a comprehensive|field-specific|detailed)[^\n]*(?:court of appeal|legal professionals?)[^\n]*/gi, "");
     
+    // Strip prompt instruction text from section headings
+    cleaned = cleaned.replace(/\s*—\s*keep ALL[^\n]*/gi, "");
+    cleaned = cleaned.replace(/\s*—\s*DETAILED PATHWAY ANALYSIS[^\n]*/gi, "");
+    cleaned = cleaned.replace(/\s*\(\d+\+?\s*words[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/(GROUNDS OF MERIT)\s*—\s*DEEP ANALYSIS/gi, "$1");
+    cleaned = cleaned.replace(/\s*\(\d+\+?\s*CASES[^)]*\)/gi, "");
+    cleaned = cleaned.replace(/\s*—?\s*keep ALL[^.\n]*/gi, "");
+
+    // Strip "we/us/our" language
+    const weUsReplacements = [
+      [/\bWe are arguing\b/g, 'The applicant argues'],
+      [/\bwe are arguing\b/g, 'the applicant argues'],
+      [/\bWe are aiming\b/g, 'The appeal aims'],
+      [/\bwe are aiming\b/g, 'the appeal aims'],
+      [/\bWe are filing\b/g, 'The legal professional is filing'],
+      [/\bwe are filing\b/g, 'the legal professional is filing'],
+      [/\bWe are taking\b/g, 'The legal professional is taking'],
+      [/\bwe are taking\b/g, 'the legal professional is taking'],
+      [/\bWe succeed\b/g, 'The appeal succeeds'],
+      [/\bwe succeed\b/g, 'the appeal succeeds'],
+      [/\bwe will gather\b/g, 'the legal professional will gather'],
+      [/\bWe will gather\b/g, 'The legal professional will gather'],
+      [/\bwe will craft\b/g, 'the legal professional will craft'],
+      [/\bWe will craft\b/g, 'The legal professional will craft'],
+      [/\bwe will file\b/g, 'the legal professional will file'],
+      [/\bWe will file\b/g, 'The legal professional will file'],
+      [/\bwe will prepare\b/g, 'the legal professional will prepare'],
+      [/\bWe will prepare\b/g, 'The legal professional will prepare'],
+      [/\bwe will submit\b/g, 'the legal professional will submit'],
+      [/\bWe will submit\b/g, 'The legal professional will submit'],
+      [/\bwe will seek\b/g, 'the applicant will seek'],
+      [/\bWe will seek\b/g, 'The applicant will seek'],
+      [/\bwe will argue\b/g, 'the applicant will argue'],
+      [/\bWe will argue\b/g, 'The applicant will argue'],
+      [/\bwe will demonstrate\b/g, 'the appeal will demonstrate'],
+      [/\bWe will demonstrate\b/g, 'The appeal will demonstrate'],
+      [/\bwe will show\b/g, 'the appeal will show'],
+      [/\bWe will show\b/g, 'The appeal will show'],
+      [/\bWe argue\b/g, 'The applicant argues'],
+      [/\bwe argue\b/g, 'the applicant argues'],
+      [/\bcontact with us\b/g, 'contact with the legal professional'],
+      [/\bContact us\b/g, 'Contact the legal professional'],
+      [/\bcontact us\b/g, 'contact the legal professional'],
+      [/\bour submissions\b/g, 'the submissions'],
+      [/\bOur submissions\b/g, 'The submissions'],
+      [/\bour claims\b/g, "the applicant's claims"],
+      [/\bOur claims\b/g, "The applicant's claims"],
+      [/\bour arguments\b/g, "the applicant's arguments"],
+      [/\bOur arguments\b/g, "The applicant's arguments"],
+      [/\bour position\b/g, "the applicant's position"],
+      [/\bOur position\b/g, "The applicant's position"],
+      [/\bour case\b/g, "the applicant's case"],
+      [/\bOur case\b/g, "The applicant's case"],
+      [/\bour strategy\b/g, 'the legal strategy'],
+      [/\bOur strategy\b/g, 'The legal strategy'],
+      [/\bour analysis\b/g, 'this analysis'],
+      [/\bOur analysis\b/g, 'This analysis'],
+      [/\bon our behalf\b/g, 'on behalf of the applicant'],
+      [/\byour legal team\b/g, 'the legal professional'],
+      [/\bYour legal team\b/g, 'The legal professional'],
+      [/\byour partner\b/g, "the victim"],
+      [/\byou've been\b/g, 'the applicant has been'],
+      [/\bYou've been\b/g, 'The applicant has been'],
+      [/\b, we are\b/g, ', the legal professional is'],
+      [/\b, we will\b/g, ', the legal professional will'],
+      [/\b, we have\b/g, ', the legal professional has'],
+      [/\bWe have identified\b/g, 'This analysis has identified'],
+      [/\bwe have identified\b/g, 'this analysis has identified'],
+      [/\bWe have reviewed\b/g, 'This analysis has reviewed'],
+      [/\bwe have reviewed\b/g, 'this analysis has reviewed'],
+    ];
+    for (const [pattern, replacer] of weUsReplacements) {
+      cleaned = cleaned.replace(pattern, replacer);
+    }
+
     // Convert American spellings to Australian
     const ausReplacements = [
       [/\bfinalized\b/gi, (m) => m[0] === 'F' ? 'Finalised' : 'finalised'],
@@ -972,23 +1109,18 @@ const BarristerView = ({ user }) => {
             style={{ minHeight: '100vh' }}
             data-testid="barrister-report"
           >
-            {/* Cover Header with gradient */}
-            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white p-8 sm:p-12 relative overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+            {/* Cover Header — light mode professional */}
+            <div className="bg-slate-800 text-white p-8 sm:p-12 relative overflow-hidden">
               
               <div className="relative z-10">
                 {/* Document Type Badge */}
                 <div className="flex items-center gap-2 mb-6">
                   <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 px-3 py-1">
                     <Scale className="w-3 h-3 mr-1" />
-                    CONFIDENTIAL LEGAL BRIEF
+                    BARRISTER BRIEF
                   </Badge>
                   <Badge variant="outline" className="border-slate-500 text-slate-300">
-                    {report?.report_type === 'quick_summary' ? 'Summary' :
-                     report?.report_type === 'full_detailed' ? 'Full Analysis' :
-                     'Extensive Log'}
+                    Synthesised from {allReports?.length || 3} Reports
                   </Badge>
                 </div>
 
@@ -1002,7 +1134,7 @@ const BarristerView = ({ user }) => {
                 
                 {/* Subtitle */}
                 <p className="text-lg sm:text-xl text-slate-300 mb-8" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                  Appeal Case Analysis & Legal Brief
+                  Appeal Case Analysis — Deep Synthesis
                 </p>
 
                 {/* Key Case Info Grid */}
@@ -1012,7 +1144,7 @@ const BarristerView = ({ user }) => {
                       <User className="w-4 h-4" />
                       <span className="text-xs uppercase tracking-wide">Defendant</span>
                     </div>
-                    <p className="font-semibold text-white">{caseData?.defendant_name}</p>
+                    <p className="font-semibold text-white">{caseData?.defendant_name || "Not specified"}</p>
                   </div>
                   
                   {caseData?.case_number && (
@@ -1025,7 +1157,7 @@ const BarristerView = ({ user }) => {
                     </div>
                   )}
                   
-                  {caseData?.court && (
+                  {caseData?.court && caseData.court !== "N/A" && (
                     <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4">
                       <div className="flex items-center gap-2 text-blue-400 mb-1">
                         <Building2 className="w-4 h-4" />
@@ -1044,23 +1176,23 @@ const BarristerView = ({ user }) => {
                   </div>
                 </div>
 
-                {/* DO NOT UNDO — Prepared by and date section */}
+                {/* Prepared by section */}
                 <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Prepared</p>
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Generated</p>
                     <p className="text-sm text-white font-medium">{formatDate(report?.generated_at)}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Report Type</p>
-                    <p className="text-sm text-white font-medium">
-                      {report?.report_type === 'quick_summary' ? 'Quick Summary' :
-                       report?.report_type === 'full_detailed' ? 'Full Detailed Analysis' :
-                       'Extensive Log — Premium Tier'}
-                    </p>
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Grounds Identified</p>
+                    <p className="text-sm text-white font-medium">{grounds.length} grounds</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Footer</p>
-                    <p className="text-sm text-white font-medium">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</p>
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Documents Analysed</p>
+                    <p className="text-sm text-white font-medium">{documents.length} documents</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Created By</p>
+                    <p className="text-sm text-white font-medium">Deb King — GLENMORE PARK NSW</p>
                   </div>
                 </div>
               </div>
@@ -1736,23 +1868,21 @@ const BarristerView = ({ user }) => {
             </div>
 
             {/* ===== DOCUMENT FOOTER ===== */}
-            <div className="p-8 sm:p-12 bg-gradient-to-br from-slate-900 to-indigo-900 text-white">
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <Scale className="w-6 h-6 text-blue-500" />
-                  <span 
-                    className="text-xl font-semibold"
-                    style={{ fontFamily: 'Crimson Pro, serif' }}
-                  >
-                    Appeal Case Manager
-                  </span>
-                </div>
-                <p className="text-slate-300 mb-2">
-                  Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
+            <div className="p-6 sm:p-8 bg-white border-t-2 border-slate-200">
+              <div className="text-center mb-4">
+                <p className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  Created and Designed by Deb King
                 </p>
-                <div className="mt-4 pt-4 border-t border-slate-700">
-                  <p className="text-xs text-slate-400">
-                    Australian Criminal Appeal Reference | Generated {formatDate(report?.generated_at)}
+                <p className="text-sm text-slate-600 mt-1">
+                  Criminal Law Appeal Case Management — GLENMORE PARK NSW
+                </p>
+              </div>
+              <div className="bg-red-50 border-4 border-red-500 rounded-lg p-5 flex items-start gap-4">
+                <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-base font-extrabold text-red-700 uppercase tracking-wide mb-2">NOT LEGAL ADVICE</p>
+                  <p className="text-sm font-bold text-slate-800">
+                    This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken. No solicitor-client relationship is formed through the provision of this report.
                   </p>
                 </div>
               </div>
@@ -1788,6 +1918,7 @@ const BarristerView = ({ user }) => {
           border-collapse: collapse;
           margin: 0.8rem 0;
           background: #ffffff;
+          table-layout: fixed;
         }
         .legal-report th {
           background: #1e3a8a;
@@ -1800,6 +1931,8 @@ const BarristerView = ({ user }) => {
           font-size: 0.95rem;
           vertical-align: top;
           color: #0f172a;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

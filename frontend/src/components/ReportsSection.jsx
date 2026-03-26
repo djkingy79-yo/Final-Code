@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle
+  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -541,11 +541,11 @@ const ReportsSection = ({
                               variant="outline"
                               size="sm"
                               disabled
-                              className="text-slate-700 border-slate-200 bg-white opacity-80 cursor-not-allowed"
+                              className="text-slate-400 border-slate-200 bg-slate-50 opacity-80 cursor-not-allowed"
                               data-testid={`barrister-view-locked-${report.report_id}`}
                             >
-                              <Presentation className="w-4 h-4 mr-1.5" />
-                              Barrister View - unlock after all 3 reports
+                              <Lock className="w-4 h-4 mr-1.5" />
+                              Barrister View (locked — generate all 3 reports)
                             </Button>
                           )
                         )}

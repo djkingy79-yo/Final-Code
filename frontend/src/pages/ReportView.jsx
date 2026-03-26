@@ -115,6 +115,9 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?detailed[^\n]*\n?)/i, "");
   cleaned = cleaned.replace(/^(Here('s| is) (a |the |your )?thorough[^\n]*\n?)/i, "");
   cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
+  // Strip \1 artifacts
+  cleaned = cleaned.replace(/\\1/g, "");
+  cleaned = cleaned.replace(/\x01/g, "");
   // Strip bracket placeholder notes — BOTH square [] and round () brackets
   cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
 
@@ -215,6 +218,12 @@ const cleanAIContent = (text) => {
     [/\bwe have analysed\b/g, 'this analysis has examined'],
     [/\bWe have analyzed\b/g, 'This analysis has examined'],
     [/\bwe have analyzed\b/g, 'this analysis has examined'],
+    [/\bWe argue\b/g, 'The applicant argues'],
+    [/\bwe argue\b/g, 'the applicant argues'],
+    [/\byour legal team\b/g, 'the legal professional'],
+    [/\bYour legal team\b/g, 'The legal professional'],
+    [/\byou've been\b/g, 'the applicant has been'],
+    [/\bYou've been\b/g, 'The applicant has been'],
   ];
   for (const [pattern, replacer] of weUsReplacements) {
     cleaned = cleaned.replace(pattern, replacer);
@@ -497,14 +506,19 @@ const ReportView = () => {
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
-    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; }
+    .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
+    .section-body th { background: #1e3a8a; color: #fff !important; font-weight: 700; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; word-wrap: break-word; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
     .disclaimer-text { font-size: 11px; color: #334155; }
     .disclaimer-text strong { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 2px; }
+    .created-by { text-align: center; padding: 20px 32px 4px; font-size: 16px; font-weight: 700; color: ${theme.headerBg.includes('emerald') ? '#065f46' : theme.headerBg.includes('blue') ? '#1e3a8a' : '#581c87'}; font-family: 'Crimson Pro', serif; }
+    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
+    .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
+    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
     .footer { text-align: center; padding: 12px 32px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #475569; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
     .no-print { display: none !important; }
@@ -594,11 +608,12 @@ const ReportView = () => {
         </tbody>
       </table>
     </div>
-    <div class="disclaimer">
-      <div class="disclaimer-icon">&#9888;</div>
-      <div class="disclaimer-text">
-        <strong>Not Legal Advice</strong>
-        This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.
+    <div class="created-by">Created and Designed by Deb King</div>
+    <div class="disclaimer-bold">
+      <div class="disc-icon">&#9888;</div>
+      <div class="disc-text">
+        <strong>NOT LEGAL ADVICE</strong>
+        This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken. No solicitor-client relationship is formed through the provision of this report.
       </div>
     </div>
     ${footer}
@@ -909,15 +924,18 @@ const ReportView = () => {
           {/* ===== DISCLAIMER FOOTER ===== */}
           <div className="bg-white border-t border-slate-200 p-5 sm:p-6" data-testid="report-footer">
             <div className="flex items-start gap-3 mb-3">
-              <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Not Legal Advice</p>
-                <p className="text-xs text-slate-700">This report does NOT constitute legal advice. All findings must be verified by a qualified Australian legal professional before any action is taken.</p>
+                <p className="text-sm font-extrabold text-red-700 uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
+                <p className="text-sm font-bold text-slate-800">This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken.</p>
               </div>
             </div>
             <div className="text-center pt-3 border-t border-slate-200">
-              <p className="text-xs text-slate-700">
-                Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW
+              <p className="text-base font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Created and Designed by Deb King
+              </p>
+              <p className="text-xs text-slate-700 mt-1">
+                Criminal Law Appeal Case Management — GLENMORE PARK NSW
               </p>
             </div>
           </div>
@@ -946,10 +964,10 @@ const ReportView = () => {
         .legal-report-table-wrap { overflow-x: auto; }
         .legal-report table {
           width: 100%;
-          min-width: 720px;
           border-collapse: collapse;
           margin: 1rem 0;
           background: #ffffff;
+          table-layout: fixed;
         }
         .legal-report th {
           background: #1e3a8a;
@@ -962,6 +980,8 @@ const ReportView = () => {
           font-size: 1.02rem;
           vertical-align: top;
           color: #0f172a;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;
