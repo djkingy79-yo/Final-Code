@@ -385,7 +385,7 @@ code, .mono {
 /* Tables — Full professional legal formatting */
 .legal-report table {
   width: 100%;
-  min-width: 720px;
+  min-width: 560px;
   border-collapse: collapse;
   margin: 1.25rem 0;
   font-size: 1rem;
@@ -642,7 +642,7 @@ code, .mono {
   .legal-report table {
     page-break-inside: auto;
     width: 100%;
-    min-width: 720px;
+    min-width: 560px;
     table-layout: auto;
   }
 

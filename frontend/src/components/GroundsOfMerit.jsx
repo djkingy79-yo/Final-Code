@@ -7,10 +7,11 @@ import { useState } from "react";
 import { 
   Scale, Trash2, ChevronRight, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
-  BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink
+  BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
@@ -120,10 +121,10 @@ const GroundsOfMerit = ({
               <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 break-words font-medium">{children}</a>
             ),
             table: ({ children }) => (
-              <div className="overflow-x-auto my-4"><table className="min-w-full border-collapse border border-slate-300">{children}</table></div>
+              <div className="overflow-x-auto my-4"><table className="w-full min-w-[560px] border-collapse border border-slate-300 table-auto">{children}</table></div>
             ),
             th: ({ children }) => (
-              <th className="border border-slate-300 bg-slate-100 px-3 py-2 text-left text-sm font-semibold">{children}</th>
+              <th className="border border-slate-300 bg-blue-700 px-3 py-2 text-left text-sm font-extrabold text-white whitespace-normal break-normal">{children}</th>
             ),
             td: ({ children }) => (
               <td className="border border-slate-300 px-3 py-2 text-sm">{children}</td>
@@ -132,6 +133,159 @@ const GroundsOfMerit = ({
         >{analysis}</ReactMarkdown>
       </div>
     );
+  };
+
+  const buildGroundsPreviewHtml = () => {
+    const contentMarkup = renderToStaticMarkup(
+      <div className="grounds-export-shell">
+        <div className="grounds-export-brand">Created and Designed by Deb King</div>
+        <div className="grounds-export-header">
+          <p className="grounds-export-kicker">Grounds of Merit</p>
+          <h1>Detailed Grounds Analysis</h1>
+          <p>Full grounds file including descriptions, supporting evidence, legal references, similar cases, and deep investigation analysis.</p>
+        </div>
+
+        {grounds.map((ground, index) => (
+          <section key={ground.ground_id || index} className="grounds-export-section">
+            <div className="grounds-export-title-wrap">
+              <h2>{`Ground ${index + 1}: ${ground.title}`}</h2>
+              <div className="grounds-export-meta">
+                <span>{GROUND_TYPE_LABELS[ground.ground_type] || ground.ground_type}</span>
+                <span>{STATUS_CONFIG[ground.status]?.label || ground.status || "Identified"}</span>
+                <span>{STRENGTH_CONFIG[ground.strength]?.label || ground.strength || "Moderate"}</span>
+              </div>
+            </div>
+
+            <p className="grounds-export-description">{ground.description}</p>
+
+            {ground.supporting_evidence?.length > 0 && (
+              <div className="grounds-export-block">
+                <h3>Supporting Evidence</h3>
+                <ul>
+                  {ground.supporting_evidence.map((item, idx) => <li key={idx}>{item}</li>)}
+                </ul>
+              </div>
+            )}
+
+            {ground.law_sections?.length > 0 && (
+              <div className="grounds-export-block">
+                <h3>Relevant Law Sections</h3>
+                <ul>
+                  {ground.law_sections.map((section, idx) => (
+                    <li key={idx}>{`s.${section.section} ${section.act} (${section.jurisdiction || "NSW"})`}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {ground.similar_cases?.length > 0 && (
+              <div className="grounds-export-block">
+                <h3>Similar Cases</h3>
+                <ul>
+                  {ground.similar_cases.map((caseItem, idx) => (
+                    <li key={idx}>{caseItem.citation ? `${caseItem.case_name} — ${caseItem.citation}` : caseItem.case_name}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {(ground.deep_analysis?.full_analysis || ground.analysis) && (
+              <div className="grounds-export-analysis">
+                <h3>Deep Investigation Analysis</h3>
+                <div className="legal-report">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      table: ({ children }) => (
+                        <div className="legal-report-table-wrap"><table>{children}</table></div>
+                      )
+                    }}
+                  >
+                    {ground.deep_analysis?.full_analysis || ground.analysis}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </section>
+        ))}
+
+        <div className="grounds-export-disclaimer">
+          NOT LEGAL ADVICE — This material is an educational tool only. All analysis and recommendations must be independently verified by a qualified Australian legal professional.
+        </div>
+      </div>
+    );
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grounds of Merit Export</title>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; }
+    .grounds-export-shell { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 28px; }
+    .grounds-export-brand { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 12px; margin: 0 0 10px; }
+    .grounds-export-header h1 { margin: 0 0 10px; font-size: 34px; }
+    .grounds-export-header p { margin: 0; line-height: 1.6; }
+    .grounds-export-section { padding: 22px 0; border-bottom: 1px solid #e2e8f0; }
+    .grounds-export-title-wrap h2 { margin: 0 0 10px; font-size: 26px; }
+    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 16px; line-height: 1.7; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 10px; font-size: 18px; }
+    .grounds-export-block ul { margin: 0 0 16px; padding-left: 20px; line-height: 1.6; }
+    .grounds-export-analysis { margin-top: 14px; }
+    .grounds-export-disclaimer { margin-top: 24px; border: 2px solid #dc2626; padding: 16px; font-weight: 700; line-height: 1.6; }
+    .legal-report p { line-height: 1.8; }
+    .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
+    .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .legal-report table { width: 100%; min-width: 560px; border-collapse: collapse; table-layout: auto; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 10px; vertical-align: top; }
+    .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; }
+    .legal-report td { overflow-wrap: anywhere; }
+    @media print {
+      body { background: #ffffff; }
+      .grounds-export-shell { max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>${contentMarkup}</body>
+</html>`;
+  };
+
+  const openGroundsPreview = (mode = "print") => {
+    const html = buildGroundsPreviewHtml();
+    localStorage.setItem(
+      "document-preview-payload",
+      JSON.stringify({
+        html,
+        mode,
+        title: "Grounds of Merit Export",
+        source: "grounds",
+        createdAt: Date.now(),
+      })
+    );
+
+    const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
+    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
+    if (!previewWindow) {
+      window.location.assign(previewUrl);
+    }
+  };
+
+  const exportGroundsWord = () => {
+    const html = buildGroundsPreviewHtml();
+    const blob = new Blob([html], { type: "application/msword" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `grounds_of_merit_${caseId}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => window.URL.revokeObjectURL(url), 10000);
   };
 
   return (
@@ -179,6 +333,19 @@ const GroundsOfMerit = ({
         </Card>
       ) : (
         <div className="grid gap-4">
+          {isUnlocked && (
+            <div className="flex flex-wrap gap-2 justify-end" data-testid="grounds-export-actions">
+              <Button onClick={() => openGroundsPreview("print")} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="grounds-print-view-btn">
+                <Printer className="w-4 h-4 mr-2" /> Print View
+              </Button>
+              <Button onClick={() => openGroundsPreview("pdf")} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="grounds-pdf-view-btn">
+                <Download className="w-4 h-4 mr-2" /> PDF View
+              </Button>
+              <Button onClick={exportGroundsWord} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="grounds-word-view-btn">
+                <FileText className="w-4 h-4 mr-2" /> Word View
+              </Button>
+            </div>
+          )}
           {grounds.map((ground) => {
             const strengthConfig = STRENGTH_CONFIG[ground.strength] || STRENGTH_CONFIG.moderate;
             const StrengthIcon = strengthConfig.icon;
