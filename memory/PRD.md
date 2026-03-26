@@ -12,6 +12,16 @@ React + Tailwind + Shadcn UI / FastAPI + MongoDB / OpenAI GPT-4o via Emergent LL
 ## Case Tabs (CORRECT ORDER)
 Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO Contradictions tab**
 
+## Report Tiers & Pricing
+| Tier | Price | Target Words | Passes |
+|---|---|---|---|
+| Quick Summary | FREE | 2,000-3,000 | 1 |
+| Full Detailed | $150 AUD | 12,000-18,000 | 5 (3 sections/pass, 3000+ words/pass) |
+| Extensive Log | $200 AUD | 25,000-35,000 | 7 |
+| Barrister View | LOCKED | N/A | Synthesis of all 3 |
+
+Barrister View unlocks only after all 3 standard reports are generated.
+
 ## What's Been Implemented (26 Mar 2026)
 - Full CRUD for cases, documents, reports
 - AI-powered grounds identification (Free + $99 tier)
@@ -28,26 +38,36 @@ Documents, Timeline, Grounds, Notes, Reports, Legal Framework, Progress — **NO
 - PageCTA inline variant fixed for light mode
 - SuccessStories footer CTA and Share My Story button fixed
 - CaseDetail gradient button replaced with solid blue
-- **Report language sanitisation**: "we/us/our" eliminated from AI prompts + post-processing in backend (_strip_report_placeholders) and frontend (cleanAIContent). Replaced with "the applicant", "the legal professional", "this analysis".
-- **Print/PDF preview rebuilt**: Professional layout matching on-screen view — coloured headers, numbered sections, styled borders, table of contents, disclaimer footer.
-- **CLIENT PLAIN-ENGLISH BRIEF** prompts updated across all 3 report tiers to enforce educational tool third-person language.
-- **Extensive Log timeout fix**: Reduced per-pass LLM timeout from 420s to 180s, cut retries from 6 to 4 with gpt-4o-mini fallback. Skipped expansion step for extensive_log (7 passes already produce 70k+ chars). Added partial-save after each pass so server restarts don't lose work. Added startup cleanup for orphaned "generating" reports.
-- **Progress indicator improved**: Shows contextual messages during generation ("Reading documents..." -> "Writing analysis..." -> "Completing final sections...").
-- **Report content depth enforced**: Full Detailed target 10k-15k words, Extensive Log target 25k-35k words. MATERIAL COUNTS (doc/timeline/ground counts) added to all prompts.
-- **ALL grounds enforcement**: Every report prompt now has GROUNDS TO COVER with "MUST INCLUDE ALL" and explicit counts.
-- **Comparison table**: Added to end of ALL report views and print/PDF — 3 columns (FREE / $150 / $200) with 24 subject matter rows and checkmarks.
-- **Disclaimer with hazard symbol**: Present on all on-screen reports AND print/PDF views.
-- **Prompt instruction stripping**: Headings like "OUTCOME OPTIONS — keep ALL pathways in this ONE section" cleaned in both backend and frontend.
-- **Pricing updated**: $150 AUD Full Detailed, $200 AUD Extensive Log throughout all prompts and UI.
-- **\1 artifact stripping**: Added to backend _strip_report_placeholders and frontend cleanAIContent (both ReportView + BarristerView).
-- **Prompt instruction stripping**: Backend + frontend strip "keep ALL outcome pathways..." and similar leaked AI instructions from headings.
-- **BarristerView overhaul**: Header fixed (shows BARRISTER BRIEF, grounds/docs counts, Created By Deb King). Removed dark gradient. Print preview upgraded to professional styled layout.
-- **Barrister View padlock**: Lock icon shown when not all 3 reports generated.
-- **Bold disclaimer on ALL reports**: "NOT LEGAL ADVICE" in red bold + "Created and Designed by Deb King" on all 4 report types (on-screen + print/PDF).
-- **Table overflow fix**: table-layout:fixed + word-wrap:break-word on all tables (on-screen + print CSS).
-- **"You/your" language ban**: Added "your legal team" → "the legal professional", "you've been" → "the applicant has been" replacements.
+- **Report language sanitisation**: "we/us/our" eliminated from AI prompts + post-processing
+- **Print/PDF preview rebuilt**: Professional layout matching on-screen view
+- **CLIENT PLAIN-ENGLISH BRIEF** prompts updated across all 3 report tiers
+- **Extensive Log timeout fix**: Reduced per-pass LLM timeout, partial-save after each pass
+- **Progress indicator improved**: Shows contextual messages during generation
+- **Report content depth enforced**: Full Detailed target 12k-18k words (increased from 10k-15k), Extensive Log target 25k-35k words
+- **ALL grounds enforcement**: Every report prompt now has GROUNDS TO COVER with "MUST INCLUDE ALL"
+- **Comparison table**: Added to end of ALL report views and print/PDF
+- **Disclaimer with hazard symbol**: Present on all on-screen reports AND print/PDF views
+- **Prompt instruction stripping**: Headings cleaned in both backend and frontend
+- **Pricing updated**: $150 AUD Full Detailed, $200 AUD Extensive Log
+- **BarristerView overhaul**: Header fixed, lock icon, print preview
+- **Bold disclaimer on ALL reports**: "NOT LEGAL ADVICE" + "Created and Designed by Deb King"
+- **Table overflow fix**: Horizontal scroll on mobile, table-layout:fixed for print only
+- **"You/your" language ban**: All pronouns replaced with third-person references
+
+### Implemented This Session (26 Mar 2026 — Session 2)
+- **Generate Report Modal Redesign**: Cards now show coloured icons (emerald/blue/purple), feature lists with CheckCircle2, clear pricing badges
+- **Barrister View in Modal**: 4th option added to Generate Report dialog, locked with Lock icon until all 3 reports generated, shows Crown icon when unlocked
+- **Generating Indicator Redesign**: Blue header bar with progress steps (Reading → Analysing → Writing → Finalising), elapsed timer, progress bar
+- **Strength Rating Colour Coding**: "Strong" renders in RED (text-red-600), "Moderate" in BLUE (text-blue-600), "Weak" in orange within ReportView MarkdownBlock
+- **Documents Tab Cleanup**: Removed "Extract Text" and "OCR Scan" buttons per user request, only Upload Document remains
+- **Progress Analysis Fix**: Backend `strength_rating` → `strength` field name corrected so AI gets actual ground strengths
+- **Full Detailed Report Depth**: Increased from 2000→3000 minimum words per pass (5 passes), target range 12k-18k words, stronger differentiation instructions vs free report
+- **Consistent Case Law Font Size**: Set `li` font-size to 1.15rem in legal-report CSS
 
 ## Prioritised Backlog
+### P0
+- None
+
 ### P1
 - Backend refactoring (decompose server.py — >5000 lines)
 - Native mobile app build (Capacitor configured)
