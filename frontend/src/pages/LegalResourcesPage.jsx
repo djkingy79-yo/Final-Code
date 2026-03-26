@@ -72,34 +72,28 @@ const LegalResourcesPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-white">
+      <section className="py-6 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center" data-testid="legal-resources-hero-icon">
-              <Building className="w-7 h-7 text-white" />
-            </div>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-hero-title">
-            Legal Resources & Contacts Directory
+          <h1 className="text-xl font-bold mb-2 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-hero-title">
+            Legal Resources & Contacts
           </h1>
-          <p className="text-slate-700 max-w-2xl mx-auto" data-testid="legal-resources-hero-description">
-            One merged directory for legal resources and legal contacts across all Australian states and territories.
-            Each listing explains what type of legal advice or support the service can help with.
+          <p className="text-xs text-slate-700 max-w-xl mx-auto" data-testid="legal-resources-hero-description">
+            Merged directory for legal resources and contacts across all Australian states and territories.
           </p>
         </div>
       </section>
 
       <section className="sticky top-[72px] z-30 bg-white backdrop-blur border-b border-slate-200" data-testid="legal-resources-quick-nav-wrapper">
-        <div className="max-w-5xl mx-auto px-6 py-3">
-          <div className="flex flex-wrap items-center gap-3 mb-2">
-            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide" htmlFor="state-filter-select">
+        <div className="max-w-5xl mx-auto px-6 py-2">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <label className="text-[10px] font-semibold text-slate-700 uppercase tracking-wide" htmlFor="state-filter-select">
               Filter by state
             </label>
             <select
               id="state-filter-select"
               value={stateFilter}
               onChange={(e) => setStateFilter(e.target.value)}
-              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900"
+              className="h-7 rounded-md border border-slate-200 bg-white px-2 text-xs text-slate-900"
               data-testid="legal-resources-state-filter"
             >
               <option value="all">All states & national</option>
@@ -113,22 +107,19 @@ const LegalResourcesPage = () => {
               <option value="NT">NT</option>
               <option value="ACT">ACT</option>
             </select>
-            <p className="text-[11px] text-slate-700" data-testid="legal-resources-state-filter-help">
-              Services are automatically shown in state order.
-            </p>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1" data-testid="legal-resources-quick-nav">
+          <div className="flex gap-1.5 overflow-x-auto pb-1" data-testid="legal-resources-quick-nav">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => scrollToSection(tab.id)}
-                  className="inline-flex items-center gap-2 whitespace-nowrap px-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-blue-500 hover:bg-blue-50 text-sm text-slate-900 transition-colors"
+                  className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-1.5 rounded-md border border-slate-200 bg-white hover:border-blue-500 hover:bg-blue-50 text-xs text-slate-900 transition-colors"
                   data-testid={`legal-resource-tab-${tab.id}`}
                 >
-                  <Icon className="w-4 h-4 text-blue-700" />
+                  <Icon className="w-3 h-3 text-blue-700" />
                   {tab.label}
                 </button>
               );

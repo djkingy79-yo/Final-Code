@@ -430,34 +430,24 @@ const FAQPage = () => {
         )}
 
         {/* Still have questions */}
-        <div className="mt-16 rounded-2xl overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1521791055366-0d553872125f?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=200&fit=crop"
-            alt="Legal Help"
-            className="w-full h-48 object-cover"
-          />
-          <div className="absolute inset-0 bg-white/95 border border-slate-200 flex items-center justify-center">
-            <div className="text-center px-6">
-              <MessageCircle className="w-12 h-12 text-blue-700 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Still have questions?
-              </h3>
-              <p className="text-slate-700 mb-6 max-w-md mx-auto">
-                Can't find what you're looking for? We're here to help.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to="/contact" data-testid="faq-contact-link">
-                  <Button className="landing-cta-primary" data-testid="faq-contact-btn">
-                    Contact Us
-                  </Button>
-                </Link>
-                <Link to="/glossary" data-testid="faq-glossary-link">
-                  <Button variant="outline" className="landing-cta-secondary" data-testid="faq-glossary-btn">
-                    Legal Glossary
-                  </Button>
-                </Link>
-              </div>
-            </div>
+        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+          <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            Still have questions?
+          </h3>
+          <p className="text-xs text-slate-700 mb-3">
+            Can't find what you're looking for? We're here to help.
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Link to="/contact" data-testid="faq-contact-link">
+              <Button className="landing-cta-primary text-xs px-4 py-2" data-testid="faq-contact-btn">
+                Contact Us
+              </Button>
+            </Link>
+            <Link to="/glossary" data-testid="faq-glossary-link">
+              <Button variant="outline" className="text-xs px-4 py-2 border-slate-300" data-testid="faq-glossary-btn">
+                Legal Glossary
+              </Button>
+            </Link>
           </div>
         </div>
       </main>
