@@ -807,17 +807,6 @@ const ReportView = () => {
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
-              {report?.report_type === 'extensive_log' && (
-                hasAllReports ? (
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/cases/${caseId}/reports/${reportId}/barrister`)} className="border-blue-300 text-blue-800 hover:bg-blue-50" data-testid="barrister-view-btn">
-                    <Eye className="w-4 h-4 mr-2" /> Barrister View
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" disabled className="text-slate-700 border-slate-200 bg-white opacity-80 cursor-not-allowed" data-testid="barrister-view-locked">
-                    <Eye className="w-4 h-4 mr-2" /> Barrister View — unlock after all 3 reports
-                  </Button>
-                )
-              )}
               <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-200 text-slate-700 hover:bg-slate-100" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>

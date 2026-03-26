@@ -3504,6 +3504,41 @@ def _strip_report_placeholders(text: str) -> str:
     ]
     for pattern, replacement in we_us_replacements:
         cleaned = re.sub(pattern, replacement, cleaned)
+    
+    # Catch-all: replace remaining "we " patterns at sentence boundaries
+    cleaned = re.sub(r'\bwe facilitate\b', 'this analysis facilitates', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe recommend\b', 'it is recommended', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe note\b', 'it is noted', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe observe\b', 'it is observed', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe consider\b', 'it is considered', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe conclude\b', 'it is concluded', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe suggest\b', 'it is suggested', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe assess\b', 'this analysis assesses', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe examine\b', 'this analysis examines', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe highlight\b', 'this analysis highlights', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe identify\b', 'this analysis identifies', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe believe\b', 'it is assessed', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe find\b', 'this analysis finds', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe can see\b', 'it can be seen', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe can\b', 'the applicant can', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe must\b', 'the legal professional must', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe should\b', 'the legal professional should', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bwe need\b', 'the legal professional needs', cleaned, flags=re.I)
+    cleaned = re.sub(r', we \b', ', the analysis ', cleaned)
+    cleaned = re.sub(r'\. We \b', '. This analysis ', cleaned)
+    # Catch remaining "our" possessives
+    cleaned = re.sub(r'\bour client\b', 'the applicant', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bour focus\b', 'the focus', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bour team\b', 'the legal professional', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bour review\b', 'this review', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bour assessment\b', 'this assessment', cleaned, flags=re.I)
+    cleaned = re.sub(r'\bour examination\b', 'this examination', cleaned, flags=re.I)
+    
+    # Fix broken markdown links: <Text> [Text](url) → just [Text](url)
+    cleaned = re.sub(r'<([^>]+)>\s*\[([^\]]+)\]\(([^)]+)\)', r'[\2](\3)', cleaned)
+    # Fix raw angle-bracket links: <Text> without markdown
+    cleaned = re.sub(r'<(Search [^>]+)>', r'\1', cleaned)
+    
     return cleaned
 
 
@@ -4351,68 +4386,226 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
         elif report_type == "extensive_log":
             # Seven-pass generation for extensive_log (3 sections per pass)
             passes = [
-                ("PASS 1/7", """
+                ("PASS 1/7", f"""
 
-NOW GENERATE ONLY SECTIONS 1-3. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Every paragraph must name specific people, dates, documents, or legislation from this case. Do NOT write generic descriptions of what analysis should be done — DO the analysis.
+NOW GENERATE ONLY SECTIONS 1-3. Write 5000+ WORDS for this pass. This is a $200 PREMIUM report — every paragraph must be packed with case-specific facts, not generic legal education.
 
-## 1. EXECUTIVE BRIEF
-## 2. FORENSIC CASE CHRONOLOGY
-## 3. DOCUMENT EVIDENCE DIGEST
+## 1. EXECUTIVE BRIEF (1200+ words)
+Write 6-8 FULL paragraphs (NOT bullet points):
+- Paragraph 1: Document/timeline/grounds counts from supplied data, then strategic overview of the appeal's overall strength with percentage assessment
+- Paragraph 2: The 2-3 STRONGEST grounds with specific evidence anchors and legal tests that support them
+- Paragraph 3: The weakest ground and why it's still worth pursuing (or should be abandoned)
+- Paragraph 4: Jurisdiction-specific posture — what the {state_info.get('appeal_court', 'NSWCCA')} typically does with this type of appeal
+- Paragraph 5: Most likely outcome pathway and realistic assessment of relief
+- Paragraph 6: Key risks the prosecution will exploit and how to counter them
+- Paragraph 7: Immediate actions required with specific deadlines
+- Paragraph 8: Summary of 8+ primary issues identified with document references
 
-Write ALL 3 sections with specific case facts in every paragraph. STOP after section 3."""),
-                ("PASS 2/7", """
+## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
+Write 18+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
+"On [EXACT DATE], [WHAT HAPPENED in detail]. This is established by [SOURCE DOCUMENT with specific reference]. The legal significance for the appeal is [SIGNIFICANCE]. The prosecution's likely treatment of this event is [PROSECUTION VIEW], while the defence can argue [DEFENCE POSITION]."
+Cover: offence date and circumstances, arrest, charges laid, bail, committal, psychiatric/forensic reports, plea, trial dates, key witness testimony, jury directions, verdict, sentencing submissions, sentence, appeal filing.
 
-NOW GENERATE ONLY SECTIONS 4-5. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Section 4 requires 900+ words PER ground and MUST include EVERY ground listed in GROUNDS TO COVER, written as "Ground X: [Exact Title]" in flowing paragraphs (no bullet points or sub-headings within grounds).
+## 3. DOCUMENT EVIDENCE DIGEST (1200+ words)
+For EACH of the {len(documents)} uploaded documents, write 2-3 FULL PARAGRAPHS analysing:
+- Document title and date
+- Key extracts (QUOTE directly from the document content where possible)
+- Reliability and credibility assessment
+- Probative value — what it proves or disproves
+- Which specific grounds this document supports
+- Rating: Critical / Important / Supporting / Peripheral
+If there are 10 documents, write 20-30 paragraphs.
 
-## 4. GROUNDS OF MERIT — DEEP ANALYSIS (900+ words per ground, flowing paragraphs)
-## 5. COMPARATIVE SENTENCING TABLE (12+ CASES with full citations and specific factual comparisons)
+STOP after section 3. Write ALL content — do NOT truncate."""),
+                ("PASS 2/7", f"""
 
-Write BOTH sections with deep case-specific analysis. STOP after section 5."""),
-                ("PASS 3/7", """
+NOW GENERATE ONLY SECTIONS 4-5. Write 6000+ WORDS for this pass. Section 4 is the HEART of the $200 report — each ground must be a mini-essay.
 
-NOW GENERATE ONLY SECTIONS 6-8. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Apply every provision to THIS case's facts. Do NOT just describe what the law says — explain how it applies to Homann specifically.
+## 4. GROUNDS OF MERIT — DEEP ANALYSIS
+You MUST write about EVERY ground listed below. If there are 5 grounds, write 5 complete analyses. NO OMISSIONS.
+GROUNDS TO COVER:
+{grounds_enumerated}
+
+For EACH ground, write 1200+ words as flowing paragraphs (NOT bullet points) covering:
+1. "Ground X: [Exact Title from above]" as the heading
+2. LEGAL THRESHOLD: The specific test for this ground — cite the statutory provision (section + Act + year) and the leading case that established the test. Explain what must be proved.
+3. FACTUAL BASIS: How THIS case's specific facts satisfy the test. Reference documents, dates, witness statements. Quote from case material where possible.
+4. VIABILITY RATING: Strong / Moderate / Weak — with 5-6 sentences explaining WHY, citing comparable cases where this type of ground succeeded or failed.
+5. CROWN RESPONSE PREDICTION: Write 4-5 sentences predicting EXACTLY what the prosecution will argue. Be specific — name the authorities they'll rely on.
+6. DEFENCE REBUTTAL STRATEGY: Write 4-5 sentences with the specific counter-argument. Name authorities that trump the Crown's position.
+7. FALLBACK POSITION: If the primary argument fails, what's the fallback? (2-3 sentences)
+8. APPEAL IMPACT: If this ground succeeds — conviction quashed? Sentence reduced? Retrial? What specific court order should be sought?
+9. KEY AUTHORITY: Name the single most important case, provide the citation, and explain in 3-4 sentences exactly how it applies to this ground in this case.
+
+## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
+Markdown table with 12+ rows. After the table, write a DETAILED PARAGRAPH for EACH of the 12+ cases (200+ words each) explaining: original sentencing reasoning, appeal court's reasoning, how the reduction was achieved, which grounds succeeded, and how this specifically compares to the current case.
+
+STOP after section 5."""),
+                ("PASS 3/7", f"""
+
+NOW GENERATE ONLY SECTIONS 6-8. Write 4000+ WORDS for this pass.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
-## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS — keep ALL pathways in this ONE section
-## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
+Markdown table with 10+ rows, then for EACH common ground write 100+ words explaining how it does or does not apply to THIS specific case. Reference the actual grounds identified in this case where they overlap.
 
-Write ALL 3 sections. STOP after section 8."""),
-                ("PASS 4/7", """
+## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS
+First provide summary table, then write 400+ WORDS for EACH of these 5 pathways (ALL within this one section):
+- **Conviction quashed entirely**: Which of the {len(grounds)} grounds support this? What's the legal standard (e.g., miscarriage of justice)? What evidence is strongest? Historical success rate for this type of case?
+- **Retrial ordered**: What triggers a retrial? What changes? Timeframes? Risks? What happens if the same evidence is presented?
+- **Conviction substituted/downgraded**: Could the charge be reduced? Under what legal basis? What would the new sentence range be? Which grounds support this?
+- **Sentence reduced as manifestly excessive**: Show EXACT before/after — Original sentence/NPP → realistic revised sentence/NPP with percentage. Which sentencing comparisons from Section 5 support this?
+- **Appeal dismissed**: What happens? Consequences for the applicant? Special leave to High Court — threshold, timeframe, realistic prospects?
 
-NOW GENERATE ONLY SECTIONS 9-11. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. For the precedent matrix, include full citations and explain the SPECIFIC factual parallel to Homann's case for each. For the statutory framework, APPLY each provision to THIS case — do NOT just list what the Act covers generally.
+## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (800+ words)
+List 10+ specific gaps. For each: what's missing, why it matters, exact steps to obtain it (who to contact, what to request, expected timeframe), priority (Critical/Important/Helpful), impact on which grounds if not remediated.
 
-## 9. PRECEDENT OUTCOME MATRIX (15+ CASES with full citations and factual parallels)
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (apply each provision to THIS case specifically)
+STOP after section 8."""),
+                ("PASS 4/7", f"""
+
+NOW GENERATE ONLY SECTIONS 9-11. Write 5000+ WORDS for this pass. Section 11 MUST cover ALL {len(grounds)} grounds.
+
+## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
+For each of 15+ cases, write a FULL PARAGRAPH (not just a table row):
+- Full citation
+- Factual similarity to THIS matter (be specific — offence type, relationship, circumstances)
+- Hearing outcome
+- Extracted legal principle
+- How this principle applies to the current case (3-4 sentences)
+
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (1200+ words)
+15+ statutory provisions. For EACH provision, write a FULL PARAGRAPH:
+- Section number, Act name with year, jurisdiction
+- What the provision covers (1 sentence)
+- How it SPECIFICALLY APPLIES to THIS case (3-4 sentences) — name the defendant, the offence, the ground it relates to
+- Any recent amendments or judicial interpretation that affects the appeal
+
 ## 11. HOW TO ARGUE EACH TOP GROUND — DETAILED STRATEGY
+MUST cover ALL {len(grounds)} grounds. For EACH ground write 500+ words:
+GROUNDS TO COVER:
+{grounds_enumerated}
 
-Write ALL 3 sections. STOP after section 11."""),
-                ("PASS 5/7", """
+For each ground:
+- **Lead Proposition**: The core argument in 2 powerful sentences
+- **Supporting Authority Cluster**: Specific statute + 3-4 precedent cases with full citations and 2-3 sentences explaining each
+- **Expected Crown Response**: 4-5 sentences predicting what the prosecution will argue
+- **Rebuttal Strategy**: 4-5 sentences with specific counter-authorities
+- **Fallback Position**: If the primary argument is rejected, what's the alternative? (3-4 sentences)
+- **If Established**: What specific court order should be sought?
 
-NOW GENERATE ONLY SECTIONS 12-14. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. These are practical hearing-ready sections — include draft submission paragraphs, specific questions to prepare for, and conference agenda items tied to THIS case.
+STOP after section 11."""),
+                ("PASS 5/7", f"""
 
-## 12. SUBMISSIONS BLUEPRINT
-## 13. HEARING PREPARATION NOTES
-## 14. CONFERENCE PREPARATION PACK
+NOW GENERATE ONLY SECTIONS 12-14. Write 5000+ WORDS for this pass. These are the sections that make this $200 report UNIQUE. Sections 13 and 14 DO NOT exist in the $150 report.
 
-Write ALL 3 sections. STOP after section 14."""),
-                ("PASS 6/7", """
+## 12. SUBMISSIONS BLUEPRINT (1500+ words)
+**Written Submission Strategy**: Write ACTUAL DRAFT PARAGRAPHS that could be filed with the court. For each major ground, write 2-3 paragraphs of draft submission text. Include argument sequence, authority placement, and framing. Write the opening paragraph and closing paragraph of the written submissions.
 
-NOW GENERATE ONLY SECTIONS 15-17. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. Include specific court forms, filing deadlines for NSW, and similar case search strategies tied to THIS case's facts.
+**Oral Submission Strategy**: For each ground, write:
+- The opening line to say to the bench
+- 3-4 likely bench questions with prepared response lines (word for word)
+- Time allocation recommendation (e.g., "Ground 1: 15 minutes")
+- How to handle judicial scepticism on weaker grounds
 
-## 15. COURT PATHWAY OPERATIONS PLAYBOOK
-## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
-## 17. SIMILAR CASE SEARCH OPTIONS
+## 13. HEARING PREPARATION NOTES (1200+ words — NEW SECTION NOT IN $150 REPORT)
+For EACH of the {len(grounds)} grounds:
+- Key talking points for quick reference (5-6 per ground)
+- Top 3 anticipated bench questions with WORD-FOR-WORD suggested answers
+- First authority to cite and why (2-3 sentences)
+- Concessions to make strategically vs points to contest
+- What visual aids or demonstratives to prepare
 
-Write ALL 3 sections. STOP after section 17."""),
-                ("PASS 7/7", """
+## 14. CONFERENCE PREPARATION PACK (1200+ words — NEW SECTION NOT IN $150 REPORT)
+For briefing a barrister — write as an actual document:
+- One-page case summary (write the ACTUAL summary — 300+ words covering lead theory, key facts, strongest grounds)
+- Authorities shortlist (10+ cases with key passages identified)
+- Orders sought (list specific court orders to request)
+- Case strengths with evidence references (6+ points)
+- Case weaknesses and mitigation strategy (4+ points with specific counter-arguments)
+- Client instructions summary
 
-NOW GENERATE ONLY SECTIONS 18-20. Write thorough, exhaustive, CASE-SPECIFIC legal analysis. MINIMUM 2000 WORDS for this pass. The action plan must have specific deadlines. The risk assessment must address specific weaknesses in THIS case. The plain-English brief must explain the specific grounds and their implications to the client.
+STOP after section 14."""),
+                ("PASS 6/7", f"""
 
-## 18. PRIORITISED ACTION PLAN — keep ALL timeframes in this ONE section
-## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
-## 20. CLIENT PLAIN-ENGLISH BRIEF
+NOW GENERATE ONLY SECTIONS 15-17. Write 4000+ WORDS for this pass. These sections are UNIQUE to the $200 report.
 
-Write ALL 3 sections. Do NOT truncate any section."""),
+## 15. COURT PATHWAY OPERATIONS PLAYBOOK (1200+ words — NEW SECTION NOT IN $150 REPORT)
+For EACH relevant court level in {state_info.get('name', 'NSW')}:
+- Court name and jurisdiction
+- Filing sequence with specific documents required at each stage
+- Court registry details (address, phone, email where available)
+- Deadlines for each filing step
+- Extension-of-time route if deadlines have passed — specific provisions and what needs to be demonstrated
+- What happens at each stage (directions hearing, callover, full hearing)
+- Estimated timeframes from filing to hearing
+- Costs considerations
+
+## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS (800+ words)
+Step-by-step guide specific to {state_info.get('name', 'NSW')} with FULL DETAIL per step:
+1. Obtain trial transcripts and exhibits — from which court registry, expected cost and timeframe
+2. Identify and finalise grounds of appeal — how to narrow from identified grounds to filed grounds
+3. Lodge Notice of Intention to Appeal — form name, deadline, where to lodge
+4. Prepare detailed written submissions — structure, length, authorities
+5. Serve documents on the Crown/DPP — who, where, method
+6. Attend the appeal hearing — what to expect, who attends
+Forms table: | Form/Document | Purpose | Where to Obtain | Filing Deadline |
+
+## 17. SIMILAR CASE SEARCH OPTIONS (800+ words — NEW SECTION NOT IN $150 REPORT)
+5+ tailored AustLII search queries specifically designed for this case:
+For each query:
+- The exact search string
+- What it's designed to find
+- Expected number of results and how to filter them
+- Key cases to look for in results
+- How to use the results to strengthen the appeal
+Court-level filtering suggestions and keyword alternatives for each ground.
+
+STOP after section 17."""),
+                ("PASS 7/7", f"""
+
+NOW GENERATE ONLY SECTIONS 18-20. Write 5000+ WORDS for this pass. Section 20 is the CLIENT BRIEF — it must be thorough and cover EVERY ground.
+
+## 18. PRIORITISED ACTION PLAN (1000+ words)
+72-hour actions (urgent — at least 6 specific actions):
+For each: exact action, who to contact (name the office/registry), deadline, objective, what happens if missed.
+
+7-day actions (important — at least 6 specific actions):
+For each: exact action, resources needed, dependencies, expected outcome.
+
+28-day actions (strategic — at least 6 specific actions):
+For each: exact action, preparation steps, milestones, how this contributes to the appeal.
+
+## 19. RISK ASSESSMENT + CONTINGENCY PLANNING (1200+ words — NEW SECTION NOT IN $150 REPORT)
+For EACH of the {len(grounds)} grounds, write 150+ words covering:
+- Probability of success (percentage range with reasoning)
+- Main risk factor (what could go wrong?)
+- Contingency if this ground fails (what's the backup?)
+- Impact on overall appeal if this ground is excluded
+
+Overall appeal risk assessment (500+ words):
+- Best case scenario, likelihood, and path to get there
+- Most likely outcome with realistic assessment
+- Worst case scenario and mitigation strategy
+- How grounds interact — if Ground 1 fails, does Ground 3 become stronger?
+- Whether grounds should be argued independently or as a package
+
+## 20. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
+THIS IS THE FINAL SECTION. Write in plain, everyday English that the defendant can understand.
+
+For EACH of the {len(grounds)} grounds individually:
+- What this ground means in simple terms (2-3 sentences)
+- Why it matters for the appeal (2-3 sentences)
+- What the chances are (honest assessment)
+- What happens if it succeeds (specific outcome)
+
+Then cover:
+- The overall appeal: what it is, why it's happening, and the realistic timeline
+- Each possible outcome and what it means personally for the applicant
+- Exactly what the client should do right now, this week, and this month
+- What to expect at the hearing — how long, who's there, what happens
+- Honest assessment of risks alongside the opportunities
+- NEVER use "we", "us", "our". Use "the applicant", "the legal professional", "this analysis".
+
+Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
             
             parts = []
