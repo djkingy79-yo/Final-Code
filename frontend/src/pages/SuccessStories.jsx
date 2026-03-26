@@ -213,12 +213,12 @@ const SuccessStories = () => {
             <Link to="/contact" className="text-slate-400 hover:text-white text-sm transition-colors">Contact</Link>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white transition-colors"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
@@ -229,7 +229,7 @@ const SuccessStories = () => {
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
+          <div className="md:hidden bg-white border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white">Legal Terms</Link>
             <Link to="/faq" className="block py-2 text-slate-300 hover:text-white">FAQ</Link>
             <Link to="/contact" className="block py-2 text-slate-300 hover:text-white">Contact</Link>
@@ -436,7 +436,7 @@ const SuccessStories = () => {
       </main>
 
       {/* Footer CTA */}
-      <section className="bg-slate-900 dark:bg-slate-950 px-6 py-12 border-t border-slate-800">
+      <section className="bg-white dark:bg-white px-6 py-12 border-t border-slate-800">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Start Your Journey?

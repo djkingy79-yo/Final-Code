@@ -966,6 +966,20 @@ select {
   color: #0f172a !important;
 }
 
+.landing-page [class*="text-white/"] {
+  color: #0f172a !important;
+}
+
+.landing-page [class*="bg-white/"] {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.landing-page [class*="border-white/"] {
+  border-color: #cbd5e1 !important;
+}
+
 .landing-page .bg-slate-900,
 .landing-page .bg-slate-950,
 .landing-page .bg-slate-800,
@@ -1061,6 +1075,50 @@ select {
   border-color: #e2e8f0 !important;
 }
 
+.force-light .opacity-60,
+.force-light .opacity-70,
+.force-light .opacity-80 {
+  opacity: 1 !important;
+}
+
+.force-light .text-white {
+  color: #0f172a !important;
+}
+
+.force-light [data-testid="report-colour-header"] *,
+.force-light .landing-cta-primary,
+.force-light .landing-cta-primary *,
+.force-light .landing-cta-secondary,
+.force-light .landing-cta-secondary * {
+  color: #ffffff !important;
+}
+
+.force-light [class*="bg-blue-6"],
+.force-light [class*="bg-blue-7"],
+.force-light [class*="bg-blue-8"],
+.force-light [class*="bg-emerald-6"],
+.force-light [class*="bg-emerald-7"],
+.force-light [class*="bg-purple-7"],
+.force-light [class*="bg-red-6"],
+.force-light [class*="bg-red-7"],
+.force-light [class*="bg-indigo-7"],
+.force-light [class*="bg-indigo-8"] {
+  color: #ffffff !important;
+}
+
+.force-light [class*="bg-blue-6"] *,
+.force-light [class*="bg-blue-7"] *,
+.force-light [class*="bg-blue-8"] *,
+.force-light [class*="bg-emerald-6"] *,
+.force-light [class*="bg-emerald-7"] *,
+.force-light [class*="bg-purple-7"] *,
+.force-light [class*="bg-red-6"] *,
+.force-light [class*="bg-red-7"] *,
+.force-light [class*="bg-indigo-7"] *,
+.force-light [class*="bg-indigo-8"] * {
+  color: #ffffff !important;
+}
+
 /* Landing pages — bright, bold, white background */
 .landing-page {
   background: #ffffff;
@@ -1117,6 +1175,20 @@ select {
 .landing-page p.text-white,
 .landing-page span.text-white {
   color: #0f172a !important;
+}
+
+.landing-page [class*="text-white/"] {
+  color: #0f172a !important;
+}
+
+.landing-page [class*="bg-white/"] {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.landing-page [class*="border-white/"] {
+  border-color: #cbd5e1 !important;
 }
 
 

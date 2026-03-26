@@ -51,17 +51,17 @@ const LandingPage = () => {
           </div>
           {/* DO NOT UNDO — Desktop + iPad Navigation */}
           <div className="hidden lg:flex items-center gap-4">
-            <Link to="/how-it-works" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-how-it-works-link">
+            <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="nav-how-it-works-link">
               How It Works
             </Link>
-            <Link to="/appeal-statistics" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-appeal-statistics-link">
+            <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="nav-appeal-statistics-link">
               Appeal Statistics
             </Link>
-            <Link to="/legal-resources" className="text-slate-400 hover:text-white text-sm transition-colors" data-testid="nav-legal-resources-link">
+            <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="nav-legal-resources-link">
               Resources & Contacts
             </Link>
             <div className="relative group">
-              <button className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1" data-testid="nav-more-dropdown">
+              <button className="text-slate-700 hover:text-blue-700 text-sm transition-colors flex items-center gap-1" data-testid="nav-more-dropdown">
                 More <ChevronRight className="w-3 h-3 rotate-90" />
               </button>
               <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
@@ -80,7 +80,7 @@ const LandingPage = () => {
             </div>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors"
               data-testid="theme-toggle"
             >
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -103,22 +103,22 @@ const LandingPage = () => {
         {/* Mobile + iPad Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
-            <Link to="/how-it-works" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-how-it-works">How It Works</Link>
-            <Link to="/appeal-statistics" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
-            <Link to="/forms" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-forms">Forms & Templates</Link>
-            <Link to="/glossary" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-glossary">Legal Glossary</Link>
-            <Link to="/lawyers" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
-            <Link to="/faq" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-faq">FAQ</Link>
-            <Link to="/contact" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-contact">Contact</Link>
-            <Link to="/about" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-about">About</Link>
-            <Link to="/success-stories" className="block py-2 text-slate-300 hover:text-white" data-testid="mobile-nav-success-stories">Success Stories</Link>
+            <Link to="/how-it-works" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-it-works">How It Works</Link>
+            <Link to="/appeal-statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
+            <Link to="/forms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-forms">Forms & Templates</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
+            <Link to="/lawyers" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
+            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
+            <Link to="/contact" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-contact">Contact</Link>
+            <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
+            <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
             <div className="border-t border-slate-700 pt-3 mt-3">
               <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>
             </div>
             <div className="flex items-center gap-3 pt-2">
-              <button onClick={toggleTheme} className="p-2 text-slate-300 hover:text-white" data-testid="mobile-theme-toggle">
+              <button onClick={toggleTheme} className="p-2 text-slate-700 hover:text-blue-700" data-testid="mobile-theme-toggle">
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <Button onClick={() => setShowAuthModal(true)} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
@@ -225,7 +225,7 @@ const LandingPage = () => {
                 <img 
                   src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/6fe186d3d7a5b01e3d3c6076c0a6aefc22c07aea5667124e0978d927d9c58335.png" 
                   alt="Barrister desk with gavel, authorities bundle, and appeal brief"
-                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100 dark:bg-slate-900"
+                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100 dark:bg-white"
                   loading="eager"
                   decoding="async"
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80'; }}
@@ -369,7 +369,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* COMPLETE APP CAPABILITIES - At A Glance */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-slate-900 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-16 px-6 bg-white dark:bg-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -398,19 +398,19 @@ const LandingPage = () => {
             <p className="text-blue-300 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-testid="landing-statistics-row">
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
+            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
               <div className="text-slate-300 text-sm">Criminal Appeals Filed Annually</div>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
+            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-emerald-400 mb-1">~40%</div>
               <div className="text-slate-300 text-sm">Appeals Heard Result in Change</div>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
+            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-blue-400 mb-1">98%</div>
               <div className="text-slate-300 text-sm">Resolved Within 12 Months</div>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 text-center">
+            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
               <div className="text-3xl font-bold text-red-400 mb-1">1 in 80</div>
               <div className="text-slate-300 text-sm">Convicted Australians Appeal</div>
             </div>
@@ -423,7 +423,7 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Case Management */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
+            <div className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Briefcase className="w-5 h-5 text-white" />
@@ -439,7 +439,7 @@ const LandingPage = () => {
             </div>
 
             {/* AI Analysis */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
+            <div className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BarChart3 className="w-5 h-5 text-white" />
@@ -455,7 +455,7 @@ const LandingPage = () => {
             </div>
 
             {/* Legal Research Hub */}
-            <Link to="/legal-framework" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/legal-framework" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <BookOpen className="w-5 h-5 text-white" />
@@ -471,7 +471,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Forms & Templates */}
-            <Link to="/forms" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/forms" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5 text-white" />
@@ -487,7 +487,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Legal Contacts Directory */}
-            <Link to="/legal-resources" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/legal-resources" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Users className="w-5 h-5 text-white" />
@@ -503,7 +503,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Legal Glossary */}
-            <Link to="/glossary" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/glossary" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Book className="w-5 h-5 text-white" />
@@ -519,7 +519,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Appeal Statistics */}
-            <Link to="/appeal-statistics" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/appeal-statistics" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <TrendingUp className="w-5 h-5 text-white" />
@@ -535,7 +535,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Success Stories */}
-            <Link to="/success-stories" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/success-stories" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Heart className="w-5 h-5 text-white" />
@@ -551,7 +551,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Lawyer Directory */}
-            <Link to="/lawyers" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/lawyers" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Scale className="w-5 h-5 text-white" />
@@ -567,7 +567,7 @@ const LandingPage = () => {
             </Link>
 
             {/* Reports & Export */}
-            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
+            <div className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Download className="w-5 h-5 text-white" />
@@ -583,7 +583,7 @@ const LandingPage = () => {
             </div>
 
             {/* How To Use Guide */}
-            <Link to="/how-to-use" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/how-to-use" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-lime-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <HelpCircle className="w-5 h-5 text-white" />
@@ -599,7 +599,7 @@ const LandingPage = () => {
             </Link>
 
             {/* FAQ */}
-            <Link to="/faq" className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
+            <Link to="/faq" className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group block">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                   <MessageCircle className="w-5 h-5 text-white" />
@@ -874,7 +874,7 @@ const LandingPage = () => {
               <h3 className="text-lg font-bold text-foreground mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
               
               <ul className="space-y-4 text-sm text-foreground mb-6">
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -886,7 +886,7 @@ const LandingPage = () => {
                     <p className="text-xs text-muted-foreground mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -898,7 +898,7 @@ const LandingPage = () => {
                     <p className="text-xs text-muted-foreground mt-1">15 sections: grounds portfolio, 8+ sentencing comparisons, outcome options matrix, submissions blueprint, filing guide with forms, and client brief</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-700">
+                <li className="flex items-start gap-2 p-3 bg-white dark:bg-white rounded-lg border border-blue-200 dark:border-blue-700">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -911,7 +911,7 @@ const LandingPage = () => {
                   </div>
                 </li>
               </ul>
-              <div className="bg-white dark:bg-slate-800 rounded-lg p-3 text-center text-sm text-muted-foreground mb-4">
+              <div className="bg-white dark:bg-white rounded-lg p-3 text-center text-sm text-muted-foreground mb-4">
                 <p><strong className="text-foreground">Compare:</strong> A junior lawyer charges $1,000+ just to review a case</p>
                 <p className="text-xs text-muted-foreground mt-1">Barristers charge triple that. A full legal report? Thousands.</p>
               </div>
@@ -944,7 +944,7 @@ const LandingPage = () => {
             <table className="w-full text-base border-collapse" data-testid="tier-comparison-table">
               <thead>
                 <tr>
-                  <th className="text-left p-4 bg-slate-900 border border-slate-700 font-semibold text-slate-100" style={{ minWidth: '240px' }}>Section</th>
+                  <th className="text-left p-4 bg-white border border-slate-700 font-semibold text-slate-100" style={{ minWidth: '240px' }}>Section</th>
                   <th className="p-4 bg-emerald-500/15 text-center font-semibold text-emerald-200 border border-emerald-400/20" style={{ minWidth: '130px' }}>
                     Quick Summary<br /><span className="text-sm font-normal">FREE (7 sections)</span>
                   </th>
@@ -1019,13 +1019,13 @@ const LandingPage = () => {
                     </td>
                   </tr>
                 ))}
-                <tr className="border-t-2 border-border bg-slate-50 dark:bg-slate-800/50">
+                <tr className="border-t-2 border-border bg-slate-50 dark:bg-white/50">
                   <td className="p-3 text-foreground font-semibold text-sm">Target word count</td>
                   <td className="p-3 text-center text-sm font-semibold text-green-400">2,000–3,000</td>
                   <td className="p-3 text-center text-sm font-semibold text-blue-400">7,000–9,000</td>
                   <td className="p-3 text-center text-sm font-semibold text-purple-400">15,000–20,000</td>
                 </tr>
-                <tr className="border-t border-border bg-slate-900/40">
+                <tr className="border-t border-border bg-white/40">
                   <td className="p-3 text-foreground font-semibold text-sm">Aggressive mode depth</td>
                   <td className="p-3 text-center text-sm text-green-300">~2× depth</td>
                   <td className="p-3 text-center text-sm text-blue-300">~2× depth</td>
@@ -1053,7 +1053,7 @@ const LandingPage = () => {
                 body: "Comparable authorities show materially lower non‑parole periods for similar factual matrices. R v Loveridge [2014] NSWCCA 120 (7 year NPP) and R v Pham [2015] HCA 39 indicate the sentencing range applied here may be outside proportionate bounds.",
               }
             ].map((card, idx) => (
-              <div key={idx} className="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl">
+              <div key={idx} className="bg-white border border-slate-700 rounded-2xl p-6 shadow-xl">
                 <p className="text-xs uppercase tracking-widest text-blue-300 mb-2">{card.label}</p>
                 <h3 className="text-lg font-bold text-slate-100 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   Report Snapshot
@@ -1077,7 +1077,7 @@ const LandingPage = () => {
       </section>
 
       {/* About Link Section */}
-      <section className="py-12 px-6 bg-slate-900 dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-12 px-6 bg-white dark:bg-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -1101,7 +1101,7 @@ const LandingPage = () => {
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about">
-            <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
+            <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg">
               Read My Full Story
             </Button>
           </Link>

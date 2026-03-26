@@ -236,7 +236,7 @@ const HowItWorksPage = () => {
       title: "Present in Barrister View",
       subtitle: "Court-ready presentation format for legal professionals",
       color: "bg-slate-700",
-      lightColor: "bg-slate-50 dark:bg-slate-800/50",
+      lightColor: "bg-slate-50 dark:bg-white/50",
       borderColor: "border-slate-200 dark:border-slate-700",
       textColor: "text-slate-700 dark:text-slate-300",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
@@ -363,11 +363,11 @@ const HowItWorksPage = () => {
             <Link to="/how-to-use" className="text-slate-400 hover:text-white text-sm transition-colors">How To Use</Link>
             <Link to="/legal-framework" className="text-slate-400 hover:text-white text-sm transition-colors">Legal Framework</Link>
             <Link to="/forms" className="text-slate-400 hover:text-white text-sm transition-colors">Forms</Link>
-            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors" data-testid="how-it-works-theme-toggle">
+            <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white transition-colors" data-testid="how-it-works-theme-toggle">
               {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg" data-testid="how-it-works-back-btn">
+              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-white rounded-lg" data-testid="how-it-works-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back
               </Button>
             </Link>
@@ -377,7 +377,7 @@ const HowItWorksPage = () => {
           </button>
         </div>
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
+          <div className="md:hidden bg-white border-t border-slate-700 px-6 py-4 space-y-3">
             <Link to="/how-to-use" className="block py-2 text-slate-300 hover:text-white">How To Use</Link>
             <Link to="/legal-framework" className="block py-2 text-slate-300 hover:text-white">Legal Framework</Link>
             <Link to="/forms" className="block py-2 text-slate-300 hover:text-white">Forms</Link>
@@ -415,7 +415,7 @@ const HowItWorksPage = () => {
       </section>
 
       {/* Step Navigation Tabs */}
-      <div className="sticky top-[72px] z-30 bg-white dark:bg-slate-900 border-b border-border shadow-sm">
+      <div className="sticky top-[72px] z-30 bg-white dark:bg-white border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 overflow-x-auto">
           <div className="flex items-center gap-1 py-2 min-w-max">
             {detailedSteps.map((step, idx) => {
@@ -585,7 +585,7 @@ const HowItWorksPage = () => {
                     <p className="font-bold text-foreground text-sm uppercase tracking-wide mb-3">{step.interactive.label}</p>
                     <div className="grid sm:grid-cols-2 gap-2">
                       {step.interactive.items.map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-lg px-3 py-2 border border-border">
+                        <div key={i} className="flex items-center gap-2 bg-white dark:bg-white rounded-lg px-3 py-2 border border-border">
                           <Gavel className={`w-3.5 h-3.5 ${step.textColor} flex-shrink-0`} />
                           <span className="text-xs text-foreground">{item}</span>
                         </div>
@@ -674,7 +674,7 @@ const HowItWorksPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800 mt-8">
+      <footer className="bg-white px-6 py-8 border-t border-slate-800 mt-8">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-red-400 text-xs font-medium">
             This is NOT legal advice. Appeal Case Manager is an AI-powered research tool. All findings must be verified by a qualified Australian legal professional.
