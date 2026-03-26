@@ -466,6 +466,10 @@ const ReportsSection = ({
             }
 
             if (reportStatus === 'failed') {
+              const failedMessage = typeof report.error === 'string' && /BadGatewayError|OpenAIException|litellm|502|All LLM attempts failed/i.test(report.error)
+                ? 'Report generation was interrupted by a temporary AI service error. Retry resumes from the last completed section.'
+                : (report.error || 'Generation was interrupted. Retry resumes from the last completed section.');
+
               return (
                 <Card key={report.report_id} className="overflow-hidden border border-red-200 bg-red-50 shadow-sm">
                   <div className="px-5 py-4 flex items-center justify-between flex-wrap gap-3">
@@ -473,20 +477,14 @@ const ReportsSection = ({
                       <AlertCircle className="w-5 h-5 text-red-600" />
                       <div>
                         <p className="text-sm font-semibold text-red-900">Report generation failed</p>
-                        <p className="text-xs text-red-600">{report.error || "Generation was interrupted. Delete and retry."}</p>
+                        <p className="text-xs text-red-600">{failedMessage}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={async () => {
-                          await handleDeleteReport(report.report_id);
-                          setTimeout(() => {
-                            setSelectedReportType(report.report_type);
-                            setShowReportDialog(true);
-                          }, 500);
-                        }}
+                        onClick={() => generateReport(report.report_type)}
                         className="border-red-300 text-red-700 hover:bg-red-100"
                         data-testid={`retry-report-btn-${report.report_id}`}
                       >

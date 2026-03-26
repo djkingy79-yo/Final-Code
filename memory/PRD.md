@@ -51,6 +51,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Compacted the Barrister top layout so the analysis starts higher on mobile and print-preview screens
 - **2026-03-26:** Replaced popup/blob preview with a dedicated in-app `/document-preview` route using stored preview payloads, fixing the mobile blank PDF/print preview behaviour for Barrister and standard report pages
 - **2026-03-26:** Added Barrister comparison-table enrichment and regenerated case `case_db8d84fecfc4` as report `rpt_d287912f2a53` with 40,923 characters, 4 comparison tables, and deeper all-report synthesis
+- **2026-03-26:** Fixed failed multi-pass report recovery for the third report by resuming from saved partial passes instead of restarting from zero, splitting the heaviest pass, and replacing raw 502 UI errors with a user-friendly retry message
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching

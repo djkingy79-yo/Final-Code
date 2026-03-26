@@ -4450,7 +4450,21 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
             
             parts = []
-            for label, instruction in passes:
+            resume_from = 0
+            if report_id:
+                existing_report = await db.reports.find_one(
+                    {"report_id": report_id},
+                    {"_id": 0, "content.partial_analysis": 1, "content.passes_completed": 1},
+                )
+                existing_content = (existing_report or {}).get("content") or {}
+                existing_partial = existing_content.get("partial_analysis") or ""
+                existing_passes_completed = int(existing_content.get("passes_completed") or 0)
+                if existing_partial and existing_passes_completed > 0:
+                    parts = [existing_partial]
+                    resume_from = min(existing_passes_completed, len(passes))
+                    logger.info(f"Resuming full_detailed report {report_id} from pass {resume_from + 1}")
+
+            for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
                 pass_prompt = user_prompt + instruction
                 logger.info(f"Full detailed {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
@@ -4461,7 +4475,7 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
                     partial_content = "\n\n".join(parts)
                     await db.reports.update_one(
                         {"report_id": report_id},
-                        {"$set": {"content.analysis": partial_content, "content.partial": True}}
+                        {"$set": {"content.analysis": partial_content, "content.partial": True, "content.partial_analysis": partial_content, "content.passes_completed": pass_index}}
                     )
             
             response = "\n\n".join(parts)
@@ -4545,24 +4559,29 @@ First provide summary table, then write 400+ WORDS for EACH of these 5 pathways 
 List 10+ specific gaps. For each: what's missing, why it matters, exact steps to obtain it (who to contact, what to request, expected timeframe), priority (Critical/Important/Helpful), impact on which grounds if not remediated.
 
 STOP after section 8."""),
-                ("PASS 4/7", f"""
+                ("PASS 4/8", """
 
-NOW GENERATE ONLY SECTIONS 9-11. Write 5000+ WORDS for this pass. Section 11 MUST cover ALL {len(grounds)} grounds.
+NOW GENERATE ONLY SECTIONS 9-10. Write 3200+ WORDS for this pass.
 
-## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
-For each of 15+ cases, write a FULL PARAGRAPH (not just a table row):
+## 9. PRECEDENT OUTCOME MATRIX (12+ CASES)
+For each of 12+ cases, write a FULL PARAGRAPH (not just a table row):
 - Full citation
 - Factual similarity to THIS matter (be specific — offence type, relationship, circumstances)
 - Hearing outcome
 - Extracted legal principle
 - How this principle applies to the current case (3-4 sentences)
 
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (1200+ words)
-15+ statutory provisions. For EACH provision, write a FULL PARAGRAPH:
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (1000+ words)
+12+ statutory provisions. For EACH provision, write a FULL PARAGRAPH:
 - Section number, Act name with year, jurisdiction
 - What the provision covers (1 sentence)
 - How it SPECIFICALLY APPLIES to THIS case (3-4 sentences) — name the defendant, the offence, the ground it relates to
 - Any recent amendments or judicial interpretation that affects the appeal
+
+STOP after section 10."""),
+                ("PASS 5/8", f"""
+
+NOW GENERATE ONLY SECTION 11. Write 2800+ WORDS for this pass. This pass exists so EVERY ground can be fully argued without truncation.
 
 ## 11. HOW TO ARGUE EACH TOP GROUND — DETAILED STRATEGY
 MUST cover ALL {len(grounds)} grounds. For EACH ground write 500+ words:
@@ -4578,7 +4597,7 @@ For each ground:
 - **If Established**: What specific court order should be sought?
 
 STOP after section 11."""),
-                ("PASS 5/7", f"""
+                ("PASS 6/8", f"""
 
 NOW GENERATE ONLY SECTIONS 12-14. Write 5000+ WORDS for this pass. These are the sections that make this $200 report UNIQUE. Sections 13 and 14 DO NOT exist in the $150 report.
 
@@ -4601,7 +4620,7 @@ For briefing a barrister — write as an actual document:
 - Client instructions summary
 
 STOP after section 14."""),
-                ("PASS 6/7", f"""
+                ("PASS 7/8", f"""
 
 NOW GENERATE ONLY SECTIONS 15-17. Write 4000+ WORDS for this pass. These sections are UNIQUE to the $200 report.
 
@@ -4637,7 +4656,7 @@ For each query:
 Court-level filtering suggestions and keyword alternatives for each ground.
 
 STOP after section 17."""),
-                ("PASS 7/7", f"""
+                ("PASS 8/8", f"""
 
 NOW GENERATE ONLY SECTIONS 18-20. Write 5000+ WORDS for this pass. Section 20 is the CLIENT BRIEF — it must be thorough and cover EVERY ground.
 
@@ -4686,7 +4705,21 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
             ]
             
             parts = []
-            for label, instruction in passes:
+            resume_from = 0
+            if report_id:
+                existing_report = await db.reports.find_one(
+                    {"report_id": report_id},
+                    {"_id": 0, "content.partial_analysis": 1, "content.passes_completed": 1},
+                )
+                existing_content = (existing_report or {}).get("content") or {}
+                existing_partial = existing_content.get("partial_analysis") or ""
+                existing_passes_completed = int(existing_content.get("passes_completed") or 0)
+                if existing_partial and existing_passes_completed > 0:
+                    parts = [existing_partial]
+                    resume_from = min(existing_passes_completed, len(passes))
+                    logger.info(f"Resuming extensive_log report {report_id} from pass {resume_from + 1}")
+
+            for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
                 pass_prompt = user_prompt + instruction
                 logger.info(f"Extensive log {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
@@ -4696,7 +4729,7 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
                 partial_response = "\n\n".join(parts)
                 await db.reports.update_one(
                     {"report_id": report_id},
-                    {"$set": {"content.partial_analysis": partial_response, "content.passes_completed": len(parts)}}
+                    {"$set": {"content.partial_analysis": partial_response, "content.passes_completed": pass_index}}
                 )
             
             response = "\n\n".join(parts)
@@ -5336,9 +5369,10 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
         logger.info(f"Report {report_id} generated successfully")
     except Exception as exc:
         logger.error(f"Report {report_id} generation failed: {exc}")
+        friendly_error = "Report generation was interrupted by a temporary AI service error. Retry resumes from the last completed section."
         await db.reports.update_one(
             {"report_id": report_id},
-            {"$set": {"status": "failed", "error": str(exc)}}
+            {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}}
         )
 
 
@@ -5390,6 +5424,30 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
                 }
             )
     
+    existing_failed = await db.reports.find(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "report_type": report_type,
+            "status": "failed",
+            "content.aggressive_mode": {"$ne": True},
+        },
+        {"_id": 0},
+    ).sort("generated_at", -1).to_list(1)
+
+    if existing_failed:
+        resumed_report = existing_failed[0]
+        await db.reports.update_one(
+            {"report_id": resumed_report["report_id"]},
+            {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+        )
+        asyncio.create_task(
+            _run_report_generation(resumed_report["report_id"], case_id, user.user_id, report_type, False)
+        )
+        resumed_report["status"] = "generating"
+        resumed_report["error"] = None
+        return resumed_report
+
     # Create a placeholder report with "generating" status and return immediately
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
     report_titles = {
