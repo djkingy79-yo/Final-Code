@@ -831,7 +831,7 @@ const ReportsSection = ({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowReportDialog(false)} className="landing-cta-secondary" data-testid="report-dialog-cancel">
+            <Button onClick={() => setShowReportDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="report-dialog-cancel">
               Cancel
             </Button>
             <Button 
@@ -885,7 +885,7 @@ const ReportsSection = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="bg-blue-700 text-white hover:bg-blue-600 border-blue-700">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteReport} className="bg-red-600 hover:bg-red-700 text-white">
               Delete Report
             </AlertDialogAction>

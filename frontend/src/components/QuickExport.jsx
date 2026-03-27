@@ -185,13 +185,13 @@ const QuickExport = ({ caseId, caseTitle }) => {
           </div>
 
           <DialogFooter className="gap-3">
-            <Button variant="outline" onClick={() => setShowDialog(false)}>
+            <Button onClick={() => setShowDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
             <Button
               onClick={handleExport}
               disabled={exporting || loading}
-              className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
             >
               {exporting ? (
                 <>

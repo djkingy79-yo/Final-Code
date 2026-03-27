@@ -1432,12 +1432,12 @@ const CaseDetail = ({ user }) => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowEventDialog(false)}>
+            <Button onClick={() => setShowEventDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
             <Button 
               onClick={handleCreateEvent}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="event-submit"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -1521,12 +1521,12 @@ const CaseDetail = ({ user }) => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowGroundDialog(false)}>
+            <Button onClick={() => setShowGroundDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
             <Button 
               onClick={handleCreateGround}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="ground-submit"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -1564,7 +1564,7 @@ const CaseDetail = ({ user }) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="bg-blue-700 text-white hover:bg-blue-600 border-blue-700">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteCase} className="bg-red-600 hover:bg-red-700 text-white">
               Yes, Delete Case
             </AlertDialogAction>
@@ -1580,7 +1580,7 @@ const CaseDetail = ({ user }) => {
             <AlertDialogDescription>This timeline event will be permanently removed.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="bg-blue-700 text-white hover:bg-blue-600 border-blue-700">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteEvent} className="bg-red-600 hover:bg-red-700 text-white">
               Delete Event
             </AlertDialogAction>
@@ -1596,7 +1596,7 @@ const CaseDetail = ({ user }) => {
             <AlertDialogDescription>This ground will be permanently removed from the case.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="bg-blue-700 text-white hover:bg-blue-600 border-blue-700">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteGround} className="bg-red-600 hover:bg-red-700 text-white">
               Delete Ground
             </AlertDialogAction>
@@ -1676,7 +1676,7 @@ const CaseDetail = ({ user }) => {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowEditCaseDialog(false)} className="rounded-xl">Cancel</Button>
+            <Button onClick={() => setShowEditCaseDialog(false)} className="rounded-xl bg-blue-700 text-white hover:bg-blue-600">Cancel</Button>
             <Button onClick={handleSaveCase} disabled={savingCase} className="rounded-xl bg-blue-700 text-white hover:bg-blue-600" data-testid="save-case-btn">
               {savingCase ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Saving...</> : "Save Changes"}
             </Button>

@@ -604,7 +604,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNoteDialog(false)} data-testid="note-cancel-btn">
+            <Button onClick={() => setShowNoteDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="note-cancel-btn">
               Cancel
             </Button>
             <Button

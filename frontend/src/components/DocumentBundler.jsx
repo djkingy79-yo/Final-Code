@@ -217,7 +217,7 @@ const DocumentBundler = ({ caseId, documents }) => {
           </div>
 
           <DialogFooter className="gap-3 border-t border-slate-200 pt-4">
-            <Button variant="outline" onClick={() => setShowDialog(false)}>
+            <Button onClick={() => setShowDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
             <Button
