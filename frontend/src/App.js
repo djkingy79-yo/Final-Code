@@ -84,7 +84,7 @@ const AuthCallback = () => {
           }
           // Clean the hash from URL
           window.history.replaceState(null, "", window.location.pathname);
-          navigate("/dashboard", { state: { user: response.data }, replace: true });
+          window.location.replace("/dashboard");
           return;
         } catch (error) {
           console.error("Auth error:", error);
@@ -95,7 +95,7 @@ const AuthCallback = () => {
       if (existingToken) {
         try {
           const me = await axios.get(`${API}/auth/me`);
-          navigate("/dashboard", { state: { user: me.data }, replace: true });
+          window.location.replace("/dashboard");
           return;
         } catch (error) {
           localStorage.removeItem("session_token");

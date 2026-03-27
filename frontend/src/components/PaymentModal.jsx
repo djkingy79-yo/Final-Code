@@ -127,6 +127,8 @@ export default function PaymentModal({
         toast.success("Payment verified! Feature unlocked.");
         onPaymentSuccess?.();
         onClose();
+      } else if (response.data.status === "submitted_for_review") {
+        toast.success(response.data.message || "Payment submitted. Refresh again after receipt is confirmed.");
       } else {
         toast.info(response.data.message);
       }
@@ -300,7 +302,7 @@ export default function PaymentModal({
                 {verifying ? (
                   <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
                 ) : (
-                  <><CheckCircle className="w-5 h-5 mr-2" />I've Made the Payment</>
+                  <><CheckCircle className="w-5 h-5 mr-2" />Payment Received Refresh</>
                 )}
               </Button>
 

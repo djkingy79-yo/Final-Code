@@ -2165,7 +2165,7 @@ async def create_payid_reference(request: Request):
 
 @api_router.post("/payments/payid/verify")
 async def verify_payid_payment(request: Request):
-    """Mark a PayID payment as submitted (manual verification by admin)"""
+    """Mark a PayID payment as submitted and let users refresh until admin confirmation completes unlock."""
     user = await get_current_user(request)
     body = await request.json()
     reference = body.get("reference")
@@ -2182,25 +2182,24 @@ async def verify_payid_payment(request: Request):
     
     if not payment:
         raise HTTPException(status_code=404, detail="Payment reference not found")
+
+    if payment.get("status") == "completed":
+        if case_id and feature_type:
+            await db.cases.update_one(
+                {"case_id": case_id, "user_id": user.user_id},
+                {"$addToSet": {"unlocked_features": feature_type}}
+            )
+        return {"status": "already_verified", "message": "Payment confirmed. Feature unlocked."}
     
     await db.payments.update_one(
         {"reference": reference},
         {"$set": {"status": "submitted", "submitted_at": datetime.now(timezone.utc).isoformat()}}
     )
     
-    # Auto-grant access (admin can revoke if payment not received)
-    await db.payments.update_one(
-        {"reference": reference},
-        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat()}}
-    )
-    
-    # Grant feature access
-    await db.cases.update_one(
-        {"case_id": case_id, "user_id": user.user_id},
-        {"$addToSet": {"unlocked_features": feature_type}}
-    )
-    
-    return {"status": "verified", "message": "Payment confirmed. Feature unlocked."}
+    return {
+        "status": "submitted_for_review",
+        "message": "Payment marked as sent. Use refresh after payment is received and confirmed."
+    }
 
 
 @api_router.get("/payments/payid/pending")
