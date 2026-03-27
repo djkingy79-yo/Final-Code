@@ -4935,7 +4935,7 @@ REPORT TO EXPAND:
 
 
 BARRISTER_SOURCE_TYPES = ["quick_summary", "full_detailed", "extensive_log"]
-BARRISTER_GENERATION_TIMEOUT_MINUTES = 6
+BARRISTER_GENERATION_TIMEOUT_MINUTES = 15
 
 
 def _coerce_utc_datetime(value):
@@ -5100,7 +5100,7 @@ def _normalise_barrister_table_titles(text: str) -> str:
     return text
 
 
-async def generate_barrister_brief(case_id: str, user_id: str) -> dict:
+async def generate_barrister_brief(case_id: str, user_id: str, report_id: str | None = None) -> dict:
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
@@ -5216,7 +5216,20 @@ DOCUMENT INVENTORY
     ]
 
     section_outputs = []
-    for group in section_groups:
+    resume_index = 0
+    if report_id:
+        existing_report = await db.reports.find_one(
+            {"report_id": report_id},
+            {"_id": 0, "content.partial_sections": 1, "content.partial_stage": 1, "content.partial_analysis": 1},
+        )
+        existing_content = (existing_report or {}).get("content") or {}
+        saved_sections = existing_content.get("partial_sections") or []
+        if saved_sections:
+            section_outputs = list(saved_sections)
+            resume_index = min(len(section_outputs), len(section_groups))
+            logger.info(f"Resuming barrister brief {report_id} from group {resume_index + 1}")
+
+    for group_index, group in enumerate(section_groups[resume_index:], start=resume_index + 1):
         headings_text = "\n".join(group["required_headings"])
         group_source_text = _build_barrister_group_source_text(source_reports, group["source_limits"])
         group_prompt = f"""Prepare only the following Barrister Brief sections, using the exact headings below and in the exact order:
@@ -5249,6 +5262,17 @@ SOURCE REPORTS
         group_response = _strip_report_placeholders(group_response)
         group_response = re.sub(r"\n{3,}", "\n\n", group_response).strip()
         section_outputs.append(group_response)
+        if report_id:
+            partial_analysis = "\n\n".join(part for part in section_outputs if part).strip()
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {
+                    "content.partial_sections": section_outputs,
+                    "content.partial_stage": group.get("slug"),
+                    "content.partial_analysis": partial_analysis,
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
+                }}
+            )
 
     response = "\n\n".join(part for part in section_outputs if part).strip()
 
@@ -5440,7 +5464,7 @@ CURRENT BARRISTER BRIEF
 
 async def _run_barrister_report_generation(report_id: str, case_id: str, user_id: str):
     try:
-        analysis_result = await generate_barrister_brief(case_id, user_id)
+        analysis_result = await generate_barrister_brief(case_id, user_id, report_id=report_id)
         await db.reports.update_one(
             {"report_id": report_id},
             {
@@ -5456,8 +5480,13 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
                         "source_signature": analysis_result["source_signature"],
                         "source_reports": analysis_result["source_reports"],
                         "aggressive_mode": False,
+                        "partial_sections": [],
+                        "partial_stage": None,
+                        "partial_analysis": "",
                     },
                     "grounds_of_merit": analysis_result["grounds_of_merit"],
+                    "error": None,
+                    "technical_error": None,
                 }
             },
         )

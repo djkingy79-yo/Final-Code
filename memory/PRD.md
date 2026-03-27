@@ -70,6 +70,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-27:** Added visible payment-status badges to the paid report tier cards using live payment state data (`Pending`, `Awaiting confirmation`, `Unlocked`)
 - **2026-03-27:** Fixed unlocked paid report cards so they generate directly instead of reopening payment, and updated remaining client-view white buttons (Help, Quick Export, Bundle Docs, Compare Cases dashboard) to bright blue with white text
 - **2026-03-27:** Completed the remaining dialog/secondary action button restyle in core case flows, including Cancel buttons, event/ground submit buttons, export dialog buttons, and report dialog buttons
+- **2026-03-27:** Hardened Barrister generation against timeouts by increasing stale-job tolerance to 15 minutes, adding per-stage partial-save/resume support, and verifying a full rerun that survived an expansion-stage 502 and still completed successfully
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
