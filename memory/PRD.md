@@ -64,6 +64,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Fixed Google auth callback redirect to hard-redirect into `/dashboard` after successful session exchange instead of falling back to landing-page navigation
 - **2026-03-26:** Fixed PayID `Payment Received Refresh` flow so user verification now marks payment as submitted for admin review, admin refresh sees it, admin confirmation completes it, and subsequent user refresh unlocks the feature correctly
 - **2026-03-27:** Re-normalised report tables across full-page, Barrister, preview, and grounds surfaces using a fixed-layout 640px baseline with stable wrapping to stop columns jumping and stretching unpredictably
+- **2026-03-27:** Added live PayID notice emails to the active payment routes in `server.py`, so user verification and admin confirmation now send payment-status emails to the user inbox
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
