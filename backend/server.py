@@ -500,6 +500,25 @@ FEATURE_PRICES = {
     "extensive_report": {"price": 200.00, "name": "Extensive Log Report"}
 }
 
+FEATURE_TYPE_ALIASES = {
+    "grounds_of_merit": "grounds_of_merit",
+    "full_report": "full_report",
+    "full_detailed": "full_report",
+    "extensive_report": "extensive_report",
+    "extensive_log": "extensive_report",
+}
+
+
+def canonical_feature_type(feature_type: str | None) -> str | None:
+    if not feature_type:
+        return feature_type
+    return FEATURE_TYPE_ALIASES.get(feature_type, feature_type)
+
+
+def feature_type_variants(feature_type: str | None) -> list[str]:
+    canonical = canonical_feature_type(feature_type)
+    return sorted({key for key, value in FEATURE_TYPE_ALIASES.items() if value == canonical} | ({canonical} if canonical else set()))
+
 # ============ AUTH HELPERS ============
 
 async def get_current_user(request: Request) -> User:
@@ -2166,10 +2185,16 @@ async def get_case_payments(case_id: str, request: Request):
         "full_report": False,
         "extensive_report": False
     }
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "unlocked_features": 1})
+    for feature in case.get("unlocked_features", []) if case else []:
+        canonical = canonical_feature_type(feature)
+        if canonical in unlocked:
+            unlocked[canonical] = True
     
     for payment in payments:
-        if payment.get("feature_type") in unlocked:
-            unlocked[payment["feature_type"]] = True
+        canonical = canonical_feature_type(payment.get("feature_type"))
+        if canonical in unlocked:
+            unlocked[canonical] = True
     
     return {
         "payments": payments,
@@ -2186,18 +2211,19 @@ async def create_payid_reference(request: Request):
     body = await request.json()
     feature_type = body.get("feature_type")
     case_id = body.get("case_id")
+    canonical_type = canonical_feature_type(feature_type)
     
     if not feature_type or not case_id:
         raise HTTPException(status_code=400, detail="Missing feature_type or case_id")
     
-    price = FEATURE_PRICES.get(feature_type, {}).get("price", 0)
+    price = FEATURE_PRICES.get(canonical_type, {}).get("price", 0)
     reference = f"ACM-{uuid.uuid4().hex[:8].upper()}"
     
     payment_record = {
         "payment_id": f"pay_{uuid.uuid4().hex[:12]}",
         "user_id": user.user_id,
         "case_id": case_id,
-        "feature_type": feature_type,
+        "feature_type": canonical_type,
         "amount": price,
         "method": "payid",
         "reference": reference,
@@ -2223,6 +2249,7 @@ async def verify_payid_payment(request: Request):
     reference = body.get("reference")
     case_id = body.get("case_id")
     feature_type = body.get("feature_type")
+    canonical_type = canonical_feature_type(feature_type)
     
     if not reference:
         raise HTTPException(status_code=400, detail="Missing reference")
@@ -2239,13 +2266,13 @@ async def verify_payid_payment(request: Request):
         if case_id and feature_type:
             await db.cases.update_one(
                 {"case_id": case_id, "user_id": user.user_id},
-                {"$addToSet": {"unlocked_features": feature_type}}
+                {"$addToSet": {"unlocked_features": canonical_type}}
             )
         await send_payid_status_email(
             user.email,
             user.name,
-            FEATURE_PRICES.get(feature_type, {}).get("name", feature_type or "Feature"),
-            payment.get("amount") or FEATURE_PRICES.get(feature_type, {}).get("price", 0),
+            FEATURE_PRICES.get(canonical_type, {}).get("name", canonical_type or "Feature"),
+            payment.get("amount") or FEATURE_PRICES.get(canonical_type, {}).get("price", 0),
             reference,
             "✓ Payment Confirmed - Feature Unlocked",
             "Payment Confirmed",
@@ -2261,8 +2288,8 @@ async def verify_payid_payment(request: Request):
     await send_payid_status_email(
         user.email,
         user.name,
-        FEATURE_PRICES.get(feature_type, {}).get("name", feature_type or "Feature"),
-        payment.get("amount") or FEATURE_PRICES.get(feature_type, {}).get("price", 0),
+        FEATURE_PRICES.get(canonical_type, {}).get("name", canonical_type or "Feature"),
+        payment.get("amount") or FEATURE_PRICES.get(canonical_type, {}).get("price", 0),
         reference,
         "Payment Notice Received - Awaiting Confirmation",
         "Payment Notice Received",
@@ -2310,15 +2337,15 @@ async def admin_confirm_payid_payment(reference: str, request: Request):
     if payment.get("case_id") and payment.get("feature_type"):
         await db.cases.update_one(
             {"case_id": payment["case_id"], "user_id": payment["user_id"]},
-            {"$addToSet": {"unlocked_features": payment["feature_type"]}}
+            {"$addToSet": {"unlocked_features": canonical_feature_type(payment["feature_type"])}},
         )
 
     payment_user = await db.users.find_one({"user_id": payment.get("user_id")}, {"_id": 0, "email": 1, "name": 1})
     await send_payid_status_email(
         (payment_user or {}).get("email"),
         (payment_user or {}).get("name", ""),
-        FEATURE_PRICES.get(payment.get("feature_type"), {}).get("name", payment.get("feature_type") or "Feature"),
-        payment.get("amount") or FEATURE_PRICES.get(payment.get("feature_type"), {}).get("price", 0),
+        FEATURE_PRICES.get(canonical_feature_type(payment.get("feature_type")), {}).get("name", canonical_feature_type(payment.get("feature_type")) or "Feature"),
+        payment.get("amount") or FEATURE_PRICES.get(canonical_feature_type(payment.get("feature_type")), {}).get("price", 0),
         reference,
         "✓ Payment Confirmed - Feature Unlocked",
         "Payment Confirmed",
@@ -2801,11 +2828,11 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     payment = await db.payments.find_one({
         "case_id": case_id,
         "user_id": user.user_id,
-        "feature_type": "grounds_of_merit",
+        "feature_type": {"$in": feature_type_variants("grounds_of_merit")},
         "status": "completed"
     })
     
-    is_unlocked = payment is not None or is_admin_user(user.email)
+    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or []) or is_admin_user(user.email)
     
     if is_unlocked:
         # Return full grounds data
@@ -5483,7 +5510,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         payment = await db.payments.find_one({
             "case_id": case_id,
             "user_id": user.user_id,
-            "feature_type": "full_report",
+            "feature_type": {"$in": feature_type_variants("full_report")},
             "status": "completed"
         })
         if not payment:
@@ -5501,7 +5528,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         payment = await db.payments.find_one({
             "case_id": case_id,
             "user_id": user.user_id,
-            "feature_type": "extensive_report",
+            "feature_type": {"$in": feature_type_variants("extensive_report")},
             "status": "completed"
         })
         if not payment:
