@@ -310,8 +310,7 @@ const Dashboard = ({ user }) => {
               {isAdmin && (
                 <Link to="/admin/dashboard">
                   <Button
-                    variant="outline"
-                    className="rounded-xl border-blue-500/40 text-blue-700 hover:bg-blue-50:bg-blue-900/20"
+                    className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="admin-dashboard-shortcut-btn"
                   >
                     <Shield className="w-4 h-4 mr-2" />
@@ -321,7 +320,7 @@ const Dashboard = ({ user }) => {
               )}
               <Button
                 onClick={() => setShowNewCaseDialog(true)}
-                className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/30 px-6 py-4 text-lg font-semibold"
+                className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl shadow-lg shadow-blue-700/25 px-6 py-4 text-lg font-semibold"
                 data-testid="new-case-btn"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -464,7 +463,7 @@ const Dashboard = ({ user }) => {
                 {!searchQuery && (
                   <Button
                     onClick={() => setShowNewCaseDialog(true)}
-                    className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl"
+                    className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl"
                     data-testid="empty-new-case-btn"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -686,7 +685,7 @@ const Dashboard = ({ user }) => {
             </Button>
             <Button 
               onClick={handleCreateCase}
-              className="bg-primary text-blue-700-foreground hover:bg-primary/90 rounded-xl"
+              className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl"
               data-testid="create-case-submit"
             >
               Create Case

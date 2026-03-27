@@ -372,7 +372,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
           </Badge>
         </div>
 
-        <Button onClick={openNewDialog} className="bg-slate-900 text-white hover:bg-slate-800" data-testid="add-note-btn">
+        <Button onClick={openNewDialog} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="add-note-btn">
           <Plus className="w-4 h-4 mr-2" />
           Add Note
         </Button>
@@ -399,7 +399,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
             No notes yet
           </h3>
           <p className="text-slate-600 mb-4">Add notes to track observations, strategy, and legal issues.</p>
-          <Button onClick={openNewDialog} className="bg-slate-900 text-white hover:bg-slate-800" data-testid="add-first-note-btn">
+          <Button onClick={openNewDialog} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="add-first-note-btn">
             <Plus className="w-4 h-4 mr-2" />
             Add First Note
           </Button>
@@ -538,7 +538,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
                         data-testid={`comment-input-${note.note_id}`}
                       />
                       <Button
-                        className="bg-slate-900 text-white hover:bg-slate-800 sm:self-end"
+                        className="bg-blue-700 text-white hover:bg-blue-600 sm:self-end"
                         onClick={() => handleAddComment(note.note_id)}
                         disabled={commentSubmitting[note.note_id] || !(commentDrafts[note.note_id] || "").trim()}
                         data-testid={`comment-submit-btn-${note.note_id}`}
@@ -610,7 +610,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
             <Button
               onClick={handleCreateNote}
               disabled={saving || !newNote.title || !newNote.content}
-              className="bg-slate-900 text-white hover:bg-slate-800"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="note-submit-btn"
             >
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
