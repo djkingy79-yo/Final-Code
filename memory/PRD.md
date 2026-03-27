@@ -61,6 +61,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Completed authenticated UI verification (`/app/test_reports/iteration_93.json`) using email/password login on case `case_76056187ad4f`; all core authenticated flows passed
 - **2026-03-26:** Fixed the final Barrister hero overlap by constraining the summary grid width so the title no longer collapses vertically on the live authenticated screen
 - **2026-03-26:** Completed final pre-deploy sweep (`/app/test_reports/iteration_94.json`) across all public pages, authentication, case tabs, report views, Barrister View, grounds exports, progress tab, admin dashboard, and backend health with no critical issues found
+- **2026-03-26:** Fixed Google auth callback redirect to hard-redirect into `/dashboard` after successful session exchange instead of falling back to landing-page navigation
+- **2026-03-26:** Fixed PayID `Payment Received Refresh` flow so user verification now marks payment as submitted for admin review, admin refresh sees it, admin confirmation completes it, and subsequent user refresh unlocks the feature correctly
 - **2026-03-26:** Updated all report/Barrister table headers to the bright blue brand colour with bold white text and stopped header text from stacking vertically on mobile
 - **2026-03-26:** Updated Case File and Admin action buttons to the bright blue/white button treatment and restored the document action as `Extract All Text to Case`
 - **2026-03-26:** Reduced report table minimum width from 720px to 560px across report, Barrister, preview, and grounds analysis tables to stop over-stretching
