@@ -241,9 +241,9 @@ export default function BarristerView() {
     .preview-paper ul, .preview-paper ol { margin: 0 0 14px; padding-left: 22px; }
     .preview-paper li { margin-bottom: 6px; }
     .preview-paper .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .preview-paper table { width: 100%; min-width: 560px; border-collapse: collapse; table-layout: auto; margin: 16px 0; font-size: 12px; }
-    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; }
-    .preview-paper td { padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; overflow-wrap: anywhere; }
+    .preview-paper table { width: 100%; min-width: 640px; border-collapse: collapse; table-layout: fixed; margin: 16px 0; font-size: 12px; }
+    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; vertical-align: top; }
+    .preview-paper td { padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; }
     .preview-paper blockquote { margin: 16px 0; padding: 12px 16px; border-left: 4px solid #1d4ed8; background: #eff6ff; }
     .preview-paper a { color: #1d4ed8; text-decoration: underline; }
     @media print {
@@ -594,8 +594,8 @@ export default function BarristerView() {
         .legal-report li { margin-bottom: 0.45rem; }
         .legal-report table {
           width: 100%;
-          min-width: 560px;
-          table-layout: auto;
+          min-width: 640px;
+          table-layout: fixed;
           border-collapse: collapse;
           margin: 0;
         }
@@ -614,6 +614,7 @@ export default function BarristerView() {
           white-space: normal;
           word-break: normal;
           overflow-wrap: normal;
+          vertical-align: top;
         }
         .legal-report blockquote {
           margin: 1rem 0;

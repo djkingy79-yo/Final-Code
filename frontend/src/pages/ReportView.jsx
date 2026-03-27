@@ -652,9 +652,9 @@ const ReportView = () => {
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; min-width: 560px; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: auto; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: normal; overflow-wrap: normal; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; font-size: 12px; }
+    .section-body table { width: 100%; min-width: 640px; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: normal; overflow-wrap: normal; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: anywhere; font-size: 12px; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
@@ -1033,11 +1033,11 @@ const ReportView = () => {
         .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
           width: 100%;
-          min-width: 560px;
+          min-width: 640px;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
-          table-layout: auto;
+          table-layout: fixed;
         }
         .legal-report th {
           background: #1d4ed8;
@@ -1047,6 +1047,7 @@ const ReportView = () => {
           white-space: normal;
           word-break: normal;
           overflow-wrap: normal;
+          vertical-align: top;
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
@@ -1061,6 +1062,7 @@ const ReportView = () => {
         }
         .legal-report td {
           color: #0f172a;
+          overflow-wrap: anywhere;
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

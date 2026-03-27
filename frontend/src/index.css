@@ -385,11 +385,11 @@ code, .mono {
 /* Tables — Full professional legal formatting */
 .legal-report table {
   width: 100%;
-  min-width: 560px;
+  min-width: 640px;
   border-collapse: collapse;
   margin: 1.25rem 0;
-  font-size: 1rem;
-  table-layout: auto;
+  font-size: 0.95rem;
+  table-layout: fixed;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   overflow: hidden;
@@ -412,6 +412,7 @@ code, .mono {
   white-space: normal;
   word-break: normal;
   overflow-wrap: normal;
+  vertical-align: top;
 }
 
 .legal-report tbody tr {
@@ -433,6 +434,18 @@ code, .mono {
   color: #334155;
   line-height: 1.7;
   font-size: 1rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.legal-report-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
 }
 
 .legal-report tbody td:first-child {
@@ -642,14 +655,14 @@ code, .mono {
   .legal-report table {
     page-break-inside: auto;
     width: 100%;
-    min-width: 560px;
-    table-layout: auto;
+    min-width: 640px;
+    table-layout: fixed;
   }
 
   .legal-report td,
   .legal-report th {
-    word-wrap: normal;
-    overflow-wrap: normal;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
     min-width: 0;
   }
 

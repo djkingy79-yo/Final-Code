@@ -121,13 +121,13 @@ const GroundsOfMerit = ({
               <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 break-words font-medium">{children}</a>
             ),
             table: ({ children }) => (
-              <div className="overflow-x-auto my-4"><table className="w-full min-w-[560px] border-collapse border border-slate-300 table-auto">{children}</table></div>
+              <div className="overflow-x-auto my-4 border border-slate-300 rounded-xl"><table className="w-full min-w-[640px] border-collapse border border-slate-300 table-fixed">{children}</table></div>
             ),
             th: ({ children }) => (
-              <th className="border border-slate-300 bg-blue-700 px-3 py-2 text-left text-sm font-extrabold text-white whitespace-normal break-normal">{children}</th>
+              <th className="border border-slate-300 bg-blue-700 px-3 py-2 text-left text-sm font-extrabold text-white whitespace-normal break-normal align-top">{children}</th>
             ),
             td: ({ children }) => (
-              <td className="border border-slate-300 px-3 py-2 text-sm">{children}</td>
+              <td className="border border-slate-300 px-3 py-2 text-sm break-words align-top">{children}</td>
             ),
           }}
         >{analysis}</ReactMarkdown>
