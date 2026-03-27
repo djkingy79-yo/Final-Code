@@ -82,6 +82,7 @@ const ReportsSection = ({
   setReports, 
   onReportsChange,
   documents,
+  paymentSummary,
   navigate,
   isAdmin
 }) => {
@@ -94,6 +95,30 @@ const ReportsSection = ({
   const [pendingReportType, setPendingReportType] = useState(null);
 
   const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
+  const latestPaymentStatus = paymentSummary?.latest_status_by_feature || {};
+  const unlockedFeatures = paymentSummary?.unlocked_features || {};
+
+  const getReportPaymentFeature = (reportType) => {
+    if (reportType === "full_detailed") return "full_report";
+    if (reportType === "extensive_log") return "extensive_report";
+    return null;
+  };
+
+  const getPaymentBadge = (reportType) => {
+    const feature = getReportPaymentFeature(reportType);
+    if (!feature) return null;
+    if (unlockedFeatures[feature]) {
+      return { label: "Unlocked", className: "bg-emerald-100 text-emerald-700 border-emerald-200" };
+    }
+    const status = latestPaymentStatus[feature]?.status;
+    if (status === "submitted") {
+      return { label: "Awaiting confirmation", className: "bg-amber-100 text-amber-700 border-amber-200" };
+    }
+    if (status === "pending") {
+      return { label: "Pending", className: "bg-blue-100 text-blue-700 border-blue-200" };
+    }
+    return null;
+  };
 
   const hasAllReports = requiredReportTypes.every((type) =>
     reports.some((report) =>
@@ -695,6 +720,7 @@ const ReportsSection = ({
               };
               const colors = colorMap[type.color] || colorMap.blue;
               const IconComponent = type.color === 'emerald' ? FileText : type.color === 'blue' ? Scale : BookOpen;
+              const paymentBadge = getPaymentBadge(type.value);
               
               return (
                 <div
@@ -715,9 +741,16 @@ const ReportsSection = ({
                             FREE
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className={`${colors.badge} px-3 py-1 text-xs font-bold`}>
-                            ${type.price.toFixed(2)} AUD
-                          </Badge>
+                          <div className="flex flex-col items-end gap-1">
+                            <Badge variant="outline" className={`${colors.badge} px-3 py-1 text-xs font-bold`}>
+                              ${type.price.toFixed(2)} AUD
+                            </Badge>
+                            {paymentBadge && (
+                              <Badge variant="outline" className={`${paymentBadge.className} px-3 py-1 text-[11px] font-bold`} data-testid={`payment-status-badge-${type.value}`}>
+                                {paymentBadge.label}
+                              </Badge>
+                            )}
+                          </div>
                         )}
                       </div>
                       <p className="text-sm text-slate-600 mb-2">{type.description}</p>

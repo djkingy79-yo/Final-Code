@@ -2171,13 +2171,14 @@ async def get_case_payments(case_id: str, request: Request):
                 "grounds_of_merit": True,
                 "full_report": True,
                 "extensive_report": True
-            }
+            },
+            "latest_status_by_feature": {}
         }
     
     payments = await db.payments.find(
-        {"case_id": case_id, "user_id": user.user_id, "status": "completed"},
+        {"case_id": case_id, "user_id": user.user_id},
         {"_id": 0}
-    ).to_list(100)
+    ).sort("created_at", -1).to_list(100)
     
     # Return which features are unlocked
     unlocked = {
@@ -2194,11 +2195,24 @@ async def get_case_payments(case_id: str, request: Request):
     for payment in payments:
         canonical = canonical_feature_type(payment.get("feature_type"))
         if canonical in unlocked:
-            unlocked[canonical] = True
+            if payment.get("status") == "completed":
+                unlocked[canonical] = True
+
+    latest_status_by_feature = {}
+    for payment in payments:
+        canonical = canonical_feature_type(payment.get("feature_type"))
+        if canonical and canonical not in latest_status_by_feature:
+            latest_status_by_feature[canonical] = {
+                "status": payment.get("status"),
+                "reference": payment.get("reference"),
+                "amount": payment.get("amount"),
+                "created_at": payment.get("created_at"),
+            }
     
     return {
         "payments": payments,
-        "unlocked_features": unlocked
+        "unlocked_features": unlocked,
+        "latest_status_by_feature": latest_status_by_feature
     }
 
 # ============ PAYID PAYMENT ENDPOINTS ============

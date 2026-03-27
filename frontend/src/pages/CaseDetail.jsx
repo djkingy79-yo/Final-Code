@@ -142,6 +142,7 @@ const CaseDetail = ({ user }) => {
   const [groundsCount, setGroundsCount] = useState(0);
   const [groundsUnlocked, setGroundsUnlocked] = useState(false);
   const [groundsUnlockPrice, setGroundsUnlockPrice] = useState(99.00);
+  const [paymentSummary, setPaymentSummary] = useState({ payments: [], unlocked_features: {}, latest_status_by_feature: {} });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [activeTab, setActiveTab] = useState("documents");
@@ -214,12 +215,13 @@ const CaseDetail = ({ user }) => {
       setCaseData(caseRes.data);
       
       // Then fetch related data - use Promise.allSettled for resilience
-      const [docsRes, timelineRes, reportsRes, notesRes, groundsRes] = await Promise.allSettled([
+      const [docsRes, timelineRes, reportsRes, notesRes, groundsRes, paymentsRes] = await Promise.allSettled([
         axios.get(`${API}/cases/${caseId}/documents`),
         axios.get(`${API}/cases/${caseId}/timeline`),
         axios.get(`${API}/cases/${caseId}/reports`),
         axios.get(`${API}/cases/${caseId}/notes`),
-        axios.get(`${API}/cases/${caseId}/grounds`)
+        axios.get(`${API}/cases/${caseId}/grounds`),
+        axios.get(`${API}/cases/${caseId}/payments`)
       ]);
       
       // Set data from successful responses, empty arrays for failed ones
@@ -227,6 +229,7 @@ const CaseDetail = ({ user }) => {
       setTimeline(timelineRes.status === 'fulfilled' ? timelineRes.value.data : []);
       setReports(reportsRes.status === 'fulfilled' ? reportsRes.value.data : []);
       setNotes(notesRes.status === 'fulfilled' ? notesRes.value.data : []);
+      setPaymentSummary(paymentsRes.status === 'fulfilled' ? paymentsRes.value.data : { payments: [], unlocked_features: {}, latest_status_by_feature: {} });
       
       // Handle grounds response with paywall info
       if (groundsRes.status === 'fulfilled') {
@@ -1049,6 +1052,7 @@ const CaseDetail = ({ user }) => {
               setReports={setReports}
               onReportsChange={fetchCaseData}
               documents={documents}
+              paymentSummary={paymentSummary}
               navigate={navigate}
               isAdmin={user?.is_admin}
             />
