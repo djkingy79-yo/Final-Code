@@ -728,10 +728,9 @@ const CaseDetail = ({ user }) => {
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
               <Button 
-                variant="ghost" 
                 size="sm" 
                 onClick={() => navigate("/help")}
-                className="text-slate-700 hover:text-slate-900 rounded-xl hidden sm:flex"
+                className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl hidden sm:flex"
                 data-testid="help-btn"
               >
                 <HelpCircle className="w-4 h-4 mr-1" />

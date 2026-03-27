@@ -101,8 +101,7 @@ const DocumentBundler = ({ caseId, documents }) => {
     <>
       <Button
         onClick={() => setShowDialog(true)}
-        variant="outline"
-        className="rounded-xl"
+        className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
         disabled={documents.length === 0}
         data-testid="bundle-docs-btn"
       >

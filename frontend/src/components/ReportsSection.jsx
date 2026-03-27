@@ -188,7 +188,9 @@ const ReportsSection = ({
     
     // Check if user has already paid for this report type
     const existingReport = reports.find(r => r.report_type === reportType);
-    if (existingReport) {
+    const featureType = getReportPaymentFeature(reportType);
+    const alreadyUnlocked = featureType ? unlockedFeatures[featureType] : false;
+    if (existingReport || alreadyUnlocked) {
       // Already generated this type, just regenerate
       generateReport(reportType);
       return;

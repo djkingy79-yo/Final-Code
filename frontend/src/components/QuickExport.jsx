@@ -112,7 +112,7 @@ const QuickExport = ({ caseId, caseTitle }) => {
     <>
       <Button
         onClick={() => setShowDialog(true)}
-        className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 rounded-xl shadow-lg shadow-emerald-600/20"
+        className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl shadow-lg shadow-blue-700/20"
         data-testid="quick-export-btn"
       >
         <Package className="w-4 h-4 mr-2" />

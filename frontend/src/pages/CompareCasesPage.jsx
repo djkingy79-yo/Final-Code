@@ -200,8 +200,7 @@ const CompareCasesPage = ({ user }) => {
           <div className="hidden md:flex items-center gap-4">
 <Button 
               onClick={() => navigate("/dashboard")} 
-              variant="outline" 
-              className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg"
+              className="bg-blue-700 text-white hover:bg-blue-600 rounded-lg"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Dashboard
