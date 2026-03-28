@@ -90,6 +90,12 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Added a Timeline Print button that opens `/document-preview` with full expanded event details (description, source, participants, linked documents, related grounds, contested and inconsistency notes) included in the printout
 - **2026-03-28:** Wired timeline preview returns back to `/cases/:caseId?tab=timeline` so leaving the print preview lands on the Timeline tab instead of resetting the case view
 - **2026-03-28:** Verified these frontend updates with browser smoke tests plus `auto_frontend_testing_agent` and backend sanity checks; all passed with no regressions
+- **2026-03-28:** Fixed the Generate Report dialog footer buttons so they no longer overlap on narrow/mobile widths and both remain bright blue with white text
+- **2026-03-28:** Fixed the top report-page Back to Case buttons by switching them to direct case-route navigation for Report View and Barrister View
+- **2026-03-28:** Corrected the sentence-summary extraction so case cards no longer pull appeal outcome junk (for example “dismissed/upheld”) instead of the actual sentence
+- **2026-03-28:** Tightened full-screen report table rendering for mobile by using scrollable wrappers with auto table layout and smaller mobile table typography
+- **2026-03-28:** Added title-page cover sheets to report print previews plus PDF/DOCX export generation, covering all report tiers through the shared export pipeline
+- **2026-03-28:** Verified the latest report fixes on desktop and mobile, including the cover sheet, via responsive frontend testing and export sanity checks; all passed
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -98,6 +104,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P1 preview/export back-button routing: implemented and verified
 - P1 grounds print density improvement: implemented and verified
 - P1 timeline print preview with expanded details: implemented and verified
+- P0 report sentence-summary bug: implemented and verified
+- P1 generate-report modal mobile button overlap: implemented and verified
+- P1 report cover sheet for print/PDF/Word: implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_96.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
