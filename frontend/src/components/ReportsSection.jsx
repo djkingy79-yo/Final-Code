@@ -830,8 +830,8 @@ const ReportsSection = ({
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button onClick={() => setShowReportDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="report-dialog-cancel">
+          <DialogFooter className="flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <Button onClick={() => setShowReportDialog(false)} className="w-full sm:w-auto bg-blue-700 text-white hover:bg-blue-600" data-testid="report-dialog-cancel">
               Cancel
             </Button>
             <Button 
@@ -850,7 +850,7 @@ const ReportsSection = ({
                 handleGenerateReport(selectedReportType);
               }}
               disabled={!selectedReportType || generatingReport || (selectedReportType === 'barrister_view' && !hasAllReports)}
-              className="landing-cta-primary px-6 py-4 text-base font-semibold"
+              className="w-full sm:w-auto landing-cta-primary px-6 py-4 text-base font-semibold justify-center"
               data-testid="report-dialog-generate"
             >
               {generatingReport ? (

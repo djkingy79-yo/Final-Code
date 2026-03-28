@@ -5993,6 +5993,28 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#0f172a')
     ))
+    styles.add(ParagraphStyle(
+        name='CoverMetaLabel',
+        fontSize=10,
+        fontName='Helvetica-Bold',
+        textColor=colors.HexColor('#64748b'),
+        spaceAfter=2,
+    ))
+    styles.add(ParagraphStyle(
+        name='CoverMetaValue',
+        fontSize=13,
+        fontName='Helvetica-Bold',
+        textColor=colors.HexColor('#0f172a'),
+        spaceAfter=6,
+    ))
+    styles.add(ParagraphStyle(
+        name='CoverDisclaimer',
+        fontSize=10,
+        fontName='Helvetica-Bold',
+        textColor=colors.HexColor('#1e293b'),
+        alignment=TA_CENTER,
+        leading=14,
+    ))
 
     def format_inline(text: str) -> str:
         clean = (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -6124,15 +6146,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             render_table(table_lines)
 
     story = []
-    
-    # Header
-    story.append(Paragraph("APPEAL CASE MANAGER", styles['ReportTitle']))
-    story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
-    story.append(Paragraph("Created and Designed by Deb King — GLENMORE PARK NSW", styles['ReportSubtitle']))
-    story.append(Spacer(1, 8*mm))
-    story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
-    story.append(Spacer(1, 10*mm))
-    
+
     # Report Title
     report_type_labels = {
         'quick_summary': 'Quick Case Summary',
@@ -6143,6 +6157,57 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
     footer_label = _truncate_export_footer(_build_export_footer_label(case, title, report.get('generated_at')))
     footer_message = _build_export_footer_message()
+
+    cover_meta = [
+        ['Case Title', case.get('title', 'N/A')],
+        ['Defendant', case.get('defendant_name', 'N/A')],
+        ['Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"],
+        ['Report', title],
+        ['Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()],
+        ['Sentence', case.get('sentence') or 'See report analysis'],
+    ]
+
+    story.append(Spacer(1, 18*mm))
+    story.append(Paragraph("Appeal Case Manager", styles['ReportSubtitle']))
+    story.append(Paragraph(title, styles['ReportTitle']))
+    story.append(Paragraph("Created and Designed by Deb King", styles['ReportSubtitle']))
+    story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
+    story.append(Spacer(1, 10*mm))
+
+    cover_table_rows = []
+    for idx in range(0, len(cover_meta), 2):
+        left = cover_meta[idx]
+        right = cover_meta[idx + 1] if idx + 1 < len(cover_meta) else ["", ""]
+        cover_table_rows.append([
+            Paragraph(f"<b>{left[0]}</b><br/>{left[1]}", styles['CoverMetaValue']),
+            Paragraph(f"<b>{right[0]}</b><br/>{right[1]}", styles['CoverMetaValue'])
+        ])
+    cover_table = Table(cover_table_rows, colWidths=[80*mm, 80*mm])
+    cover_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f8fafc')),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
+        ('INNERGRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+    ]))
+    story.append(cover_table)
+    story.append(Spacer(1, 12*mm))
+    story.append(Paragraph(
+        "NOT LEGAL ADVICE — This document is an educational tool only. All analysis and recommendations must be independently verified by a qualified Australian legal professional.",
+        styles['CoverDisclaimer']
+    ))
+    story.append(PageBreak())
+
+    # Header
+    story.append(Paragraph("APPEAL CASE MANAGER", styles['ReportTitle']))
+    story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
+    story.append(Paragraph("Created and Designed by Deb King — GLENMORE PARK NSW", styles['ReportSubtitle']))
+    story.append(Spacer(1, 8*mm))
+    story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
+    story.append(Spacer(1, 10*mm))
 
     def draw_page_footer(canvas_obj, pdf_doc):
         canvas_obj.saveState()
@@ -6437,6 +6502,61 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         footer_msg_run.font.size = Pt(8)
         footer_msg_run.font.bold = True
         footer_msg_run.font.color.rgb = RGBColor(30, 58, 95)
+
+    cover_title = doc.add_paragraph()
+    cover_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cover_title_run = cover_title.add_run(report_title)
+    cover_title_run.font.size = Pt(24)
+    cover_title_run.font.bold = True
+    cover_title_run.font.color.rgb = RGBColor(15, 23, 42)
+
+    cover_subtitle = doc.add_paragraph()
+    cover_subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cover_subtitle_run = cover_subtitle.add_run("Appeal Case Manager")
+    cover_subtitle_run.font.size = Pt(11)
+    cover_subtitle_run.font.bold = True
+    cover_subtitle_run.font.color.rgb = RGBColor(29, 78, 216)
+
+    cover_created = doc.add_paragraph()
+    cover_created.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cover_created_run = cover_created.add_run("Created and Designed by Deb King")
+    cover_created_run.font.size = Pt(11)
+    cover_created_run.font.bold = True
+    cover_created_run.font.color.rgb = RGBColor(30, 58, 95)
+
+    cover_case = doc.add_paragraph()
+    cover_case.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cover_case_run = cover_case.add_run(case.get('title', 'Unknown case'))
+    cover_case_run.font.size = Pt(12)
+    cover_case_run.font.color.rgb = RGBColor(71, 85, 105)
+
+    doc.add_paragraph()
+    cover_info = [
+        ('Case Title', case.get('title', 'N/A')),
+        ('Defendant', case.get('defendant_name', 'N/A')),
+        ('Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"),
+        ('Report', report_title),
+        ('Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()),
+        ('Sentence', case.get('sentence') or 'See report analysis'),
+    ]
+    cover_table = doc.add_table(rows=len(cover_info), cols=2)
+    cover_table.style = 'Table Grid'
+    for row_idx, (label, value) in enumerate(cover_info):
+        row = cover_table.rows[row_idx]
+        row.cells[0].text = label
+        row.cells[1].text = str(value)
+        row.cells[0].paragraphs[0].runs[0].font.bold = True
+
+    cover_disclaimer = doc.add_paragraph()
+    cover_disclaimer.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cover_disclaimer_run = cover_disclaimer.add_run(
+        "NOT LEGAL ADVICE — This document is an educational tool only. All analysis and recommendations must be independently verified by a qualified Australian legal professional."
+    )
+    cover_disclaimer_run.font.size = Pt(10)
+    cover_disclaimer_run.font.bold = True
+    cover_disclaimer_run.font.color.rgb = RGBColor(30, 41, 59)
+
+    doc.add_page_break()
 
     title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER

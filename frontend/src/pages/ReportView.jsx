@@ -37,7 +37,14 @@ const titleFromSnake = (value) => {
 
 const cleanSentence = (s) => {
   if (!s) return s;
-  let c = s.replace(/\s*\[.*$/, "").replace(/\s*\(https?:.*$/, "").replace(/\s*\(http.*$/, "").replace(/\s*https?:.*$/, "");
+  let c = s
+    .replace(/\s*\[.*$/, "")
+    .replace(/\s*\(https?:.*$/, "")
+    .replace(/\s*\(http.*$/, "")
+    .replace(/\s*https?:.*$/, "")
+    .replace(/\s*[|•].*$/, "")
+    .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
+    .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "");
   c = c.trim();
   // Truncate overly long sentences — extract just the core penalty
   if (c.length > 120) {
@@ -57,9 +64,14 @@ const cleanSentence = (s) => {
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
-  const byExactYears = analysis.match(/(\d+\s+years?\s+with\s+a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)/i);
+  const bySentenceImposed = analysis.match(/(?:sentence\s+imposed\s+was|sentence\s+was|head\s+sentence\s+was|head\s+sentence:|sentenced?\s+to)\s+([^\.\n]{8,160})/i);
+  if (bySentenceImposed?.[1]) {
+    const cleaned = cleanSentence(bySentenceImposed[1]);
+    if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned)) return cleaned;
+  }
+  const byExactYears = analysis.match(/(\d+\s+years?'?\s+with\s+a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)/i);
   if (byExactYears?.[1]) return cleanSentence(byExactYears[1]);
-  const byThirtyStyle = analysis.match(/(\d+\s+years?(?:\s+and\s+\d+\s+months?)?\s*(?:imprisonment|gaol|jail|custody)?\s*(?:with\s+(?:a\s+)?non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)?)/i);
+  const byThirtyStyle = analysis.match(/(\d+\s+years?'?(?:\s+and\s+\d+\s+months?)?\s*(?:imprisonment|gaol|jail|custody)?\s*(?:with\s+(?:a\s+)?non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)?)/i);
   if (byThirtyStyle?.[1] && /non[- ]?parole|imprisonment|gaol|custody/i.test(byThirtyStyle[1])) return cleanSentence(byThirtyStyle[1]);
   const combined = analysis.match(/sentenced?\s+to\s+([^\n\.]{10,180}?(?:non[- ]?parole\s+period|NPP)[^\n\.]{0,160})/i);
   if (combined?.[1]) return cleanSentence(combined[1]);
@@ -377,8 +389,8 @@ const MarkdownBlock = ({ text, testId }) => (
           <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline underline-offset-2 hover:text-blue-500 break-words font-medium">{children}</a>
         ),
         table: ({ children }) => (
-          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '1rem 0' }} data-testid={`${testId}-table-wrapper`}>
-            <table style={{ width: '100%', minWidth: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>{children}</table>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', display: 'block', maxWidth: '100%', margin: '1rem 0', border: '1px solid #cbd5e1', borderRadius: '16px', background: '#ffffff' }} data-testid={`${testId}-table-wrapper`}>
+            <table style={{ width: 'max-content', minWidth: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>{children}</table>
           </div>
         ),
         thead: ({ children }) => (
@@ -567,6 +579,10 @@ const ReportView = () => {
     openReportPreview("print");
   };
 
+  const handleBackToCase = () => {
+    window.location.assign(`/cases/${caseId}`);
+  };
+
   const iosShareOrDownload = async (blob, filename, mimeType) => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS && navigator.share) {
@@ -634,6 +650,17 @@ const ReportView = () => {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
+    .cover-page { padding: 32px 0 16px; }
+    .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
+    .cover-page-kicker { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 800; color: #1d4ed8; }
+    .cover-page h1 { margin: 0 0 10px; font-family: 'Crimson Pro', serif; font-size: 32px; color: #0f172a; }
+    .cover-page p { margin: 0 0 8px; color: #334155; }
+    .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 22px 0 18px; text-align: left; }
+    .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
+    .cover-page-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
+    .cover-page-card-value { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
+    .page-break { page-break-after: always; break-after: page; }
     .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
@@ -702,7 +729,22 @@ const ReportView = () => {
   </style>
 </head>
 <body>
-  ${notice}
+    ${notice}
+    <section class="cover-page page-break">
+      <div class="cover-page-inner">
+        <p class="cover-page-kicker">Appeal Case Manager</p>
+        <h1>${title}</h1>
+        <p>Created and Designed by Deb King</p>
+        <p>${caseData?.title || "Case"}</p>
+        <div class="cover-page-grid">
+          <div class="cover-page-card"><div class="cover-page-card-label">Defendant</div><div class="cover-page-card-value">${defendantName}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Court / State</div><div class="cover-page-card-value">${meta}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Offence</div><div class="cover-page-card-value">${offenceLabel}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Sentence</div><div class="cover-page-card-value">${sentenceSummary}</div></div>
+        </div>
+        <div class="cover-page-note">NOT LEGAL ADVICE — This document is an educational tool only and must be independently verified by a qualified Australian legal professional.</div>
+      </div>
+    </section>
   <div class="report-container">
     <div class="created-by">Created and Designed by Deb King</div>
     <div class="report-header">
@@ -884,7 +926,7 @@ const ReportView = () => {
       <header className="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40 no-print" data-testid="report-header">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between gap-3 flex-wrap text-slate-900">
-            <Button variant="ghost" size="sm" onClick={() => navigate(`/cases/${caseId}`)} className="text-slate-700 hover:text-slate-900 hover:bg-slate-100" data-testid="back-btn">
+            <Button size="sm" onClick={handleBackToCase} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="back-btn">
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
@@ -1060,12 +1102,12 @@ const ReportView = () => {
         .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
         .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
         .legal-report table {
-          width: 100%;
-          min-width: 640px;
+          width: max-content;
+          min-width: 100%;
           border-collapse: collapse;
           margin: 0;
           background: #ffffff;
-          table-layout: fixed;
+          table-layout: auto;
         }
         .legal-report th {
           background: #1d4ed8;
@@ -1091,6 +1133,22 @@ const ReportView = () => {
         .legal-report td {
           color: #0f172a;
           overflow-wrap: anywhere;
+        }
+        @media (max-width: 768px) {
+          .legal-report {
+            font-size: 1rem;
+            line-height: 1.7;
+          }
+          .legal-report li {
+            font-size: 1rem;
+          }
+          .legal-report table {
+            min-width: 560px;
+          }
+          .legal-report th, .legal-report td {
+            padding: 8px 9px;
+            font-size: 0.8rem;
+          }
         }
         .legal-report blockquote {
           border-left: 4px solid #1e3a8a;

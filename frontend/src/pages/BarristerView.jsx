@@ -43,8 +43,23 @@ const formatTitle = (value) => {
 
 const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
+  const bySentenceImposed = analysis.match(/(?:sentence\s+imposed\s+was|sentence\s+was|head\s+sentence\s+was|head\s+sentence:|sentenced?\s+to)\s+([^\.\n]{8,160})/i);
+  if (bySentenceImposed?.[1]) {
+    const cleaned = bySentenceImposed[1]
+      .replace(/\s*[|•].*$/, "")
+      .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
+      .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
+      .trim();
+    if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned)) return cleaned;
+  }
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+([^\n\.]{10,160})/i);
-  if (byVerb?.[1]) return byVerb[1].trim();
+  if (byVerb?.[1]) {
+    return byVerb[1]
+      .replace(/\s*[|•].*$/, "")
+      .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
+      .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
+      .trim();
+  }
   return "Not recorded";
 };
 
@@ -276,6 +291,17 @@ export default function BarristerView() {
     * { box-sizing: border-box; }
     body { margin: 0; padding-bottom: 88px; background: #eef2f7; color: #0f172a; font-family: 'Manrope', Arial, sans-serif; }
     .preview-shell { max-width: 920px; margin: 24px auto; padding: 0 18px; }
+    .cover-page { padding: 0 0 16px; }
+    .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
+    .cover-page-kicker { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 800; color: #1d4ed8; }
+    .cover-page h1 { margin: 0 0 10px; font-family: 'Crimson Pro', serif; font-size: 32px; color: #0f172a; }
+    .cover-page p { margin: 0 0 8px; color: #334155; }
+    .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 22px 0 18px; text-align: left; }
+    .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
+    .cover-page-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
+    .cover-page-card-value { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
+    .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
     .preview-paper { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); }
     .preview-paper h1, .preview-paper h2, .preview-paper h3, .preview-paper h4 { font-family: 'Crimson Pro', serif; }
@@ -311,6 +337,21 @@ export default function BarristerView() {
 <body>
   <div class="preview-shell">
     ${notice}
+    <section class="cover-page page-break">
+      <div class="cover-page-inner">
+        <p class="cover-page-kicker">Appeal Case Manager</p>
+        <h1>${title}</h1>
+        <p>Created and Designed by Deb King</p>
+        <p>${caseData?.title || "Case"}</p>
+        <div class="cover-page-grid">
+          <div class="cover-page-card"><div class="cover-page-card-label">Defendant</div><div class="cover-page-card-value">${caseData?.defendant_name || "Appellant"}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Court / State</div><div class="cover-page-card-value">${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Offence</div><div class="cover-page-card-value">${offenceLabel}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Sentence</div><div class="cover-page-card-value">${sentenceSummary}</div></div>
+        </div>
+        <div class="cover-page-note">NOT LEGAL ADVICE — This document is an educational tool only and must be independently verified by a qualified Australian legal professional.</div>
+      </div>
+    </section>
     <div class="preview-paper">${contentEl.innerHTML}</div>
   </div>
   <div class="print-footer">
@@ -382,6 +423,10 @@ export default function BarristerView() {
     }
   };
 
+  const handleBackToCase = () => {
+    window.location.assign(`/cases/${caseId}`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center" data-testid="barrister-view-loading">
@@ -405,10 +450,9 @@ export default function BarristerView() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3 flex-wrap">
             <Button
-              variant="ghost"
               size="sm"
-              onClick={() => navigate(`/cases/${caseId}`)}
-              className="text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+              onClick={handleBackToCase}
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="barrister-back-button"
             >
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
