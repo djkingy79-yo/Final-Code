@@ -161,11 +161,12 @@ export default function BarristerView() {
     requestRef.current = requestId;
     setLoading(true);
     try {
-      const [caseRes, groundsRes, timelineRes, documentsRes, barristerRes] = await Promise.allSettled([
+      const [caseRes, groundsRes, timelineRes, documentsRes, reportsRes, barristerRes] = await Promise.allSettled([
         axios.get(`${API}/cases/${caseId}`),
         axios.get(`${API}/cases/${caseId}/grounds`),
         axios.get(`${API}/cases/${caseId}/timeline`),
         axios.get(`${API}/cases/${caseId}/documents`),
+        axios.get(`${API}/cases/${caseId}/reports`),
         axios.get(`${API}/cases/${caseId}/reports/barrister-view`, {
           params: regenerate ? { regenerate: true } : {},
         }),
@@ -177,8 +178,24 @@ export default function BarristerView() {
       if (groundsRes.status === "fulfilled") setGrounds(groundsRes.value.data?.grounds || []);
       if (timelineRes.status === "fulfilled") setTimeline(timelineRes.value.data || []);
       if (documentsRes.status === "fulfilled") setDocuments(documentsRes.value.data || []);
+      const completedStandardReports = reportsRes.status === "fulfilled"
+        ? ["quick_summary", "full_detailed", "extensive_log"].every((type) =>
+            (reportsRes.value.data || []).some((item) => item.report_type === type && item.status === "completed")
+          )
+        : false;
 
       if (barristerRes.status === "rejected") {
+        if (completedStandardReports && !regenerate) {
+          const retryRes = await axios.get(`${API}/cases/${caseId}/reports/barrister-view`, {
+            params: { regenerate: true },
+          });
+          if (requestId !== requestRef.current) return;
+          const retryReport = retryRes.data;
+          setReport(retryReport);
+          setStatus(retryReport?.status || "generating");
+          setErrorMessage(retryReport?.error || "");
+          return;
+        }
         const detail = barristerRes.reason?.response?.data?.detail;
         setReport(null);
         setStatus("locked");

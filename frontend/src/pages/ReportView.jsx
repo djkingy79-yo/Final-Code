@@ -693,9 +693,9 @@ const ReportView = () => {
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 12px; table-layout: fixed; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 12px; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt; table-layout: fixed; font-family: 'Manrope', 'Arial', sans-serif; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt; font-family: 'Manrope', 'Arial', sans-serif; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt; font-family: 'Manrope', 'Arial', sans-serif; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }

@@ -5698,6 +5698,16 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
     if current_report and not regenerate:
         current_status = current_report.get("status")
         if current_status == "completed":
+            current_analysis = ((current_report.get("content") or {}).get("analysis") or "").strip()
+            if len(current_analysis) < 4000:
+                await db.reports.update_one(
+                    {"report_id": current_report.get("report_id")},
+                    {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+                )
+                current_report["status"] = "generating"
+                current_report["error"] = None
+                asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
+                return current_report
             return current_report
         if current_status == "failed":
             temporary_error = str(current_report.get("technical_error") or current_report.get("error") or "")
@@ -6046,8 +6056,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         try:
             col_width = doc.width / col_count
             para_rows = []
-            cell_style = ParagraphStyle(name='CellText', fontSize=7.5, leading=9, wordWrap='CJK')
-            header_style = ParagraphStyle(name='HeaderCellText', fontSize=7.5, leading=9, fontName='Helvetica-Bold', textColor=colors.white)
+            cell_style = ParagraphStyle(name='CellText', fontSize=11, leading=13, fontName='Helvetica', wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=11, leading=13, fontName='Helvetica-Bold', textColor=colors.white)
             for ri, row in enumerate(rows):
                 style = header_style if ri == 0 else cell_style
                 para_rows.append([Paragraph(c[:260], style) for c in row])
@@ -6700,10 +6710,12 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 if r_idx == 0:
                     for run in cell.paragraphs[0].runs:
                         run.bold = True
-                        run.font.size = Pt(8.5)
+                        run.font.size = Pt(11)
+                        run.font.name = 'Arial'
                 else:
                     for run in cell.paragraphs[0].runs:
-                        run.font.size = Pt(8.5)
+                        run.font.size = Pt(11)
+                        run.font.name = 'Arial'
         doc.add_paragraph()
 
     def render_markdown_docx(text):
