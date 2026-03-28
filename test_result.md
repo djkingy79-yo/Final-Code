@@ -8862,3 +8862,194 @@ relationship is formed through the provision of this report.
 
 ---
 
+
+---
+
+# Test Results - How It Works Page Image Update Verification (Iteration 58)
+
+## Test Date
+2026-03-28
+
+## Test Scope
+Verification of updated /how-it-works page on https://case-synthesis-lab.preview.emergentagent.com:
+1. Step images should no longer be generic dummy-case screenshots
+2. Page should show updated mix of real-case screenshots and live app screens (Documents, Timeline, Grounds, Notes, Reports, Legal, Progress)
+3. Reports screenshot should show real colour-headed reports screen
+4. No broken images
+
+---
+
+## Test Results Summary
+
+### ✅ ALL 4 REQUIREMENTS PASSED - 4/4
+
+---
+
+## Detailed Test Results
+
+### 1. Step Images No Longer Generic Dummy Screenshots ✅
+
+**Test Method:** Visual verification with Playwright on desktop viewport (1920x1080)
+
+**Result:** ✅ PASS - All step images are real screenshots
+
+**Evidence:**
+- All 9 step images loaded successfully (9/9)
+- Images show actual app screens and real case data
+- No placeholder or dummy images detected
+- Image dimensions confirm real screenshots:
+  - Live app screens: 1920x800px (desktop screenshots)
+  - Real case screenshots: 1125x2436px (mobile screenshots)
+
+**Status:** ✅ VERIFIED - Step images are authentic screenshots, not dummy placeholders
+
+---
+
+### 2. Mix of Real-Case Screenshots and Live App Screens ✅
+
+**Test Method:** Image source analysis and visual verification
+
+**Result:** ✅ PASS - Correct mix of screenshot types
+
+**Image Type Breakdown:**
+
+**Real Case Screenshots (4 steps):**
+- Step 3 (Upload Documents): customer-assets.emergentagent.com/...IMG_4323.png
+- Step 4 (Create the Timeline): customer-assets.emergentagent.com/...IMG_4324.png
+- Step 5 (Do the Grounds): customer-assets.emergentagent.com/...IMG_4325.png
+- Step 6 (Do the Notes): customer-assets.emergentagent.com/...IMG_4327.png
+
+**Live App Screens (5 steps):**
+- Step 1 (Sign In First): /howto/live-login.jpeg
+- Step 2 (Start Your Case): /howto/live-start.jpeg
+- Step 7 (Run the Reports): /howto/live-reports.jpeg ← **CRITICAL**
+- Step 8 (Open the Legal Tab): /howto/live-legal.jpeg
+- Step 9 (Track the Progress): /howto/live-progress.jpeg
+
+**Status:** ✅ VERIFIED - Page shows correct mix of real-case screenshots (Documents, Timeline, Grounds, Notes) and live app screens (Login, Start, Reports, Legal, Progress)
+
+---
+
+### 3. Reports Screenshot Shows Real Colour-Headed Reports Screen ✅
+
+**Test Method:** Visual verification of Step 7 (Reports) with detailed text analysis
+
+**Result:** ✅ PASS - Reports screenshot shows authentic colour-headed reports screen
+
+**Evidence:**
+
+**Image Details:**
+- Image source: /howto/live-reports.jpeg
+- Image loaded: True
+- Image dimensions: 1920x800px
+- File size: 58KB
+- Last modified: Mar 28 16:20 (recent update)
+
+**Text Verification:**
+- Step 7 Description: "The Reports tab is where the **colour-headed report cards** and report generation controls live. This is the screen used to run the case reports."
+- Step 7 Caption: "This is the live Reports screen, including the front report area with the **colour heading treatment**."
+
+**Visual Verification:**
+Screenshot shows the actual Reports screen with:
+- ✅ Purple "EXTENSIVE LOG REPORT" card
+- ✅ Blue "FULL DETAILED REPORT" card
+- ✅ Green "QUICK SUMMARY" card
+- ✅ Multiple other coloured report cards visible
+- ✅ Real case name: "R v Homann"
+- ✅ Real case details and tabs (Documents, Timeline, Grounds, Notes, Reports, Legal, Progress)
+- ✅ "Generate Report" button visible
+- ✅ Caption explicitly confirms "colour heading treatment"
+
+**Status:** ✅ VERIFIED - Reports screenshot is authentic and shows real colour-headed reports screen
+
+---
+
+### 4. No Broken Images ✅
+
+**Test Method:** Automated image load verification with Playwright
+
+**Result:** ✅ PASS - All images loaded successfully
+
+**Image Load Status:**
+- Total steps checked: 9
+- Images loaded successfully: 9/9 (100%)
+- Broken/missing images: 0
+- Failed image requests: 0
+
+**Individual Image Verification:**
+1. ✅ Step 1 (Sign In First): Loaded, 1920x800px
+2. ✅ Step 2 (Start Your Case): Loaded, 1920x800px
+3. ✅ Step 3 (Upload Documents): Loaded, 1125x2436px
+4. ✅ Step 4 (Create the Timeline): Loaded, 1125x2436px
+5. ✅ Step 5 (Do the Grounds): Loaded, 1125x2436px
+6. ✅ Step 6 (Do the Notes): Loaded, 1125x2436px
+7. ✅ Step 7 (Run the Reports): Loaded, 1920x800px ← **CRITICAL**
+8. ✅ Step 8 (Open the Legal Tab): Loaded, 1920x800px
+9. ✅ Step 9 (Track the Progress): Loaded, 1920x800px
+
+**Network Verification:**
+- No 404 errors detected
+- No failed image requests
+- All external URLs (customer-assets.emergentagent.com) accessible
+- All local images (/howto/*.jpeg) served correctly
+
+**Status:** ✅ VERIFIED - No broken images, all images load successfully
+
+---
+
+## Screenshots Captured
+
+1. `step7_reports_full.png` - Full Step 7 section showing Reports screen
+2. `step7_reports_image_only.png` - Just the Reports screenshot image
+3. `step7_final_verification.png` - Final verification screenshot of Step 7
+4. `step3_documents_full.png` - Step 3 Documents section
+5. `step4_timeline_full.png` - Step 4 Timeline section
+6. `step5_grounds_full.png` - Step 5 Grounds section
+7. `step6_notes_full.png` - Step 6 Notes section
+8. `step8_legal_full.png` - Step 8 Legal section
+9. `step9_progress_full.png` - Step 9 Progress section
+
+---
+
+## Test Environment
+
+- **URL:** https://case-synthesis-lab.preview.emergentagent.com/how-it-works
+- **Viewport:** Desktop (1920x1080)
+- **Browser:** Chromium (Playwright)
+- **Test Type:** Public Route Verification (No Authentication Required)
+- **Test Duration:** ~45 seconds
+- **Network Status:** All resources loaded successfully
+
+---
+
+## Summary
+
+✅ **ALL 4 VERIFICATION REQUIREMENTS PASSED - 4/4**
+
+**Key Findings:**
+
+1. ✅ **Step images are no longer generic dummy screenshots**
+   - All 9 images are authentic screenshots
+   - Mix of desktop (1920x800px) and mobile (1125x2436px) screenshots
+   - No placeholder or dummy images detected
+
+2. ✅ **Page shows updated mix of real-case screenshots and live app screens**
+   - Real case screenshots: 4 steps (Documents, Timeline, Grounds, Notes)
+   - Live app screens: 5 steps (Login, Start, Reports, Legal, Progress)
+   - Correct distribution as specified in requirements
+
+3. ✅ **Reports screenshot shows real colour-headed reports screen**
+   - Step 7 image: /howto/live-reports.jpeg
+   - Shows authentic Reports screen with purple, blue, green coloured cards
+   - Description and caption explicitly mention "colour-headed" and "colour heading treatment"
+   - Real case data visible (R v Homann)
+
+4. ✅ **No broken images**
+   - 100% image load success rate (9/9)
+   - No 404 errors or failed requests
+   - All external and local images accessible
+
+**Verdict:** ✅ PASS - All requirements verified successfully. The /how-it-works page has been correctly updated with real screenshots and the Reports screenshot shows the authentic colour-headed reports screen.
+
+---
+

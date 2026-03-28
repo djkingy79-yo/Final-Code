@@ -58,7 +58,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From the front page, open the sign-in modal. The first screen shows the Google sign-in button, followed by the email and password fields.",
       visual: {
-        imageSrc: "/howto/step-1-login.jpeg",
+        imageSrc: "/howto/live-login.jpeg",
         alt: "Login screen with Google sign in",
         caption: "This is the real login screen users see first, including Google sign-in."
       },
@@ -83,7 +83,7 @@ const HowItWorksPage = () => {
       textColor: "text-sky-600",
       description: "After signing in, the dashboard is where a new case starts. This is the working area for every appeal file.",
       visual: {
-        imageSrc: "/howto/step-2-start.jpeg",
+        imageSrc: "/howto/live-start.jpeg",
         alt: "Dashboard after login",
         caption: "The dashboard is the starting point before moving into a case file."
       },
@@ -108,7 +108,7 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Go into the Documents tab and upload the real case materials. This is the base for later AI analysis and reporting.",
       visual: {
-        imageSrc: "/howto/step-3-upload.jpeg",
+        imageSrc: "https://customer-assets.emergentagent.com/job_6d2f3ab6-d469-4440-bb48-f565df1ce07b/artifacts/9na2kdw9_IMG_4323.png",
         alt: "Documents tab in a live case",
         caption: "The Documents tab is where transcripts, remarks, briefs, and exhibits are uploaded."
       },
@@ -133,7 +133,7 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "The Timeline tab helps structure the chronology of the case, which improves the later grounds, reports, and progress tracking.",
       visual: {
-        imageSrc: "/howto/step-4-timeline.jpeg",
+        imageSrc: "https://customer-assets.emergentagent.com/job_6d2f3ab6-d469-4440-bb48-f565df1ce07b/artifacts/x2jfr640_IMG_4324.png",
         alt: "Timeline tab in a live case",
         caption: "Use the Timeline tab to add and organise the important case events."
       },
@@ -157,7 +157,7 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "Use the Grounds tab to identify and work through potential grounds of appeal from the actual case material.",
       visual: {
-        imageSrc: "/howto/step-5-grounds.jpeg",
+        imageSrc: "https://customer-assets.emergentagent.com/job_6d2f3ab6-d469-4440-bb48-f565df1ce07b/artifacts/ged6bn61_IMG_4325.png",
         alt: "Grounds tab in a live case",
         caption: "The Grounds tab is where appeal grounds are identified and developed."
       },
@@ -181,7 +181,7 @@ const HowItWorksPage = () => {
       textColor: "text-amber-600",
       description: "The Notes tab is for working notes, strategy reminders, and anything that needs to be preserved while building the appeal.",
       visual: {
-        imageSrc: "/howto/step-6-notes.jpeg",
+        imageSrc: "https://customer-assets.emergentagent.com/job_6d2f3ab6-d469-4440-bb48-f565df1ce07b/artifacts/r8gm48ki_IMG_4327.png",
         alt: "Notes tab in a live case",
         caption: "Use Notes to record strategy points, questions, and ongoing work on the case."
       },
@@ -205,7 +205,7 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "The Reports tab is where the colour-headed report cards and report generation controls live. This is the screen used to run the case reports.",
       visual: {
-        imageSrc: "/howto/step-7-reports.jpeg",
+        imageSrc: "/howto/live-reports.jpeg",
         alt: "Reports tab with report actions",
         caption: "This is the live Reports screen, including the front report area with the colour heading treatment."
       },
@@ -229,7 +229,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-700",
       description: "The Legal tab keeps the case focused on the legal side of the appeal workflow and acts as part of the full working file.",
       visual: {
-        imageSrc: "/howto/step-8-legal.jpeg",
+        imageSrc: "/howto/live-legal.jpeg",
         alt: "Legal tab in a live case",
         caption: "The Legal tab is part of the live case workspace and sits alongside reports, notes, and progress."
       },
@@ -252,7 +252,7 @@ const HowItWorksPage = () => {
       textColor: "text-teal-700",
       description: "Finish in the Progress tab to monitor where the appeal work stands and what still needs doing.",
       visual: {
-        imageSrc: "/howto/step-9-progress.jpeg",
+        imageSrc: "/howto/live-progress.jpeg",
         alt: "Progress tab in a live case",
         caption: "The Progress tab tracks the case workflow and what remains to be done."
       },
