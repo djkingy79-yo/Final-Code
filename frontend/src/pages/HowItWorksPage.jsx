@@ -56,7 +56,7 @@ const HowItWorksPage = () => {
       lightColor: "bg-blue-50",
       borderColor: "border-blue-200",
       textColor: "text-blue-600",
-      description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
+      description: "From your Dashboard, click the 'New Case' button. Fill in basic details about the criminal matter.",
       visual: {
         alt: "Dashboard with cases and progress tracking",
         caption: "Your dashboard shows all cases with progress tracking."
@@ -82,28 +82,28 @@ const HowItWorksPage = () => {
     {
       num: 2,
       icon: Upload,
-      title: "Upload Case Documents",
-      subtitle: "Drag and drop your transcripts, exhibits, and evidence",
+      title: "Upload Documents & Extract Text",
+      subtitle: "Upload your transcripts, exhibits, and evidence then extract the text",
       color: "bg-emerald-600",
       lightColor: "bg-emerald-50",
       borderColor: "border-emerald-200",
       textColor: "text-emerald-600",
-      description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
+      description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. After uploading, click the 'Extract Text' button on each document so the AI can read and analyse the content.",
       visual: {
         alt: "Documents tab with uploaded case files",
-        caption: "Upload transcripts, sentencing remarks, and evidence — all processed by AI."
+        caption: "Upload documents and click Extract Text so the AI can analyse them."
       },
       whatYouSee: [
         "A drag-and-drop upload area — drop multiple files at once",
         "Support for PDF, DOCX, TXT, JPG, and PNG files",
-        "OCR processing indicator — scanned documents are automatically converted to text",
+        "An 'Extract Text' button on each document — click it to process the document",
+        "OCR processing converts scanned documents to readable text",
         "Document list showing file name, type, size, and upload date",
-        "Click any document to view its contents",
       ],
       proTips: [
         "Upload sentencing remarks FIRST — these are the most important for appeal analysis",
+        "Always click 'Extract Text' after uploading — the AI cannot analyse without it",
         "Include the trial transcript, judge's directions to jury, and any expert reports",
-        "Police briefs, witness statements, and CCTV evidence summaries are also valuable",
         "The more documents you upload, the more detailed and accurate the AI analysis will be",
       ],
       whatToUpload: [
@@ -118,29 +118,57 @@ const HowItWorksPage = () => {
     },
     {
       num: 3,
-      icon: Search,
-      title: "Find Grounds — FREE",
-      subtitle: "AI scans your documents and tells you how many appeal grounds exist",
+      icon: Clock,
+      title: "AI Timeline Analysis",
+      subtitle: "Build a chronological timeline of key events from your documents",
       color: "bg-purple-600",
       lightColor: "bg-purple-50",
       borderColor: "border-purple-200",
       textColor: "text-purple-600",
-      description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
+      description: "Go to the 'Timeline' tab and click the 'AI Analyse' button. The AI reads your documents and automatically builds a chronological timeline of every key event in the case.",
       visual: {
-        alt: "Grounds tab showing identified grounds with strength ratings",
-        caption: "AI identifies grounds — titles hidden until you pay $99 to investigate."
+        alt: "Timeline tab showing chronological events extracted by AI",
+        caption: "AI extracts dates and events from your documents into a clear timeline."
+      },
+      whatYouSee: [
+        "A chronological list of key events extracted from your documents",
+        "Each event shows the date, title, and a description of what happened",
+        "Events are colour-coded by type: incident, arrest, hearing, trial, verdict, sentencing",
+        "You can manually add, edit, or remove events as needed",
+      ],
+      proTips: [
+        "Run the AI Timeline after uploading and extracting ALL your documents",
+        "A clear timeline helps identify gaps, inconsistencies, and procedural errors",
+        "Check the AI-generated timeline against your own knowledge of events",
+        "Add any missing events manually — especially informal events not in documents",
+      ],
+    },
+    {
+      num: 4,
+      icon: Search,
+      title: "Find Grounds — FREE",
+      subtitle: "AI scans your documents and identifies how many appeal grounds exist",
+      color: "bg-red-600",
+      lightColor: "bg-red-50",
+      borderColor: "border-red-200",
+      textColor: "text-red-600",
+      description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis. Pay $99 AUD to unlock full titles and reports on each ground. Click 'Investigate' on any ground for a deep analysis.",
+      visual: {
+        alt: "Grounds tab showing identified grounds count",
+        caption: "AI identifies grounds — pay $99 to unlock titles and click Investigate for deep analysis."
       },
       whatYouSee: [
         "The total number of potential appeal grounds identified (e.g., '5 Grounds Found')",
         "Strength distribution: how many are Strong, Moderate, or Weak",
-        "You do NOT see the ground titles or detailed analysis — that requires Investigate Grounds ($99)",
-        "Enough to know whether it's worth investing in the full investigation",
+        "You do NOT see the ground titles or detailed analysis — that requires $99 AUD payment",
+        "After paying, each ground shows its full title, legal basis, and strength rating",
+        "Click 'Investigate' on any ground for a deep AI analysis of that specific issue",
       ],
       proTips: [
         "Upload all your documents BEFORE running Find Grounds — the more data, the better",
-        "This is free, so use it to gauge whether it's worth investing in the full investigation",
-        "You can also manually add grounds you've identified yourself",
-        "Use the Timeline tab first to ensure the AI has the correct chronology",
+        "The free scan tells you if it is worth investing $99 in the full investigation",
+        "After unlocking, use the Investigate button on each ground for detailed case law analysis",
+        "Share the grounds analysis with your lawyer to save consultation time and money",
       ],
       interactive: {
         label: "Types of grounds the AI looks for",
@@ -155,100 +183,88 @@ const HowItWorksPage = () => {
       },
     },
     {
-      num: 4,
-      icon: Brain,
-      title: "Investigate Grounds — $99 AUD",
-      subtitle: "Get the detailed legal analysis behind each ground",
+      num: 5,
+      icon: BookOpen,
+      title: "Case Notes",
+      subtitle: "Record your strategy, research, and follow-up items",
+      color: "bg-blue-600",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      textColor: "text-blue-600",
+      description: "Use the Notes tab to keep track of your research, strategy ideas, and follow-up items. Notes can be categorised and pinned for easy reference.",
+      visual: {
+        alt: "Notes tab with categorised case notes",
+        caption: "Keep track of your strategy and research with categorised notes."
+      },
+      whatYouSee: [
+        "Notes organised by category: Strategy, Research, Follow Up, General",
+        "Pin important notes to keep them at the top of the list",
+        "Each note has a title and detailed content area",
+        "Add as many notes as you need — they stay with your case",
+      ],
+      proTips: [
+        "Record your thoughts as you review each ground — they help when speaking with a lawyer",
+        "Use the Strategy category for legal arguments and the Research category for case law",
+        "Pin your most important notes so they are always visible at the top",
+      ],
+    },
+    {
+      num: 6,
+      icon: FileCheck,
+      title: "Generate Premium Reports",
+      subtitle: "Choose your report tier — from quick overview to barrister-level depth",
       color: "bg-indigo-600",
       lightColor: "bg-indigo-50",
       borderColor: "border-indigo-200",
       textColor: "text-indigo-600",
-      description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
-      visual: {
-        alt: "Full ground analysis with titles, evidence, and strength ratings",
-        caption: "Investigate Grounds reveals full titles, supporting evidence, and case law."
-      },
-      whatYouSee: [
-        "Detailed analysis of EACH ground with legal basis and relevant legislation",
-        "Supporting evidence from your specific documents cited for each ground",
-        "Cross-references to similar cases and their outcomes (with AustLII links)",
-        "Strength assessment explaining WHY each ground is rated Strong, Moderate, or Weak",
-        "Specific sections of legislation that apply to your case",
-      ],
-      proTips: [
-        "This is the core value — it tells you exactly what your appeal grounds are and WHY",
-        "Share the grounds analysis with your lawyer to save consultation time and money",
-        "The investigation uses your actual documents, not generic advice",
-        "After investigation, generate a Full Report or Extensive Log for the complete package",
-      ],
-      interactive: {
-        label: "What you get for $99",
-        items: [
-          "Full legal analysis of every identified ground",
-          "Relevant case law citations with links",
-          "Specific legislation sections that apply",
-          "Strength rating with detailed reasoning",
-          "Evidence from YOUR documents supporting each ground",
-          "Strategic notes on which grounds to prioritise",
-        ],
-      },
-    },
-    {
-      num: 5,
-      icon: FileCheck,
-      title: "Generate Premium Reports",
-      subtitle: "Choose your report tier — from quick overview to barrister-level depth",
-      color: "bg-red-600",
-      lightColor: "bg-red-50",
-      borderColor: "border-red-200",
-      textColor: "text-red-600",
-      description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
+      description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis. All three reports must be generated to unlock the Barrister View.",
       visual: {
         alt: "Reports tab showing generated reports with export options",
-        caption: "Three report tiers plus Barrister View — from free overview to hearing-ready briefs."
+        caption: "Three report tiers — from free overview to hearing-ready briefs. Generate all three to unlock Barrister View."
       },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
         "Each report generates with professional formatting: tables, links, case citations",
-        "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice, Filing Guide",
+        "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice",
         "Reports can be exported as PDF or Word document for legal consultations",
+        "All three reports must be generated before the Barrister View becomes available",
       ],
       proTips: [
         "Start with the FREE Quick Summary to get an overview before committing to a paid report",
         "Full Detailed Reports include legislation links and comparative sentencing tables",
         "Extensive Log Reports are designed to be handed directly to a barrister",
-      ],
-    },
-    {
-      num: 6,
-      icon: Presentation,
-      title: "Present in Barrister View",
-      subtitle: "Court-ready presentation format for legal professionals",
-      color: "bg-blue-600",
-      lightColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-      textColor: "text-blue-700",
-      description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
-      visual: {
-        alt: "Barrister Executive Brief synthesised from all reports",
-        caption: "Barrister View synthesises all 3 reports into one court-ready brief."
-      },
-      whatYouSee: [
-        "Table of Contents with clickable section headings",
-        "'Synthesised from N reports' badge showing how many reports were combined",
-        "Clean professional layout with readable headings and tables",
-        "Tables with formatted headers for sentencing comparisons and case law",
-        "Export to PDF or Word document for legal consultations",
-        "All legislation links are clickable and open to official government sources",
-      ],
-      proTips: [
-        "Export the Barrister View as PDF or Word to take to a legal consultation",
-        "Export as Word to allow your lawyer to edit and add their own notes",
-        "The Barrister View is designed to impress — use it when presenting your case",
+        "Generate all three to unlock the Barrister View — the capstone synthesis",
       ],
     },
     {
       num: 7,
+      icon: Gavel,
+      title: "Review Legal Framework",
+      subtitle: "Explore legislation, appeal procedures, and court forms for your jurisdiction",
+      color: "bg-blue-600",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      textColor: "text-blue-700",
+      description: "The Legal tab provides the applicable legislation for your case, with direct links to AustLII. It also includes step-by-step guides on how to start your appeal and access to court forms.",
+      visual: {
+        alt: "Legal Framework tab with legislation and AustLII links",
+        caption: "Review applicable legislation with links to AustLII and court forms."
+      },
+      whatYouSee: [
+        "Applicable legislation sections for your state and offence type",
+        "Direct links to AustLII for each section of legislation",
+        "Step-by-step 'How to Start Your Appeal' guide",
+        "Appeal court forms for your jurisdiction",
+        "Common appeal grounds for your offence type",
+      ],
+      proTips: [
+        "The Legal Framework tab is auto-populated based on your state and offence type",
+        "Use the AustLII links to read the full text of relevant legislation",
+        "Download and print the court forms you need for filing",
+      ],
+    },
+    {
+      num: 8,
       icon: ListChecks,
       title: "Track Progress & Take Action",
       subtitle: "Deadlines, checklists, and next steps to keep your appeal on track",
@@ -264,13 +280,13 @@ const HowItWorksPage = () => {
       whatYouSee: [
         "Deadline Tracker — shows key dates and how many days remain",
         "Appeal Checklist — step-by-step list of everything you need to do",
-        "Notes section — add your own observations, questions for your lawyer, and reminders",
+        "Check off items as you complete them to track your progress",
         "AI progress scan — generates a structured summary of next steps and risks",
       ],
       proTips: [
         "Set your conviction/sentence date immediately — all deadlines calculate from this",
-        "Check off steps as you complete them so you don't miss anything",
-        "Use Notes to track communications with your lawyer and key decisions",
+        "Check off steps as you complete them so you do not miss anything",
+        "Use the AI Analyse Progress button for a summary of where your appeal stands",
       ],
       interactive: {
         label: "Critical deadlines",
@@ -281,6 +297,35 @@ const HowItWorksPage = () => {
           "Apply for Legal Aid early if you need financial assistance",
         ],
       },
+    },
+    {
+      num: 9,
+      icon: Presentation,
+      title: "Present in Barrister View",
+      subtitle: "Locked until all three reports are generated",
+      color: "bg-slate-800",
+      lightColor: "bg-slate-50",
+      borderColor: "border-slate-300",
+      textColor: "text-slate-800",
+      description: "The Barrister View is locked until all three reports have been generated (Quick Summary, Full Detailed, and Extensive Log). Once unlocked, it synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
+      visual: {
+        alt: "Barrister Executive Brief synthesised from all reports",
+        caption: "Barrister View synthesises all 3 reports into one court-ready brief."
+      },
+      whatYouSee: [
+        "LOCKED until all 3 reports are generated (Quick Summary + Full Detailed + Extensive Log)",
+        "Once unlocked: Table of Contents with clickable section headings",
+        "'Synthesised from 3 reports' badge showing all reports were combined",
+        "Clean professional layout with readable headings and tables",
+        "Includes Attachment A — Barrister Issue Matrix",
+        "Export to PDF or Word document for legal consultations",
+      ],
+      proTips: [
+        "You must generate all three reports before this becomes available",
+        "Export the Barrister View as PDF or Word to take to a legal consultation",
+        "Export as Word to allow your lawyer to edit and add their own notes",
+        "The Barrister View is designed to impress — use it when presenting your case",
+      ],
     },
   ];
 
@@ -398,7 +443,7 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4" /> 7 simple steps
+              <Clock className="w-4 h-4" /> 9 simple steps
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
@@ -458,7 +503,7 @@ const HowItWorksPage = () => {
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-slate-500">Step {step.num} of 7</p>
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Step {step.num} of {detailedSteps.length}</p>
                     <h2 className={`text-2xl sm:text-3xl font-bold ${step.textColor}`}>
                       {step.title}
                     </h2>
