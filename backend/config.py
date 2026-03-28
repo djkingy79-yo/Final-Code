@@ -22,3 +22,7 @@ logger = logging.getLogger(__name__)
 
 # Environment variables
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+
+
+def get_frontend_url() -> str:
+    return os.environ['FRONTEND_URL'].replace('/api', '')

@@ -7,7 +7,7 @@ from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from config import db, logger
+from config import db, logger, get_frontend_url
 from auth_utils import get_current_user
 import os
 import asyncio
@@ -67,7 +67,7 @@ async def send_payment_confirmation_email(user_email: str, user_name: str, featu
     
     try:
         # Get the frontend URL for the case link
-        frontend_url = os.environ.get('FRONTEND_URL', 'https://case-synthesis-lab.preview.emergentagent.com')
+        frontend_url = get_frontend_url()
         case_link = f"{frontend_url}/cases/{case_id}"
         
         html_content = f"""

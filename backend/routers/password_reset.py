@@ -13,7 +13,7 @@ import os
 import asyncio
 import resend
 
-from config import db, logger
+from config import db, logger, get_frontend_url as get_config_frontend_url
 
 router = APIRouter(prefix="/api/auth", tags=["password-reset"])
 
@@ -22,7 +22,7 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 
 
 def get_frontend_url() -> str:
-    return os.environ["FRONTEND_URL"].replace("/api", "")
+    return get_config_frontend_url()
 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
