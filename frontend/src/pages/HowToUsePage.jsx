@@ -16,28 +16,14 @@ const HowToUsePage = () => {
   const steps = [
     {
       num: 1,
-      title: "Create Your Account",
-      icon: Users,
-      color: "blue",
-      image: "/images/howto/live-step1-signin.png",
-      description: "Sign up for free using your email or Google account. Your data is secure and private.",
-      instructions: [
-        "Click 'Sign In' or 'Get Started Free' on the homepage",
-        "Choose to sign in with Google or create an account with email/password",
-        "If using email, verify your email address",
-        "You'll be taken to your personal dashboard"
-      ],
-      tip: "Use the same account across devices to keep your cases synced."
-    },
-    {
-      num: 2,
-      title: "Your Dashboard",
+      title: "Create a New Case",
       icon: FileText,
-      color: "emerald",
+      color: "blue",
       image: "/images/howto/live-step2-new-case.png",
-      description: "Your dashboard shows all your cases, document counts, and quick access to tools.",
+      description: "Sign in and create a new appeal case from your dashboard.",
       instructions: [
-        "Click '+ New Case' in the top right to create a new case",
+        "Sign in with your email or Google account",
+        "Click '+ New Case' on your dashboard",
         "Enter the case name (e.g., 'R v Smith [2024]')",
         "Select your State/Territory jurisdiction",
         "Choose the offence type (Murder, Assault, Drug Supply, etc.)",
@@ -46,88 +32,73 @@ const HowToUsePage = () => {
       tip: "Include the citation if you have it — this helps organise your cases."
     },
     {
-      num: 3,
-      title: "Upload Your Documents",
+      num: 2,
+      title: "Upload Documents & Extract Text",
       icon: Upload,
-      color: "blue",
+      color: "emerald",
       image: "/images/howto/live-step3-documents.png",
-      description: "Upload all relevant case documents — transcripts, evidence, statements, court records.",
+      description: "Upload all relevant case documents and extract the text for AI analysis.",
       instructions: [
         "Open your case and go to the 'Documents' tab",
         "Click 'Upload Document' or drag and drop files",
         "Supported formats: PDF, DOCX, images (JPG, PNG)",
-        "The system automatically extracts text using OCR",
-        "Categorise each document (Transcript, Evidence, Brief, etc.)",
-        "Upload as many documents as you need — there's no limit"
+        "After uploading, click the 'Extract Text' button on each document",
+        "The system extracts text using OCR so the AI can analyse it",
+        "Upload as many documents as you need — there is no limit"
       ],
-      tip: "Upload everything you have. The more documents, the better the AI analysis will be."
+      tip: "Upload everything you have. The more documents, the better the AI analysis will be. Always click Extract Text after uploading."
     },
     {
-      num: 4,
-      title: "Review the AI Timeline",
+      num: 3,
+      title: "AI Timeline Analysis",
       icon: Clock,
       color: "purple",
       image: "/images/howto/live-step4-timeline.png",
-      description: "The system automatically creates a chronological timeline of key events from your documents.",
+      description: "Use the AI to automatically build a chronological timeline of key events from your documents.",
       instructions: [
         "Go to the 'Timeline' tab in your case",
-        "The AI analyses your documents and extracts dates and events",
-        "Events are shown in chronological order",
-        "Click on any event to see the source document",
-        "You can manually add, edit, or remove events"
+        "Click the 'AI Analyse' button to start the AI timeline extraction",
+        "The AI reviews your documents and extracts dates and events",
+        "Events are displayed in chronological order",
+        "You can manually add, edit, or remove events as needed"
       ],
       tip: "A clear timeline helps identify gaps in the narrative and potential inconsistencies."
     },
     {
-      num: 5,
+      num: 4,
       title: "Analyse Potential Grounds",
       icon: BarChart3,
       color: "red",
       image: "/images/howto/live-step5-grounds.png",
-      description: "The AI identifies potential grounds of appeal based on your documents.",
+      description: "The AI identifies potential grounds of appeal. The free tier shows the number of grounds found. Pay $99 AUD to unlock full titles and detailed reports on each ground.",
       instructions: [
         "Go to the 'Grounds' tab in your case",
         "Click 'Analyse Grounds' to start the AI review",
-        "The system checks for: misdirections, procedural fairness issues, evidence problems, sentencing errors",
-        "Each ground shows its strength (Strong/Moderate/Potential)",
-        "Click 'Investigate' on any ground for detailed analysis"
+        "The free result shows only the number of grounds identified",
+        "Pay $99 AUD to unlock the full title and report for each ground found",
+        "Each ground shows its assessed strength (Strong / Moderate / Potential)",
+        "Click 'Investigate' on any ground for a deep analysis of that specific ground"
       ],
-      tip: "The free tier shows how many grounds were found. Upgrade to see full details."
+      tip: "The Investigate button runs a deep AI analysis on each individual ground — use it to understand the strength and case law behind each issue."
+    },
+    {
+      num: 5,
+      title: "Case Notes",
+      icon: Lightbulb,
+      color: "blue",
+      image: "/images/howto/live-step5-notes.png",
+      description: "Keep track of your research, strategy, and follow-up items with case notes.",
+      instructions: [
+        "Go to the 'Notes' tab in your case",
+        "Click 'Add Note' to create a new note",
+        "Choose a category: Strategy, Research, Follow Up, or General",
+        "Pin important notes to keep them at the top",
+        "Use notes to record your own observations and research"
+      ],
+      tip: "Good notes help when discussing the case with a lawyer. Record your thoughts as you review each ground."
     },
     {
       num: 6,
-      title: "Review Legal Framework",
-      icon: Search,
-      color: "blue",
-      image: "/images/howto/live-step6-legal.png",
-      description: "Explore the applicable legislation, appeal procedures, and court forms for your jurisdiction.",
-      instructions: [
-        "Go to the 'Legal' tab in your case",
-        "Review applicable legislation with links to AustLII",
-        "Follow the step-by-step 'How to Start Your Appeal' guide",
-        "Access appeal forms for your state court",
-        "Review common appeal grounds for your offence type"
-      ],
-      tip: "The Legal Framework tab provides direct links to legislation, court forms, and Legal Aid resources."
-    },
-    {
-      num: 7,
-      title: "Track Your Progress",
-      icon: CheckCircle,
-      color: "teal",
-      image: "/images/howto/live-step7-progress.png",
-      description: "Use the Appeal Checklist to track what's been done and what's next.",
-      instructions: [
-        "Go to the 'Progress' tab",
-        "See the standard appeal process steps",
-        "Check off completed items",
-        "Track important deadlines",
-        "Know your next action at all times"
-      ],
-      tip: "Appeals have strict deadlines — usually 28 days to file Notice of Intention."
-    },
-    {
-      num: 8,
       title: "Generate Reports",
       icon: FileCheck,
       color: "indigo",
@@ -147,6 +118,38 @@ const HowToUsePage = () => {
         { label: "Full Detailed Report ($150 AUD)", image: "/images/howto/live-report-full-detailed.png", color: "blue" },
         { label: "Extensive Log Report ($200 AUD)", image: "/images/howto/live-report-extensive-log.png", color: "purple" }
       ]
+    },
+    {
+      num: 7,
+      title: "Review Legal Framework",
+      icon: Search,
+      color: "blue",
+      image: "/images/howto/live-step6-legal.png",
+      description: "Explore the applicable legislation, appeal procedures, and court forms for your jurisdiction.",
+      instructions: [
+        "Go to the 'Legal' tab in your case",
+        "Review applicable legislation with links to AustLII",
+        "Follow the step-by-step 'How to Start Your Appeal' guide",
+        "Access appeal forms for your state court",
+        "Review common appeal grounds for your offence type"
+      ],
+      tip: "The Legal Framework tab provides direct links to legislation, court forms, and Legal Aid resources."
+    },
+    {
+      num: 8,
+      title: "Track Your Progress",
+      icon: CheckCircle,
+      color: "teal",
+      image: "/images/howto/live-step7-progress.png",
+      description: "Use the Appeal Checklist to track what has been done and what is next.",
+      instructions: [
+        "Go to the 'Progress' tab",
+        "Click 'Appeal Checklist' to expand the full checklist",
+        "Check off completed items as you work through each phase",
+        "Track important deadlines with the Deadline Tracker",
+        "Use 'AI Analyse Progress' for an AI-powered assessment of where your appeal stands"
+      ],
+      tip: "Appeals have strict deadlines — usually 28 days to file Notice of Intention. Use the checklist to stay on track."
     }
   ];
 
