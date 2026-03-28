@@ -106,6 +106,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Removed the extra `Created and Designed by Deb King` report-layout blocks from the live report/preview/export flows so the footer now stops at the disclaimer + footer label/page treatment the user requested
 - **2026-03-28:** Changed report PDF buttons to open the real backend-generated PDF output instead of the HTML pseudo-PDF preview; added Barrister export alias endpoints for `/reports/barrister-view/export-pdf` and `/export-docx` to stop the Barrister PDF 404 path
 - **2026-03-28:** Re-verified standard report PDF export, Barrister PDF export alias, and Barrister DOCX export alias — all now return 200 successfully
+- **2026-03-28:** Removed the remaining report-layout `Created and Designed by Deb King` strings from Barrister/standard preview covers and DOCX export endings so the report footer content now ends where the user requested
+- **2026-03-28:** Added Barrister alias export routes in the backend so both direct-report and `barrister-view` PDF/Word flows resolve to the latest completed Barrister brief without 404s
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
