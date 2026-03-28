@@ -121,6 +121,22 @@ const HowToUsePage = () => {
     },
     {
       num: 7,
+      title: "Use Barrister View",
+      icon: FileCheck,
+      color: "teal",
+      image: "/images/howto/live-step8-reports.png",
+      description: "Once all three reports are generated, the Barrister View unlocks. It synthesises every report into one hearing-ready brief.",
+      instructions: [
+        "Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)",
+        "Click 'Barrister View' from your case reports once unlocked",
+        "Opens a clean, professional presentation synthesising all three reports",
+        "Includes 'Attachment A — Barrister Issue Matrix' for counsel reference",
+        "Can be printed or exported to PDF or Word document"
+      ],
+      tip: "Use the Barrister View when discussing your case with legal professionals. It is designed as a counsel-grade brief."
+    },
+    {
+      num: 8,
       title: "Review Legal Framework",
       icon: Search,
       color: "blue",
@@ -136,10 +152,10 @@ const HowToUsePage = () => {
       tip: "The Legal Framework tab provides direct links to legislation, court forms, and Legal Aid resources."
     },
     {
-      num: 8,
+      num: 9,
       title: "Track Your Progress",
       icon: CheckCircle,
-      color: "teal",
+      color: "slate",
       image: "/images/howto/live-step7-progress.png",
       description: "Use the Appeal Checklist to track what has been done and what is next.",
       instructions: [
@@ -161,7 +177,8 @@ const HowToUsePage = () => {
       red: { bg: "bg-red-100", text: "text-red-700", tipBg: "bg-red-50", tipText: "text-red-800" },
       orange: { bg: "bg-orange-100", text: "text-orange-700", tipBg: "bg-orange-50", tipText: "text-orange-800" },
       teal: { bg: "bg-teal-100", text: "text-teal-700", tipBg: "bg-teal-50", tipText: "text-teal-800" },
-      indigo: { bg: "bg-indigo-100", text: "text-indigo-700", tipBg: "bg-indigo-50", tipText: "text-indigo-800" }
+      indigo: { bg: "bg-indigo-100", text: "text-indigo-700", tipBg: "bg-indigo-50", tipText: "text-indigo-800" },
+      slate: { bg: "bg-slate-100", text: "text-slate-700", tipBg: "bg-slate-50", tipText: "text-slate-800" }
     };
     return map[color] || map.blue;
   };
@@ -324,39 +341,6 @@ const HowToUsePage = () => {
 
         {/* Additional Steps */}
         <div className="mt-20 space-y-12">
-          {/* Barrister View */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8" data-testid="howto-barrister-view">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                <Presentation className="w-6 h-6 text-blue-700" />
-              </div>
-              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 9</span>
-            </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
-              Use Barrister View
-            </h3>
-            <p className="text-sm text-slate-700 mb-4">Present your case professionally with the clean Barrister View — a comprehensive synthesis of all three reports.</p>
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl mb-4" data-testid="barrister-unlock-notice">
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-semibold text-blue-900">Unlock Requirement</p>
-                  <p className="text-sm text-blue-800">All three standard reports (Quick Summary, Full Detailed Report, and Extensive Log) must be generated before the Barrister View becomes available. This ensures a thorough foundation for the counsel-grade analysis.</p>
-                </div>
-              </div>
-            </div>
-            <ul className="space-y-2 text-sm text-slate-700 mb-4">
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Click 'Barrister View' from your case reports once unlocked</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Opens a clean, professional presentation synthesising all three reports</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Includes "Attachment A — Barrister Issue Matrix" for counsel reference</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Can be printed or exported to PDF</li>
-            </ul>
-            <div className="p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
-              <strong>Tip:</strong> Use the Barrister View when discussing your case with legal professionals. It is designed as a counsel-grade brief.
-            </div>
-          </div>
-
           {/* Export */}
           <div className="bg-white border border-slate-200 rounded-2xl p-8" data-testid="howto-export">
             <div className="flex items-center gap-3 mb-4">
