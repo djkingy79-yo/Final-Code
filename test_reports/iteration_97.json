@@ -1,0 +1,88 @@
+{
+  "summary": "Iteration 97 - Sentence verification testing for case_76056187ad4f across all 4 report types and exports. All reports correctly display the sentence with 30 years imprisonment and 22 years 6 months non-parole period.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_results": {
+    "quick_summary_report": {
+      "report_id": "rpt_72e6a39f91f6",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months",
+      "contains_30_years": true,
+      "contains_22_years_6_months": true
+    },
+    "full_detailed_report": {
+      "report_id": "rpt_f049e0c6b384",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months",
+      "contains_30_years": true,
+      "contains_22_years_6_months": true
+    },
+    "extensive_log_report": {
+      "report_id": "rpt_4249ad7d9fee",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months",
+      "contains_30_years": true,
+      "contains_22_years_6_months": true
+    },
+    "barrister_view_report": {
+      "report_id": "rpt_d7b82aafbdea",
+      "route": "/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/barrister",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months",
+      "contains_30_years": true,
+      "contains_22_years_6_months": true
+    },
+    "print_preview": {
+      "status": "PASS",
+      "details": "Print preview cover page shows correct sentence in the SENTENCE card"
+    },
+    "pdf_exports": {
+      "status": "PASS",
+      "details": "All 4 report types (quick/full/extensive/barrister) export to PDF successfully with 200 status"
+    },
+    "docx_exports": {
+      "status": "PASS",
+      "details": "All 4 report types (quick/full/extensive/barrister) export to DOCX successfully with 200 status"
+    }
+  },
+  "sentence_analysis": {
+    "user_expected": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+    "actual_displayed": "30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months",
+    "key_values_match": true,
+    "note": "The sentence contains the correct key values (30 years imprisonment, 22 years and 6 months non-parole). The displayed text includes additional context ('for murder', 'minimum') which is extracted from the report analysis. The core sentence information is accurate."
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration97_sentence.py",
+    "/app/test_reports/pytest/iteration97_sentence.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Sentence extraction logic in ReportView.jsx and BarristerView.jsx correctly uses extractSentenceFromSourceReports() to derive sentence from completed reports",
+    "Backend _derive_export_sentence() function correctly resolves sentence from report history for PDF/DOCX exports",
+    "All 4 report types consistently show the same sentence value",
+    "Print preview cover page correctly displays the sentence in the SENTENCE card"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration97_sentence.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88",
+    "target_case": "case_76056187ad4f"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 97 verified sentence display across all 4 report types for case_76056187ad4f. The sentence '30 years' imprisonment for murder, with a minimum non-parole period of 22 years and 6 months' is correctly displayed in: (1) Quick Summary rpt_72e6a39f91f6, (2) Full Detailed rpt_f049e0c6b384, (3) Extensive Log rpt_4249ad7d9fee, (4) Barrister View rpt_d7b82aafbdea. Print preview and PDF/DOCX exports all work correctly. The sentence contains the key values (30 years, 22 years 6 months NPP) with additional context from the case analysis."
+}

@@ -50,7 +50,7 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
       .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
       .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
       .trim();
-    if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned)) return cleaned;
+    if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned) && !/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would|adequacy|seek|sought|relief)\b/i.test(cleaned)) return cleaned;
   }
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+([^\n\.]{10,160})/i);
   if (byVerb?.[1]) {
@@ -80,7 +80,7 @@ const extractSentenceFromSourceReports = (reports = [], caseInfo = null, fallbac
         candidate &&
         candidate !== "Not recorded" &&
         candidate.length < 140 &&
-        !/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would)\b/i.test(candidate)
+        !/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would|adequacy|seek|sought|relief)\b/i.test(candidate)
       ) {
         return candidate;
       }

@@ -5970,6 +5970,74 @@ def _truncate_export_footer(text: str, max_chars: int = 118) -> str:
         return value
     return value[: max_chars - 1].rstrip() + "…"
 
+
+def _clean_sentence_candidate(value: str) -> str:
+    cleaned = (value or "")
+    cleaned = re.sub(r"\s*\[.*$", "", cleaned)
+    cleaned = re.sub(r"\s*\(https?:.*$", "", cleaned)
+    cleaned = re.sub(r"\s*[|•].*$", "", cleaned)
+    cleaned = re.sub(r"[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$", "", cleaned, flags=re.I)
+    cleaned = re.sub(r"[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$", "", cleaned, flags=re.I)
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
+def _is_valid_sentence_candidate(value: str) -> bool:
+    if not value:
+        return False
+    if not re.search(r"(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)", value, re.I):
+        return False
+    if re.search(r"\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would|adequacy|seek|sought|relief)\b", value, re.I):
+        return False
+    return len(value) < 140
+
+
+def _extract_sentence_from_text(case: dict, analysis: str) -> str:
+    if case.get('sentence') and str(case.get('sentence')).strip():
+        return str(case.get('sentence')).strip()
+    patterns = [
+        r"(?:sentence\s+imposed\s+was|sentence\s+was|head\s+sentence\s+was|head\s+sentence:|sentenced?\s+to)\s+([^\.\n]{8,160})",
+        r"(\d+\s+years?'?\s+with\s+a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)",
+        r"(\d+\s+years?'?(?:\s+and\s+\d+\s+months?)?\s*(?:imprisonment|gaol|jail|custody)?\s*(?:with\s+(?:a\s+)?non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)?)",
+        r"(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})",
+        r"(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})",
+        r"(?:sentenced?\s+to\s+)?(life\s+imprisonment|imprisonment\s+for\s+life|life\s+sentence)[^\n\.]{0,60}",
+        r"(\d+[\s-]*(?:years?|months?)(?:'s?)?\s*(?:imprisonment|gaol|jail|custody|sentence|non[- ]?parole)[^\n\.]{0,80})",
+        r"sentence\s+of\s+(\d+[^\n\.]{5,80})",
+        r"((?:minimum|non[- ]?parole)\s+(?:period\s+)?of\s+\d+[^\n\.]{3,60})",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, analysis or "", re.I | re.M)
+        if match:
+            candidate = _clean_sentence_candidate(match.group(1))
+            if _is_valid_sentence_candidate(candidate):
+                return candidate
+    return "See report analysis"
+
+
+async def _derive_export_sentence(case: dict, case_id: str, user_id: str, fallback_report: dict | None = None) -> str:
+    standard_reports = await db.reports.find(
+        {
+            "case_id": case_id,
+            "user_id": user_id,
+            "report_type": {"$in": ["quick_summary", "full_detailed", "extensive_log", "barrister_view"]},
+            "status": "completed",
+        },
+        {"_id": 0},
+    ).sort("generated_at", -1).to_list(20)
+
+    for report_type in ["quick_summary", "full_detailed", "extensive_log", "barrister_view"]:
+        for item in [r for r in standard_reports if r.get("report_type") == report_type]:
+            candidate = _extract_sentence_from_text(case, ((item.get("content") or {}).get("analysis") or ""))
+            if candidate != "See report analysis":
+                return candidate
+
+    if fallback_report:
+        candidate = _extract_sentence_from_text(case, ((fallback_report.get("content") or {}).get("analysis") or ""))
+        if candidate != "See report analysis":
+            return candidate
+
+    return _extract_sentence_from_text(case, "")
+
 @api_router.get("/cases/{case_id}/reports/{report_id}/export-pdf")
 async def export_report_pdf(case_id: str, report_id: str, request: Request):
     """Export a report as PDF with Grounds of Merit and Legal References"""
@@ -6243,6 +6311,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         'barrister_view': 'Barrister Brief'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)
     footer_label = _truncate_export_footer(_build_export_footer_label(case, title, report.get('generated_at')))
     footer_message = _build_export_footer_message()
 
@@ -6252,7 +6321,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         ['Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"],
         ['Report', title],
         ['Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()],
-        ['Sentence', case.get('sentence') or 'See report analysis'],
+        ['Sentence', resolved_sentence],
     ]
 
     story.append(Spacer(1, 18*mm))
@@ -6330,8 +6399,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         case_data_rows.append(['Court:', case['court']])
     if case.get('state'):
         case_data_rows.append(['Jurisdiction:', case['state'].upper()])
-    if case.get('sentence') and case.get('sentence') != 'N/A':
-        case_data_rows.append(['Sentence:', case['sentence']])
+    if resolved_sentence and resolved_sentence != 'See report analysis':
+        case_data_rows.append(['Sentence:', resolved_sentence])
     case_data_rows.append(['Grounds:', f"{len(pdf_grounds)} identified"])
     case_data_rows.append(['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'])
     
@@ -6558,6 +6627,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         'barrister_view': 'Barrister Brief'
     }
     report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)
     footer_label = _truncate_export_footer(_build_export_footer_label(case, report_title, report.get('generated_at')))
     footer_message = _build_export_footer_message()
 
@@ -6625,7 +6695,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         ('Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"),
         ('Report', report_title),
         ('Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()),
-        ('Sentence', case.get('sentence') or 'See report analysis'),
+        ('Sentence', resolved_sentence),
     ]
     cover_table = doc.add_table(rows=len(cover_info), cols=2)
     cover_table.style = 'Table Grid'
@@ -6662,8 +6732,8 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         case_info.append(('Court:', case['court']))
     if case.get('state'):
         case_info.append(('Jurisdiction:', case['state'].upper()))
-    if case.get('sentence') and case.get('sentence') != 'N/A':
-        case_info.append(('Sentence:', case['sentence']))
+    if resolved_sentence and resolved_sentence != 'See report analysis':
+        case_info.append(('Sentence:', resolved_sentence))
     case_info.append(('Grounds:', f"{len(grounds)} identified"))
     case_info.append(('Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'))
     

@@ -62,38 +62,66 @@ const cleanSentence = (s) => {
   return c.trim();
 };
 
+const isValidSentenceCandidate = (candidate = "") => {
+  if (!candidate || candidate === "Not recorded") return false;
+  if (!/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(candidate)) return false;
+  if (/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would|adequacy|seek|sought|relief)\b/i.test(candidate)) return false;
+  return candidate.length < 140;
+};
+
 const extractSentenceSummary = (caseInfo, analysis = "") => {
   if (caseInfo?.sentence && caseInfo.sentence.trim().length > 3) return caseInfo.sentence.trim();
   const bySentenceImposed = analysis.match(/(?:sentence\s+imposed\s+was|sentence\s+was|head\s+sentence\s+was|head\s+sentence:|sentenced?\s+to)\s+([^\.\n]{8,160})/i);
   if (bySentenceImposed?.[1]) {
     const cleaned = cleanSentence(bySentenceImposed[1]);
-    if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned)) return cleaned;
+    if (isValidSentenceCandidate(cleaned)) return cleaned;
   }
   const byExactYears = analysis.match(/(\d+\s+years?'?\s+with\s+a\s+non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)/i);
-  if (byExactYears?.[1]) return cleanSentence(byExactYears[1]);
+  if (byExactYears?.[1] && isValidSentenceCandidate(cleanSentence(byExactYears[1]))) return cleanSentence(byExactYears[1]);
   const byThirtyStyle = analysis.match(/(\d+\s+years?'?(?:\s+and\s+\d+\s+months?)?\s*(?:imprisonment|gaol|jail|custody)?\s*(?:with\s+(?:a\s+)?non[- ]?parole\s+period\s+of\s+\d+\s+years?(?:\s+and\s+\d+\s+months?)?)?)/i);
-  if (byThirtyStyle?.[1] && /non[- ]?parole|imprisonment|gaol|custody/i.test(byThirtyStyle[1])) return cleanSentence(byThirtyStyle[1]);
+  if (byThirtyStyle?.[1] && /non[- ]?parole|imprisonment|gaol|custody/i.test(byThirtyStyle[1]) && isValidSentenceCandidate(cleanSentence(byThirtyStyle[1]))) return cleanSentence(byThirtyStyle[1]);
   const combined = analysis.match(/sentenced?\s+to\s+([^\n\.]{10,180}?(?:non[- ]?parole\s+period|NPP)[^\n\.]{0,160})/i);
-  if (combined?.[1]) return cleanSentence(combined[1]);
+  if (combined?.[1] && isValidSentenceCandidate(cleanSentence(combined[1]))) return cleanSentence(combined[1]);
   // Match "sentenced to X years imprisonment" patterns
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+(\d+\s*(?:years?|months?)\s+(?:and\s+\d+\s*(?:years?|months?)\s+)?(?:imprisonment|gaol|jail|custody)[^\n\.]{0,80})/i);
-  if (byVerb?.[1]) return cleanSentence(byVerb[1]);
+  if (byVerb?.[1] && isValidSentenceCandidate(cleanSentence(byVerb[1]))) return cleanSentence(byVerb[1]);
   // Match "Head Sentence: X years"
   const byHead = analysis.match(/(?:^|\n)\s*(?:Head\s+)?Sentence\s*:\s*(\d+[^\n]{5,100})/im);
-  if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1])) return cleanSentence(byHead[1]);
+  if (byHead?.[1] && /\d+\s*(year|month|life)/i.test(byHead[1]) && isValidSentenceCandidate(cleanSentence(byHead[1]))) return cleanSentence(byHead[1]);
   // Match "life imprisonment" / "imprisonment for life"
   const byLife = analysis.match(/(?:sentenced?\s+to\s+)?(life\s+imprisonment|imprisonment\s+for\s+life|life\s+sentence)[^\n\.]{0,60}/i);
-  if (byLife) return cleanSentence(byLife[0].replace(/^sentenced?\s+to\s+/i, ""));
+  if (byLife && isValidSentenceCandidate(cleanSentence(byLife[0].replace(/^sentenced?\s+to\s+/i, "")))) return cleanSentence(byLife[0].replace(/^sentenced?\s+to\s+/i, ""));
   // Match "X years' imprisonment" or "X-year sentence"
   const byYears = analysis.match(/(\d+[\s-]*(?:years?|months?)(?:'s?)?\s*(?:imprisonment|gaol|jail|custody|sentence|non[- ]?parole)[^\n\.]{0,80})/i);
-  if (byYears?.[1]) return cleanSentence(byYears[1]);
+  if (byYears?.[1] && isValidSentenceCandidate(cleanSentence(byYears[1]))) return cleanSentence(byYears[1]);
   // Match "sentence of X years"
   const bySentOf = analysis.match(/sentence\s+of\s+(\d+[^\n\.]{5,80})/i);
-  if (bySentOf?.[1]) return cleanSentence(bySentOf[1]);
+  if (bySentOf?.[1] && isValidSentenceCandidate(cleanSentence(bySentOf[1]))) return cleanSentence(bySentOf[1]);
   // Match "minimum/non-parole period of X years"
   const byNPP = analysis.match(/((?:minimum|non[- ]?parole)\s+(?:period\s+)?of\s+\d+[^\n\.]{3,60})/i);
-  if (byNPP?.[1]) return cleanSentence(byNPP[1]);
+  if (byNPP?.[1] && isValidSentenceCandidate(cleanSentence(byNPP[1]))) return cleanSentence(byNPP[1]);
   return "Not recorded";
+};
+
+const extractSentenceFromSourceReports = (reports = [], caseInfo = null, fallbackAnalysis = "") => {
+  const typeOrder = ["quick_summary", "full_detailed", "extensive_log", "barrister_view"];
+
+  for (const reportType of typeOrder) {
+    const orderedReports = [...reports]
+      .filter((item) => item?.report_type === reportType)
+      .sort((a, b) => new Date(b?.generated_at || 0) - new Date(a?.generated_at || 0));
+
+    for (const item of orderedReports) {
+      const candidate = extractSentenceSummary(caseInfo, item?.content?.analysis || "")
+        .replace(/^sentence\s*[:\-]?\s*/i, "")
+        .trim();
+      if (isValidSentenceCandidate(candidate)) {
+        return candidate;
+      }
+    }
+  }
+
+  return extractSentenceSummary(caseInfo, fallbackAnalysis);
 };
 
 const sanitiseReportOutput = (text = "") => {
@@ -530,6 +558,7 @@ const ReportView = () => {
   const [report, setReport] = useState(null);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
+  const [sourceReports, setSourceReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasAllReports, setHasAllReports] = useState(false);
 
@@ -540,6 +569,7 @@ const ReportView = () => {
     setReport(null);
     setCaseData(null);
     setGrounds([]);
+    setSourceReports([]);
     setHasAllReports(false);
     fetchData(requestId);
   }, [caseId, reportId]);
@@ -556,6 +586,7 @@ const ReportView = () => {
       setReport(reportRes.data);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
+      setSourceReports(reportsRes.data || []);
       const requiredTypes = ["quick_summary", "full_detailed", "extensive_log"];
       const hasAll = requiredTypes.every((type) =>
         (reportsRes.data || []).some((item) =>
@@ -899,7 +930,7 @@ const ReportView = () => {
   const sections = useMemo(() => parseAnalysisSections(analysisText), [analysisText]);
   const documentsCount = report?.content?.document_count || 0;
   const eventsCount = report?.content?.event_count || 0;
-  const sentenceSummary = extractSentenceSummary(caseData, analysisText);
+  const sentenceSummary = extractSentenceFromSourceReports(sourceReports, caseData, analysisText);
   const defendantName = caseData?.defendant_name || report?.content?.defendant || extractDefendantFromAnalysis(analysisText);
   const extractedOffence = extractOffenceFromAnalysis(analysisText);
   const offenceLabel = caseData?.offence_type || extractedOffence || titleFromSnake(caseData?.offence_category);
