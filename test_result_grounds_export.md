@@ -4,7 +4,7 @@
 2026-03-26
 
 ## Test Scope
-Code-level verification of Grounds tab export changes on https://case-synthesis-lab.preview.emergentagent.com:
+Code-level verification of Grounds tab export changes on https://criminal-appeals-au-2.preview.emergentagent.com:
 
 **Requirements:**
 1. All report tables should be tightened so they no longer over-stretch horizontally; the global minimum width was reduced from 720px to 560px and Grounds markdown tables were updated too.

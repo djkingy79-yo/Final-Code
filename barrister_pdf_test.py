@@ -18,7 +18,7 @@ import re
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
+BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 CASE_ID = "case_db8d84fecfc4"
 EXPECTED_REPORT_ID = "rpt_703bad1e2169"
 

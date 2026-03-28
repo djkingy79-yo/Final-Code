@@ -7,7 +7,7 @@ import requests
 import json
 
 # Configuration
-BASE_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
+BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 TEST_EMAIL = "djkingy79@gmail.com"
 TEST_PASSWORD = "Grubbygrub88"
 CASE_ID = "case_76056187ad4f"

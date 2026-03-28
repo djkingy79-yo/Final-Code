@@ -4,7 +4,7 @@
 2026-03-28
 
 ## Test Scope
-Verification of PDF button fix on https://case-synthesis-lab.preview.emergentagent.com:
+Verification of PDF button fix on https://criminal-appeals-au-2.preview.emergentagent.com:
 - Login with credentials: djkingy79@gmail.com / Grubbygrub88
 - Case ID: case_76056187ad4f
 - Test report: rpt_f049e0c6b384 (full detailed)
@@ -101,7 +101,7 @@ OFFENCE: murder and manslaughter
 1. User clicks "Export PDF" button
 2. Frontend fetches PDF blob from backend API
 3. Creates blob URL with `URL.createObjectURL(blob)`
-4. Opens blob URL in new window: `blob:https://case-synthesis-lab.preview.emergentagent.com/[uuid]`
+4. Opens blob URL in new window: `blob:https://criminal-appeals-au-2.preview.emergentagent.com/[uuid]`
 5. Blob URL fails to load properly (popup URL shows as ":")
 6. Toast notification: "PDF opened." (misleading - it didn't actually open)
 
@@ -120,7 +120,7 @@ OFFENCE: murder and manslaughter
 
 **Console Evidence:**
 ```
-REQUEST FAILED: blob:https://case-synthesis-lab.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
+REQUEST FAILED: blob:https://criminal-appeals-au-2.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
 ```
 
 **Screenshot:** report_with_offence.png (shows green toast "PDF opened." but popup failed)
@@ -287,7 +287,7 @@ Since Print button already provides PDF functionality (user can print to PDF), t
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop (1920x1080)
 - **Browser:** Chromium (Playwright)
 - **Authentication:** Working correctly
@@ -343,7 +343,7 @@ Since Print button already provides PDF functionality (user can print to PDF), t
 
 **Key Findings:**
 ```
-REQUEST FAILED: blob:https://case-synthesis-lab.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
+REQUEST FAILED: blob:https://criminal-appeals-au-2.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
 ```
 
 This confirms the Export PDF button is still using blob URLs which fail to load.
@@ -371,7 +371,7 @@ This confirms the Export PDF button is still using blob URLs which fail to load.
 2026-03-28
 
 ## Test Scope
-Verification of latest Barrister/report fixes on https://case-synthesis-lab.preview.emergentagent.com:
+Verification of latest Barrister/report fixes on https://criminal-appeals-au-2.preview.emergentagent.com:
 - Login with credentials: djkingy79@gmail.com / Grubbygrub88
 - Case ID: case_76056187ad4f
 - Specific report: rpt_f049e0c6b384 (full detailed)
@@ -638,7 +638,7 @@ GET /api/cases/case_76056187ad4f/reports/rpt_f049e0c6b384
 2026-03-26
 
 ## Test Scope
-Quick backend/export sanity check after latest report fixes at https://case-synthesis-lab.preview.emergentagent.com/api:
+Quick backend/export sanity check after latest report fixes at https://criminal-appeals-au-2.preview.emergentagent.com/api:
 - Authentication with provided credentials: djkingy79@gmail.com / Grubbygrub88
 - Case ID: case_76056187ad4f
 - Specific report: rpt_0520d60ed7aa
@@ -698,7 +698,7 @@ Quick backend/export sanity check after latest report fixes at https://case-synt
 ## Backend Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Authentication: Session-based with Bearer token
 - **Total Tests: 11/11 PASSED ✅**
@@ -734,7 +734,7 @@ Quick backend/export sanity check after latest report fixes at https://case-synt
 2026-03-26
 
 ## Test Scope
-Live backend verification for Appeal Case Manager at https://case-synthesis-lab.preview.emergentagent.com/api:
+Live backend verification for Appeal Case Manager at https://criminal-appeals-au-2.preview.emergentagent.com/api:
 - Authentication with provided credentials: djkingy79@gmail.com / Grubbygrub88
 - Case ID: case_76056187ad4f
 - Report exports for rpt_1cc1bfeace33 and rpt_dcb21f0efc62
@@ -784,7 +784,7 @@ Live backend verification for Appeal Case Manager at https://case-synthesis-lab.
 ## Backend Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Authentication: Session-based with Bearer token
 - **Total Tests: 9/9 PASSED ✅**
@@ -849,7 +849,7 @@ Retest of Barrister View hero section overlap issue after latest CSS/layout adju
 **Console Errors:**
 ```
 error: Failed to load resource: the server responded with a status of 401 () 
-at https://case-synthesis-lab.preview.emergentagent.com/api/auth/me
+at https://criminal-appeals-au-2.preview.emergentagent.com/api/auth/me
 ```
 
 **Evidence:**
@@ -1012,9 +1012,9 @@ at https://case-synthesis-lab.preview.emergentagent.com/api/auth/me
 
 **Authentication Errors:**
 ```
-REQUEST FAILED: https://case-synthesis-lab.preview.emergentagent.com/cdn-cgi/rum? - net::ERR_ABORTED
+REQUEST FAILED: https://criminal-appeals-au-2.preview.emergentagent.com/cdn-cgi/rum? - net::ERR_ABORTED
 error: Failed to load resource: the server responded with a status of 401 () 
-at https://case-synthesis-lab.preview.emergentagent.com/api/auth/me
+at https://criminal-appeals-au-2.preview.emergentagent.com/api/auth/me
 ```
 
 **Route Errors (when not authenticated):**
@@ -1410,7 +1410,7 @@ Verification of latest frontend updates for public navigation and How It Works p
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewports Tested:** 
   - Desktop: 1920x1080
   - Mobile: 390x844 (iPhone size)
@@ -1689,7 +1689,7 @@ Code-level verification of button styling changes across three key files:
 2026-03-26
 
 ## Test Scope
-Verification of new dedicated in-app preview route fix for mobile blank PDF/print previews on https://case-synthesis-lab.preview.emergentagent.com:
+Verification of new dedicated in-app preview route fix for mobile blank PDF/print previews on https://criminal-appeals-au-2.preview.emergentagent.com:
 
 **What Changed:**
 - BarristerView.jsx and ReportView.jsx now store generated preview HTML in localStorage under `document-preview-payload` and open `/document-preview?mode=print|pdf`
@@ -1977,7 +1977,7 @@ Verification of new dedicated in-app preview route fix for mobile blank PDF/prin
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewports Tested:** 
   - Mobile: 390x844 (iPhone size)
   - Desktop: 1920x1080
@@ -2037,7 +2037,7 @@ Verification of new dedicated in-app preview route fix for mobile blank PDF/prin
 2026-03-26
 
 ## Test Scope
-Mobile viewport testing for Barrister View and Report View print/PDF preview fixes on https://case-synthesis-lab.preview.emergentagent.com:
+Mobile viewport testing for Barrister View and Report View print/PDF preview fixes on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Barrister View top section size (should be compact, not wasting space)
 2. Barrister print preview functionality (should not fail or stay on same screen with only toast)
 3. Barrister PDF/DOCX export on iPhone/Safari (should not open blank page)
@@ -2491,7 +2491,7 @@ const iosShareOrDownload = async (blob, filename, mimeType) => {
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Mobile (390x844 - iPhone size)
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Code-Level Verification + Attempted Live Testing
@@ -2524,7 +2524,7 @@ const iosShareOrDownload = async (blob, filename, mimeType) => {
 2026-03-24
 
 ## Test Scope
-Comprehensive verification of frontend UI content updates on https://case-synthesis-lab.preview.emergentagent.com:
+Comprehensive verification of frontend UI content updates on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Landing page header nav order and labels (How It Works, Appeal Statistics, Resources & Contacts, More dropdown with About second last and Success Stories last)
 2. Footer link order matches dropdown with About second last, Success Stories last
 3. "See It In Action" section Step 2 text states free grounds count only with $99 unlock for titles/details
@@ -2818,7 +2818,7 @@ whatYouSee: [
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Content Verification
@@ -2872,7 +2872,7 @@ whatYouSee: [
 2026-03-06
 
 ## Test Scope
-Final frontend sanity check before handoff on https://case-synthesis-lab.preview.emergentagent.com:
+Final frontend sanity check before handoff on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Landing top nav has no dropdown menus and key links are directly visible
 2. Appeal statistics important content is visible by default (no hidden dropdown section)
 3. How It Works headings are centered
@@ -3027,7 +3027,7 @@ These are **development-only React warnings** caused by React's strict mode addi
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Verification + Runtime Error Check
@@ -3062,7 +3062,7 @@ These are **development-only React warnings** caused by React's strict mode addi
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of merged legal pages behavior on https://case-synthesis-lab.preview.emergentagent.com:
+Comprehensive validation of merged legal pages behavior on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. /legal-contacts redirects to /legal-resources
 2. /contacts redirects to /legal-resources
 3. Legal Resources hero indicates merged directory
@@ -3084,7 +3084,7 @@ Comprehensive validation of merged legal pages behavior on https://case-synthesi
 **Redirect Behavior:**
 - ✅ Successfully redirects from /legal-contacts to /legal-resources
 - ✅ Uses React Router Navigate component with replace prop
-- ✅ Final URL: https://case-synthesis-lab.preview.emergentagent.com/legal-resources
+- ✅ Final URL: https://criminal-appeals-au-2.preview.emergentagent.com/legal-resources
 - ✅ No intermediate pages or errors
 
 **Code Implementation (App.js lines 285-287):**
@@ -3104,7 +3104,7 @@ Comprehensive validation of merged legal pages behavior on https://case-synthesi
 **Redirect Behavior:**
 - ✅ Successfully redirects from /contacts to /legal-resources
 - ✅ Uses React Router Navigate component with replace prop
-- ✅ Final URL: https://case-synthesis-lab.preview.emergentagent.com/legal-resources
+- ✅ Final URL: https://criminal-appeals-au-2.preview.emergentagent.com/legal-resources
 - ✅ No intermediate pages or errors
 
 **Code Implementation (App.js lines 288-291):**
@@ -3214,7 +3214,7 @@ Comprehensive validation of merged legal pages behavior on https://case-synthesi
 2. ✅ Directory link visible below hero description
 3. ✅ Click link
 4. ✅ Successfully navigates to /legal-resources
-5. ✅ Final URL: https://case-synthesis-lab.preview.emergentagent.com/legal-resources
+5. ✅ Final URL: https://criminal-appeals-au-2.preview.emergentagent.com/legal-resources
 
 **Status:** ✅ PASS - Contact page directory link correctly points to merged /legal-resources page
 
@@ -3246,7 +3246,7 @@ Comprehensive validation of merged legal pages behavior on https://case-synthesi
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Navigation + Content Verification
@@ -3366,7 +3366,7 @@ Quick backend verification after performance optimization patch:
 ## Backend Verification Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 4/4 PASSED ✅
 
@@ -3486,7 +3486,7 @@ Quick frontend sanity check after performance hotfix:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Load Testing + Code-Level Verification
@@ -3604,7 +3604,7 @@ analysis_result = await analyze_case_with_ai(case_id, user.user_id, report_type,
 ## Backend Quick Check Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - **Total Tests: 3/3 PASSED ✅**
@@ -3635,7 +3635,7 @@ analysis_result = await analyze_case_with_ai(case_id, user.user_id, report_type,
 2026-03-06
 
 ## Test Scope
-Quick AU-English content sanity pass on https://case-synthesis-lab.preview.emergentagent.com after latest edits:
+Quick AU-English content sanity pass on https://criminal-appeals-au-2.preview.emergentagent.com after latest edits:
 1. Landing: check 'Categorised' spelling and overall rendering
 2. FAQ/Statistics/Compare Cases pages: check 'anonymised' spelling appears and no runtime errors
 3. Case Detail labels should show 'Favours Prosecution' / 'Favours Defence' (code-path verification)
@@ -3773,7 +3773,7 @@ const PERSPECTIVES = [
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Content Verification + Code-Level Analysis
@@ -3877,7 +3877,7 @@ Quick backend check after AU-English wording updates:
 ## Backend Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - Bonus Tests: 2/2 PASSED ✅
@@ -3910,7 +3910,7 @@ Quick backend check after AU-English wording updates:
 2026-03-06
 
 ## Test Scope
-Quick verification after AU-English spelling lock pass on https://case-synthesis-lab.preview.emergentagent.com:
+Quick verification after AU-English spelling lock pass on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Landing page still renders correctly
 2. Hero section uses 'Organise' (AU spelling)
 3. No obvious US spelling regressions in key updated UI messages
@@ -3987,7 +3987,7 @@ Quick verification after AU-English spelling lock pass on https://case-synthesis
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Content Verification + Console Monitoring
@@ -4111,7 +4111,7 @@ MANDATORY GUARDRAILS:
 ## Backend Regression Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Tests: 3/3 PASSED ✅
 - Bonus Tests: 2/2 PASSED ✅
@@ -4144,7 +4144,7 @@ MANDATORY GUARDRAILS:
 2026-03-06
 
 ## Test Scope
-Final frontend verification after latest landing/report wording updates on https://case-synthesis-lab.preview.emergentagent.com:
+Final frontend verification after latest landing/report wording updates on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Resources dropdown includes all footer links
 2. Landing hero and image descriptions render correctly with AU spelling
 3. Barrister showcase section reflects updated conference/hearing messaging and comparative sentencing snapshot
@@ -4287,7 +4287,7 @@ Final frontend verification after latest landing/report wording updates on https
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI/Content Verification
@@ -4323,7 +4323,7 @@ Final frontend verification after latest landing/report wording updates on https
 2026-03-06
 
 ## Test Scope
-Quick post-iteration frontend sanity check on https://case-synthesis-lab.preview.emergentagent.com:
+Quick post-iteration frontend sanity check on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Landing page renders
 2. /contacts redirects to /legal-contacts
 3. /contact has legal directory link
@@ -4358,7 +4358,7 @@ Quick post-iteration frontend sanity check on https://case-synthesis-lab.preview
 
 **Runtime Test:**
 - ✅ Navigation to /contacts successfully redirects to /legal-contacts
-- ✅ Final URL confirmed: https://case-synthesis-lab.preview.emergentagent.com/legal-contacts
+- ✅ Final URL confirmed: https://criminal-appeals-au-2.preview.emergentagent.com/legal-contacts
 - ✅ Legal Contacts Directory page rendered correctly
 - ✅ Legal directory content visible
 
@@ -4501,7 +4501,7 @@ Quick post-iteration frontend sanity check on https://case-synthesis-lab.preview
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Testing (items 1-3) + Code-Level Verification (items 4-6)
@@ -4540,7 +4540,7 @@ Quick post-iteration frontend sanity check on https://case-synthesis-lab.preview
 2026-03-06
 
 ## Test Scope
-Final frontend verification on https://case-synthesis-lab.preview.emergentagent.com after latest fix:
+Final frontend verification on https://criminal-appeals-au-2.preview.emergentagent.com after latest fix:
 1. Confirm app loads and no report-related compile/runtime overlays
 2. Validate ReportsSection collapsible expand/collapse for report cards and verify no uncontrolled/controlled warning behavior after open state fix
 3. Verify ReportView premium page still renders: top summary box, readiness gauge, TOC, markdown section rendering
@@ -4558,7 +4558,7 @@ Final frontend verification on https://case-synthesis-lab.preview.emergentagent.
 ### 1. App Load and Runtime Error Check ✅
 
 **Initial Load Test:**
-- ✅ Page navigation completed successfully to https://case-synthesis-lab.preview.emergentagent.com
+- ✅ Page navigation completed successfully to https://criminal-appeals-au-2.preview.emergentagent.com
 - ✅ No React error overlay detected
 - ✅ No webpack error overlay detected  
 - ✅ No error boundary triggered
@@ -4702,7 +4702,7 @@ All verification checks passed:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Runtime Load Testing + Console Monitoring + Code-Level Verification
@@ -4730,7 +4730,7 @@ The final frontend verification after the open state fix has been successfully c
 2026-03-06
 
 ## Test Scope
-Final frontend sanity pass on https://case-synthesis-lab.preview.emergentagent.com for current iteration:
+Final frontend sanity pass on https://criminal-appeals-au-2.preview.emergentagent.com for current iteration:
 1. Confirm app loads without compile/runtime overlay
 2. Verify landing page renders correctly (header/hero)
 3. Validate report UX expectations via code-path verification:
@@ -4868,7 +4868,7 @@ All requested features verified and working correctly:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** UI Load Testing + Code-Level Verification
@@ -4902,7 +4902,7 @@ The final frontend sanity pass has been successfully completed. The application 
 2026-03-06
 
 ## Test Scope
-Backend regression checks against https://case-synthesis-lab.preview.emergentagent.com/api focused on latest report overhaul:
+Backend regression checks against https://criminal-appeals-au-2.preview.emergentagent.com/api focused on latest report overhaul:
 1. Health endpoint availability validation via /api/health
 2. Auth-protected report endpoint authentication enforcement 
 3. Code-level verification of updated report prompt guardrails excluding costs and witness contradiction sections
@@ -4990,7 +4990,7 @@ MANDATORY GUARDRAILS:
 ## Backend Regression Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Total Tests: 8
 - All Tests Passed: ✅ 8/8
@@ -5171,7 +5171,7 @@ All requested features are working correctly:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Pages Tested:** Landing Page, Legal Resources Page
@@ -5204,7 +5204,7 @@ The latest UI changes have been successfully validated. All requested features a
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of latest UI improvements on https://case-synthesis-lab.preview.emergentagent.com:
+Comprehensive validation of latest UI improvements on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Legal Resources page: state filter, merged heading, and resource cards rendering
 2. State filter behavior: NSW filtering and reset to "all"
 3. Appeal Statistics page: huge heading, 0.012% spotlight box, section labels, and collapsible appeal-access analysis
@@ -5394,7 +5394,7 @@ This logic filters to exact state match only, excluding national cards when a sp
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring
@@ -5440,7 +5440,7 @@ This logic filters to exact state match only, excluding national cards when a sp
 2026-03-06
 
 ## Test Scope
-Re-test of latest legal/statistics tidy updates on https://case-synthesis-lab.preview.emergentagent.com:
+Re-test of latest legal/statistics tidy updates on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Legal resources page: NSW filter should show NSW + National cards
 2. National-only filter should show only national/multi-state cards
 3. Appeal statistics page: verify big heading + 0.012% spotlight + section labels
@@ -5597,7 +5597,7 @@ While this is a MINOR issue, it can be fixed by wrapping with React.Fragment:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring
@@ -5647,7 +5647,7 @@ While this is a MINOR issue, it can be fixed by wrapping with React.Fragment:
 2026-03-06
 
 ## Test Scope
-Final quick check on https://case-synthesis-lab.preview.emergentagent.com/appeal-statistics after Fragment update:
+Final quick check on https://criminal-appeals-au-2.preview.emergentagent.com/appeal-statistics after Fragment update:
 1. Page renders with big heading and 0.012% spotlight
 2. State comparison table renders correctly after Fragment update
 3. Console hydration warning status
@@ -5763,7 +5763,7 @@ The hydration warnings are **NOT caused by the developer's code**, but by the Em
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com/appeal-statistics
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com/appeal-statistics
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Console Monitoring + Code Verification
@@ -5814,7 +5814,7 @@ The hydration warnings are **NOT caused by the developer's code**, but by the Em
 2026-03-06
 
 ## Test Scope
-Validation of latest legal resources organisation update on https://case-synthesis-lab.preview.emergentagent.com/legal-resources:
+Validation of latest legal resources organisation update on https://criminal-appeals-au-2.preview.emergentagent.com/legal-resources:
 1. Confirm merged legal resources/contacts still on one page
 2. Confirm default state filter now loads in state-focused mode (NSW) and cards are easier to scan
 3. Confirm cards are state-ordered and include national support where relevant
@@ -5958,7 +5958,7 @@ Criminal law, family law, civil law services for eligible NSW residents.
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com/legal-resources
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com/legal-resources
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Code-Level Verification
@@ -6008,7 +6008,7 @@ Criminal law, family law, civil law services for eligible NSW residents.
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of new page organisation update on https://case-synthesis-lab.preview.emergentagent.com:
+Comprehensive validation of new page organisation update on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. New standalone page `/how-it-works` exists and loads
 2. Page includes process flow, report pricing section, and 'Start Your Case Now' button
 3. Landing Learn dropdown includes 'How It Works'
@@ -6027,7 +6027,7 @@ Comprehensive validation of new page organisation update on https://case-synthes
 ### 1. New Standalone Page /how-it-works Exists and Loads ✅
 
 **Page Navigation:**
-- ✅ Successfully navigated to https://case-synthesis-lab.preview.emergentagent.com/how-it-works
+- ✅ Successfully navigated to https://criminal-appeals-au-2.preview.emergentagent.com/how-it-works
 - ✅ Page loads without any error overlays or runtime errors
 - ✅ No React error boundaries triggered
 - ✅ Clean page load with proper rendering
@@ -6131,7 +6131,7 @@ Comprehensive validation of new page organisation update on https://case-synthes
 ### 4. Existing /how-to-use Page Still Remains Available ✅
 
 **Page Navigation:**
-- ✅ Successfully navigated to https://case-synthesis-lab.preview.emergentagent.com/how-to-use
+- ✅ Successfully navigated to https://criminal-appeals-au-2.preview.emergentagent.com/how-to-use
 - ✅ Page loads without any error overlays or runtime errors
 - ✅ No breaking changes detected
 
@@ -6194,7 +6194,7 @@ Comprehensive validation of new page organisation update on https://case-synthes
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Navigation + Content Verification
@@ -6252,7 +6252,7 @@ Comprehensive validation of new page organisation update on https://case-synthes
 2026-03-06
 
 ## Test Scope
-Final sanity check after professional redesign pass on https://case-synthesis-lab.preview.emergentagent.com:
+Final sanity check after professional redesign pass on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. New palette (black/gold/white/bright blue) visible on Landing/How It Works/Appeal Statistics
 2. Typography hierarchy feels consistent (headings strong, body readable)
 3. Global FastScrollTop button appears on long scroll and works
@@ -6384,7 +6384,7 @@ Final sanity check after professional redesign pass on https://case-synthesis-la
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive Visual Design + Functionality Validation
@@ -6447,7 +6447,7 @@ Final sanity check after professional redesign pass on https://case-synthesis-la
 2026-03-06
 
 ## Test Scope
-Comprehensive validation of presentation tidy updates on https://case-synthesis-lab.preview.emergentagent.com:
+Comprehensive validation of presentation tidy updates on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Success Stories page: 3-column layout on desktop, heading above comment, body text smaller, details retained
 2. Landing page Resources dropdown: merged updates (Legal Resources & Contacts, no duplicate contacts entry)
 3. Landing page resource section: new messaging and includes How It Works card
@@ -6602,7 +6602,7 @@ Comprehensive validation of presentation tidy updates on https://case-synthesis-
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop 1920x1080
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Comprehensive UI Validation + Code-Level Verification
@@ -6669,7 +6669,7 @@ Comprehensive validation of presentation tidy updates on https://case-synthesis-
 2026-03-06
 
 ## Test Scope
-Report-generation stability verification after latest hotfix on https://case-synthesis-lab.preview.emergentagent.com/api:
+Report-generation stability verification after latest hotfix on https://criminal-appeals-au-2.preview.emergentagent.com/api:
 1. /api/health is healthy
 2. quick_summary report generation with aggressive_mode=true succeeds
 3. response analysis includes 'AGGRESSIVE RELIEF OPTIONS — QUICK REFERENCE' section at the end
@@ -6760,7 +6760,7 @@ def is_admin_user(email: str) -> bool:
 ## Backend Stability Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: backend_test.py
 - Core Stability Tests: 4/4 PASSED ✅
 
@@ -6895,7 +6895,7 @@ if current_status == "generating":
 
 **Test Results:**
 ```bash
-curl -X GET "https://case-synthesis-lab.preview.emergentagent.com/api/cases/case_db8d84fecfc4/reports/barrister-view"
+curl -X GET "https://criminal-appeals-au-2.preview.emergentagent.com/api/cases/case_db8d84fecfc4/reports/barrister-view"
 Response: {"detail":"Not authenticated"}
 HTTP Status: 401 (Expected - proper authentication protection)
 ```
@@ -6969,7 +6969,7 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
 
 ## Test Environment
 
-- **Target:** https://case-synthesis-lab.preview.emergentagent.com/api
+- **Target:** https://criminal-appeals-au-2.preview.emergentagent.com/api
 - **Test Case:** case_db8d84fecfc4
 - **Expected Report:** rpt_3b5271d6f2ab
 - **Test Suite:** barrister_view_regression_test.py
@@ -7144,7 +7144,7 @@ Backend-only verification for Appeal Case Manager Barrister depth fix:
 
 ## Test Environment
 
-- **Target:** https://case-synthesis-lab.preview.emergentagent.com/api
+- **Target:** https://criminal-appeals-au-2.preview.emergentagent.com/api
 - **Test Case:** case_db8d84fecfc4
 - **Expected Report:** rpt_d707334d7843 or newer
 - **Test Suite:** backend_test.py (comprehensive Barrister depth fix verification)
@@ -7336,7 +7336,7 @@ INFO: "GET /api/cases/case_db8d84fecfc4/reports/rpt_d707334d7843/export-docx HTT
 
 ## Test Environment
 
-- **Target:** https://case-synthesis-lab.preview.emergentagent.com/api
+- **Target:** https://criminal-appeals-au-2.preview.emergentagent.com/api
 - **Test Case:** case_db8d84fecfc4
 - **Expected Report:** rpt_703bad1e2169 or newer
 - **Test Suite:** barrister_pdf_test.py
@@ -7557,7 +7557,7 @@ section_groups = [
 
 ## Test Environment
 
-- **Target:** https://case-synthesis-lab.preview.emergentagent.com/api
+- **Target:** https://criminal-appeals-au-2.preview.emergentagent.com/api
 - **Test Case:** case_db8d84fecfc4
 - **Target Report:** rpt_d287912f2a53 or newer
 - **Test Suite:** backend_test.py
@@ -7753,7 +7753,7 @@ Backend-only verification for case `case_76056187ad4f` progress/report fixes:
 
 ## Test Environment
 
-- **Target:** https://case-synthesis-lab.preview.emergentagent.com/api
+- **Target:** https://criminal-appeals-au-2.preview.emergentagent.com/api
 - **Test Case:** case_76056187ad4f
 - **Test Suite:** backend_test_case_76056187ad4f.py
 - **Backend Service:** Healthy and operational
@@ -8060,7 +8060,7 @@ All buttons should use `bg-blue-700 text-white hover:bg-blue-600` for bright blu
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop (1920x1080)
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Code-Level Verification
@@ -8158,7 +8158,7 @@ Quick backend sanity check after latest frontend-only changes for Appeal Case Ma
 ## Backend Test Summary
 
 **Test Configuration:**
-- Target: https://case-synthesis-lab.preview.emergentagent.com/api
+- Target: https://criminal-appeals-au-2.preview.emergentagent.com/api
 - Test Suite: quick_backend_test.py
 - Authentication: Session-based with Bearer token
 - **Total Tests: 4/4 PASSED ✅**
@@ -8190,7 +8190,7 @@ Quick backend sanity check after latest frontend-only changes for Appeal Case Ma
 2026-03-28
 
 ## Test Scope
-Re-verification of Barrister/report fixes on correct live routes at https://case-synthesis-lab.preview.emergentagent.com:
+Re-verification of Barrister/report fixes on correct live routes at https://criminal-appeals-au-2.preview.emergentagent.com:
 - Login credentials: djkingy79@gmail.com / Grubbygrub88
 - Case ID: case_76056187ad4f
 - Barrister route: `/cases/case_76056187ad4f/reports/rpt_f0429e43223a/barrister`
@@ -8525,7 +8525,7 @@ Re-verification of Barrister/report fixes on correct live routes at https://case
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop (1920x1080)
 - **Browser:** Chromium (Playwright)
 - **Authentication:** Manual session token injection (due to login flow issue)
@@ -8585,7 +8585,7 @@ Re-verification of Barrister/report fixes on correct live routes at https://case
 2026-03-28
 
 ## Test Scope
-Final verification of 5 specific fixes for case case_76056187ad4f on https://case-synthesis-lab.preview.emergentagent.com:
+Final verification of 5 specific fixes for case case_76056187ad4f on https://criminal-appeals-au-2.preview.emergentagent.com:
 - Login: djkingy79@gmail.com / Grubbygrub88
 - Test one standard report (rpt_f049e0c6b384) and the Barrister report
 - Focus on report flows only (ignore email templates/marketing pages)
@@ -8677,7 +8677,7 @@ INFO: ... "GET /api/cases/case_76056187ad4f/reports/barrister-view/export-pdf?se
 **Backend Verification:**
 - Manual test of correct endpoint succeeds:
   ```bash
-  curl "https://case-synthesis-lab.preview.emergentagent.com/api/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/export-pdf?session_token=sess_8c19381d95b84e71a32b0e48c570df5e"
+  curl "https://criminal-appeals-au-2.preview.emergentagent.com/api/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/export-pdf?session_token=sess_8c19381d95b84e71a32b0e48c570df5e"
   ```
 - Returns: 49KB PDF file (valid)
 - Backend endpoint works correctly when given the right report_id
@@ -8819,7 +8819,7 @@ relationship is formed through the provision of this report.
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com
 - **Viewport:** Desktop (1920x1080)
 - **Browser:** Chromium (Playwright)
 - **Authentication:** djkingy79@gmail.com / Grubbygrub88
@@ -8871,7 +8871,7 @@ relationship is formed through the provision of this report.
 2026-03-28
 
 ## Test Scope
-Verification of updated /how-it-works page on https://case-synthesis-lab.preview.emergentagent.com:
+Verification of updated /how-it-works page on https://criminal-appeals-au-2.preview.emergentagent.com:
 1. Step images should no longer be generic dummy-case screenshots
 2. Page should show updated mix of real-case screenshots and live app screens (Documents, Timeline, Grounds, Notes, Reports, Legal, Progress)
 3. Reports screenshot should show real colour-headed reports screen
@@ -9013,7 +9013,7 @@ Screenshot shows the actual Reports screen with:
 
 ## Test Environment
 
-- **URL:** https://case-synthesis-lab.preview.emergentagent.com/how-it-works
+- **URL:** https://criminal-appeals-au-2.preview.emergentagent.com/how-it-works
 - **Viewport:** Desktop (1920x1080)
 - **Browser:** Chromium (Playwright)
 - **Test Type:** Public Route Verification (No Authentication Required)

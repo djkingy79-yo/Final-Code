@@ -18,7 +18,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-API_BASE = "https://case-synthesis-lab.preview.emergentagent.com/api"
+API_BASE = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 CASE_ID = "case_76056187ad4f"
 
 def test_health_endpoint():

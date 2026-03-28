@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Backend Testing for Appeal Case Manager
-Testing live backend at https://case-synthesis-lab.preview.emergentagent.com/api
+Testing live backend at https://criminal-appeals-au-2.preview.emergentagent.com/api
 """
 
 import requests
@@ -10,7 +10,7 @@ import sys
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
+BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 TEST_EMAIL = "djkingy79@gmail.com"
 TEST_PASSWORD = "Grubbygrub88"
 CASE_ID = "case_76056187ad4f"

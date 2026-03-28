@@ -21,7 +21,7 @@ import sys
 from datetime import datetime
 
 # Backend URL for testing
-BACKEND_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
+BACKEND_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 
 # Known test data from review request
 TEST_CASE_ID = "case_db8d84fecfc4"
