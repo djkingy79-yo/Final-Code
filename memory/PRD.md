@@ -44,6 +44,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Added "Unlock Requirement" notice to Step 9 (Barrister View) — all 3 reports must be generated first
 - Populated demo case with 8 documents, 8 timeline events, 4 grounds, 3 notes, and 3 completed reports
 - Testing agent confirmed 100% pass rate (iteration_101.json)
+- **Landing Page Pricing & Comparison Table:** Fixed report title mismatches ("Quick Summary Report" → "Quick Summary", "Full Detailed" → "Full Detailed Report", "Extensive Log" → "Extensive Log Report"). Applied tier-specific colours to pricing cards (Green, Blue, Purple, Teal) and comparison table headers (emerald-600, blue-600, purple-600). Added teal Barrister View note below comparison table. Testing agent confirmed 100% pass (iteration_102.json).
 
 ## Backlog
 ### P1
