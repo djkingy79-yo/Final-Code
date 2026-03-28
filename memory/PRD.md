@@ -77,15 +77,26 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-26:** Added Grounds tab export actions for unlocked users: Print View, PDF View, and Word View, including full deep investigation analysis in the generated grounds export document
 - **2026-03-26:** Added the requested acknowledgement quote above the About page footer for Renee Yates and Nigel Willett
 - **2026-03-26:** Restyled the About page acknowledgement card to the bright blue background with white text treatment
+- **2026-03-28:** Fixed stale case/report state bleed in `CaseDetail.jsx`, `ReportView.jsx`, and `BarristerView.jsx` by resetting view state on route changes and ignoring late async responses from older case/report requests
+- **2026-03-28:** Corrected offence display fallback so report and barrister headers prefer case-specific extracted offence text before generic offence-category labels
+- **2026-03-28:** Reworked report, barrister, and grounds preview navigation to use same-tab `/document-preview` routing with stored `returnTo` paths; preview back buttons now return to the originating report/case screen instead of the landing page
+- **2026-03-28:** Updated preview and print surfaces with dynamic footer text (document name + appellant + date), Deb King branding, thank-you sign-off, and visible preview page numbering; tightened print-table wrapping to prevent stretched or overlapping columns
+- **2026-03-28:** Added PDF footer/page numbering in `server.py` and DOCX footer/page field output with the requested dynamic footer label and Deb King closing message
+- **2026-03-28:** Increased long-report tolerance by extending report polling/generation timeouts for Extensive Log and Barrister generation so large runs are less likely to fail prematurely
+- **2026-03-28:** Restyled PayID purchase buttons to the bright-blue/white treatment with clearer vertical spacing
+- **2026-03-28:** Verified the full fix set with smoke testing plus rigorous automated coverage in `/app/test_reports/iteration_96.json` (backend and frontend both passed)
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
 - P0 Print/PDF presentation fixes: implemented and verified
-- Latest rigorous verification: `/app/test_reports/iteration_91.json` — backend 100%, frontend 100%
+- P0 stale case/report data bleed guards: implemented and verified
+- P1 preview/export back-button routing: implemented and verified
+- Latest rigorous verification: `/app/test_reports/iteration_96.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
 ### P1
 - Run user review on live Barrister brief quality with real completed cases and refine prompt depth if needed
+- Monitor large Extensive Log/Barrister runs on fresh non-homicide matters to confirm the timeout changes hold under real long-form generation
 - Continue export polish if any jurisdiction-specific formatting preferences emerge from review
 - Resume deferred backend refactor to decompose `server.py`
 - Progress Capacitor/native mobile wrapper once the web report presentation is signed off
