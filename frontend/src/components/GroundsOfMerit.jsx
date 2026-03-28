@@ -264,15 +264,13 @@ const GroundsOfMerit = ({
         mode,
         title: "Grounds of Merit Export",
         source: "grounds",
+        returnTo: `/cases/${caseId}`,
         createdAt: Date.now(),
       })
     );
 
     const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
-    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
-    if (!previewWindow) {
-      window.location.assign(previewUrl);
-    }
+    window.location.assign(previewUrl);
   };
 
   const exportGroundsWord = () => {

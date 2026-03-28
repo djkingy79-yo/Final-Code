@@ -4419,7 +4419,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
             ("openai", "gpt-4o-mini"),
             ("openai", "gpt-4o-mini"),
         ]
-        call_timeout = 300 if report_type == "extensive_log" else 420
+        call_timeout = 420 if report_type in ("full_detailed", "extensive_log") else 300
         
         last_err = None
         for idx, (provider, model_name) in enumerate(models):
@@ -4935,7 +4935,7 @@ REPORT TO EXPAND:
 
 
 BARRISTER_SOURCE_TYPES = ["quick_summary", "full_detailed", "extensive_log"]
-BARRISTER_GENERATION_TIMEOUT_MINUTES = 15
+BARRISTER_GENERATION_TIMEOUT_MINUTES = 40
 
 
 def _coerce_utc_datetime(value):
@@ -5657,8 +5657,8 @@ async def get_reports(case_id: str, request: Request):
     """Get all reports for a case"""
     user = await get_current_user(request)
     
-    # Auto-fail any report stuck in "generating" for more than 30 minutes
-    thirty_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat()
+    # Auto-fail any report stuck in "generating" for more than 60 minutes
+    thirty_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
     await db.reports.update_many(
         {"case_id": case_id, "user_id": user.user_id, "status": "generating", "generated_at": {"$lt": thirty_min_ago}},
         {"$set": {"status": "failed", "error": "Generation timed out"}}
@@ -5859,6 +5859,29 @@ async def delete_report(case_id: str, report_id: str, request: Request):
 
 # ============ PDF EXPORT ============
 
+def _format_export_display_date(value=None) -> str:
+    parsed = _coerce_utc_datetime(value)
+    if not parsed:
+        parsed = datetime.now(timezone.utc)
+    return parsed.astimezone(timezone.utc).strftime("%d/%m/%Y")
+
+
+def _build_export_footer_label(case: dict, report_label: str, generated_at=None) -> str:
+    appellant_name = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
+    report_name = (report_label or "Legal Report").strip()
+    return f"Criminal Appeal Case Management - {report_name} on {appellant_name} - {_format_export_display_date(generated_at)}"
+
+
+def _build_export_footer_message() -> str:
+    return "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process."
+
+
+def _truncate_export_footer(text: str, max_chars: int = 118) -> str:
+    value = (text or "").strip()
+    if len(value) <= max_chars:
+        return value
+    return value[: max_chars - 1].rstrip() + "…"
+
 @api_router.get("/cases/{case_id}/reports/{report_id}/export-pdf")
 async def export_report_pdf(case_id: str, report_id: str, request: Request):
     """Export a report as PDF with Grounds of Merit and Legal References"""
@@ -5899,7 +5922,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         rightMargin=20*mm,
         leftMargin=20*mm,
         topMargin=20*mm,
-        bottomMargin=20*mm
+        bottomMargin=28*mm
     )
     
     # Styles
@@ -6001,11 +6024,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         try:
             col_width = doc.width / col_count
             para_rows = []
-            cell_style = ParagraphStyle(name='CellText', fontSize=8, leading=10, wordWrap='CJK')
-            header_style = ParagraphStyle(name='HeaderCellText', fontSize=8, leading=10, fontName='Helvetica-Bold', textColor=colors.white)
+            cell_style = ParagraphStyle(name='CellText', fontSize=7.5, leading=9, wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=7.5, leading=9, fontName='Helvetica-Bold', textColor=colors.white)
             for ri, row in enumerate(rows):
                 style = header_style if ri == 0 else cell_style
-                para_rows.append([Paragraph(c[:200], style) for c in row])
+                para_rows.append([Paragraph(c[:260], style) for c in row])
             table = Table(para_rows, colWidths=[col_width] * col_count, repeatRows=1)
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
@@ -6118,6 +6141,26 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         'barrister_view': 'Barrister Brief'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    footer_label = _truncate_export_footer(_build_export_footer_label(case, title, report.get('generated_at')))
+    footer_message = _build_export_footer_message()
+
+    def draw_page_footer(canvas_obj, pdf_doc):
+        canvas_obj.saveState()
+        footer_top = 14 * mm
+        footer_mid = 10 * mm
+        footer_bottom = 6 * mm
+        canvas_obj.setStrokeColor(colors.HexColor('#cbd5e1'))
+        canvas_obj.setLineWidth(0.6)
+        canvas_obj.line(pdf_doc.leftMargin, footer_top, A4[0] - pdf_doc.rightMargin, footer_top)
+        canvas_obj.setFillColor(colors.HexColor('#475569'))
+        canvas_obj.setFont('Helvetica', 8)
+        canvas_obj.drawString(pdf_doc.leftMargin, footer_mid, footer_label)
+        canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, footer_mid, f"Page {canvas_obj.getPageNumber()}")
+        canvas_obj.setFillColor(colors.HexColor('#1e3a5f'))
+        canvas_obj.setFont('Helvetica-Bold', 8)
+        canvas_obj.drawCentredString(A4[0] / 2, footer_bottom, footer_message)
+        canvas_obj.restoreState()
+
     story.append(Paragraph(title, styles['ReportTitle']))
     story.append(Spacer(1, 5*mm))
     
@@ -6251,7 +6294,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     
     # Build PDF
     try:
-        doc.build(story)
+        doc.build(story, onFirstPage=draw_page_footer, onLaterPages=draw_page_footer)
     except Exception as e:
         logger.error(f"PDF build failed: {e}")
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
@@ -6276,6 +6319,8 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     from docx.shared import Inches, Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.enum.style import WD_STYLE_TYPE
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
     from io import BytesIO
     
     user = await get_current_user(request)
@@ -6360,6 +6405,39 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         'barrister_view': 'Barrister Brief'
     }
     report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    footer_label = _truncate_export_footer(_build_export_footer_label(case, report_title, report.get('generated_at')))
+    footer_message = _build_export_footer_message()
+
+    def add_page_number_field(paragraph):
+        run = paragraph.add_run()
+        fld_char_begin = OxmlElement('w:fldChar')
+        fld_char_begin.set(qn('w:fldCharType'), 'begin')
+        instr_text = OxmlElement('w:instrText')
+        instr_text.set(qn('xml:space'), 'preserve')
+        instr_text.text = ' PAGE '
+        fld_char_end = OxmlElement('w:fldChar')
+        fld_char_end.set(qn('w:fldCharType'), 'end')
+        run._r.append(fld_char_begin)
+        run._r.append(instr_text)
+        run._r.append(fld_char_end)
+
+    for section in doc.sections:
+        section.footer_distance = Inches(0.35)
+        footer = section.footer
+        footer_line = footer.paragraphs[0]
+        footer_line.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        footer_line_run = footer_line.add_run(f"{footer_label} — Page ")
+        footer_line_run.font.size = Pt(8)
+        footer_line_run.font.color.rgb = RGBColor(71, 85, 105)
+        add_page_number_field(footer_line)
+
+        footer_msg_para = footer.add_paragraph()
+        footer_msg_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        footer_msg_run = footer_msg_para.add_run(footer_message)
+        footer_msg_run.font.size = Pt(8)
+        footer_msg_run.font.bold = True
+        footer_msg_run.font.color.rgb = RGBColor(30, 58, 95)
+
     title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     
@@ -6491,13 +6569,21 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
             return
         table = doc.add_table(rows=len(rows), cols=len(rows[0]))
         table.style = 'Table Grid'
+        table.autofit = False
+        available_width = doc.sections[0].page_width - doc.sections[0].left_margin - doc.sections[0].right_margin
+        col_width = int(available_width / max(1, len(rows[0])))
         for r_idx, row in enumerate(rows):
             for c_idx, value in enumerate(row):
                 cell = table.cell(r_idx, c_idx)
+                cell.width = col_width
                 cell.text = value.replace('**', '')
                 if r_idx == 0:
                     for run in cell.paragraphs[0].runs:
                         run.bold = True
+                        run.font.size = Pt(8.5)
+                else:
+                    for run in cell.paragraphs[0].runs:
+                        run.font.size = Pt(8.5)
         doc.add_paragraph()
 
     def render_markdown_docx(text):

@@ -215,7 +215,7 @@ export default function PaymentModal({
               <Button
                 onClick={handlePayIDStart}
                 disabled={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 text-base rounded-xl min-h-[56px]"
+                className="w-full bg-blue-700 hover:bg-blue-600 text-white py-6 text-base rounded-xl min-h-[56px]"
                 data-testid="payid-start-btn"
               >
                 {loading ? (
@@ -293,26 +293,28 @@ export default function PaymentModal({
                 </div>
               </div>
 
-              <Button
-                onClick={handlePayIDVerify}
-                disabled={verifying}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-6 rounded-xl min-h-[56px] text-base"
-                data-testid="payid-verify-btn"
-              >
-                {verifying ? (
-                  <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
-                ) : (
-                  <><CheckCircle className="w-5 h-5 mr-2" />Payment Received Refresh</>
-                )}
-              </Button>
+              <div className="space-y-3 pt-1">
+                <Button
+                  onClick={handlePayIDVerify}
+                  disabled={verifying}
+                  className="w-full bg-blue-700 hover:bg-blue-600 text-white py-6 rounded-xl min-h-[56px] text-base"
+                  data-testid="payid-verify-btn"
+                >
+                  {verifying ? (
+                    <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
+                  ) : (
+                    <><CheckCircle className="w-5 h-5 mr-2" />Payment Received Refresh</>
+                  )}
+                </Button>
 
-              <Button
-                variant="ghost"
-                onClick={() => { setPayidDetails(null); setPayidReference(null); }}
-                className="w-full text-sm h-10"
-              >
-                <X className="w-4 h-4 mr-1" /> Start Over
-              </Button>
+                <Button
+                  onClick={() => { setPayidDetails(null); setPayidReference(null); }}
+                  className="w-full bg-blue-700 hover:bg-blue-600 text-white text-sm min-h-[48px]"
+                  data-testid="payid-start-over-btn"
+                >
+                  <X className="w-4 h-4 mr-1" /> Start Over
+                </Button>
+              </div>
             </div>
           )}
 

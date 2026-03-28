@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -133,6 +133,7 @@ const GROUND_TYPES = [
 const CaseDetail = ({ user }) => {
   const { caseId } = useParams();
   const navigate = useNavigate();
+  const caseRequestRef = useRef(0);
   const [caseData, setCaseData] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [timeline, setTimeline] = useState([]);
@@ -191,7 +192,17 @@ const CaseDetail = ({ user }) => {
   });
 
   useEffect(() => {
-    fetchCaseData();
+    const requestId = caseRequestRef.current + 1;
+    caseRequestRef.current = requestId;
+    setCaseData(null);
+    setDocuments([]);
+    setTimeline([]);
+    setReports([]);
+    setNotes([]);
+    setGrounds([]);
+    setGroundsCount(0);
+    setLoading(true);
+    fetchCaseData(requestId);
     
     // Handle payment return
     const params = new URLSearchParams(window.location.search);
@@ -206,12 +217,13 @@ const CaseDetail = ({ user }) => {
     }
   }, [caseId]);
 
-  const fetchCaseData = async () => {
+  const fetchCaseData = async (requestId = caseRequestRef.current) => {
     setLoadError(null);
     setLoading(true);
     try {
       // Fetch case data first to verify access
       const caseRes = await axios.get(`${API}/cases/${caseId}`);
+      if (requestId !== caseRequestRef.current) return;
       setCaseData(caseRes.data);
       
       // Then fetch related data - use Promise.allSettled for resilience
@@ -223,6 +235,7 @@ const CaseDetail = ({ user }) => {
         axios.get(`${API}/cases/${caseId}/grounds`),
         axios.get(`${API}/cases/${caseId}/payments`)
       ]);
+      if (requestId !== caseRequestRef.current) return;
       
       // Set data from successful responses, empty arrays for failed ones
       setDocuments(docsRes.status === 'fulfilled' ? docsRes.value.data : []);
@@ -244,6 +257,7 @@ const CaseDetail = ({ user }) => {
       }
       
     } catch (error) {
+      if (requestId !== caseRequestRef.current) return;
       console.error("Failed to load case:", error);
       if (error.response?.status === 401) {
         setLoadError("Session expired. Please log in again.");
@@ -256,6 +270,7 @@ const CaseDetail = ({ user }) => {
         setLoadError("Failed to load case data. Please try again.");
       }
     } finally {
+      if (requestId !== caseRequestRef.current) return;
       setLoading(false);
     }
   };

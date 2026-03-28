@@ -238,18 +238,26 @@ code, .mono {
   table {
     border-collapse: collapse !important;
     width: 100% !important;
-    font-size: 9pt !important;
+    font-size: 8.5pt !important;
+    table-layout: fixed !important;
   }
 
   th, td {
     border: 1px solid #333 !important;
     padding: 4px 8px !important;
     color: black !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
   }
 
   th {
     background: #e5e7eb !important;
     font-weight: bold !important;
+  }
+
+  .legal-report-table-wrap {
+    overflow: visible !important;
   }
 
   a {

@@ -21,6 +21,15 @@ export default function DocumentPreviewPage() {
   }, []);
 
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const returnTo = payload?.returnTo || -1;
+
+  const handleBack = () => {
+    if (typeof returnTo === "string" && returnTo.trim()) {
+      navigate(returnTo);
+      return;
+    }
+    navigate(-1);
+  };
 
   useEffect(() => {
     if (!loaded || mode !== "print" || isIOS || !iframeRef.current?.contentWindow) return;
@@ -36,7 +45,7 @@ export default function DocumentPreviewPage() {
           <p className="mt-3 text-slate-700">
             The preview payload was not found. Return to the report page and open Print or PDF preview again.
           </p>
-          <Button className="mt-5 bg-blue-700 text-white hover:bg-blue-600" onClick={() => navigate(-1)} data-testid="document-preview-back-button">
+          <Button className="mt-5 bg-blue-700 text-white hover:bg-blue-600" onClick={handleBack} data-testid="document-preview-back-button">
             <ArrowLeft className="w-4 h-4 mr-2" /> Go back
           </Button>
         </div>
@@ -61,7 +70,7 @@ export default function DocumentPreviewPage() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <Button variant="outline" onClick={() => navigate(-1)} data-testid="document-preview-close-button">
+            <Button className="bg-blue-700 text-white hover:bg-blue-600" onClick={handleBack} data-testid="document-preview-close-button">
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
             <Button

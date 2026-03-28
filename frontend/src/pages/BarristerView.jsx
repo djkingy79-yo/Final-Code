@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -46,6 +46,25 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
   const byVerb = analysis.match(/(?:was\s+)?sentenced?\s+to\s+([^\n\.]{10,160})/i);
   if (byVerb?.[1]) return byVerb[1].trim();
   return "Not recorded";
+};
+
+const extractOffenceFromAnalysis = (analysis = "") => {
+  const patterns = [
+    /(?:offence(?:s)?\s+of|for\s+the\s+offence\s+of|convicted\s+of|charged\s+with)\s+([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
+    /(?:primary|principal)\s+offence(?:\s+was|:)?\s+([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
+    /(?:count\s+\d+\s*[:\-])\s*([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = analysis.match(pattern);
+    if (match?.[1]) {
+      return match[1]
+        .replace(/under\s+s\.[^\n\.]+/i, "")
+        .replace(/,?\s*(?:under|pursuant\s+to).*/i, "")
+        .trim();
+    }
+  }
+  return "";
 };
 
 const parseBarristerSections = (analysis = "") => {
@@ -112,6 +131,7 @@ const MarkdownBlock = ({ text, testId }) => (
 export default function BarristerView() {
   const { caseId } = useParams();
   const navigate = useNavigate();
+  const requestRef = useRef(0);
   const [report, setReport] = useState(null);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
@@ -122,6 +142,8 @@ export default function BarristerView() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const loadBarristerView = useCallback(async (regenerate = false) => {
+    const requestId = requestRef.current + 1;
+    requestRef.current = requestId;
     setLoading(true);
     try {
       const [caseRes, groundsRes, timelineRes, documentsRes, barristerRes] = await Promise.allSettled([
@@ -133,6 +155,8 @@ export default function BarristerView() {
           params: regenerate ? { regenerate: true } : {},
         }),
       ]);
+
+      if (requestId !== requestRef.current) return;
 
       if (caseRes.status === "fulfilled") setCaseData(caseRes.value.data);
       if (groundsRes.status === "fulfilled") setGrounds(groundsRes.value.data?.grounds || []);
@@ -152,12 +176,25 @@ export default function BarristerView() {
       setStatus(barristerReport?.status || "completed");
       setErrorMessage(barristerReport?.error || "");
     } catch (error) {
+      if (requestId !== requestRef.current) return;
       setReport(null);
       setStatus("error");
       setErrorMessage("Failed to load the barrister brief.");
     } finally {
+      if (requestId !== requestRef.current) return;
       setLoading(false);
     }
+  }, [caseId]);
+
+  useEffect(() => {
+    setReport(null);
+    setCaseData(null);
+    setGrounds([]);
+    setTimeline([]);
+    setDocuments([]);
+    setStatus("loading");
+    setErrorMessage("");
+    setLoading(true);
   }, [caseId]);
 
   useEffect(() => {
@@ -173,6 +210,10 @@ export default function BarristerView() {
   const sections = useMemo(() => parseBarristerSections(report?.content?.analysis || ""), [report]);
   const sentenceSummary = useMemo(
     () => extractSentenceSummary(caseData, report?.content?.analysis || ""),
+    [caseData, report]
+  );
+  const offenceLabel = useMemo(
+    () => caseData?.offence_type || extractOffenceFromAnalysis(report?.content?.analysis || "") || formatTitle(caseData?.offence_category),
     [caseData, report]
   );
 
@@ -219,6 +260,9 @@ export default function BarristerView() {
     const notice = mode === "pdf"
       ? '<div class="preview-notice">PDF preview — use Print / Save as PDF to download.</div>'
       : "";
+    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
+    const previewFooterLabel = `Criminal Appeal Case Management - Barrister Brief on ${caseData?.defendant_name || "Appellant"} - ${previewDate}`;
+    const previewFooterMessage = "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process.";
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -230,7 +274,7 @@ export default function BarristerView() {
   <style>
     @page { size: A4; margin: 16mm; }
     * { box-sizing: border-box; }
-    body { margin: 0; background: #eef2f7; color: #0f172a; font-family: 'Manrope', Arial, sans-serif; }
+    body { margin: 0; padding-bottom: 88px; background: #eef2f7; color: #0f172a; font-family: 'Manrope', Arial, sans-serif; }
     .preview-shell { max-width: 920px; margin: 24px auto; padding: 0 18px; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
     .preview-paper { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); }
@@ -241,16 +285,26 @@ export default function BarristerView() {
     .preview-paper ul, .preview-paper ol { margin: 0 0 14px; padding-left: 22px; }
     .preview-paper li { margin-bottom: 6px; }
     .preview-paper .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .preview-paper table { width: 100%; min-width: 640px; border-collapse: collapse; table-layout: fixed; margin: 16px 0; font-size: 12px; }
-    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; vertical-align: top; }
+    .preview-paper table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; margin: 16px 0; font-size: 12px; }
+    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
     .preview-paper td { padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; }
     .preview-paper blockquote { margin: 16px 0; padding: 12px 16px; border-left: 4px solid #1d4ed8; background: #eff6ff; }
     .preview-paper a { color: #1d4ed8; text-decoration: underline; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .print-footer-page-print::after { content: ''; }
+    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
     @media print {
       body { background: #ffffff; }
       .preview-shell { max-width: none; margin: 0; padding: 0; }
       .preview-notice { display: none; }
       .preview-paper { border: none; box-shadow: none; }
+      .preview-paper .legal-report-table-wrap { overflow: visible; }
+      .preview-paper table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
+      .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .print-footer-page-static { display: none; }
+      .print-footer-page-print::after { content: "Page " counter(page); }
     }
   </style>
 </head>
@@ -258,6 +312,13 @@ export default function BarristerView() {
   <div class="preview-shell">
     ${notice}
     <div class="preview-paper">${contentEl.innerHTML}</div>
+  </div>
+  <div class="print-footer">
+    <div class="print-footer-row">
+      <span class="print-footer-label">${previewFooterLabel}</span>
+      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+    </div>
+    <div class="print-footer-message">${previewFooterMessage}</div>
   </div>
 </body>
 </html>`;
@@ -269,15 +330,13 @@ export default function BarristerView() {
         mode,
         title,
         source: "barrister",
+        returnTo: `/cases/${caseId}/reports/${report?.report_id}/barrister`,
         createdAt: Date.now(),
       })
     );
 
     const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
-    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
-    if (!previewWindow) {
-      window.location.assign(previewUrl);
-    }
+    window.location.assign(previewUrl);
 
     toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
   };
@@ -361,19 +420,19 @@ export default function BarristerView() {
 
           <div className="flex items-center gap-2 flex-wrap">
             <Button
-              variant="outline"
               size="sm"
               onClick={() => openBarristerPreview("print")}
               disabled={!isCompleted}
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="barrister-print-button"
             >
               <Printer className="w-4 h-4 mr-2" /> Print
             </Button>
             <Button
-              variant="outline"
               size="sm"
               onClick={handleExportDOCX}
               disabled={!isCompleted}
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="barrister-export-docx-button"
             >
               <FileText className="w-4 h-4 mr-2" /> Export Word
@@ -471,7 +530,7 @@ export default function BarristerView() {
                   <CompactMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
                   <CompactMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
                   <CompactMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
-                  <CompactMetric label="Offence" value={caseData?.offence_type || formatTitle(caseData?.offence_category)} testId="barrister-summary-offence" />
+                  <CompactMetric label="Offence" value={offenceLabel} testId="barrister-summary-offence" />
                   <CompactMetric label="Grounds" value={`${grounds.length}`} testId="barrister-summary-grounds" />
                   <CompactMetric label="Generated" value={formatDate(report?.generated_at)} testId="barrister-summary-generated" />
                 </div>

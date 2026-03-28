@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -162,7 +162,7 @@ const extractOffenceFromAnalysis = (analysis = "") => {
         .trim();
     }
   }
-  return "Not specified";
+  return "";
 };
 
 const extractDefendantFromAnalysis = (analysis = "") => {
@@ -514,6 +514,7 @@ const REPORT_THEME = {
 const ReportView = () => {
   const { caseId, reportId } = useParams();
   const navigate = useNavigate();
+  const requestRef = useRef(0);
   const [report, setReport] = useState(null);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
@@ -521,10 +522,17 @@ const ReportView = () => {
   const [hasAllReports, setHasAllReports] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    const requestId = requestRef.current + 1;
+    requestRef.current = requestId;
+    setLoading(true);
+    setReport(null);
+    setCaseData(null);
+    setGrounds([]);
+    setHasAllReports(false);
+    fetchData(requestId);
   }, [caseId, reportId]);
 
-  const fetchData = async () => {
+  const fetchData = async (requestId = requestRef.current) => {
     try {
       const [reportRes, caseRes, groundsRes, reportsRes] = await Promise.all([
         axios.get(`${API}/cases/${caseId}/reports/${reportId}`),
@@ -532,6 +540,7 @@ const ReportView = () => {
         axios.get(`${API}/cases/${caseId}/grounds`),
         axios.get(`${API}/cases/${caseId}/reports`),
       ]);
+      if (requestId !== requestRef.current) return;
       setReport(reportRes.data);
       setCaseData(caseRes.data);
       setGrounds(groundsRes.data?.grounds || []);
@@ -545,9 +554,11 @@ const ReportView = () => {
       );
       setHasAllReports(hasAll);
     } catch (error) {
+      if (requestId !== requestRef.current) return;
       toast.error("Failed to load report");
       navigate(`/cases/${caseId}`);
     } finally {
+      if (requestId !== requestRef.current) return;
       setLoading(false);
     }
   };
@@ -607,8 +618,9 @@ const ReportView = () => {
     const notice = mode === "pdf"
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
-
-    const footer = '<div class="footer">Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW</div>';
+    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
+    const previewFooterLabel = `Criminal Appeal Case Management - ${title} on ${defendantName} - ${previewDate}`;
+    const previewFooterMessage = "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process.";
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -618,8 +630,9 @@ const ReportView = () => {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
@@ -652,9 +665,10 @@ const ReportView = () => {
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
     .section-body li { margin-bottom: 0.4rem; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body table { width: 100%; min-width: 640px; border-collapse: collapse; margin: 12px 0; font-size: 13px; table-layout: fixed; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: normal; overflow-wrap: normal; vertical-align: top; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-wrap: break-word; overflow-wrap: anywhere; font-size: 12px; }
+    .section-body .legal-report-table-wrap { overflow-x: auto; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 12px; table-layout: fixed; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11px; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 12px; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
@@ -665,15 +679,25 @@ const ReportView = () => {
     .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
-    .footer { text-align: center; padding: 12px 32px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #475569; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .print-footer-page-print::after { content: ''; }
+    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
     .no-print { display: none !important; }
     @media print {
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .report-container { max-width: none; }
       .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .section { page-break-inside: avoid; }
+      .section-body .legal-report-table-wrap { overflow: visible; }
+      .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
+      .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .print-footer-page-static { display: none; }
+      .print-footer-page-print::after { content: "Page " counter(page); }
     }
   </style>
 </head>
@@ -763,7 +787,13 @@ const ReportView = () => {
         This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken. No solicitor-client relationship is formed through the provision of this report.
       </div>
     </div>
-    ${footer}
+  </div>
+  <div class="print-footer">
+    <div class="print-footer-row">
+      <span class="print-footer-label">${previewFooterLabel}</span>
+      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+    </div>
+    <div class="print-footer-message">${previewFooterMessage}</div>
   </div>
 </body>
 </html>`;
@@ -775,16 +805,13 @@ const ReportView = () => {
         mode,
         title,
         source: "report",
+        returnTo: `/cases/${caseId}/reports/${reportId}`,
         createdAt: Date.now(),
       })
     );
 
     const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
-    const previewWindow = window.open(previewUrl, "_blank", "noopener,noreferrer");
-
-    if (!previewWindow) {
-      window.location.assign(previewUrl);
-    }
+    window.location.assign(previewUrl);
 
     toast.success(mode === "print" ? "Preview opened — use Print." : "PDF preview opened.");
   };
@@ -832,7 +859,8 @@ const ReportView = () => {
   const eventsCount = report?.content?.event_count || 0;
   const sentenceSummary = extractSentenceSummary(caseData, analysisText);
   const defendantName = caseData?.defendant_name || report?.content?.defendant || extractDefendantFromAnalysis(analysisText);
-  const offenceLabel = caseData?.offence_type || titleFromSnake(caseData?.offence_category) || extractOffenceFromAnalysis(analysisText);
+  const extractedOffence = extractOffenceFromAnalysis(analysisText);
+  const offenceLabel = caseData?.offence_type || extractedOffence || titleFromSnake(caseData?.offence_category);
   const theme = REPORT_THEME[report?.report_type] || REPORT_THEME.quick_summary;
 
   const scrollToSection = (sectionId) => {
@@ -860,13 +888,13 @@ const ReportView = () => {
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
-              <Button variant="outline" size="sm" onClick={handlePrint} className="border-slate-200 text-slate-700 hover:bg-slate-100" data-testid="print-btn">
+              <Button size="sm" onClick={handlePrint} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="print-btn">
                 <Printer className="w-4 h-4 mr-2" /> Print
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportDOCX} className="border-blue-300 text-blue-800 hover:bg-blue-50" data-testid="export-docx-btn">
+              <Button size="sm" onClick={handleExportDOCX} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="export-docx-btn">
                 <FileText className="w-4 h-4 mr-2" /> Export Word
               </Button>
-              <Button size="sm" onClick={handleExportPDF} className="bg-blue-600 text-white hover:bg-blue-500" data-testid="export-pdf-btn">
+              <Button size="sm" onClick={handleExportPDF} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="export-pdf-btn">
                 <Download className="w-4 h-4 mr-2" /> Export PDF
               </Button>
             </div>

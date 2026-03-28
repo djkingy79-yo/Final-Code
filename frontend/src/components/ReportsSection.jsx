@@ -292,7 +292,7 @@ const ReportsSection = ({
   const pollForCompletion = (reportId) => {
     let elapsed = 0;
     const interval = 3000;
-    const maxWait = 1800000;
+    const maxWait = 3600000;
 
     pollingRef.current = setInterval(async () => {
       elapsed += interval;
