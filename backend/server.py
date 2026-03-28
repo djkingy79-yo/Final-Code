@@ -6924,23 +6924,6 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     analysis_text = _strip_report_placeholders(report.get('content', {}).get('analysis', 'No analysis available.'))
     render_markdown_docx(analysis_text)
     
-    # Footer disclaimer
-    doc.add_paragraph()
-    
-    # Created By
-    created_para = doc.add_paragraph()
-    created_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    created_run = created_para.add_run("Created and Designed by Deb King")
-    created_run.font.size = Pt(14)
-    created_run.font.bold = True
-    created_run.font.color.rgb = RGBColor(30, 58, 95)
-    
-    footer_para = doc.add_paragraph()
-    footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    footer_run = footer_para.add_run("Criminal Law Appeal Case Management — GLENMORE PARK NSW")
-    footer_run.font.size = Pt(9)
-    footer_run.font.color.rgb = RGBColor(100, 116, 139)
-    
     doc.add_paragraph()
     
     # Bold Disclaimer

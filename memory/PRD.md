@@ -103,6 +103,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Replaced speculative sentence fallbacks with sentence resolution from the case’s completed report history across Report View, Barrister View, and backend exports so the live case now shows the exact sentence wording everywhere
 - **2026-03-28:** Normalised sentence wording to remove offence text (`for murder`), remove `minimum` from non-parole wording, and remove the stray comma after `imprisonment`
 - **2026-03-28:** Verified exact sentence wording across all 4 report types plus Print/PDF/DOCX outputs in `/app/test_reports/iteration_99.json` — all passed
+- **2026-03-28:** Removed the extra `Created and Designed by Deb King` report-layout blocks from the live report/preview/export flows so the footer now stops at the disclaimer + footer label/page treatment the user requested
+- **2026-03-28:** Changed report PDF buttons to open the real backend-generated PDF output instead of the HTML pseudo-PDF preview; added Barrister export alias endpoints for `/reports/barrister-view/export-pdf` and `/export-docx` to stop the Barrister PDF 404 path
+- **2026-03-28:** Re-verified standard report PDF export, Barrister PDF export alias, and Barrister DOCX export alias — all now return 200 successfully
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -117,6 +120,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 barrister unlock/recovery bug: implemented and verified
 - P0 barrister synthesis rewrite from all 3 source reports: implemented and live-regenerated for current case
 - P0 exact sentence wording across 4 reports + exports: implemented and verified
+- P0 real PDF view + footer cleanup across report flows: implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
