@@ -881,50 +881,50 @@ const LandingPage = () => {
               <h3 className="text-xl font-bold text-slate-900 mb-4 mt-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
               
               <ul className="space-y-4 text-sm text-slate-900 mb-6">
-                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
+                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-red-200">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-slate-900">Unlock Grounds of Merit</strong>
-                      <span className="text-blue-700 font-bold text-base">$99</span>
+                      <strong className="text-red-700">Unlock Grounds of Merit</strong>
+                      <span className="text-red-700 font-bold text-base">$99</span>
                     </div>
                     <p className="text-sm text-slate-700 mt-1">See full details of each potential ground, investigate further with legal citations and case law</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
-                  <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <svg className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-slate-900">Full Detailed Report</strong>
+                      <strong className="text-blue-700">Full Detailed Report</strong>
                       <span className="text-blue-700 font-bold text-base">$150</span>
                     </div>
                     <p className="text-sm text-slate-700 mt-1">15 sections: grounds portfolio, 8+ sentencing comparisons, outcome options matrix, submissions blueprint, filing guide with forms, and client brief</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-slate-200">
-                  <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <svg className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-slate-900">Extensive Log Report</strong>
-                      <span className="text-blue-700 font-bold text-base">$200</span>
+                      <strong className="text-purple-700">Extensive Log Report</strong>
+                      <span className="text-purple-700 font-bold text-base">$200</span>
                     </div>
                     <p className="text-sm text-slate-700 mt-1">20 sections: everything in Full Detailed plus hearing preparation notes, barrister conference pack, court pathway playbook, tailored case search, and risk assessment</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <svg className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                  <svg className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-slate-900">Barrister View</strong>
-                      <span className="text-blue-700 font-bold text-xs">UNLOCKS AFTER ALL 3</span>
+                      <strong className="text-teal-700">Barrister View</strong>
+                      <span className="text-teal-700 font-bold text-xs">UNLOCKS AFTER ALL 3</span>
                     </div>
                     <p className="text-sm text-slate-700 mt-1">Capstone synthesis combining all three reports into a single barrister-ready brief with all grounds, strategies, and authorities consolidated</p>
                   </div>
