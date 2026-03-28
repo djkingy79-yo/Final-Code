@@ -203,6 +203,8 @@ const extractOffenceFromAnalysis = (analysis = "") => {
       return match[1]
         .replace(/under\s+s\.[^\n\.]+/i, "")
         .replace(/,?\s*(?:under|pursuant\s+to).*/i, "")
+        .replace(/\s+(?:on|by|amid(?:st)?|with|during)\b.*$/i, "")
+        .replace(/\s+of\b.*$/i, "")
         .trim();
     }
   }
@@ -757,6 +759,9 @@ const ReportView = () => {
       .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .print-footer-page-static { display: none; }
       .print-footer-page-print::after { content: "Page " counter(page); }
+    }
+    @media (max-width: 768px) {
+      .cover-page-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>

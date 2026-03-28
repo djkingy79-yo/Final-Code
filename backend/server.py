@@ -5531,6 +5531,45 @@ CURRENT BARRISTER BRIEF
     except Exception as exc:
         logger.warning(f"Barrister comparison table enrichment skipped for {case_id}: {exc}")
 
+    if grounds:
+        try:
+            issue_matrix_prompt = f"""Produce only the following attachment, with no introduction or conclusion before it:
+
+## Attachment A — Barrister Issue Matrix
+
+Requirements:
+- This must appear as a barrister attachment at the end of the report.
+- Use a markdown table with these columns exactly: Ground | Key facts | Main authorities | Risk level | Likely prosecution response | Oral submission angle.
+- One row per ground from the mandatory ground list.
+- Keep each cell specific, practical, and counsel-facing.
+- Do not use generic filler.
+
+MANDATORY GROUND LIST
+{grounds_heading_text}
+
+STRUCTURED GROUNDS
+{grounds_text}
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+            issue_matrix = await call_llm_with_fallback(
+                system_prompt,
+                issue_matrix_prompt,
+                session_id=f"barrister-{case_id}-issue-matrix",
+                max_tokens=8000,
+                timeout_seconds=240,
+            )
+            issue_matrix = _strip_report_placeholders(issue_matrix)
+            issue_matrix = re.sub(r"\n{3,}", "\n\n", issue_matrix).strip()
+            if issue_matrix.startswith("## Attachment A — Barrister Issue Matrix"):
+                response = response.rstrip() + "\n\n" + issue_matrix
+        except Exception as exc:
+            logger.warning(f"Barrister issue matrix skipped for {case_id}: {exc}")
+
     response = _strip_report_placeholders(response)
     response = _normalise_barrister_table_titles(response)
     response = _dedupe_barrister_ground_subsections(response)

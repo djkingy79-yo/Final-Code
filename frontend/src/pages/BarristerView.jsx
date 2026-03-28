@@ -111,6 +111,8 @@ const extractOffenceFromAnalysis = (analysis = "") => {
       return match[1]
         .replace(/under\s+s\.[^\n\.]+/i, "")
         .replace(/,?\s*(?:under|pursuant\s+to).*/i, "")
+        .replace(/\s+(?:on|by|amid(?:st)?|with|during)\b.*$/i, "")
+        .replace(/\s+of\b.*$/i, "")
         .trim();
     }
   }
@@ -385,6 +387,9 @@ export default function BarristerView() {
       .print-footer-page-static { display: none; }
       .print-footer-page-print::after { content: "Page " counter(page); }
     }
+    @media (max-width: 768px) {
+      .cover-page-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -614,7 +619,7 @@ export default function BarristerView() {
                   </h1>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-6 gap-y-4 w-full xl:w-[440px] xl:flex-shrink-0" data-testid="barrister-summary-grid">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 w-full xl:w-[440px] xl:flex-shrink-0" data-testid="barrister-summary-grid">
                   <CompactMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
                   <CompactMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
                   <CompactMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
