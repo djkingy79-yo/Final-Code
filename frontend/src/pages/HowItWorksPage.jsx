@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { useTheme } from "../contexts/ThemeContext";
@@ -235,6 +235,7 @@ const HowItWorksPage = () => {
         "Extensive Log Reports are designed to be handed directly to a barrister",
         "Generate all three to unlock the Barrister View — the capstone synthesis",
       ],
+      showPricingAfter: true,
     },
     {
       num: 7,
@@ -297,35 +298,6 @@ const HowItWorksPage = () => {
           "Apply for Legal Aid early if you need financial assistance",
         ],
       },
-    },
-    {
-      num: 9,
-      icon: Presentation,
-      title: "Present in Barrister View",
-      subtitle: "Locked until all three reports are generated",
-      color: "bg-slate-800",
-      lightColor: "bg-slate-50",
-      borderColor: "border-slate-300",
-      textColor: "text-slate-800",
-      description: "The Barrister View is locked until all three reports have been generated (Quick Summary, Full Detailed, and Extensive Log). Once unlocked, it synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
-      visual: {
-        alt: "Barrister Executive Brief synthesised from all reports",
-        caption: "Barrister View synthesises all 3 reports into one court-ready brief."
-      },
-      whatYouSee: [
-        "LOCKED until all 3 reports are generated (Quick Summary + Full Detailed + Extensive Log)",
-        "Once unlocked: Table of Contents with clickable section headings",
-        "'Synthesised from 3 reports' badge showing all reports were combined",
-        "Clean professional layout with readable headings and tables",
-        "Includes Attachment A — Barrister Issue Matrix",
-        "Export to PDF or Word document for legal consultations",
-      ],
-      proTips: [
-        "You must generate all three reports before this becomes available",
-        "Export the Barrister View as PDF or Word to take to a legal consultation",
-        "Export as Word to allow your lawyer to edit and add their own notes",
-        "The Barrister View is designed to impress — use it when presenting your case",
-      ],
     },
   ];
 
@@ -443,7 +415,7 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4" /> 9 simple steps
+              <Clock className="w-4 h-4" /> 8 simple steps
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
@@ -490,8 +462,8 @@ const HowItWorksPage = () => {
         {detailedSteps.map((step, idx) => {
           const Icon = step.icon;
           return (
+            <React.Fragment key={idx}>
             <section
-              key={idx}
               id={`step-${idx}`}
               className={`rounded-2xl border ${step.borderColor} overflow-hidden scroll-mt-36`}
               data-testid={`how-it-works-step-${idx + 1}`}
@@ -621,45 +593,47 @@ const HowItWorksPage = () => {
                 )}
               </div>
             </section>
+
+            {/* Report Pricing + Barrister View — rendered after the Reports step */}
+            {step.showPricingAfter && (
+              <section className="pt-4" data-testid="how-it-works-pricing-section">
+                <div className="text-center mb-8">
+                  <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Report Pricing</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                    Choose the right report for your needs
+                  </h2>
+                </div>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {reportPricing.map((tier) => (
+                    <div
+                      key={tier.title}
+                      className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-slate-200"} bg-white`}
+                      data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
+                    >
+                      <div className="text-white p-5 text-center" style={{ backgroundColor: tier.headerColor || undefined }} >
+                        {tier.popular && <span className="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full mb-2 inline-block" style={{ color: "#ffffff", fontWeight: 900 }}>MOST POPULAR</span>}
+                        <div className="text-lg font-black text-white" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.title}</div>
+                        <p className="text-3xl font-black text-white mt-1" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.price}</p>
+                      </div>
+                      <div className="p-5">
+                        <ul className="space-y-2.5">
+                          {tier.features.map((feature, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm">
+                              <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                              <span className="text-slate-700 break-words">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+            </React.Fragment>
           );
         })}
-
-        {/* REPORT PRICING */}
-        <section className="pt-4" data-testid="how-it-works-pricing-section">
-          <div className="text-center mb-8">
-            <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Report Pricing</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              Choose the right report for your needs
-            </h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {reportPricing.map((tier) => (
-              <div
-                key={tier.title}
-                className={`rounded-2xl overflow-hidden border ${tier.popular ? "border-blue-500 shadow-lg shadow-blue-500/10" : "border-slate-200"} bg-white`}
-                data-testid={`how-it-works-pricing-${tier.title.toLowerCase().replace(/\s+/g, "-")}`}
-              >
-                <div className="text-white p-5 text-center" style={{ backgroundColor: tier.headerColor || undefined }} >
-                  {tier.popular && <span className="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full mb-2 inline-block" style={{ color: "#ffffff", fontWeight: 900 }}>MOST POPULAR</span>}
-                  <div className="text-lg font-black text-white" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.title}</div>
-                  <p className="text-3xl font-black text-white mt-1" style={{ color: "#ffffff", fontWeight: 900 }}>{tier.price}</p>
-                </div>
-                <div className="p-5">
-                  <ul className="space-y-2.5">
-                    {tier.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-slate-700 break-words">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* CTA */}
         <section className="rounded-2xl border-2 border-blue-200 bg-white p-6 sm:p-8 text-center" data-testid="how-it-works-start-case-section">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
