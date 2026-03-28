@@ -14,6 +14,7 @@ BASE_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
 TEST_EMAIL = "djkingy79@gmail.com"
 TEST_PASSWORD = "Grubbygrub88"
 CASE_ID = "case_76056187ad4f"
+REPORT_ID = "rpt_0520d60ed7aa"  # Specific report from review request
 REPORT_ID_1 = "rpt_1cc1bfeace33"
 REPORT_ID_2 = "rpt_dcb21f0efc62"
 
@@ -252,11 +253,12 @@ class BackendTester:
         # Test 3: Barrister View
         barrister_success = self.test_barrister_view()
 
-        # Test 4 & 5: Report Exports
+        # Test 4, 5 & 6: Report Exports (including specific report from review request)
+        export_specific_success = self.test_report_exports(REPORT_ID, "Specific Report (rpt_0520d60ed7aa)")
         export1_success = self.test_report_exports(REPORT_ID_1, "Report 1")
         export2_success = self.test_report_exports(REPORT_ID_2, "Report 2")
 
-        # Test 6: API Regression Check
+        # Test 7: API Regression Check
         regression_success = self.test_api_regression_check()
 
         # Summary
