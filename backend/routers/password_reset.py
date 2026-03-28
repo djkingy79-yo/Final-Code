@@ -22,7 +22,7 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 
 
 def get_frontend_url() -> str:
-    return os.environ["REACT_APP_BACKEND_URL"].replace("/api", "")
+    return os.environ["FRONTEND_URL"].replace("/api", "")
 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
