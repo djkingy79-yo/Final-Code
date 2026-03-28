@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime, timezone
 import uuid
+import secrets
 
 
 # ============ USER MODELS ============
@@ -215,6 +216,69 @@ class NoteUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     is_pinned: Optional[bool] = None
+
+
+
+# ============ SHARING MODELS ============
+
+class CaseShare(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    share_id: str = Field(default_factory=lambda: f"share_{uuid.uuid4().hex[:12]}")
+    case_id: str
+    owner_id: str
+    shared_with_user_id: Optional[str] = None
+    shared_with_email: str
+    permission: str = "view_comment"  # view_comment = view + add notes/comments
+    status: str = "pending"  # pending, accepted, revoked
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ShareLink(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    link_id: str = Field(default_factory=lambda: f"slink_{uuid.uuid4().hex[:12]}")
+    case_id: str
+    owner_id: str
+    token: str = Field(default_factory=lambda: secrets.token_urlsafe(32))
+    permission: str = "view_comment"
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    expires_at: Optional[datetime] = None
+
+
+class CaseMessage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    message_id: str = Field(default_factory=lambda: f"msg_{uuid.uuid4().hex[:12]}")
+    case_id: str
+    user_id: str
+    author_name: str
+    author_email: str
+    content: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class Notification(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    notification_id: str = Field(default_factory=lambda: f"notif_{uuid.uuid4().hex[:12]}")
+    user_id: str
+    type: str  # share_invite, new_message, new_note, case_update
+    title: str
+    message: str
+    case_id: Optional[str] = None
+    from_user_name: Optional[str] = None
+    is_read: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class Activity(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    activity_id: str = Field(default_factory=lambda: f"act_{uuid.uuid4().hex[:12]}")
+    case_id: str
+    user_id: str
+    user_name: str
+    action: str  # shared_case, added_note, sent_message, viewed_case, added_document
+    detail: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 
 
 # ============ DEADLINE MODELS ============

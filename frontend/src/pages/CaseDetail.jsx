@@ -13,7 +13,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare, Trash2, Printer, Pencil
+  MessageSquare, Trash2, Printer, Pencil, Share2, Users
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -59,6 +59,9 @@ import NotesSection from "../components/NotesSection";
 import ReportsSection from "../components/ReportsSection";
 import QuickExport from "../components/QuickExport";
 import DocumentBundler from "../components/DocumentBundler";
+import ShareCaseModal from "../components/ShareCaseModal";
+import CaseChat from "../components/CaseChat";
+import ActivityFeed from "../components/ActivityFeed";
 
 const EVENT_TYPES = [
   // Pre-trial
@@ -160,6 +163,7 @@ const CaseDetail = ({ user }) => {
   const [showDeleteCaseDialog, setShowDeleteCaseDialog] = useState(false);
   const [deleteEventId, setDeleteEventId] = useState(null);
   const [deleteGroundId, setDeleteGroundId] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [timelineAnalysis, setTimelineAnalysis] = useState(null);
   const [generatingProgress, setGeneratingProgress] = useState(false);
   const [progressAnalysis, setProgressAnalysis] = useState(null);
@@ -762,6 +766,16 @@ const CaseDetail = ({ user }) => {
               <span className="hidden sm:inline"><QuickExport caseId={caseId} caseTitle={caseData?.title} /></span>
               <span className="hidden sm:inline"><DocumentBundler caseId={caseId} documents={documents} /></span>
               <Button 
+                variant="outline"
+                size="sm"
+                onClick={() => setShowShareModal(true)}
+                className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 rounded-xl"
+                data-testid="share-case-btn"
+              >
+                <Share2 className="w-4 h-4 mr-1" />
+                Share
+              </Button>
+              <Button 
                 variant="destructive" 
                 size="sm" 
                 onClick={handleDeleteCase}
@@ -868,6 +882,10 @@ const CaseDetail = ({ user }) => {
                 <TabsTrigger value="progress" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-progress">
                   <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Progress
+                </TabsTrigger>
+                <TabsTrigger value="collaboration" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-collaboration">
+                  <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Collaboration</span><span className="sm:hidden">Collab</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -1205,8 +1223,23 @@ const CaseDetail = ({ user }) => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="collaboration" className="space-y-6" data-tab-content>
+            <ActivityFeed caseId={caseId} />
+          </TabsContent>
         </Tabs>
       </main>
+
+      {/* Chat Panel (floating) */}
+      <CaseChat caseId={caseId} user={user} />
+
+      {/* Share Modal */}
+      <ShareCaseModal
+        caseId={caseId}
+        caseName={caseData?.title}
+        open={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      />
 
       {/* Add Event Dialog */}
       <Dialog open={showEventDialog} onOpenChange={setShowEventDialog}>

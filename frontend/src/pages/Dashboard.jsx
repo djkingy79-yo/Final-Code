@@ -11,7 +11,7 @@ import {
   Scale, Plus, FileText, Clock, Trash2,
   LogOut, FolderOpen, Search, User, HelpCircle, Users, BookOpen,
   FileCheck, Moon, Sun, Menu, X, Home, Gavel, ChevronRight, GitCompare,
-  Shield, TrendingUp, Sparkles
+  Shield, TrendingUp, Sparkles, Share2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -38,17 +38,21 @@ import {
 import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
 import DisclaimerReminder from "../components/DisclaimerReminder";
+import ShareCaseModal from "../components/ShareCaseModal";
+import NotificationBell from "../components/NotificationBell";
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [cases, setCases] = useState([]);
+  const [sharedCases, setSharedCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNewCaseDialog, setShowNewCaseDialog] = useState(false);
   const [offenceCategories, setOffenceCategories] = useState([]);
   const [australianStates, setAustralianStates] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shareModalCase, setShareModalCase] = useState(null);
   const [newCase, setNewCase] = useState({
     title: "",
     defendant_name: "",
@@ -64,8 +68,15 @@ const Dashboard = ({ user }) => {
 
   useEffect(() => {
     fetchCases();
+    fetchSharedCases();
     fetchOffenceCategories();
     fetchStates();
+    // Handle pending share link acceptance
+    const pendingToken = localStorage.getItem("pending_share_token");
+    if (pendingToken) {
+      localStorage.removeItem("pending_share_token");
+      navigate(`/shared/${pendingToken}`);
+    }
   }, []);
 
   const fetchStates = async () => {
@@ -94,6 +105,15 @@ const Dashboard = ({ user }) => {
       toast.error("Failed to load cases");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSharedCases = async () => {
+    try {
+      const response = await axios.get(`${API}/shared-cases`);
+      setSharedCases(response.data || []);
+    } catch (error) {
+      console.error("Failed to load shared cases");
     }
   };
 
@@ -307,6 +327,7 @@ const Dashboard = ({ user }) => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <NotificationBell user={user} />
               {isAdmin && (
                 <Link to="/admin/dashboard">
                   <Button
@@ -491,6 +512,15 @@ const Dashboard = ({ user }) => {
                         <p className="text-sm text-slate-700 mt-0.5">{caseItem.defendant_name}</p>
                       </div>
                       <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); setShareModalCase(caseItem); }}
+                        className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 rounded-lg flex-shrink-0 mr-1"
+                        data-testid={`share-case-btn-${caseItem.case_id}`}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </Button>
+                      <Button 
                         variant="destructive" 
                         size="sm" 
                         onClick={(e) => { e.stopPropagation(); handleDeleteCase(caseItem.case_id); }}
@@ -527,8 +557,69 @@ const Dashboard = ({ user }) => {
               </div>
             )}
           </section>
+
+          {/* Shared With Me Section */}
+          {sharedCases.length > 0 && (
+            <section className="mt-8" data-testid="shared-cases-section">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-5 h-5 text-teal-600" />
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  Shared With Me
+                </h2>
+                <span className="text-xs text-slate-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                  {sharedCases.length}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {sharedCases.map((caseItem) => (
+                  <div 
+                    key={caseItem.case_id} 
+                    className="card-elevated p-5 group cursor-pointer hover:border-teal-300 transition-colors border-l-4 border-l-teal-500"
+                    onClick={() => navigate(`/cases/${caseItem.case_id}`)}
+                    data-testid={`shared-case-card-${caseItem.case_id}`}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-semibold text-slate-900 group-hover:text-teal-600 transition-colors truncate" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                          {caseItem.title}
+                        </h3>
+                        <p className="text-sm text-slate-700 mt-0.5">{caseItem.defendant_name}</p>
+                      </div>
+                      <span className="text-xs bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200 shrink-0">
+                        Shared
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mb-3">
+                      Shared by <strong>{caseItem.owner_name}</strong>
+                    </p>
+                    <div className="flex items-center gap-4 text-xs text-slate-700">
+                      <div className="flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>{caseItem.document_count || 0} docs</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>{caseItem.event_count || 0} events</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end mt-4 pt-3 border-t border-slate-200">
+                      <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-teal-600 transition-colors" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
+
+      {/* Share Case Modal */}
+      <ShareCaseModal
+        caseId={shareModalCase?.case_id}
+        caseName={shareModalCase?.title}
+        open={!!shareModalCase}
+        onClose={() => setShareModalCase(null)}
+      />
 
       {/* New Case Dialog */}
       <Dialog open={showNewCaseDialog} onOpenChange={setShowNewCaseDialog}>

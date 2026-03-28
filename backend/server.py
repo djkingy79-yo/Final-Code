@@ -7078,6 +7078,11 @@ app.include_router(contradictions_router)
 from routers.export import router as export_router
 app.include_router(export_router)
 
+# Include collaboration router (sharing, chat, notifications)
+from routers.collaboration import router as collaboration_router
+app.include_router(collaboration_router)
+
+
 # PayID-only payment system (PayPal removed)
 
 app.add_middleware(

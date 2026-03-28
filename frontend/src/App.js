@@ -41,6 +41,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import DocumentPreviewPage from "./pages/DocumentPreviewPage";
+import AcceptShareLink from "./pages/AcceptShareLink";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 import AppFooter from "./components/AppFooter";
@@ -255,6 +256,14 @@ function AppRouter() {
       <Route
         path="/document-preview"
         element={<DocumentPreviewPage />}
+      />
+      <Route
+        path="/shared/:token"
+        element={
+          <ProtectedRoute>
+            {({ user }) => <AcceptShareLink />}
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/admin/stats"

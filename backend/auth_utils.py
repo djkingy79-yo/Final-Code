@@ -48,3 +48,18 @@ async def verify_case_ownership(case_id: str, user_id: str):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
     return case
+
+
+async def verify_case_access(case_id: str, user_id: str):
+    """Verify user owns OR has shared access to the case."""
+    case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    if case.get("user_id") == user_id:
+        return case
+    share = await db.case_shares.find_one({
+        "case_id": case_id, "shared_with_user_id": user_id, "status": "accepted"
+    }, {"_id": 0})
+    if share:
+        return case
+    raise HTTPException(status_code=403, detail="Access denied")

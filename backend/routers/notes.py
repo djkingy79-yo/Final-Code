@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 from config import db
 from models import Note, NoteCreate, NoteUpdate
-from auth_utils import get_current_user, verify_case_ownership
+from auth_utils import get_current_user, verify_case_ownership, verify_case_access
 
 router = APIRouter(prefix="/api/cases/{case_id}/notes", tags=["notes"])
 
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api/cases/{case_id}/notes", tags=["notes"])
 async def get_notes(case_id: str, request: Request):
     """Get all notes for a case"""
     user = await get_current_user(request)
-    await verify_case_ownership(case_id, user.user_id)
+    await verify_case_access(case_id, user.user_id)
     
     notes = await db.notes.find(
         {"case_id": case_id},
@@ -32,7 +32,7 @@ async def get_notes(case_id: str, request: Request):
 async def create_note(case_id: str, note_data: NoteCreate, request: Request):
     """Create a new note"""
     user = await get_current_user(request)
-    await verify_case_ownership(case_id, user.user_id)
+    await verify_case_access(case_id, user.user_id)
     
     note = Note(
         case_id=case_id,
