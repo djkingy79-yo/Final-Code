@@ -350,9 +350,9 @@ const HowItWorksPage = () => {
     {
       title: "Barrister View",
       price: "UNLOCKS",
-      color: "bg-teal-600",
-      badge: "bg-teal-400",
-      headerColor: "#0f766e",
+      color: "bg-indigo-900",
+      badge: "bg-indigo-400",
+      headerColor: "#312e81",
       features: [
         "Unlocks after all 3 reports are generated",
         "Capstone synthesis combining all three reports into one brief",
