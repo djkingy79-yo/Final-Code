@@ -108,6 +108,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Re-verified standard report PDF export, Barrister PDF export alias, and Barrister DOCX export alias — all now return 200 successfully
 - **2026-03-28:** Removed the remaining report-layout `Created and Designed by Deb King` strings from Barrister/standard preview covers and DOCX export endings so the report footer content now ends where the user requested
 - **2026-03-28:** Added Barrister alias export routes in the backend so both direct-report and `barrister-view` PDF/Word flows resolve to the latest completed Barrister brief without 404s
+- **2026-03-28:** Reworked Barrister grounds expansion again so each Ground of Merit is now rewritten individually at much greater depth with factual foundation, legal test, authorities, evidentiary anchors, prosecution answer, reply strategy, fallback positions, relief implications, and submission framing
+- **2026-03-28:** Regenerated the live Barrister brief for case `case_76056187ad4f` after the deeper grounds-focused rewrite; the current live brief now returns a substantially larger counsel-facing output (~60k characters) with denser Grounds of Merit coverage
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -123,6 +125,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 barrister synthesis rewrite from all 3 source reports: implemented and live-regenerated for current case
 - P0 exact sentence wording across 4 reports + exports: implemented and verified
 - P0 real PDF view + footer cleanup across report flows: implemented and verified
+- P0 barrister grounds-of-merit deepening: implemented and live-regenerated for current case
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions

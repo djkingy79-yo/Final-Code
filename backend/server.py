@@ -5319,20 +5319,31 @@ CURRENT BARRISTER BRIEF
             logger.warning(f"Barrister whole-brief expansion skipped for {case_id}: {exc}")
 
     if len(response) < 75000 and grounds:
-        ground_expansion_prompt = f"""Rewrite only the ## Grounds of Merit section of the Barrister Brief below.
+        try:
+            rewritten_ground_sections = []
+            for ground_index, ground in enumerate(grounds, start=1):
+                ground_title = (ground.get("title") or f"Ground {ground_index}").strip()
+                ground_prompt = f"""Write only the following Barrister Brief subsection in this exact heading format:
+
+### {ground_title}
 
 Requirements:
-- Keep the heading exactly as ## Grounds of Merit.
-- Include every ground from the mandatory ground list below.
-- Create one dedicated ### subsection per listed ground.
-- Make this rewritten grounds section extremely detailed, with factual support, legal reasoning, strategic use, weaknesses, fallback positions, and any key authority or statutory link relevant to that ground.
-- Minimum target length for this rewritten section alone: 26000 characters.
+- Minimum target length for this subsection alone: 7000 characters.
+- Focus on critical, vital, counsel-useful detail rather than generic explanation.
+- Set out the factual foundation for the ground, procedural context, legal test, statutory framework, decisive authorities, documentary anchors, timeline anchors, evidentiary vulnerabilities, likely prosecution answer, reply strategy, fallback positions, relief implications, and how counsel should frame the point in written and oral submissions.
+- Do not repeat generic appeal language.
+- Keep the tone strictly barrister-facing and case-specific.
+
+STRUCTURED GROUND
+TITLE: {ground_title}
+DESCRIPTION: {ground.get('description', '')}
+LEGAL BASIS: {ground.get('legal_basis', '')}
+WHY IT MATTERS: {ground.get('strength_reason', '')}
+RISK LEVEL: {ground.get('strength', '')}
+SUPPORTING DOCUMENT IDS: {', '.join(ground.get('supporting_documents', []) or [])}
 
 MANDATORY GROUND LIST
 {grounds_heading_text}
-
-STRUCTURED GROUNDS
-{grounds_text}
 
 SOURCE REPORTS
 {expansion_source_text}
@@ -5340,17 +5351,21 @@ SOURCE REPORTS
 CURRENT BARRISTER BRIEF
 {response}
 """
-        try:
-            rewritten_grounds = await call_llm_with_fallback(
-                system_prompt,
-                ground_expansion_prompt,
-                session_id=f"barrister-{case_id}-grounds-expand",
-                max_tokens=16384,
-                timeout_seconds=240,
-            )
-            rewritten_grounds = _strip_report_placeholders(rewritten_grounds)
-            rewritten_grounds = re.sub(r"\n{3,}", "\n\n", rewritten_grounds).strip()
-            if rewritten_grounds.startswith("## Grounds of Merit"):
+                subsection = await call_llm_with_fallback(
+                    system_prompt,
+                    ground_prompt,
+                    session_id=f"barrister-{case_id}-ground-{ground_index}-expand",
+                    max_tokens=12000,
+                    timeout_seconds=240,
+                )
+                subsection = _strip_report_placeholders(subsection)
+                subsection = re.sub(r"\n{3,}", "\n\n", subsection).strip()
+                if not subsection.startswith(f"### {ground_title}"):
+                    subsection = f"### {ground_title}\n\n{subsection}"
+                rewritten_ground_sections.append(subsection)
+
+            rewritten_grounds = "## Grounds of Merit\n\n" + "\n\n".join(rewritten_ground_sections).strip()
+            if rewritten_ground_sections:
                 response = re.sub(
                     r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework and Governing Tests)",
                     rewritten_grounds + "\n\n",
