@@ -121,6 +121,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Removed the hardcoded preview fallback from `backend/routers/payments_new.py` and verified backend health + deployment scan still pass
 - **2026-03-28:** Extended the backend config audit by adding shared `get_admin_emails()` and `get_contact_email()` helpers in `backend/config.py` and removed remaining hardcoded admin/contact email fallbacks from `admin.py`, `auth.py`, `analytics.py`, `payments_new.py`, and `server.py`
 - **2026-03-28:** Fixed a small analytics lint issue found during the audit, verified backend health remains 200, and re-ran deployment analysis — final deployment status remains PASS with no blockers or warnings
+- **2026-03-28:** Replaced the earlier generic How It Works screenshot set with the real user-requested sequence: login, start, upload documents, timeline, grounds, notes, reports, legal, progress
+- **2026-03-28:** Wired the How It Works page to use the user-provided real-case screenshots for Documents, Timeline, Grounds, and Notes, plus live captured app screens for Login, Start, Reports, Legal, and Progress; verified all 9 images load with no broken links
+- **2026-03-28:** Restyled the highlighted Appeal Statistics crisis block to bright blue with white text and bright red emphasis text, then re-verified the new styling in the live frontend
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -138,6 +141,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 real PDF view + footer cleanup across report flows: implemented and verified
 - P0 barrister grounds-of-merit deepening: implemented and live-regenerated for current case
 - P1 barrister issue matrix attachment at end: implemented and verified in live regeneration
+- P1 How It Works real screenshot sequence: implemented and verified
+- P1 Appeal Statistics crisis block restyle: implemented and verified
 - P0 PDF-view blank screen fix: implemented and manually verified in browser
 - P0 deployment readiness blocker (password reset frontend URL env): implemented and verified
 - P1 shared deployment-safe frontend URL helper: implemented and verified
