@@ -85,12 +85,19 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Increased long-report tolerance by extending report polling/generation timeouts for Extensive Log and Barrister generation so large runs are less likely to fail prematurely
 - **2026-03-28:** Restyled PayID purchase buttons to the bright-blue/white treatment with clearer vertical spacing
 - **2026-03-28:** Verified the full fix set with smoke testing plus rigorous automated coverage in `/app/test_reports/iteration_96.json` (backend and frontend both passed)
+- **2026-03-28:** Reduced Grounds of Merit print/export typography and table sizing so more content fits on each page without removing detail
+- **2026-03-28:** Changed the floating home button above the Top of Page button to the bright-blue treatment with a white home icon
+- **2026-03-28:** Added a Timeline Print button that opens `/document-preview` with full expanded event details (description, source, participants, linked documents, related grounds, contested and inconsistency notes) included in the printout
+- **2026-03-28:** Wired timeline preview returns back to `/cases/:caseId?tab=timeline` so leaving the print preview lands on the Timeline tab instead of resetting the case view
+- **2026-03-28:** Verified these frontend updates with browser smoke tests plus `auto_frontend_testing_agent` and backend sanity checks; all passed with no regressions
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
 - P0 Print/PDF presentation fixes: implemented and verified
 - P0 stale case/report data bleed guards: implemented and verified
 - P1 preview/export back-button routing: implemented and verified
+- P1 grounds print density improvement: implemented and verified
+- P1 timeline print preview with expanded details: implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_96.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
