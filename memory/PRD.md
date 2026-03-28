@@ -115,6 +115,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Regenerated the live Barrister brief again after the attachment + deeper grounds update; the current live brief now returns ~65k characters and includes the issue-matrix attachment at the end
 - **2026-03-28:** Switched report PDF buttons back to the reliable `/document-preview?mode=pdf` route after the blob/object-URL approach was confirmed to produce blank screens on the user flow
 - **2026-03-28:** Verified the standard report PDF route now opens the working preview page and the offence label now renders as `murder` for the live case
+- **2026-03-28:** Fixed the deployment readiness blocker in `backend/routers/password_reset.py` by moving the password-reset frontend URL to backend env config (`FRONTEND_URL`) instead of incorrectly reading the frontend-only `REACT_APP_BACKEND_URL` variable
+- **2026-03-28:** Added `FRONTEND_URL` to `backend/.env`, restarted backend, and re-ran deployment health check — deployment status is now PASS with zero blockers or warnings
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -133,6 +135,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 barrister grounds-of-merit deepening: implemented and live-regenerated for current case
 - P1 barrister issue matrix attachment at end: implemented and verified in live regeneration
 - P0 PDF-view blank screen fix: implemented and manually verified in browser
+- P0 deployment readiness blocker (password reset frontend URL env): implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
