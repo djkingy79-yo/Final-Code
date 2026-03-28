@@ -30,17 +30,20 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Legal Framework, Glossary, FAQ, Resources pages
 - Appeal Statistics page (bright blue bg, white text, red emphasis)
 - "How It Works" page with step-by-step walkthrough
-- "How To Use" page with live populated screenshots (8 steps + Barrister View + Export)
+- "How To Use" page with live populated screenshots (8 steps + 3 individual report views + Barrister unlock info)
 - Payment integration (PayPal/PayID/Stripe)
 - Deployment config audit (centralised FRONTEND_URL)
 - Notes system with categories and pinning
 
 ## Completed This Session (28 Mar 2026)
-- Captured 8 fresh live screenshots from a populated demo case for the How To Use page
-- Created dummy case "Dummy Murder Appeal Demonstration" (Alex Carter) with 8 timeline events, 4 grounds, 3 notes
-- All screenshots showing real app data: login, dashboard, documents, timeline, grounds, legal, progress, reports
-- Verified all images serve correctly (HTTP 200, image/png content type)
-- Testing agent confirmed 100% pass rate on frontend
+- Re-captured all 8 step screenshots exclusively from the demo case (Dummy Murder Appeal Demonstration / Alex Carter)
+- Generated 3 reports on the demo case (Quick Summary, Full Detailed, Extensive Log) and captured individual report screenshots showing colour headings + table of contents
+- Reports tab screenshot now shows 3 colourful cards: purple ($200 Extensive Log), blue ($150 Full Detailed), green (Free Quick Summary)
+- Progress tab screenshot shows Appeal Checklist with 8/22 items ticked
+- Added "Each Report Type" section to Step 8 with 3-column grid of individual report screenshots
+- Added "Unlock Requirement" notice to Step 9 (Barrister View) — all 3 reports must be generated first
+- Populated demo case with 8 documents, 8 timeline events, 4 grounds, 3 notes, and 3 completed reports
+- Testing agent confirmed 100% pass rate (iteration_101.json)
 
 ## Backlog
 ### P1
