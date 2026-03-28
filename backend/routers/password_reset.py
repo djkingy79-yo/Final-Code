@@ -19,7 +19,10 @@ router = APIRouter(prefix="/api/auth", tags=["password-reset"])
 
 # Resend configuration
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
-FRONTEND_URL = os.environ.get("REACT_APP_BACKEND_URL", "").replace("/api", "")
+
+
+def get_frontend_url() -> str:
+    return os.environ["REACT_APP_BACKEND_URL"].replace("/api", "")
 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
@@ -88,7 +91,7 @@ async def forgot_password(request: ForgotPasswordRequest):
         email_sent = False
         if RESEND_API_KEY:
             try:
-                reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+                reset_url = f"{get_frontend_url()}/reset-password?token={reset_token}"
                 
                 html_content = f"""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
