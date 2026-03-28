@@ -47,7 +47,8 @@ const cleanSentence = (s) => {
     .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
     .replace(/\s+for\s+[a-z\s'-]+(?=,|\s+with\b|$)/i, "")
     .replace(/\bminimum\s+non[- ]?parole\s+period\b/gi, "non-parole period")
-    .replace(/\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b/gi, "with a non-parole period");
+    .replace(/\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b/gi, "with a non-parole period")
+    .replace(/imprisonment,\s+with/gi, "imprisonment with");
   c = c.trim();
   // Truncate overly long sentences — extract just the core penalty
   if (c.length > 120) {

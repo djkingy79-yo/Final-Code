@@ -1,0 +1,104 @@
+{
+  "summary": "Iteration 99 - Verified exact sentence wording across all 4 report types. The sentence '30 years' imprisonment with a non-parole period of 22 years and 6 months' displays correctly WITHOUT comma after 'imprisonment', WITHOUT 'for murder' text, and WITHOUT 'minimum' text.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verification_results": {
+    "quick_summary_report": {
+      "report_id": "rpt_72e6a39f91f6",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+      "no_comma_after_imprisonment": true,
+      "no_for_murder": true,
+      "no_minimum_npp": true
+    },
+    "full_detailed_report": {
+      "report_id": "rpt_f049e0c6b384",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+      "no_comma_after_imprisonment": true,
+      "no_for_murder": true,
+      "no_minimum_npp": true
+    },
+    "extensive_log_report": {
+      "report_id": "rpt_4249ad7d9fee",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+      "no_comma_after_imprisonment": true,
+      "no_for_murder": true,
+      "no_minimum_npp": true
+    },
+    "barrister_view_report": {
+      "report_id": "rpt_d7b82aafbdea",
+      "status": "PASS",
+      "sentence_displayed": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+      "no_comma_after_imprisonment": true,
+      "no_for_murder": true,
+      "no_minimum_npp": true
+    },
+    "print_preview": {
+      "status": "PASS",
+      "sentence_in_cover": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+      "verified_via_screenshot": true
+    },
+    "pdf_export": {
+      "status": "PASS",
+      "endpoint_accessible": true,
+      "returns_pdf_content": true
+    },
+    "docx_export": {
+      "status": "PASS",
+      "endpoint_accessible": true,
+      "returns_docx_content": true
+    }
+  },
+  "sentence_analysis": {
+    "user_expected": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+    "actual_displayed": "30 years' imprisonment with a non-parole period of 22 years and 6 months",
+    "exact_match": true,
+    "normalization_fixes_applied": [
+      "imprisonment, with -> imprisonment with (comma removed)",
+      "for [offence] text removed",
+      "minimum non-parole period -> non-parole period"
+    ],
+    "code_locations": {
+      "frontend_ReportView": "Line 51: .replace(/imprisonment,\\s+with/gi, 'imprisonment with')",
+      "frontend_BarristerView": "Lines 55, 68: Same replacement pattern",
+      "backend_server": "Line 5984: re.sub(r'imprisonment,\\s+with', 'imprisonment with', ...)"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration99_sentence_wording.py",
+    "/app/test_reports/pytest/iteration99_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Frontend cleanSentence() in ReportView.jsx correctly removes comma after 'imprisonment'",
+    "Frontend extractSentenceSummary() in BarristerView.jsx applies same normalization",
+    "Backend _clean_sentence_candidate() in server.py applies same normalization for PDF/DOCX exports",
+    "All 4 report types display consistent, correct sentence wording"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration99_sentence_wording.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (all UI tests passed via Playwright)"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88",
+    "target_case": "case_76056187ad4f",
+    "session_token_used": "Goxbknz5HiKsbinqhk4OWnhBCi0llVN_7Fxspwl1P58"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 99 verified the final sentence wording fix. The comma after 'imprisonment' has been removed. The sentence now reads exactly: '30 years' imprisonment with a non-parole period of 22 years and 6 months' across all 4 report types (quick_summary, full_detailed, extensive_log, barrister_view) and in Print/PDF/DOCX exports. The normalization is applied by cleanSentence() in ReportView.jsx, extractSentenceSummary() in BarristerView.jsx, and _clean_sentence_candidate() in server.py."
+}
