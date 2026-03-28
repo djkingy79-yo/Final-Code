@@ -100,6 +100,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Standardised full detailed report preview/export tables to a consistent smaller 11pt-style table font treatment and unified table font family handling across preview/PDF/DOCX paths
 - **2026-03-28:** Reworked Barrister synthesis prompts so the brief now explicitly includes a 3-part source-report synthesis (`Quick Summary`, `Full Detailed`, `Extensive Log`) before the integrated counsel analysis, rather than treating the inputs as one blurred summary source
 - **2026-03-28:** Regenerated the live Barrister brief for case `case_76056187ad4f` after the prompt rewrite so the current live brief now uses the new 3-report synthesis structure
+- **2026-03-28:** Replaced speculative sentence fallbacks with sentence resolution from the case’s completed report history across Report View, Barrister View, and backend exports so the live case now shows the exact sentence wording everywhere
+- **2026-03-28:** Normalised sentence wording to remove offence text (`for murder`), remove `minimum` from non-parole wording, and remove the stray comma after `imprisonment`
+- **2026-03-28:** Verified exact sentence wording across all 4 report types plus Print/PDF/DOCX outputs in `/app/test_reports/iteration_99.json` — all passed
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -113,7 +116,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P1 report cover sheet for print/PDF/Word: implemented and verified
 - P0 barrister unlock/recovery bug: implemented and verified
 - P0 barrister synthesis rewrite from all 3 source reports: implemented and live-regenerated for current case
-- Latest rigorous verification: `/app/test_reports/iteration_96.json` — backend 100%, frontend 100%
+- P0 exact sentence wording across 4 reports + exports: implemented and verified
+- Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
 ### P1
