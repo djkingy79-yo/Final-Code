@@ -332,7 +332,6 @@ export default function BarristerView() {
       : "";
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
     const previewFooterLabel = `Criminal Appeal Case Management - Barrister Brief on ${caseData?.defendant_name || "Appellant"} - ${previewDate}`;
-    const previewFooterMessage = "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process.";
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -375,7 +374,6 @@ export default function BarristerView() {
     .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
-    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
     @media print {
       body { background: #ffffff; }
       .preview-shell { max-width: none; margin: 0; padding: 0; }
@@ -414,7 +412,6 @@ export default function BarristerView() {
       <span class="print-footer-label">${previewFooterLabel}</span>
       <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
     </div>
-    <div class="print-footer-message">${previewFooterMessage}</div>
   </div>
 </body>
 </html>`;
@@ -440,18 +437,17 @@ export default function BarristerView() {
   const handleExportPDF = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
     try {
+      const token = localStorage.getItem("session_token");
+      const baseUrl = `${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`;
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      const pdfUrl = `${baseUrl}${separator}session_token=${token}`;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
-        openBarristerPreview("pdf");
+        window.location.assign(pdfUrl);
         return;
       }
-      const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`, {
-        responseType: "blob",
-        timeout: 60000,
-      });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      await iosShareOrDownload(blob, `${caseData?.title || "Case"}_barrister_brief.pdf`, "application/pdf");
-      toast.success("Barrister brief PDF downloaded.");
+      window.open(pdfUrl, "_blank", "noopener,noreferrer");
+      toast.success("Barrister brief PDF opened.");
     } catch (error) {
       toast.error("Failed to export the barrister brief PDF.");
     }
@@ -602,12 +598,6 @@ export default function BarristerView() {
 
         {isCompleted && (
           <article className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden" data-testid="barrister-print-frame">
-            <div className="text-center py-3 bg-white border-b border-slate-200" data-testid="barrister-created-by-top">
-              <p className="text-base font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
-                Created and Designed by Deb King
-              </p>
-            </div>
-
             <div className="px-6 sm:px-10 py-6 sm:py-7 border-b border-slate-200 bg-white" data-testid="barrister-hero">
               <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8">
                 <div className="min-w-0 flex-1 xl:flex-[1.2] xl:pr-8">
@@ -703,13 +693,6 @@ export default function BarristerView() {
             </div>
 
             <div className="px-6 sm:px-10 py-8 border-t border-slate-200 bg-slate-50" data-testid="barrister-footer">
-              <div className="text-center mb-5">
-                <p className="text-base font-bold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>
-                  Created and Designed by Deb King
-                </p>
-                <p className="text-xs text-slate-700 mt-1">Criminal Law Appeal Case Management — GLENMORE PARK NSW</p>
-              </div>
-
               <div className="rounded-2xl border-4 border-red-500 bg-white p-5 sm:p-6 flex items-start gap-4" data-testid="barrister-footer-disclaimer">
                 <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>

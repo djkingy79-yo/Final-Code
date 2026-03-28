@@ -5961,7 +5961,7 @@ def _build_export_footer_label(case: dict, report_label: str, generated_at=None)
 
 
 def _build_export_footer_message() -> str:
-    return "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process."
+    return ""
 
 
 def _truncate_export_footer(text: str, max_chars: int = 118) -> str:
@@ -6382,9 +6382,10 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         canvas_obj.setFont('Helvetica', 8)
         canvas_obj.drawString(pdf_doc.leftMargin, footer_mid, footer_label)
         canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, footer_mid, f"Page {canvas_obj.getPageNumber()}")
-        canvas_obj.setFillColor(colors.HexColor('#1e3a5f'))
-        canvas_obj.setFont('Helvetica-Bold', 8)
-        canvas_obj.drawCentredString(A4[0] / 2, footer_bottom, footer_message)
+        if footer_message:
+            canvas_obj.setFillColor(colors.HexColor('#1e3a5f'))
+            canvas_obj.setFont('Helvetica-Bold', 8)
+            canvas_obj.drawCentredString(A4[0] / 2, footer_bottom, footer_message)
         canvas_obj.restoreState()
 
     story.append(Paragraph(title, styles['ReportTitle']))
@@ -6658,12 +6659,13 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         footer_line_run.font.color.rgb = RGBColor(71, 85, 105)
         add_page_number_field(footer_line)
 
-        footer_msg_para = footer.add_paragraph()
-        footer_msg_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        footer_msg_run = footer_msg_para.add_run(footer_message)
-        footer_msg_run.font.size = Pt(8)
-        footer_msg_run.font.bold = True
-        footer_msg_run.font.color.rgb = RGBColor(30, 58, 95)
+        if footer_message:
+            footer_msg_para = footer.add_paragraph()
+            footer_msg_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            footer_msg_run = footer_msg_para.add_run(footer_message)
+            footer_msg_run.font.size = Pt(8)
+            footer_msg_run.font.bold = True
+            footer_msg_run.font.color.rgb = RGBColor(30, 58, 95)
 
     cover_title = doc.add_paragraph()
     cover_title.alignment = WD_ALIGN_PARAGRAPH.CENTER

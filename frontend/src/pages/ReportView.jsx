@@ -671,7 +671,6 @@ const ReportView = () => {
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
     const previewFooterLabel = `Criminal Appeal Case Management - ${title} on ${defendantName} - ${previewDate}`;
-    const previewFooterMessage = "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process.";
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -736,7 +735,6 @@ const ReportView = () => {
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
     .disclaimer-text { font-size: 11px; color: #334155; }
     .disclaimer-text strong { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 2px; }
-    .created-by { text-align: center; padding: 20px 32px 4px; font-size: 16px; font-weight: 700; color: #0f172a; font-family: 'Crimson Pro', serif; }
     .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
     .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
@@ -746,7 +744,6 @@ const ReportView = () => {
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
-    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
     .no-print { display: none !important; }
     @media print {
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -781,7 +778,6 @@ const ReportView = () => {
       </div>
     </section>
   <div class="report-container">
-    <div class="created-by">Created and Designed by Deb King</div>
     <div class="report-header">
       <div class="header-row">
         <div>
@@ -856,7 +852,6 @@ const ReportView = () => {
         </tbody>
       </table>
     </div>
-    <div class="created-by">Created and Designed by Deb King</div>
     <div class="disclaimer-bold">
       <div class="disc-icon">&#9888;</div>
       <div class="disc-text">
@@ -870,7 +865,6 @@ const ReportView = () => {
       <span class="print-footer-label">${previewFooterLabel}</span>
       <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
     </div>
-    <div class="print-footer-message">${previewFooterMessage}</div>
   </div>
 </body>
 </html>`;
@@ -895,16 +889,17 @@ const ReportView = () => {
 
   const handleExportPDF = async () => {
     try {
+      const token = localStorage.getItem("session_token");
+      const baseUrl = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      const pdfUrl = `${baseUrl}${separator}session_token=${token}`;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
-        openReportPreview("pdf");
+        window.location.assign(pdfUrl);
         return;
       }
-      toast.info("Generating PDF...");
-      const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const filename = `${caseData?.title || "Report"}_${report?.report_type || "report"}.pdf`;
-      await iosShareOrDownload(blob, filename, "application/pdf");
+      window.open(pdfUrl, "_blank", "noopener,noreferrer");
+      toast.success("PDF opened.");
     } catch (error) {
       console.error("PDF export error:", error);
       toast.error("Failed to export PDF. Please try again.");
@@ -981,13 +976,6 @@ const ReportView = () => {
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <div className={`bg-white rounded-xl border ${theme.borderColor} overflow-hidden shadow-xl`} data-testid="report-content">
-
-          {/* ===== CREATED BY — TOP ===== */}
-          <div className="text-center py-3 bg-white border-b border-slate-200">
-            <p className="text-base font-bold text-slate-800" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              Created and Designed by Deb King
-            </p>
-          </div>
 
           {/* ===== COLOUR-CODED REPORT HEADER (matches landing page) ===== */}
           <div className={`${theme.headerBg} text-white p-6 sm:p-8`} data-testid="report-colour-header">
@@ -1102,14 +1090,6 @@ const ReportView = () => {
                 <p className="text-sm font-extrabold text-red-700 uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
                 <p className="text-sm font-bold text-slate-800">This document is an educational tool only. It does NOT constitute legal advice and must NOT be relied upon as such. All analysis, findings, and recommendations must be independently verified by a qualified Australian legal professional before any action is taken.</p>
               </div>
-            </div>
-            <div className="text-center pt-3 border-t border-slate-200">
-              <p className="text-base font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Created and Designed by Deb King
-              </p>
-              <p className="text-xs text-slate-700 mt-1">
-                Criminal Law Appeal Case Management — GLENMORE PARK NSW
-              </p>
             </div>
           </div>
         </div>
