@@ -222,32 +222,34 @@ const GroundsOfMerit = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grounds of Merit Export</title>
   <style>
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; }
+    @page { size: A4; margin: 12mm; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 12px; }
     .grounds-export-shell { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 28px; }
-    .grounds-export-brand { text-align: center; font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+    .grounds-export-brand { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 12px; margin: 0 0 10px; }
-    .grounds-export-header h1 { margin: 0 0 10px; font-size: 34px; }
-    .grounds-export-header p { margin: 0; line-height: 1.6; }
-    .grounds-export-section { padding: 22px 0; border-bottom: 1px solid #e2e8f0; }
-    .grounds-export-title-wrap h2 { margin: 0 0 10px; font-size: 26px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 11px; margin: 0 0 8px; }
+    .grounds-export-header h1 { margin: 0 0 8px; font-size: 26px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 12px; }
+    .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
+    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 20px; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 16px; line-height: 1.7; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 10px; font-size: 18px; }
-    .grounds-export-block ul { margin: 0 0 16px; padding-left: 20px; line-height: 1.6; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 12px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 15px; }
+    .grounds-export-block ul { margin: 0 0 12px; padding-left: 18px; line-height: 1.45; font-size: 11px; }
     .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 24px; border: 2px solid #dc2626; padding: 16px; font-weight: 700; line-height: 1.6; }
-    .legal-report p { line-height: 1.8; }
+    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 11px; }
+    .legal-report p { line-height: 1.5; margin: 0 0 8px; font-size: 11px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .legal-report table { width: 100%; min-width: 560px; border-collapse: collapse; table-layout: auto; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 10px; vertical-align: top; }
-    .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: normal; overflow-wrap: normal; }
-    .legal-report td { overflow-wrap: anywhere; }
+    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 10px; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 6px 7px; vertical-align: top; }
+    .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+    .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
     @media print {
       body { background: #ffffff; }
       .grounds-export-shell { max-width: none; padding: 0; }
+      .legal-report-table-wrap { overflow: visible; }
     }
   </style>
 </head>

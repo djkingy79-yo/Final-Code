@@ -6,7 +6,7 @@
 import { useState, useMemo } from "react";
 import { 
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,
-  Filter, Search, Download, ChevronDown, ChevronUp, Eye
+  Filter, Search, Download, ChevronDown, ChevronUp, Eye, Printer
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -85,6 +85,8 @@ const Timeline = ({
   events, 
   documents = [], 
   grounds = [],
+  caseId,
+  caseInfo,
   onDeleteEvent, 
   onEditEvent,
   onExportPDF,
@@ -168,6 +170,131 @@ const Timeline = ({
       newExpanded.add(eventId);
     }
     setExpandedEvents(newExpanded);
+  };
+
+  const escapeHtml = (value = "") => String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  const buildTimelinePrintHtml = () => {
+    const previewDate = new Date().toLocaleDateString("en-AU");
+    const footerLabel = `Criminal Appeal Case Management - Timeline on ${caseInfo?.defendant_name || "Appellant"} - ${previewDate}`;
+    const footerMessage = "Created and Designed by Deb King — Thank you for using the tool. Good luck with the appeal process.";
+    const eventsMarkup = filteredEvents.map((event) => {
+      const catConfig = EVENT_CATEGORIES[event.event_category] || EVENT_CATEGORIES.general;
+      const sigConfig = SIGNIFICANCE_CONFIG[event.significance] || SIGNIFICANCE_CONFIG.normal;
+      const perspConfig = PERSPECTIVE_CONFIG[event.perspective] || PERSPECTIVE_CONFIG.neutral;
+      const linkedDocs = (event.linked_documents || []).map((docId) => docMap[docId]?.filename || docId);
+      const linkedGrounds = (event.related_grounds || []).map((groundId) => groundMap[groundId]?.title || groundId);
+      const participants = event.participants || [];
+
+      return `
+        <section class="timeline-print-event">
+          <div class="timeline-print-heading">
+            <div>
+              <div class="timeline-print-meta-row">
+                <span class="timeline-pill">${escapeHtml(catConfig.label)}</span>
+                <span class="timeline-pill timeline-pill-alt">${escapeHtml(sigConfig.label)}</span>
+                ${event.perspective !== 'neutral' ? `<span class="timeline-pill timeline-pill-neutral">${escapeHtml(perspConfig.label)}</span>` : ""}
+                ${event.is_contested ? `<span class="timeline-pill timeline-pill-contested">Contested</span>` : ""}
+              </div>
+              <h2>${escapeHtml(event.title || "Untitled event")}</h2>
+              <p class="timeline-print-subtitle">${escapeHtml(EVENT_TYPE_LABELS[event.event_type] || event.event_type || "Event")} • ${escapeHtml(formatDate(event.event_date))}</p>
+            </div>
+          </div>
+          ${event.description ? `<div class="timeline-print-block"><h3>Description</h3><p>${escapeHtml(event.description).replace(/\n/g, "<br />")}</p></div>` : ""}
+          ${event.is_contested && event.contested_details ? `<div class="timeline-print-block timeline-print-alert"><h3>Contested Details</h3><p>${escapeHtml(event.contested_details).replace(/\n/g, "<br />")}</p></div>` : ""}
+          ${event.source_citation ? `<div class="timeline-print-block"><h3>Source</h3><p>${escapeHtml(event.source_citation)}</p></div>` : ""}
+          ${participants.length ? `<div class="timeline-print-block"><h3>Participants</h3><ul>${participants.map((participant) => `<li>${escapeHtml(participant.name || "Unnamed participant")}${participant.role ? ` (${escapeHtml(participant.role)})` : ""}</li>`).join("")}</ul></div>` : ""}
+          ${linkedDocs.length ? `<div class="timeline-print-block"><h3>Linked Documents</h3><ul>${linkedDocs.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>` : ""}
+          ${linkedGrounds.length ? `<div class="timeline-print-block"><h3>Related Grounds of Appeal</h3><ul>${linkedGrounds.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>` : ""}
+          ${event.inconsistency_notes ? `<div class="timeline-print-block timeline-print-warn"><h3>Inconsistency Notes</h3><p>${escapeHtml(event.inconsistency_notes).replace(/\n/g, "<br />")}</p></div>` : ""}
+        </section>
+      `;
+    }).join("");
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(caseInfo?.title || "Case")} — Timeline</title>
+  <style>
+    @page { size: A4; margin: 14mm 14mm 18mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0 0 88px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; }
+    .timeline-print-shell { max-width: 920px; margin: 24px auto; background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); padding: 28px; }
+    .timeline-print-brand { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .timeline-print-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 20px; }
+    .timeline-print-kicker { margin: 0 0 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
+    .timeline-print-header h1 { margin: 0 0 8px; font-size: 28px; }
+    .timeline-print-header p { margin: 0; line-height: 1.5; font-size: 12px; color: #475569; }
+    .timeline-print-event { padding: 18px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
+    .timeline-print-heading h2 { margin: 0 0 6px; font-size: 20px; }
+    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 12px; }
+    .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .timeline-pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 700; }
+    .timeline-pill-alt { background: #eff6ff; color: #1d4ed8; }
+    .timeline-pill-neutral { background: #f1f5f9; color: #334155; }
+    .timeline-pill-contested { background: #fee2e2; color: #b91c1c; }
+    .timeline-print-block { margin-top: 12px; }
+    .timeline-print-block h3 { margin: 0 0 6px; font-size: 13px; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; }
+    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.55; font-size: 12px; }
+    .timeline-print-block ul { margin: 0; padding-left: 18px; }
+    .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; }
+    .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .print-footer-page-print::after { content: ''; }
+    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
+    @media print {
+      body { background: #ffffff; }
+      .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
+      .print-footer-page-static { display: none; }
+      .print-footer-page-print::after { content: 'Page ' counter(page); }
+    }
+  </style>
+</head>
+<body>
+  <div class="timeline-print-shell">
+    <div class="timeline-print-brand">Created and Designed by Deb King</div>
+    <div class="timeline-print-header">
+      <p class="timeline-print-kicker">Timeline</p>
+      <h1>${escapeHtml(caseInfo?.title || "Case Timeline")}</h1>
+      <p>${escapeHtml(caseInfo?.defendant_name || "")} ${caseInfo?.court ? `• ${escapeHtml(caseInfo.court)}` : ""} ${caseInfo?.case_number ? `• ${escapeHtml(caseInfo.case_number)}` : ""}</p>
+      <p>${filteredEvents.length} event${filteredEvents.length === 1 ? "" : "s"} included in this printout. All expanded timeline details are included below.</p>
+    </div>
+    ${eventsMarkup || `<p>No timeline events available.</p>`}
+  </div>
+  <div class="print-footer">
+    <div class="print-footer-row">
+      <span class="print-footer-label">${escapeHtml(footerLabel)}</span>
+      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+    </div>
+    <div class="print-footer-message">${escapeHtml(footerMessage)}</div>
+  </div>
+</body>
+</html>`;
+  };
+
+  const openTimelinePrintPreview = (mode = "print") => {
+    const html = buildTimelinePrintHtml();
+    localStorage.setItem(
+      "document-preview-payload",
+      JSON.stringify({
+        html,
+        mode,
+        title: `${caseInfo?.title || "Case"} Timeline`,
+        source: "timeline",
+        returnTo: `/cases/${caseId}?tab=timeline`,
+        createdAt: Date.now(),
+      })
+    );
+    window.location.assign(`${window.location.origin}/document-preview?mode=${mode}`);
   };
 
   // Stats
@@ -277,6 +404,15 @@ const Timeline = ({
             data-testid="analyze-timeline-btn"
           >
             {analyzing ? "Analysing..." : "AI Analysis"}
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => openTimelinePrintPreview("print")}
+            className="bg-blue-700 text-white hover:bg-blue-600"
+            data-testid="print-timeline-btn"
+          >
+            <Printer className="w-4 h-4 mr-1" />
+            Print
           </Button>
           <Button
             variant="outline"

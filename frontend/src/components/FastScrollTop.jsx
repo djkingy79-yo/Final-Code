@@ -39,7 +39,7 @@ export const FastScrollTop = () => {
     <div className="fixed bottom-20 right-5 z-[70] flex flex-col gap-2">
       <button
         onClick={() => navigate("/")}
-        className="h-12 w-12 rounded-full bg-slate-800 hover:bg-slate-900 text-white shadow-xl border-2 border-white/60 flex items-center justify-center transition-colors"
+        className="h-12 w-12 rounded-full bg-blue-700 hover:bg-blue-600 text-white shadow-xl border-2 border-white/60 flex items-center justify-center transition-colors"
         data-testid="global-quick-home-btn"
         aria-label="Go to home"
       >

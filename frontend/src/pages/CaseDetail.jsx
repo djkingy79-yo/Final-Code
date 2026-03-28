@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
@@ -132,6 +132,7 @@ const GROUND_TYPES = [
 
 const CaseDetail = ({ user }) => {
   const { caseId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const caseRequestRef = useRef(0);
   const [caseData, setCaseData] = useState(null);
@@ -146,7 +147,7 @@ const CaseDetail = ({ user }) => {
   const [paymentSummary, setPaymentSummary] = useState({ payments: [], unlocked_features: {}, latest_status_by_feature: {} });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
-  const [activeTab, setActiveTab] = useState("documents");
+  const [activeTab, setActiveTab] = useState(() => new URLSearchParams(window.location.search).get("tab") || "documents");
 
   // Dialog states
   const [showEventDialog, setShowEventDialog] = useState(false);
@@ -190,6 +191,13 @@ const CaseDetail = ({ user }) => {
     strength: "moderate",
     supporting_evidence: []
   });
+
+  useEffect(() => {
+    const requestedTab = new URLSearchParams(location.search).get("tab");
+    if (requestedTab) {
+      setActiveTab(requestedTab);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     const requestId = caseRequestRef.current + 1;
@@ -972,6 +980,8 @@ const CaseDetail = ({ user }) => {
                   events={timeline} 
                   documents={documents}
                   grounds={grounds}
+                  caseId={caseId}
+                  caseInfo={caseData}
                   onDeleteEvent={handleDeleteEvent}
                   onExportPDF={handleExportTimelinePDF}
                   onAnalyze={handleAnalyzeTimeline}
