@@ -857,10 +857,10 @@ const LandingPage = () => {
                   <span>See number of potential grounds identified</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>Quick Summary Report</span>
+                  <span className="text-emerald-700 font-semibold">Quick Summary</span>
                 </li>
               </ul>
               <Button
@@ -968,10 +968,10 @@ const LandingPage = () => {
                     Quick Summary<br /><span className="text-sm font-normal">FREE (7 sections)</span>
                   </th>
                   <th className="p-4 bg-blue-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
-                    Full Detailed<br /><span className="text-sm font-normal">$150 (15 sections)</span>
+                    Full Detailed Report<br /><span className="text-sm font-normal">$150 (15 sections)</span>
                   </th>
                   <th className="p-4 bg-purple-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
-                    Extensive Log<br /><span className="text-sm font-normal">$200 (20 sections)</span>
+                    Extensive Log Report<br /><span className="text-sm font-normal">$200 (20 sections)</span>
                   </th>
                 </tr>
               </thead>
@@ -1046,6 +1046,13 @@ const LandingPage = () => {
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-4 bg-teal-50 border border-teal-200 rounded-xl p-4 text-center" data-testid="barrister-view-comparison-note">
+            <p className="text-teal-800 font-semibold text-sm">
+              <strong className="text-teal-900">Barrister View</strong> — Unlocks after all three reports above are generated. 
+              A capstone synthesis combining every ground, strategy, authority, and recommendation into a single barrister-ready brief.
+            </p>
           </div>
 
           <div className="mt-6 text-center">
