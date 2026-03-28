@@ -5158,6 +5158,8 @@ MANDATORY RULES:
 - Use markdown headings only, with ## for main sections and ### for sub-sections.
 - Write a professional barrister-ready brief with strong structure, clean transitions, and substantial case-specific detail.
 - This must be materially more detailed than a summary. It must preserve the strongest factual analysis, legal reasoning, statutory interpretation, sentencing comparison, and strategic detail from the source reports.
+- The brief must clearly synthesise all 3 source reports as 3 distinct source analyses before building the integrated counsel brief. Each source report's unique contribution must be identified so the final brief does not recycle the same point over and over.
+- The brief is for counsel. Avoid consumer-style explanation and avoid shrinking the material into a simplified note.
 - Each section must be dense, specific, and useful to counsel. Generic high-level summaries are unacceptable.
 """
 
@@ -5179,39 +5181,40 @@ DOCUMENT INVENTORY
 
     section_groups = [
         {
-            "slug": "foundations",
-            "target_chars": 12000,
-            "source_limits": {"quick_summary": 12000, "full_detailed": 18000, "extensive_log": 22000},
+            "slug": "source-synthesis",
+            "target_chars": 22000,
+            "source_limits": {"quick_summary": 14000, "full_detailed": 24000, "extensive_log": 32000},
             "required_headings": [
-                "## Executive Summary",
+                "## Executive Overview for Counsel",
+                "## Source Report Synthesis",
                 "## Case Background and Procedural History",
                 "## Conviction, Offence and Sentence Analysis",
-                "## Evidence and Factual Issues",
             ],
-            "instructions": "Write these sections in full depth. Set out the procedural history carefully, explain the conviction/sentence context, identify factual tensions in the evidence, and draw in the strongest details from the source reports rather than compressing them into a short overview.",
+            "instructions": "Write these sections in full depth. Under ## Source Report Synthesis, create exactly these three sub-headings in this order: ### Quick Summary Synthesis, ### Full Detailed Report Synthesis, ### Extensive Log Synthesis. Under each sub-heading, identify what that source report contributes that is unique, critical, or more developed than the others. Do not repeat the same point in all 3 sub-sections. Set out the procedural history carefully and explain the conviction and sentence context at counsel depth.",
         },
         {
-            "slug": "legal-analysis",
-            "target_chars": 20000,
-            "source_limits": {"quick_summary": 9000, "full_detailed": 26000, "extensive_log": 30000},
+            "slug": "case-analysis",
+            "target_chars": 26000,
+            "source_limits": {"quick_summary": 11000, "full_detailed": 28000, "extensive_log": 36000},
             "required_headings": [
+                "## Evidentiary Tensions and Appeal Pressure Points",
                 "## Grounds of Merit",
-                "## Statutory Framework",
+                "## Statutory Framework and Governing Tests",
                 "## Authorities and Comparative Cases",
-                "## Sentencing Comparison and Relief Pathways",
             ],
-            "instructions": "Write these sections at barrister depth. Under ## Grounds of Merit, create one dedicated ### subsection for every item in the mandatory ground list and do not omit, merge, or collapse any listed ground. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, fallback positions, and strategic implications. The authorities section must meaningfully compare cases and explain why they matter, including a markdown comparative authorities table where useful. The sentencing comparison must be detailed and specific, not a summary paragraph, and should include a markdown sentencing comparison table where useful.",
+            "instructions": "Write these sections at barrister depth. Under ## Grounds of Merit, create one dedicated ### subsection for every item in the mandatory ground list and do not omit, merge, or collapse any listed ground. Each ground must be explained with substantial factual support, legal reasoning, weaknesses, strengths, fallback positions, strategic implications, and why counsel should care about it in conference and written submissions. The authorities section must meaningfully compare cases and explain why they matter, including a markdown comparative authorities table where useful. Under ## Evidentiary Tensions and Appeal Pressure Points, identify contradictions, missing links, procedural fractures, and anything that intensifies appellate pressure without repeating the same sentence structure.",
         },
         {
             "slug": "strategy",
-            "target_chars": 12000,
-            "source_limits": {"quick_summary": 7000, "full_detailed": 16000, "extensive_log": 22000},
+            "target_chars": 24000,
+            "source_limits": {"quick_summary": 8000, "full_detailed": 22000, "extensive_log": 32000},
             "required_headings": [
+                "## Sentencing Comparison and Relief Pathways",
                 "## Proposed Submissions and Hearing Strategy",
-                "## Filing Position, Risks and Next Steps",
-                "## Plain-English Brief",
+                "## Conference Questions, Filing Priorities and Risks",
+                "## Final Barrister Briefing Note",
             ],
-            "instructions": "Write these sections as a serious counsel-facing strategy brief. Include detailed proposed submission themes, hearing structure, fallback positions, risk analysis, filing considerations, and a clear but still detailed plain-English explanation. Do not shorten the analysis into generic advice.",
+            "instructions": "Write these sections as a serious counsel-facing strategy brief. Include detailed proposed submission themes, hearing structure, fallback positions, risk analysis, filing priorities, conference questions for counsel, and a closing barrister briefing note that is still detailed rather than compressed. Do not shorten the analysis into generic advice.",
         },
     ]
 
@@ -5256,8 +5259,8 @@ SOURCE REPORTS
             system_prompt,
             group_prompt,
             session_id=f"barrister-{case_id}-{group['slug']}",
-            max_tokens=12000,
-            timeout_seconds=180,
+            max_tokens=14000,
+            timeout_seconds=240,
         )
         group_response = _strip_report_placeholders(group_response)
         group_response = re.sub(r"\n{3,}", "\n\n", group_response).strip()
@@ -5276,7 +5279,7 @@ SOURCE REPORTS
 
     response = "\n\n".join(part for part in section_outputs if part).strip()
 
-    target_length = 45000
+    target_length = 90000
     if len(response) < target_length:
         expansion_source_text = _build_barrister_group_source_text(
             source_reports,
@@ -5289,6 +5292,7 @@ Do not remove or shorten any existing material.
 Add more factual depth, procedural detail, case-specific analysis, statutory interpretation, authority comparison, sentencing detail, and hearing strategy under the existing sections only.
 The result must read like a deeply detailed barrister brief, not a summary.
 Every ground in the mandatory ground list must remain in the final text with its own dedicated discussion.
+Under ## Source Report Synthesis, deepen each of the 3 report sub-sections with further unique material rather than rephrasing the same content.
 
 MANDATORY GROUND LIST
 {grounds_heading_text}
@@ -5305,7 +5309,7 @@ CURRENT BARRISTER BRIEF
                 expansion_prompt,
                 session_id=f"barrister-{case_id}-expand",
                 max_tokens=16384,
-                timeout_seconds=180,
+                timeout_seconds=240,
             )
             expanded_response = _strip_report_placeholders(expanded_response)
             expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
@@ -5314,7 +5318,7 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Barrister whole-brief expansion skipped for {case_id}: {exc}")
 
-    if len(response) < 38000 and grounds:
+    if len(response) < 75000 and grounds:
         ground_expansion_prompt = f"""Rewrite only the ## Grounds of Merit section of the Barrister Brief below.
 
 Requirements:
@@ -5322,7 +5326,7 @@ Requirements:
 - Include every ground from the mandatory ground list below.
 - Create one dedicated ### subsection per listed ground.
 - Make this rewritten grounds section extremely detailed, with factual support, legal reasoning, strategic use, weaknesses, fallback positions, and any key authority or statutory link relevant to that ground.
-- Minimum target length for this rewritten section alone: 18000 characters.
+- Minimum target length for this rewritten section alone: 26000 characters.
 
 MANDATORY GROUND LIST
 {grounds_heading_text}
@@ -5342,19 +5346,93 @@ CURRENT BARRISTER BRIEF
                 ground_expansion_prompt,
                 session_id=f"barrister-{case_id}-grounds-expand",
                 max_tokens=16384,
-                timeout_seconds=180,
+                timeout_seconds=240,
             )
             rewritten_grounds = _strip_report_placeholders(rewritten_grounds)
             rewritten_grounds = re.sub(r"\n{3,}", "\n\n", rewritten_grounds).strip()
             if rewritten_grounds.startswith("## Grounds of Merit"):
                 response = re.sub(
-                    r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework)",
+                    r"## Grounds of Merit\n[\s\S]*?(?=\n## Statutory Framework and Governing Tests)",
                     rewritten_grounds + "\n\n",
                     response,
                     count=1,
                 )
         except Exception as exc:
             logger.warning(f"Barrister grounds expansion skipped for {case_id}: {exc}")
+
+    if len(response) < 70000:
+        cross_analysis_prompt = f"""Produce only the following sections, in this exact order:
+
+## Report-to-Report Cross-Analysis
+## Document and Evidence Deployment for Counsel
+
+Requirements:
+- Minimum target length for this response: 22000 characters.
+- Use all 3 source reports and identify where they overlap, where they diverge, and what unique critical material each one contributes.
+- Do not recycle the same paragraph 3 times. Organise the material by issue and explain which source report adds what.
+- Under ## Document and Evidence Deployment for Counsel, explain how specific documents, witnesses, chronology items, psychiatric material, media material, and procedural incidents should be deployed by counsel in conference, written submissions, and oral argument.
+- This must be dense, counsel-facing, and case-specific.
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+        try:
+            cross_analysis = await call_llm_with_fallback(
+                system_prompt,
+                cross_analysis_prompt,
+                session_id=f"barrister-{case_id}-cross-analysis",
+                max_tokens=16384,
+                timeout_seconds=240,
+            )
+            cross_analysis = _strip_report_placeholders(cross_analysis)
+            cross_analysis = re.sub(r"\n{3,}", "\n\n", cross_analysis).strip()
+            if cross_analysis.startswith("## Report-to-Report Cross-Analysis"):
+                response = response.rstrip() + "\n\n" + cross_analysis
+        except Exception as exc:
+            logger.warning(f"Barrister cross-analysis expansion skipped for {case_id}: {exc}")
+
+    if len(response) < 85000:
+        strategy_expansion_prompt = f"""Rewrite only the following sections of the Barrister Brief below, keeping the same headings and making them substantially more detailed:
+
+## Proposed Submissions and Hearing Strategy
+## Conference Questions, Filing Priorities and Risks
+## Final Barrister Briefing Note
+
+Requirements:
+- Minimum target length for this rewritten block alone: 24000 characters.
+- Expand the oral and written submissions structure greatly.
+- Include issue sequencing, fallback positions, framing choices, evidentiary use, likely resistance points, answer lines, and conference questions for counsel.
+- The rewritten material must read like a serious barrister working brief, not a summary.
+- Avoid repeating the same sentence structure or generic observations.
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+        try:
+            rewritten_strategy = await call_llm_with_fallback(
+                system_prompt,
+                strategy_expansion_prompt,
+                session_id=f"barrister-{case_id}-strategy-expand",
+                max_tokens=16384,
+                timeout_seconds=240,
+            )
+            rewritten_strategy = _strip_report_placeholders(rewritten_strategy)
+            rewritten_strategy = re.sub(r"\n{3,}", "\n\n", rewritten_strategy).strip()
+            if rewritten_strategy.startswith("## Proposed Submissions and Hearing Strategy"):
+                response = re.sub(
+                    r"## Proposed Submissions and Hearing Strategy\n[\s\S]*$",
+                    rewritten_strategy,
+                    response,
+                    count=1,
+                )
+        except Exception as exc:
+            logger.warning(f"Barrister strategy expansion skipped for {case_id}: {exc}")
 
     try:
         comparison_tables_prompt = f"""Produce only the following markdown blocks, in this exact order, with no introduction or conclusion:
@@ -5388,7 +5466,7 @@ CURRENT BARRISTER BRIEF
             comparison_tables_prompt,
             session_id=f"barrister-{case_id}-comparison-tables",
             max_tokens=12000,
-            timeout_seconds=180,
+            timeout_seconds=240,
         )
         comparison_tables = _strip_report_placeholders(comparison_tables)
         comparison_tables = re.sub(r"\n{3,}", "\n\n", comparison_tables).strip()
@@ -5409,7 +5487,7 @@ CURRENT BARRISTER BRIEF
 
         if evidence_table_match and "### Evidentiary Pressure Points Table" not in response:
             response = re.sub(
-                r"(## Evidence and Factual Issues\n[\s\S]*?)(?=\n## Grounds of Merit)",
+                r"(## Evidentiary Tensions and Appeal Pressure Points\n[\s\S]*?)(?=\n## Grounds of Merit)",
                 lambda match: match.group(1).rstrip() + "\n\n" + evidence_table_match.group(1).strip() + "\n\n",
                 response,
                 count=1,

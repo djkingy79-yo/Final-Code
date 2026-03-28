@@ -96,6 +96,10 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Tightened full-screen report table rendering for mobile by using scrollable wrappers with auto table layout and smaller mobile table typography
 - **2026-03-28:** Added title-page cover sheets to report print previews plus PDF/DOCX export generation, covering all report tiers through the shared export pipeline
 - **2026-03-28:** Verified the latest report fixes on desktop and mobile, including the cover sheet, via responsive frontend testing and export sanity checks; all passed
+- **2026-03-28:** Fixed Barrister availability when all 3 standard reports exist by recovering incomplete empty barrister records and auto-retrying generation when the three prerequisite reports are completed
+- **2026-03-28:** Standardised full detailed report preview/export tables to a consistent smaller 11pt-style table font treatment and unified table font family handling across preview/PDF/DOCX paths
+- **2026-03-28:** Reworked Barrister synthesis prompts so the brief now explicitly includes a 3-part source-report synthesis (`Quick Summary`, `Full Detailed`, `Extensive Log`) before the integrated counsel analysis, rather than treating the inputs as one blurred summary source
+- **2026-03-28:** Regenerated the live Barrister brief for case `case_76056187ad4f` after the prompt rewrite so the current live brief now uses the new 3-report synthesis structure
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -107,6 +111,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 report sentence-summary bug: implemented and verified
 - P1 generate-report modal mobile button overlap: implemented and verified
 - P1 report cover sheet for print/PDF/Word: implemented and verified
+- P0 barrister unlock/recovery bug: implemented and verified
+- P0 barrister synthesis rewrite from all 3 source reports: implemented and live-regenerated for current case
 - Latest rigorous verification: `/app/test_reports/iteration_96.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
