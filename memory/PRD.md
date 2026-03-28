@@ -119,6 +119,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Added `FRONTEND_URL` to `backend/.env`, restarted backend, and re-ran deployment health check — deployment status is now PASS with zero blockers or warnings
 - **2026-03-28:** Added a shared backend `get_frontend_url()` config helper in `backend/config.py` and reused it in password reset + payment email flows so frontend-facing backend URLs are sourced from one place
 - **2026-03-28:** Removed the hardcoded preview fallback from `backend/routers/payments_new.py` and verified backend health + deployment scan still pass
+- **2026-03-28:** Extended the backend config audit by adding shared `get_admin_emails()` and `get_contact_email()` helpers in `backend/config.py` and removed remaining hardcoded admin/contact email fallbacks from `admin.py`, `auth.py`, `analytics.py`, `payments_new.py`, and `server.py`
+- **2026-03-28:** Fixed a small analytics lint issue found during the audit, verified backend health remains 200, and re-ran deployment analysis — final deployment status remains PASS with no blockers or warnings
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -139,6 +141,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 PDF-view blank screen fix: implemented and manually verified in browser
 - P0 deployment readiness blocker (password reset frontend URL env): implemented and verified
 - P1 shared deployment-safe frontend URL helper: implemented and verified
+- P1 backend config/env standardisation audit: implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
