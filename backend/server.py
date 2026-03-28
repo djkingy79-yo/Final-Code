@@ -5978,6 +5978,9 @@ def _clean_sentence_candidate(value: str) -> str:
     cleaned = re.sub(r"\s*[|•].*$", "", cleaned)
     cleaned = re.sub(r"[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$", "", cleaned, flags=re.I)
     cleaned = re.sub(r"[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$", "", cleaned, flags=re.I)
+    cleaned = re.sub(r"\s+for\s+[a-z\s'-]+(?=,|\s+with\b|$)", "", cleaned, flags=re.I)
+    cleaned = re.sub(r"\bminimum\s+non[- ]?parole\s+period\b", "non-parole period", cleaned, flags=re.I)
+    cleaned = re.sub(r"\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b", "with a non-parole period", cleaned, flags=re.I)
     return re.sub(r"\s+", " ", cleaned).strip()
 
 

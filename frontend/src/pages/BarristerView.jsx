@@ -49,6 +49,9 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
       .replace(/\s*[|•].*$/, "")
       .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
       .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
+      .replace(/\s+for\s+[a-z\s'-]+(?=,|\s+with\b|$)/i, "")
+      .replace(/\bminimum\s+non[- ]?parole\s+period\b/gi, "non-parole period")
+      .replace(/\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b/gi, "with a non-parole period")
       .trim();
     if (/(life|year|month|non[- ]?parole|imprisonment|gaol|custody|sentence)/i.test(cleaned) && !/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would|adequacy|seek|sought|relief)\b/i.test(cleaned)) return cleaned;
   }
@@ -58,6 +61,9 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
       .replace(/\s*[|•].*$/, "")
       .replace(/[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$/i, "")
       .replace(/[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$/i, "")
+      .replace(/\s+for\s+[a-z\s'-]+(?=,|\s+with\b|$)/i, "")
+      .replace(/\bminimum\s+non[- ]?parole\s+period\b/gi, "non-parole period")
+      .replace(/\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b/gi, "with a non-parole period")
       .trim();
   }
   return "Not recorded";
