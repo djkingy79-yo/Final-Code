@@ -58,6 +58,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-600",
       description: "From your Dashboard, click the 'New Case' button. You'll be asked to fill in basic details about the criminal matter.",
       visual: {
+        imageSrc: "/howto/step-1-dashboard.jpeg",
         alt: "Dashboard with cases and progress tracking",
         caption: "Your dashboard shows all cases with progress tracking."
       },
@@ -90,6 +91,7 @@ const HowItWorksPage = () => {
       textColor: "text-emerald-600",
       description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. The system processes them with OCR so even scanned PDFs are readable.",
       visual: {
+        imageSrc: "/howto/step-2-documents.jpeg",
         alt: "Documents tab with uploaded case files",
         caption: "Upload transcripts, sentencing remarks, and evidence — all processed by AI."
       },
@@ -127,6 +129,7 @@ const HowItWorksPage = () => {
       textColor: "text-purple-600",
       description: "In the Grounds tab, click 'AI Identify Grounds'. The AI reads all your uploaded documents and identifies how many potential appeal grounds exist. This step is completely FREE — you see the number of grounds found, but not the titles or detailed analysis.",
       visual: {
+        imageSrc: "/howto/step-3-grounds.jpeg",
         alt: "Grounds tab showing identified grounds with strength ratings",
         caption: "AI identifies grounds — titles hidden until you pay $99 to investigate."
       },
@@ -165,6 +168,7 @@ const HowItWorksPage = () => {
       textColor: "text-indigo-600",
       description: "Once you've seen how many grounds were found (Step 3), click 'Investigate Grounds' to get the full detailed analysis. This is a one-time payment of $99 AUD and unlocks the complete legal breakdown of every ground.",
       visual: {
+        imageSrc: "/howto/step-4-investigate.jpeg",
         alt: "Full ground analysis with titles, evidence, and strength ratings",
         caption: "Investigate Grounds reveals full titles, supporting evidence, and case law."
       },
@@ -204,6 +208,7 @@ const HowItWorksPage = () => {
       textColor: "text-red-600",
       description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis, with the Extensive Log designed for use by legal professionals.",
       visual: {
+        imageSrc: "/howto/step-5-reports.jpeg",
         alt: "Reports tab showing generated reports with export options",
         caption: "Three report tiers plus Barrister View — from free overview to hearing-ready briefs."
       },
@@ -230,6 +235,7 @@ const HowItWorksPage = () => {
       textColor: "text-blue-700",
       description: "Barrister View unlocks after all three reports are complete (Quick Summary, Full Detailed, Extensive Log). It synthesises every report into one hearing-ready brief with a full Table of Contents, source tracking, and conference formatting.",
       visual: {
+        imageSrc: "/howto/step-6-barrister.jpeg",
         alt: "Barrister Executive Brief synthesised from all reports",
         caption: "Barrister View synthesises all 3 reports into one court-ready brief."
       },
@@ -258,6 +264,7 @@ const HowItWorksPage = () => {
       textColor: "text-teal-700",
       description: "Use the Progress tab to track your appeal timeline, tick off completed steps, and never miss a critical deadline.",
       visual: {
+        imageSrc: "/howto/step-7-progress.jpeg",
         alt: "Progress tab with milestones and completion tracking",
         caption: "Track every milestone from case creation to lodging the appeal."
       },
@@ -474,11 +481,23 @@ const HowItWorksPage = () => {
                 </p>
 
                 {step.visual && (
-                  <div className={`${step.lightColor} rounded-xl border ${step.borderColor} p-4 flex items-center gap-3`} data-testid={`how-it-works-step-${step.num}-visual`}>
-                    <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center flex-shrink-0`}>
-                      <Icon className="w-5 h-5 text-white" />
+                  <div className={`${step.lightColor} rounded-xl border ${step.borderColor} p-4 space-y-3`} data-testid={`how-it-works-step-${step.num}-visual`}>
+                    {step.visual.imageSrc && (
+                      <div className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm" data-testid={`how-it-works-step-${step.num}-image-wrap`}>
+                        <img
+                          src={step.visual.imageSrc}
+                          alt={step.visual.alt}
+                          className="w-full h-auto object-contain"
+                          data-testid={`how-it-works-step-${step.num}-image`}
+                        />
+                      </div>
+                    )}
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <p className="text-sm text-slate-700">{step.visual.caption}</p>
                     </div>
-                    <p className="text-sm text-slate-700">{step.visual.caption}</p>
                   </div>
                 )}
 
