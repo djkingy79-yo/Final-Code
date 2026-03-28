@@ -6,14 +6,14 @@ Provides comprehensive usage statistics and metrics
 from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone, timedelta
 
-from config import db, logger
+from config import db, logger, get_admin_emails
 from auth_utils import get_current_user
 import os
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
 # Admin emails
-ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+ADMIN_EMAILS = get_admin_emails()
 
 
 @router.post("/track-visit")
@@ -116,7 +116,6 @@ async def get_dashboard_stats(request: Request):
         
         # Calculate date ranges
         now = datetime.now(timezone.utc)
-        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         week_ago = now - timedelta(days=7)
         month_ago = now - timedelta(days=30)
         

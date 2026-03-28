@@ -26,3 +26,11 @@ EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
 
 def get_frontend_url() -> str:
     return os.environ['FRONTEND_URL'].replace('/api', '')
+
+
+def get_admin_emails() -> list[str]:
+    return [email.strip() for email in os.environ['ADMIN_EMAILS'].split(',') if email.strip()]
+
+
+def get_contact_email() -> str:
+    return os.environ['CONTACT_EMAIL']

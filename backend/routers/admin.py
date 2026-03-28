@@ -12,17 +12,17 @@ import uuid
 import asyncio
 import resend
 
-from config import db, logger
+from config import db, logger, get_admin_emails, get_contact_email
 from auth_utils import get_current_user
 
 router = APIRouter(prefix="/api", tags=["admin"])
 
 # Admin configuration
-ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+ADMIN_EMAILS = get_admin_emails()
 
 # Resend email configuration
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
-CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "djkingy79@gmail.com")
+CONTACT_EMAIL = get_contact_email()
 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY

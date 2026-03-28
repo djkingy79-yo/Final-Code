@@ -7,7 +7,7 @@ from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
-from config import db, logger, get_frontend_url
+from config import db, logger, get_frontend_url, get_admin_emails
 from auth_utils import get_current_user
 import os
 import asyncio
@@ -471,7 +471,7 @@ async def admin_confirm_payid(reference: str, request: Request):
     user = await get_current_user(request)
     
     # Check if admin
-    admin_emails = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+    admin_emails = get_admin_emails()
     if user.email not in admin_emails:
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -534,7 +534,7 @@ async def get_pending_payid_payments(request: Request):
     user = await get_current_user(request)
     
     # Check if admin
-    admin_emails = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+    admin_emails = get_admin_emails()
     if user.email not in admin_emails:
         raise HTTPException(status_code=403, detail="Admin access required")
     

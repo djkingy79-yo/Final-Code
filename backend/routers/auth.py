@@ -11,11 +11,11 @@ import uuid
 import hashlib
 import secrets
 
-from config import db, logger
+from config import db, logger, get_admin_emails
 from auth_utils import get_current_user
 import os
 
-ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+ADMIN_EMAILS = get_admin_emails()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 

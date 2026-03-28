@@ -43,7 +43,7 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Admin configuration - emails that have admin access
-ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS", "djkingy79@gmail.com").split(",")
+ADMIN_EMAILS = [email.strip() for email in os.environ["ADMIN_EMAILS"].split(",") if email.strip()]
 
 # Resend email configuration for payment notices
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
