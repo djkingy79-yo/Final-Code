@@ -132,14 +132,21 @@ const HowToUsePage = () => {
       icon: FileCheck,
       color: "indigo",
       image: "/images/howto/live-step8-reports.png",
-      description: "Create professional reports summarising your case and findings.",
+      description: "Create professional reports summarising your case and findings. Three tiers are available, each with increasing depth of analysis.",
       instructions: [
         "Go to the 'Reports' tab",
         "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
+        "Each report includes a colour-coded cover page and table of contents",
         "Reports are generated as PDF documents",
-        "Download and share with your lawyer"
+        "Download and share with your lawyer",
+        "All three reports must be generated to unlock the Barrister View"
       ],
-      tip: "The Full Report is ideal to take to a lawyer for review."
+      tip: "The Full Report is ideal to take to a lawyer for review. Generate all three to access the Barrister View.",
+      reportScreenshots: [
+        { label: "Quick Summary (Free)", image: "/images/howto/live-report-quick-summary.png", color: "emerald" },
+        { label: "Full Detailed Report ($150 AUD)", image: "/images/howto/live-report-full-detailed.png", color: "blue" },
+        { label: "Extensive Log Report ($200 AUD)", image: "/images/howto/live-report-extensive-log.png", color: "purple" }
+      ]
     }
   ];
 
@@ -281,6 +288,32 @@ const HowToUsePage = () => {
                     <strong>Tip:</strong> {step.tip}
                   </div>
                 </div>
+
+                {/* Report type screenshots for Step 8 */}
+                {step.reportScreenshots && (
+                  <div className="mt-8" data-testid="report-type-screenshots">
+                    <h4 className="text-base font-semibold text-slate-900 mb-4">Each Report Type:</h4>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {step.reportScreenshots.map((rs, idx) => (
+                        <div key={idx} className="border border-slate-200 rounded-xl overflow-hidden">
+                          <div className={`px-3 py-2 text-xs font-bold text-center ${
+                            rs.color === 'emerald' ? 'bg-emerald-600 text-white' :
+                            rs.color === 'blue' ? 'bg-blue-600 text-white' :
+                            'bg-purple-600 text-white'
+                          }`}>
+                            {rs.label}
+                          </div>
+                          <img
+                            src={rs.image}
+                            alt={rs.label}
+                            className="w-full h-auto"
+                            data-testid={`report-screenshot-${idx}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -299,15 +332,25 @@ const HowToUsePage = () => {
             <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
               Use Barrister View
             </h3>
-            <p className="text-sm text-slate-700 mb-4">Present your case professionally with the clean Barrister View.</p>
+            <p className="text-sm text-slate-700 mb-4">Present your case professionally with the clean Barrister View — a comprehensive synthesis of all three reports.</p>
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl mb-4" data-testid="barrister-unlock-notice">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-900">Unlock Requirement</p>
+                  <p className="text-sm text-blue-800">All three standard reports (Quick Summary, Full Detailed Report, and Extensive Log) must be generated before the Barrister View becomes available. This ensures a thorough foundation for the counsel-grade analysis.</p>
+                </div>
+              </div>
+            </div>
             <ul className="space-y-2 text-sm text-slate-700 mb-4">
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Click 'Barrister View' from your case reports</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Opens a clean, professional presentation format</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Perfect for meetings with lawyers or counsel</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Click 'Barrister View' from your case reports once unlocked</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Opens a clean, professional presentation synthesising all three reports</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Includes "Attachment A — Barrister Issue Matrix" for counsel reference</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Can be printed or exported to PDF</li>
             </ul>
-            <div className="p-3 bg-white rounded-lg text-sm text-slate-700">
-              <strong>Tip:</strong> Use this when discussing your case with legal professionals.
+            <div className="p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
+              <strong>Tip:</strong> Use the Barrister View when discussing your case with legal professionals. It is designed as a counsel-grade brief.
             </div>
           </div>
 
