@@ -620,6 +620,27 @@ const ReportView = () => {
     window.location.assign(`/cases/${caseId}`);
   };
 
+  const openPdfBlobInViewer = async (blob) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      window.location.assign(dataUrl);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const previewWindow = window.open(objectUrl, "_blank", "noopener,noreferrer");
+    if (!previewWindow) {
+      window.location.assign(objectUrl);
+    }
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+  };
+
   const iosShareOrDownload = async (blob, filename, mimeType) => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS && navigator.share) {
@@ -893,16 +914,10 @@ const ReportView = () => {
 
   const handleExportPDF = async () => {
     try {
-      const token = localStorage.getItem("session_token");
-      const baseUrl = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
-      const separator = baseUrl.includes("?") ? "&" : "?";
-      const pdfUrl = `${baseUrl}${separator}session_token=${token}`;
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.location.assign(pdfUrl);
-        return;
-      }
-      window.open(pdfUrl, "_blank", "noopener,noreferrer");
+      toast.info("Opening PDF...");
+      const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      await openPdfBlobInViewer(blob);
       toast.success("PDF opened.");
     } catch (error) {
       console.error("PDF export error:", error);

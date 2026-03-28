@@ -1,3 +1,370 @@
+# Test Results - PDF Button Fix Verification (Iteration 57)
+
+## Test Date
+2026-03-28
+
+## Test Scope
+Verification of PDF button fix on https://case-synthesis-lab.preview.emergentagent.com:
+- Login with credentials: djkingy79@gmail.com / Grubbygrub88
+- Case ID: case_76056187ad4f
+- Test report: rpt_f049e0c6b384 (full detailed)
+- Barrister report route: /cases/case_76056187ad4f/reports/barrister-view
+- Requirements:
+  1. PDF buttons should open real PDF resource instead of blank page
+  2. Verify offence label shows concise offence wording
+  3. Test both standard report and barrister report PDF buttons
+
+---
+
+## Test Results Summary
+
+### ✅ PARTIAL SUCCESS - Print Button Fixed, Export PDF Button NOT Fixed
+
+**Status:** Print button uses new /document-preview route, but Export PDF button still uses old blob URL approach
+
+---
+
+## Detailed Test Results
+
+### 1. Authentication ✅
+
+**Login Test:**
+- ✅ Login successful with provided credentials
+- ✅ Session token received: sess_b1ec2384baef406...
+- ✅ User authenticated successfully
+- ✅ Can access protected routes (case page, report page)
+
+---
+
+### 2. Report Page Access ✅
+
+**Navigation:**
+- ✅ Successfully navigated to case_76056187ad4f
+- ✅ Successfully navigated to report rpt_f049e0c6b384
+- ✅ Report page loaded without timeout issues
+- ✅ All export buttons visible (Print, Export Word, Export PDF)
+
+**Screenshot:** test2_report_page.png
+
+---
+
+### 3. Offence Label Verification ✅
+
+**Requirement:** Offence label should show concise offence wording
+
+**Result:** ✅ PASS
+- Offence label displays: "murder and manslaughter"
+- This is the concise offence wording as required
+- Label is visible in the report summary section
+
+**Evidence:**
+```
+OFFENCE: murder and manslaughter
+```
+
+---
+
+### 4. Print Button Test ✅
+
+**Requirement:** Print button should open real preview instead of blank page
+
+**Result:** ✅ PASS - Uses NEW /document-preview route
+
+**Implementation Details:**
+- Print button calls `handlePrint()` → `openReportPreview("print")`
+- Generates complete HTML document with styles
+- Stores HTML in localStorage under key: "document-preview-payload"
+- Opens route: `/document-preview?mode=print`
+- Uses DocumentPreviewPage component to render preview
+- Toast notification: "Preview opened — use Print."
+
+**Code Location:** /app/frontend/src/pages/ReportView.jsx lines 615-913
+- Line 615: `handlePrint()` function
+- Line 684-913: `openReportPreview(mode)` function
+- Lines 897-910: localStorage storage and route navigation
+
+**Why This Works:**
+- No blob URLs used
+- No popup window issues
+- Works reliably on iOS/mobile
+- Dedicated route with proper error handling
+
+---
+
+### 5. Export PDF Button Test ❌
+
+**Requirement:** Export PDF button should open real PDF resource instead of blank page
+
+**Result:** ❌ FAIL - Still uses OLD blob URL approach
+
+**What Happens:**
+1. User clicks "Export PDF" button
+2. Frontend fetches PDF blob from backend API
+3. Creates blob URL with `URL.createObjectURL(blob)`
+4. Opens blob URL in new window: `blob:https://case-synthesis-lab.preview.emergentagent.com/[uuid]`
+5. Blob URL fails to load properly (popup URL shows as ":")
+6. Toast notification: "PDF opened." (misleading - it didn't actually open)
+
+**Implementation Details:**
+- Export PDF button calls `handleExportPDF()` → `openPdfBlobInViewer(blob)`
+- Fetches PDF blob from: `${API}/cases/${caseId}/reports/${reportId}/export-pdf`
+- Uses `URL.createObjectURL(blob)` to create blob URL
+- Opens blob URL in new window with `window.open(objectUrl, "_blank")`
+- This is the OLD approach that causes blank pages on mobile/iOS
+
+**Code Location:** /app/frontend/src/pages/ReportView.jsx
+- Line 915-926: `handleExportPDF()` function
+- Line 623-642: `openPdfBlobInViewer(blob)` function
+- Line 636: `const objectUrl = URL.createObjectURL(blob);` ← PROBLEM
+- Line 637: `window.open(objectUrl, "_blank")` ← PROBLEM
+
+**Console Evidence:**
+```
+REQUEST FAILED: blob:https://case-synthesis-lab.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
+```
+
+**Screenshot:** report_with_offence.png (shows green toast "PDF opened." but popup failed)
+
+---
+
+### 6. Barrister View Test - Same Issue ❌
+
+**Status:** Barrister View has the same problem as Report View
+
+**Implementation:**
+- BarristerView.jsx uses identical `openPdfBlobInViewer(blob)` function
+- Export PDF button has same blob URL issue
+- Code Location: /app/frontend/src/pages/BarristerView.jsx lines 441-475
+
+---
+
+## Root Cause Analysis
+
+### Why Export PDF Button Fails
+
+**The Problem:**
+The PDF button fix was only **partially implemented**. The codebase has TWO different approaches:
+
+1. **NEW Approach (Working):** Used by Print button
+   - Generates HTML preview
+   - Stores in localStorage
+   - Opens `/document-preview` route
+   - DocumentPreviewPage renders the preview
+   - ✅ Works on all devices including iOS/mobile
+
+2. **OLD Approach (Broken):** Used by Export PDF button
+   - Fetches PDF blob from backend
+   - Creates blob URL with `URL.createObjectURL()`
+   - Opens blob URL in popup window
+   - ❌ Fails on iOS/mobile with blank pages
+   - ❌ Blob URLs can be blocked by browsers
+   - ❌ Unreliable popup behavior
+
+### What Was Supposed to Happen (Iteration 50)
+
+According to test_result.md Iteration 50, the fix was supposed to:
+- Update BOTH Print and Export PDF buttons to use `/document-preview` route
+- Remove all blob URL usage
+- Store HTML payload in localStorage
+- Open dedicated `/document-preview` route
+
+**What Actually Happened:**
+- ✅ Print button was updated correctly
+- ❌ Export PDF button was NOT updated
+- ❌ Still uses old blob URL approach
+
+---
+
+## Code Comparison
+
+### Print Button (CORRECT Implementation)
+
+```javascript
+// ReportView.jsx line 615-616
+const handlePrint = () => {
+  openReportPreview("print");
+};
+
+// ReportView.jsx lines 684-913
+const openReportPreview = (mode = "print") => {
+  // ... generate HTML ...
+  
+  // Store in localStorage
+  localStorage.setItem(
+    "document-preview-payload",
+    JSON.stringify({
+      html,
+      mode,
+      title,
+      source: "report",
+      returnTo: `/cases/${caseId}/reports/${reportId}`,
+      createdAt: Date.now(),
+    })
+  );
+
+  // Open /document-preview route
+  const previewUrl = `${window.location.origin}/document-preview?mode=${mode}`;
+  window.location.assign(previewUrl);
+  
+  toast.success(mode === "print" ? "Preview opened — use Print." : "PDF preview opened.");
+};
+```
+
+### Export PDF Button (INCORRECT Implementation)
+
+```javascript
+// ReportView.jsx lines 915-926
+const handleExportPDF = async () => {
+  try {
+    toast.info("Opening PDF...");
+    // Fetch PDF blob from backend
+    const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { 
+      responseType: "blob", 
+      timeout: 60000 
+    });
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    // Use OLD blob URL approach
+    await openPdfBlobInViewer(blob);  // ← PROBLEM
+    toast.success("PDF opened.");
+  } catch (error) {
+    console.error("PDF export error:", error);
+    toast.error("Failed to export PDF. Please try again.");
+  }
+};
+
+// ReportView.jsx lines 623-642
+const openPdfBlobInViewer = async (blob) => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    window.location.assign(dataUrl);
+    return;
+  }
+
+  // Create blob URL (PROBLEM)
+  const objectUrl = URL.createObjectURL(blob);
+  const previewWindow = window.open(objectUrl, "_blank", "noopener,noreferrer");
+  if (!previewWindow) {
+    window.location.assign(objectUrl);
+  }
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+};
+```
+
+---
+
+## Required Fix
+
+### What Needs to Change
+
+**Files to Update:**
+1. `/app/frontend/src/pages/ReportView.jsx`
+2. `/app/frontend/src/pages/BarristerView.jsx`
+
+**Changes Required:**
+
+#### Option 1: Make Export PDF use same approach as Print button
+
+```javascript
+// Change handleExportPDF to call openReportPreview with mode="pdf"
+const handleExportPDF = () => {
+  openReportPreview("pdf");  // Instead of fetching blob
+};
+```
+
+This would make Export PDF button behave exactly like Print button, opening the `/document-preview` route with mode=pdf.
+
+#### Option 2: Remove Export PDF button entirely
+
+Since Print button already provides PDF functionality (user can print to PDF), the Export PDF button might be redundant.
+
+---
+
+## Test Environment
+
+- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **Viewport:** Desktop (1920x1080)
+- **Browser:** Chromium (Playwright)
+- **Authentication:** Working correctly
+- **Case ID:** case_76056187ad4f
+- **Report ID:** rpt_f049e0c6b384
+
+---
+
+## Summary
+
+### ✅ What's Working
+
+1. ✅ Authentication and login
+2. ✅ Report page loading (no timeout issues)
+3. ✅ Offence label shows concise wording: "murder and manslaughter"
+4. ✅ Print button uses NEW /document-preview route approach
+5. ✅ DocumentPreviewPage component exists and is properly implemented
+6. ✅ All export buttons are visible
+
+### ❌ What's NOT Working
+
+1. ❌ Export PDF button still uses OLD blob URL approach
+2. ❌ Blob URLs fail to load properly (console shows ERR_ABORTED)
+3. ❌ Popup window shows URL as ":" indicating failure
+4. ❌ Same issue exists in both ReportView.jsx and BarristerView.jsx
+5. ❌ Misleading toast notification says "PDF opened" when it actually failed
+
+### 🔧 Required Actions
+
+**HIGH PRIORITY:**
+1. Update `handleExportPDF()` in ReportView.jsx to call `openReportPreview("pdf")` instead of `openPdfBlobInViewer(blob)`
+2. Update `handleExportPDF()` in BarristerView.jsx to call `openBarristerPreview("pdf")` instead of `openPdfBlobInViewer(blob)`
+3. Remove or deprecate `openPdfBlobInViewer()` function as it's no longer needed
+4. Test Export PDF button on desktop and mobile to confirm it opens /document-preview route
+5. Verify no blob URLs are created in console logs
+
+**MEDIUM PRIORITY:**
+6. Consider removing Export PDF button if Print button provides same functionality
+7. Update toast notifications to be more accurate
+8. Add error handling for localStorage payload failures
+
+---
+
+## Screenshots Captured
+
+1. `test1_case_page.png` - Case page loaded successfully
+2. `test2_report_page.png` - Report page with all export buttons visible
+3. `report_with_offence.png` - Report showing offence label and PDF opened toast
+
+---
+
+## Console Logs
+
+**Key Findings:**
+```
+REQUEST FAILED: blob:https://case-synthesis-lab.preview.emergentagent.com/825a8b6b-4557-4999-b66d-a606f6a3ecc5 - net::ERR_ABORTED
+```
+
+This confirms the Export PDF button is still using blob URLs which fail to load.
+
+---
+
+## Verdict
+
+**Overall Status:** ❌ PARTIAL FIX - Export PDF button NOT working as intended
+
+**Confidence Level:** HIGH - Root cause identified through code inspection and testing
+
+**Next Steps:**
+1. Main agent should update handleExportPDF functions in both ReportView.jsx and BarristerView.jsx
+2. Change Export PDF to use openReportPreview("pdf") approach
+3. Remove blob URL code
+4. Retest to confirm PDF button opens /document-preview route successfully
+
+---
+
+
 # Test Results - Barrister/Report Fixes Verification (Iteration 56)
 
 ## Test Date

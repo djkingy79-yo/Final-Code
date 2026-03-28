@@ -438,19 +438,36 @@ export default function BarristerView() {
     toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
   };
 
+  const openPdfBlobInViewer = async (blob) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      window.location.assign(dataUrl);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const previewWindow = window.open(objectUrl, "_blank", "noopener,noreferrer");
+    if (!previewWindow) {
+      window.location.assign(objectUrl);
+    }
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+  };
+
   const handleExportPDF = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
     try {
-      const token = localStorage.getItem("session_token");
-      const baseUrl = `${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`;
-      const separator = baseUrl.includes("?") ? "&" : "?";
-      const pdfUrl = `${baseUrl}${separator}session_token=${token}`;
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        window.location.assign(pdfUrl);
-        return;
-      }
-      window.open(pdfUrl, "_blank", "noopener,noreferrer");
+      const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`, {
+        responseType: "blob",
+        timeout: 60000,
+      });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      await openPdfBlobInViewer(blob);
       toast.success("Barrister brief PDF opened.");
     } catch (error) {
       toast.error("Failed to export the barrister brief PDF.");
