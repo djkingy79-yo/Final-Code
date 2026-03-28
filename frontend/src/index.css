@@ -978,7 +978,6 @@ select {
 
 /* Landing tables - higher contrast */
 .landing-page table thead th {
-  background: #1e3a8a !important;
   color: #ffffff !important;
   font-weight: 700;
   font-size: 0.95rem;
@@ -1227,7 +1226,6 @@ select {
 
 /* Landing tables - higher contrast */
 .landing-page table thead th {
-  background: #1e3a8a !important;
   color: #ffffff !important;
   font-weight: 700;
   font-size: 0.95rem;

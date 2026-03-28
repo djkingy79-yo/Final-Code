@@ -45,6 +45,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Populated demo case with 8 documents, 8 timeline events, 4 grounds, 3 notes, and 3 completed reports
 - Testing agent confirmed 100% pass rate (iteration_101.json)
 - **Landing Page Pricing & Comparison Table:** Fixed report title mismatches ("Quick Summary Report" → "Quick Summary", "Full Detailed" → "Full Detailed Report", "Extensive Log" → "Extensive Log Report"). Applied tier-specific colours to pricing cards (Green, Blue, Purple, Teal) and comparison table headers (emerald-600, blue-600, purple-600). Added teal Barrister View note below comparison table. Testing agent confirmed 100% pass (iteration_102.json).
+- **Landing Page Table Header Colour Fix:** Removed CSS `!important` override in index.css (`.landing-page table thead th { background: #1e3a8a !important }`) that was forcing all table headers to the same dark blue — headers now correctly show Green (Quick Summary), Blue (Full Detailed Report), Purple (Extensive Log Report). Also cross-referenced and corrected all 25 comparison table section names to exactly match backend report headings (e.g. "Outcome Options Matrix" → "Outcome Options", "Barrister Conference Pack" → "Conference Preparation Pack", "Filing Guide + Required Forms" → "How to Start Your Appeal + Required Forms"). Removed non-existent "What the Paid Reports Add" row.
 
 ## Backlog
 ### P1
