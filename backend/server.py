@@ -5852,6 +5852,37 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
     return placeholder
 
 
+async def _get_latest_completed_barrister_report(case_id: str, user_id: str):
+    return await db.reports.find_one(
+        {
+            "case_id": case_id,
+            "user_id": user_id,
+            "report_type": "barrister_view",
+            "status": "completed",
+        },
+        {"_id": 0},
+        sort=[("generated_at", -1)],
+    )
+
+
+@api_router.get("/cases/{case_id}/reports/barrister-view/export-pdf")
+async def export_latest_barrister_view_pdf(case_id: str, request: Request):
+    user = await get_current_user(request)
+    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Completed barrister report not found")
+    return await export_report_pdf(case_id, report["report_id"], request)
+
+
+@api_router.get("/cases/{case_id}/reports/barrister-view/export-docx")
+async def export_latest_barrister_view_docx(case_id: str, request: Request):
+    user = await get_current_user(request)
+    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Completed barrister report not found")
+    return await export_report_docx(case_id, report["report_id"], request)
+
+
 @api_router.get("/reports/embedded-legacy", response_model=dict)
 async def get_embedded_legacy_reports(request: Request, limit: int = 3):
     """Return strongest historical reports for embedding/reference in UI."""
