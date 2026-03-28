@@ -263,7 +263,7 @@ const AppealStatisticsPage = () => {
                 <p className="font-bold text-base mb-2">The Reality: Only 1 in 80 Convicted Australians Appeal</p>
                 <p>
                   Of the <strong>684,138 criminal cases</strong> finalised in Australian courts in 2021-22, 
-                  approximately <strong>8,733 appeals</strong> were filed. That's roughly a <strong className="!text-red-300">1.3% appeal rate</strong> — 
+                  approximately <strong>8,733 appeals</strong> were filed. That's roughly a <strong style={{ color: '#fca5a5' }}>1.3% appeal rate</strong> — 
                   meaning over 98% of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
                 </p>
               </div>
@@ -271,7 +271,7 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-base mb-2">⚠️ Data Limitations</p>
                 <p>
-                  <strong className="!text-red-300">Critical Note:</strong> Some statistics cited are from <strong>2007-2008</strong> and earlier — 
+                  <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some statistics cited are from <strong>2007-2008</strong> and earlier — 
                   nearly <strong>18+ years old</strong>. This reflects a systemic problem: 
                   <span className="italic"> there is inadequate current, comprehensive data on criminal appeals in Australia</span>. 
                   The lack of transparent, up-to-date statistics itself points to how overlooked this area of justice is.
@@ -284,7 +284,7 @@ const AppealStatisticsPage = () => {
                 
                 <div className="space-y-3 ml-4">
                   <div>
-                    <p className="font-semibold !text-red-300">1. Failed Counsel & Inadequate Representation</p>
+                    <p className="font-semibold" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
                     <ul className="list-disc ml-6 mt-1 space-y-1">
                       <li>Many defendants had <strong>legal aid lawyers</strong> who were overworked, under-resourced, or inexperienced</li>
                       <li>Trial counsel may have <strong>failed to preserve objections</strong> or identify appealable errors during trial</li>
@@ -294,7 +294,7 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold !text-red-300">2. Lack of Legal Knowledge & Rights Awareness</p>
+                    <p className="font-semibold" style={{ color: '#fca5a5' }}>2. Lack of Legal Knowledge & Rights Awareness</p>
                     <ul className="list-disc ml-6 mt-1 space-y-1">
                       <li>Most people in prison have <strong>no legal training</strong> and don't understand appeal rights</li>
                       <li>Complex legal system with strict <strong>28-day time limits</strong> in most states</li>
@@ -304,7 +304,7 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold !text-red-300">3. Financial Barriers & Resource Constraints</p>
+                    <p className="font-semibold" style={{ color: '#fca5a5' }}>3. Financial Barriers & Resource Constraints</p>
                     <ul className="list-disc ml-6 mt-1 space-y-1">
                       <li><strong>Cost of appeals:</strong> Private barristers charge $5,000-$50,000+ for a criminal appeal</li>
                       <li><strong>Legal aid limitations:</strong> Strict means tests, limited grants, often only covers summary advice</li>
@@ -314,7 +314,7 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold !text-red-300">4. Practical & Psychological Obstacles</p>
+                    <p className="font-semibold" style={{ color: '#fca5a5' }}>4. Practical & Psychological Obstacles</p>
                     <ul className="list-disc ml-6 mt-1 space-y-1">
                       <li><strong>In custody:</strong> Limited library access, no internet, hard to prepare appeals from prison</li>
                       <li><strong>Mental health & trauma:</strong> Depression, PTSD, hopelessness after conviction</li>
@@ -324,7 +324,7 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold !text-red-300">5. Systemic Discouragement</p>
+                    <p className="font-semibold" style={{ color: '#fca5a5' }}>5. Systemic Discouragement</p>
                     <ul className="list-disc ml-6 mt-1 space-y-1">
                       <li>Courts and corrections don't actively inform defendants of appeal rights</li>
                       <li>Leave to appeal requirements in some states act as gatekeepers</li>
@@ -339,7 +339,7 @@ const AppealStatisticsPage = () => {
                 <p className="font-bold text-base mb-2">The Hidden Tragedy</p>
                 <p>
                   Given that <strong>approximately 40% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
-                  <strong className="!text-red-300"> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
+                  <strong style={{ color: '#fca5a5' }}> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
                   simply because they lack the knowledge, resources, or support to appeal.
                 </p>
                 <p className="mt-2">
