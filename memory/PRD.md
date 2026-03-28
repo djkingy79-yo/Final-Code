@@ -46,6 +46,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Testing agent confirmed 100% pass rate (iteration_101.json)
 - **Landing Page Pricing & Comparison Table:** Fixed report title mismatches ("Quick Summary Report" → "Quick Summary", "Full Detailed" → "Full Detailed Report", "Extensive Log" → "Extensive Log Report"). Applied tier-specific colours to pricing cards (Green, Blue, Purple, Teal) and comparison table headers (emerald-600, blue-600, purple-600). Added teal Barrister View note below comparison table. Testing agent confirmed 100% pass (iteration_102.json).
 - **Global Footer Legal Disclaimer:** Added a full, bold, red-background "NOT LEGAL ADVICE" disclaimer banner at the very bottom of every page via AppFooter.jsx. Includes warning icon, full disclaimer text (educational tool, not legal advice, creator is not a lawyer, must be verified by qualified Australian legal professional, no solicitor-client relationship), and link to Terms & Privacy.
+- **Full Disclaimer in All Reports:** Updated ALL disclaimer instances across ReportView (on-screen, PDF, print), BarristerView (banner, footer, PDF, print), and backend exports (PDF via reportlab, DOCX via python-docx) to use the same full-length disclaimer text: "educational research tool only, does NOT constitute legal advice, creator is not a lawyer, must be independently verified, Australian law only, no solicitor-client relationship".
 
 ## Backlog
 ### P1
