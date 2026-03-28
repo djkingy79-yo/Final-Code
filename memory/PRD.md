@@ -113,6 +113,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Added `Attachment A — Barrister Issue Matrix` to the end of the Barrister brief so the issue matrix now appears as an attachment rather than near the front
 - **2026-03-28:** Tightened offence-label cleanup in report previews so verbose offence blurbs collapse to the concise offence label the user expects (for the live case, `murder`)
 - **2026-03-28:** Regenerated the live Barrister brief again after the attachment + deeper grounds update; the current live brief now returns ~65k characters and includes the issue-matrix attachment at the end
+- **2026-03-28:** Switched report PDF buttons back to the reliable `/document-preview?mode=pdf` route after the blob/object-URL approach was confirmed to produce blank screens on the user flow
+- **2026-03-28:** Verified the standard report PDF route now opens the working preview page and the offence label now renders as `murder` for the live case
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -130,6 +132,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P0 real PDF view + footer cleanup across report flows: implemented and verified
 - P0 barrister grounds-of-merit deepening: implemented and live-regenerated for current case
 - P1 barrister issue matrix attachment at end: implemented and verified in live regeneration
+- P0 PDF-view blank screen fix: implemented and manually verified in browser
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions

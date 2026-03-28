@@ -284,10 +284,11 @@ export default function BarristerView() {
     () => extractSentenceFromSourceReports(sourceReports, caseData, report?.content?.analysis || ""),
     [caseData, report, sourceReports]
   );
-  const offenceLabel = useMemo(
-    () => caseData?.offence_type || extractOffenceFromAnalysis(report?.content?.analysis || "") || formatTitle(caseData?.offence_category),
-    [caseData, report]
-  );
+  const offenceLabel = useMemo(() => {
+    const extracted = extractOffenceFromAnalysis(report?.content?.analysis || "");
+    if (/murder/i.test(extracted || caseData?.offence_type || "")) return "murder";
+    return caseData?.offence_type || extracted || formatTitle(caseData?.offence_category);
+  }, [caseData, report]);
 
   const buildAuthUrl = (baseUrl) => {
     const token = localStorage.getItem("session_token");
@@ -438,40 +439,9 @@ export default function BarristerView() {
     toast.success(mode === "print" ? "Print preview opened." : "PDF preview opened.");
   };
 
-  const openPdfBlobInViewer = async (blob) => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-      window.location.assign(dataUrl);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(blob);
-    const previewWindow = window.open(objectUrl, "_blank", "noopener,noreferrer");
-    if (!previewWindow) {
-      window.location.assign(objectUrl);
-    }
-    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-  };
-
   const handleExportPDF = async () => {
     if (!report?.report_id || report?.status !== "completed") return;
-    try {
-      const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-pdf`, {
-        responseType: "blob",
-        timeout: 60000,
-      });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      await openPdfBlobInViewer(blob);
-      toast.success("Barrister brief PDF opened.");
-    } catch (error) {
-      toast.error("Failed to export the barrister brief PDF.");
-    }
+    openBarristerPreview("pdf");
   };
 
   const handleExportDOCX = async () => {

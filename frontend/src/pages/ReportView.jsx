@@ -620,27 +620,6 @@ const ReportView = () => {
     window.location.assign(`/cases/${caseId}`);
   };
 
-  const openPdfBlobInViewer = async (blob) => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-      window.location.assign(dataUrl);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(blob);
-    const previewWindow = window.open(objectUrl, "_blank", "noopener,noreferrer");
-    if (!previewWindow) {
-      window.location.assign(objectUrl);
-    }
-    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-  };
-
   const iosShareOrDownload = async (blob, filename, mimeType) => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS && navigator.share) {
@@ -913,16 +892,7 @@ const ReportView = () => {
   };
 
   const handleExportPDF = async () => {
-    try {
-      toast.info("Opening PDF...");
-      const response = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/export-pdf`, { responseType: "blob", timeout: 60000 });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      await openPdfBlobInViewer(blob);
-      toast.success("PDF opened.");
-    } catch (error) {
-      console.error("PDF export error:", error);
-      toast.error("Failed to export PDF. Please try again.");
-    }
+    openReportPreview("pdf");
   };
 
   const handleExportDOCX = async () => {
@@ -951,7 +921,9 @@ const ReportView = () => {
   const sentenceSummary = extractSentenceFromSourceReports(sourceReports, caseData, analysisText);
   const defendantName = caseData?.defendant_name || report?.content?.defendant || extractDefendantFromAnalysis(analysisText);
   const extractedOffence = extractOffenceFromAnalysis(analysisText);
-  const offenceLabel = caseData?.offence_type || extractedOffence || titleFromSnake(caseData?.offence_category);
+  const offenceLabel = /murder/i.test(extractedOffence || caseData?.offence_type || "")
+    ? "murder"
+    : caseData?.offence_type || extractedOffence || titleFromSnake(caseData?.offence_category);
   const theme = REPORT_THEME[report?.report_type] || REPORT_THEME.quick_summary;
 
   const scrollToSection = (sectionId) => {
