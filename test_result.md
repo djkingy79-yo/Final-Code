@@ -8209,3 +8209,289 @@ Re-verification of Barrister/report fixes on correct live routes at https://case
 
 ---
 
+
+---
+
+# Test Results - Report PDF/Print Layout Fixes Verification (Iteration 57)
+
+## Test Date
+2026-03-28
+
+## Test Scope
+Final verification of 5 specific fixes for case case_76056187ad4f on https://case-synthesis-lab.preview.emergentagent.com:
+- Login: djkingy79@gmail.com / Grubbygrub88
+- Test one standard report (rpt_f049e0c6b384) and the Barrister report
+- Focus on report flows only (ignore email templates/marketing pages)
+
+**Requirements:**
+1. Crossed-out Created/Designed wording should be gone from report print/PDF layouts
+2. Bottom of reports should stop before that removed Created/Designed line and keep disclaimer/footer label/page treatment
+3. PDF button on standard report should open real backend PDF file (not HTML pseudo-PDF preview)
+4. PDF button on Barrister report should open real backend PDF file (not broken route)
+5. Page numbers should be present in generated PDF documents
+
+---
+
+## Test Results Summary
+
+### ✅ 4/5 REQUIREMENTS PASSED - 1 CRITICAL FAILURE
+
+**Status:** 4 requirements verified successfully, 1 critical issue found
+
+---
+
+## Detailed Test Results
+
+### 1. Standard Report PDF Export ✅
+
+**Test Configuration:**
+- Report ID: rpt_f049e0c6b384 (Full Detailed Legal Analysis)
+- Case ID: case_76056187ad4f
+- Test Method: Direct PDF download via Export PDF button
+
+**Test Results:**
+- ✅ PDF button successfully downloads real backend PDF file
+- ✅ File size: 82,627 bytes (valid PDF)
+- ✅ Download endpoint: `/api/cases/case_76056187ad4f/reports/rpt_f049e0c6b384/export-pdf`
+- ✅ HTTP Status: 200 OK
+- ✅ Content-Type: application/pdf
+
+**PDF Content Analysis:**
+- ✅ Total pages: 30
+- ✅ Page numbers present on all pages (e.g., "Page 1", "Page 30")
+- ✅ No "Created" or "Designed" text found anywhere in the PDF
+- ✅ Proper disclaimer text at bottom of last page:
+  ```
+  NOT LEGAL ADVICE
+  This document is an educational tool only. It does NOT constitute legal advice and must NOT be
+  relied upon as such. All analysis, findings, and recommendations must be independently verified
+  by a qualified Australian legal professional before any action is taken. No solicitor-client
+  relationship is formed through the provision of this report.
+  ```
+
+**Screenshot:** test3_standard_report.png
+
+**Status:** ✅ PASS - Standard report PDF export working correctly
+
+---
+
+### 2. Barrister View PDF Export ❌
+
+**Test Configuration:**
+- Report ID: rpt_d7b82aafbdea (Barrister Brief)
+- Case ID: case_76056187ad4f
+- Test Method: Direct PDF download via Export PDF button
+
+**Test Results:**
+- ❌ **CRITICAL: PDF button opens broken route**
+- ❌ URL opened: `/api/cases/case_76056187ad4f/reports/barrister-view/export-pdf`
+- ❌ HTTP Status: 404 Not Found
+- ❌ Content-Type: application/json (error response, not PDF)
+- ❌ No PDF download occurs - timeout after 60 seconds
+
+**Backend Logs:**
+```
+INFO: ... "GET /api/cases/case_76056187ad4f/reports/barrister-view/export-pdf?session_token=sess_8c19381d95b84e71a32b0e48c570df5e HTTP/1.1" 404 Not Found
+```
+
+**Root Cause Analysis:**
+- The button is using "barrister-view" as the report_id instead of the actual report_id
+- Correct report_id from API: `rpt_d7b82aafbdea`
+- Expected URL: `/api/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/export-pdf`
+- Actual URL: `/api/cases/case_76056187ad4f/reports/barrister-view/export-pdf`
+
+**Code Investigation:**
+- File: `/app/frontend/src/pages/BarristerView.jsx`
+- Line 440: `const baseUrl = \`\${API}/cases/\${caseId}/reports/\${report.report_id}/export-pdf\`;`
+- The code appears correct - it uses `report.report_id`
+- React state inspection confirms report object has correct report_id: `rpt_d7b82aafbdea`
+- However, the actual URL being opened uses "barrister-view" instead
+
+**Backend Verification:**
+- Manual test of correct endpoint succeeds:
+  ```bash
+  curl "https://case-synthesis-lab.preview.emergentagent.com/api/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/export-pdf?session_token=sess_8c19381d95b84e71a32b0e48c570df5e"
+  ```
+- Returns: 49KB PDF file (valid)
+- Backend endpoint works correctly when given the right report_id
+
+**Screenshot:** test4_barrister_view.png
+
+**Status:** ❌ FAIL - Barrister View PDF export is broken
+
+---
+
+## Requirements Verification
+
+### Requirement 1: No Crossed-Out Created/Designed Wording ✅
+**Status:** ✅ PASS
+
+**Verification Method:** PDF text extraction and search
+
+**Results:**
+- Searched entire standard report PDF (30 pages) for "Created" and "Designed" text
+- No matches found
+- Crossed-out text has been successfully removed from PDF layouts
+
+---
+
+### Requirement 2: Proper Footer/Disclaimer Treatment ✅
+**Status:** ✅ PASS
+
+**Verification Method:** PDF last page inspection
+
+**Results:**
+- Report ends with proper disclaimer section
+- Disclaimer text is clearly visible and properly formatted
+- No remnants of removed "Created/Designed" line
+- Footer treatment is clean and professional
+
+**Disclaimer Text Found:**
+```
+NOT LEGAL ADVICE
+This document is an educational tool only. It does NOT constitute legal advice and must NOT be
+relied upon as such. All analysis, findings, and recommendations must be independently verified
+by a qualified Australian legal professional before any action is taken. No solicitor-client
+relationship is formed through the provision of this report.
+```
+
+---
+
+### Requirement 3: Standard Report PDF Button Opens Real Backend PDF ✅
+**Status:** ✅ PASS
+
+**Verification Method:** Browser automation with download monitoring
+
+**Results:**
+- Export PDF button successfully triggers backend PDF download
+- File downloaded: `R v Homann_full_detailed.pdf` (82,627 bytes)
+- Not an HTML pseudo-PDF preview
+- Real PDF file generated by backend ReportLab library
+- Opens in browser PDF viewer correctly
+
+---
+
+### Requirement 4: Barrister Report PDF Button Opens Real Backend PDF ❌
+**Status:** ❌ FAIL
+
+**Verification Method:** Browser automation with network monitoring
+
+**Results:**
+- Export PDF button opens wrong URL
+- Returns 404 error instead of PDF
+- Uses "barrister-view" as report_id instead of actual report_id
+- No PDF download occurs
+- **BLOCKER: This is the exact issue mentioned in the review request**
+
+**Issue Details:**
+- Current behavior: Opens `/api/cases/{case_id}/reports/barrister-view/export-pdf` → 404
+- Expected behavior: Opens `/api/cases/{case_id}/reports/{report_id}/export-pdf` → PDF download
+- The backend endpoint exists and works when given correct report_id
+- Frontend code appears correct but runtime behavior is wrong
+
+---
+
+### Requirement 5: Page Numbers Present in Generated PDFs ✅
+**Status:** ✅ PASS
+
+**Verification Method:** PDF text extraction and page analysis
+
+**Results:**
+- Page numbers detected on all pages
+- Format: "Page 1", "Page 2", ... "Page 30"
+- Consistent placement across all pages
+- Page numbers are clearly visible in PDF
+
+**Sample Evidence:**
+- First page: "Page 1" found in header
+- Last page: "Page 30" found in header
+- Page numbers present throughout document
+
+---
+
+## Critical Issues Found
+
+### 🔴 CRITICAL ISSUE: Barrister View PDF Export Broken Route
+
+**Severity:** HIGH
+**Impact:** Users cannot download Barrister View PDF despite backend working correctly
+
+**Details:**
+- Frontend button opens wrong URL using "barrister-view" instead of actual report_id
+- Backend returns 404 Not Found
+- No PDF download occurs
+- This is exactly the issue described in requirement #4
+
+**Evidence:**
+1. Backend logs show 404 for `/api/cases/case_76056187ad4f/reports/barrister-view/export-pdf`
+2. Correct endpoint `/api/cases/case_76056187ad4f/reports/rpt_d7b82aafbdea/export-pdf` works when tested manually
+3. React state shows correct report_id but button opens wrong URL
+
+**Code Location:**
+- File: `/app/frontend/src/pages/BarristerView.jsx`
+- Function: `handleExportPDF` (lines 436-453)
+- Button: Line 536 (data-testid="barrister-export-pdf-button")
+
+**Recommendation:**
+1. Investigate why `report.report_id` is not being used correctly at runtime
+2. Check for caching issues or stale JavaScript bundles
+3. Verify the report object is properly populated when button is clicked
+4. Consider adding console logging to debug the actual values being used
+5. Test with hard refresh (Ctrl+Shift+R) to clear browser cache
+
+---
+
+## Screenshots Captured
+
+1. `test1_case_page.png` - Case page loaded successfully
+2. `test2_reports_section.png` - Reports section on case page
+3. `test3_standard_report.png` - Standard report page with Export PDF button
+4. `test4_barrister_view.png` - Barrister View page with Export PDF button
+
+---
+
+## Test Environment
+
+- **URL:** https://case-synthesis-lab.preview.emergentagent.com
+- **Viewport:** Desktop (1920x1080)
+- **Browser:** Chromium (Playwright)
+- **Authentication:** djkingy79@gmail.com / Grubbygrub88
+- **Session Token:** sess_8c19381d95b84e71a32b0e48c570df5e
+- **Case ID:** case_76056187ad4f
+- **Standard Report ID:** rpt_f049e0c6b384
+- **Barrister Report ID:** rpt_d7b82aafbdea
+
+---
+
+## Summary
+
+✅ **4/5 REQUIREMENTS PASSED**
+
+**Successful Requirements:**
+1. ✅ No crossed-out Created/Designed wording in PDFs
+2. ✅ Proper footer/disclaimer treatment maintained
+3. ✅ Standard report PDF button downloads real backend PDF
+5. ✅ Page numbers present in generated PDFs
+
+**Failed Requirements:**
+4. ❌ Barrister report PDF button opens broken route (404 error)
+
+**Key Findings:**
+- Standard report PDF export works perfectly
+- PDF content is clean with no crossed-out text
+- Page numbers and disclaimers are properly formatted
+- Barrister View PDF export is broken due to wrong URL being used
+- Backend endpoint works correctly when given the right report_id
+- Issue appears to be in frontend runtime behavior, not the code itself
+
+**Verdict:** 4 out of 5 requirements met. One critical issue blocking Barrister View PDF export.
+
+**Next Steps:**
+1. **URGENT:** Fix Barrister View PDF export URL issue
+2. Investigate why "barrister-view" is being used instead of actual report_id
+3. Clear browser/build caches and retest
+4. Add debugging to identify root cause
+5. After fix, retest Barrister View PDF export to verify it downloads real backend PDF
+
+---
+

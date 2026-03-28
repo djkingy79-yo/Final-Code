@@ -766,7 +766,6 @@ const ReportView = () => {
       <div class="cover-page-inner">
         <p class="cover-page-kicker">Appeal Case Manager</p>
         <h1>${title}</h1>
-        <p>Created and Designed by Deb King</p>
         <p>${caseData?.title || "Case"}</p>
         <div class="cover-page-grid">
           <div class="cover-page-card"><div class="cover-page-card-label">Defendant</div><div class="cover-page-card-value">${defendantName}</div></div>

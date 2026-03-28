@@ -6331,7 +6331,6 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story.append(Spacer(1, 18*mm))
     story.append(Paragraph("Appeal Case Manager", styles['ReportSubtitle']))
     story.append(Paragraph(title, styles['ReportTitle']))
-    story.append(Paragraph("Created and Designed by Deb King", styles['ReportSubtitle']))
     story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
     story.append(Spacer(1, 10*mm))
 
@@ -6365,7 +6364,6 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     # Header
     story.append(Paragraph("APPEAL CASE MANAGER", styles['ReportTitle']))
     story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
-    story.append(Paragraph("Created and Designed by Deb King — GLENMORE PARK NSW", styles['ReportSubtitle']))
     story.append(Spacer(1, 8*mm))
     story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
     story.append(Spacer(1, 10*mm))
@@ -6497,16 +6495,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     analysis_text = _strip_report_placeholders(report.get('content', {}).get('analysis', 'No analysis available.'))
     render_markdown(analysis_text)
 
-    # Footer — Created By + Bold Disclaimer
+    # Footer — Bold Disclaimer
     story.append(Spacer(1, 15*mm))
-    story.append(Paragraph(
-        "Created and Designed by Deb King",
-        ParagraphStyle(name='CreatedBy', fontSize=14, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#1e3a5f'), spaceAfter=6)
-    ))
-    story.append(Paragraph(
-        "Criminal Law Appeal Case Management — GLENMORE PARK NSW",
-        ParagraphStyle(name='Footer1', fontSize=9, alignment=TA_CENTER, textColor=colors.HexColor('#475569'), spaceAfter=10)
-    ))
     story.append(Spacer(1, 5*mm))
     story.append(Paragraph(
         "NOT LEGAL ADVICE",
@@ -6609,13 +6599,6 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     sub_run.font.size = Pt(11)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
 
-    created_by = doc.add_paragraph()
-    created_by.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    cb_run = created_by.add_run("Created and Designed by Deb King — GLENMORE PARK NSW")
-    cb_run.font.size = Pt(11)
-    cb_run.font.bold = True
-    cb_run.font.color.rgb = RGBColor(30, 58, 95)
-
     case_line = doc.add_paragraph()
     case_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
     case_run = case_line.add_run(f"Case: {case.get('title', 'Unknown')}")
@@ -6680,13 +6663,6 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_subtitle_run.font.size = Pt(11)
     cover_subtitle_run.font.bold = True
     cover_subtitle_run.font.color.rgb = RGBColor(29, 78, 216)
-
-    cover_created = doc.add_paragraph()
-    cover_created.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    cover_created_run = cover_created.add_run("Created and Designed by Deb King")
-    cover_created_run.font.size = Pt(11)
-    cover_created_run.font.bold = True
-    cover_created_run.font.color.rgb = RGBColor(30, 58, 95)
 
     cover_case = doc.add_paragraph()
     cover_case.alignment = WD_ALIGN_PARAGRAPH.CENTER
