@@ -422,21 +422,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-200">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-slate-700 text-sm">
-            © 2025 Appeal Case Manager. All rights reserved.
-          </p>
-          <p className="text-slate-600 text-xs mt-2">
-            Created by Debra King — Glenmore Park, NSW
-          </p>
-          <p className="text-red-600 text-xs mt-2 font-medium">
-            Australian Law Only • Not Legal Advice • Always consult a qualified legal professional
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

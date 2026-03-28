@@ -419,18 +419,6 @@ const HowToUsePage = () => {
           </Link>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-200">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-slate-700 text-sm">
-            Need more help? Check our <Link to="/faq" className="text-blue-500 hover:underline">FAQ</Link> or <Link to="/contact" className="text-blue-500 hover:underline">Contact Us</Link>
-          </p>
-          <p className="text-red-400 text-xs mt-2 font-medium">
-            This guide is for informational purposes only. Always seek professional legal advice.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -43,6 +43,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import DocumentPreviewPage from "./pages/DocumentPreviewPage";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
+import AppFooter from "./components/AppFooter";
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
 
@@ -358,6 +360,14 @@ function AppRouter() {
   );
 }
 
+function FooterWrapper() {
+  const location = useLocation();
+  // Hide footer on document preview and print-oriented pages
+  const hideOn = ["/document-preview"];
+  if (hideOn.some(p => location.pathname.startsWith(p))) return null;
+  return <AppFooter />;
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -365,6 +375,7 @@ function App() {
         <BrowserRouter>
           <ScrollToTopOnNav />
           <AppRouter />
+          <FooterWrapper />
           <FastScrollTop />
           <Toaster position="top-right" richColors />
           <InstallPrompt />

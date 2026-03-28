@@ -1343,18 +1343,6 @@ const LegalResourcesPage = () => {
           }
         `}</style>
       )}
-
-      {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-200 mt-12">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-700 text-xs">
-            All contact information is publicly available. Links open in a new tab to official websites.
-          </p>
-          <p className="text-red-600 text-xs mt-2 font-medium">
-            This is not legal advice. Always verify information directly with the relevant organisation.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

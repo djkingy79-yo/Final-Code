@@ -231,13 +231,6 @@ const ProfessionalSummary = () => {
             </CardContent>
           </Card>
         </section>
-
-        {/* Footer */}
-        <footer className="text-center text-sm text-slate-500 pt-6 border-t border-slate-200">
-          <p className="mb-1">Criminal Appeal Case Management Tool</p>
-          <p>Created by Debra King — Glenmore Park, NSW</p>
-          <p className="mt-2 text-xs">NSW State & Australian Federal Law Reference</p>
-        </footer>
       </div>
     </div>
   );

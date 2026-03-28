@@ -698,15 +698,6 @@ const HowItWorksPage = () => {
           ))}
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-200 mt-8">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-red-600 text-xs font-medium">
-            This is NOT legal advice. Appeal Case Manager is an AI-powered research tool. All findings must be verified by a qualified Australian legal professional.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

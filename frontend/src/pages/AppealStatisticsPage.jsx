@@ -587,18 +587,6 @@ const AppealStatisticsPage = () => {
         <PageCTA variant="inline" className="mt-12" />
 
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white px-6 py-8 border-t border-slate-800 mt-12">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
-            Statistics are for informational purposes only. Past success rates do not guarantee future outcomes.
-          </p>
-          <p className="text-red-400 text-xs mt-2 font-medium">
-            This is not legal advice. Always consult a qualified legal professional.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -562,18 +562,6 @@ const ContactsPage = () => {
           </div>
 
       </main>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800 mt-12">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
-            All contact information is publicly available. Links open in a new tab to official websites.
-          </p>
-          <p className="text-red-400 text-xs mt-2 font-medium">
-            This is not legal advice. Always verify information directly with the relevant organisation.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };

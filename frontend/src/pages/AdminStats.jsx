@@ -231,15 +231,6 @@ const AdminStats = () => {
           Stats update in real-time as visitors access the site
         </p>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 px-6 py-8 border-t border-slate-800">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-slate-400 text-sm">
-            © 2025 Appeal Case Manager. Admin Dashboard.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };
