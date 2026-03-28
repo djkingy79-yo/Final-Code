@@ -1,327 +1,286 @@
 #!/usr/bin/env python3
 """
-Backend-only verification for Barrister depth upgrade on case case_db8d84fecfc4.
-
-Validates:
-1. Latest completed barrister_view report is rpt_d287912f2a53 or newer
-2. Latest barrister analysis is completed and materially deeper than earlier versions
-3. Latest analysis includes comparison tables (Evidentiary Pressure Points, Comparative Authorities, Sentencing Comparison, Relief Pathways Matrix)
-4. Latest analysis still contains the full 5-ground structure in the Barrister brief
-5. No backend crash from the new comparison-table generation path
+Backend Testing for Appeal Case Manager
+Testing live backend at https://case-synthesis-lab.preview.emergentagent.com/api
 """
 
 import requests
 import json
 import sys
-from datetime import datetime
+from typing import Dict, Any, Optional
 
 # Configuration
-API_BASE = "https://case-synthesis-lab.preview.emergentagent.com/api"
-CASE_ID = "case_db8d84fecfc4"
-TARGET_REPORT_ID = "rpt_d287912f2a53"
+BASE_URL = "https://case-synthesis-lab.preview.emergentagent.com/api"
+TEST_EMAIL = "djkingy79@gmail.com"
+TEST_PASSWORD = "Grubbygrub88"
+CASE_ID = "case_76056187ad4f"
+REPORT_ID_1 = "rpt_1cc1bfeace33"
+REPORT_ID_2 = "rpt_dcb21f0efc62"
 
-def test_health_endpoint():
-    """Test 1: Verify backend health"""
-    print("🔍 Testing backend health...")
-    try:
-        response = requests.get(f"{API_BASE}/health", timeout=10)
-        if response.status_code == 200:
-            health_data = response.json()
-            print(f"✅ Backend health: {health_data.get('status', 'unknown')}")
-            return True
-        else:
-            print(f"❌ Health check failed: HTTP {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"❌ Health check error: {e}")
-        return False
+class BackendTester:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            'Content-Type': 'application/json',
+            'User-Agent': 'Backend-Tester/1.0'
+        })
+        self.auth_token = None
+        self.test_results = []
 
-def test_barrister_view_endpoint():
-    """Test 2: Verify barrister view endpoint accessibility"""
-    print(f"🔍 Testing barrister view endpoint for case {CASE_ID}...")
-    try:
-        response = requests.get(f"{API_BASE}/cases/{CASE_ID}/reports/barrister-view", timeout=30)
-        if response.status_code == 401:
-            print("✅ Barrister view endpoint accessible (returns 401 for unauthenticated request)")
-            return True
-        elif response.status_code == 200:
-            print("✅ Barrister view endpoint accessible (returns 200)")
-            return True
-        else:
-            print(f"❌ Barrister view endpoint failed: HTTP {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"❌ Barrister view endpoint error: {e}")
-        return False
+    def log_test(self, test_name: str, passed: bool, details: str = ""):
+        """Log test result"""
+        status = "✅ PASS" if passed else "❌ FAIL"
+        self.test_results.append({
+            'name': test_name,
+            'passed': passed,
+            'details': details
+        })
+        print(f"{status} - {test_name}")
+        if details:
+            print(f"    {details}")
 
-def test_latest_report_id():
-    """Test 3: Verify latest completed barrister_view report ID"""
-    print(f"🔍 Testing latest barrister report ID (should be {TARGET_REPORT_ID} or newer)...")
-    
-    # Since we can't authenticate, we'll check the backend logs for recent successful barrister view requests
-    try:
-        # Check supervisor backend logs for recent barrister view activity
-        import subprocess
-        result = subprocess.run(
-            ["tail", "-n", "200", "/var/log/supervisor/backend.out.log"],
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
+    def test_auth_login(self) -> bool:
+        """Test 1: Auth login works and returns a session token"""
+        print("\n=== Testing Authentication ===")
         
-        if result.returncode == 0:
-            log_content = result.stdout
-            # Look for recent barrister-view requests
-            barrister_lines = [line for line in log_content.split('\n') if 'barrister-view' in line and CASE_ID in line]
+        try:
+            # Test login endpoint
+            login_data = {
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD
+            }
             
-            if barrister_lines:
-                latest_line = barrister_lines[-1]
-                print(f"✅ Recent barrister view activity found: {latest_line.strip()}")
-                
-                # Check if we can find report IDs in the logs
-                report_lines = [line for line in log_content.split('\n') if 'rpt_' in line and CASE_ID in line]
-                if report_lines:
-                    latest_report_line = report_lines[-1]
-                    print(f"✅ Recent report activity: {latest_report_line.strip()}")
-                    
-                    # Extract report ID if possible
-                    import re
-                    report_id_match = re.search(r'rpt_[a-f0-9]{12}', latest_report_line)
-                    if report_id_match:
-                        found_report_id = report_id_match.group()
-                        print(f"✅ Found report ID in logs: {found_report_id}")
-                        
-                        # Compare with target (lexicographic comparison for hex IDs)
-                        if found_report_id >= TARGET_REPORT_ID:
-                            print(f"✅ Report ID {found_report_id} is newer than or equal to target {TARGET_REPORT_ID}")
-                            return True
-                        else:
-                            print(f"⚠️ Report ID {found_report_id} is older than target {TARGET_REPORT_ID}")
-                            return True  # Still pass as we found recent activity
-                
-                return True
+            response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Check for either access_token or session_token
+                token = data.get('access_token') or data.get('session_token')
+                if token:
+                    self.auth_token = token
+                    self.session.headers.update({
+                        'Authorization': f'Bearer {self.auth_token}'
+                    })
+                    token_type = 'access_token' if 'access_token' in data else 'session_token'
+                    self.log_test("Auth Login", True, f"Successfully logged in, {token_type} received")
+                    return True
+                else:
+                    self.log_test("Auth Login", False, f"No access_token or session_token in response: {data}")
+                    return False
             else:
-                print("⚠️ No recent barrister view activity found in logs")
-                return True  # Don't fail on this, endpoint might still work
-        else:
-            print("⚠️ Could not read backend logs")
-            return True
-            
-    except Exception as e:
-        print(f"⚠️ Log analysis error: {e}")
-        return True  # Don't fail the test on log reading issues
+                self.log_test("Auth Login", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Auth Login", False, f"Exception: {str(e)}")
+            return False
 
-def test_comparison_tables_implementation():
-    """Test 4: Verify comparison tables are implemented in backend code"""
-    print("🔍 Testing comparison tables implementation in backend...")
-    
-    try:
-        # Read the server.py file to verify comparison table implementation
-        with open('/app/backend/server.py', 'r') as f:
-            server_content = f.read()
+    def test_case_reports(self) -> bool:
+        """Test 2: GET /cases/case_76056187ad4f/reports returns completed report data"""
+        print("\n=== Testing Case Reports ===")
         
-        required_tables = [
-            "Evidentiary Pressure Points Table",
-            "Comparative Authorities Table", 
-            "Sentencing Comparison Table",
-            "Relief Pathways Matrix"
-        ]
-        
-        tables_found = []
-        for table in required_tables:
-            if table in server_content:
-                tables_found.append(table)
-                print(f"✅ Found implementation: {table}")
-            else:
-                print(f"❌ Missing implementation: {table}")
-        
-        if len(tables_found) == len(required_tables):
-            print("✅ All 4 comparison tables implemented in backend")
-            return True
-        else:
-            print(f"❌ Only {len(tables_found)}/{len(required_tables)} comparison tables found")
+        if not self.auth_token:
+            self.log_test("Case Reports", False, "No auth token available")
             return False
             
-    except Exception as e:
-        print(f"❌ Error checking comparison tables implementation: {e}")
-        return False
-
-def test_five_ground_structure():
-    """Test 5: Verify 5-ground structure is maintained in backend"""
-    print("🔍 Testing 5-ground structure implementation...")
-    
-    try:
-        with open('/app/backend/server.py', 'r') as f:
-            server_content = f.read()
-        
-        # Look for ground-related implementation
-        ground_indicators = [
-            "grounds_heading_text",
-            "mandatory ground list", 
-            "dedicated ### subsection",
-            "every item in the mandatory ground list",
-            "one dedicated ### subsection for every item"
-        ]
-        
-        found_indicators = []
-        for indicator in ground_indicators:
-            if indicator.lower() in server_content.lower():
-                found_indicators.append(indicator)
-                print(f"✅ Found ground structure indicator: {indicator}")
-        
-        if len(found_indicators) >= 3:
-            print("✅ 5-ground structure implementation verified")
-            return True
-        else:
-            print(f"⚠️ Limited ground structure indicators found: {len(found_indicators)}")
-            return True  # Don't fail on this
+        try:
+            response = self.session.get(f"{BASE_URL}/cases/{CASE_ID}/reports")
             
-    except Exception as e:
-        print(f"❌ Error checking ground structure: {e}")
-        return False
-
-def test_no_backend_crashes():
-    """Test 6: Verify no recent backend crashes"""
-    print("🔍 Testing for backend crashes...")
-    
-    try:
-        # Check supervisor status
-        import subprocess
-        result = subprocess.run(
-            ["sudo", "supervisorctl", "status", "backend"],
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
-        
-        if result.returncode == 0:
-            status_output = result.stdout.strip()
-            if "RUNNING" in status_output:
-                print("✅ Backend service is running")
-                
-                # Check for recent errors in logs
-                error_result = subprocess.run(
-                    ["tail", "-n", "100", "/var/log/supervisor/backend.err.log"],
-                    capture_output=True,
-                    text=True,
-                    timeout=10
-                )
-                
-                if error_result.returncode == 0:
-                    error_content = error_result.stdout
-                    recent_errors = [line for line in error_content.split('\n') if line.strip() and 'barrister' in line.lower()]
-                    
-                    if not recent_errors:
-                        print("✅ No recent barrister-related errors in backend logs")
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list) and len(data) > 0:
+                    # Check if reports have completed status
+                    completed_reports = [r for r in data if r.get('status') == 'completed']
+                    if completed_reports:
+                        self.log_test("Case Reports", True, f"Found {len(completed_reports)} completed reports out of {len(data)} total")
                         return True
                     else:
-                        print(f"⚠️ Found {len(recent_errors)} barrister-related log entries (may not be crashes)")
-                        for error in recent_errors[-3:]:  # Show last 3
-                            print(f"   {error.strip()}")
-                        return True  # Don't fail on warnings
+                        self.log_test("Case Reports", False, f"No completed reports found. Reports: {[r.get('status', 'unknown') for r in data]}")
+                        return False
                 else:
-                    print("⚠️ Could not read error logs")
-                    return True
+                    self.log_test("Case Reports", False, f"No reports found or invalid response format: {data}")
+                    return False
             else:
-                print(f"❌ Backend service not running: {status_output}")
+                self.log_test("Case Reports", False, f"HTTP {response.status_code}: {response.text}")
                 return False
-        else:
-            print("❌ Could not check backend service status")
+                
+        except Exception as e:
+            self.log_test("Case Reports", False, f"Exception: {str(e)}")
+            return False
+
+    def test_barrister_view(self) -> bool:
+        """Test 3: GET /cases/case_76056187ad4f/reports/barrister-view returns the completed barrister brief"""
+        print("\n=== Testing Barrister View ===")
+        
+        if not self.auth_token:
+            self.log_test("Barrister View", False, "No auth token available")
             return False
             
-    except Exception as e:
-        print(f"❌ Error checking backend crashes: {e}")
-        return False
+        try:
+            response = self.session.get(f"{BASE_URL}/cases/{CASE_ID}/reports/barrister-view")
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Check if it's a valid barrister brief response
+                if isinstance(data, dict):
+                    # Look for typical barrister brief fields
+                    expected_fields = ['title', 'content', 'generated_at', 'case_id']
+                    found_fields = [field for field in expected_fields if field in data]
+                    
+                    if len(found_fields) >= 2:  # At least 2 expected fields
+                        self.log_test("Barrister View", True, f"Valid barrister brief returned with fields: {list(data.keys())}")
+                        return True
+                    else:
+                        self.log_test("Barrister View", False, f"Response missing expected fields. Found: {list(data.keys())}")
+                        return False
+                else:
+                    self.log_test("Barrister View", False, f"Invalid response format: {type(data)}")
+                    return False
+            else:
+                self.log_test("Barrister View", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Barrister View", False, f"Exception: {str(e)}")
+            return False
 
-def test_materially_deeper_analysis():
-    """Test 7: Verify implementation supports materially deeper analysis"""
-    print("🔍 Testing materially deeper analysis implementation...")
-    
-    try:
-        with open('/app/backend/server.py', 'r') as f:
-            server_content = f.read()
+    def test_report_exports(self, report_id: str, report_name: str) -> bool:
+        """Test report PDF and DOCX exports"""
+        print(f"\n=== Testing {report_name} Exports ===")
         
-        # Look for depth indicators
-        depth_indicators = [
-            "target_length = 45000",  # Target length
-            "target_chars",           # Character targets
-            "materially more detailed",
-            "barrister depth",
-            "substantial factual support",
-            "detailed and specific"
-        ]
+        if not self.auth_token:
+            self.log_test(f"{report_name} Exports", False, "No auth token available")
+            return False
         
-        found_depth = []
-        for indicator in depth_indicators:
-            if indicator.lower() in server_content.lower():
-                found_depth.append(indicator)
-                print(f"✅ Found depth indicator: {indicator}")
+        pdf_success = False
+        docx_success = False
         
-        if len(found_depth) >= 4:
-            print("✅ Materially deeper analysis implementation verified")
+        # Test PDF export
+        try:
+            response = self.session.get(f"{BASE_URL}/cases/{CASE_ID}/reports/{report_id}/export-pdf")
+            
+            if response.status_code == 200:
+                content_length = len(response.content)
+                if content_length > 0:
+                    self.log_test(f"{report_name} PDF Export", True, f"PDF file returned, size: {content_length} bytes")
+                    pdf_success = True
+                else:
+                    self.log_test(f"{report_name} PDF Export", False, "Empty PDF file returned")
+            else:
+                self.log_test(f"{report_name} PDF Export", False, f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test(f"{report_name} PDF Export", False, f"Exception: {str(e)}")
+
+        # Test DOCX export
+        try:
+            response = self.session.get(f"{BASE_URL}/cases/{CASE_ID}/reports/{report_id}/export-docx")
+            
+            if response.status_code == 200:
+                content_length = len(response.content)
+                if content_length > 0:
+                    self.log_test(f"{report_name} DOCX Export", True, f"DOCX file returned, size: {content_length} bytes")
+                    docx_success = True
+                else:
+                    self.log_test(f"{report_name} DOCX Export", False, "Empty DOCX file returned")
+            else:
+                self.log_test(f"{report_name} DOCX Export", False, f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test(f"{report_name} DOCX Export", False, f"Exception: {str(e)}")
+
+        return pdf_success and docx_success
+
+    def test_api_regression_check(self) -> bool:
+        """Test 6: Confirm no immediate API-level regression from timeout-threshold changes"""
+        print("\n=== Testing API Regression Check ===")
+        
+        # Test health endpoint
+        try:
+            response = self.session.get(f"{BASE_URL}/health")
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'healthy':
+                    self.log_test("API Health Check", True, "Backend is healthy")
+                    health_ok = True
+                else:
+                    self.log_test("API Health Check", False, f"Unhealthy status: {data}")
+                    health_ok = False
+            else:
+                self.log_test("API Health Check", False, f"HTTP {response.status_code}: {response.text}")
+                health_ok = False
+        except Exception as e:
+            self.log_test("API Health Check", False, f"Exception: {str(e)}")
+            health_ok = False
+
+        # Test that report generation endpoints are accessible (even if they return auth errors)
+        generation_ok = True
+        if self.auth_token:
+            try:
+                # Test report generation endpoint structure
+                response = self.session.post(f"{BASE_URL}/cases/{CASE_ID}/reports/generate", 
+                                           json={"report_type": "quick_summary"})
+                
+                # We expect either success or a specific error, not a 500 server error
+                if response.status_code in [200, 201, 400, 401, 403, 404, 422]:
+                    self.log_test("Report Generation Endpoint", True, f"Endpoint accessible (HTTP {response.status_code})")
+                else:
+                    self.log_test("Report Generation Endpoint", False, f"Server error: HTTP {response.status_code}")
+                    generation_ok = False
+                    
+            except Exception as e:
+                self.log_test("Report Generation Endpoint", False, f"Exception: {str(e)}")
+                generation_ok = False
+        else:
+            self.log_test("Report Generation Endpoint", True, "Skipped (no auth token)")
+
+        return health_ok and generation_ok
+
+    def run_all_tests(self):
+        """Run all backend tests"""
+        print("🚀 Starting Backend Tests for Appeal Case Manager")
+        print(f"Target: {BASE_URL}")
+        print(f"Case ID: {CASE_ID}")
+        print("=" * 60)
+
+        # Test 1: Authentication
+        auth_success = self.test_auth_login()
+
+        # Test 2: Case Reports
+        reports_success = self.test_case_reports()
+
+        # Test 3: Barrister View
+        barrister_success = self.test_barrister_view()
+
+        # Test 4 & 5: Report Exports
+        export1_success = self.test_report_exports(REPORT_ID_1, "Report 1")
+        export2_success = self.test_report_exports(REPORT_ID_2, "Report 2")
+
+        # Test 6: API Regression Check
+        regression_success = self.test_api_regression_check()
+
+        # Summary
+        print("\n" + "=" * 60)
+        print("📊 TEST SUMMARY")
+        print("=" * 60)
+
+        passed_tests = sum(1 for result in self.test_results if result['passed'])
+        total_tests = len(self.test_results)
+
+        for result in self.test_results:
+            status = "✅" if result['passed'] else "❌"
+            print(f"{status} {result['name']}")
+
+        print(f"\nTotal: {passed_tests}/{total_tests} tests passed")
+
+        if passed_tests == total_tests:
+            print("🎉 ALL TESTS PASSED - Backend is working correctly!")
             return True
         else:
-            print(f"⚠️ Limited depth indicators found: {len(found_depth)}")
-            return True
-            
-    except Exception as e:
-        print(f"❌ Error checking analysis depth: {e}")
-        return False
-
-def main():
-    """Run all backend verification tests"""
-    print("=" * 80)
-    print("🚀 BACKEND VERIFICATION: Barrister Depth Upgrade")
-    print(f"📋 Case ID: {CASE_ID}")
-    print(f"🎯 Target Report ID: {TARGET_REPORT_ID} or newer")
-    print("=" * 80)
-    
-    tests = [
-        ("Backend Health", test_health_endpoint),
-        ("Barrister View Endpoint", test_barrister_view_endpoint), 
-        ("Latest Report ID", test_latest_report_id),
-        ("Comparison Tables Implementation", test_comparison_tables_implementation),
-        ("5-Ground Structure", test_five_ground_structure),
-        ("No Backend Crashes", test_no_backend_crashes),
-        ("Materially Deeper Analysis", test_materially_deeper_analysis),
-    ]
-    
-    results = []
-    for test_name, test_func in tests:
-        print(f"\n📝 {test_name}")
-        print("-" * 40)
-        try:
-            result = test_func()
-            results.append((test_name, result))
-        except Exception as e:
-            print(f"❌ Test failed with exception: {e}")
-            results.append((test_name, False))
-    
-    print("\n" + "=" * 80)
-    print("📊 BACKEND VERIFICATION SUMMARY")
-    print("=" * 80)
-    
-    passed = 0
-    total = len(results)
-    
-    for test_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status:<10} {test_name}")
-        if result:
-            passed += 1
-    
-    print("-" * 80)
-    print(f"🎯 TOTAL: {passed}/{total} PASSED")
-    
-    if passed == total:
-        print("🎉 ALL BACKEND VERIFICATION TESTS PASSED")
-        print("✅ Barrister depth upgrade verified - no regressions")
-    else:
-        print("⚠️ Some tests failed - review required")
-    
-    print("=" * 80)
-    return passed == total
+            print(f"⚠️  {total_tests - passed_tests} test(s) failed - See details above")
+            return False
 
 if __name__ == "__main__":
-    success = main()
+    tester = BackendTester()
+    success = tester.run_all_tests()
     sys.exit(0 if success else 1)
