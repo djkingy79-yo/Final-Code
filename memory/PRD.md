@@ -117,6 +117,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **2026-03-28:** Verified the standard report PDF route now opens the working preview page and the offence label now renders as `murder` for the live case
 - **2026-03-28:** Fixed the deployment readiness blocker in `backend/routers/password_reset.py` by moving the password-reset frontend URL to backend env config (`FRONTEND_URL`) instead of incorrectly reading the frontend-only `REACT_APP_BACKEND_URL` variable
 - **2026-03-28:** Added `FRONTEND_URL` to `backend/.env`, restarted backend, and re-ran deployment health check — deployment status is now PASS with zero blockers or warnings
+- **2026-03-28:** Added a shared backend `get_frontend_url()` config helper in `backend/config.py` and reused it in password reset + payment email flows so frontend-facing backend URLs are sourced from one place
+- **2026-03-28:** Removed the hardcoded preview fallback from `backend/routers/payments_new.py` and verified backend health + deployment scan still pass
 
 ## Verified Status
 - P0 Barrister View backend synthesis: implemented and verified
@@ -136,6 +138,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P1 barrister issue matrix attachment at end: implemented and verified in live regeneration
 - P0 PDF-view blank screen fix: implemented and manually verified in browser
 - P0 deployment readiness blocker (password reset frontend URL env): implemented and verified
+- P1 shared deployment-safe frontend URL helper: implemented and verified
 - Latest rigorous verification: `/app/test_reports/iteration_99.json` — backend 100%, frontend 100%
 
 ## Prioritised Next Actions
