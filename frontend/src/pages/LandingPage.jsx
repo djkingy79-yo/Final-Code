@@ -22,7 +22,7 @@ const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleAuthSuccess = (userData) => {
-    navigate("/dashboard", { state: { user: userData }, replace: true });
+    window.location.replace("/dashboard");
   };
 
   const scrollToTop = () => {

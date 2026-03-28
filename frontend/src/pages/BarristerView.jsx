@@ -63,6 +63,33 @@ const extractSentenceSummary = (caseInfo, analysis = "") => {
   return "Not recorded";
 };
 
+const extractSentenceFromSourceReports = (reports = [], caseInfo = null, fallbackAnalysis = "") => {
+  const typeOrder = ["quick_summary", "full_detailed", "extensive_log"];
+
+  for (const reportType of typeOrder) {
+    const orderedReports = [...reports]
+      .filter((item) => item?.report_type === reportType)
+      .sort((a, b) => new Date(b?.generated_at || 0) - new Date(a?.generated_at || 0));
+
+    for (const item of orderedReports) {
+      const candidate = extractSentenceSummary(caseInfo, item?.content?.analysis || "")
+        .replace(/^sentence\s*[:\-]?\s*/i, "")
+        .trim();
+
+      if (
+        candidate &&
+        candidate !== "Not recorded" &&
+        candidate.length < 140 &&
+        !/\b(reduced|reduce|precedent|appeal|submissions|could|should|potentially|perhaps|would)\b/i.test(candidate)
+      ) {
+        return candidate;
+      }
+    }
+  }
+
+  return extractSentenceSummary(caseInfo, fallbackAnalysis);
+};
+
 const extractOffenceFromAnalysis = (analysis = "") => {
   const patterns = [
     /(?:offence(?:s)?\s+of|for\s+the\s+offence\s+of|convicted\s+of|charged\s+with)\s+([A-Z][A-Za-z0-9\s,'-]{4,120})/i,
@@ -150,6 +177,7 @@ export default function BarristerView() {
   const [report, setReport] = useState(null);
   const [caseData, setCaseData] = useState(null);
   const [grounds, setGrounds] = useState([]);
+  const [sourceReports, setSourceReports] = useState([]);
   const [timeline, setTimeline] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -176,6 +204,7 @@ export default function BarristerView() {
 
       if (caseRes.status === "fulfilled") setCaseData(caseRes.value.data);
       if (groundsRes.status === "fulfilled") setGrounds(groundsRes.value.data?.grounds || []);
+      if (reportsRes.status === "fulfilled") setSourceReports(reportsRes.value.data || []);
       if (timelineRes.status === "fulfilled") setTimeline(timelineRes.value.data || []);
       if (documentsRes.status === "fulfilled") setDocuments(documentsRes.value.data || []);
       const completedStandardReports = reportsRes.status === "fulfilled"
@@ -222,6 +251,7 @@ export default function BarristerView() {
     setReport(null);
     setCaseData(null);
     setGrounds([]);
+    setSourceReports([]);
     setTimeline([]);
     setDocuments([]);
     setStatus("loading");
@@ -241,8 +271,8 @@ export default function BarristerView() {
 
   const sections = useMemo(() => parseBarristerSections(report?.content?.analysis || ""), [report]);
   const sentenceSummary = useMemo(
-    () => extractSentenceSummary(caseData, report?.content?.analysis || ""),
-    [caseData, report]
+    () => extractSentenceFromSourceReports(sourceReports, caseData, report?.content?.analysis || ""),
+    [caseData, report, sourceReports]
   );
   const offenceLabel = useMemo(
     () => caseData?.offence_type || extractOffenceFromAnalysis(report?.content?.analysis || "") || formatTitle(caseData?.offence_category),
@@ -459,7 +489,7 @@ export default function BarristerView() {
   const isGenerating = reportStatus === "generating";
   const isCompleted = reportStatus === "completed" && report?.content?.analysis;
   const isFailed = reportStatus === "failed";
-  const sourceReports = report?.content?.source_reports || [];
+  const sourceReportMeta = report?.content?.source_reports || [];
 
   return (
     <div className="min-h-screen bg-slate-50 report-page">
@@ -578,7 +608,7 @@ export default function BarristerView() {
                       <Scale className="w-3.5 h-3.5 mr-1.5" /> BARRISTER BRIEF
                     </Badge>
                     <span className="text-sm font-medium text-slate-600" data-testid="barrister-source-badge">
-                      Built from all {sourceReports.length || 3} completed reports
+                      Built from all {sourceReportMeta.length || 3} completed reports
                     </span>
                   </div>
 
@@ -616,7 +646,7 @@ export default function BarristerView() {
                   <Clock className="w-4 h-4 text-blue-700" /> {timeline.length} timeline events
                 </div>
                 <div className="flex items-center gap-2" data-testid="barrister-meta-source-reports">
-                  <Gavel className="w-4 h-4 text-blue-700" /> {sourceReports.length || 3} source reports referenced
+                  <Gavel className="w-4 h-4 text-blue-700" /> {sourceReportMeta.length || 3} source reports referenced
                 </div>
               </div>
             </div>
