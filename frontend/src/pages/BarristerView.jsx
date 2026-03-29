@@ -385,7 +385,6 @@ export default function BarristerView() {
       .preview-paper .legal-report-table-wrap { overflow: visible; }
       .preview-paper table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .print-footer-page-static { display: none; }
       .print-footer-page-print::after { content: "Page " counter(page); }
     }
     @media (max-width: 768px) {
@@ -435,7 +434,7 @@ export default function BarristerView() {
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">${previewFooterLabel}</span>
-      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
   </div>
 </body>

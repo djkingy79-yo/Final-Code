@@ -166,6 +166,39 @@ const ReportsSection = ({
     }
   };
 
+  const handleExportDOCX = async (reportId) => {
+    try {
+      toast.info("Generating Word document...");
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const response = await axios.get(
+        `${API}/cases/${caseId}/reports/${reportId}/export-docx`,
+        { responseType: 'blob', timeout: 60000 }
+      );
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      const filename = `report_${reportId}.docx`;
+      if (isIOS && navigator.share) {
+        try {
+          const file = new File([blob], filename, { type: blob.type });
+          await navigator.share({ files: [file], title: filename });
+          toast.success("Shared successfully!");
+          return;
+        } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+      toast.success("Word document ready!");
+    } catch (error) {
+      console.error("DOCX export error:", error);
+      toast.error("Failed to export Word document");
+    }
+  };
+
   const handleGenerateReport = async (reportType) => {
     if (documents.length === 0) {
       toast.error("Please upload documents before generating a report");
@@ -640,7 +673,17 @@ const ReportsSection = ({
                           data-testid={`export-pdf-btn-${report.report_id}`}
                         >
                           <Download className="w-4 h-4 mr-1.5" />
-                          Export PDF
+                          PDF
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleExportDOCX(report.report_id)}
+                          className="text-slate-700"
+                          data-testid={`export-docx-btn-${report.report_id}`}
+                        >
+                          <FileText className="w-4 h-4 mr-1.5" />
+                          Word
                         </Button>
                         <Button
                           variant="outline"

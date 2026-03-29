@@ -267,7 +267,6 @@ const GroundsOfMerit = ({
       body { background: #ffffff; }
       .grounds-export-shell { max-width: none; padding: 0; }
       .legal-report-table-wrap { overflow: visible; }
-      .print-footer-page-static { display: none; }
       .print-footer-page-print::after { content: "Page " counter(page); }
     }
   </style>
@@ -276,7 +275,7 @@ const GroundsOfMerit = ({
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">Criminal Appeal Case Management - Grounds of Merit - ${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
-      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
   </div>
 </body>

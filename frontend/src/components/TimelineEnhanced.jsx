@@ -254,7 +254,6 @@ const Timeline = ({
     @media print {
       body { background: #ffffff; }
       .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
-      .print-footer-page-static { display: none; }
       .print-footer-page-print::after { content: 'Page ' counter(page); }
     }
   </style>
@@ -290,7 +289,7 @@ const Timeline = ({
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">${escapeHtml(footerLabel)}</span>
-      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
     <div class="print-footer-message">${escapeHtml(footerMessage)}</div>
   </div>
