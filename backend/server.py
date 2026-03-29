@@ -3002,7 +3002,7 @@ async def get_grounds_of_merit(case_id: str, request: Request):
         "status": "completed"
     })
     
-    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or [])
+    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or []) or is_admin_user(user.email)
     
     if is_unlocked:
         # Return full grounds data
