@@ -5,7 +5,7 @@ const AppFooter = () => {
   return (
     <footer data-testid="app-footer">
       <div className="py-8 px-6 border-t border-slate-200 bg-white">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 items-start">
+        <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 items-start">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2">
               <Scale className="w-5 h-5 text-slate-700" />

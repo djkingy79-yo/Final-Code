@@ -5,46 +5,34 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 
 ## Core Requirements
 - **Report Tiers:** Scale in depth. Free (Base) -> $150 (2x depth) -> $200 (3x depth).
-- **Barrister View:** Locked until all 3 standard reports are generated/paid. Acts as a capstone synthesis.
-- **Report Language:** STRICT third-person educational tool. No "we", "us", "our", "you", "your". Paragraphs, not bullet points.
-- **Branding & Disclaimers:** All reports/exports must feature "NOT LEGAL ADVICE" disclaimers + branding footer (scales icon + Appeal Case Manager + Founded by Debra King).
-- **UI/UX:** Forced light mode globally. High contrast. Blue/slate/navy palette. Bright blue action buttons with white text.
+- **Barrister View:** Locked until all 3 standard reports generated/paid. Capstone synthesis.
+- **Report Language:** STRICT third-person educational tool. Paragraphs, not bullet points.
+- **Branding & Disclaimers:** All reports/exports: "NOT LEGAL ADVICE" disclaimers + branding footer (scales icon + Appeal Case Manager + Founded by Debra King).
+- **UI/UX:** Forced light mode globally. High contrast. Blue/slate/navy palette. Bright blue action buttons.
 - **Paywalls:** Grounds of Merit shows only count until $99 paid. Admin bypasses all paywalls.
 - **Australian English:** All UI text, code, and AI outputs use Australian spelling.
-- **Export Buttons:** Every report must have Print View, PDF View, and Word View.
-- **Document Footers:** Page numbers (via CSS counter(page)), appellant name, and date. No static "Page 1". Branding footer with scales embedded in all documents.
+- **Export Buttons:** Every report must have Print, PDF, and Word buttons.
+- **Document Footers:** CSS counter(page) for page numbers, appellant name, date. No static "Page 1". Branding footer embedded.
+- **Footer Layout:** 3-column layout on all screen sizes (Brand | Explore | Legal).
+- **Legal Resources:** Default filter "All states" (not NSW-only). All resource cards display visible state badges.
+- **Terms of Service:** References "Commonwealth of Australia" and all states/territories (not just NSW).
 
 ## What's Been Implemented
 - User auth (JWT + Google social login)
-- Case CRUD with AI auto-detection of metadata (State, Crime, Sentence, Court)
+- Case CRUD with AI auto-detection of metadata
 - Document upload with text extraction + background auto-timeline generation
-- Grounds of Merit identification with strict $99 paywall
-- Deep investigation analysis per ground
-- 4-tier report system (Free, $150, $200, Barrister View)
-- Document export (Print/PDF/Word) across ALL features with page+date footers
-- Branding footer on all report views and exports (on-screen + Print/PDF/Word)
-- Report Tier Comparison table (Landing Page only, removed from exports)
-- Timeline, Legal Framework, Notes, Stats pages
-- Chat button (bottom-left), Home+ScrollTop (bottom-right) — properly separated
-- PDF preview auto-sizes to content height (no cramped iframe)
-- Condensed case info on Grounds tab (summary hidden, Deb King branding footer)
-- Word export button on report cards (4 buttons: Full Report Page, PDF, Word, Print)
+- Grounds of Merit with strict $99 paywall
+- 4-tier report system with Print/PDF/Word exports
+- Branding footer on all report views and exports
+- Legal Resources page with state filter defaulting to "all"
+- Terms of Service covering all Australian jurisdictions
+- Chat button (bottom-left), Home+ScrollTop (bottom-right)
+- PDF preview auto-sizes to content height
+- 3-column footer layout on all screen sizes
+- Resource card badges using inline styles (Tailwind-purge-proof)
 
 ## Prioritised Backlog
 - **P1:** Build Native Mobile App (Capacitor configured)
+- **P1:** Custom domain setup (criminallawappealmanagement.com.au via GoDaddy)
 - **P2:** Counsel conference prep attachment for Barrister View
 - **P3:** Break up server.py monolith (>7300 lines)
-
-## Architecture
-```
-/app/
-├── backend/
-│   ├── server.py           # Core logic, LLM generation engine
-│   ├── routers/            # Extracted API routes (export.py)
-│   └── .env
-└── frontend/
-    └── src/
-        ├── components/     # GroundsOfMerit, Timeline, CaseChat, Documents, ReportsSection
-        ├── pages/          # CaseDetail, ReportView, BarristerView, DocumentPreviewPage
-        └── App.js
-```
