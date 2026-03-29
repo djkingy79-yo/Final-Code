@@ -616,7 +616,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
     
     # Create PDF
     pdf_buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
+    pdf_doc = SimpleDocTemplate(
         pdf_buffer,
         pagesize=A4,
         rightMargin=2*cm,
@@ -725,8 +725,27 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
         if i < len(documents):
             story.append(PageBreak())
     
+    # Legal Disclaimer
+    story.append(Spacer(1, 1*cm))
+    disclaimer_style = ParagraphStyle(
+        'Disclaimer',
+        parent=styles['Normal'],
+        fontSize=9,
+        leading=12,
+        textColor=colors.HexColor('#1e293b'),
+        borderWidth=2,
+        borderColor=colors.HexColor('#ef4444'),
+        borderPadding=10,
+    )
+    disclaimer_text = (
+        "<b>NOT LEGAL ADVICE</b> — This application is an educational research tool only and does NOT constitute legal advice. "
+        "The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified "
+        "Australian legal professional. Australian law only. No solicitor-client relationship is created."
+    )
+    story.append(Paragraph(disclaimer_text, disclaimer_style))
+
     # Build PDF
-    doc.build(story)
+    pdf_doc.build(story)
     pdf_buffer.seek(0)
     
     # Generate filename

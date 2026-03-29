@@ -1,0 +1,65 @@
+{
+  "summary": "Iteration 105 testing completed. All requested features verified: 1) Document Bundle export works - dialog opens, documents can be selected, PDF generation endpoint returns 200. 2) Timeline delete buttons visible on mobile (opacity-100 class applied). 3) Notes delete buttons visible and functional. 4) Footer 'NOT LEGAL ADVICE' disclaimer visible on all pages (landing, how-it-works, appeal-statistics, case detail). 5) Report View has disclaimer. 6) Barrister View has prominent red disclaimer banner (data-testid='barrister-disclaimer-banner'). 7) Tab print preview and Timeline print preview HTML include disclaimer boxes (verified in source code).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration105_bundle_export.py",
+    "/app/test_reports/pytest/iteration105_bundle_export.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration105_bundle_export.py"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "seed_data_creation": "N/A - used existing test case case_a97ea91f0692",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All fixes from iteration 105 verified: 1) Bundle PDF export fixed (variable shadowing bug in export.py line 619 - 'doc' renamed to 'pdf_doc'). 2) Timeline delete button opacity fixed (opacity-100 md:opacity-0 md:group-hover:opacity-100). 3) Disclaimers added to all print/export views. Test case case_a97ea91f0692 has 8 documents, 8 timeline events, 3 notes, and 3 reports including rpt_bef09b0d9664.",
+  "test_results": {
+    "backend_api_tests": {
+      "login_success": "PASS - session_token returned",
+      "bundle_export_endpoint": "PASS - returns PDF (200)",
+      "bundle_export_empty_docs": "PASS - returns 400",
+      "timeline_events_endpoint": "PASS - 8 events found",
+      "timeline_delete_endpoint": "PASS - event deleted successfully",
+      "notes_endpoint": "PASS - 3 notes found",
+      "health_check": "PASS"
+    },
+    "frontend_ui_tests": {
+      "footer_disclaimer_landing_page": "PASS - data-testid='footer-legal-disclaimer' visible with 'NOT LEGAL ADVICE'",
+      "footer_disclaimer_how_it_works": "PASS - visible",
+      "footer_disclaimer_appeal_statistics": "PASS - visible",
+      "footer_disclaimer_case_detail": "PASS - visible",
+      "bundle_docs_button": "PASS - data-testid='bundle-docs-btn' visible and clickable",
+      "bundle_dialog_opens": "PASS - dialog opens with document selection",
+      "timeline_delete_button_desktop": "PASS - opacity=0 (hidden until hover) - expected behavior",
+      "timeline_delete_button_mobile_390x844": "PASS - opacity=1, has opacity-100 class for mobile visibility",
+      "notes_delete_button": "PASS - 3 delete buttons visible",
+      "report_view_disclaimer": "PASS - 17 'NOT LEGAL ADVICE' elements found",
+      "barrister_view_disclaimer_banner": "PASS - data-testid='barrister-disclaimer-banner' visible"
+    },
+    "source_code_verification": {
+      "tab_print_preview_disclaimer": "VERIFIED - CaseDetail.jsx line 461-464 includes disclaimer-box div",
+      "timeline_print_preview_disclaimer": "VERIFIED - TimelineEnhanced.jsx line 272-275 includes NOT LEGAL ADVICE box",
+      "bundle_pdf_disclaimer": "VERIFIED - export.py line 740-745 includes disclaimer in PDF",
+      "timeline_delete_opacity_fix": "VERIFIED - TimelineEnhanced.jsx line 534 has 'opacity-100 md:opacity-0 md:group-hover:opacity-100'"
+    }
+  },
+  "bugs_verified_fixed": {
+    "bundle_pdf_crash": "FIXED - Variable 'doc' was shadowed by MongoDB document dict in for loop. Renamed to 'pdf_doc' at line 619 of export.py",
+    "timeline_delete_button_hidden_on_mobile": "FIXED - Changed from 'opacity-0 group-hover:opacity-100' to 'opacity-100 md:opacity-0 md:group-hover:opacity-100'",
+    "missing_disclaimers": "FIXED - Disclaimers added to tab print HTML, timeline print HTML, timeline PDF export, and bundle PDF export"
+  }
+}
