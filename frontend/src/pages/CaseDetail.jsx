@@ -13,7 +13,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare, Trash2, Printer, Pencil, Share2, Users
+  MessageSquare, Trash2, Printer, Pencil, Share2, Users, Download
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -62,6 +62,7 @@ import DocumentBundler from "../components/DocumentBundler";
 import ShareCaseModal from "../components/ShareCaseModal";
 import CaseChat from "../components/CaseChat";
 import ActivityFeed from "../components/ActivityFeed";
+import { buildExportHtml } from "../utils/exportHtml";
 
 const EVENT_TYPES = [
   // Pre-trial
@@ -697,6 +698,65 @@ const CaseDetail = ({ user }) => {
     }
   };
 
+  const buildProgressHtml = () => {
+    let body = `<div class="export-header" style="background:#7c3aed;"><h1>Case Progress</h1><p>${caseData?.title || ""} - ${caseData?.defendant_name || ""}</p></div><div class="export-body">`;
+    if (progressAnalysis) {
+      body += `<h2>AI Progress Analysis</h2><div style="white-space:pre-wrap;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+    } else {
+      body += `<p>No progress analysis generated yet.</p>`;
+    }
+    body += `</div>`;
+    return buildExportHtml({ title: "Case Progress", sectionTitle: "Progress", defendantName: caseData?.defendant_name || "", accentColor: "#7c3aed", bodyHtml: body });
+  };
+
+  const buildPrintAllHtml = () => {
+    const defendant = caseData?.defendant_name || "Unknown";
+    const title = caseData?.title || "Case";
+    let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${title} - ${defendant}</p></div>`;
+    // Case Summary
+    body += `<div class="export-body"><h2>Case Summary</h2>`;
+    body += `<p><strong>Title:</strong> ${title}</p>`;
+    body += `<p><strong>Defendant:</strong> ${defendant}</p>`;
+    body += `<p><strong>State:</strong> ${caseData?.state || "N/A"}</p>`;
+    body += `<p><strong>Offence:</strong> ${caseData?.offence_type || caseData?.offence_category || "N/A"}</p>`;
+    body += `<p><strong>Sentence:</strong> ${caseData?.sentence || "N/A"}</p>`;
+    if (caseData?.summary) body += `<p><strong>Summary:</strong> ${caseData.summary}</p>`;
+    body += `</div>`;
+    // Timeline
+    body += `<div class="page-break"></div><div class="export-body"><h2>Timeline Events</h2>`;
+    if (timeline.length > 0) {
+      body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
+      timeline.forEach(e => {
+        body += `<tr><td>${e.event_date || ""}</td><td>${e.title || ""}</td><td>${(e.description || "").substring(0, 200)}</td></tr>`;
+      });
+      body += `</tbody></table>`;
+    } else { body += `<p>No timeline events.</p>`; }
+    body += `</div>`;
+    // Grounds
+    body += `<div class="page-break"></div><div class="export-body"><h2>Grounds of Merit</h2>`;
+    if (grounds.length > 0) {
+      grounds.forEach((g, i) => {
+        body += `<div class="section-block"><h3>Ground ${i + 1}: ${g.title || ""}</h3><p>${g.description || ""}</p><p><strong>Strength:</strong> ${g.strength || "N/A"}</p></div>`;
+      });
+    } else { body += `<p>${groundsCount > 0 ? groundsCount + " grounds identified (locked)." : "No grounds identified."}</p>`; }
+    body += `</div>`;
+    // Notes
+    body += `<div class="page-break"></div><div class="export-body"><h2>Notes</h2>`;
+    if (notes.length > 0) {
+      notes.forEach(n => {
+        const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+        body += `<div class="note-card"><div class="note-title">${n.title || "Untitled"}</div><div class="note-date">${date}</div><div class="note-content">${(n.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+      });
+    } else { body += `<p>No notes.</p>`; }
+    body += `</div>`;
+    // Progress
+    if (progressAnalysis) {
+      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+    }
+    return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -781,6 +841,33 @@ const CaseDetail = ({ user }) => {
               >
                 <Share2 className="w-4 h-4 mr-1" />
                 Share
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                const html = buildPrintAllHtml();
+                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
+                window.open("/document-preview?mode=print", "_blank");
+              }} className="text-slate-700 rounded-xl" data-testid="print-all-print-btn">
+                <Printer className="w-4 h-4 mr-1" />Print All
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                const html = buildPrintAllHtml();
+                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
+                window.open("/document-preview?mode=pdf", "_blank");
+              }} className="text-slate-700 rounded-xl" data-testid="print-all-pdf-btn">
+                <Download className="w-4 h-4 mr-1" />PDF All
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                try {
+                  toast.info("Generating Word document...");
+                  const html = buildPrintAllHtml();
+                  const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = "complete_case_bundle.doc"; document.body.appendChild(a); a.click(); a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 5000);
+                  toast.success("Word document ready!");
+                } catch { toast.error("Failed to export Word"); }
+              }} className="text-slate-700 rounded-xl" data-testid="print-all-word-btn">
+                <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
               <Button 
                 variant="destructive" 
@@ -1140,6 +1227,31 @@ const CaseDetail = ({ user }) => {
           {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
           {/* DO NOT UNDO — Progress Tab with AI Analysis */}
           <TabsContent value="progress" className="space-y-6" data-tab-content>
+            {/* Export Buttons */}
+            <div className="flex items-center gap-2 flex-wrap" data-testid="progress-export-bar">
+              <Button variant="outline" size="sm" onClick={() => {
+                const html = buildProgressHtml();
+                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
+                window.open("/document-preview?mode=print", "_blank");
+              }} className="text-slate-700" data-testid="progress-print-btn"><Printer className="w-4 h-4 mr-1" />Print</Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                const html = buildProgressHtml();
+                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
+                window.open("/document-preview?mode=pdf", "_blank");
+              }} className="text-slate-700" data-testid="progress-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
+              <Button variant="outline" size="sm" onClick={() => {
+                try {
+                  toast.info("Generating Word document...");
+                  const html = buildProgressHtml();
+                  const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = url; a.download = "progress.doc"; document.body.appendChild(a); a.click(); a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 5000);
+                  toast.success("Word document ready!");
+                } catch { toast.error("Failed to export Word"); }
+              }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
+            </div>
+
             {/* AI Progress Analysis Button */}
             <Card>
               <CardContent className="p-4">

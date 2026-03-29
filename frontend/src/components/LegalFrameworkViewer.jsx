@@ -7,7 +7,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { 
   Scale, BookOpen, Shield, AlertTriangle, ChevronDown, ChevronRight,
-  FileText, Gavel, ExternalLink, Loader2, MapPin, Clock, Search
+  FileText, Gavel, ExternalLink, Loader2, MapPin, Clock, Search,
+  Printer, Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -18,6 +19,8 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { API } from "../App";
+import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
+import { toast } from "sonner";
 
 const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) => {
   const [framework, setFramework] = useState(null);
@@ -107,6 +110,57 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
   const appealFramework = framework.appeal_framework || {};
   const stateInfo = framework.state || { name: "New South Wales", abbreviation: "NSW" };
 
+  const buildLegalHtml = () => {
+    let body = `<div class="export-header" style="background:#1e40af;"><h1>Legal Framework</h1><p>${category?.name || "General"} - ${offenceType || "General"} | ${stateInfo.name} (${stateInfo.abbreviation})</p></div><div class="export-body">`;
+    if (category?.state_legislation && Object.keys(category.state_legislation).length > 0) {
+      body += `<h2>State Legislation (${stateInfo.abbreviation})</h2>`;
+      Object.entries(category.state_legislation).forEach(([key, val]) => {
+        body += `<div class="section-block"><h3>${key}</h3>`;
+        if (Array.isArray(val)) val.forEach(v => { body += `<p>${typeof v === "object" ? JSON.stringify(v) : v}</p>`; });
+        else if (typeof val === "object") Object.entries(val).forEach(([k, v]) => { body += `<p><strong>${k}:</strong> ${Array.isArray(v) ? v.join(", ") : v}</p>`; });
+        else body += `<p>${val}</p>`;
+        body += `</div>`;
+      });
+    }
+    if (category?.federal_legislation && Object.keys(category.federal_legislation).length > 0) {
+      body += `<h2>Federal Legislation</h2>`;
+      Object.entries(category.federal_legislation).forEach(([key, val]) => {
+        body += `<div class="section-block"><h3>${key}</h3>`;
+        if (typeof val === "object" && !Array.isArray(val)) Object.entries(val).forEach(([k, v]) => { body += `<p><strong>${k}:</strong> ${Array.isArray(v) ? v.join(", ") : v}</p>`; });
+        else body += `<p>${Array.isArray(val) ? val.join(", ") : val}</p>`;
+        body += `</div>`;
+      });
+    }
+    if (commonGrounds.length > 0) {
+      body += `<h2>Common Appeal Grounds</h2>`;
+      commonGrounds.forEach(g => { body += `<div class="section-block"><h3>${g.ground || ""}</h3><p>${g.description || ""}</p>${g.key_cases ? `<p><strong>Key cases:</strong> ${g.key_cases.join(", ")}</p>` : ""}</div>`; });
+    }
+    if (appealFramework && Object.keys(appealFramework).length > 0) {
+      body += `<h2>Appeal Framework</h2>`;
+      Object.entries(appealFramework).forEach(([key, val]) => {
+        body += `<div class="section-block"><h3>${key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</h3>`;
+        if (typeof val === "object" && !Array.isArray(val)) Object.entries(val).forEach(([k, v]) => { body += `<p><strong>${k}:</strong> ${Array.isArray(v) ? v.join(", ") : v}</p>`; });
+        else body += `<p>${Array.isArray(val) ? val.join(", ") : val}</p>`;
+        body += `</div>`;
+      });
+    }
+    body += `</div>`;
+    return buildExportHtml({ title: "Legal Framework", sectionTitle: "Legal Framework", defendantName: "", accentColor: "#1e40af", bodyHtml: body });
+  };
+  const handleLegalPrint = () => openExportPreview(buildLegalHtml(), "print");
+  const handleLegalPDF = () => openExportPreview(buildLegalHtml(), "pdf");
+  const handleLegalWord = () => {
+    try {
+      toast.info("Generating Word document...");
+      const html = buildLegalHtml();
+      const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "legal_framework.doc"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      toast.success("Word document ready!");
+    } catch { toast.error("Failed to export Word"); }
+  };
+
   return (
     <Card className="border-slate-200">
       <CardHeader className="pb-4">
@@ -127,7 +181,10 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={handleLegalPrint} className="text-slate-700" data-testid="legal-print-btn"><Printer className="w-4 h-4 mr-1" />Print</Button>
+            <Button variant="outline" size="sm" onClick={handleLegalPDF} className="text-slate-700" data-testid="legal-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
+            <Button variant="outline" size="sm" onClick={handleLegalWord} className="text-slate-700" data-testid="legal-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             <MapPin className="w-4 h-4 text-slate-500" />
             <select
               value={selectedState}

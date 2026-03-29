@@ -42,6 +42,8 @@ import {
 } from "./ui/select";
 import { Label } from "./ui/label";
 import { API } from "../App";
+import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
+import { Printer, Download, FileText as FileTextIcon } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -354,6 +356,35 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
+  const buildNotesHtml = () => {
+    const notesHtml = sortedNotes.map(n => {
+      const cat = NOTE_CATEGORIES.find(c => c.value === n.category)?.label || "General";
+      const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      return `<div class="note-card"><div class="note-title">${n.is_pinned || n.pinned ? "📌 " : ""}${n.title || "Untitled"} <span style="font-size:10px;font-weight:400;color:#64748b;">[${cat}]</span></div><div class="note-date">${date}</div><div class="note-content">${(n.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+    }).join("");
+    return buildExportHtml({
+      title: "Case Notes",
+      sectionTitle: "Notes",
+      defendantName: "",
+      accentColor: "#ca8a04",
+      bodyHtml: `<div class="export-header" style="background:#ca8a04;"><h1>Case Notes</h1><p>${sortedNotes.length} note${sortedNotes.length !== 1 ? "s" : ""}</p></div><div class="export-body">${notesHtml || "<p>No notes recorded.</p>"}</div>`,
+    });
+  };
+  const handleNotesPrint = () => openExportPreview(buildNotesHtml(), "print");
+  const handleNotesPDF = () => openExportPreview(buildNotesHtml(), "pdf");
+  const handleNotesWord = async () => {
+    try {
+      toast.info("Generating Word document...");
+      const html = buildNotesHtml();
+      const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "notes.doc"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      toast.success("Word document ready!");
+    } catch { toast.error("Failed to export Word"); }
+  };
+
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4" data-testid="notes-toolbar">
@@ -372,10 +403,15 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
           </Badge>
         </div>
 
-        <Button onClick={openNewDialog} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="add-note-btn">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Note
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" size="sm" onClick={handleNotesPrint} className="text-slate-700" data-testid="notes-print-btn"><Printer className="w-4 h-4 mr-1" />Print</Button>
+          <Button variant="outline" size="sm" onClick={handleNotesPDF} className="text-slate-700" data-testid="notes-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
+          <Button variant="outline" size="sm" onClick={handleNotesWord} className="text-slate-700" data-testid="notes-word-btn"><FileTextIcon className="w-4 h-4 mr-1" />Word</Button>
+          <Button onClick={openNewDialog} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="add-note-btn">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Note
+          </Button>
+        </div>
       </div>
 
       {noteAuthorSuggestions.length > 0 && (
