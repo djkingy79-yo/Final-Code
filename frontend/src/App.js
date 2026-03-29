@@ -365,6 +365,10 @@ function AppRouter() {
         path="/admin"
         element={<Navigate to="/admin/dashboard" replace />}
       />
+      <Route
+        path="/login"
+        element={<Navigate to="/" replace />}
+      />
     </Routes>
   );
 }
