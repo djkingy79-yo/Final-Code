@@ -277,15 +277,15 @@ const AppealStatisticsPage = () => {
 
           {/* ACCESS TO JUSTICE ANALYSIS */}
           <div className="mt-8 bg-blue-700 border-2 border-blue-800 rounded-xl p-6" data-testid="appeal-access-crisis-details">
-            <h3 className="text-lg font-bold text-white flex items-center justify-center gap-2 text-center">
-              <AlertTriangle className="w-6 h-6" />
+            <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <AlertTriangle className="w-7 h-7" />
               The Appeal Access Crisis: Why So Few People Exercise Their Rights
             </h3>
 
             <div className="space-y-4 text-sm text-white mt-4">
               <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-xl mb-2">The Reality: Only 1 in 80 Convicted Australians Appeal</p>
-                <p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Reality: Only 1 in 80 Convicted Australians Appeal</p>
+                <p className="text-sm">
                   Of the <strong>684,138 criminal cases</strong> finalised in Australian courts in 2021-22, 
                   approximately <strong>8,733 appeals</strong> were filed. That's roughly a <strong style={{ color: '#fca5a5' }}>1.3% appeal rate</strong> — 
                   meaning over 98% of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
@@ -293,8 +293,8 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-xl mb-2">Data Limitations</p>
-                <p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Limitations</p>
+                <p className="text-sm">
                   <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some statistics cited are from <strong>2007-2008</strong> and earlier — 
                   nearly <strong>18+ years old</strong>. This reflects a systemic problem: 
                   <span className="italic"> there is inadequate current, comprehensive data on criminal appeals in Australia</span>. 
@@ -303,13 +303,13 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-xl mb-2">Why Are Appeal Rates So Low?</p>
-                <p className="mb-3">This extraordinarily low rate doesn't mean most convictions are fair and error-free. Instead, it reveals major systemic barriers:</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Are Appeal Rates So Low?</p>
+                <p className="mb-3 text-sm">This extraordinarily low rate doesn't mean most convictions are fair and error-free. Instead, it reveals major systemic barriers:</p>
                 
                 <div className="space-y-3 ml-4">
                   <div>
-                    <p className="font-bold text-lg" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1">
+                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li>Many defendants had <strong>legal aid lawyers</strong> who were overworked, under-resourced, or inexperienced</li>
                       <li>Trial counsel may have <strong>failed to preserve objections</strong> or identify appealable errors during trial</li>
                       <li>Poor legal advice post-conviction: defendants not informed they <em>have</em> grounds for appeal</li>
@@ -318,8 +318,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-lg" style={{ color: '#fca5a5' }}>2. Lack of Legal Knowledge & Rights Awareness</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1">
+                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>2. Lack of Legal Knowledge & Rights Awareness</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li>Most people in prison have <strong>no legal training</strong> and don't understand appeal rights</li>
                       <li>Complex legal system with strict <strong>28-day time limits</strong> in most states</li>
                       <li>Don't know what constitutes "grounds for appeal" (errors of law, unreasonable verdict, fresh evidence, etc.)</li>
@@ -328,8 +328,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-lg" style={{ color: '#fca5a5' }}>3. Financial Barriers & Resource Constraints</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1">
+                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>3. Financial Barriers & Resource Constraints</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li><strong>Cost of appeals:</strong> Private barristers charge $5,000-$50,000+ for a criminal appeal</li>
                       <li><strong>Legal aid limitations:</strong> Strict means tests, limited grants, often only covers summary advice</li>
                       <li>Defendants in custody have <strong>no income</strong> and families already financially devastated</li>
@@ -338,8 +338,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-lg" style={{ color: '#fca5a5' }}>4. Practical & Psychological Obstacles</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1">
+                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>4. Practical & Psychological Obstacles</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li><strong>In custody:</strong> Limited library access, no internet, hard to prepare appeals from prison</li>
                       <li><strong>Mental health & trauma:</strong> Depression, PTSD, hopelessness after conviction</li>
                       <li><strong>Family pressure:</strong> "Just accept it and serve your time" to avoid prolonging pain</li>
@@ -348,8 +348,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold" style={{ color: '#fca5a5' }}>5. Systemic Discouragement</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1">
+                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>5. Systemic Discouragement</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li>Courts and corrections don't actively inform defendants of appeal rights</li>
                       <li>Leave to appeal requirements in some states act as gatekeepers</li>
                       <li>Long delays (11+ months average) discourage appeals, especially for shorter sentences</li>
@@ -360,8 +360,8 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2">The Hidden Tragedy</p>
-                <p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Hidden Tragedy</p>
+                <p className="text-sm">
                   Given that <strong>approximately 40% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
                   <strong style={{ color: '#fca5a5' }}> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
                   simply because they lack the knowledge, resources, or support to appeal.
@@ -382,8 +382,8 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-800/70 rounded-lg p-4 border-2 border-blue-400">
-                <p className="font-bold text-xl mb-2 text-white">This Tool's Purpose</p>
-                <p className="text-white">
+                <p className="font-bold text-2xl mb-2 text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>This Tool's Purpose</p>
+                <p className="text-sm text-white">
                   <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
                   and AI-powered analysis accessible and affordable, the goal is to help those who have grounds for appeal 
                   but lack the resources to pursue justice through traditional means. Everyone deserves a fair chance to have 
@@ -404,19 +404,29 @@ const AppealStatisticsPage = () => {
 
           {/* State Tabs */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {Object.entries(stateStats).map(([key, state]) => (
-              <button
-                key={key}
-                onClick={() => setActiveState(key)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  activeState === key
-                    ? "bg-red-600 text-white"
-                    : "bg-blue-700 hover:bg-blue-800 text-white border border-blue-400"
-                }`}
-              >
-                {state.abbrev}
-              </button>
-            ))}
+            {Object.entries(stateStats).map(([key, state]) => {
+              const stateColorMap = {
+                blue: { active: "bg-blue-600", inactive: "bg-blue-600/40 hover:bg-blue-600/70 border border-blue-400" },
+                purple: { active: "bg-purple-600", inactive: "bg-purple-600/40 hover:bg-purple-600/70 border border-purple-400" },
+                red: { active: "bg-red-600", inactive: "bg-red-600/40 hover:bg-red-600/70 border border-red-400" },
+                emerald: { active: "bg-emerald-600", inactive: "bg-emerald-600/40 hover:bg-emerald-600/70 border border-emerald-400" },
+                teal: { active: "bg-teal-600", inactive: "bg-teal-600/40 hover:bg-teal-600/70 border border-teal-400" },
+                orange: { active: "bg-orange-600", inactive: "bg-orange-600/40 hover:bg-orange-600/70 border border-orange-400" },
+                indigo: { active: "bg-indigo-600", inactive: "bg-indigo-600/40 hover:bg-indigo-600/70 border border-indigo-400" },
+              };
+              const sc = stateColorMap[state.color] || stateColorMap.blue;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveState(key)}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold text-white transition-colors ${
+                    activeState === key ? sc.active : sc.inactive
+                  }`}
+                >
+                  {state.abbrev}
+                </button>
+              );
+            })}
           </div>
 
           {/* State Detail Card */}
@@ -591,17 +601,17 @@ const AppealStatisticsPage = () => {
 
         {/* Data Sources */}
         <section className="bg-blue-700 border border-blue-400 rounded-xl p-6">
-          <h3 className="font-bold text-white text-xl mb-4">Data Sources</h3>
-          <ul className="text-sm text-blue-100 space-y-2">
-            <li><strong className="text-white">ABS Criminal Courts Australia 2023-24</strong> — National court statistics</li>
-            <li><strong className="text-white">NSW Supreme Court Annual Review 2024</strong> — NSW CCA filings and disposals</li>
-            <li><strong className="text-white">Supreme Court of Victoria Annual Report 2024-25</strong> — Victorian appeal data</li>
-            <li><strong className="text-white">QLD Courts Annual Report 2024-25</strong> — Queensland appeal outcomes</li>
-            <li><strong className="text-white">Judicial Commission of NSW</strong> — Historical conviction appeal study (2001-2007)</li>
-            <li><strong className="text-white">Victorian Sentencing Advisory Council</strong> — Sentence appeal research</li>
-            <li><strong className="text-white">OLCR/Legal Services Commissioners</strong> — Lawyer complaint data</li>
-          </ul>
-          <p className="text-xs text-blue-200 mt-4">
+          <h3 className="font-bold text-white text-2xl mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Sources</h3>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-blue-100">
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">ABS Criminal Courts Australia 2023-24</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">NSW Supreme Court Annual Review 2024</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Supreme Court of Victoria Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">QLD Courts Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Judicial Commission of NSW</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Victorian Sentencing Advisory Council</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">OLCR/Legal Services Commissioners</strong></span>
+          </div>
+          <p className="text-xs text-blue-200 mt-3">
             Note: Some figures are estimates based on available public data. Success rates may vary year to year. 
             Always consult official court statistics for the most current information.
           </p>

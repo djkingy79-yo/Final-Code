@@ -809,7 +809,7 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-2">Pricing</p>
-            <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Simple, Affordable Access
             </h2>
             <p className="text-slate-600 text-sm max-w-2xl mx-auto">
