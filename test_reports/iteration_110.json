@@ -1,0 +1,74 @@
+{
+  "summary": "Iteration 110 testing completed. All requested UI changes verified: (1) Chat button moved to bottom-LEFT (x=24px), (2) Home and Scroll-to-Top buttons remain on bottom-RIGHT, (3) Chat panel opens on LEFT side (x=24px), (4) Extensive Log report has Barrister View button (code verified at ReportsSection.jsx lines 610-633), (5) DocumentPreviewPage iframe auto-sizes to content height with minHeight 90vh, (6) Branding footer appears after disclaimer on ReportView, (7) GroundsOfMerit export includes print footer with page number and date, (8) Report Tier Comparison table only exists on LandingPage (not in exports).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_110.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "seed_data_creation": "N/A - used existing test case R v Karlsson (case_e7a5b5faf51e)",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All UI changes verified via Playwright and code review: (1) CaseChat.jsx line 146: Chat toggle at 'fixed bottom-6 left-6', line 160: Chat panel at 'fixed bottom-6 left-6'. (2) ReportsSection.jsx lines 610-633: Barrister View button on extensive_log reports (active if hasAllReports, locked otherwise). (3) DocumentPreviewPage.jsx lines 95-104: iframe auto-sizes with iframeHeight state, minHeight 90vh. (4) GroundsOfMerit.jsx lines 276-279: print-footer with page counter and date. (5) Report Tier Comparison only in LandingPage.jsx lines 949-963.",
+  "test_results": {
+    "frontend_ui_tests": {
+      "login": "PASS",
+      "case_detail_page": "PASS - R v Karlsson loaded",
+      "chat_button_position": "PASS - Chat button at bottom-LEFT (x=24px)",
+      "chat_panel_position": "PASS - Chat panel opens on LEFT side (x=24px)",
+      "home_scrolltop_buttons": "PASS - Home and Scroll-to-Top buttons on RIGHT side (visible in screenshots)",
+      "buttons_not_stacked": "PASS - Chat on left, Home/ScrollTop on right - no overlap",
+      "extensive_log_barrister_view": "PASS (code verified) - ReportsSection.jsx lines 610-633 show Barrister View button for extensive_log reports",
+      "document_preview_iframe": "PASS (code verified) - DocumentPreviewPage.jsx auto-sizes iframe to content height with minHeight 90vh",
+      "branding_footer_report_view": "PASS - 'Appeal Case Manager', 'Founded by Debra King' found after disclaimer",
+      "grounds_export_print_footer": "PASS (code verified) - GroundsOfMerit.jsx lines 276-279 include print-footer with page counter and date",
+      "report_tier_comparison_not_in_exports": "PASS - Only exists in LandingPage.jsx lines 949-963"
+    }
+  },
+  "code_verification": {
+    "chat_button_position": {
+      "file": "/app/frontend/src/components/CaseChat.jsx",
+      "line": "146",
+      "code": "className=\"fixed bottom-6 left-6 z-40 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3.5 shadow-lg transition-all\""
+    },
+    "chat_panel_position": {
+      "file": "/app/frontend/src/components/CaseChat.jsx",
+      "line": "160",
+      "code": "className=\"fixed bottom-6 left-6 z-40 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col\""
+    },
+    "barrister_view_button": {
+      "file": "/app/frontend/src/components/ReportsSection.jsx",
+      "lines": "610-633",
+      "description": "Barrister View button appears on extensive_log reports - active if hasAllReports, locked otherwise"
+    },
+    "document_preview_iframe": {
+      "file": "/app/frontend/src/pages/DocumentPreviewPage.jsx",
+      "lines": "95-104",
+      "description": "iframe auto-sizes to content scrollHeight + 40px, minHeight 90vh"
+    },
+    "grounds_export_print_footer": {
+      "file": "/app/frontend/src/components/GroundsOfMerit.jsx",
+      "lines": "276-279",
+      "description": "print-footer with date and page counter using CSS counter(page)"
+    },
+    "report_tier_comparison": {
+      "file": "/app/frontend/src/pages/LandingPage.jsx",
+      "lines": "949-963",
+      "description": "Report Tier Comparison table ONLY exists on Landing Page, not in any exports"
+    }
+  }
+}

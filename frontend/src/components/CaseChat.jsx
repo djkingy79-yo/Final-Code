@@ -143,7 +143,7 @@ const CaseChat = ({ caseId, user }) => {
       {!isOpen && (
         <button
           onClick={() => { setIsOpen(true); setUnread(0); }}
-          className="fixed bottom-24 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3.5 shadow-lg transition-all"
+          className="fixed bottom-6 left-6 z-40 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3.5 shadow-lg transition-all"
           data-testid="chat-toggle-btn"
         >
           <MessageCircle className="w-6 h-6" />
@@ -157,7 +157,7 @@ const CaseChat = ({ caseId, user }) => {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-40 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col" style={{ height: "480px" }} data-testid="chat-panel">
+        <div className="fixed bottom-6 left-6 z-40 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col" style={{ height: "480px" }} data-testid="chat-panel">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-blue-600 text-white rounded-t-2xl">
             <div className="flex items-center gap-2">

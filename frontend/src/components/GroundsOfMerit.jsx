@@ -212,6 +212,19 @@ const GroundsOfMerit = ({
         <div className="grounds-export-disclaimer">
           NOT LEGAL ADVICE — This material is an educational tool only. All analysis and recommendations must be independently verified by a qualified Australian legal professional.
         </div>
+        <div style={{textAlign:'center', margin:'24px 0', padding:'16px 0'}}>
+          <p style={{fontSize:'12px', fontWeight:700, color:'#334155', margin:'0 0 10px'}}>Created and Designed by Deb King</p>
+          <div style={{display:'inline-flex', alignItems:'center', gap:'10px'}}>
+            <div style={{width:'36px', height:'36px', background:'#dc2626', borderRadius:'6px', display:'flex', alignItems:'center', justifyContent:'center'}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+            </div>
+            <div style={{textAlign:'left'}}>
+              <p style={{margin:0, fontWeight:700, fontSize:'13px', color:'#0f172a'}}>Appeal Case Manager</p>
+              <p style={{margin:0, fontSize:'11px', color:'#64748b'}}>Founded by Debra King</p>
+              <p style={{margin:0, fontSize:'11px', color:'#64748b'}}>Criminal Appeal Research Tool — Australian Law Only</p>
+            </div>
+          </div>
+        </div>
       </div>
     );
 
@@ -246,14 +259,27 @@ const GroundsOfMerit = ({
     .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 6px 7px; vertical-align: top; }
     .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .print-footer-page-print::after { content: ''; }
     @media print {
       body { background: #ffffff; }
       .grounds-export-shell { max-width: none; padding: 0; }
       .legal-report-table-wrap { overflow: visible; }
+      .print-footer-page-static { display: none; }
+      .print-footer-page-print::after { content: "Page " counter(page); }
     }
   </style>
 </head>
-<body>${contentMarkup}</body>
+<body>${contentMarkup}
+  <div class="print-footer">
+    <div class="print-footer-row">
+      <span class="print-footer-label">Criminal Appeal Case Management - Grounds of Merit - ${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
+      <span class="print-footer-page"><span class="print-footer-page-static">Page 1</span><span class="print-footer-page-print"></span></span>
+    </div>
+  </div>
+</body>
 </html>`;
   };
 
@@ -315,6 +341,19 @@ ${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + grou
 ${(ground.similar_cases||[]).length ? '<h2>Similar Cases</h2>' + ground.similar_cases.map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div>
+<div style="text-align:center;margin:24px 0;padding:16px 0;">
+  <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
+  <div style="display:inline-flex;align-items:center;gap:10px;">
+    <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+    </div>
+    <div style="text-align:left;">
+      <p style="margin:0;font-weight:700;font-size:13px;color:#0f172a;">Appeal Case Manager</p>
+      <p style="margin:0;font-size:11px;color:#64748b;">Founded by Debra King</p>
+      <p style="margin:0;font-size:11px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+    </div>
+  </div>
+</div>
 </body></html>`;
   };
 

@@ -8,6 +8,7 @@ export default function DocumentPreviewPage() {
   const [searchParams] = useSearchParams();
   const iframeRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState("90vh");
   const mode = searchParams.get("mode") || "pdf";
 
   const payload = useMemo(() => {
@@ -85,13 +86,23 @@ export default function DocumentPreviewPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8" data-testid="document-preview-frame-wrap">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden min-h-[70vh]">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
           <iframe
             ref={iframeRef}
             title={payload.title || "Document preview"}
             srcDoc={payload.html}
-            className="w-full h-[78vh] bg-white"
-            onLoad={() => setLoaded(true)}
+            className="w-full bg-white border-0"
+            style={{ minHeight: "90vh", height: iframeHeight }}
+            onLoad={() => {
+              setLoaded(true);
+              try {
+                const doc = iframeRef.current?.contentDocument || iframeRef.current?.contentWindow?.document;
+                if (doc) {
+                  const h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+                  setIframeHeight(h + 40 + "px");
+                }
+              } catch (e) { /* cross-origin fallback */ }
+            }}
             data-testid="document-preview-iframe"
           />
         </div>
