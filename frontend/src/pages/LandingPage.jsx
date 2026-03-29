@@ -193,7 +193,7 @@ const LandingPage = () => {
               
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
-                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
                 <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-sm text-slate-700">
                   <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Homicide</li>
                   <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Assault</li>
