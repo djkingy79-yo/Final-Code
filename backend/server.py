@@ -108,11 +108,11 @@ from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
 def get_offence_context(case: dict) -> str:
     """Build offence-specific context string for AI prompts"""
-    offence_category = case.get('offence_category', 'homicide')
+    offence_category = case.get('offence_category') or 'other'
     offence_type = case.get('offence_type', '')
-    state = case.get('state', 'nsw')
+    state = case.get('state') or 'nsw'
     
-    category_data = OFFENCE_CATEGORIES.get(offence_category, OFFENCE_CATEGORIES.get('homicide'))
+    category_data = OFFENCE_CATEGORIES.get(offence_category, OFFENCE_CATEGORIES.get('other', OFFENCE_CATEGORIES.get('homicide', {})))
     state_info = AUSTRALIAN_STATES.get(state, AUSTRALIAN_STATES.get('nsw'))
     
     context = f"""
@@ -248,9 +248,9 @@ class Case(BaseModel):
     court: Optional[str] = None
     judge: Optional[str] = None
     state: str = "nsw"  # nsw, vic, qld, sa, wa, tas, nt, act
-    offence_category: str = "homicide"  # homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences
-    offence_type: Optional[str] = None  # Specific offence within category
-    sentence: Optional[str] = None  # e.g. "30 years imprisonment with NPP of 22.5 years"
+    offence_category: str = "homicide"  # homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences — will be auto-detected from documents
+    offence_type: Optional[str] = None  # Specific offence within category — will be auto-detected
+    sentence: Optional[str] = None  # e.g. "30 years imprisonment with NPP of 22.5 years" — will be auto-detected
     status: str = "active"
     summary: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -263,7 +263,7 @@ class CaseCreate(BaseModel):
     court: Optional[str] = None
     judge: Optional[str] = None
     state: str = "nsw"
-    offence_category: str = "homicide"
+    offence_category: Optional[str] = None
     offence_type: Optional[str] = None
     sentence: Optional[str] = None
     summary: Optional[str] = None
@@ -791,6 +791,61 @@ async def upload_document(
         {"case_id": case_id},
         {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}}
     )
+    
+    # ── Auto-detect case metadata from this document if case has no metadata yet ──
+    if content_text and len(content_text) > 200:
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+        if case and (not case.get('offence_category') or case.get('offence_category') == 'homicide') and not case.get('offence_type') and not case.get('sentence'):
+            try:
+                detect_prompt = f"""Analyse this criminal case document and extract metadata.
+Return ONLY valid JSON (no markdown):
+{{
+  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
+  "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH>",
+  "sentence": "<exact sentence if stated, else null>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act>",
+  "court": "<court name if found>",
+  "case_number": "<case number if found>",
+  "defendant_name": "<defendant full name if found>"
+}}
+Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unknown, set null. state must be lowercase.
+
+DOCUMENT ({file.filename}):
+{content_text[:20000]}"""
+                detect_chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"upload_detect_{case_id}",
+                    system_message="Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
+                raw = await asyncio.wait_for(detect_chat.send_message(UserMessage(text=detect_prompt)), timeout=60)
+                raw = (raw or "").strip()
+                if raw.startswith("```"):
+                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+                import json as _json
+                meta = _json.loads(raw)
+                valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
+                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+                update_fields = {}
+                if meta.get("offence_category") in valid_cats:
+                    update_fields["offence_category"] = meta["offence_category"]
+                if meta.get("offence_type"):
+                    update_fields["offence_type"] = meta["offence_type"]
+                if meta.get("sentence"):
+                    update_fields["sentence"] = meta["sentence"]
+                if meta.get("state") and meta["state"].lower() in valid_sts:
+                    update_fields["state"] = meta["state"].lower()
+                if meta.get("court"):
+                    update_fields["court"] = meta["court"]
+                if meta.get("case_number") and not case.get("case_number"):
+                    update_fields["case_number"] = meta["case_number"]
+                if meta.get("defendant_name") and not case.get("defendant_name"):
+                    update_fields["defendant_name"] = meta["defendant_name"]
+                if update_fields:
+                    update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                    await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
+                    logger.info(f"Upload auto-detected metadata for {case_id}: {update_fields}")
+            except Exception as e:
+                logger.warning(f"Upload auto-detect failed for {case_id}: {e}")
     
     # Return the document without MongoDB's _id field and file_data
     created_doc = await db.documents.find_one({"document_id": doc.document_id}, {"_id": 0, "file_data": 0})
@@ -2947,7 +3002,7 @@ async def get_grounds_of_merit(case_id: str, request: Request):
         "status": "completed"
     })
     
-    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or []) or is_admin_user(user.email)
+    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or [])
     
     if is_unlocked:
         # Return full grounds data
@@ -2958,21 +3013,9 @@ async def get_grounds_of_merit(case_id: str, request: Request):
             "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]
         }
     else:
-        # Return only count and basic info (titles only, no descriptions)
-        preview_grounds = []
-        for g in grounds:
-            preview_grounds.append({
-                "ground_id": g.get("ground_id"),
-                "title": g.get("title"),
-                "ground_type": g.get("ground_type"),
-                "strength": g.get("strength"),
-                # Hide detailed content
-                "description": "*** UNLOCK TO VIEW ***",
-                "supporting_evidence": [],
-                "analysis": None
-            })
+        # Return only count — no titles, no descriptions, no details
         return {
-            "grounds": preview_grounds,
+            "grounds": [],
             "count": len(grounds),
             "is_unlocked": False,
             "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"],
@@ -3893,7 +3936,7 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     
     # ── Auto-detect case metadata if still defaults ──
     needs_detection = (
-        case.get('offence_category', 'homicide') == 'homicide'
+        (not case.get('offence_category') or case.get('offence_category') == 'homicide')
         and not case.get('offence_type')
         and not case.get('sentence')
     )

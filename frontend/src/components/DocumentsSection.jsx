@@ -106,7 +106,7 @@ const DocumentsSection = ({
     }
     
     if (uploadedDocs.length > 0) {
-      toast.success(`Successfully uploaded ${uploadedDocs.length} document(s)`);
+      toast.success(`Successfully uploaded ${uploadedDocs.length} document(s) — analysing case details...`);
       if (onDocumentsChange) onDocumentsChange();
     }
     if (failedFiles.length > 0) {

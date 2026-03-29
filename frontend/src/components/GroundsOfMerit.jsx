@@ -321,7 +321,7 @@ const GroundsOfMerit = ({
         </Card>
       )}
 
-      {grounds.length === 0 ? (
+      {groundsCount === 0 && grounds.length === 0 ? (
         <Card className="p-12 text-center">
           <Scale className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -331,6 +331,9 @@ const GroundsOfMerit = ({
             Use AI to automatically identify potential grounds or add them manually.
           </p>
         </Card>
+      ) : !isUnlocked ? (
+        /* LOCKED — paywall banner above is shown, nothing else */
+        null
       ) : (
         <div className="grid gap-4">
           {isUnlocked && (

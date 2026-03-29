@@ -1,0 +1,90 @@
+{
+  "summary": "Iteration 107 testing completed. All requested features verified: 1) Grounds paywall enforcement working - admin bypass removed, is_unlocked=false, empty grounds array returned with count=2. 2) Auto-detection metadata persisted correctly - case_e7a5b5faf51e shows offence_category='sexual_offences' (NOT 'homicide'), offence_type='Possess and Access Child Abuse Material', sentence populated. 3) Dashboard new case form defaults offence_category to '' (Auto-detect from documents). 4) Bundle export still works (HTTP 200). 5) Frontend paywall UI shows '2 Grounds of Merit Found!' banner with 'Unlock for $99.00' button, no ground cards visible, AI/Add buttons hidden when locked.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration107_paywall_autodetect.py",
+    "/app/test_reports/pytest/iteration107_paywall_autodetect.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration107_paywall_autodetect.py"
+  ],
+  "success_rate": {
+    "backend": "100% (6/6 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "seed_data_creation": "N/A - used existing test cases case_e7a5b5faf51e (R v Karlsson) and case_a97ea91f0692 (Dummy Murder)",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All three major fixes verified: 1) Grounds paywall enforcement - admin bypass removed at server.py line 3005, locked response returns empty grounds array with count at lines 3018-3022. 2) Auto-detection metadata - case_e7a5b5faf51e correctly shows sexual_offences (not homicide) with offence_type and sentence populated. 3) Dashboard form default - offence_category defaults to '' (Auto-detect from documents) at Dashboard.jsx line 63. Test case case_e7a5b5faf51e has 2 locked grounds, session token sess_39ffc655249445cb8e4f9879d3af0044 works for auth.",
+  "test_results": {
+    "backend_api_tests": {
+      "health_check": "PASS",
+      "karlsson_case_metadata": "PASS - offence_category='sexual_offences', offence_type='Possess and Access Child Abuse Material', sentence populated",
+      "grounds_paywall_locked": "PASS - is_unlocked=false, count=2, grounds=[] (empty array)",
+      "bundle_export": "PASS - POST /api/cases/case_a97ea91f0692/export/bundle returns 200 with PDF",
+      "admin_bypass_removed": "PASS - admin user sees locked grounds (is_unlocked=false)",
+      "offence_categories_endpoint": "PASS"
+    },
+    "frontend_ui_tests": {
+      "case_detail_offence_badge": "PASS - Shows 'Sexual Offences' badge (blue), NOT 'Homicide'",
+      "case_detail_offence_type": "PASS - Shows 'Possess and Access Child Abuse Material'",
+      "case_detail_sentence": "PASS - Shows sentence",
+      "grounds_tab_label": "PASS - Shows 'Grounds (2)' - count from API",
+      "paywall_banner": "PASS - Shows '2 Grounds of Merit Found!' with lock icon",
+      "unlock_button": "PASS - Shows 'Unlock for $99.00' (red button)",
+      "no_ground_cards_visible": "PASS - No ground cards visible when locked",
+      "ai_identify_btn_hidden": "PASS - AI Identify Grounds button hidden when locked with existing grounds",
+      "add_ground_btn_hidden": "PASS - Add Ground button hidden when locked",
+      "dashboard_new_case_default": "PASS - Offence Category defaults to 'Auto-detect from documents' (value='')"
+    }
+  },
+  "paywall_verification": {
+    "test_case": "case_e7a5b5faf51e (R v Karlsson)",
+    "api_response": {
+      "is_unlocked": false,
+      "count": 2,
+      "grounds": [],
+      "unlock_price": 99.0
+    },
+    "ui_elements_visible": [
+      "Lock icon",
+      "'2 Grounds of Merit Found!' heading",
+      "'Unlock to see full details, evidence, and deep analysis for each ground.' description",
+      "'Unlock for $99.00' button (red)"
+    ],
+    "ui_elements_hidden": [
+      "Ground cards (titles, descriptions, badges)",
+      "AI Identify Grounds button",
+      "Add Ground button",
+      "Investigate buttons",
+      "Search buttons"
+    ]
+  },
+  "auto_detection_verification": {
+    "test_case": "case_e7a5b5faf51e (R v Karlsson)",
+    "metadata_shown": {
+      "offence_category": "sexual_offences",
+      "offence_type": "Possess and Access Child Abuse Material",
+      "sentence": "imprisonment for 6 years 9 months to date from 8 October 2025",
+      "state": "nsw",
+      "court": "District Court New South Wales",
+      "case_number": "2023/292851"
+    }
+  },
+  "dashboard_form_verification": {
+    "offence_category_default_value": "",
+    "offence_category_default_text": "Auto-detect from documents",
+    "verified": true
+  }
+}

@@ -60,7 +60,7 @@ const Dashboard = ({ user }) => {
     court: "",
     judge: "",
     state: "nsw",
-    offence_category: "homicide",
+    offence_category: "",
     offence_type: "",
     sentence: "",
     summary: ""
@@ -127,7 +127,7 @@ const Dashboard = ({ user }) => {
       const response = await axios.post(`${API}/cases`, newCase);
       setCases([response.data, ...cases]);
       setShowNewCaseDialog(false);
-      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "homicide", offence_type: "", sentence: "", summary: "" });
+      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "", offence_type: "", sentence: "", summary: "" });
       toast.success("Case created successfully");
     } catch (error) {
       const detail = error?.response?.data?.detail;
@@ -665,6 +665,7 @@ const Dashboard = ({ user }) => {
                     className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-offence-category"
                   >
+                    <option value="">Auto-detect from documents</option>
                     {offenceCategories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}

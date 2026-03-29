@@ -872,7 +872,7 @@ const CaseDetail = ({ user }) => {
                 </TabsTrigger>
                 <TabsTrigger value="grounds" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-grounds">
                   <Gavel className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  Grounds ({grounds.length})
+                  Grounds ({groundsCount || grounds.length})
                 </TabsTrigger>
                 <TabsTrigger value="notes" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-notes">
                   <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -925,30 +925,34 @@ const CaseDetail = ({ user }) => {
               )}
               {activeTab === "grounds" && (
                 <>
-                  <Button 
-                    onClick={handleAutoIdentifyGrounds}
-                    disabled={autoIdentifying}
-                    className="bg-blue-700 text-white hover:bg-blue-600"
-                    data-testid="auto-identify-btn"
-                  >
-                    {autoIdentifying ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      <Sparkles className="w-4 h-4 mr-2" />
-                    )}
-                    AI Identify Grounds
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
-                      setShowGroundDialog(true);
-                    }}
-                    className="bg-blue-700 text-white hover:bg-blue-600"
-                    data-testid="add-ground-btn"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Ground
-                  </Button>
+                  {(groundsUnlocked || !groundsCount) && (
+                    <Button 
+                      onClick={handleAutoIdentifyGrounds}
+                      disabled={autoIdentifying}
+                      className="bg-blue-700 text-white hover:bg-blue-600"
+                      data-testid="auto-identify-btn"
+                    >
+                      {autoIdentifying ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Sparkles className="w-4 h-4 mr-2" />
+                      )}
+                      AI Identify Grounds
+                    </Button>
+                  )}
+                  {groundsUnlocked && (
+                    <Button 
+                      onClick={() => {
+                        setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
+                        setShowGroundDialog(true);
+                      }}
+                      className="bg-blue-700 text-white hover:bg-blue-600"
+                      data-testid="add-ground-btn"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Ground
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -1030,7 +1034,7 @@ const CaseDetail = ({ user }) => {
                 </div>
               </div>
             )}
-            {grounds.length === 0 ? (
+            {grounds.length === 0 && !groundsCount ? (
               <Card className="p-12 text-center card-elevated">
                 <Gavel className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
