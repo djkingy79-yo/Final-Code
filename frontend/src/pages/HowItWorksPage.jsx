@@ -39,6 +39,7 @@ import {
   ListChecks,
   Download,
   Zap,
+  MessageSquare,
 } from "lucide-react";
 
 const HowItWorksPage = () => {
@@ -299,6 +300,40 @@ const HowItWorksPage = () => {
         ],
       },
     },
+    {
+      num: 9,
+      icon: MessageSquare,
+      title: "Chat & Collaboration",
+      subtitle: "Share your case and collaborate with others in real time",
+      color: "bg-cyan-600",
+      lightColor: "bg-cyan-50",
+      borderColor: "border-cyan-200",
+      textColor: "text-cyan-700",
+      description: "Use the Collaboration tab to share your case with other registered users — such as family members, support people, or legal professionals. Once shared, participants can send messages in a real-time chat, add notes, and review documents together.",
+      visual: {
+        alt: "Collaboration tab with shared case and real-time chat",
+        caption: "Share your case and chat in real time with collaborators."
+      },
+      whatYouSee: [
+        "A 'Share Case' button to invite other registered users by email",
+        "Real-time chat window — send and receive messages instantly",
+        "Notification badges when a collaborator sends a new message",
+        "Shared access to notes, documents, and timeline for the case",
+        "Permission controls — you decide who can view or edit your case",
+      ],
+      proTips: [
+        "Share your case with a trusted family member to help gather documents and take notes",
+        "Use the chat to discuss strategy with your legal representative between consultations",
+        "Collaborators can see reports and grounds — useful for briefing a barrister before a conference",
+        "All chat messages are saved to your case — nothing is lost",
+      ],
+      interactive: {
+        label: "Try it now",
+        text: "Open a case and click the Collaboration tab to share and chat",
+        link: "/dashboard",
+        btnText: "Go to Dashboard",
+      },
+    },
   ];
 
   const reportPricing = [
@@ -415,7 +450,7 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4" /> 8 simple steps
+              <Clock className="w-4 h-4" /> 9 simple steps
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
