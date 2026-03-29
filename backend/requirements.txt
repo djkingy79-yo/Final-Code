@@ -17,6 +17,7 @@ PyJWT==2.12.1
 httpx==0.28.1
 
 # AI / LLM
+--extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
 emergentintegrations==0.1.0
 
 # Document Processing
