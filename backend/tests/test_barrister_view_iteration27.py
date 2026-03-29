@@ -204,7 +204,7 @@ class TestSingleReportEndpoint:
             assert 'analysis' in content, f"Report content missing analysis. Keys: {content.keys()}"
             print(f"SUCCESS: Report has analysis of {len(content.get('analysis', ''))} chars")
         
-        print(f"SUCCESS: Single report endpoint returned valid data")
+        print("SUCCESS: Single report endpoint returned valid data")
 
 
 class TestCaseEndpoint:

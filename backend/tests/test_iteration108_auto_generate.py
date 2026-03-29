@@ -130,7 +130,7 @@ class TestAutoGenerateFeatures:
         
         # Check if already investigated
         if ground.get("deep_analysis", {}).get("full_analysis"):
-            print(f"✓ Ground already has deep_analysis from previous investigation")
+            print("✓ Ground already has deep_analysis from previous investigation")
             print(f"  Investigated at: {ground.get('deep_analysis', {}).get('investigated_at', 'N/A')}")
             return
         
@@ -143,7 +143,7 @@ class TestAutoGenerateFeatures:
             result = resp.json()
             assert "deep_analysis" in result, "Response should contain deep_analysis"
             assert result["deep_analysis"].get("full_analysis"), "deep_analysis should have full_analysis"
-            print(f"✓ Investigate endpoint returned deep analysis")
+            print("✓ Investigate endpoint returned deep analysis")
             print(f"  Analysis length: {len(result['deep_analysis'].get('full_analysis', ''))} chars")
         elif resp.status_code == 500:
             print(f"⚠ Investigate endpoint returned 500 (LLM may have timed out): {resp.text[:200]}")
@@ -241,7 +241,7 @@ class TestDocumentUploadTrigger:
         case = resp.json()
         
         # Check for auto-detected fields
-        print(f"✓ Case metadata:")
+        print("✓ Case metadata:")
         print(f"  - offence_category: {case.get('offence_category', 'N/A')}")
         print(f"  - offence_type: {case.get('offence_type', 'N/A')}")
         print(f"  - sentence: {case.get('sentence', 'N/A')[:50] if case.get('sentence') else 'N/A'}...")

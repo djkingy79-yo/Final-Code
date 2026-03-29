@@ -92,7 +92,7 @@ class TestStripePayments:
         assert prices["extensive_report"]["price"] == 39.00, "extensive_report should be $39.00"
         assert prices["grounds_of_merit"]["price"] == 50.00, "grounds_of_merit should be $50.00"
         
-        print(f"PASS: /api/payments/prices returns 3 pricing tiers correctly")
+        print("PASS: /api/payments/prices returns 3 pricing tiers correctly")
     
     def test_checkout_creates_session(self, auth_headers):
         """Test /api/payments/checkout creates Stripe checkout session"""
@@ -115,7 +115,7 @@ class TestStripePayments:
             assert "url" in data, "Checkout response should include URL"
             assert "session_id" in data, "Checkout response should include session_id"
             assert data["url"].startswith("https://"), "URL should be HTTPS"
-            print(f"PASS: /api/payments/checkout created session successfully")
+            print("PASS: /api/payments/checkout created session successfully")
         elif response.status_code == 500:
             # Payment system may not be fully configured with real Stripe key
             detail = response.json().get("detail", "")
@@ -144,7 +144,7 @@ class TestStripePayments:
         assert response.status_code == 400, f"Expected 400 for invalid feature type, got {response.status_code}"
         data = response.json()
         assert "detail" in data, "Should return error detail"
-        print(f"PASS: /api/payments/checkout rejects invalid feature types")
+        print("PASS: /api/payments/checkout rejects invalid feature types")
     
     def test_checkout_requires_auth(self):
         """Test checkout requires authentication"""
@@ -158,7 +158,7 @@ class TestStripePayments:
         )
         
         assert response.status_code == 401, f"Expected 401 without auth, got {response.status_code}"
-        print(f"PASS: /api/payments/checkout requires authentication")
+        print("PASS: /api/payments/checkout requires authentication")
 
 
 class TestReportGeneration:
@@ -199,13 +199,13 @@ class TestReportGeneration:
             assert "report_id" in data, "Response should include report_id"
             assert "content" in data, "Response should include content"
             assert data["report_type"] == "quick_summary", "report_type should match request"
-            print(f"PASS: quick_summary report generated successfully")
+            print("PASS: quick_summary report generated successfully")
         elif response.status_code == 402:
             # Payment required (shouldn't happen for admin but possible if admin check fails)
-            print(f"INFO: Payment required for quick_summary (admin bypass may not be active)")
+            print("INFO: Payment required for quick_summary (admin bypass may not be active)")
         elif response.status_code == 504 or response.status_code == 408:
             # Timeout - AI generation can be slow
-            print(f"INFO: Report generation timed out (expected for AI-heavy operation)")
+            print("INFO: Report generation timed out (expected for AI-heavy operation)")
         else:
             # Log the error but don't fail - AI generation can be flaky
             print(f"INFO: Report generation returned {response.status_code}: {response.text[:200]}")
@@ -248,7 +248,7 @@ class TestReportGeneration:
             assert "report_id" in data, "Report should have report_id"
             assert "content" in data, "Report should have content"
             assert data["report_id"] == EXISTING_REPORT, "report_id should match requested"
-            print(f"PASS: Single report fetch works correctly")
+            print("PASS: Single report fetch works correctly")
         elif response.status_code == 404:
             # Report may have been deleted
             print(f"INFO: Report {EXISTING_REPORT} not found (may have been deleted)")
@@ -286,14 +286,14 @@ class TestPaymentStatus:
         
         # Should return 404 for non-existent session
         assert response.status_code == 404, f"Expected 404 for invalid session, got {response.status_code}"
-        print(f"PASS: /api/payments/status returns 404 for invalid session")
+        print("PASS: /api/payments/status returns 404 for invalid session")
     
     def test_payment_status_requires_auth(self):
         """Test payment status requires authentication"""
         response = requests.get(f"{BASE_URL}/api/payments/status/test_session")
         
         assert response.status_code == 401, f"Expected 401 without auth, got {response.status_code}"
-        print(f"PASS: /api/payments/status requires authentication")
+        print("PASS: /api/payments/status requires authentication")
 
 
 class TestHealthAndCaseAccess:
@@ -303,7 +303,7 @@ class TestHealthAndCaseAccess:
         """Test health endpoint is accessible"""
         response = requests.get(f"{BASE_URL}/health")
         assert response.status_code == 200, f"Health check failed: {response.status_code}"
-        print(f"PASS: Health endpoint accessible")
+        print("PASS: Health endpoint accessible")
     
     @pytest.fixture(scope="class")
     def session_token(self):

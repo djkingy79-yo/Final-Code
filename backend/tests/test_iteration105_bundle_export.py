@@ -33,7 +33,7 @@ class TestAuthentication:
         assert response.status_code == 200, f"Login failed: {response.text}"
         data = response.json()
         assert "session_token" in data, f"No session_token in response: {data}"
-        print(f"Login successful, session_token received")
+        print("Login successful, session_token received")
         return data["session_token"]
 
 

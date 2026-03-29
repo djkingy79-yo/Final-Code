@@ -31,7 +31,7 @@ class TestBackendAPIs:
         if self.created_case_id:
             try:
                 self.session.delete(f"{BASE_URL}/api/cases/{self.created_case_id}")
-            except:
+            except Exception:
                 pass
     
     def login_test_user(self):

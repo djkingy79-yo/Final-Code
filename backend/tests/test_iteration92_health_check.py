@@ -171,8 +171,8 @@ class TestStatisticsEndpoints:
         response = requests.get(f"{BASE_URL}/api/statistics/appeals", timeout=10)
         # Should return 200 or 404 if not implemented
         if response.status_code == 200:
-            data = response.json()
-            print(f"✓ Appeal statistics endpoint works")
+            response.json()
+            print("✓ Appeal statistics endpoint works")
         else:
             print(f"✓ Appeal statistics endpoint status: {response.status_code}")
 

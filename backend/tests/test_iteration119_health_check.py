@@ -41,7 +41,7 @@ class TestAuthentication:
         # Response may have user nested or flat
         email = data.get("user", {}).get("email") or data.get("email")
         assert email == TEST_EMAIL
-        print(f"✓ Login successful, session_token received")
+        print("✓ Login successful, session_token received")
         return data["session_token"]
     
     def test_login_invalid_credentials(self):
@@ -51,7 +51,7 @@ class TestAuthentication:
             "password": "wrongpassword"
         })
         assert response.status_code == 401
-        print(f"✓ Invalid login correctly rejected")
+        print("✓ Invalid login correctly rejected")
 
 
 @pytest.fixture(scope="class")
@@ -141,7 +141,7 @@ class TestTimelineAPI:
         events = get_response.json()
         event_ids = [e.get("event_id") for e in events]
         assert event_id in event_ids
-        print(f"✓ Timeline event verified in list")
+        print("✓ Timeline event verified in list")
         
         # Delete
         delete_response = requests.delete(
@@ -156,7 +156,7 @@ class TestTimelineAPI:
         events2 = get_response2.json()
         event_ids2 = [e.get("event_id") for e in events2]
         assert event_id not in event_ids2
-        print(f"✓ Timeline event deletion verified")
+        print("✓ Timeline event deletion verified")
 
 
 class TestNotesAPI:
@@ -194,7 +194,7 @@ class TestNotesAPI:
         notes = get_response.json()
         note_ids = [n.get("note_id") for n in notes]
         assert note_id in note_ids
-        print(f"✓ Note verified in list")
+        print("✓ Note verified in list")
         
         # Delete
         delete_response = requests.delete(
@@ -209,7 +209,7 @@ class TestNotesAPI:
         notes2 = get_response2.json()
         note_ids2 = [n.get("note_id") for n in notes2]
         assert note_id not in note_ids2
-        print(f"✓ Note deletion verified")
+        print("✓ Note deletion verified")
 
 
 class TestDeadlinesAPI:
@@ -237,7 +237,7 @@ class TestDeadlinesAPI:
         assert response.status_code == 200
         data = response.json()
         assert "overall_strength" in data or "strength" in data or isinstance(data, dict)
-        print(f"✓ Strength endpoint returned assessment")
+        print("✓ Strength endpoint returned assessment")
     
     def test_create_and_delete_deadline(self, auth_headers):
         """Test creating and deleting a deadline"""
@@ -264,7 +264,7 @@ class TestDeadlinesAPI:
         deadlines = get_response.json()
         deadline_ids = [d.get("deadline_id") for d in deadlines]
         assert deadline_id in deadline_ids
-        print(f"✓ Deadline verified in list")
+        print("✓ Deadline verified in list")
         
         # Delete
         delete_response = requests.delete(
@@ -279,7 +279,7 @@ class TestDeadlinesAPI:
         deadlines2 = get_response2.json()
         deadline_ids2 = [d.get("deadline_id") for d in deadlines2]
         assert deadline_id not in deadline_ids2
-        print(f"✓ Deadline deletion verified")
+        print("✓ Deadline deletion verified")
 
 
 class TestGroundsAPI:
@@ -317,7 +317,7 @@ class TestReportsAPI:
         assert response.status_code == 200
         data = response.json()
         assert "content" in data or "sections" in data or isinstance(data, dict)
-        print(f"✓ Barrister view endpoint returned data")
+        print("✓ Barrister view endpoint returned data")
 
 
 class TestExportsAPI:
@@ -393,7 +393,7 @@ class TestPaymentsAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, dict) or isinstance(data, list)
-        print(f"✓ Prices endpoint returned data")
+        print("✓ Prices endpoint returned data")
     
     def test_get_case_payments(self, auth_headers):
         """Test getting payments for a case"""
@@ -419,7 +419,7 @@ class TestResourcesAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list) or isinstance(data, dict)
-        print(f"✓ Resources directory endpoint returned data")
+        print("✓ Resources directory endpoint returned data")
     
     def test_get_templates(self, auth_headers):
         """Test getting templates"""
@@ -451,7 +451,7 @@ class TestStatisticsAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, dict)
-        print(f"✓ Public statistics endpoint returned data")
+        print("✓ Public statistics endpoint returned data")
 
 
 class TestAnalyticsAPI:
@@ -463,7 +463,7 @@ class TestAnalyticsAPI:
         assert response.status_code == 200
         data = response.json()
         assert "count" in data or isinstance(data, dict)
-        print(f"✓ Visitor count endpoint returned data")
+        print("✓ Visitor count endpoint returned data")
 
 
 class TestStatesAPI:
@@ -475,7 +475,7 @@ class TestStatesAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list) or isinstance(data, dict)
-        print(f"✓ States endpoint returned data")
+        print("✓ States endpoint returned data")
     
     def test_get_offence_framework(self, auth_headers):
         """Test getting offence framework"""
@@ -483,7 +483,7 @@ class TestStatesAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, dict) or isinstance(data, list)
-        print(f"✓ Offence framework endpoint returned data")
+        print("✓ Offence framework endpoint returned data")
     
     def test_get_offence_categories(self, auth_headers):
         """Test getting offence categories"""
@@ -491,7 +491,7 @@ class TestStatesAPI:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, dict) or isinstance(data, list)
-        print(f"✓ Offence categories endpoint returned data")
+        print("✓ Offence categories endpoint returned data")
 
 
 if __name__ == "__main__":

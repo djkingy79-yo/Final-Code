@@ -61,14 +61,14 @@ class JustitiaAPITester:
                 print(f"✅ Passed - Status: {response.status_code}")
                 try:
                     return True, response.json() if response.content else {}
-                except:
+                except Exception:
                     return True, {}
             else:
                 print(f"❌ Failed - Expected {expected_status}, got {response.status_code}")
                 try:
                     error_detail = response.json()
                     print(f"   Error: {error_detail}")
-                except:
+                except Exception:
                     print(f"   Response: {response.text[:200]}")
                 return False, {}
 
@@ -442,7 +442,7 @@ class JustitiaAPITester:
         
         # Test invalid report generation
         invalid_report_data = {"report_type": "invalid_type"}
-        self.run_test("Generate invalid report type", "POST", f"cases/invalid-case/reports/generate", 404, invalid_report_data)
+        self.run_test("Generate invalid report type", "POST", "cases/invalid-case/reports/generate", 404, invalid_report_data)
         
         # Test unauthorized access (without token)
         old_token = self.session_token
@@ -453,10 +453,10 @@ class JustitiaAPITester:
 def main():
     print("🏛️  JUSTITIA AI - CRIMINAL APPEAL CASE MANAGEMENT API TESTING")
     print("=" * 70)
-    print(f"Backend URL: http://localhost:8001")
-    print(f"Test User: test-user-notes-1770882054339")
-    print(f"Session Token: test_session_notes_1770882054339")
-    print(f"Test Case ID: case_64f57656cd75")
+    print("Backend URL: http://localhost:8001")
+    print("Test User: test-user-notes-1770882054339")
+    print("Session Token: test_session_notes_1770882054339")
+    print("Test Case ID: case_64f57656cd75")
     print("=" * 70)
     
     tester = JustitiaAPITester()

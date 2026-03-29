@@ -169,7 +169,7 @@ class TestChatMessagesEndpoints:
         assert get_response.status_code == 200
         messages = get_response.json()
         found = any(m.get("content") == unique_content for m in messages)
-        assert found, f"Posted message not found in GET response"
+        assert found, "Posted message not found in GET response"
         print("✓ Posted message verified in GET /messages response")
 
 
@@ -183,7 +183,7 @@ class TestReportExports:
         )
         assert response.status_code == 200, f"PDF export failed: {response.status_code}"
         content_type = response.headers.get("content-type", "")
-        assert "pdf" in content_type.lower() or len(response.content) > 0, f"Invalid PDF response"
+        assert "pdf" in content_type.lower() or len(response.content) > 0, "Invalid PDF response"
         print(f"✓ PDF export returned {len(response.content)} bytes")
     
     def test_export_docx(self, auth_session):

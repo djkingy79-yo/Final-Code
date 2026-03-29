@@ -47,7 +47,7 @@ class TestHealthEndpoint:
         data = response.json()
         assert data["database"] == "connected", f"Database not connected: {data['database']}"
         assert data["status"] == "healthy", f"Health status not healthy: {data['status']}"
-        print(f"✅ Database connected and healthy")
+        print("✅ Database connected and healthy")
 
 
 class TestRootEndpoint:

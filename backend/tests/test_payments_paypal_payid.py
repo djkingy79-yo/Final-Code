@@ -24,7 +24,7 @@ class TestPaymentPrices:
         assert "extensive_report" in prices
         assert "grounds_of_merit" in prices
         # Verify PayPal configured flag
-        assert data.get("paypal_configured") == True
+        assert data.get("paypal_configured")
     
     def test_full_report_price(self):
         """Verify full_report is $29"""
@@ -74,7 +74,7 @@ class TestPaymentMethods:
         data = response.json()
         
         paypal = data.get("paypal", {})
-        assert paypal.get("enabled") == True
+        assert paypal.get("enabled")
         assert paypal.get("name") == "PayPal"
         assert "PayPal" in paypal.get("description", "")
         assert "supports" in paypal
@@ -85,7 +85,7 @@ class TestPaymentMethods:
         data = response.json()
         
         payid = data.get("payid", {})
-        assert payid.get("enabled") == True
+        assert payid.get("enabled")
         assert payid.get("name") == "PayID / Bank Transfer"
         assert payid.get("payid") == "djkingy79@gmail.com"
         assert payid.get("payid_type") == "email"

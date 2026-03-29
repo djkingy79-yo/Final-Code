@@ -102,23 +102,23 @@ class TestComparePatterns:
         
         data = response.json()
         assert "filters_applied" in data or "message" in data
-        print(f"✓ GET /api/compare/patterns with offence_category filter works")
+        print("✓ GET /api/compare/patterns with offence_category filter works")
     
     def test_get_patterns_with_state_filter(self, auth_session):
         """Get patterns filtered by state"""
         response = auth_session.get(f"{BASE_URL}/api/compare/patterns?state=nsw")
         assert response.status_code == 200
         
-        data = response.json()
-        print(f"✓ GET /api/compare/patterns with state filter works")
+        response.json()
+        print("✓ GET /api/compare/patterns with state filter works")
     
     def test_get_patterns_with_ground_type_filter(self, auth_session):
         """Get patterns filtered by ground type"""
         response = auth_session.get(f"{BASE_URL}/api/compare/patterns?ground_type=procedural_error")
         assert response.status_code == 200
         
-        data = response.json()
-        print(f"✓ GET /api/compare/patterns with ground_type filter works")
+        response.json()
+        print("✓ GET /api/compare/patterns with ground_type filter works")
 
 
 class TestCompareSuccessFactors:
@@ -131,15 +131,15 @@ class TestCompareSuccessFactors:
         
         data = response.json()
         assert "success_factors" in data or "message" in data
-        print(f"✓ GET /api/compare/success-factors works")
+        print("✓ GET /api/compare/success-factors works")
     
     def test_get_success_factors_with_filter(self, auth_session):
         """Get success factors filtered by offence category"""
         response = auth_session.get(f"{BASE_URL}/api/compare/success-factors?offence_category=assault")
         assert response.status_code == 200
         
-        data = response.json()
-        print(f"✓ GET /api/compare/success-factors with filter works")
+        response.json()
+        print("✓ GET /api/compare/success-factors with filter works")
 
 
 @pytest.fixture(scope="module")
@@ -168,7 +168,7 @@ def test_cases(auth_session):
         try:
             auth_session.delete(f"{BASE_URL}/api/cases/{case['case_id']}")
             print(f"✓ Cleaned up test case: {case['case_id']}")
-        except:
+        except Exception:
             pass
 
 
@@ -269,7 +269,7 @@ def test_case_with_docs(auth_session):
     try:
         auth_session.delete(f"{BASE_URL}/api/cases/{case_id}")
         print(f"✓ Cleaned up test case: {case_id}")
-    except:
+    except Exception:
         pass
 
 
@@ -278,7 +278,7 @@ class TestContradictionFinder:
     
     def test_scan_requires_2_documents(self, auth_session, test_case_with_docs):
         """Scan should require at least 2 documents"""
-        case_id = test_case_with_docs["case_id"]
+        test_case_with_docs["case_id"]
         
         # Create a case with only 1 document
         case_data = {

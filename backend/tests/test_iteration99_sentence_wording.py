@@ -112,7 +112,7 @@ class TestReportSentenceWording:
         assert "30 years" in analysis, "Sentence data not found in analysis"
         assert "non-parole period" in analysis, "Non-parole period not found in analysis"
         
-        print(f"✓ Quick Summary report contains sentence data")
+        print("✓ Quick Summary report contains sentence data")
     
     def test_full_detailed_report_sentence(self, api_client):
         """Test Full Detailed report sentence wording"""
@@ -127,7 +127,7 @@ class TestReportSentenceWording:
         assert data.get("report_type") == "full_detailed"
         assert data.get("status") == "completed"
         
-        print(f"✓ Full Detailed report accessible and completed")
+        print("✓ Full Detailed report accessible and completed")
     
     def test_extensive_log_report_sentence(self, api_client):
         """Test Extensive Log report sentence wording"""
@@ -142,7 +142,7 @@ class TestReportSentenceWording:
         assert data.get("report_type") == "extensive_log"
         assert data.get("status") == "completed"
         
-        print(f"✓ Extensive Log report accessible and completed")
+        print("✓ Extensive Log report accessible and completed")
     
     def test_barrister_view_report_sentence(self, api_client):
         """Test Barrister View report sentence wording"""
@@ -160,7 +160,7 @@ class TestReportSentenceWording:
         data = response.json()
         assert data.get("status") == "completed"
         
-        print(f"✓ Barrister View report accessible and completed")
+        print("✓ Barrister View report accessible and completed")
 
 
 class TestCaseData:
@@ -234,7 +234,7 @@ class TestExportEndpoints:
         assert response.status_code == 200, f"PDF export failed: {response.status_code}"
         assert "application/pdf" in response.headers.get("content-type", "")
         
-        print(f"✓ PDF export endpoint works correctly")
+        print("✓ PDF export endpoint works correctly")
     
     def test_docx_export_endpoint_accessible(self, api_client):
         """Test that DOCX export endpoint is accessible"""
@@ -252,7 +252,7 @@ class TestExportEndpoints:
         content_type = response.headers.get("content-type", "")
         assert "application/vnd.openxmlformats" in content_type or "application/octet-stream" in content_type
         
-        print(f"✓ DOCX export endpoint works correctly")
+        print("✓ DOCX export endpoint works correctly")
 
 
 if __name__ == "__main__":

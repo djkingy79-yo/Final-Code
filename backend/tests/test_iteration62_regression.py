@@ -84,7 +84,7 @@ class TestIteration62Regression:
         assert response.status_code == 200, f"Login failed: {response.text}"
         data = response.json()
         assert "user_id" in data or "email" in data, "Login response missing user info"
-        print(f"PASS: Login - user authenticated")
+        print("PASS: Login - user authenticated")
     
     # ============ CASE TESTS ============
     def test_05_create_case(self, auth_session):
@@ -177,7 +177,7 @@ class TestIteration62Regression:
         if response.status_code == 200:
             data = response.json()
             assert "analysis" in data or "content" in data, "Response missing analysis"
-            print(f"PASS: Progress analysis generated successfully")
+            print("PASS: Progress analysis generated successfully")
         else:
             print(f"INFO: Progress analysis returned {response.status_code}")
     

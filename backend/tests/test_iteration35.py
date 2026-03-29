@@ -27,8 +27,8 @@ class TestHealthAndBasics:
         try:
             data = response.json()
             print(f"PASS: Health check - status={data.get('status', 'ok')}")
-        except:
-            print(f"PASS: Health check - status=200 OK")
+        except Exception:
+            print("PASS: Health check - status=200 OK")
     
     def test_api_offence_categories(self):
         """Test offence categories endpoint"""
@@ -227,7 +227,7 @@ class TestNotesFlow:
         
         data = response.json()
         is_pinned = data.get("is_pinned") or data.get("pinned")
-        assert is_pinned == True, f"Note should be pinned, got is_pinned={is_pinned}"
+        assert is_pinned, f"Note should be pinned, got is_pinned={is_pinned}"
         print(f"PASS: Pin note - is_pinned={is_pinned}")
         
         # Unpin the note
@@ -239,7 +239,7 @@ class TestNotesFlow:
         
         data2 = response2.json()
         is_pinned2 = data2.get("is_pinned") or data2.get("pinned")
-        assert is_pinned2 == False, f"Note should be unpinned, got is_pinned={is_pinned2}"
+        assert not is_pinned2, f"Note should be unpinned, got is_pinned={is_pinned2}"
         print(f"PASS: Unpin note - is_pinned={is_pinned2}")
     
     def test_add_note_comment(self, authenticated_session):
@@ -370,14 +370,14 @@ class TestReportGenerationAggressiveMode:
             # Check if aggressive_mode is persisted in response
             if isinstance(data.get("content"), dict):
                 assert "aggressive_mode" in data["content"], "aggressive_mode should be in report content"
-                assert data["content"]["aggressive_mode"] == True
-                print(f"PASS: Report generated with aggressive_mode=True persisted in content")
+                assert data["content"]["aggressive_mode"]
+                print("PASS: Report generated with aggressive_mode=True persisted in content")
             else:
-                print(f"PASS: Report generated (content is string format)")
+                print("PASS: Report generated (content is string format)")
         elif response.status_code == 400:
-            print(f"PASS: aggressive_mode parameter accepted, 400 due to no documents (expected)")
+            print("PASS: aggressive_mode parameter accepted, 400 due to no documents (expected)")
         else:
-            print(f"PASS: aggressive_mode parameter accepted, 500 likely AI error (acceptable for parameter test)")
+            print("PASS: aggressive_mode parameter accepted, 500 likely AI error (acceptable for parameter test)")
 
 
 class TestDeadlines:
@@ -442,8 +442,8 @@ class TestDeadlines:
         assert response.status_code == 200, f"Update deadline failed: {response.text}"
         
         data = response.json()
-        assert data.get("is_completed") == True
-        print(f"PASS: Update deadline is_completed=True")
+        assert data.get("is_completed")
+        print("PASS: Update deadline is_completed=True")
     
     def test_delete_deadline(self, authenticated_session):
         """Test deleting a deadline"""

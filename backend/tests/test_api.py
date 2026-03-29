@@ -456,7 +456,7 @@ class TestDocumentSearch:
                 assert "context" in match
                 assert "position" in match
                 assert "matched_text" in match
-        print(f"✓ Search with matches returned proper structure")
+        print("✓ Search with matches returned proper structure")
 
     def test_search_documents_case_sensitive(self, auth_headers, test_case_id_with_docs):
         """Test case-sensitive search"""
@@ -579,8 +579,8 @@ class TestOCR:
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] == True
-        assert data["ocr_used"] == True
+        assert data["success"]
+        assert data["ocr_used"]
         assert data["content_length"] > 0
         assert "content_preview" in data
         print(f"✓ OCR on image extracted {data['content_length']} characters")
@@ -596,8 +596,8 @@ class TestOCR:
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] == True
-        assert data["ocr_used"] == True
+        assert data["success"]
+        assert data["ocr_used"]
         assert data["content_length"] > 0
         print(f"✓ OCR on scanned PDF extracted {data['content_length']} characters")
     
@@ -621,8 +621,8 @@ class TestOCR:
         data = response.json()
         assert data.get("content_text") is not None
         assert len(data.get("content_text", "")) > 0
-        assert data.get("ocr_extracted") == True
-        print(f"✓ Document content_text updated with OCR result")
+        assert data.get("ocr_extracted")
+        print("✓ Document content_text updated with OCR result")
     
     def test_ocr_all_documents(self, auth_headers, test_case_id_with_ocr_docs):
         """Test OCR-all endpoint processes multiple documents"""
@@ -655,7 +655,7 @@ class TestOCR:
         for result in data["results"]:
             if result["status"] == "skipped":
                 assert "Already has extracted text" in result.get("reason", "")
-        print(f"✓ OCR-all correctly skips documents with existing text")
+        print("✓ OCR-all correctly skips documents with existing text")
     
     def test_ocr_document_not_found(self, auth_headers, test_case_id):
         """Test OCR on non-existent document returns 404"""

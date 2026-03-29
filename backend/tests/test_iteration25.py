@@ -110,7 +110,7 @@ class TestAuthEndpoints:
         data = me_response.json()
         assert data["email"] == TEST_EMAIL.lower()
         assert "is_admin" in data, "is_admin field should be present"
-        assert data["is_admin"] == False, "Regular user should not be admin"
+        assert not data["is_admin"], "Regular user should not be admin"
         print(f"✓ /me returned user with is_admin={data['is_admin']}")
     
     def test_auth_me_has_is_admin_field(self):
@@ -233,7 +233,7 @@ class TestHealthCheck:
                     assert data["status"] == "healthy"
                     print(f"✓ Health check passed: {data}")
                     return
-            except:
+            except Exception:
                 pass
         
         # If we reach here, try states endpoint as health proxy

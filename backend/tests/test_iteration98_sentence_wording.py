@@ -100,7 +100,7 @@ class TestSentenceWordingInReports:
         # Check that one of the expected sentence variants appears
         found_expected = any(variant in analysis for variant in EXPECTED_SENTENCE_VARIANTS)
         assert found_expected, \
-            f"Expected sentence variants not found in full detailed analysis"
+            "Expected sentence variants not found in full detailed analysis"
 
     def test_extensive_log_sentence_wording(self, auth_headers):
         """Extensive Log report should have exact sentence wording"""
@@ -116,7 +116,7 @@ class TestSentenceWordingInReports:
         # Check that one of the expected sentence variants appears
         found_expected = any(variant in analysis for variant in EXPECTED_SENTENCE_VARIANTS)
         assert found_expected, \
-            f"Expected sentence variants not found in extensive log analysis"
+            "Expected sentence variants not found in extensive log analysis"
 
     def test_barrister_view_sentence_wording(self, auth_headers):
         """Barrister View report should have exact sentence wording"""
@@ -132,7 +132,7 @@ class TestSentenceWordingInReports:
         # Check that one of the expected sentence variants appears
         found_expected = any(variant in analysis for variant in EXPECTED_SENTENCE_VARIANTS)
         assert found_expected, \
-            f"Expected sentence variants not found in barrister view analysis"
+            "Expected sentence variants not found in barrister view analysis"
 
 
 class TestSentenceWordingInExports:

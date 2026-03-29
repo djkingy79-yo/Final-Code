@@ -229,7 +229,7 @@ class TestAutoIdentifyGrounds:
         if response.status_code == 200:
             data = response.json()
             assert "grounds" in data or "created_grounds" in data or "summary" in data
-            print(f"✓ Auto-identify grounds succeeded")
+            print("✓ Auto-identify grounds succeeded")
             if "created_grounds" in data:
                 print(f"  Created {len(data['created_grounds'])} new grounds")
             if "summary" in data:

@@ -49,7 +49,7 @@ class TestCollaborationAPIs:
             assert "status" in data, "Response should contain status"
             print(f"PASS: Share case by email - share_id: {data.get('share_id')}")
         else:
-            print(f"PASS: Share case by email - returned 400 (expected for duplicate)")
+            print("PASS: Share case by email - returned 400 (expected for duplicate)")
     
     def test_share_case_self_error(self):
         """POST /api/cases/{case_id}/share - Cannot share with yourself"""

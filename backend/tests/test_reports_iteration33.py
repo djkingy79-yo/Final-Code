@@ -17,7 +17,7 @@ class TestHealthAndBasicEndpoints:
         assert response.status_code == 200, f"Health check failed: {response.status_code}"
         data = response.json()
         assert data.get("status") == "healthy"
-        print(f"PASS: Health endpoint returns status=healthy")
+        print("PASS: Health endpoint returns status=healthy")
     
     def test_offence_categories(self):
         """Test offence categories endpoint"""
@@ -51,13 +51,13 @@ class TestPaymentEndpoints:
         assert response.status_code == 200, f"Payment prices failed: {response.status_code}"
         data = response.json()
         assert "full_report" in data or isinstance(data, dict), "Expected prices dict"
-        print(f"PASS: Payment prices endpoint returns valid response")
+        print("PASS: Payment prices endpoint returns valid response")
     
     def test_payment_methods(self):
         """Test payment methods endpoint"""
         response = requests.get(f"{BASE_URL}/api/payments/methods", timeout=10)
         assert response.status_code == 200, f"Payment methods failed: {response.status_code}"
-        print(f"PASS: Payment methods endpoint returns valid response")
+        print("PASS: Payment methods endpoint returns valid response")
 
 
 class TestAuthProtection:
@@ -67,13 +67,13 @@ class TestAuthProtection:
         """Test that /auth/me requires authentication"""
         response = requests.get(f"{BASE_URL}/api/auth/me", timeout=10)
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"PASS: /auth/me correctly requires authentication")
+        print("PASS: /auth/me correctly requires authentication")
     
     def test_cases_endpoint_requires_auth(self):
         """Test that /cases requires authentication"""
         response = requests.get(f"{BASE_URL}/api/cases", timeout=10)
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"PASS: /cases correctly requires authentication")
+        print("PASS: /cases correctly requires authentication")
 
 
 class TestReportGenerationProtection:
@@ -87,7 +87,7 @@ class TestReportGenerationProtection:
             timeout=10
         )
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"PASS: Report generation correctly requires authentication")
+        print("PASS: Report generation correctly requires authentication")
 
 
 class TestExportEndpoints:
@@ -121,25 +121,25 @@ class TestPublicPages:
         response = requests.get(BASE_URL, timeout=15)
         assert response.status_code == 200, f"Landing page failed: {response.status_code}"
         assert "Criminal Appeal" in response.text or "Appeal" in response.text
-        print(f"PASS: Landing page loads successfully")
+        print("PASS: Landing page loads successfully")
     
     def test_legal_resources_page(self):
         """Test legal resources page accessible"""
         response = requests.get(f"{BASE_URL}/legal-resources", timeout=10)
         assert response.status_code == 200, f"Legal resources failed: {response.status_code}"
-        print(f"PASS: Legal resources page loads")
+        print("PASS: Legal resources page loads")
     
     def test_terms_page(self):
         """Test terms page accessible"""
         response = requests.get(f"{BASE_URL}/terms", timeout=10)
         assert response.status_code == 200, f"Terms page failed: {response.status_code}"
-        print(f"PASS: Terms page loads")
+        print("PASS: Terms page loads")
     
     def test_about_page(self):
         """Test about page accessible"""
         response = requests.get(f"{BASE_URL}/about", timeout=10)
         assert response.status_code == 200, f"About page failed: {response.status_code}"
-        print(f"PASS: About page loads")
+        print("PASS: About page loads")
 
 
 if __name__ == "__main__":

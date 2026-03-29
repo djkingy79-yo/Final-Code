@@ -53,10 +53,10 @@ class TestOffenceCategories:
         assert response.status_code == 200
         
         for category in response.json()["categories"]:
-            assert "id" in category, f"Category missing 'id'"
-            assert "name" in category, f"Category missing 'name'"
-            assert "description" in category, f"Category missing 'description'"
-            assert "offences" in category, f"Category missing 'offences'"
+            assert "id" in category, "Category missing 'id'"
+            assert "name" in category, "Category missing 'name'"
+            assert "description" in category, "Category missing 'description'"
+            assert "offences" in category, "Category missing 'offences'"
             assert isinstance(category["offences"], list), "Offences should be a list"
             assert len(category["offences"]) > 0, f"Category {category['id']} has no offences"
 

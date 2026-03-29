@@ -259,10 +259,10 @@ class TestAIEndpointsWithLLMFallback:
         case_id = test_case.get("case_id")
         ground_id = test_ground.get("ground_id")
         
-        print(f"\n🔍 Testing investigate_ground_of_merit endpoint...")
+        print("\n🔍 Testing investigate_ground_of_merit endpoint...")
         print(f"   Case ID: {case_id}")
         print(f"   Ground ID: {ground_id}")
-        print(f"   This endpoint should use call_llm_with_fallback (may take 30-120s)")
+        print("   This endpoint should use call_llm_with_fallback (may take 30-120s)")
         
         start_time = time.time()
         response = requests.post(
@@ -289,7 +289,7 @@ class TestAIEndpointsWithLLMFallback:
             analysis = data.get("analysis") or data.get("deep_analysis", {}).get("full_analysis")
             assert analysis and len(analysis) > 100, f"Analysis too short or missing: {analysis[:100] if analysis else 'None'}"
             
-            print(f"✓ investigate_ground_of_merit SUCCESS")
+            print("✓ investigate_ground_of_merit SUCCESS")
             print(f"   Status: {data.get('status')}")
             print(f"   Analysis length: {len(analysis)} chars")
             print(f"   Law sections found: {data.get('deep_analysis', {}).get('law_sections_identified', 0)}")
@@ -309,9 +309,9 @@ class TestAIEndpointsWithLLMFallback:
         headers = {"Authorization": f"Bearer {auth_token}"}
         case_id = test_case.get("case_id")
         
-        print(f"\n🔍 Testing auto_identify_grounds endpoint...")
+        print("\n🔍 Testing auto_identify_grounds endpoint...")
         print(f"   Case ID: {case_id}")
-        print(f"   This endpoint should use call_llm_with_fallback (may take 30-120s)")
+        print("   This endpoint should use call_llm_with_fallback (may take 30-120s)")
         
         start_time = time.time()
         response = requests.post(
@@ -337,7 +337,7 @@ class TestAIEndpointsWithLLMFallback:
             if isinstance(data.get("grounds"), list):
                 grounds_count = len(data["grounds"])
             
-            print(f"✓ auto_identify_grounds SUCCESS")
+            print("✓ auto_identify_grounds SUCCESS")
             print(f"   Grounds identified: {grounds_count}")
             if data.get("summary"):
                 print(f"   Summary: {data['summary'][:200]}...")
@@ -361,7 +361,7 @@ class TestTimelineAIEndpoints:
         headers = {"Authorization": f"Bearer {auth_token}"}
         case_id = test_case.get("case_id")
         
-        print(f"\n🔍 Testing timeline generation endpoint...")
+        print("\n🔍 Testing timeline generation endpoint...")
         
         # This endpoint requires documents with content, so it may return 400
         response = requests.post(
@@ -373,7 +373,7 @@ class TestTimelineAIEndpoints:
         print(f"   Status code: {response.status_code}")
         
         # Should NOT return 502
-        assert response.status_code != 502, f"Got 502 - LLM fallback may not be working"
+        assert response.status_code != 502, "Got 502 - LLM fallback may not be working"
         
         if response.status_code == 200:
             data = response.json()
@@ -391,7 +391,7 @@ class TestTimelineAIEndpoints:
         headers = {"Authorization": f"Bearer {auth_token}"}
         case_id = test_case.get("case_id")
         
-        print(f"\n🔍 Testing timeline analysis endpoint...")
+        print("\n🔍 Testing timeline analysis endpoint...")
         
         # This endpoint requires at least 2 timeline events
         response = requests.post(
@@ -403,11 +403,11 @@ class TestTimelineAIEndpoints:
         print(f"   Status code: {response.status_code}")
         
         # Should NOT return 502
-        assert response.status_code != 502, f"Got 502 - LLM fallback may not be working"
+        assert response.status_code != 502, "Got 502 - LLM fallback may not be working"
         
         if response.status_code == 200:
-            data = response.json()
-            print(f"✓ Timeline analysis SUCCESS")
+            response.json()
+            print("✓ Timeline analysis SUCCESS")
         elif response.status_code == 400:
             print(f"✓ Timeline analysis returned 400 (expected - need 2+ events): {response.text[:100]}")
         else:
@@ -439,7 +439,7 @@ class TestCodeVerification:
         )
         assert "call_llm_with_fallback" in result.stdout, "investigate_ground_of_merit does not use call_llm_with_fallback"
         assert "anthropic" not in result.stdout.lower() or "call_llm_with_fallback" in result.stdout, "May still have hardcoded Claude call"
-        print(f"✓ investigate_ground_of_merit uses call_llm_with_fallback")
+        print("✓ investigate_ground_of_merit uses call_llm_with_fallback")
     
     def test_auto_identify_uses_fallback(self):
         """Verify auto_identify_grounds uses call_llm_with_fallback"""
@@ -451,7 +451,7 @@ class TestCodeVerification:
             text=True
         )
         assert "call_llm_with_fallback" in result.stdout, "auto_identify_grounds does not use call_llm_with_fallback"
-        print(f"✓ auto_identify_grounds uses call_llm_with_fallback")
+        print("✓ auto_identify_grounds uses call_llm_with_fallback")
     
     def test_fallback_model_sequence(self):
         """Verify the model fallback sequence is correct"""
@@ -467,7 +467,7 @@ class TestCodeVerification:
         assert "gpt-4o" in output, "gpt-4o not in fallback sequence"
         assert "claude" in output.lower() or "anthropic" in output.lower(), "Claude not in fallback sequence"
         assert "gpt-4o-mini" in output, "gpt-4o-mini not in fallback sequence"
-        print(f"✓ Model fallback sequence verified: gpt-4o -> claude -> gpt-4o-mini")
+        print("✓ Model fallback sequence verified: gpt-4o -> claude -> gpt-4o-mini")
 
 
 if __name__ == "__main__":

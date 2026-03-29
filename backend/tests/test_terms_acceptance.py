@@ -66,7 +66,7 @@ class TestTermsAcceptance:
         assert response.status_code == 200
         data = response.json()
         assert "terms_accepted" in data
-        assert data["terms_accepted"] == False
+        assert not data["terms_accepted"]
         assert data["terms_accepted_at"] is None
     
     def test_accept_terms_endpoint(self):
@@ -82,7 +82,7 @@ class TestTermsAcceptance:
         assert response.status_code == 200
         data = response.json()
         assert data["message"] == "Terms accepted"
-        assert data["terms_accepted"] == True
+        assert data["terms_accepted"]
     
     def test_get_me_returns_terms_accepted_true_after_accept(self):
         """Test GET /api/auth/me returns terms_accepted: true after accepting"""
@@ -104,7 +104,7 @@ class TestTermsAcceptance:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["terms_accepted"] == True
+        assert data["terms_accepted"]
         assert data["terms_accepted_at"] is not None
     
     def test_accept_terms_requires_auth(self):
@@ -168,7 +168,7 @@ class TestExistingUserWithTerms:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["terms_accepted"] == True
+        assert data["terms_accepted"]
         assert data["terms_accepted_at"] is not None
 
 

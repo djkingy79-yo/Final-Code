@@ -195,7 +195,7 @@ class TestQuickSummaryPromptSections:
         
         # This is informational - old reports may not have new sections
         print(f"\nSummary: Found {len(found_sections)}/{len(sections_to_check)} expected sections")
-        print(f"Note: Missing sections may indicate report was generated before prompt update")
+        print("Note: Missing sections may indicate report was generated before prompt update")
         
         return {
             "report_id": quick_summary_report.get("report_id"),

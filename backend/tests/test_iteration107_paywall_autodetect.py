@@ -70,7 +70,7 @@ class TestGroundsPaywallAndAutoDetection:
         offence_type = data.get("offence_type", "")
         sentence = data.get("sentence", "")
         
-        print(f"Case metadata:")
+        print("Case metadata:")
         print(f"  offence_category: {offence_category}")
         print(f"  offence_type: {offence_type}")
         print(f"  sentence: {sentence}")
@@ -80,10 +80,10 @@ class TestGroundsPaywallAndAutoDetection:
         assert offence_category == "sexual_offences", f"offence_category should be 'sexual_offences', got: {offence_category}"
         
         # Verify offence_type is populated
-        assert offence_type, f"offence_type should be populated, got empty string"
+        assert offence_type, "offence_type should be populated, got empty string"
         
         # Verify sentence is populated
-        assert sentence, f"sentence should be populated, got empty string"
+        assert sentence, "sentence should be populated, got empty string"
         
         print("PASS: Case metadata auto-detected correctly (sexual_offences, not homicide)")
     
@@ -103,14 +103,14 @@ class TestGroundsPaywallAndAutoDetection:
         grounds = data.get("grounds", [])
         unlock_price = data.get("unlock_price")
         
-        print(f"Grounds response:")
+        print("Grounds response:")
         print(f"  is_unlocked: {is_unlocked}")
         print(f"  count: {count}")
         print(f"  grounds array length: {len(grounds)}")
         print(f"  unlock_price: {unlock_price}")
         
         # Verify paywall is enforced
-        assert is_unlocked == False, f"is_unlocked should be False, got: {is_unlocked}"
+        assert not is_unlocked, f"is_unlocked should be False, got: {is_unlocked}"
         
         # Verify count is returned (should be 2 based on context)
         assert count >= 2, f"count should be >= 2, got: {count}"
@@ -164,7 +164,7 @@ class TestGroundsPaywallAndAutoDetection:
         is_unlocked = data.get("is_unlocked")
         
         # Even though test user is admin, grounds should be locked (admin bypass removed)
-        assert is_unlocked == False, f"Admin bypass should be removed - is_unlocked should be False, got: {is_unlocked}"
+        assert not is_unlocked, f"Admin bypass should be removed - is_unlocked should be False, got: {is_unlocked}"
         
         print("PASS: Admin bypass removed - admin user sees locked grounds")
 

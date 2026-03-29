@@ -128,7 +128,7 @@ class TestReports:
         for report_type in expected_types:
             assert report_type in prices, f"Missing report type: {report_type}"
         
-        print(f"✅ All 3 report types available in pricing")
+        print("✅ All 3 report types available in pricing")
 
 
 class TestPublicPages:

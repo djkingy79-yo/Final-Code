@@ -101,7 +101,7 @@ class TestAdminMe:
         
         data = me_response.json()
         assert "is_admin" in data, "is_admin field should be present in /api/auth/me response"
-        assert data["is_admin"] == False, "Regular user should have is_admin=false"
+        assert not data["is_admin"], "Regular user should have is_admin=false"
         print(f"✓ Regular user {unique_email} has is_admin={data['is_admin']}")
 
 
@@ -146,9 +146,9 @@ class TestPaymentsEndpointAdminBypass:
         
         # Regular user should have all features locked
         unlocked = data["unlocked_features"]
-        assert unlocked.get("grounds_of_merit") == False, "grounds_of_merit should be locked for regular user"
-        assert unlocked.get("full_report") == False, "full_report should be locked for regular user"
-        assert unlocked.get("extensive_report") == False, "extensive_report should be locked for regular user"
+        assert not unlocked.get("grounds_of_merit"), "grounds_of_merit should be locked for regular user"
+        assert not unlocked.get("full_report"), "full_report should be locked for regular user"
+        assert not unlocked.get("extensive_report"), "extensive_report should be locked for regular user"
         
         print(f"✓ Regular user features are locked: {unlocked}")
         
@@ -194,7 +194,7 @@ class TestGroundsEndpointAdminBypass:
         
         data = grounds_response.json()
         assert "is_unlocked" in data, "is_unlocked field should be present"
-        assert data["is_unlocked"] == False, "Regular user should have is_unlocked=false"
+        assert not data["is_unlocked"], "Regular user should have is_unlocked=false"
         
         print(f"✓ Regular user grounds is_unlocked={data['is_unlocked']}")
         
@@ -210,7 +210,7 @@ class TestAdminEmailVerification:
         # We can check this indirectly by verifying the API health
         response = requests.get(f"{BASE_URL}/health")
         assert response.status_code == 200
-        print(f"✓ Backend health check passed")
+        print("✓ Backend health check passed")
     
     def test_auth_me_has_is_admin_field(self):
         """Verify /api/auth/me endpoint returns is_admin field"""
@@ -241,7 +241,7 @@ class TestAdminEmailVerification:
         assert "terms_accepted" in data, "terms_accepted should be in response"
         assert "is_admin" in data, "is_admin should be in response"
         
-        print(f"✓ /api/auth/me returns all expected fields including is_admin")
+        print("✓ /api/auth/me returns all expected fields including is_admin")
 
 
 class TestLlmChatConstructorFix:
@@ -282,7 +282,7 @@ class TestLlmChatConstructorFix:
         # Should get 200 even if no scans exist
         assert scans_response.status_code == 200, f"Scans endpoint failed: {scans_response.text}"
         
-        print(f"✓ Contradictions scans endpoint working correctly")
+        print("✓ Contradictions scans endpoint working correctly")
         
         # Cleanup
         session.delete(f"{BASE_URL}/api/cases/{case_id}")

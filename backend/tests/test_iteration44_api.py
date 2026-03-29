@@ -44,7 +44,7 @@ class TestPublicEndpoints:
         
         # Verify currency
         assert data.get("currency") == "AUD", f"Wrong currency: {data.get('currency')}"
-        print(f"✓ Prices correct: $99 (grounds), $150 (full), $200 (extensive)")
+        print("✓ Prices correct: $99 (grounds), $150 (full), $200 (extensive)")
     
     def test_states_endpoint(self):
         """Test /api/states returns Australian states"""

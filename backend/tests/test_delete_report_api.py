@@ -42,7 +42,7 @@ class TestHealthAndReportEndpoints:
         """GET /api/ should return a valid response"""
         response = requests.get(f"{BASE_URL}/api/")
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
-        print(f"Root API endpoint check passed")
+        print("Root API endpoint check passed")
 
 
 if __name__ == "__main__":

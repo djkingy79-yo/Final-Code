@@ -141,7 +141,7 @@ class TestExtractedRouters:
         assert response.status_code == 200
         data = response.json()
         assert "grounds" in data or "count" in data
-        print(f"✓ Grounds router: Response contains grounds data")
+        print("✓ Grounds router: Response contains grounds data")
     
     # ============ PAYMENTS ROUTER ============
     def test_get_payment_prices(self):
@@ -174,7 +174,7 @@ class TestExtractedRouters:
         assert "support_services" in data
         assert "advocacy_groups" in data
         assert "courts" in data
-        print(f"✓ Resources router: Directory endpoint working")
+        print("✓ Resources router: Directory endpoint working")
     
     def test_get_templates(self):
         """Test GET /api/templates (resources.py router)"""
@@ -197,9 +197,9 @@ class TestExtractedRouters:
         if response.status_code == 200:
             data = response.json()
             assert "analysis" in data
-            print(f"✓ Contradictions analysis router: Analysis completed")
+            print("✓ Contradictions analysis router: Analysis completed")
         else:
-            print(f"✓ Contradictions analysis router: Correctly returned 400 (need 2+ docs)")
+            print("✓ Contradictions analysis router: Correctly returned 400 (need 2+ docs)")
     
     def test_progress_analysis(self):
         """Test POST /api/cases/{case_id}/progress-analysis (analysis.py router)"""
@@ -212,7 +212,7 @@ class TestExtractedRouters:
         data = response.json()
         assert "analysis" in data
         assert "generated_at" in data
-        print(f"✓ Progress analysis router: Analysis generated")
+        print("✓ Progress analysis router: Analysis generated")
     
     # ============ REPORTS (stays in server.py) ============
     def test_get_reports(self):
@@ -235,10 +235,10 @@ class TestExtractedRouters:
         # May return 404 if no barrister view exists
         assert response.status_code in [200, 404]
         if response.status_code == 200:
-            data = response.json()
-            print(f"✓ Barrister view endpoint (server.py): View found")
+            response.json()
+            print("✓ Barrister view endpoint (server.py): View found")
         else:
-            print(f"✓ Barrister view endpoint (server.py): No view exists (404 expected)")
+            print("✓ Barrister view endpoint (server.py): No view exists (404 expected)")
     
     # ============ COLLABORATION ROUTER ============
     def test_get_messages(self):

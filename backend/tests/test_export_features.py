@@ -96,7 +96,7 @@ class TestExportEndpoints:
         
         # Should return 404 or 403
         assert response.status_code in [403, 404], f"Expected 403/404, got {response.status_code}"
-        print(f"✓ Preview correctly blocked for non-existent case")
+        print("✓ Preview correctly blocked for non-existent case")
     
     # ============= Quick Export (ZIP Package) Tests =============
     
@@ -218,7 +218,7 @@ class TestExportEndpoints:
         assert response.status_code in [401, 403], \
             f"Expected 401/403, got {response.status_code}"
         
-        print(f"✓ Export package correctly requires authentication")
+        print("✓ Export package correctly requires authentication")
     
     # ============= Document Bundler (PDF) Tests =============
     
@@ -237,7 +237,7 @@ class TestExportEndpoints:
         assert response.status_code == 400, \
             f"Expected 400 for empty documents, got {response.status_code}"
         
-        print(f"✓ Bundle correctly requires documents")
+        print("✓ Bundle correctly requires documents")
     
     def test_bundle_with_nonexistent_documents(self):
         """Test bundle with non-existent document IDs returns 404"""
@@ -254,7 +254,7 @@ class TestExportEndpoints:
         assert response.status_code == 404, \
             f"Expected 404 for non-existent docs, got {response.status_code}"
         
-        print(f"✓ Bundle correctly handles non-existent documents")
+        print("✓ Bundle correctly handles non-existent documents")
     
     def test_bundle_unauthorized(self):
         """Test bundle endpoint requires authentication"""
@@ -273,7 +273,7 @@ class TestExportEndpoints:
         assert response.status_code in [401, 403], \
             f"Expected 401/403, got {response.status_code}"
         
-        print(f"✓ Bundle correctly requires authentication")
+        print("✓ Bundle correctly requires authentication")
 
 
 class TestExportWithDocuments:
@@ -404,7 +404,7 @@ class TestExportWithDocuments:
         assert response.status_code == 200
         assert response.headers.get("content-type") == "application/pdf"
         
-        print(f"✓ Bundle without TOC generated successfully")
+        print("✓ Bundle without TOC generated successfully")
 
 
 class TestCaseStrengthMeter:

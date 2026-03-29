@@ -87,7 +87,7 @@ class TestHealthAndPricing:
         category_ids = [c["id"] for c in categories]
         for cat in expected_categories:
             assert cat in category_ids
-        print(f"✅ All 11 offence categories returned")
+        print("✅ All 11 offence categories returned")
 
 
 if __name__ == "__main__":

@@ -48,7 +48,7 @@ class TestHealthAndPayments:
         extensive_price = prices.get("extensive_report", {}).get("price")
         assert extensive_price == 200.00, f"Expected extensive_report price $200, got {extensive_price}"
         
-        print(f"Payment prices verified: grounds=$99, full=$150, extensive=$200")
+        print("Payment prices verified: grounds=$99, full=$150, extensive=$200")
 
 
 class TestAuthAndCaseAccess:
@@ -134,7 +134,7 @@ class TestCaseTabs:
         })
         
         if login_response.status_code != 200:
-            pytest.skip(f"Login failed")
+            pytest.skip("Login failed")
         
         return s
     
@@ -156,7 +156,7 @@ class TestCaseTabs:
         assert response.status_code == 200
         data = response.json()
         assert "grounds" in data or isinstance(data, list)
-        print(f"Grounds endpoint works")
+        print("Grounds endpoint works")
     
     def test_notes_endpoint(self, session):
         """Test Notes tab endpoint"""
@@ -174,13 +174,13 @@ class TestCaseTabs:
         """Test Progress tab - Deadlines endpoint"""
         response = session.get(f"{BASE_URL}/api/cases/{TEST_CASE_ID}/deadlines")
         assert response.status_code == 200
-        print(f"Deadlines endpoint works")
+        print("Deadlines endpoint works")
     
     def test_checklist_endpoint(self, session):
         """Test Progress tab - Checklist endpoint"""
         response = session.get(f"{BASE_URL}/api/cases/{TEST_CASE_ID}/checklist")
         assert response.status_code == 200
-        print(f"Checklist endpoint works")
+        print("Checklist endpoint works")
 
 
 if __name__ == "__main__":

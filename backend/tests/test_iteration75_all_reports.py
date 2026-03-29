@@ -161,7 +161,7 @@ class TestAllReportsExist:
         assert report.get("report_type") == "quick_summary"
         # Check aggressive_mode in content
         aggressive_mode = report.get("content", {}).get("aggressive_mode", False)
-        assert aggressive_mode == True, f"Expected aggressive_mode=True, got {aggressive_mode}"
+        assert aggressive_mode, f"Expected aggressive_mode=True, got {aggressive_mode}"
         print(f"✓ Quick Summary Aggressive exists: {REPORT_IDS['quick_summary_aggressive']}")
     
     def test_full_detailed_standard_exists(self, report_details):
@@ -179,7 +179,7 @@ class TestAllReportsExist:
         assert report.get("status") == "completed", f"Report status: {report.get('status')}"
         assert report.get("report_type") == "full_detailed"
         aggressive_mode = report.get("content", {}).get("aggressive_mode", False)
-        assert aggressive_mode == True, f"Expected aggressive_mode=True, got {aggressive_mode}"
+        assert aggressive_mode, f"Expected aggressive_mode=True, got {aggressive_mode}"
         print(f"✓ Full Detailed Aggressive exists: {REPORT_IDS['full_detailed_aggressive']}")
     
     def test_extensive_log_standard_exists(self, report_details):
@@ -197,7 +197,7 @@ class TestAllReportsExist:
         assert report.get("status") == "completed", f"Report status: {report.get('status')}"
         assert report.get("report_type") == "extensive_log"
         aggressive_mode = report.get("content", {}).get("aggressive_mode", False)
-        assert aggressive_mode == True, f"Expected aggressive_mode=True, got {aggressive_mode}"
+        assert aggressive_mode, f"Expected aggressive_mode=True, got {aggressive_mode}"
         print(f"✓ Extensive Log Aggressive exists: {REPORT_IDS['extensive_log_aggressive']}")
 
 
@@ -509,7 +509,7 @@ class TestAggressiveModeFlag:
             if not report:
                 continue
             aggressive_mode = report.get("content", {}).get("aggressive_mode", False)
-            assert aggressive_mode == False, f"{key} has aggressive_mode={aggressive_mode}"
+            assert not aggressive_mode, f"{key} has aggressive_mode={aggressive_mode}"
         print("✓ All standard reports have aggressive_mode=False")
     
     def test_aggressive_reports_have_flag(self, report_details):
@@ -519,7 +519,7 @@ class TestAggressiveModeFlag:
             if not report:
                 continue
             aggressive_mode = report.get("content", {}).get("aggressive_mode", False)
-            assert aggressive_mode == True, f"{key} has aggressive_mode={aggressive_mode}"
+            assert aggressive_mode, f"{key} has aggressive_mode={aggressive_mode}"
         print("✓ All aggressive reports have aggressive_mode=True")
 
 

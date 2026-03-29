@@ -25,7 +25,7 @@ class TestStripeRemoval:
         )
         # After Stripe removal, this endpoint should not exist
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"PASS: /api/payments/checkout returns 404 (Stripe removed)")
+        print("PASS: /api/payments/checkout returns 404 (Stripe removed)")
 
 
 class TestBackendHealth:
@@ -37,7 +37,7 @@ class TestBackendHealth:
         assert response.status_code == 200, f"Health check failed with {response.status_code}"
         data = response.json()
         assert data.get("status") == "healthy", f"Expected healthy status, got {data}"
-        print(f"PASS: /api/health returns healthy status")
+        print("PASS: /api/health returns healthy status")
 
 
 class TestPaymentPrices:
@@ -59,10 +59,10 @@ class TestPaymentPrices:
         assert prices["extensive_report"]["price"] == 39.0, f"Extensive report should be $39, got {prices['extensive_report']['price']}"
         
         # Verify PayPal is configured
-        assert data.get("paypal_configured") == True, "PayPal should be configured"
+        assert data.get("paypal_configured"), "PayPal should be configured"
         assert data.get("currency") == "AUD", "Currency should be AUD"
         
-        print(f"PASS: Prices endpoint returns correct pricing (Full $29, Extensive $39)")
+        print("PASS: Prices endpoint returns correct pricing (Full $29, Extensive $39)")
 
 
 class TestLandingPagePricing:

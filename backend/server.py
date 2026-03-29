@@ -40,6 +40,26 @@ from services.offence_helpers import get_offence_context, get_offence_system_pro
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
+from routers.cases import router as cases_router
+from routers.auth import router as auth_router
+from routers.password_reset import router as password_reset_router
+from routers.admin import router as admin_router
+from routers.utilities import router as utilities_router
+from routers.analytics import router as analytics_router
+from routers.statistics import router as statistics_router
+from routers.compare import router as compare_router
+from routers.contradictions import router as contradictions_router
+from routers.export import router as export_router
+from routers.collaboration import router as collaboration_router
+from routers.documents import router as documents_router
+from routers.timeline import router as timeline_router
+from routers.deadlines import router as deadlines_router
+from routers.notes import router as notes_router
+from routers.grounds import router as grounds_router
+from routers.payments import router as payments_router
+from routers.resources import router as resources_router
+from routers.analysis import router as analysis_router
+
 # ── MongoDB client reference (for shutdown) ──
 MONGO_URL = os.environ.get("MONGO_URL")
 DB_NAME = os.environ.get("DB_NAME", "criminal_appeals")
@@ -3754,63 +3774,25 @@ async def root():
 # ── Include api_router (report/export endpoints defined above) ──
 app.include_router(api_router)
 
-# ── Include extracted routers ──
-from routers.cases import router as cases_router
+# ── Include routers ──
 app.include_router(cases_router)
-
-from routers.auth import router as auth_router
 app.include_router(auth_router)
-
-from routers.password_reset import router as password_reset_router
 app.include_router(password_reset_router)
-
-from routers.admin import router as admin_router
 app.include_router(admin_router)
-
-from routers.utilities import router as utilities_router
 app.include_router(utilities_router)
-
-from routers.analytics import router as analytics_router
 app.include_router(analytics_router)
-
-from routers.statistics import router as statistics_router
 app.include_router(statistics_router)
-
-from routers.compare import router as compare_router
 app.include_router(compare_router)
-
-from routers.contradictions import router as contradictions_router
 app.include_router(contradictions_router)
-
-from routers.export import router as export_router
 app.include_router(export_router)
-
-from routers.collaboration import router as collaboration_router
 app.include_router(collaboration_router)
-
-# ── NEW extracted routers ──
-from routers.documents import router as documents_router
 app.include_router(documents_router)
-
-from routers.timeline import router as timeline_router
 app.include_router(timeline_router)
-
-from routers.deadlines import router as deadlines_router
 app.include_router(deadlines_router)
-
-from routers.notes import router as notes_router
 app.include_router(notes_router)
-
-from routers.grounds import router as grounds_router
 app.include_router(grounds_router)
-
-from routers.payments import router as payments_router
 app.include_router(payments_router)
-
-from routers.resources import router as resources_router
 app.include_router(resources_router)
-
-from routers.analysis import router as analysis_router
 app.include_router(analysis_router)
 
 # ── CORS Middleware ──

@@ -63,9 +63,9 @@ class TestSentenceInReports:
         
         # Check if the expected sentence appears in the analysis
         assert EXPECTED_SENTENCE.lower() in analysis.lower() or "30 years" in analysis.lower(), \
-            f"Expected sentence not found in quick summary report analysis"
+            "Expected sentence not found in quick summary report analysis"
         
-        print(f"Quick summary report contains sentence reference")
+        print("Quick summary report contains sentence reference")
     
     def test_full_detailed_report_sentence(self, session):
         """Verify sentence in full detailed report"""
@@ -77,9 +77,9 @@ class TestSentenceInReports:
         
         # Check if the expected sentence appears in the analysis
         assert EXPECTED_SENTENCE.lower() in analysis.lower() or "30 years" in analysis.lower(), \
-            f"Expected sentence not found in full detailed report analysis"
+            "Expected sentence not found in full detailed report analysis"
         
-        print(f"Full detailed report contains sentence reference")
+        print("Full detailed report contains sentence reference")
     
     def test_extensive_log_report_sentence(self, session):
         """Verify sentence in extensive log report"""
@@ -91,9 +91,9 @@ class TestSentenceInReports:
         
         # Check if the expected sentence appears in the analysis
         assert EXPECTED_SENTENCE.lower() in analysis.lower() or "30 years" in analysis.lower(), \
-            f"Expected sentence not found in extensive log report analysis"
+            "Expected sentence not found in extensive log report analysis"
         
-        print(f"Extensive log report contains sentence reference")
+        print("Extensive log report contains sentence reference")
     
     def test_barrister_view_report_sentence(self, session):
         """Verify sentence in barrister view report"""
@@ -105,9 +105,9 @@ class TestSentenceInReports:
         
         # Check if the expected sentence appears in the analysis
         assert EXPECTED_SENTENCE.lower() in analysis.lower() or "30 years" in analysis.lower(), \
-            f"Expected sentence not found in barrister report analysis"
+            "Expected sentence not found in barrister report analysis"
         
-        print(f"Barrister report contains sentence reference")
+        print("Barrister report contains sentence reference")
 
 
 class TestSentenceInExports:

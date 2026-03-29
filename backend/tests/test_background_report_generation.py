@@ -182,7 +182,7 @@ class TestReportPollingFlow:
         new_report = next((r for r in reports if r.get("report_id") == report_id), None)
         
         assert new_report is not None, f"Report {report_id} not found in list"
-        assert new_report.get("status") == "completed", f"Report status mismatch in list"
+        assert new_report.get("status") == "completed", "Report status mismatch in list"
         
         # Check content is populated
         content = new_report.get("content", {})

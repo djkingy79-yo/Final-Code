@@ -55,7 +55,7 @@ class TestIteration67ContentQuality:
         if self.case_id:
             try:
                 self.session.delete(f"{BASE_URL}/api/cases/{self.case_id}")
-            except:
+            except Exception:
                 pass
     
     def test_01_health_endpoint(self):
@@ -64,7 +64,7 @@ class TestIteration67ContentQuality:
         assert response.status_code == 200, f"Health check failed: {response.status_code}"
         data = response.json()
         assert data.get("status") == "healthy", f"Health status not healthy: {data}"
-        print(f"PASS: Health endpoint returns healthy")
+        print("PASS: Health endpoint returns healthy")
     
     def test_02_create_case_with_sentence_field(self):
         """Test case creation accepts sentence field"""
@@ -156,7 +156,7 @@ class TestIteration67ContentQuality:
         response = self.session.get(f"{BASE_URL}/api/cases/{self.case_id}/reports/fake_report_id/export-pdf")
         # 404 = endpoint exists but report not found, 401 = auth issue, 500 = server error
         # 405 = endpoint doesn't exist (would be a failure)
-        assert response.status_code != 405, f"Report export-pdf endpoint doesn't exist (405)"
+        assert response.status_code != 405, "Report export-pdf endpoint doesn't exist (405)"
         print(f"PASS: Report export-pdf endpoint exists (status: {response.status_code})")
     
     def test_06_timeline_export_pdf_endpoint_exists(self):
@@ -175,7 +175,7 @@ class TestIteration67ContentQuality:
         response = self.session.get(f"{BASE_URL}/api/cases/{self.case_id}/timeline/export-pdf")
         # 200 = success, 400 = no events, 404 = case not found
         # 405 = endpoint doesn't exist (would be a failure)
-        assert response.status_code != 405, f"Timeline export-pdf endpoint doesn't exist (405)"
+        assert response.status_code != 405, "Timeline export-pdf endpoint doesn't exist (405)"
         print(f"PASS: Timeline export-pdf endpoint exists (status: {response.status_code})")
 
 

@@ -97,7 +97,7 @@ class TestAutoDetection:
             offence_cat = detected.get("offence_category")
             print(f"Detected offence_category: {offence_cat}")
             # It should NOT be homicide (the default)
-            assert offence_cat != "homicide", f"Auto-detection failed - still showing homicide instead of actual offence"
+            assert offence_cat != "homicide", "Auto-detection failed - still showing homicide instead of actual offence"
             print(f"PASS: Auto-detection returned non-homicide category: {offence_cat}")
         else:
             print("WARNING: detected_metadata is empty - may need document content")
@@ -117,7 +117,7 @@ class TestAutoDetection:
         
         # Verify offence_category is NOT homicide (should be sexual_offences for R v Karlsson)
         offence_cat = case_data.get("offence_category")
-        assert offence_cat != "homicide", f"Case still shows homicide after auto-detection"
+        assert offence_cat != "homicide", "Case still shows homicide after auto-detection"
         print(f"PASS: Case offence_category updated to: {offence_cat}")
         
         # Verify other fields are populated

@@ -97,7 +97,7 @@ class TestReportsListAPI:
         assert FULL_DETAILED_ID in report_ids, f"Full detailed {FULL_DETAILED_ID} not found in reports"
         assert EXTENSIVE_LOG_ID in report_ids, f"Extensive log {EXTENSIVE_LOG_ID} not found in reports"
         
-        print(f"PASSED: All 3 expected reports found in list")
+        print("PASSED: All 3 expected reports found in list")
 
 
 def get_analysis_text(data):
@@ -140,7 +140,7 @@ class TestQuickSummaryReport:
         placeholders = check_ai_placeholders(content)
         
         assert len(placeholders) == 0, f"Found AI placeholders: {placeholders}"
-        print(f"PASSED: No AI placeholder text found in quick summary")
+        print("PASSED: No AI placeholder text found in quick summary")
     
     def test_quick_summary_report_type(self, api_client):
         """Verify report type is quick_summary"""
@@ -150,7 +150,7 @@ class TestQuickSummaryReport:
         
         report_type = data.get('report_type')
         assert report_type == 'quick_summary', f"Expected quick_summary, got {report_type}"
-        print(f"PASSED: Report type is quick_summary")
+        print("PASSED: Report type is quick_summary")
 
 
 class TestFullDetailedReport:
@@ -198,7 +198,7 @@ class TestFullDetailedReport:
         placeholders = check_ai_placeholders(content)
         
         assert len(placeholders) == 0, f"Found AI placeholders: {placeholders}"
-        print(f"PASSED: No AI placeholder text found in full detailed")
+        print("PASSED: No AI placeholder text found in full detailed")
     
     def test_full_detailed_report_type(self, api_client):
         """Verify report type is full_detailed"""
@@ -208,7 +208,7 @@ class TestFullDetailedReport:
         
         report_type = data.get('report_type')
         assert report_type == 'full_detailed', f"Expected full_detailed, got {report_type}"
-        print(f"PASSED: Report type is full_detailed")
+        print("PASSED: Report type is full_detailed")
 
 
 class TestExtensiveLogReport:
@@ -256,7 +256,7 @@ class TestExtensiveLogReport:
         placeholders = check_ai_placeholders(content)
         
         assert len(placeholders) == 0, f"Found AI placeholders: {placeholders}"
-        print(f"PASSED: No AI placeholder text found in extensive log")
+        print("PASSED: No AI placeholder text found in extensive log")
     
     def test_extensive_log_report_type(self, api_client):
         """Verify report type is extensive_log"""
@@ -266,7 +266,7 @@ class TestExtensiveLogReport:
         
         report_type = data.get('report_type')
         assert report_type == 'extensive_log', f"Expected extensive_log, got {report_type}"
-        print(f"PASSED: Report type is extensive_log")
+        print("PASSED: Report type is extensive_log")
 
 
 class TestReportContentQuality:
@@ -301,7 +301,7 @@ class TestReportContentQuality:
         
         # Allow up to 3 short sections (some may be tables or lists)
         assert len(short_sections) <= 3, f"Too many short sections: {short_sections}"
-        print(f"PASSED: Full detailed sections are substantive")
+        print("PASSED: Full detailed sections are substantive")
     
     def test_extensive_log_sections_substantive(self, api_client):
         """Verify extensive log sections are not single-line summaries"""
@@ -330,7 +330,7 @@ class TestReportContentQuality:
         
         # Allow up to 3 short sections
         assert len(short_sections) <= 3, f"Too many short sections: {short_sections}"
-        print(f"PASSED: Extensive log sections are substantive")
+        print("PASSED: Extensive log sections are substantive")
 
 
 class TestReportGenerationEndpoint:

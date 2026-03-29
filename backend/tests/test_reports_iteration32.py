@@ -107,8 +107,8 @@ class TestPaymentEndpoints:
         
         assert "paypal" in data
         assert "payid" in data
-        assert data["paypal"]["enabled"] == True
-        assert data["payid"]["enabled"] == True
+        assert data["paypal"]["enabled"]
+        assert data["payid"]["enabled"]
         print("✅ Payment methods endpoint working with PayPal and PayID enabled")
 
 

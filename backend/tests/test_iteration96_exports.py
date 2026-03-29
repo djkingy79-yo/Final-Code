@@ -97,7 +97,7 @@ class TestReportExports:
             timeout=60
         )
         assert response.status_code == 200, f"Barrister PDF export failed: {response.status_code} - {response.text[:500]}"
-        assert "application/pdf" in response.headers.get("Content-Type", ""), f"Expected PDF content type"
+        assert "application/pdf" in response.headers.get("Content-Type", ""), "Expected PDF content type"
         assert len(response.content) > 1000, f"PDF content too small: {len(response.content)} bytes"
         print(f"✓ Barrister PDF export successful: {len(response.content)} bytes")
     

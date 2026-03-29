@@ -31,7 +31,7 @@ def auth_session():
     if login_response.status_code != 200:
         pytest.skip(f"Login failed with status {login_response.status_code}: {login_response.text}")
     
-    print(f"Login successful for deletetest@test.com")
+    print("Login successful for deletetest@test.com")
     TestSession.session = session
     return session
 
@@ -114,7 +114,7 @@ class TestReportGeneration:
             TestSession.report_id = data["report_id"]
             print(f"PASS: Report generated - ID: {TestSession.report_id}")
         else:
-            print(f"INFO: Report generated, checking reports list")
+            print("INFO: Report generated, checking reports list")
     
     def test_get_reports_list(self, auth_session):
         """Get list of reports for case"""
@@ -153,7 +153,7 @@ class TestAIFeatures:
             if response.status_code == 200:
                 data = response.json()
                 assert "analysis" in data or "content" in data, "No analysis in response"
-                print(f"PASS: AI Progress analysis returned content")
+                print("PASS: AI Progress analysis returned content")
             else:
                 print(f"INFO: Progress analysis detail: {response.text[:200]}")
         else:

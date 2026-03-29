@@ -41,7 +41,7 @@ class TestAdminReportGeneration:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         assert "report_id" in data or "content" in data, "Response should contain report data"
-        print(f"✓ Quick summary report generated successfully")
+        print("✓ Quick summary report generated successfully")
     
     def test_full_detailed_report_admin_bypass(self):
         """Test full detailed report - admin should bypass payment check"""
@@ -53,12 +53,12 @@ class TestAdminReportGeneration:
         print(f"Full Detailed Report Response: {response.status_code}")
         
         # Admin should NOT get 402 Payment Required
-        assert response.status_code != 402, f"Admin should bypass payment - got 402 Payment Required"
+        assert response.status_code != 402, "Admin should bypass payment - got 402 Payment Required"
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         
         data = response.json()
         assert "report_id" in data or "content" in data, "Response should contain report data"
-        print(f"✓ Full detailed report generated for admin without payment")
+        print("✓ Full detailed report generated for admin without payment")
     
     def test_extensive_log_report_admin_bypass(self):
         """Test extensive log report - admin should bypass payment check"""
@@ -70,12 +70,12 @@ class TestAdminReportGeneration:
         print(f"Extensive Log Report Response: {response.status_code}")
         
         # Admin should NOT get 402 Payment Required
-        assert response.status_code != 402, f"Admin should bypass payment - got 402 Payment Required"
+        assert response.status_code != 402, "Admin should bypass payment - got 402 Payment Required"
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         
         data = response.json()
         assert "report_id" in data or "content" in data, "Response should contain report data"
-        print(f"✓ Extensive log report generated for admin without payment")
+        print("✓ Extensive log report generated for admin without payment")
 
 
 class TestGroundsIdentification:
@@ -115,7 +115,7 @@ class TestGroundsIdentification:
         if "identified_count" in data:
             print(f"✓ Grounds auto-identification working - identified {data.get('identified_count', 0)} new grounds")
         else:
-            print(f"✓ Grounds auto-identification working")
+            print("✓ Grounds auto-identification working")
     
     def test_get_existing_grounds(self):
         """Test getting existing grounds for a case"""
@@ -221,7 +221,7 @@ class TestContradictionsScan:
         # Check response structure
         assert "scan_id" in data or "contradictions" in data or "results" in data, \
             f"Response should contain scan results: {list(data.keys()) if isinstance(data, dict) else data}"
-        print(f"✓ Contradictions scan working with empty body")
+        print("✓ Contradictions scan working with empty body")
     
     def test_contradictions_scan_with_focus_areas(self):
         """Test contradictions scan with focus areas specified"""
@@ -233,7 +233,7 @@ class TestContradictionsScan:
         print(f"Contradictions Scan (with focus) Response: {response.status_code}")
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
-        print(f"✓ Contradictions scan with focus areas working")
+        print("✓ Contradictions scan with focus areas working")
     
     def test_get_previous_scans(self):
         """Test getting previous contradiction scans"""

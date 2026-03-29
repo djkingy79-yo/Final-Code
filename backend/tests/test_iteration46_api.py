@@ -47,7 +47,7 @@ class TestPaymentPrices:
         assert "extensive_report" in prices, "Missing extensive_report in prices"
         assert prices["extensive_report"]["price"] == 200.0, f"Expected $200, got {prices['extensive_report']['price']}"
         
-        print(f"Payment prices verified: Grounds=$99, Full=$150, Extensive=$200")
+        print("Payment prices verified: Grounds=$99, Full=$150, Extensive=$200")
 
 
 class TestAuthAndCaseAccess:
@@ -100,7 +100,7 @@ class TestAuthAndCaseAccess:
             json={"email": "testuser999@test.com", "password": "TestPass123!"},
             timeout=10
         )
-        assert login_resp.status_code == 200, f"Login failed"
+        assert login_resp.status_code == 200, "Login failed"
         
         # Access specific case
         case_id = "case_9e57a5b899bf"
@@ -120,7 +120,7 @@ class TestAuthAndCaseAccess:
             json={"email": "testuser999@test.com", "password": "TestPass123!"},
             timeout=10
         )
-        assert login_resp.status_code == 200, f"Login failed"
+        assert login_resp.status_code == 200, "Login failed"
         
         # Access specific report
         case_id = "case_9e57a5b899bf"

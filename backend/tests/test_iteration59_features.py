@@ -23,7 +23,7 @@ class TestHealthCheck:
         assert data.get("status") == "healthy", f"Expected status 'healthy', got {data.get('status')}"
         assert data.get("database") == "connected", f"Expected database 'connected', got {data.get('database')}"
         assert "timestamp" in data, "Response should contain timestamp"
-        print(f"PASS: Health check returns healthy with database connected")
+        print("PASS: Health check returns healthy with database connected")
 
 
 class TestProgressAnalysisEndpoint:
@@ -33,7 +33,7 @@ class TestProgressAnalysisEndpoint:
         """Endpoint requires authentication"""
         response = requests.post(f"{BASE_URL}/api/cases/test_case_id/progress-analysis", timeout=10)
         assert response.status_code == 401, f"Expected 401 without auth, got {response.status_code}"
-        print(f"PASS: progress-analysis requires authentication")
+        print("PASS: progress-analysis requires authentication")
     
     def test_progress_analysis_nonexistent_case_returns_404(self):
         """Nonexistent case returns 404 when authenticated"""
@@ -55,7 +55,7 @@ class TestProgressAnalysisEndpoint:
             timeout=10
         )
         assert response.status_code == 404, f"Expected 404 for nonexistent case, got {response.status_code}"
-        print(f"PASS: progress-analysis returns 404 for nonexistent case")
+        print("PASS: progress-analysis returns 404 for nonexistent case")
 
 
 class TestReportsGenerateEndpoint:
@@ -69,7 +69,7 @@ class TestReportsGenerateEndpoint:
             timeout=10
         )
         assert response.status_code == 401, f"Expected 401 without auth, got {response.status_code}"
-        print(f"PASS: reports/generate requires authentication")
+        print("PASS: reports/generate requires authentication")
     
     def test_reports_generate_accepts_extensive_log_type(self):
         """Endpoint accepts report_type=extensive_log"""
@@ -110,7 +110,7 @@ class TestExtensiveLogPromptContent:
         
         # Check for 25. APPENDIX section
         assert "## 25. APPENDIX" in content, "Extensive log prompt should contain '## 25. APPENDIX' section"
-        print(f"PASS: Extensive log prompt contains '## 25. APPENDIX' section (25 sections)")
+        print("PASS: Extensive log prompt contains '## 25. APPENDIX' section (25 sections)")
     
     def test_extensive_log_prompt_has_word_target(self):
         """Verify extensive_log prompt has 12000-18000 words target"""
@@ -119,7 +119,7 @@ class TestExtensiveLogPromptContent:
             content = f.read()
         
         assert "12000-18000" in content, "Extensive log prompt should specify 12000-18000 words target"
-        print(f"PASS: Extensive log prompt contains 12000-18000 words target")
+        print("PASS: Extensive log prompt contains 12000-18000 words target")
     
     def test_extensive_log_prompt_has_draft_written_submissions(self):
         """Verify extensive_log prompt includes Draft Written Submissions"""
@@ -128,7 +128,7 @@ class TestExtensiveLogPromptContent:
             content = f.read()
         
         assert "DRAFT WRITTEN SUBMISSIONS" in content, "Extensive log prompt should include 'DRAFT WRITTEN SUBMISSIONS'"
-        print(f"PASS: Extensive log prompt contains 'DRAFT WRITTEN SUBMISSIONS'")
+        print("PASS: Extensive log prompt contains 'DRAFT WRITTEN SUBMISSIONS'")
     
     def test_extensive_log_prompt_has_draft_notice_of_appeal(self):
         """Verify extensive_log prompt includes Draft Notice of Appeal"""
@@ -137,7 +137,7 @@ class TestExtensiveLogPromptContent:
             content = f.read()
         
         assert "DRAFT NOTICE OF APPEAL" in content, "Extensive log prompt should include 'DRAFT NOTICE OF APPEAL'"
-        print(f"PASS: Extensive log prompt contains 'DRAFT NOTICE OF APPEAL'")
+        print("PASS: Extensive log prompt contains 'DRAFT NOTICE OF APPEAL'")
     
     def test_extensive_log_prompt_has_barrister_case_snapshot(self):
         """Verify extensive_log prompt includes Barrister Case Snapshot section"""
@@ -147,7 +147,7 @@ class TestExtensiveLogPromptContent:
         
         # Check for section 2 - BARRISTER CASE SNAPSHOT
         assert "## 2. BARRISTER CASE SNAPSHOT" in content, "Extensive log prompt should include '## 2. BARRISTER CASE SNAPSHOT'"
-        print(f"PASS: Extensive log prompt contains '## 2. BARRISTER CASE SNAPSHOT'")
+        print("PASS: Extensive log prompt contains '## 2. BARRISTER CASE SNAPSHOT'")
     
     def test_extensive_log_prompt_has_barrister_conference_dossier(self):
         """Verify extensive_log prompt includes Barrister Conference Dossier section"""
@@ -157,7 +157,7 @@ class TestExtensiveLogPromptContent:
         
         # Check for section 24 - BARRISTER CONFERENCE DOSSIER
         assert "## 24. BARRISTER CONFERENCE DOSSIER" in content, "Extensive log prompt should include '## 24. BARRISTER CONFERENCE DOSSIER'"
-        print(f"PASS: Extensive log prompt contains '## 24. BARRISTER CONFERENCE DOSSIER'")
+        print("PASS: Extensive log prompt contains '## 24. BARRISTER CONFERENCE DOSSIER'")
 
 
 if __name__ == "__main__":

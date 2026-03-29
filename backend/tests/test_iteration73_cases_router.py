@@ -90,12 +90,12 @@ class TestCasesRouterExtraction:
         assert get_response.status_code == 200, "Should be able to fetch created case"
         fetched_data = get_response.json()
         assert fetched_data["title"] == test_case["title"], "Fetched title should match"
-        print(f"PASSED: Created case verified via GET")
+        print("PASSED: Created case verified via GET")
         
         # Cleanup - delete the test case
         delete_response = requests.delete(f"{BASE_URL}/api/cases/{created_case_id}", headers=auth_headers)
         assert delete_response.status_code == 200, f"Cleanup failed: {delete_response.status_code}"
-        print(f"PASSED: Test case cleaned up")
+        print("PASSED: Test case cleaned up")
     
     def test_update_case(self, auth_headers):
         """PUT /api/cases/{case_id} - Update an existing case"""
