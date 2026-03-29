@@ -8,7 +8,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Barrister View:** Locked until all 3 standard reports generated/paid. Capstone synthesis.
 - **Report Language:** STRICT third-person educational tool. NO "we/us/our/you/your".
 - **Branding:** Legal disclaimers on all reports, PDFs, and exports.
-- **UI/UX:** Forced light mode. High contrast. Bright blue action buttons.
+- **UI/UX:** Forced light mode. High contrast. Bright blue action buttons. No amber/brown. Report colours: Emerald (Quick Summary), Blue (Full Detailed), Purple (Extensive Log), TEAL (Barrister View).
 - **Language:** Australian English throughout (analyse, organise, defence, offence).
 
 ## User Personas
@@ -20,42 +20,17 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 ```
 /app/
 ├── backend/
-│   ├── server.py              # App factory + Report/AI/Export engine (3848 lines)
+│   ├── server.py              # App factory + Report/AI/Export engine
 │   ├── config.py              # Centralised environment variables, DB, logger
-│   ├── auth_utils.py          # Authentication helpers (get_current_user, verify_case_ownership)
+│   ├── auth_utils.py          # Authentication helpers
 │   ├── models/__init__.py     # All Pydantic models + payment helpers
-│   ├── services/
-│   │   ├── llm_service.py     # LLM call with model fallback
-│   │   ├── offence_helpers.py # Offence framework context builders
-│   │   ├── email_service.py   # PayID notification emails via Resend
-│   │   ├── document_helpers.py# Text extraction, OCR, document context
-│   │   └── notes_helpers.py   # Notes WebSocket collaboration helpers
-│   ├── routers/
-│   │   ├── cases.py           # Case CRUD
-│   │   ├── auth.py            # Authentication (login, register, Google OAuth)
-│   │   ├── documents.py       # Document CRUD + OCR + text extraction + auto-detect
-│   │   ├── timeline.py        # Timeline CRUD + auto-generate + analyse + PDF export
-│   │   ├── deadlines.py       # Deadlines + checklist + case strength
-│   │   ├── notes.py           # Notes CRUD + pin + comments + WebSocket
-│   │   ├── grounds.py         # Grounds of merit CRUD + investigate + auto-identify
-│   │   ├── payments.py        # PayID/PayPal/Stripe payment endpoints
-│   │   ├── resources.py       # Resource directory + document templates
-│   │   ├── analysis.py        # Contradictions + progress analysis
-│   │   ├── messages.py        # Chat messages (unused - handled by collaboration.py)
-│   │   ├── collaboration.py   # Case sharing + messages + notifications + chat WS
-│   │   ├── export.py          # Appeal package export (ZIP/PDF bundle)
-│   │   ├── contradictions.py  # AI contradiction scanning
-│   │   ├── compare.py         # Case comparison + patterns
-│   │   ├── statistics.py      # Public statistics
-│   │   ├── analytics.py       # Visit tracking + admin dashboard
-│   │   ├── admin.py           # Admin endpoints (contact, stories)
-│   │   ├── password_reset.py  # Password reset flow
-│   │   └── utilities.py       # States, offence framework, categories
-│   └── tests/                 # 64 pytest files (using localhost:8001)
+│   ├── services/              # LLM, offence, email, document, notes helpers
+│   ├── routers/               # 20+ modular routers
+│   └── tests/
 └── frontend/
     └── src/
-        ├── components/
-        ├── pages/
+        ├── components/        # ReportsSection.jsx, etc.
+        ├── pages/             # BarristerView.jsx, ReportView.jsx, HowItWorksPage.jsx, etc.
         ├── utils/
         └── App.js
 ```
@@ -73,17 +48,18 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - Case sharing and collaboration
 - Real-time WebSocket chat and notes collaboration
 - Appeal statistics page
-- How It Works tutorial page
-- Security vulnerability patching (14+ CVEs)
-- ESLint/production build fixes (204+ errors)
+- How It Works tutorial page (9 steps)
 - server.py monolith refactoring (7533 → 3848 lines)
 - **Barrister View UI overhaul (29 Mar 2026):**
-  - Dark navy blue (bg-blue-900) coloured header matching other 3 reports
+  - TEAL coloured header (bg-teal-700) matching landing page
   - Removed invisible white badge from header
-  - Barrister report now listed as 4th card in Reports tab
-  - Print/PDF preview with coloured .report-header
-  - Blue-bordered sections with numbered circles
+  - Barrister report listed as 4th card in Reports tab (teal)
+  - Print/PDF preview with coloured .report-header (teal)
+  - Teal-bordered sections with numbered circles
   - Scale icon visibility fix in CaseDetail header
+- **How It Works Step 9 (29 Mar 2026):**
+  - Added "Chat & Collaboration" as Step 9 with cyan theme
+  - Updated hero from "8 steps" to "9 steps"
 
 ## 3rd Party Integrations
 - OpenAI GPT-4o (via Emergent LLM Key)
@@ -95,5 +71,5 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: "How It Works" page images — user verification pending
-- P3: Real-time collaboration/chat enhancements
-- P3: Case sharing between registered users
+- P3: Further collaboration/chat enhancements
+- P3: Case sharing improvements
