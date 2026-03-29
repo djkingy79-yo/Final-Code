@@ -12,19 +12,15 @@ import remarkGfm from "remark-gfm";
 import {
   AlertTriangle,
   ArrowLeft,
-  
   Clock,
   Download,
   FileText,
-  FolderOpen,
-  Gavel,
   Loader2,
   Printer,
   RefreshCcw,
   Scale,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
 import { API } from "../App";
 
 const formatDate = (dateStr) => {
@@ -339,7 +335,7 @@ export default function BarristerView() {
   };
 
   const openBarristerPreview = (mode = "print") => {
-    const contentEl = document.querySelector('[data-testid="barrister-print-frame"]');
+    const contentEl = document.querySelector('[data-testid="barrister-sections-wrapper"]');
     if (!contentEl) {
       toast.error("Unable to open the barrister brief preview.");
       return;
@@ -351,6 +347,11 @@ export default function BarristerView() {
       : "";
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
     const previewFooterLabel = `Criminal Appeal Case Management - Barrister Brief on ${caseData?.defendant_name || "Appellant"} - ${previewDate}`;
+    const defendantName = caseData?.defendant_name || "Appellant";
+    const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
+    const documentsCount = documents.length;
+    const eventsCount = timeline.length;
+    const reportsCount = sourceReportMeta.length || 3;
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -360,11 +361,11 @@ export default function BarristerView() {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page { size: A4; margin: 16mm; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding-bottom: 88px; background: #eef2f7; color: #0f172a; font-family: 'Manrope', Arial, sans-serif; }
-    .preview-shell { max-width: 920px; margin: 24px auto; padding: 0 18px; }
-    .cover-page { padding: 0 0 16px; }
+    @page { size: A4; margin: 14mm 14mm 18mm; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
+    .report-container { max-width: 900px; margin: 0 auto; }
+    .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
     .cover-page-kicker { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 800; color: #1d4ed8; }
     .cover-page h1 { margin: 0 0 10px; font-family: 'Crimson Pro', serif; font-size: 32px; color: #0f172a; }
@@ -376,54 +377,86 @@ export default function BarristerView() {
     .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
-    .preview-paper { background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); }
-    .preview-paper h1, .preview-paper h2, .preview-paper h3, .preview-paper h4 { font-family: 'Crimson Pro', serif; }
-    .preview-paper h2 { font-size: 28px; margin: 0; }
-    .preview-paper h3 { font-size: 22px; margin: 0 0 10px; }
-    .preview-paper p { margin: 0 0 12px; line-height: 1.75; }
-    .preview-paper ul, .preview-paper ol { margin: 0 0 14px; padding-left: 22px; }
-    .preview-paper li { margin-bottom: 6px; }
-    .preview-paper .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .preview-paper table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; margin: 16px 0; font-size: 12px; }
-    .preview-paper th { background: #1d4ed8; color: #ffffff; padding: 10px; text-align: left; border: 1px solid #cbd5e1; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-    .preview-paper td { padding: 10px; border: 1px solid #cbd5e1; vertical-align: top; overflow-wrap: anywhere; word-break: break-word; }
-    .preview-paper blockquote { margin: 16px 0; padding: 12px 16px; border-left: 4px solid #1d4ed8; background: #eff6ff; }
-    .preview-paper a { color: #1d4ed8; text-decoration: underline; }
+    .report-header { background: #1e3a8a; color: #fff; padding: 28px 32px; }
+    .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+    .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
+    .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
+    .report-header .grounds-label { font-size: 11px; color: rgba(255,255,255,0.8); text-align: right; }
+    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .report-header .case-info-grid .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+    .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
+    .sections { padding: 24px 32px; }
+    .section { margin-bottom: 24px; page-break-inside: avoid; }
+    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #1e3a8a; padding-left: 12px; margin-bottom: 12px; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: #0f172a; }
+    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
+    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 1.2rem 0 0.6rem; }
+    .section-body h2 { font-size: 1.4rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
+    .section-body h3 { font-size: 1.2rem; color: #1e40af; }
+    .section-body h4 { font-size: 1.05rem; color: #334155; }
+    .section-body p { margin-bottom: 0.7rem; }
+    .section-body strong { color: #0f172a; font-weight: 700; }
+    .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
+    .section-body li { margin-bottom: 0.4rem; }
+    .section-body a { color: #1d4ed8; text-decoration: underline; }
+    .section-body .legal-report-table-wrap { overflow-x: auto; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt !important; table-layout: fixed; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
+    .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
+    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
+    .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
+    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
     @media print {
-      body { background: #ffffff; }
-      .preview-shell { max-width: none; margin: 0; padding: 0; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .report-container { max-width: none; }
+      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .section { page-break-inside: avoid; }
+      .section-body .legal-report-table-wrap { overflow: visible; }
+      .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .preview-notice { display: none; }
-      .preview-paper { border: none; box-shadow: none; }
-      .preview-paper .legal-report-table-wrap { overflow: visible; }
-      .preview-paper table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .print-footer-page-print::after { content: counter(page); }
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
-      body { font-size: 13px; padding-bottom: 60px; }
-      .preview-shell { max-width: 100%; padding: 0 8px; margin: 8px auto; }
+      body { font-size: 13px; padding: 0 0 60px; }
+      .report-container { max-width: 100%; }
       .cover-page-inner { padding: 18px 16px; }
       .cover-page h1 { font-size: 22px; }
       .cover-page-card-value { font-size: 12px; }
       .cover-page-note { font-size: 10px; padding: 10px 12px; }
-      .preview-paper h2 { font-size: 20px; }
-      .preview-paper h3 { font-size: 17px; }
-      .preview-paper p { font-size: 13px; line-height: 1.6; }
-      .preview-paper table { font-size: 10px; }
-      .preview-paper th, .preview-paper td { padding: 6px; font-size: 10px; }
-      .preview-notice { font-size: 11px; padding: 8px 12px; }
+      .report-header { padding: 18px 16px; }
+      .report-header h1 { font-size: 20px; }
+      .report-header .case-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .report-header .case-info-grid .ci-value { font-size: 11px; }
+      .sections { padding: 16px; }
+      .section-title { font-size: 16px; }
+      .section-body { padding: 14px 16px; }
+      .section-body h2 { font-size: 1.1rem; }
+      .section-body h3 { font-size: 1rem; }
+      .section-body table { font-size: 9pt !important; }
+      .section-body th, .section-body td { padding: 5px 6px; font-size: 9pt !important; }
+      .disclaimer-bold { margin: 12px 16px; padding: 14px 16px; }
+      .disclaimer-bold .disc-text { font-size: 11px; }
+      .disclaimer-bold .disc-text strong { font-size: 12px; }
       .print-footer { padding: 6px 12px; }
       .print-footer-row { font-size: 8px; }
     }
   </style>
 </head>
 <body>
-  <div class="preview-shell">
     ${notice}
     <section class="cover-page page-break">
       <div class="cover-page-inner">
@@ -431,19 +464,44 @@ export default function BarristerView() {
         <h1>${title}</h1>
         <p>${caseData?.title || "Case"}</p>
         <div class="cover-page-grid">
-          <div class="cover-page-card"><div class="cover-page-card-label">Defendant</div><div class="cover-page-card-value">${caseData?.defendant_name || "Appellant"}</div></div>
-          <div class="cover-page-card"><div class="cover-page-card-label">Court / State</div><div class="cover-page-card-value">${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Defendant</div><div class="cover-page-card-value">${defendantName}</div></div>
+          <div class="cover-page-card"><div class="cover-page-card-label">Court / State</div><div class="cover-page-card-value">${meta}</div></div>
           <div class="cover-page-card"><div class="cover-page-card-label">Offence</div><div class="cover-page-card-value">${offenceLabel}</div></div>
           <div class="cover-page-card"><div class="cover-page-card-label">Sentence</div><div class="cover-page-card-value">${sentenceSummary}</div></div>
         </div>
         <div class="cover-page-note">NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</div>
       </div>
     </section>
-    <div class="preview-paper">${contentEl.innerHTML}</div>
-    <div class="disclaimer-bold" style="background:#fef2f2;border:3px solid #ef4444;padding:20px 28px;margin:16px 32px;border-radius:8px;display:flex;gap:14px;align-items:flex-start;">
-      <div class="disc-icon" style="color:#ef4444;font-size:28px;flex-shrink:0;">&#9888;</div>
-      <div class="disc-text" style="font-size:14px;color:#1e293b;font-weight:700;">
-        <strong style="font-size:16px;text-transform:uppercase;letter-spacing:0.08em;color:#dc2626;display:block;margin-bottom:6px;">NOT LEGAL ADVICE</strong>
+  <div class="report-container">
+    <div class="report-header">
+      <div class="header-row">
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">Barrister Brief</div>
+          <h1>${title}</h1>
+          <div class="meta-line">${meta}</div>
+          <div class="badge">BARRISTER BRIEF</div>
+          <div class="gen-date">Generated: ${previewDate}</div>
+        </div>
+        <div>
+          <div class="grounds-count">${grounds.length}</div>
+          <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
+        </div>
+      </div>
+      <div class="case-info-grid">
+        <div><div class="ci-label">Defendant</div><div class="ci-value">${defendantName}</div></div>
+        <div><div class="ci-label">Offence</div><div class="ci-value">${offenceLabel}</div></div>
+        <div><div class="ci-label">Sentence</div><div class="ci-value">${sentenceSummary}</div></div>
+        <div><div class="ci-label">Documents</div><div class="ci-value">${documentsCount} files analysed</div></div>
+        <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
+        <div><div class="ci-label">Source Reports</div><div class="ci-value">${reportsCount} reports referenced</div></div>
+      </div>
+    </div>
+    <div class="sections">${contentEl.innerHTML}</div>
+  </div>
+    <div class="disclaimer-bold">
+      <div class="disc-icon">&#9888;</div>
+      <div class="disc-text">
+        <strong>NOT LEGAL ADVICE</strong>
         This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service.
       </div>
     </div>
@@ -460,7 +518,6 @@ export default function BarristerView() {
         </div>
       </div>
     </div>
-  </div>
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">${previewFooterLabel}</span>
@@ -593,19 +650,14 @@ export default function BarristerView() {
     <div className="min-h-screen bg-slate-50 report-page">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur no-print" data-testid="barrister-header">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-3 flex-wrap">
-            <Button
-              size="sm"
-              onClick={handleBackToCase}
-              className="bg-blue-700 text-white hover:bg-blue-600"
-              data-testid="barrister-back-button"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
-            </Button>
-            <Badge className="bg-slate-900 text-white" data-testid="barrister-status-badge">
-              {isGenerating ? "Generating Barrister Brief" : isCompleted ? "Barrister Brief Ready" : "Barrister Brief"}
-            </Badge>
-          </div>
+          <Button
+            size="sm"
+            onClick={handleBackToCase}
+            className="bg-blue-700 text-white hover:bg-blue-600"
+            data-testid="barrister-back-button"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
+          </Button>
 
           <div className="flex items-center gap-2 flex-wrap">
             <Button
@@ -738,101 +790,111 @@ export default function BarristerView() {
         )}
 
         {isCompleted && (
-          <article className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden" data-testid="barrister-print-frame">
-            <div className="px-6 sm:px-10 py-6 sm:py-7 border-b border-slate-200 bg-white" data-testid="barrister-hero">
-              <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8">
-                <div className="min-w-0 flex-1 xl:flex-[1.2] xl:pr-8">
-                  <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <Badge className="bg-blue-700 text-white" data-testid="barrister-hero-badge">
-                      <Scale className="w-3.5 h-3.5 mr-1.5" /> BARRISTER BRIEF
-                    </Badge>
-                    <span className="text-sm font-medium text-slate-600" data-testid="barrister-source-badge">
-                      Built from all {sourceReportMeta.length || 3} completed reports
-                    </span>
-                  </div>
-
-                  <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-[1.05] break-words max-w-3xl" data-testid="barrister-title">
+          <article className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xl" data-testid="barrister-print-frame">
+            {/* ===== COLOUR-CODED BARRISTER HEADER (matches other reports) ===== */}
+            <div className="bg-blue-900 text-white p-6 sm:p-8" data-testid="barrister-hero">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                <div>
+                  <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Barrister Brief</p>
+                  <h1 className="text-3xl sm:text-4xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="barrister-title">
                     {caseData?.title || "Barrister Brief"}
                   </h1>
+                  <p className="text-sm text-white/90 mt-1 font-medium">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 w-full xl:w-[440px] xl:flex-shrink-0" data-testid="barrister-summary-grid">
-                  <CompactMetric label="Defendant" value={caseData?.defendant_name || "Not recorded"} testId="barrister-summary-defendant" />
-                  <CompactMetric label="Court / State" value={`${caseData?.court || "Court not recorded"} • ${(caseData?.state || "nsw").toUpperCase()}`} testId="barrister-summary-court-state" />
-                  <CompactMetric label="Sentence" value={sentenceSummary} testId="barrister-summary-sentence" />
-                  <CompactMetric label="Offence" value={offenceLabel} testId="barrister-summary-offence" />
-                  <CompactMetric label="Grounds" value={`${grounds.length}`} testId="barrister-summary-grounds" />
-                  <CompactMetric label="Generated" value={formatDate(report?.generated_at)} testId="barrister-summary-generated" />
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-white" data-testid="barrister-grounds-count">{grounds.length} Ground{grounds.length !== 1 ? "s" : ""}</p>
+                  <p className="text-xs text-white/80 font-semibold">Identified</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap text-sm text-white/90 mb-5">
+                <span className="bg-blue-700 px-3 py-1 rounded-full text-sm font-bold text-white">BARRISTER BRIEF</span>
+                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Generated: {formatDate(report?.generated_at)}</span>
+                <span className="text-sm text-white/80" data-testid="barrister-source-badge">Built from all {sourceReportMeta.length || 3} reports</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-white/20 pt-4" data-testid="barrister-summary-grid">
+                <div>
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Defendant</p>
+                  <p className="font-bold text-white" data-testid="barrister-summary-defendant">{caseData?.defendant_name || "Not recorded"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Offence</p>
+                  <p className="font-bold text-white" data-testid="barrister-summary-offence">{offenceLabel}</p>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Sentence</p>
+                  <p className="font-bold text-white" data-testid="barrister-summary-sentence">{sentenceSummary}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Documents</p>
+                  <p className="font-bold text-white" data-testid="barrister-meta-documents">{documents.length} files analysed</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Timeline Events</p>
+                  <p className="font-bold text-white" data-testid="barrister-meta-timeline">{timeline.length} events</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Source Reports</p>
+                  <p className="font-bold text-white" data-testid="barrister-meta-source-reports">{sourceReportMeta.length || 3} reports referenced</p>
                 </div>
               </div>
             </div>
 
-            <div className="px-6 sm:px-10 py-5 bg-red-700" data-testid="barrister-disclaimer-banner">
+            <div className="bg-red-700 px-6 sm:px-8 py-4" data-testid="barrister-disclaimer-banner">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-6 h-6 text-white shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-white shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-base font-extrabold text-white uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
-                  <p className="text-sm text-white leading-relaxed">
-                    This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service.
+                  <p className="text-sm font-extrabold text-white uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
+                  <p className="text-xs text-white leading-relaxed">
+                    This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="px-6 sm:px-10 py-4 bg-slate-50 border-b border-slate-200" data-testid="barrister-meta-strip">
-              <div className="grid md:grid-cols-3 gap-3 text-sm text-slate-700">
-                <div className="flex items-center gap-2" data-testid="barrister-meta-documents">
-                  <FolderOpen className="w-4 h-4 text-blue-700" /> {documents.length} documents analysed
-                </div>
-                <div className="flex items-center gap-2" data-testid="barrister-meta-timeline">
-                  <Clock className="w-4 h-4 text-blue-700" /> {timeline.length} timeline events
-                </div>
-                <div className="flex items-center gap-2" data-testid="barrister-meta-source-reports">
-                  <Gavel className="w-4 h-4 text-blue-700" /> {sourceReportMeta.length || 3} source reports referenced
-                </div>
-              </div>
-            </div>
-
             {sections.length > 1 && (
-              <div className="px-6 sm:px-10 py-8 border-b border-slate-200 bg-white" data-testid="barrister-table-of-contents">
-                <div className="flex items-center gap-3 mb-5">
-                  <FileText className="w-5 h-5 text-blue-700" />
-                  <h2 className="text-2xl font-bold text-slate-900">Table of contents</h2>
+              <div className="bg-slate-50/80 border-b border-slate-200 p-4 sm:p-5" data-testid="barrister-table-of-contents">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-slate-700" />
+                  <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                    Contents ({sections.length} Sections)
+                  </p>
                 </div>
-                <div className="grid md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5">
                   {sections.map((section, index) => (
                     <button
                       key={section.id}
                       onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                      className="text-left rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                      className="text-left text-xs text-slate-700 hover:text-blue-700 transition-colors truncate"
                       data-testid={`barrister-toc-item-${index + 1}`}
                     >
-                      <span className="text-xs font-bold uppercase tracking-wide text-blue-700">Section {index + 1}</span>
-                      <p className="mt-1 text-sm font-semibold text-slate-900">{section.title}</p>
+                      <span className="font-semibold text-slate-900">{index + 1}.</span> {section.title}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="px-6 sm:px-10 py-8 sm:py-10 space-y-10" data-testid="barrister-sections-wrapper">
+            <div className="p-5 sm:p-6 md:p-8 space-y-6" data-testid="barrister-sections-wrapper">
               {sections.map((section, index) => (
-                <section key={section.id} id={section.id} className="scroll-mt-24" data-testid={`barrister-section-${index + 1}`}>
-                  <div className="flex items-start gap-4 mb-5">
-                    <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-sm font-bold flex-shrink-0" data-testid={`barrister-section-number-${index + 1}`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Section {index + 1}</p>
-                      <h2 className="text-3xl font-bold text-slate-900" data-testid={`barrister-section-heading-${index + 1}`}>
+                <article key={section.id} id={section.id} className="scroll-mt-24" data-testid={`barrister-section-${index + 1}`}>
+                  <div className="border-l-4 border-blue-800 pl-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-900 text-xs font-bold" data-testid={`barrister-section-number-${index + 1}`}>
+                        {index + 1}
+                      </span>
+                      <h3
+                        className="text-xl sm:text-2xl font-bold text-blue-900 tracking-tight"
+                        style={{ fontFamily: "Crimson Pro, serif" }}
+                        data-testid={`barrister-section-heading-${index + 1}`}
+                      >
                         {section.title}
-                      </h2>
+                      </h3>
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm" data-testid={`barrister-section-body-${index + 1}`}>
+                  <div className="bg-white rounded-lg border border-slate-200 p-6 sm:p-7 shadow-sm" data-testid={`barrister-section-body-${index + 1}`}>
                     <MarkdownBlock text={section.content} testId={`barrister-section-markdown-${index + 1}`} />
                   </div>
-                </section>
+                </article>
               ))}
             </div>
 
@@ -932,10 +994,3 @@ export default function BarristerView() {
     </div>
   );
 }
-
-const CompactMetric = ({ label, value, testId }) => (
-  <div className="min-w-0" data-testid={testId}>
-    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 mb-1">{label}</p>
-    <p className="text-sm font-semibold text-slate-900 break-words leading-snug">{value}</p>
-  </div>
-);

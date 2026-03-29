@@ -578,6 +578,7 @@ const ReportsSection = ({
               quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
+              barrister_view: { headerBg: "bg-blue-900", badge: "bg-blue-700", label: "Barrister Brief", price: "BARRISTER" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             return (
@@ -633,12 +634,15 @@ const ReportsSection = ({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}`)}
+                          onClick={() => report.report_type === 'barrister_view' 
+                            ? navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)
+                            : navigate(`/cases/${caseId}/reports/${report.report_id}`)
+                          }
                           className="bg-blue-700 text-white hover:bg-blue-600"
                           data-testid={`view-report-btn-${report.report_id}`}
                         >
                           <Eye className="w-4 h-4 mr-1.5" />
-                          Full Report Page
+                          {report.report_type === 'barrister_view' ? 'View Barrister Brief' : 'Full Report Page'}
                         </Button>
                         {report.report_type === 'extensive_log' && (
                           hasAllReports ? (

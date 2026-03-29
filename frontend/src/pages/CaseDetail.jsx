@@ -240,20 +240,31 @@ const CaseDetail = ({ user }) => {
       setCaseData(caseRes.data);
       
       // Then fetch related data - use Promise.allSettled for resilience
-      const [docsRes, timelineRes, reportsRes, notesRes, groundsRes, paymentsRes] = await Promise.allSettled([
+      const [docsRes, timelineRes, reportsRes, notesRes, groundsRes, paymentsRes, barristerRes] = await Promise.allSettled([
         axios.get(`${API}/cases/${caseId}/documents`),
         axios.get(`${API}/cases/${caseId}/timeline`),
         axios.get(`${API}/cases/${caseId}/reports`),
         axios.get(`${API}/cases/${caseId}/notes`),
         axios.get(`${API}/cases/${caseId}/grounds`),
-        axios.get(`${API}/cases/${caseId}/payments`)
+        axios.get(`${API}/cases/${caseId}/payments`),
+        axios.get(`${API}/cases/${caseId}/reports/barrister-view`)
       ]);
       if (requestId !== caseRequestRef.current) return;
       
       // Set data from successful responses, empty arrays for failed ones
       setDocuments(docsRes.status === 'fulfilled' ? docsRes.value.data : []);
       setTimeline(timelineRes.status === 'fulfilled' ? timelineRes.value.data : []);
-      setReports(reportsRes.status === 'fulfilled' ? reportsRes.value.data : []);
+      
+      // Combine standard reports with barrister report if it exists and is completed
+      const standardReports = reportsRes.status === 'fulfilled' ? reportsRes.value.data : [];
+      const barristerReport = barristerRes.status === 'fulfilled' ? barristerRes.value.data : null;
+      if (barristerReport && barristerReport.status === 'completed' && barristerReport.report_id) {
+        const alreadyIncluded = standardReports.some(r => r.report_id === barristerReport.report_id);
+        if (!alreadyIncluded) {
+          standardReports.push(barristerReport);
+        }
+      }
+      setReports(standardReports);
       setNotes(notesRes.status === 'fulfilled' ? notesRes.value.data : []);
       setPaymentSummary(paymentsRes.status === 'fulfilled' ? paymentsRes.value.data : { payments: [], unlocked_features: {}, latest_status_by_feature: {} });
       
@@ -812,8 +823,8 @@ const CaseDetail = ({ user }) => {
               <ArrowLeft className="w-4 h-4 mr-1" />
               <span className="hidden sm:inline">Back</span>
             </Button>
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
+              <div className="w-8 h-8 rounded-lg bg-blue-700 flex items-center justify-center shrink-0 z-10">
                 <Scale className="w-4 h-4 text-white" />
               </div>
               <span className="text-slate-500 hidden sm:inline">/</span>
