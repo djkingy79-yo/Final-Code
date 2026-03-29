@@ -136,8 +136,18 @@ const DocumentsSection = ({
     setExtractingText(true);
     try {
       const response = await axios.post(`${API}/cases/${caseId}/extract-all-text`);
-      const { successful_extractions, total_documents } = response.data;
+      const { successful_extractions, total_documents, detected_metadata } = response.data;
       toast.success(`Extracted text from ${successful_extractions}/${total_documents} documents`);
+      if (detected_metadata && Object.keys(detected_metadata).length > 0) {
+        const parts = [];
+        if (detected_metadata.offence_type) parts.push(detected_metadata.offence_type);
+        else if (detected_metadata.offence_category) parts.push(detected_metadata.offence_category.replace(/_/g, ' '));
+        if (detected_metadata.state) parts.push(detected_metadata.state.toUpperCase());
+        if (detected_metadata.sentence) parts.push(detected_metadata.sentence.substring(0, 60));
+        if (parts.length > 0) {
+          toast.success(`Auto-detected: ${parts.join(' | ')}`, { duration: 5000 });
+        }
+      }
       if (onDocumentsChange) onDocumentsChange();
     } catch (error) {
       toast.error("Failed to extract text");

@@ -1,0 +1,69 @@
+{
+  "summary": "Iteration 106 testing completed. All requested features verified: 1) Auto-detection of case metadata works - reset case to 'homicide', called extract-all-text, LLM correctly detected 'sexual_offences' with offence_type, sentence, state, court, case_number. 2) Bundle PDF export works (HTTP 200 with PDF content). 3) Frontend shows correct auto-detected metadata (Sexual Offences badge, not Homicide). 4) Timeline delete buttons visible on mobile (opacity=1). 5) Footer 'NOT LEGAL ADVICE' disclaimer visible on all pages.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration106_auto_detection.py",
+    "/app/test_reports/pytest/iteration106_auto_detection.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration106_auto_detection.py"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "seed_data_creation": "N/A - used existing test cases case_e7a5b5faf51e (R v Karlsson) and case_a97ea91f0692 (Dummy Murder)",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Auto-detection feature verified working. Key test flow: 1) PUT /api/cases/{case_id} to reset offence_category to 'homicide' and clear offence_type/sentence. 2) POST /api/cases/{case_id}/extract-all-text (takes ~2-3 seconds for LLM). 3) Response contains detected_metadata with offence_category, offence_type, sentence, state, court, case_number. 4) GET /api/cases/{case_id} confirms case was updated. Test case case_e7a5b5faf51e (R v Karlsson) has 1 document about sexual offences - auto-detects as 'sexual_offences'. Test case case_a97ea91f0692 (Dummy Murder) has 8 timeline events for mobile delete button testing.",
+  "test_results": {
+    "backend_api_tests": {
+      "health_check": "PASS",
+      "reset_case_metadata": "PASS - PUT /api/cases/case_e7a5b5faf51e with offence_category='homicide'",
+      "extract_all_text_auto_detection": "PASS - detected_metadata returned with offence_category='sexual_offences', offence_type='Possess and Access Child Abuse Material', sentence='imprisonment for 6 years 9 months to date from 8 October 2025', state='nsw', court='District Court New South Wales', case_number='2023/292851'",
+      "verify_case_updated": "PASS - GET /api/cases/case_e7a5b5faf51e shows updated metadata",
+      "bundle_export": "PASS - POST /api/cases/case_a97ea91f0692/export/bundle returns PDF",
+      "get_karlsson_case": "PASS",
+      "get_dummy_murder_case": "PASS"
+    },
+    "frontend_ui_tests": {
+      "footer_disclaimer_landing_page": "PASS - data-testid='footer-legal-disclaimer' visible with 'NOT LEGAL ADVICE'",
+      "footer_disclaimer_how_it_works": "PASS",
+      "footer_disclaimer_appeal_statistics": "PASS",
+      "footer_disclaimer_case_detail": "PASS",
+      "case_detail_offence_badge": "PASS - Shows 'Sexual Offences' badge (blue), NOT 'Homicide'",
+      "case_detail_offence_type": "PASS - Shows 'Possess and Access Child Abuse Material'",
+      "case_detail_sentence": "PASS - Shows 'imprisonment for 6 years 9 months to date from 8 October 2025'",
+      "timeline_delete_button_mobile_390x844": "PASS - opacity=1, is_visible=True, 8 delete buttons found"
+    }
+  },
+  "auto_detection_verification": {
+    "test_case": "case_e7a5b5faf51e (R v Karlsson)",
+    "document": "aaaaaaaaa test 5.pdf (15925 chars extracted)",
+    "before_detection": {
+      "offence_category": "homicide",
+      "offence_type": "",
+      "sentence": ""
+    },
+    "after_detection": {
+      "offence_category": "sexual_offences",
+      "offence_type": "Possess and Access Child Abuse Material",
+      "sentence": "imprisonment for 6 years 9 months to date from 8 October 2025",
+      "state": "nsw",
+      "court": "District Court New South Wales",
+      "case_number": "2023/292851"
+    },
+    "llm_response_time": "~2-3 seconds"
+  }
+}

@@ -1301,10 +1301,96 @@ async def extract_all_documents_text(case_id: str, request: Request):
         })
     
     successful = sum(1 for r in results if r['success'])
+
+    # ── AI auto-detect case metadata from extracted text ──
+    detected_metadata = {}
+    if successful > 0:
+        try:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            combined_text = ""
+            for doc in documents:
+                ct = doc.get("content_text") or ""
+                if not ct:
+                    # Check if text was just extracted in this call
+                    for r in results:
+                        if r.get("document_id") == doc["document_id"] and r.get("success"):
+                            fresh = await db.documents.find_one({"document_id": doc["document_id"]}, {"_id": 0, "content_text": 1})
+                            ct = (fresh or {}).get("content_text", "")
+                if ct:
+                    combined_text += f"\n--- DOCUMENT: {doc.get('filename','')} ---\n{ct[:6000]}\n"
+            if len(combined_text) > 200:
+                detect_prompt = f"""Analyse the following case documents and extract these metadata fields. 
+Return ONLY valid JSON with these exact keys (no markdown, no explanation):
+{{
+  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
+  "offence_type": "<specific offence e.g. Murder, Manslaughter, Assault Occasioning Actual Bodily Harm, Armed Robbery, etc.>",
+  "sentence": "<exact sentence imposed e.g. 30 years imprisonment with non-parole period of 22 years>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act>",
+  "court": "<court name if found>",
+  "case_number": "<case number if found>",
+  "defendant_name": "<defendant full name if found>"
+}}
+
+Rules:
+- offence_category MUST be from the provided list only
+- Read the ACTUAL document content to determine the REAL offence — do NOT guess or default
+- If the document discusses assault, the category is "assault" not "homicide"
+- If sentence is not clearly stated, set it to null
+- If a field cannot be determined, set it to null
+- state should be lowercase (e.g. "nsw" not "NSW")
+
+DOCUMENTS:
+{combined_text[:30000]}"""
+                chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"detect_{case_id}",
+                    system_message="You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
+                raw = await asyncio.wait_for(
+                    chat.send_message(UserMessage(text=detect_prompt)),
+                    timeout=60
+                )
+                raw = (raw or "").strip()
+                # Strip markdown fences if present
+                if raw.startswith("```"):
+                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+                import json as _json
+                meta = _json.loads(raw)
+                update_fields = {}
+                valid_categories = ["homicide", "assault", "sexual_offences", "robbery_theft",
+                                    "drug_offences", "fraud_dishonesty", "firearms_weapons",
+                                    "domestic_violence", "public_order", "terrorism", "driving_offences"]
+                valid_states = ["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act"]
+                if meta.get("offence_category") in valid_categories:
+                    update_fields["offence_category"] = meta["offence_category"]
+                if meta.get("offence_type"):
+                    update_fields["offence_type"] = meta["offence_type"]
+                if meta.get("sentence"):
+                    update_fields["sentence"] = meta["sentence"]
+                if meta.get("state") and meta["state"].lower() in valid_states:
+                    update_fields["state"] = meta["state"].lower()
+                if meta.get("court"):
+                    update_fields["court"] = meta["court"]
+                if meta.get("case_number"):
+                    update_fields["case_number"] = meta["case_number"]
+                if meta.get("defendant_name") and not case.get("defendant_name"):
+                    update_fields["defendant_name"] = meta["defendant_name"]
+                if update_fields:
+                    update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                    await db.cases.update_one(
+                        {"case_id": case_id},
+                        {"$set": update_fields}
+                    )
+                    detected_metadata = update_fields
+                    logger.info(f"Auto-detected case metadata for {case_id}: {update_fields}")
+        except Exception as e:
+            logger.warning(f"Auto-detect metadata failed for {case_id}: {e}")
+
     return {
         "total_documents": len(documents),
         "successful_extractions": successful,
-        "results": results
+        "results": results,
+        "detected_metadata": detected_metadata
     }
 
 # ============ TIMELINE ENDPOINTS ============
@@ -3804,6 +3890,73 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
         {"case_id": case_id},
         {"_id": 0}
     ).to_list(100)
+    
+    # ── Auto-detect case metadata if still defaults ──
+    needs_detection = (
+        case.get('offence_category', 'homicide') == 'homicide'
+        and not case.get('offence_type')
+        and not case.get('sentence')
+    )
+    if needs_detection and documents:
+        try:
+            combined_text = ""
+            for d in documents:
+                ct = d.get("content_text") or ""
+                if ct:
+                    combined_text += f"\n--- {d.get('filename','')} ---\n{ct[:6000]}\n"
+            if len(combined_text) > 200:
+                detect_prompt = f"""Analyse the following case documents and extract metadata.
+Return ONLY valid JSON (no markdown, no explanation):
+{{
+  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
+  "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH, Armed Robbery>",
+  "sentence": "<exact sentence imposed if stated, else null>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act — if determinable>",
+  "court": "<court name if found>"
+}}
+Rules:
+- offence_category MUST be from the listed values only. Read the ACTUAL documents — do NOT default to homicide.
+- If the document is about assault, category is "assault". If robbery, "robbery_theft", etc.
+- If a field cannot be determined, set to null. state must be lowercase.
+
+DOCUMENTS:
+{combined_text[:30000]}"""
+                detect_chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"rpt_detect_{case_id}",
+                    system_message="You are a legal document analyst. Extract factual metadata only. Return valid JSON."
+                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
+                raw = await asyncio.wait_for(
+                    detect_chat.send_message(UserMessage(text=detect_prompt)),
+                    timeout=60
+                )
+                raw = (raw or "").strip()
+                raw = (raw or "").strip()
+                if raw.startswith("```"):
+                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+                import json as _json
+                meta = _json.loads(raw)
+                valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
+                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+                update_fields = {}
+                if meta.get("offence_category") in valid_cats:
+                    update_fields["offence_category"] = meta["offence_category"]
+                if meta.get("offence_type"):
+                    update_fields["offence_type"] = meta["offence_type"]
+                if meta.get("sentence"):
+                    update_fields["sentence"] = meta["sentence"]
+                if meta.get("state") and meta["state"].lower() in valid_sts:
+                    update_fields["state"] = meta["state"].lower()
+                if meta.get("court"):
+                    update_fields["court"] = meta["court"]
+                if update_fields:
+                    update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                    await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
+                    # Re-read case with updated metadata
+                    case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+                    logger.info(f"Report gen auto-detected metadata for {case_id}: {update_fields}")
+        except Exception as e:
+            logger.warning(f"Report gen auto-detect failed for {case_id}: {e}")
     
     # Get offence-specific context
     offence_category = case.get('offence_category', 'homicide')
