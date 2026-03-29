@@ -15,7 +15,7 @@ const DirectoryFilterContext = createContext({ stateFilter: "all" });
 const LegalResourcesPage = () => {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [stateFilter, setStateFilter] = useState("NSW");
+  const [stateFilter, setStateFilter] = useState("all");
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1348,6 +1348,8 @@ const LegalResourcesPage = () => {
 };
 
 // Resource Card Component
+/* Tailwind safelist: bg-blue-600 bg-purple-600 bg-red-600 bg-emerald-600 bg-teal-600 bg-orange-600 bg-indigo-600 bg-slate-700 bg-pink-600 */
+
 const ResourceCard = ({ title, state, phone, website, description, color, highlight }) => {
   const { stateFilter } = useContext(DirectoryFilterContext);
 
@@ -1386,17 +1388,16 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
     return null;
   }
 
-  const colorClasses = {
-    blue: "bg-blue-600",
-    purple: "bg-purple-600",
-    red: "bg-red-600",
-    blue_mapped: "bg-red-600",
-    emerald: "bg-emerald-600",
-    teal: "bg-teal-600",
-    orange: "bg-orange-600",
-    indigo: "bg-indigo-600",
-    slate: "bg-slate-700",
-    pink: "bg-pink-600",
+  const colorHex = {
+    blue: "#2563eb",
+    purple: "#9333ea",
+    red: "#dc2626",
+    emerald: "#059669",
+    teal: "#0d9488",
+    orange: "#ea580c",
+    indigo: "#4f46e5",
+    slate: "#334155",
+    pink: "#db2777",
   };
 
   return (
@@ -1406,7 +1407,10 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 ${colorClasses[color]} rounded-md flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
+          <div
+            className="w-8 h-8 rounded-md flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+            style={{ backgroundColor: colorHex[color] || "#334155" }}
+          >
             {state.slice(0, 3)}
           </div>
           <h3 className="font-bold text-slate-900 text-xs leading-tight">{title}</h3>

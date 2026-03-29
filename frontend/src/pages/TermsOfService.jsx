@@ -353,12 +353,12 @@ const TermsOfService = () => {
             { id: 'governing', title: '12. Governing Law & Jurisdiction', icon: Scale, color: 'cyan', content: (
               <>
                 <p className="mb-3">
-                  These Terms of Service shall be governed by and construed in accordance with the laws of New South Wales, Australia, 
+                  These Terms of Service shall be governed by and construed in accordance with the laws of the Commonwealth of Australia, 
                   without regard to conflict of law principles.
                 </p>
                 <p>
                   Any disputes arising from or relating to these Terms or your use of the Application shall be subject to the 
-                  exclusive jurisdiction of the courts of New South Wales, Australia.
+                  exclusive jurisdiction of the courts of the relevant state or territory of Australia.
                 </p>
               </>
             )},
