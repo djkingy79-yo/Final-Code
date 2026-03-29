@@ -4,14 +4,13 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Moon, Sun, Menu, X, BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, XCircle, Clock, FileText, Users, Gavel, PieChart } from "lucide-react";
+import { Scale, Menu, X, BarChart3, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, XCircle, Clock, FileText, Users, ChevronRight } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Link } from "react-router-dom";
-import { useTheme } from "../contexts/ThemeContext";
+import { Link, useNavigate } from "react-router-dom";
 import PageCTA from "../components/PageCTA";
 
 const AppealStatisticsPage = () => {
-  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeState, setActiveState] = useState("national");
 
@@ -142,34 +141,59 @@ const AppealStatisticsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-blue-600" style={{ fontFamily: 'Manrope, sans-serif' }}>
-      {/* Header */}
-      <header className="bg-blue-700 sticky top-0 z-50">
+    <div className="min-h-screen" style={{ fontFamily: 'Manrope, sans-serif' }}>
+      {/* Header — matches standard site header */}
+      <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Appeal Case Manager
             </span>
           </Link>
-          <div className="hidden md:flex items-center gap-4">
-            <Link to="/glossary" className="text-blue-200 hover:text-white text-sm transition-colors">Legal Terms</Link>
-            <Link to="/legal-resources" className="text-blue-200 hover:text-white text-sm transition-colors">Resources</Link>
-<Link to="/">
-              <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </Link>
+          <div className="hidden lg:flex items-center gap-4">
+            <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 text-sm transition-colors">How It Works</Link>
+            <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 text-sm transition-colors">Appeal Statistics</Link>
+            <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors">Resources & Contacts</Link>
+            <div className="relative group">
+              <button className="text-slate-700 hover:text-blue-700 text-sm transition-colors flex items-center gap-1">
+                More <ChevronRight className="w-3 h-3 rotate-90" />
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">Legal Framework</Link>
+                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">Forms & Templates</Link>
+                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">Legal Glossary</Link>
+                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">Lawyer Directory</Link>
+                <Link to="/faq" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">FAQ</Link>
+                <Link to="/contact" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">Contact</Link>
+                <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">About</Link>
+              </div>
+            </div>
+            <Button onClick={() => navigate('/')} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-base font-semibold">
+              Sign In
+            </Button>
           </div>
-          <button className="md:hidden p-2 text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="lg:hidden p-2 text-slate-900" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
+            <Link to="/how-it-works" className="block py-2 text-slate-700 hover:text-blue-700">How It Works</Link>
+            <Link to="/appeal-statistics" className="block py-2 text-slate-700 hover:text-blue-700">Appeal Statistics</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700">Resources & Contacts</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700">Legal Framework</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700">Legal Glossary</Link>
+            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700">FAQ</Link>
+            <Link to="/contact" className="block py-2 text-slate-700 hover:text-blue-700">Contact</Link>
+            <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700">About</Link>
+          </div>
+        )}
       </header>
 
+      <div className="bg-blue-600">
       {/* Hero */}
       <section className="py-12 px-6 bg-blue-800 text-white">
         <div className="max-w-5xl mx-auto text-center">
@@ -587,6 +611,7 @@ const AppealStatisticsPage = () => {
         <PageCTA variant="inline" className="mt-12" />
 
       </main>
+      </div>
     </div>
   );
 };

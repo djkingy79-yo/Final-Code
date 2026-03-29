@@ -1437,6 +1437,16 @@ select {
   font-weight: 700;
 }
 
+/* White bullets inside blue backgrounds */
+.force-light [class*="bg-blue-6"] ul li::marker,
+.force-light [class*="bg-blue-7"] ul li::marker,
+.force-light [class*="bg-blue-8"] ul li::marker,
+.force-light [class*="bg-blue-6"] ol li::marker,
+.force-light [class*="bg-blue-7"] ol li::marker,
+.force-light [class*="bg-blue-8"] ol li::marker {
+  color: #ffffff !important;
+}
+
 .notice-white {
   color: #ffffff !important;
 }
