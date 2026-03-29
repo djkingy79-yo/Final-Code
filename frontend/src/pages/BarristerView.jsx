@@ -389,6 +389,20 @@ export default function BarristerView() {
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
+      body { font-size: 13px; padding-bottom: 60px; }
+      .preview-shell { max-width: 100%; padding: 0 8px; margin: 8px auto; }
+      .cover-page-inner { padding: 18px 16px; }
+      .cover-page h1 { font-size: 22px; }
+      .cover-page-card-value { font-size: 12px; }
+      .cover-page-note { font-size: 10px; padding: 10px 12px; }
+      .preview-paper h2 { font-size: 20px; }
+      .preview-paper h3 { font-size: 17px; }
+      .preview-paper p { font-size: 13px; line-height: 1.6; }
+      .preview-paper table { font-size: 10px; }
+      .preview-paper th, .preview-paper td { padding: 6px; font-size: 10px; }
+      .preview-notice { font-size: 11px; padding: 8px 12px; }
+      .print-footer { padding: 6px 12px; }
+      .print-footer-row { font-size: 8px; }
     }
   </style>
 </head>

@@ -761,6 +761,31 @@ const ReportView = () => {
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
+      body { font-size: 13px; padding: 0 0 60px; }
+      .report-container { max-width: 100%; }
+      .cover-page-inner { padding: 18px 16px; }
+      .cover-page h1 { font-size: 22px; }
+      .cover-page-card-value { font-size: 12px; }
+      .cover-page-note { font-size: 10px; padding: 10px 12px; }
+      .report-header { padding: 18px 16px; }
+      .report-header h1 { font-size: 20px; }
+      .report-header .case-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .report-header .case-info-grid .ci-value { font-size: 11px; }
+      .toc { padding: 10px 16px; }
+      .toc-grid { grid-template-columns: 1fr; gap: 2px; }
+      .sections { padding: 16px; }
+      .section-title { font-size: 16px; }
+      .section-body { padding: 14px 16px; }
+      .section-body h2 { font-size: 1.1rem; }
+      .section-body h3 { font-size: 1rem; }
+      .section-body table { font-size: 9pt !important; }
+      .section-body th, .section-body td { padding: 5px 6px; font-size: 9pt !important; }
+      .disclaimer-bold { margin: 12px 16px; padding: 14px 16px; }
+      .disclaimer-bold .disc-text { font-size: 11px; }
+      .disclaimer-bold .disc-text strong { font-size: 12px; }
+      .notice { margin: 10px 16px; font-size: 11px; }
+      .print-footer { padding: 6px 12px; }
+      .print-footer-row { font-size: 8px; }
     }
   </style>
 </head>
