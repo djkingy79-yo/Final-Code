@@ -406,21 +406,21 @@ const AppealStatisticsPage = () => {
           <div className="flex flex-wrap gap-2 mb-6">
             {Object.entries(stateStats).map(([key, state]) => {
               const stateColorMap = {
-                blue: { active: "bg-blue-600", inactive: "bg-blue-600/40 hover:bg-blue-600/70 border border-blue-400" },
-                purple: { active: "bg-purple-600", inactive: "bg-purple-600/40 hover:bg-purple-600/70 border border-purple-400" },
-                red: { active: "bg-red-600", inactive: "bg-red-600/40 hover:bg-red-600/70 border border-red-400" },
-                emerald: { active: "bg-emerald-600", inactive: "bg-emerald-600/40 hover:bg-emerald-600/70 border border-emerald-400" },
-                teal: { active: "bg-teal-600", inactive: "bg-teal-600/40 hover:bg-teal-600/70 border border-teal-400" },
-                orange: { active: "bg-orange-600", inactive: "bg-orange-600/40 hover:bg-orange-600/70 border border-orange-400" },
-                indigo: { active: "bg-indigo-600", inactive: "bg-indigo-600/40 hover:bg-indigo-600/70 border border-indigo-400" },
+                blue: "bg-blue-600 hover:bg-blue-500",
+                purple: "bg-purple-600 hover:bg-purple-500",
+                red: "bg-red-600 hover:bg-red-500",
+                emerald: "bg-emerald-600 hover:bg-emerald-500",
+                teal: "bg-teal-500 hover:bg-teal-400",
+                orange: "bg-orange-500 hover:bg-orange-400",
+                indigo: "bg-indigo-600 hover:bg-indigo-500",
               };
               const sc = stateColorMap[state.color] || stateColorMap.blue;
               return (
                 <button
                   key={key}
                   onClick={() => setActiveState(key)}
-                  className={`px-4 py-2 rounded-lg text-sm font-bold text-white transition-colors ${
-                    activeState === key ? sc.active : sc.inactive
+                  className={`px-5 py-2.5 rounded-lg text-base font-extrabold text-white transition-colors shadow-md ${sc} ${
+                    activeState === key ? "ring-2 ring-white ring-offset-2 ring-offset-blue-700 scale-105" : ""
                   }`}
                 >
                   {state.abbrev}
