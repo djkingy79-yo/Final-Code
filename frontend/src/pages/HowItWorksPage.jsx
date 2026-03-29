@@ -10,27 +10,27 @@ import { useTheme } from "../contexts/ThemeContext";
 import {
   Scale,
   ArrowLeft,
-  Moon,
-  Sun,
+  
+  
   Menu,
   X,
   Upload,
   Search,
   FileCheck,
-  Presentation,
+  
   PlayCircle,
   Sparkles,
-  ChevronRight,
-  ChevronDown,
+  
+  
   FolderPlus,
-  FileText,
-  Brain,
-  BarChart3,
-  Printer,
+  
+  
+  
+  
   Eye,
   Shield,
   Clock,
-  AlertTriangle,
+  
   CheckCircle2,
   Gavel,
   BookOpen,
@@ -42,7 +42,7 @@ import {
 } from "lucide-react";
 
 const HowItWorksPage = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -498,7 +498,6 @@ const HowItWorksPage = () => {
                     <p className="text-sm text-slate-700">{step.visual.caption}</p>
                   </div>
                 )}
-
 
                 {/* What You'll See */}
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>

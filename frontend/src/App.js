@@ -49,7 +49,6 @@ import AppFooter from "./components/AppFooter";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
 
-
 // Configure axios with timeout
 // NOTE: Do NOT use withCredentials=true — the Kubernetes/Cloudflare proxy overwrites
 // Access-Control-Allow-Origin to "*" which conflicts with credentials mode.

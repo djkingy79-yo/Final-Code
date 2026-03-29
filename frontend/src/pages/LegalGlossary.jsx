@@ -3,8 +3,8 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, ArrowLeft, Search, BookOpen, Gavel, Shield, FileText, Users, AlertTriangle, Clock, ChevronDown, ChevronRight, Moon, Sun } from "lucide-react";
-import PageCTA from "../components/PageCTA";
+import { Scale, ArrowLeft, Search, BookOpen, Gavel, Shield, FileText, Users, AlertTriangle, Clock, ChevronDown, ChevronRight } from "lucide-react";
+
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Link } from "react-router-dom";
@@ -586,7 +586,7 @@ const glossaryCategories = [
 ];
 
 const LegalGlossary = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedTerms, setExpandedTerms] = useState({});
   const [activeCategory, setActiveCategory] = useState("all");

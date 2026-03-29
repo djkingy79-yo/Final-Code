@@ -14,20 +14,19 @@ import {
   ArrowLeft,
   Download,
   Printer,
-  Eye,
+  
   Loader2,
   FileText,
   ListOrdered,
-  Gavel,
+  
   ChevronRight,
-  Sparkles,
-  ShieldCheck,
+  
+  
   Clock,
-  BookOpen,
+  
   AlertTriangle,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
 import { API } from "../App";
 
 const titleFromSnake = (value) => {
@@ -231,7 +230,7 @@ const cleanAIContent = (text) => {
   cleaned = cleaned.replace(/^(I('ve| have) (prepared|created|compiled|generated)[^\n]*\n?)/i, "");
   // Strip \1 artifacts
   cleaned = cleaned.replace(/\\1/g, "");
-  cleaned = cleaned.replace(/\x01/g, "");
+  cleaned = cleaned.replace(/\u0001/g, "");
   // Strip bracket placeholder notes — BOTH square [] and round () brackets
   cleaned = cleaned.replace(/\[Note:\s*[^\]]*\]/gi, "");
 
@@ -566,7 +565,7 @@ const ReportView = () => {
   const [grounds, setGrounds] = useState([]);
   const [sourceReports, setSourceReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [hasAllReports, setHasAllReports] = useState(false);
+  const [setHasAllReports] = useState(false);
 
   useEffect(() => {
     const requestId = requestRef.current + 1;

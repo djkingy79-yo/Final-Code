@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Scale, ChevronRight, TrendingUp, CheckCircle, XCircle, BarChart3, FileText, Users } from "lucide-react";
+import { Scale, TrendingUp, BarChart3 } from "lucide-react";
 
 const stateData = {
   NSW: {

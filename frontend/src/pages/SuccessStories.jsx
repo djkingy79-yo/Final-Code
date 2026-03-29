@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Quote, Send, CheckCircle, Heart, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Scale, ArrowLeft, Quote, Send, CheckCircle, Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";

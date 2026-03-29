@@ -4,21 +4,14 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Download, FileText, Search, Filter, ChevronDown, ChevronRight, Building2, Gavel, Shield, Users, Heart, Lock, Moon, Sun, AlertTriangle, Clock } from "lucide-react";
+import { Scale, ArrowLeft, Download, FileText, Search, ChevronDown, ChevronRight, Gavel, Shield, Users, Lock, AlertTriangle, Clock } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
+import { Card } from "../components/ui/card";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { toast } from "sonner";
 import PageCTA from "../components/PageCTA";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../components/ui/accordion";
 import {
   Select,
   SelectContent,
@@ -112,7 +105,7 @@ const FORM_CATEGORIES = [
 ];
 
 const FormTemplates = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [selectedState, setSelectedState] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedCategories, setExpandedCategories] = useState(["appeal", "authority"]);

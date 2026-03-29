@@ -9,10 +9,9 @@ import { toast } from "sonner";
 import { 
   Download, Package, FileText, Clock, Gavel, 
   MessageSquare, Scale, Search, FileCode, Loader2,
-  CheckCircle, FolderArchive
+  FolderArchive
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import {

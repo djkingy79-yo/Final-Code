@@ -5,7 +5,7 @@
    ======================================================================== */
 import { 
   AlertTriangle, TrendingUp, Scale, Clock, Lightbulb, 
-  ChevronRight, CheckCircle, XCircle, ArrowRight
+  ChevronRight, CheckCircle, ArrowRight
 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";

@@ -248,7 +248,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
   };
 
   const handleDeleteNote = async (noteId) => {
-    if (!confirm("Delete this note?")) return;
+    if (!window.confirm("Delete this note?")) return;
 
     try {
       await axios.delete(`${API}/cases/${caseId}/notes/${noteId}`);
@@ -332,7 +332,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
   };
 
   const handleDeleteComment = async (noteId, commentId) => {
-    if (!confirm("Delete this comment?")) return;
+    if (!window.confirm("Delete this comment?")) return;
     try {
       await axios.delete(`${API}/cases/${caseId}/notes/${noteId}/comments/${commentId}`);
       setNotes((prev) =>

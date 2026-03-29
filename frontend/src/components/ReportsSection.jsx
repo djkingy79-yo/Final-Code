@@ -12,7 +12,7 @@ import {
   FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
+import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import {
   Dialog,

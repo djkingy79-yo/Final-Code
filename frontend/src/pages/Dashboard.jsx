@@ -10,12 +10,11 @@ import { toast } from "sonner";
 import { 
   Scale, Plus, FileText, Clock, Trash2,
   LogOut, FolderOpen, Search, User, HelpCircle, Users, BookOpen,
-  FileCheck, Moon, Sun, Menu, X, Home, Gavel, ChevronRight, GitCompare,
+  FileCheck, Menu, Home, Gavel, ChevronRight, GitCompare,
   Shield, TrendingUp, Sparkles, Share2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +42,7 @@ import NotificationBell from "../components/NotificationBell";
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
+
   const [cases, setCases] = useState([]);
   const [sharedCases, setSharedCases] = useState([]);
   const [loading, setLoading] = useState(true);

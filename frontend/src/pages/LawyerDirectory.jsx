@@ -3,9 +3,8 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, ArrowLeft, ExternalLink, MapPin, Phone, Globe, Users, Building2, Gavel, Moon, Sun, Search } from "lucide-react";
+import { Scale, ArrowLeft, ExternalLink, MapPin, Phone, Globe, Users, Building2, Gavel } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -225,7 +224,7 @@ const nationalResources = [
 ];
 
 const LawyerDirectory = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [selectedState, setSelectedState] = useState("all");
   
   const filteredResources = selectedState === "all" 

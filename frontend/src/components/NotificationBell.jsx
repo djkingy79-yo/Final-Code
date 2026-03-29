@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Bell, X, Check, MessageCircle, Share2, FileText, Eye } from "lucide-react";
+import { Bell, MessageCircle, Share2, FileText, Eye } from "lucide-react";
 import { API } from "../App";
 
 const ICON_MAP = {

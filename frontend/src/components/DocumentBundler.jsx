@@ -7,11 +7,10 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { 
-  FileStack, Download, FileText, Loader2, CheckCircle,
+  FileStack, Download, Loader2, CheckCircle,
   List, X
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";

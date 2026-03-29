@@ -636,7 +636,7 @@ const StateDetailCard = ({ state }) => {
     blue: "border-blue-400",
     purple: "border-purple-400",
     red: "border-red-400",
-    blue: "border-blue-400",
+
     emerald: "border-emerald-400",
     teal: "border-teal-400",
     orange: "border-orange-400",

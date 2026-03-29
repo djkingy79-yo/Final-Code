@@ -10,8 +10,8 @@ import { API } from "../App";
 import { toast } from "sonner";
 import {
   Users, Briefcase, FileText, TrendingUp, Activity, MessageCircle,
-  Heart, Calendar, Eye, ArrowUp, ArrowDown, BarChart3, CreditCard,
-  CheckCircle, Clock, DollarSign, Building2, Loader2
+  Heart, Calendar, Eye, ArrowUp, ArrowDown, BarChart3,
+  CheckCircle, Clock, Building2, Loader2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";

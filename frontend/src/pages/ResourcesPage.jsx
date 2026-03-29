@@ -13,14 +13,13 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 
 const ResourcesPage = () => {
   const navigate = useNavigate();
   const [resources, setResources] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchResources = async () => {

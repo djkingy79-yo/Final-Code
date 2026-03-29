@@ -4,8 +4,8 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, createContext, useContext } from "react";
-import PageCTA from "../components/PageCTA";
-import { Scale, ArrowLeft, Building, Users, Phone, Globe, ExternalLink, MapPin, Moon, Sun, Menu, X, Shield, Gavel, FileText, AlertTriangle, Lightbulb } from "lucide-react";
+
+import { Scale, ArrowLeft, Building, Users, Phone, Globe, ExternalLink, MapPin, Menu, X, Shield, Gavel, FileText, AlertTriangle, Lightbulb } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
@@ -13,7 +13,7 @@ import { useTheme } from "../contexts/ThemeContext";
 const DirectoryFilterContext = createContext({ stateFilter: "all" });
 
 const LegalResourcesPage = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stateFilter, setStateFilter] = useState("all");
 
@@ -130,7 +130,6 @@ const LegalResourcesPage = () => {
 
       <DirectoryFilterContext.Provider value={{ stateFilter }}>
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-12" data-state-condensed={stateFilter !== "all"}>
-
 
         {/* ============ SECTION: You Have Options ============ */}
         <div id="options" className="space-y-6">

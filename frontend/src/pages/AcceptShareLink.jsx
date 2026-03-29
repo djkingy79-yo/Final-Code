@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { Loader2, Scale, Share2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { API } from "../App";
 

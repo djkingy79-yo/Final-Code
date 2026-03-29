@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Scale, ArrowLeft, FileText, Clock, Upload, Search, 
-  Sparkles, Gavel, MessageSquare, FileDown, Eye,
+  Sparkles, Gavel, MessageSquare, Eye,
   CheckCircle, ChevronDown, ChevronUp, HelpCircle, BookOpen,
   AlertTriangle, Info
 } from "lucide-react";

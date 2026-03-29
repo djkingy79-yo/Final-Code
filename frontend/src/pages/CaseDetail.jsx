@@ -605,7 +605,7 @@ const CaseDetail = ({ user }) => {
         timeout: 180000 // 3 minute timeout for AI analysis
       });
       
-      const { identified_count, skipped_duplicates, existing_grounds, unlock_required, unlock_price } = response.data;
+      const { identified_count, skipped_duplicates, existing_grounds, unlock_price } = response.data;
       
       if (identified_count > 0) {
         // Refresh grounds list to get updated data with proper paywall state
@@ -755,7 +755,6 @@ const CaseDetail = ({ user }) => {
     }
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };
-
 
   if (loading) {
     return (

@@ -6,7 +6,7 @@
 import { useState, useMemo } from "react";
 import { 
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,
-  Filter, Search, Download, ChevronDown, ChevronUp, Eye, Printer
+  Filter, Search, Download, ChevronDown, ChevronUp, Printer
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";

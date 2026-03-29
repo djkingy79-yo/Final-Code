@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, Send, ArrowLeft, CheckCircle, Mail, User, MessageSquare, Moon, Sun, Menu, X } from "lucide-react";
+import { Scale, Send, ArrowLeft, CheckCircle, Mail, User, MessageSquare, Menu, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 
 const ContactPage = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

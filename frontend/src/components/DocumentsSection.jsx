@@ -72,7 +72,7 @@ const DocumentsSection = ({
   const [showSearchResults, setShowSearchResults] = useState(false);
   
   const [extractingText, setExtractingText] = useState(false);
-  const [runningOcr, setRunningOcr] = useState(false);
+  const [setRunningOcr] = useState(false);
 
   const handleUploadDocuments = async () => {
     if (uploadFiles.length === 0) {
@@ -121,7 +121,7 @@ const DocumentsSection = ({
   };
 
   const handleDeleteDocument = async (docId) => {
-    if (!confirm("Delete this document? This cannot be undone.")) return;
+    if (!window.confirm("Delete this document? This cannot be undone.")) return;
     
     try {
       await axios.delete(`${API}/cases/${caseId}/documents/${docId}`);

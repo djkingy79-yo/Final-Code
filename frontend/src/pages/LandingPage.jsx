@@ -3,21 +3,20 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, FileText, Clock, Shield, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, ListChecks, Users, MapPin, Moon, Sun, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp } from "lucide-react";
+import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { API } from "../App";
+import { useState } from "react";
+
 import AuthModal from "../components/AuthModal";
 import { useTheme } from "../contexts/ThemeContext";
-import VisitorCounter from "../components/VisitorCounter";
+
 import StateAppealStats from "../components/StateAppealStats";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
-  const [showLegalFramework, setShowLegalFramework] = useState(false);
+
+  const [setShowLegalFramework] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

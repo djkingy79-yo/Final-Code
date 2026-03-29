@@ -4,13 +4,13 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Shield, AlertTriangle, FileText, Users, Lock, Eye, Mail, Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
+import { Scale, ArrowLeft, Shield, AlertTriangle, FileText, Users, Lock, Eye, Mail, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 
 const TermsOfService = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 

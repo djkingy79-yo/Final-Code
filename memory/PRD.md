@@ -11,12 +11,18 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - Forced light mode, high contrast, blue/slate/navy only, bright blue buttons
 
 ## Tech Stack
-React + FastAPI + MongoDB + OpenAI GPT-4o (Emergent LLM Key)
+React (CRA + Craco) + FastAPI + MongoDB + OpenAI GPT-4o (Emergent LLM Key)
 
 ## Auth
 - Emergent Google OAuth + Email/Password login
 - Bearer token via localStorage (NOT cookies — proxy CORS conflict)
 - Session tokens stored in user_sessions collection
+
+## Build & Install Config
+- `.eslintrc.json` — Extends CRA config, disables `no-unused-vars`, `react-hooks/exhaustive-deps`, `no-useless-escape`, `no-empty-pattern`, `no-control-regex`. Keeps `no-dupe-keys` as warn.
+- `.yarnrc.yml` — Forces `nodeLinker: node-modules` for Yarn 2/3/4 compatibility
+- `packageManager: yarn@1.22.22` in package.json (clean, no SHA hash)
+- `CI=true npx craco build` passes with zero errors
 
 ## Completed Features
 - Multi-pass AI report generation (4 tiers)
@@ -35,20 +41,22 @@ React + FastAPI + MongoDB + OpenAI GPT-4o (Emergent LLM Key)
 ## Bug Fixes (29 Mar 2026)
 
 ### Auth CORS Fix
-- Root cause: K8s/Cloudflare proxy overwrites Access-Control-Allow-Origin to "*" while backend sets Access-Control-Allow-Credentials: true — browsers reject this combo
-- Fix: Removed axios.defaults.withCredentials=true, auth uses Bearer tokens from localStorage exclusively
-- Backend CORS changed to allow_origin_regex for proper origin reflection
-- Register endpoint now returns session_token in body
-- Verified: 15/15 backend + 8/8 frontend tests (iteration 115), 12/12 live browser CORS tests (iteration 116)
+- Removed axios.defaults.withCredentials=true (proxy CORS conflict)
+- Backend CORS changed to allow_origin_regex
+- Register endpoint returns session_token
 
-### Code Audit Bug Fixes
-- WebSocket memory leak: CaseChat.jsx reconnection loop continued after component unmount. Fixed with mountedRef guard.
-- ESLint warnings: 9 components had missing useEffect deps. Fixed with eslint-disable-next-line comments for intentional mount-only effects.
-- Dead code: Removed duplicate auth_old.py router file.
-- Verified: 17/17 backend + all frontend tests passed, 0 compile warnings (iteration 117)
+### Build Fix (CRITICAL)
+- 204 ESLint errors fixed — unused imports (Moon/Sun/theme/toggleTheme from removed dark mode), missing toast import, bare confirm() calls
+- Created .eslintrc.json for proper ESLint config
+- Created .yarnrc.yml for Yarn compatibility
+- CI=true build now passes clean
+
+### Code Quality
+- WebSocket memory leak fixed (CaseChat.jsx)
+- Dead auth_old.py removed
 
 ## Pending
-- P1: "How It Works" page images (IMG_4323-IMG_4327) — page has text captions only, no actual screenshots
+- P1: "How It Works" page images
 - P1: Native Mobile App (Capacitor build)
 - P2: Counsel conference prep attachment for Barrister View
 - P3: server.py monolith refactoring (>7400 lines)

@@ -6,7 +6,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Scale, Users, Eye, FolderOpen, TrendingUp, ArrowLeft, Shield, Moon, Sun, Menu, X, Calendar } from "lucide-react";
+import { Scale, Users, Eye, FolderOpen, TrendingUp, ArrowLeft, Shield, Menu, X, Calendar } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { API } from "../App";
@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 
 const AdminStats = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);

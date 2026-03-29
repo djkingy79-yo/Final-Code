@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../App";
 import { 
-  Clock, AlertTriangle, CheckCircle2, Plus, Trash2, Calendar as CalendarIcon, List, ExternalLink, Download
+  Clock, CheckCircle2, Plus, Trash2, Calendar as CalendarIcon, List, ExternalLink, Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";

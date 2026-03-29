@@ -4,10 +4,10 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, ChevronDown, ChevronRight, Search, HelpCircle, FileText, Clock, Shield, CreditCard, Users, Gavel, Moon, Sun, MessageCircle, BookOpen } from "lucide-react";
+import { Scale, ArrowLeft, ChevronDown, ChevronRight, Search, HelpCircle, FileText, Shield, CreditCard, Users, Gavel, BookOpen } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
+import { Card } from "../components/ui/card";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -203,7 +203,7 @@ const faqs = [
 ];
 
 const FAQPage = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [openItems, setOpenItems] = useState({});
   const [activeCategory, setActiveCategory] = useState("all");

@@ -8,8 +8,8 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { 
   Scale, ArrowLeft, GitCompare, BarChart3, TrendingUp, 
-  Filter, ChevronDown, CheckCircle, AlertCircle, FileText,
-  Users, MapPin, Gavel, Moon, Sun, Menu, X, Info, Sparkles
+  Filter, CheckCircle, FileText,
+  Gavel, Menu, X, Info, Sparkles
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -22,7 +22,7 @@ import { useTheme } from "../contexts/ThemeContext";
 
 const CompareCasesPage = ({ user }) => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("my-cases"); // "my-cases" or "patterns"
   
@@ -43,7 +43,7 @@ const CompareCasesPage = ({ user }) => {
   
   // Success factors state
   const [successFactors, setSuccessFactors] = useState(null);
-  const [loadingFactors, setLoadingFactors] = useState(false);
+  const [setLoadingFactors] = useState(false);
 
   useEffect(() => {
     if (user) {

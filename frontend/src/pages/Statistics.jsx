@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
-import { Scale, ArrowLeft, BarChart3, FileText, Users, TrendingUp, MapPin, Gavel, Shield, AlertTriangle, Moon, Sun, Menu, X } from "lucide-react";
+import { Scale, ArrowLeft, BarChart3, FileText, TrendingUp, MapPin, Gavel, Shield, AlertTriangle, Menu, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Link } from "react-router-dom";
@@ -13,7 +13,7 @@ import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
 
 const Statistics = () => {
-  const { theme, toggleTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
