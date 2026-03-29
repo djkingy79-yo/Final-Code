@@ -41,7 +41,7 @@ const AdminStats = () => {
       }
     };
     fetchStats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   if (loading) {

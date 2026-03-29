@@ -66,7 +66,6 @@ const Dashboard = ({ user }) => {
     summary: ""
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchCases();
     fetchSharedCases();
@@ -78,6 +77,7 @@ const Dashboard = ({ user }) => {
       localStorage.removeItem("pending_share_token");
       navigate(`/shared/${pendingToken}`);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchStates = async () => {

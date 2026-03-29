@@ -49,6 +49,7 @@ const CompareCasesPage = ({ user }) => {
     if (user) {
       fetchMyCases();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchMyCases = async () => {
@@ -129,7 +130,7 @@ const CompareCasesPage = ({ user }) => {
       fetchPatterns();
       fetchSuccessFactors();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, patternFilters, user]);
 
   if (!user) {

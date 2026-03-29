@@ -37,7 +37,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
   useEffect(() => {
     fetchStates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,12 +47,14 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
       setFramework(null);
       setLoading(false);
     }
-  }, [offenceCategory, selectedState]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offenceCategory, selectedState]);
 
   useEffect(() => {
     if (state) {
       setSelectedState(state);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const fetchStates = async () => {

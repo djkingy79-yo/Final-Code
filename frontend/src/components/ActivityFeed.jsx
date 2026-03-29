@@ -23,7 +23,7 @@ const ActivityFeed = ({ caseId }) => {
     fetchActivities();
     const interval = setInterval(fetchActivities, 15000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   const fetchActivities = async () => {

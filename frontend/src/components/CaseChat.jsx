@@ -33,7 +33,7 @@ const CaseChat = ({ caseId, user }) => {
       if (wsRef.current) wsRef.current.close();
       if (pollRef.current) clearInterval(pollRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   useEffect(() => {
@@ -41,6 +41,7 @@ const CaseChat = ({ caseId, user }) => {
       scrollToBottom();
       setUnread(0);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, isOpen]);
 
   const fetchMessages = async () => {
