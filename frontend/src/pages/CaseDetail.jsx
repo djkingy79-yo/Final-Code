@@ -228,7 +228,7 @@ const CaseDetail = ({ user }) => {
       toast.info('Payment was cancelled.');
       window.history.replaceState({}, '', `/cases/${caseId}`);
     }
-  }, [caseId]);
+  }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchCaseData = async (requestId = caseRequestRef.current) => {
     setLoadError(null);

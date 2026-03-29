@@ -19,6 +19,7 @@ const ShareCaseModal = ({ caseId, caseName, open, onClose }) => {
 
   useEffect(() => {
     if (open && caseId) fetchShares();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, caseId]);
 
   const fetchShares = async () => {

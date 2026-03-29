@@ -66,6 +66,7 @@ const Dashboard = ({ user }) => {
     summary: ""
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchCases();
     fetchSharedCases();

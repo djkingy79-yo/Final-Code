@@ -22,7 +22,7 @@ export default function AcceptShareLink() {
       return;
     }
     acceptLink();
-  }, [token, sessionToken]);
+  }, [token, sessionToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const acceptLink = async () => {
     try {

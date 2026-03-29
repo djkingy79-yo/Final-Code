@@ -15,11 +15,13 @@ const CaseChat = ({ caseId, user }) => {
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
   const pollRef = useRef(null);
+  const mountedRef = useRef(true);
 
   const token = localStorage.getItem("session_token");
   const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => {
+    mountedRef.current = true;
     if (caseId) {
       fetchMessages();
       connectWebSocket();
@@ -27,9 +29,11 @@ const CaseChat = ({ caseId, user }) => {
       pollRef.current = setInterval(fetchMessages, 10000);
     }
     return () => {
+      mountedRef.current = false;
       if (wsRef.current) wsRef.current.close();
       if (pollRef.current) clearInterval(pollRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   useEffect(() => {
@@ -72,8 +76,9 @@ const CaseChat = ({ caseId, user }) => {
         }
       };
       ws.onclose = () => {
+        if (!mountedRef.current) return;
         setTimeout(() => {
-          if (caseId) connectWebSocket();
+          if (mountedRef.current && caseId) connectWebSocket();
         }, 5000);
       };
       wsRef.current = ws;
