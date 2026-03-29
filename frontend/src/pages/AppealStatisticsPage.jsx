@@ -397,10 +397,10 @@ const AppealStatisticsPage = () => {
         {/* State by State */}
         <section className="mb-12">
           <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 2</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             State by State Statistics
           </h2>
-          <p className="text-sm text-blue-100 mb-6 text-center">Compare filings, success rates, and timeframes by jurisdiction.</p>
+          <p className="text-base text-blue-100 mb-6 text-center">Compare filings, success rates, and timeframes by jurisdiction.</p>
 
           {/* State Tabs */}
           <div className="flex flex-wrap gap-2 mb-6">
@@ -419,8 +419,8 @@ const AppealStatisticsPage = () => {
                 <button
                   key={key}
                   onClick={() => setActiveState(key)}
-                  className={`px-5 py-2.5 rounded-lg text-base font-extrabold text-white transition-colors shadow-md ${sc} ${
-                    activeState === key ? "ring-2 ring-white ring-offset-2 ring-offset-blue-700 scale-105" : ""
+                  className={`px-5 py-2.5 rounded-lg text-base font-extrabold text-white transition-all shadow-[0_0_0_2px_rgba(255,255,255,0.5)] ${sc} ${
+                    activeState === key ? "ring-2 ring-white ring-offset-2 ring-offset-blue-700 scale-105 shadow-[0_0_8px_rgba(255,255,255,0.4)]" : ""
                   }`}
                 >
                   {state.abbrev}
