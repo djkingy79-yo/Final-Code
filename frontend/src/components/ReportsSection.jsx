@@ -634,7 +634,7 @@ const ReportsSection = ({
                           variant="outline"
                           size="sm"
                           onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}`)}
-                          className="text-slate-700"
+                          className="bg-blue-700 text-white hover:bg-blue-600"
                           data-testid={`view-report-btn-${report.report_id}`}
                         >
                           <Eye className="w-4 h-4 mr-1.5" />
@@ -646,7 +646,7 @@ const ReportsSection = ({
                               variant="outline"
                               size="sm"
                               onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)}
-                              className="text-slate-700"
+                              className="bg-blue-700 text-white hover:bg-blue-600"
                               data-testid={`barrister-view-btn-${report.report_id}`}
                             >
                               <Presentation className="w-4 h-4 mr-1.5" />
@@ -669,7 +669,7 @@ const ReportsSection = ({
                           variant="outline"
                           size="sm"
                           onClick={() => handleExportPDF(report.report_id)}
-                          className="text-slate-700"
+                          className="bg-blue-700 text-white hover:bg-blue-600"
                           data-testid={`export-pdf-btn-${report.report_id}`}
                         >
                           <Download className="w-4 h-4 mr-1.5" />
@@ -679,7 +679,7 @@ const ReportsSection = ({
                           variant="outline"
                           size="sm"
                           onClick={() => handleExportDOCX(report.report_id)}
-                          className="text-slate-700"
+                          className="bg-blue-700 text-white hover:bg-blue-600"
                           data-testid={`export-docx-btn-${report.report_id}`}
                         >
                           <FileText className="w-4 h-4 mr-1.5" />
@@ -692,7 +692,7 @@ const ReportsSection = ({
                             navigate(`/cases/${caseId}/reports/${report.report_id}`);
                             toast.info("Navigating to full report - use your browser's print/share option.");
                           }}
-                          className="text-slate-700"
+                          className="bg-blue-700 text-white hover:bg-blue-600"
                           data-testid={`print-report-btn-${report.report_id}`}
                         >
                           <Printer className="w-4 h-4 mr-1.5" />

@@ -845,14 +845,14 @@ const CaseDetail = ({ user }) => {
                 const html = buildPrintAllHtml();
                 sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
                 window.open("/document-preview?mode=print", "_blank");
-              }} className="text-slate-700 rounded-xl" data-testid="print-all-print-btn">
+              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-print-btn">
                 <Printer className="w-4 h-4 mr-1" />Print All
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildPrintAllHtml();
                 sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
                 window.open("/document-preview?mode=pdf", "_blank");
-              }} className="text-slate-700 rounded-xl" data-testid="print-all-pdf-btn">
+              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-pdf-btn">
                 <Download className="w-4 h-4 mr-1" />PDF All
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
@@ -865,7 +865,7 @@ const CaseDetail = ({ user }) => {
                   setTimeout(() => URL.revokeObjectURL(url), 5000);
                   toast.success("Word document ready!");
                 } catch { toast.error("Failed to export Word"); }
-              }} className="text-slate-700 rounded-xl" data-testid="print-all-word-btn">
+              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
               <Button 

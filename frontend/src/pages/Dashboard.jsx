@@ -662,7 +662,7 @@ const Dashboard = ({ user }) => {
                     id="offence_category"
                     value={newCase.offence_category}
                     onChange={(e) => setNewCase({ ...newCase, offence_category: e.target.value, offence_type: "" })}
-                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-12 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-offence-category"
                   >
                     <option value="">Auto-detect from documents</option>
@@ -677,7 +677,7 @@ const Dashboard = ({ user }) => {
                     id="state"
                     value={newCase.state}
                     onChange={(e) => setNewCase({ ...newCase, state: e.target.value })}
-                    className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="w-full h-12 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-state"
                   >
                     {australianStates.map(state => (
@@ -702,7 +702,7 @@ const Dashboard = ({ user }) => {
                   id="offence_type"
                   value={newCase.offence_type}
                   onChange={(e) => setNewCase({ ...newCase, offence_type: e.target.value })}
-                  className="w-full h-10 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full h-12 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                   data-testid="new-case-offence-type"
                 >
                   <option value="">Select specific offence...</option>

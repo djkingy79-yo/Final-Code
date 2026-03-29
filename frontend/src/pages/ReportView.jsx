@@ -757,7 +757,7 @@ const ReportView = () => {
       .section-body .legal-report-table-wrap { overflow: visible; }
       .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .print-footer-page-print::after { content: "Page " counter(page); }
+      .print-footer-page-print::after { content: counter(page); }
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
