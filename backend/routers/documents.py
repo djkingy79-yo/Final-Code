@@ -58,7 +58,7 @@ async def upload_document(
         
         elif "pdf" in file_type or filename_lower.endswith('.pdf'):
             try:
-                from PyPDF2 import PdfReader
+                from pypdf import PdfReader
                 pdf_reader = PdfReader(io.BytesIO(file_content))
                 text_parts = []
                 for page in pdf_reader.pages[:20]:

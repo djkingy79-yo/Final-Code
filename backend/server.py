@@ -824,7 +824,7 @@ async def upload_document(
             # Extract text from PDF
             try:
                 import io
-                from PyPDF2 import PdfReader
+                from pypdf import PdfReader
                 pdf_reader = PdfReader(io.BytesIO(file_content))
                 text_parts = []
                 for page in pdf_reader.pages[:20]:  # Limit to first 20 pages
@@ -1108,7 +1108,7 @@ def extract_text_with_ocr(file_content: bytes, filename: str, file_type: str) ->
         elif "pdf" in file_type or filename_lower.endswith('.pdf'):
             # First try regular PDF text extraction
             try:
-                from PyPDF2 import PdfReader
+                from pypdf import PdfReader
                 pdf_reader = PdfReader(io.BytesIO(file_content))
                 text_parts = []
                 for page in pdf_reader.pages[:30]:
@@ -1331,7 +1331,7 @@ async def extract_document_text(case_id: str, document_id: str, request: Request
         elif "pdf" in file_type or filename_lower.endswith('.pdf'):
             try:
                 import io
-                from PyPDF2 import PdfReader
+                from pypdf import PdfReader
                 pdf_reader = PdfReader(io.BytesIO(file_content))
                 text_parts = []
                 for page in pdf_reader.pages[:30]:
@@ -1410,7 +1410,7 @@ async def extract_all_documents_text(case_id: str, request: Request):
             elif "pdf" in file_type or filename_lower.endswith('.pdf'):
                 try:
                     import io
-                    from PyPDF2 import PdfReader
+                    from pypdf import PdfReader
                     pdf_reader = PdfReader(io.BytesIO(file_content))
                     text_parts = []
                     for page in pdf_reader.pages[:30]:

@@ -105,7 +105,7 @@ PyJWT==2.12.1
 pymongo==4.16.0
 pyOpenSSL==26.0.0
 pyparsing==3.3.2
-PyPDF2==3.0.1
+pypdf==6.9.2
 pytesseract==0.3.13
 pytest==9.0.2
 python-dateutil==2.9.0.post0
