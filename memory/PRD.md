@@ -59,6 +59,8 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
   - Backend: New collaboration router with 14 API endpoints (tested 100%)
   - Frontend: 5 new components (ShareCaseModal, CaseChat, NotificationBell, ActivityFeed, AcceptShareLink)
   - Testing agent confirmed 100% pass rate (iteration_103.json)
+- **Stats Page Blue Theme Fix (29 Mar 2026):** Restored bright blue background across entire Appeal Statistics page. Fixed blank white boxes (stat cards, snapshot section, important note all now blue-themed). Made bullets white (marker:text-white) for visibility. Enlarged all section headings (text-3xl) and sub-headings (text-xl/text-2xl) so they stand out from body text. Updated StateDetailCard, Complaints, Common Grounds, Historical Trends, and Data Sources sections to blue theme.
+- **Chat Typing Indicators:** Added real-time typing indicators to CaseChat — shows "[name] is typing..." when other participants are composing a message, sent via WebSocket.
 
 ## Backlog
 ### P1

@@ -11,6 +11,7 @@ const CaseChat = ({ caseId, user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [unread, setUnread] = useState(0);
   const [sending, setSending] = useState(false);
+  const [typingUsers, setTypingUsers] = useState({});
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
   const pollRef = useRef(null);
@@ -57,6 +58,17 @@ const CaseChat = ({ caseId, user }) => {
         if (data.type === "new_message") {
           setMessages((prev) => [...prev, data.payload]);
           if (!isOpen) setUnread((prev) => prev + 1);
+        } else if (data.type === "typing") {
+          const { user_id, name, is_typing } = data.payload;
+          setTypingUsers((prev) => {
+            const next = { ...prev };
+            if (is_typing) {
+              next[user_id] = name;
+            } else {
+              delete next[user_id];
+            }
+            return next;
+          });
         }
       };
       ws.onclose = () => {
@@ -78,6 +90,10 @@ const CaseChat = ({ caseId, user }) => {
     e.preventDefault();
     if (!newMessage.trim() || sending) return;
     setSending(true);
+    // Stop typing indicator
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "typing", is_typing: false }));
+    }
     try {
       await axios.post(`${API}/cases/${caseId}/messages`, { content: newMessage.trim() }, { headers });
       setNewMessage("");
@@ -88,6 +104,15 @@ const CaseChat = ({ caseId, user }) => {
       setSending(false);
     }
   };
+
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "typing", is_typing: e.target.value.length > 0 }));
+    }
+  };
+
+  const typingNames = Object.values(typingUsers).filter((name) => name !== user?.name);
 
   const formatTime = (ts) => {
     const d = new Date(ts);
@@ -181,11 +206,18 @@ const CaseChat = ({ caseId, user }) => {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Typing Indicator */}
+          {typingNames.length > 0 && (
+            <div className="px-3 py-1.5 text-xs text-slate-500 italic">
+              {typingNames.join(", ")} {typingNames.length === 1 ? "is" : "are"} typing...
+            </div>
+          )}
+
           {/* Input */}
           <form onSubmit={handleSend} className="flex items-center gap-2 px-3 py-2 border-t border-slate-200" data-testid="chat-input-form">
             <Input
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleInputChange}
               placeholder="Type a message..."
               className="flex-1 text-sm"
               data-testid="chat-message-input"
