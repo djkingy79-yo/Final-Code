@@ -76,7 +76,14 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - How It Works tutorial page
 - Security vulnerability patching (14+ CVEs)
 - ESLint/production build fixes (204+ errors)
-- **server.py monolith refactoring (7533 → 3848 lines)**
+- server.py monolith refactoring (7533 → 3848 lines)
+- **Barrister View UI overhaul (29 Mar 2026):**
+  - Dark navy blue (bg-blue-900) coloured header matching other 3 reports
+  - Removed invisible white badge from header
+  - Barrister report now listed as 4th card in Reports tab
+  - Print/PDF preview with coloured .report-header
+  - Blue-bordered sections with numbered circles
+  - Scale icon visibility fix in CaseDetail header
 
 ## 3rd Party Integrations
 - OpenAI GPT-4o (via Emergent LLM Key)
