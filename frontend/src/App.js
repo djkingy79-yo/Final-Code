@@ -50,8 +50,10 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
 
 
-// Configure axios with timeout and credentials
-axios.defaults.withCredentials = true;
+// Configure axios with timeout
+// NOTE: Do NOT use withCredentials=true — the Kubernetes/Cloudflare proxy overwrites
+// Access-Control-Allow-Origin to "*" which conflicts with credentials mode.
+// Auth is handled via Bearer token from localStorage instead of cookies.
 axios.defaults.timeout = 30000; // 30 second timeout for most requests
 
 // Add request interceptor to include session token from localStorage as fallback

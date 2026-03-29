@@ -106,7 +106,8 @@ async def register_user(request: RegisterRequest, response: Response):
         "user_id": user_id,
         "email": request.email.lower(),
         "name": request.name,
-        "picture": None
+        "picture": None,
+        "session_token": session_token
     }
 
 @router.post("/login")
