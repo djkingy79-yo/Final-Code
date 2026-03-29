@@ -1,53 +1,92 @@
-# Appeal Case Manager — PRD
+# Appeal Case Manager — Product Requirements Document
 
-## Problem Statement
-Criminal appeals management tool for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting (Free, $150 Full Detailed, $200 Extensive Log, locked Barrister View).
+## Original Problem Statement
+Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
-- Report tiers scale in depth: Free → $150 (2x) → $200 (3x) → Barrister (synthesis)
-- Barrister View locked until all 3 standard reports generated/paid
-- Strict third-person language — no "we/us/our/you/your"
-- Legal disclaimers on all reports/exports
-- Forced light mode, high contrast, blue/slate/navy only, bright blue buttons
+- **Report Tiers:** Free (Base) → $150 (2x depth) → $200 (3x depth)
+- **Barrister View:** Locked until all 3 standard reports generated/paid. Capstone synthesis.
+- **Report Language:** STRICT third-person educational tool. NO "we/us/our/you/your".
+- **Branding:** Legal disclaimers on all reports, PDFs, and exports.
+- **UI/UX:** Forced light mode. High contrast. Bright blue action buttons.
+- **Language:** Australian English throughout (analyse, organise, defence, offence).
 
-## Tech Stack
-React (CRA + Craco) + FastAPI 0.135.2 + MongoDB + OpenAI GPT-4o (Emergent LLM Key)
+## User Personas
+- **Deb King (Admin/Creator):** Manages the platform, confirms PayID payments.
+- **Self-represented litigants:** Primary users seeking appeal assistance.
+- **Legal professionals:** Use Barrister View for case synthesis.
 
-## Auth
-- Emergent Google OAuth + Email/Password login
-- Bearer token via localStorage (NOT cookies — proxy CORS conflict)
+## Architecture (Post-Refactoring)
+```
+/app/
+├── backend/
+│   ├── server.py              # App factory + Report/AI/Export engine (3848 lines)
+│   ├── config.py              # Centralised environment variables, DB, logger
+│   ├── auth_utils.py          # Authentication helpers (get_current_user, verify_case_ownership)
+│   ├── models/__init__.py     # All Pydantic models + payment helpers
+│   ├── services/
+│   │   ├── llm_service.py     # LLM call with model fallback
+│   │   ├── offence_helpers.py # Offence framework context builders
+│   │   ├── email_service.py   # PayID notification emails via Resend
+│   │   ├── document_helpers.py# Text extraction, OCR, document context
+│   │   └── notes_helpers.py   # Notes WebSocket collaboration helpers
+│   ├── routers/
+│   │   ├── cases.py           # Case CRUD
+│   │   ├── auth.py            # Authentication (login, register, Google OAuth)
+│   │   ├── documents.py       # Document CRUD + OCR + text extraction + auto-detect
+│   │   ├── timeline.py        # Timeline CRUD + auto-generate + analyse + PDF export
+│   │   ├── deadlines.py       # Deadlines + checklist + case strength
+│   │   ├── notes.py           # Notes CRUD + pin + comments + WebSocket
+│   │   ├── grounds.py         # Grounds of merit CRUD + investigate + auto-identify
+│   │   ├── payments.py        # PayID/PayPal/Stripe payment endpoints
+│   │   ├── resources.py       # Resource directory + document templates
+│   │   ├── analysis.py        # Contradictions + progress analysis
+│   │   ├── messages.py        # Chat messages (unused - handled by collaboration.py)
+│   │   ├── collaboration.py   # Case sharing + messages + notifications + chat WS
+│   │   ├── export.py          # Appeal package export (ZIP/PDF bundle)
+│   │   ├── contradictions.py  # AI contradiction scanning
+│   │   ├── compare.py         # Case comparison + patterns
+│   │   ├── statistics.py      # Public statistics
+│   │   ├── analytics.py       # Visit tracking + admin dashboard
+│   │   ├── admin.py           # Admin endpoints (contact, stories)
+│   │   ├── password_reset.py  # Password reset flow
+│   │   └── utilities.py       # States, offence framework, categories
+│   └── tests/                 # 64 pytest files (using localhost:8001)
+└── frontend/
+    └── src/
+        ├── components/
+        ├── pages/
+        ├── utils/
+        └── App.js
+```
 
-## Build & Install Config
-- `.eslintrc.json` — Extends CRA config, disables problematic ESLint rules for CI builds
-- `.yarnrc.yml` — Forces nodeLinker: node-modules for Yarn 2/3/4 compat
-- `CI=true npx craco build` passes with zero errors
-
-## Security Audit (29 Mar 2026)
-14 of 15 CVEs fixed. Remaining: Pygments CVE-2026-4539 (no fix available).
-- ecdsa 0.19.1 → 0.19.2 (CVE-2024-23342, CVE-2026-33936)
-- cryptography 46.0.4 → 46.0.6
-- starlette 0.37.2 → 1.0.0, fastapi 0.110.1 → 0.135.2
-- pymongo 4.5.0 → 4.16.0, motor 3.3.1 → 3.7.1
-- requests 2.32.5 → 2.33.0
-- pillow 12.1.0 → 12.1.1
-- pyasn1 0.6.2 → 0.6.3
-- PyJWT 2.11.0 → 2.12.1
-- pyOpenSSL 25.3.0 → 26.0.0
-- black 26.1.0 → 26.3.1
-
-## Completed Features
-- Multi-pass AI report generation (4 tiers)
-- Document upload with auto-metadata extraction
-- PDF/Word/Print exports with branding footers
-- Barrister Issue Matrix attachment
-- Case chat (WebSocket)
-- "Print All Documents" utility
+## What's Been Implemented
+- Full authentication (email/password + Google OAuth via Emergent)
+- Case CRUD with document management
+- AI-powered report generation (4 tiers)
+- Barrister View with Issue Matrix attachment
+- Document text extraction (PDF, DOCX, images via OCR)
+- Timeline management with auto-generation
+- Grounds of merit with AI investigation
+- PayID/PayPal/Stripe payment integration
+- PDF/DOCX export for all reports
+- Case sharing and collaboration
+- Real-time WebSocket chat and notes collaboration
 - Appeal statistics page
-- Legal resources, glossary, FAQ, lawyer directory
-- Case sharing, admin dashboard, payments
+- How It Works tutorial page
+- Security vulnerability patching (14+ CVEs)
+- ESLint/production build fixes (204+ errors)
+- **server.py monolith refactoring (7533 → 3848 lines)**
 
-## Pending
-- P1: "How It Works" page images
-- P1: Native Mobile App (Capacitor build)
-- P2: Counsel conference prep for Barrister View
-- P3: server.py monolith refactoring
+## 3rd Party Integrations
+- OpenAI GPT-4o (via Emergent LLM Key)
+- Emergent Auth (Google OAuth)
+- Resend (email notifications)
+- PayPal/PayID/Stripe (payments)
+
+## Prioritised Backlog
+- P1: Build Native Mobile App (Capacitor configured)
+- P2: Counsel conference prep attachment for Barrister View
+- P2: "How It Works" page images — user verification pending
+- P3: Real-time collaboration/chat enhancements
+- P3: Case sharing between registered users
