@@ -544,8 +544,8 @@ const AppealStatisticsPage = () => {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-blue-700 border border-blue-400 rounded-xl p-6">
               <CheckCircle className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="font-bold text-white text-lg mb-2">What Increases Success</h3>
-              <ul className="text-base text-blue-100 space-y-2">
+              <h3 className="font-bold text-white text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>What Increases Success</h3>
+              <ul className="text-sm text-blue-100 space-y-2">
                 <li>Clear legal error (misdirection, procedural breach)</li>
                 <li>Strong evidence supporting the ground</li>
                 <li>Experienced appeal counsel</li>
@@ -556,8 +556,8 @@ const AppealStatisticsPage = () => {
 
             <div className="bg-blue-700 border border-blue-400 rounded-xl p-6">
               <XCircle className="w-8 h-8 text-red-400 mb-3" />
-              <h3 className="font-bold text-white text-lg mb-2">Why Appeals Fail</h3>
-              <ul className="text-base text-blue-100 space-y-2">
+              <h3 className="font-bold text-white text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Appeals Fail</h3>
+              <ul className="text-sm text-blue-100 space-y-2">
                 <li>No identifiable legal error</li>
                 <li>Simply disagreeing with the verdict</li>
                 <li>Missing the 28-day deadline</li>

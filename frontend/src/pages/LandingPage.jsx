@@ -169,7 +169,7 @@ const LandingPage = () => {
                 All Australian States & Territories • All Criminal Offences
               </p>
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-6"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 tracking-tight leading-tight mb-6"
                 style={{ fontFamily: 'Crimson Pro, serif' }}
               >
                 Criminal Law Appeal Case Management
@@ -180,15 +180,15 @@ const LandingPage = () => {
               
               {/* State Badges — DO NOT UNDO */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">NSW</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">VIC</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">QLD</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">SA</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">WA</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">TAS</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">NT</span>
-                <span className="text-xs bg-blue-50 text-blue-900 px-3 py-1.5 rounded-lg font-bold border border-blue-200">ACT</span>
-                <span className="text-xs bg-red-50 text-red-700 px-3 py-1.5 rounded-lg font-bold border border-red-200">Federal</span>
+                <span className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">NSW</span>
+                <span className="text-sm bg-purple-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">VIC</span>
+                <span className="text-sm bg-red-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">QLD</span>
+                <span className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">SA</span>
+                <span className="text-sm bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">WA</span>
+                <span className="text-sm bg-teal-500 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">TAS</span>
+                <span className="text-sm bg-orange-500 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">NT</span>
+                <span className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">ACT</span>
+                <span className="text-sm bg-red-700 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">Federal</span>
               </div>
               
               {/* Offence Types */}
