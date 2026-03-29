@@ -13,7 +13,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 
 class TestBackendAPIs:
     """Test critical backend APIs for iteration 58"""

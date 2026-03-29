@@ -9,7 +9,7 @@ import requests
 import os
 import re
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 
 class TestStripReportPlaceholders:
     """Test the _strip_report_placeholders function for 'we/us/our' sanitization"""

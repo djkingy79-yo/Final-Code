@@ -8,9 +8,9 @@ import os
 import uuid
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 if not BASE_URL:
-    BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com"
+    BASE_URL = "http://localhost:8001"
 
 # Test user credentials
 TEST_USER_ID = f"test_user_{uuid.uuid4().hex[:8]}"

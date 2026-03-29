@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 TEST_EMAIL = "testuser999@test.com"
 TEST_PASSWORD = "TestPass123!"
 TEST_CASE_ID = "case_9e57a5b899bf"

@@ -8,7 +8,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 
 # Test credentials from /app/memory/test_credentials.md
 TEST_EMAIL = "djkingy79@gmail.com"

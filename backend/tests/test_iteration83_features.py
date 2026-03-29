@@ -23,7 +23,7 @@ import requests
 import os
 import re
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://criminal-appeals-au-2.preview.emergentagent.com')
+BASE_URL = 'http://localhost:8001'
 
 
 class TestBackendHealth:

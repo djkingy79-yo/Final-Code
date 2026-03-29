@@ -11,7 +11,7 @@ import time
 import uuid
 
 # Get BASE_URL from environment - DO NOT add default
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL')
+BASE_URL = 'http://localhost:8001'
 if BASE_URL:
     BASE_URL = BASE_URL.rstrip('/')
 

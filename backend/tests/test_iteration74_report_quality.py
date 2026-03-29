@@ -10,7 +10,7 @@ import requests
 import os
 import re
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = "sess_65c07d6c3ed5440bb3e34fffe7bb41fa"
 CASE_ID = "case_1114ec0e2fd0"
 

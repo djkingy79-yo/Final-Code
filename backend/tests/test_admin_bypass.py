@@ -10,7 +10,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 
 # Admin email to test with
 ADMIN_EMAIL = "djkingy79@gmail.com"

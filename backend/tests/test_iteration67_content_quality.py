@@ -15,7 +15,7 @@ import os
 import uuid
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://criminal-appeals-au-2.preview.emergentagent.com')
+BASE_URL = 'http://localhost:8001'
 
 # Use a fixed test user for all API tests
 TEST_EMAIL = "test_iter67_fixed@example.com"

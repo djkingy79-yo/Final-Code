@@ -16,7 +16,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://criminal-appeals-au-2.preview.emergentagent.com').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', 'test_sess_7b8591ebfb684a3fa6a5b8e3dbcad052')
 TEST_CASE_ID = os.environ.get('TEST_CASE_ID', 'case_cec9b5706fae')
 

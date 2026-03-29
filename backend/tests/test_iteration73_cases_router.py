@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = "Z54IPKofu9l_AVv0fSY99-G8zJEeRuR4qnMkFqXCTeY"
 CASE_ID = "case_1114ec0e2fd0"
 USER_ID = "user_d2287f20104b"
