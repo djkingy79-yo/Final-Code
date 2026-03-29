@@ -565,7 +565,7 @@ const ReportView = () => {
   const [grounds, setGrounds] = useState([]);
   const [sourceReports, setSourceReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [setHasAllReports] = useState(false);
+  const [hasAllReports, setHasAllReports] = useState(false);
 
   useEffect(() => {
     const requestId = requestRef.current + 1;
