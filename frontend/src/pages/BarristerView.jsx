@@ -193,6 +193,8 @@ export default function BarristerView() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
+  const [genStartTime, setGenStartTime] = useState(null);
+  const [genElapsed, setGenElapsed] = useState(0);
 
   const loadBarristerView = useCallback(async (regenerate = false) => {
     const requestId = requestRef.current + 1;
@@ -278,6 +280,20 @@ export default function BarristerView() {
     const timer = window.setTimeout(() => loadBarristerView(), 4000);
     return () => window.clearTimeout(timer);
   }, [loadBarristerView, status]);
+
+  // Elapsed timer for generating state
+  useEffect(() => {
+    if (status === "generating" || loading) {
+      if (!genStartTime) setGenStartTime(Date.now());
+      const interval = setInterval(() => {
+        setGenElapsed(Math.floor((Date.now() - (genStartTime || Date.now())) / 1000));
+      }, 1000);
+      return () => clearInterval(interval);
+    } else {
+      setGenStartTime(null);
+      setGenElapsed(0);
+    }
+  }, [status, loading, genStartTime]);
 
   const sections = useMemo(() => parseBarristerSections(report?.content?.analysis || ""), [report]);
   const sentenceSummary = useMemo(
@@ -504,10 +520,64 @@ export default function BarristerView() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center" data-testid="barrister-view-loading">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-700 mx-auto" />
-          <p className="mt-4 text-slate-700">Loading Barrister View…</p>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" data-testid="barrister-view-loading">
+        <div className="w-full max-w-2xl rounded-xl overflow-hidden shadow-lg border-2 border-blue-300">
+          <div className="bg-blue-700 text-white px-6 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-white">
+                    {genElapsed < 10
+                      ? "Connecting to Barrister Engine"
+                      : genElapsed < 30
+                      ? "Loading Case Materials"
+                      : genElapsed < 60
+                      ? "Retrieving Source Reports"
+                      : "Preparing Barrister Brief"}
+                  </p>
+                  <p className="text-sm text-white/80">
+                    {genElapsed < 10
+                      ? "Fetching case data, grounds, documents and reports..."
+                      : genElapsed < 30
+                      ? "Reading all three foundational reports for synthesis..."
+                      : genElapsed < 60
+                      ? "Assembling the full case picture for the barrister..."
+                      : "This may take a moment for complex cases..."}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-mono font-bold text-white">
+                  {genElapsed < 60 ? `${genElapsed}s` : `${Math.floor(genElapsed / 60)}m ${String(genElapsed % 60).padStart(2, '0')}s`}
+                </span>
+                <p className="text-xs text-white/60">elapsed</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-blue-50 px-6 py-3">
+            <div className="flex items-center gap-3 mb-2">
+              {[
+                { label: "Connecting", active: genElapsed >= 0 },
+                { label: "Loading", active: genElapsed >= 5 },
+                { label: "Preparing", active: genElapsed >= 15 },
+                { label: "Ready", active: false },
+              ].map((step, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
+                  <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+                style={{ width: `${Math.min(90, genElapsed * 2)}%` }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -583,19 +653,66 @@ export default function BarristerView() {
         )}
 
         {isGenerating && (
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8" data-testid="barrister-generating-state">
-            <div className="flex items-start gap-4">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-700 flex-shrink-0 mt-1" />
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Preparing the Barrister Brief</h1>
-                <p className="mt-3 text-slate-700 max-w-3xl">
-                  The backend is now writing one consolidated barrister-ready brief from the Quick Summary, Full Detailed Report, and Extensive Log Report. This page refreshes automatically while the synthesis is running.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Badge variant="outline" className="border-blue-200 text-blue-700">Single cohesive brief</Badge>
-                  <Badge variant="outline" className="border-blue-200 text-blue-700">No frontend merge logic</Badge>
-                  <Badge variant="outline" className="border-blue-200 text-blue-700">Professional export formatting</Badge>
+          <div className="rounded-xl overflow-hidden shadow-lg border-2 border-blue-300" data-testid="barrister-generating-state">
+            <div className="bg-blue-700 text-white px-6 py-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin text-white" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-white">
+                      {genElapsed < 30
+                        ? "Synthesising All Reports"
+                        : genElapsed < 120
+                        ? "Writing Barrister Analysis"
+                        : genElapsed < 300
+                        ? "Building Grounds of Merit Assessment"
+                        : genElapsed < 600
+                        ? "Constructing Issue Matrix"
+                        : "Finalising Barrister Brief"}
+                    </p>
+                    <p className="text-sm text-white/80">
+                      {genElapsed < 30
+                        ? "Merging Quick Summary, Full Detailed, and Extensive Log into one brief..."
+                        : genElapsed < 120
+                        ? "AI is writing a comprehensive counsel-grade legal analysis..."
+                        : genElapsed < 300
+                        ? "Deep analysis of each ground with case law references..."
+                        : genElapsed < 600
+                        ? "Generating Attachment A — Barrister Issue Matrix..."
+                        : "Completing final sections. Complex briefs can take 10-20 minutes."}
+                    </p>
+                  </div>
                 </div>
+                <div className="text-right">
+                  <span className="text-2xl font-mono font-bold text-white">
+                    {genElapsed < 60 ? `${genElapsed}s` : `${Math.floor(genElapsed / 60)}m ${String(genElapsed % 60).padStart(2, '0')}s`}
+                  </span>
+                  <p className="text-xs text-white/60">elapsed</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-blue-50 px-6 py-3">
+              <div className="flex items-center gap-3 mb-2">
+                {[
+                  { label: "Reading", active: genElapsed >= 0 },
+                  { label: "Synthesising", active: genElapsed >= 30 },
+                  { label: "Writing", active: genElapsed >= 120 },
+                  { label: "Issue Matrix", active: genElapsed >= 300 },
+                  { label: "Finalising", active: genElapsed >= 600 },
+                ].map((step, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
+                    <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+                  style={{ width: `${Math.min(98, (genElapsed / 1200) * 100)}%` }}
+                />
               </div>
             </div>
           </div>
