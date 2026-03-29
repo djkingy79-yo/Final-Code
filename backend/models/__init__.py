@@ -72,20 +72,6 @@ class Document(BaseModel):
     uploaded_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-class DocumentSearchRequest(BaseModel):
-    query: str
-    category: Optional[str] = None
-    match_all: bool = False
-
-
-class SearchMatch(BaseModel):
-    document_id: str
-    filename: str
-    category: str
-    matches: List[dict]
-    relevance_score: float
-
-
 # ============ TIMELINE MODELS ============
 
 class TimelineEvent(BaseModel):
@@ -169,6 +155,7 @@ class GroundOfMeritUpdate(BaseModel):
 
 class ReportRequest(BaseModel):
     report_type: str = "quick_summary"
+    aggressive_mode: bool = False
 
 
 class Report(BaseModel):
@@ -198,6 +185,8 @@ class Note(BaseModel):
     is_pinned: bool = False
     document_id: Optional[str] = None
     report_id: Optional[str] = None
+    mentions: List[str] = []
+    comments: List[dict] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -209,6 +198,7 @@ class NoteCreate(BaseModel):
     is_pinned: bool = False
     document_id: Optional[str] = None
     report_id: Optional[str] = None
+    mentions: List[str] = []
 
 
 class NoteUpdate(BaseModel):
@@ -216,6 +206,10 @@ class NoteUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     is_pinned: Optional[bool] = None
+
+
+class NoteCommentCreate(BaseModel):
+    content: str
 
 
 
@@ -350,3 +344,59 @@ DEFAULT_CHECKLIST = [
     {"phase": "hearing", "title": "Prepare for hearing", "description": "Review all materials before appeal hearing", "order": 21},
     {"phase": "hearing", "title": "Generate Barrister View report", "description": "Create professional presentation for court", "order": 22},
 ]
+
+
+# ============ PAYMENT MODELS ============
+
+class Payment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    payment_id: str = Field(default_factory=lambda: f"pay_{uuid.uuid4().hex[:12]}")
+    user_id: str
+    case_id: str
+    feature_type: str
+    amount: float
+    currency: str = "AUD"
+    status: str = "pending"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    completed_at: Optional[datetime] = None
+
+
+FEATURE_PRICES = {
+    "grounds_of_merit": {"price": 99.00, "name": "Unlock Grounds of Merit Details"},
+    "full_report": {"price": 150.00, "name": "Full Detailed Report"},
+    "extensive_report": {"price": 200.00, "name": "Extensive Log Report"}
+}
+
+FEATURE_TYPE_ALIASES = {
+    "grounds_of_merit": "grounds_of_merit",
+    "full_report": "full_report",
+    "full_detailed": "full_report",
+    "extensive_report": "extensive_report",
+    "extensive_log": "extensive_report",
+}
+
+
+def canonical_feature_type(feature_type: str | None) -> str | None:
+    if not feature_type:
+        return feature_type
+    return FEATURE_TYPE_ALIASES.get(feature_type, feature_type)
+
+
+def feature_type_variants(feature_type: str | None) -> list[str]:
+    canonical = canonical_feature_type(feature_type)
+    return sorted({key for key, value in FEATURE_TYPE_ALIASES.items() if value == canonical} | ({canonical} if canonical else set()))
+
+
+# ============ DOCUMENT SEARCH MODELS ============
+
+class DocumentSearchRequest(BaseModel):
+    query: str
+    case_sensitive: bool = False
+
+
+class SearchMatch(BaseModel):
+    document_id: str
+    filename: str
+    category: str
+    matches: List[dict]
+    match_count: int

@@ -1,128 +1,94 @@
-# DO NOT UNDO — resources router. All endpoints in this file are approved and must be preserved.
 """
-Criminal Appeal AI - Resources Router
-Handles resource directory and document templates
+Criminal Appeal AI - Resources & Templates Router
+Extracted from server.py monolith.
 """
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from typing import List
 from datetime import datetime, timezone
+import logging
 
-from config import db
+from auth_utils import get_current_user
 
-router = APIRouter(tags=["resources"])
+logger = logging.getLogger(__name__)
 
-
-# Resource Directory Data
-RESOURCE_DIRECTORY = {
-    "support_services": [
-        {"name": "Community Legal Centres NSW", "website": "https://www.clcnsw.org.au", "description": "Free legal advice and referrals"},
-        {"name": "Aboriginal Legal Service NSW/ACT", "phone": "1800 765 767", "website": "https://www.alsnswact.org.au", "description": "Legal services for Aboriginal and Torres Strait Islander people"},
-    ],
-    "advocacy_groups": [
-        {"name": "Innocence Project Australia", "email": "info@innocenceproject.org.au", "website": "https://innocenceproject.org.au", "description": "Works to exonerate wrongfully convicted people"},
-        {"name": "Justice Action", "phone": "(02) 9283 0123", "website": "https://www.justiceaction.org.au", "description": "Prisoner advocacy and justice reform"},
-    ],
-    "courts": [
-        {"name": "NSW Court of Criminal Appeal", "address": "Law Courts Building, Queens Square, Sydney NSW 2000", "website": "https://www.supremecourt.justice.nsw.gov.au", "description": "Handles criminal appeals in NSW"},
-        {"name": "High Court of Australia", "address": "Parkes Place, Canberra ACT 2600", "website": "https://www.hcourt.gov.au", "description": "Australia's highest court"},
-    ],
-    "information_services": [
-        {"name": "LawAccess NSW", "phone": "1300 888 529", "website": "https://www.lawaccess.nsw.gov.au", "description": "Free legal information and referrals"},
-        {"name": "Community Legal Centres NSW", "website": "https://www.clcnsw.org.au", "description": "Directory of community legal centres"},
-    ]
-}
-
-# Document Templates
-DOCUMENT_TEMPLATES = [
-    {
-        "template_id": "notice_of_appeal",
-        "name": "Notice of Appeal",
-        "description": "Standard form for lodging a criminal appeal in NSW",
-        "category": "appeal",
-        "fields": ["appellant_name", "case_number", "conviction_date", "grounds"]
-    },
-    {
-        "template_id": "leave_to_appeal",
-        "name": "Application for Leave to Appeal",
-        "description": "Application when leave is required for the appeal",
-        "category": "appeal",
-        "fields": ["appellant_name", "case_number", "reasons_for_leave"]
-    },
-    {
-        "template_id": "fresh_evidence_affidavit",
-        "name": "Fresh Evidence Affidavit",
-        "description": "Affidavit supporting fresh evidence ground of appeal",
-        "category": "evidence",
-        "fields": ["deponent_name", "evidence_description", "why_not_available_at_trial"]
-    },
-    {
-        "template_id": "extension_of_time",
-        "name": "Application for Extension of Time",
-        "description": "Application when appeal is lodged outside the 28-day period",
-        "category": "procedural",
-        "fields": ["appellant_name", "original_deadline", "reasons_for_delay"]
-    }
-]
+router = APIRouter(prefix="/api", tags=["resources"])
 
 
-@router.get("/api/resources/directory", response_model=dict)
+@router.get("/resources/directory", response_model=dict)
 async def get_resource_directory():
-    """Get the legal resource directory"""
-    return RESOURCE_DIRECTORY
+    """Get directory of support resources"""
+    return {
+        "support_services": [
+            {"name": "Community Legal Centres NSW", "website": "https://www.clcnsw.org.au", "services": ["Legal advice", "Referrals"], "region": "NSW"},
+            {"name": "Aboriginal Legal Service (NSW/ACT)", "phone": "1800 765 767", "website": "https://www.alsnswact.org.au", "services": ["Criminal law", "Family law"], "region": "NSW/ACT"},
+            {"name": "LawAccess NSW", "phone": "1300 888 529", "website": "https://www.lawaccess.nsw.gov.au", "services": ["Legal information", "Referrals"], "region": "NSW"}
+        ],
+        "advocacy_groups": [
+            {"name": "Innocence Project (Australia)", "website": "https://www.innocenceproject.org.au", "focus": "Wrongful convictions"},
+            {"name": "Justice Action", "phone": "(02) 9283 0123", "website": "https://www.justiceaction.org.au", "focus": "Prisoner rights"},
+            {"name": "Prisoners Aid Association NSW", "phone": "(02) 9288 8700", "website": "https://www.prisonersaid.org.au", "focus": "Family support"}
+        ],
+        "courts": [
+            {"name": "NSW Court of Criminal Appeal", "website": "https://www.supremecourt.justice.nsw.gov.au"},
+            {"name": "High Court of Australia", "website": "https://www.hcourt.gov.au", "note": "Special leave required"}
+        ],
+        "appeal_deadlines": {"notice_of_appeal": "28 days from conviction/sentence", "leave_to_appeal": "28 days", "extension": "Can apply if missed - must show good reason"}
+    }
 
 
-@router.get("/api/templates", response_model=List[dict])
+@router.get("/templates", response_model=List[dict])
 async def get_document_templates():
     """Get available document templates"""
-    return DOCUMENT_TEMPLATES
+    return [
+        {"template_id": "notice_of_appeal", "title": "Notice of Appeal", "description": "Form to lodge an appeal", "category": "lodgement"},
+        {"template_id": "leave_to_appeal", "title": "Application for Leave to Appeal", "description": "Application for permission to appeal sentence", "category": "lodgement"},
+        {"template_id": "affidavit_fresh_evidence", "title": "Affidavit - Fresh Evidence", "description": "Sworn statement for new evidence", "category": "evidence"},
+        {"template_id": "extension_of_time", "title": "Extension of Time Application", "description": "Apply to file after deadline", "category": "lodgement"},
+        {"template_id": "outline_of_submissions", "title": "Written Submissions", "description": "Legal arguments for hearing", "category": "hearing"}
+    ]
 
 
-@router.post("/api/templates/{template_id}/generate", response_model=dict)
+@router.post("/templates/{template_id}/generate", response_model=dict)
 async def generate_document_from_template(template_id: str, request: Request):
-    """Generate a document from a template with provided data"""
+    """Generate a document from template"""
+    await get_current_user(request)
     body = await request.json()
-    
-    template = next((t for t in DOCUMENT_TEMPLATES if t["template_id"] == template_id), None)
-    if not template:
-        raise HTTPException(status_code=404, detail="Template not found")
-    
-    # Generate document content based on template
-    content_parts = [f"# {template['name']}\n"]
-    content_parts.append(f"Generated: {datetime.now(timezone.utc).strftime('%d %B %Y')}\n\n")
-    
     if template_id == "notice_of_appeal":
-        content_parts.append("IN THE COURT OF CRIMINAL APPEAL\n")
-        content_parts.append("SUPREME COURT OF NEW SOUTH WALES\n\n")
-        content_parts.append(f"Appellant: {body.get('appellant_name', '[APPELLANT NAME]')}\n")
-        content_parts.append(f"Case Number: {body.get('case_number', '[CASE NUMBER]')}\n")
-        content_parts.append(f"Date of Conviction: {body.get('conviction_date', '[DATE]')}\n\n")
-        content_parts.append("GROUNDS OF APPEAL:\n")
-        for i, ground in enumerate(body.get('grounds', ['[GROUND 1]']), 1):
-            content_parts.append(f"{i}. {ground}\n")
-    
+        content = f"""COURT OF CRIMINAL APPEAL - SUPREME COURT OF NSW
+NOTICE OF APPEAL
+
+Appellant: {body.get('appellant_name', '[NAME]')}
+Case Number: {body.get('case_number', '[NUMBER]')}
+
+TAKE NOTICE that the above-named appeals against: {body.get('appeal_type', '[CONVICTION/SENTENCE]')}
+
+Court of Trial: {body.get('court_of_trial', '[COURT]')}
+Date of Conviction: {body.get('date_of_conviction', '[DATE]')}
+Date of Sentence: {body.get('date_of_sentence', '[DATE]')}
+Offence: {body.get('offence', '[OFFENCE]')}
+Sentence: {body.get('sentence', '[SENTENCE]')}
+
+GROUNDS OF APPEAL:
+{body.get('grounds', '[GROUNDS]')}
+
+DATED: {datetime.now().strftime('%d %B %Y')}
+
+---
+Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"""
     elif template_id == "leave_to_appeal":
-        content_parts.append("APPLICATION FOR LEAVE TO APPEAL\n\n")
-        content_parts.append(f"Appellant: {body.get('appellant_name', '[APPELLANT NAME]')}\n")
-        content_parts.append(f"Case Number: {body.get('case_number', '[CASE NUMBER]')}\n\n")
-        content_parts.append("REASONS WHY LEAVE SHOULD BE GRANTED:\n")
-        content_parts.append(body.get('reasons_for_leave', '[REASONS]'))
-    
-    elif template_id == "fresh_evidence_affidavit":
-        content_parts.append("AFFIDAVIT IN SUPPORT OF FRESH EVIDENCE\n\n")
-        content_parts.append(f"I, {body.get('deponent_name', '[DEPONENT NAME]')}, make oath and say:\n\n")
-        content_parts.append(f"1. The evidence I wish to adduce is:\n{body.get('evidence_description', '[DESCRIPTION]')}\n\n")
-        content_parts.append(f"2. This evidence was not available at trial because:\n{body.get('why_not_available_at_trial', '[REASONS]')}")
-    
-    elif template_id == "extension_of_time":
-        content_parts.append("APPLICATION FOR EXTENSION OF TIME TO APPEAL\n\n")
-        content_parts.append(f"Appellant: {body.get('appellant_name', '[APPELLANT NAME]')}\n")
-        content_parts.append(f"Original Deadline: {body.get('original_deadline', '[DATE]')}\n\n")
-        content_parts.append("REASONS FOR DELAY:\n")
-        content_parts.append(body.get('reasons_for_delay', '[REASONS]'))
-    
-    return {
-        "template_id": template_id,
-        "template_name": template["name"],
-        "content": "".join(content_parts),
-        "generated_at": datetime.now(timezone.utc).isoformat()
-    }
+        content = f"""APPLICATION FOR LEAVE TO APPEAL AGAINST SENTENCE
+
+Appellant: {body.get('appellant_name', '[NAME]')}
+Case: {body.get('case_number', '[NUMBER]')}
+Sentence Date: {body.get('date_of_sentence', '[DATE]')}
+Sentence: {body.get('sentence', '[SENTENCE]')}
+
+GROUNDS: {body.get('grounds', '[GROUNDS]')}
+WHY LEAVE SHOULD BE GRANTED: {body.get('why_leave_granted', '[REASONS]')}
+
+DATED: {datetime.now().strftime('%d %B %Y')}
+---
+Criminal Law Appeal Case Management by Deb King GLENMORE PARK NSW"""
+    else:
+        content = f"Template {template_id} - Please contact support for this template."
+    return {"template_id": template_id, "content": content, "generated_at": datetime.now(timezone.utc).isoformat()}

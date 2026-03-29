@@ -42,6 +42,30 @@ async def get_current_user(request: Request) -> User:
     return User(**user_doc)
 
 
+async def get_user_from_session_token(session_token: str) -> User:
+    """Resolve user directly from a session token (used by WebSocket auth)."""
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    session_doc = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
+    if not session_doc:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    expires_at = session_doc.get("expires_at")
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Session expired")
+
+    user_doc = await db.users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
+    if not user_doc:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return User(**user_doc)
+
+
 async def verify_case_ownership(case_id: str, user_id: str):
     """Verify user owns the case, raises 404 if not found"""
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id})
