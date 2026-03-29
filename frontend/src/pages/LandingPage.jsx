@@ -191,15 +191,23 @@ const LandingPage = () => {
                 <span className="text-sm bg-red-700 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">Federal</span>
               </div>
               
-              {/* Offence Types */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-8">
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Homicide</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Assault</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Sexual Offences</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Drug Offences</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Robbery</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">Fraud</span>
-                <span className="text-xs bg-slate-100 text-slate-900 px-3 py-1.5 rounded font-medium border border-slate-200">+ More</span>
+              {/* Types of Crimes */}
+              <div className="mb-8 text-left">
+                <h3 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
+                <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-sm text-slate-700">
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Homicide</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Assault</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Sexual Offences</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Drug Offences</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Robbery</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Fraud &amp; Dishonesty</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Firearms &amp; Weapons</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Arson &amp; Property</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Child Abuse Material</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Manslaughter</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Kidnapping</li>
+                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />All Indictable Offences</li>
+                </ul>
               </div>
               
               {/* CTA Buttons — DO NOT UNDO */}
