@@ -9,7 +9,7 @@ import sys
 os.environ["DEFAULT_MAX_RETRIES"] = "0"  # Must be set before litellm/openai import
 os.environ["OPENAI_MAX_RETRIES"] = "0"
 
-from fastapi import FastAPI, APIRouter, HTTPException, Response, Request, UploadFile, File, Form, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, APIRouter, HTTPException, Response, Request, UploadFile, File, Form, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -696,10 +696,104 @@ async def get_documents(case_id: str, request: Request):
     
     return documents
 
+
+async def _background_auto_generate(case_id: str, user_id: str):
+    """Background task: auto-generate timeline events + case summary from documents"""
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+        if not case:
+            return
+        
+        documents = await db.documents.find(
+            {"case_id": case_id},
+            {"_id": 0, "file_data": 0}
+        ).to_list(500)
+        docs_with_text = [d for d in documents if d.get("content_text")]
+        if not docs_with_text:
+            return
+        
+        # Check if timeline events already exist
+        existing_events = await db.timeline_events.count_documents({"case_id": case_id})
+        
+        doc_context = ""
+        for doc in docs_with_text:
+            doc_context += f"\n--- {doc.get('filename','')} ---\n{doc.get('content_text','')[:6000]}\n"
+        
+        # 1) Generate case summary
+        if not case.get("summary"):
+            try:
+                summary_chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"summary_{case_id}",
+                    system_message="You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum."
+                ).with_model("openai", "gpt-4o").with_params(max_tokens=500)
+                summary = await asyncio.wait_for(
+                    summary_chat.send_message(UserMessage(text=f"Summarise this case:\n{doc_context[:15000]}")),
+                    timeout=30
+                )
+                if summary:
+                    await db.cases.update_one(
+                        {"case_id": case_id},
+                        {"$set": {"summary": summary.strip(), "updated_at": datetime.now(timezone.utc).isoformat()}}
+                    )
+                    logger.info(f"Auto-generated summary for {case_id}")
+            except Exception as e:
+                logger.warning(f"Auto-summary failed for {case_id}: {e}")
+        
+        # 2) Auto-generate timeline if none exists
+        if existing_events == 0:
+            try:
+                tl_prompt = f"""Extract a chronological timeline of events from these case documents.
+Return ONLY a JSON array (no markdown). Each event:
+{{"date":"YYYY-MM-DD","title":"Brief title","description":"Details","event_type":"incident|arrest|court_hearing|evidence|witness|legal_filing|verdict|appeal|other"}}
+
+Only include events clearly identifiable. Use Australian English.
+
+CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
+DOCUMENTS:
+{doc_context[:25000]}"""
+                tl_chat = LlmChat(
+                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                    session_id=f"tl_{case_id}",
+                    system_message="Extract timeline events from Australian criminal case documents. Return only valid JSON array."
+                ).with_model("openai", "gpt-4o").with_params(max_tokens=4000)
+                raw = await asyncio.wait_for(tl_chat.send_message(UserMessage(text=tl_prompt)), timeout=90)
+                raw = (raw or "").strip()
+                if raw.startswith("```"):
+                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+                import json as _json
+                events = _json.loads(raw)
+                if isinstance(events, list):
+                    created = 0
+                    for evt in events:
+                        if not evt.get("title"):
+                            continue
+                        event_doc = {
+                            "event_id": f"evt_{uuid.uuid4().hex[:12]}",
+                            "case_id": case_id,
+                            "user_id": user_id,
+                            "title": evt.get("title", ""),
+                            "description": evt.get("description", ""),
+                            "event_date": evt.get("date", ""),
+                            "event_type": evt.get("event_type", "other"),
+                            "source": "ai_generated",
+                            "created_at": datetime.now(timezone.utc).isoformat()
+                        }
+                        await db.timeline_events.insert_one(event_doc)
+                        created += 1
+                    logger.info(f"Auto-generated {created} timeline events for {case_id}")
+            except Exception as e:
+                logger.warning(f"Auto-timeline failed for {case_id}: {e}")
+    except Exception as e:
+        logger.warning(f"Background auto-generate failed for {case_id}: {e}")
+
+
 @api_router.post("/cases/{case_id}/documents", response_model=dict)
 async def upload_document(
     case_id: str,
     request: Request,
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     category: str = Form(...),
     description: str = Form(None),
@@ -846,6 +940,10 @@ DOCUMENT ({file.filename}):
                     logger.info(f"Upload auto-detected metadata for {case_id}: {update_fields}")
             except Exception as e:
                 logger.warning(f"Upload auto-detect failed for {case_id}: {e}")
+    
+    # Trigger background auto-generation of timeline + summary
+    if content_text and len(content_text) > 200:
+        background_tasks.add_task(_background_auto_generate, case_id, user.user_id)
     
     # Return the document without MongoDB's _id field and file_data
     created_doc = await db.documents.find_one({"document_id": doc.document_id}, {"_id": 0, "file_data": 0})

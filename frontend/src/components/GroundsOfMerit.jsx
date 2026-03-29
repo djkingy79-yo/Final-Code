@@ -288,6 +288,54 @@ const GroundsOfMerit = ({
     setTimeout(() => window.URL.revokeObjectURL(url), 10000);
   };
 
+  const buildSingleGroundHtml = (ground) => {
+    const analysis = ground.deep_analysis?.full_analysis || ground.analysis || "";
+    const escHtml = (s) => (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" /><title>Ground: ${escHtml(ground.title)}</title>
+<style>
+@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;font-size:12px;color:#0f172a;padding:28px;line-height:1.6}
+h1{font-size:22px;margin:0 0 6px}h2{font-size:16px;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px}
+.meta{display:flex;gap:8px;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.desc{margin:0 0 14px;font-size:13px}ul{padding-left:18px;margin:0 0 12px}li{margin-bottom:4px;font-size:12px}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:8px 12px;border-radius:6px;margin-bottom:6px;font-size:12px}
+.analysis{margin-top:16px;white-space:pre-wrap;font-size:12px}
+table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:6px 10px;text-align:left;font-size:11px}th{background:#dbeafe;font-weight:700}
+.disclaimer{background:#fef2f2;border:3px solid #ef4444;padding:14px 18px;border-radius:8px;margin-top:28px;page-break-inside:avoid}
+.disclaimer strong{font-size:13px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
+.disclaimer p{font-size:11px;color:#1e293b;margin:0;line-height:1.5}
+@media print{body{padding:0}}
+</style></head><body>
+<p style="text-align:center;font-weight:700;font-size:14px">Created and Designed by Deb King</p>
+<h1>Ground of Merit: ${escHtml(ground.title)}</h1>
+<div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
+<p class="desc">${escHtml(ground.description)}</p>
+${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e=>'<li>'+escHtml(e)+'</li>').join('') + '</ul>' : ''}
+${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
+${(ground.similar_cases||[]).length ? '<h2>Similar Cases</h2>' + ground.similar_cases.map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
+${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
+<div class="disclaimer"><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div>
+</body></html>`;
+  };
+
+  const handleGroundPrint = () => {
+    if (!detailGround) return;
+    const html = buildSingleGroundHtml(detailGround);
+    const w = window.open("", "_blank");
+    if (w) { w.document.write(html); w.document.close(); w.print(); }
+  };
+
+  const handleGroundPDF = () => {
+    if (!detailGround) return;
+    const html = buildSingleGroundHtml(detailGround);
+    const w = window.open("", "_blank");
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+      toast.success("PDF view opened — use Print / Save as PDF to download.");
+    }
+  };
+
   return (
     <div className="space-y-4" data-testid="grounds-container">
       {/* Paywall Banner when not unlocked */}
@@ -535,6 +583,16 @@ const GroundsOfMerit = ({
               <Scale className="w-6 h-6 text-red-600" />
               Ground of Merit Analysis
             </DialogTitle>
+            {detailGround && (detailGround.deep_analysis?.full_analysis || detailGround.analysis) && (
+              <div className="flex items-center gap-2 mt-2">
+                <Button variant="outline" size="sm" onClick={handleGroundPrint} data-testid="ground-print-btn">
+                  <Printer className="w-4 h-4 mr-1.5" /> Print
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleGroundPDF} data-testid="ground-pdf-btn">
+                  <Download className="w-4 h-4 mr-1.5" /> PDF View
+                </Button>
+              </div>
+            )}
           </DialogHeader>
           
           {detailGround && (
