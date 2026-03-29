@@ -84,7 +84,7 @@ const PageCTA = ({
           <Button
             onClick={handleClick}
             size="lg"
-            className="bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-lg"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg"
           >
             {isAuthenticated ? (
               <>

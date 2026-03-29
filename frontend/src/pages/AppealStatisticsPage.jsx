@@ -171,21 +171,21 @@ const AppealStatisticsPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-gradient-to-b from-black via-slate-950 to-blue-950 text-white">
+      <section className="py-12 px-6 bg-blue-800 text-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
             <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center">
               <BarChart3 className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-6xl font-bold mb-3 text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Australian Appeal Statistics
           </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
+          <p className="text-blue-100 max-w-2xl mx-auto">
             Real data on criminal appeals across Australia — how many are lodged, how many succeed, 
             and what grounds are most commonly used.
           </p>
-          <p className="text-blue-300 text-sm mt-4" data-testid="appeal-stats-hero-subheading">
+          <p className="text-blue-200 text-sm mt-4" data-testid="appeal-stats-hero-subheading">
             Structured by clear sections so you can quickly understand what each statistic means.
           </p>
         </div>
