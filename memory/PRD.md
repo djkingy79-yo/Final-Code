@@ -4,7 +4,7 @@
 Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) → $150 (2x depth) → $200 (3x depth)
+- **Report Tiers:** Free (Base) -> $150 (2x depth) -> $200 (3x depth)
 - **Barrister View:** Locked until all 3 standard reports generated/paid. Capstone synthesis. TEAL colour.
 - **Report Language:** STRICT third-person educational tool. NO "we/us/our/you/your".
 - **Branding:** "Created and Designed by Deb King" only at BOTTOM of prints/exports.
@@ -14,6 +14,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 ## Architecture
 ```
 /app/
+├── .github/workflows/ci.yml  # CI pipeline (Node 22, Python 3.11)
 ├── backend/
 │   ├── server.py, config.py, auth_utils.py
 │   ├── routers/ (20+ modular routers)
@@ -27,14 +28,21 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
         └── App.js
 ```
 
-## What's Been Implemented (this session — 29 Mar 2026)
-- **Barrister View UI overhaul:** Teal coloured header (bg-teal-500), removed invisible badge, listed as 4th card in Reports tab, print/PDF preview with .report-header
-- **Print/Export critical bug fix:** Fixed localStorage vs sessionStorage mismatch — DocumentPreviewPage was reading stale content. All exports now use localStorage consistently.
-- **"Created and Designed by Deb King" removed from TOP** of Timeline + Grounds prints (kept at bottom only)
-- **Word export iOS fix:** Changed MIME type to application/msword with Word XML envelope + BOM across all HTML-to-Word exports
-- **How It Works Step 9:** Added "Chat & Collaboration" step with cyan theme
-- **Stats page formatting:** Bigger headings (text-2xl/3xl), compact Data Sources with horizontal bullets, state-coloured tabs (NSW=blue, VIC=purple, QLD=red, WA=emerald, TAS=teal, NT=orange, ACT=indigo), bigger numbered bullet headings with smaller body text
-- **Landing page:** "Simple, Affordable Access" heading now text-3xl/4xl
+## What's Been Implemented
+- Multi-pass AI report generation (4 tiers) with GPT-4o
+- Document export (PDF/DOCX) with iOS-safe localStorage-based preview
+- Barrister View with teal UI, "Attachment A — Barrister Issue Matrix"
+- PayPal/PayID/Stripe payment integration
+- Google OAuth via Emergent Auth
+- Email notifications via Resend
+- Landing page, stats page, How It Works page
+- GitHub Actions CI (Node 22, Python 3.11, actions v5/v4)
+- Professional README.md
+
+## Recent Fix (Feb 2026)
+- CI workflow: Updated node-version 20 -> 22 to eliminate GitHub Actions deprecation warnings
+- package.json engines updated to >=18.0.0
+- yarn.lock verified in sync
 
 ## 3rd Party Integrations
 - OpenAI GPT-4o (via Emergent LLM Key)
