@@ -70,21 +70,21 @@ const PageCTA = ({
   // Inline CTA (for within page content)
   if (variant === "inline") {
     return (
-      <div className={`bg-blue-50 border-2 border-blue-200 rounded-xl p-8 text-center ${className}`}>
+      <div className={`bg-blue-700 border-2 border-blue-400 rounded-xl p-8 text-center ${className}`}>
         <div className="max-w-2xl mx-auto">
-          <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 bg-blue-800 rounded-xl flex items-center justify-center mx-auto mb-4">
             <FileText className="w-7 h-7 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Build Your Appeal?
           </h3>
-          <p className="text-slate-700 mb-6">
+          <p className="text-blue-100 mb-6">
             Upload your case documents, get AI analysis, and access all the tools you need to prepare a strong appeal.
           </p>
           <Button
             onClick={handleClick}
             size="lg"
-            className="landing-cta-primary"
+            className="bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-lg"
           >
             {isAuthenticated ? (
               <>
@@ -98,7 +98,7 @@ const PageCTA = ({
               </>
             )}
           </Button>
-          <p className="text-slate-500 text-xs mt-3">
+          <p className="text-blue-200 text-xs mt-3">
             {isAuthenticated ? "Organise documents • AI analysis • Generate reports" : "No credit card required • Free to start"}
           </p>
         </div>
