@@ -427,6 +427,24 @@ const Timeline = ({
             <Download className="w-4 h-4 mr-1" />
             Export PDF
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const html = buildTimelinePrintHtml();
+              const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${html}</body></html>`], {type:'application/msword'});
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'Timeline_Export.doc';
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }}
+            data-testid="export-timeline-word"
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Word
+          </Button>
         </div>
       </div>
 

@@ -591,6 +591,20 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 <Button variant="outline" size="sm" onClick={handleGroundPDF} data-testid="ground-pdf-btn">
                   <Download className="w-4 h-4 mr-1.5" /> PDF View
                 </Button>
+                <Button variant="outline" size="sm" onClick={() => {
+                  if (!detailGround) return;
+                  const html = buildSingleGroundHtml(detailGround);
+                  const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${html}</body></html>`], {type:'application/msword'});
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `Ground_${detailGround.title?.replace(/[^a-zA-Z0-9]/g,'_')}.doc`;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                  toast.success("Word document downloaded");
+                }} data-testid="ground-word-btn">
+                  <FileText className="w-4 h-4 mr-1.5" /> Word
+                </Button>
               </div>
             )}
           </DialogHeader>
