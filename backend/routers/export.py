@@ -5,16 +5,14 @@ Handles Quick Export (Appeal Package) generation - ZIP with all docs, reports, a
 """
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from typing import List, Optional
+from typing import List
 from datetime import datetime, timezone
 from pydantic import BaseModel
-import logging
-import os
 import io
 import zipfile
 import json
 
-from config import db, logger
+from config import db
 from auth_utils import get_current_user, verify_case_ownership
 
 router = APIRouter(prefix="/api/cases/{case_id}/export", tags=["export"])

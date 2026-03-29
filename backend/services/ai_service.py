@@ -3,11 +3,9 @@
 Criminal Appeal AI - AI Services Module
 Encapsulates all AI/LLM operations for report generation, grounds analysis, etc.
 """
-import os
 import uuid
 import re
 import asyncio
-from datetime import datetime, timezone
 from typing import Optional
 import logging
 

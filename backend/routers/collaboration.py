@@ -3,9 +3,8 @@ Criminal Appeal AI - Collaboration Router
 Handles case sharing, real-time chat, activity feed, and notifications
 """
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel, EmailStr
-from typing import List, Dict, Optional
-from datetime import datetime, timezone
+from pydantic import BaseModel
+from typing import Dict
 import os
 import asyncio
 import json

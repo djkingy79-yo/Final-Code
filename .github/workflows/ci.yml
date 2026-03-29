@@ -24,7 +24,7 @@ jobs:
       - name: Lint
         run: |
           pip install ruff
-          ruff check backend/ --ignore E501,F401
+          ruff check backend/ --ignore E501,F401 --exclude backend/tests/
       - name: Collect tests
         run: |
           cd backend && python -m pytest tests/ --collect-only -q

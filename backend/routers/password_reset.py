@@ -3,10 +3,9 @@
 Criminal Appeal AI - Password Reset Router
 Handles forgot password and password reset functionality
 """
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timezone, timedelta
-import uuid
 import hashlib
 import secrets
 import os

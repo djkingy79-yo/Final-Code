@@ -5,7 +5,6 @@ Supports PayPal and PayID (Australian bank transfer) payment methods
 """
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime, timezone
 from config import db, logger, get_frontend_url, get_admin_emails
 from auth_utils import get_current_user

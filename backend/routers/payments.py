@@ -10,7 +10,7 @@ import logging
 
 from config import db
 from auth_utils import get_current_user
-from models import FEATURE_PRICES, canonical_feature_type, feature_type_variants
+from models import FEATURE_PRICES, canonical_feature_type
 from services.email_service import send_payid_status_email
 
 logger = logging.getLogger(__name__)

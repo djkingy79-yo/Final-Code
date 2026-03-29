@@ -5,11 +5,9 @@ Allows users to compare their own cases and see anonymized patterns from all use
 """
 from fastapi import APIRouter, HTTPException, Request
 from typing import List, Optional
-from datetime import datetime, timezone
 from pydantic import BaseModel
-import logging
 
-from config import db, logger
+from config import db
 from auth_utils import get_current_user
 
 router = APIRouter(prefix="/api/compare", tags=["compare"])

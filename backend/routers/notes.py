@@ -3,7 +3,7 @@ Criminal Appeal AI - Notes & Comments Router
 Extracted from server.py monolith.
 """
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
-from typing import List, Dict
+from typing import List
 from datetime import datetime, timezone
 import uuid
 import json

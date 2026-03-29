@@ -4,7 +4,6 @@ Criminal Appeal AI - Statistics Router
 Handles public statistics and case comparison
 """
 from fastapi import APIRouter, HTTPException, Request
-from datetime import datetime, timezone
 
 from config import db
 from auth_utils import get_current_user

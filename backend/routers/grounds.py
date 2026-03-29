@@ -3,7 +3,6 @@ Criminal Appeal AI - Grounds of Merit Router
 Extracted from server.py monolith.
 """
 from fastapi import APIRouter, HTTPException, Request
-from typing import List
 from datetime import datetime, timezone
 import uuid
 import json

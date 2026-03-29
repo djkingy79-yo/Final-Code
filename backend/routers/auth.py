@@ -11,9 +11,8 @@ import uuid
 import hashlib
 import secrets
 
-from config import db, logger, get_admin_emails
+from config import db, get_admin_emails
 from auth_utils import get_current_user
-import os
 
 ADMIN_EMAILS = get_admin_emails()
 

@@ -13,27 +13,20 @@
 
 import os
 import re
-import json
 import uuid
-import base64
 import asyncio
-import logging
 from datetime import datetime, timezone, timedelta
-from typing import List, Optional
-from html.parser import HTMLParser
+from typing import List
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.background import BackgroundTasks
-from pydantic import BaseModel, Field
 
 import motor.motor_asyncio
 
-from config import db, logger, get_frontend_url
+from config import db, logger
 from auth_utils import get_current_user
 from models import (
-    ReportRequest, GroundOfMerit,
-    FEATURE_PRICES, canonical_feature_type, feature_type_variants,
+    ReportRequest, FEATURE_PRICES, feature_type_variants,
 )
 from services.llm_service import call_llm_with_fallback
 from services.offence_helpers import get_offence_context, get_offence_system_prompt
@@ -2880,7 +2873,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
     from io import BytesIO
     
     user = await get_current_user(request)
@@ -3366,7 +3359,6 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     from docx import Document as DocxDocument
     from docx.shared import Inches, Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.enum.style import WD_STYLE_TYPE
     from docx.oxml import OxmlElement
     from docx.oxml.ns import qn
     from io import BytesIO

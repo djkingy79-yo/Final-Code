@@ -8,7 +8,6 @@ from datetime import datetime, timezone, timedelta
 
 from config import db, logger, get_admin_emails
 from auth_utils import get_current_user
-import os
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
