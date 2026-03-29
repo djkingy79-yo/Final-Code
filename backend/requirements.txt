@@ -34,6 +34,9 @@ resend==2.23.0
 stripe==14.4.1
 paypalrestsdk==1.13.3
 
+# Testing
+pytest==9.0.2
+
 # Utilities
 aiofiles==25.1.0
 watchfiles==1.1.1
