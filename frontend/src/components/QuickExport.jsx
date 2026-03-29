@@ -55,6 +55,7 @@ const QuickExport = ({ caseId, caseTitle }) => {
     if (showDialog) {
       fetchPreview();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDialog, caseId]);
 
   const handleExport = async () => {

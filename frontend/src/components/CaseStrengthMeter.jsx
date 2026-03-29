@@ -30,6 +30,7 @@ const CaseStrengthMeter = ({ caseId }) => {
     };
 
     if (caseId) fetchStrength();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   if (loading) {

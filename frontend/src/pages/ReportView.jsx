@@ -579,6 +579,7 @@ const ReportView = () => {
     setSourceReports([]);
     setHasAllReports(false);
     fetchData(requestId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId, reportId]);
 
   const fetchData = async (requestId = requestRef.current) => {

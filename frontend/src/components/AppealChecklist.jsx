@@ -30,6 +30,7 @@ const AppealChecklist = ({ caseId }) => {
 
   useEffect(() => {
     fetchChecklist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   const fetchChecklist = async () => {

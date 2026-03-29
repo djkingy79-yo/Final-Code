@@ -22,6 +22,7 @@ const VisitorCounter = ({ variant = "full" }) => {
     trackVisit();
     // Fetch stats
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const trackVisit = async () => {

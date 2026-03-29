@@ -41,6 +41,7 @@ const DeadlineTracker = ({ caseId }) => {
 
   useEffect(() => {
     fetchDeadlines();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   const fetchDeadlines = async () => {

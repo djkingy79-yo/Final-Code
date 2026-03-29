@@ -49,6 +49,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
 
   useEffect(() => {
     fetchScans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseId]);
 
   const fetchScans = async () => {

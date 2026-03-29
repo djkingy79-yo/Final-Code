@@ -129,6 +129,7 @@ const CompareCasesPage = ({ user }) => {
       fetchPatterns();
       fetchSuccessFactors();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, patternFilters, user]);
 
   if (!user) {

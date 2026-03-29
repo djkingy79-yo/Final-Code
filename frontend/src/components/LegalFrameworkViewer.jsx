@@ -37,6 +37,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
   useEffect(() => {
     fetchStates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

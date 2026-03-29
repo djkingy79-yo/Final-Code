@@ -29,13 +29,12 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchStats();
     fetchPendingPayments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API}/analytics/dashboard`, {
-        withCredentials: true
-      });
+      const response = await axios.get(`${API}/analytics/dashboard`);
       setStats(response.data);
     } catch (err) {
       if (err.response?.status === 403) {
@@ -53,9 +52,7 @@ const AdminDashboard = () => {
   const fetchPendingPayments = async () => {
     setRefreshingPayments(true);
     try {
-      const response = await axios.get(`${API}/payments/payid/pending`, {
-        withCredentials: true
-      });
+      const response = await axios.get(`${API}/payments/payid/pending`);
       setPendingPayments(response.data.pending_payments || []);
       toast.success("PayID payments refreshed");
     } catch (err) {
@@ -75,9 +72,7 @@ const AdminDashboard = () => {
   const confirmPayment = async (reference) => {
     setConfirmingRef(reference);
     try {
-      await axios.post(`${API}/payments/payid/admin-confirm/${reference}`, {}, {
-        withCredentials: true
-      });
+      await axios.post(`${API}/payments/payid/admin-confirm/${reference}`);
       toast.success("Payment confirmed! Feature unlocked for user.");
       fetchPendingPayments();
     } catch (err) {
