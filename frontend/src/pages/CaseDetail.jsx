@@ -852,7 +852,7 @@ const CaseDetail = ({ user }) => {
               )}
             </div>
           )}
-          {caseData?.summary && (
+          {caseData?.summary && activeTab !== "grounds" && (
             <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
           )}
         </div>
@@ -1084,6 +1084,23 @@ const CaseDetail = ({ user }) => {
                 onPaymentSuccess={() => fetchCaseData()}
               />
             )}
+
+            {/* Deb King Statement & Branding Footer */}
+            <div className="mt-10 pt-8 border-t border-slate-200 text-center space-y-6" data-testid="grounds-footer">
+              <p className="text-sm font-semibold text-slate-700 tracking-wide">
+                Created and Designed by Deb King
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Scale className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-slate-900 text-sm leading-tight">Appeal Case Manager</p>
+                  <p className="text-xs text-slate-500 leading-tight">Founded by Debra King</p>
+                  <p className="text-xs text-slate-500 leading-tight">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           {/* Notes Tab */}
