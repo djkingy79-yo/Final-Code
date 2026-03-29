@@ -260,7 +260,6 @@ const Timeline = ({
 </head>
 <body>
   <div class="timeline-print-shell">
-    <div class="timeline-print-brand">Created and Designed by Deb King</div>
     <div class="timeline-print-header">
       <p class="timeline-print-kicker">Timeline</p>
       <h1>${escapeHtml(caseInfo?.title || "Case Timeline")}</h1>

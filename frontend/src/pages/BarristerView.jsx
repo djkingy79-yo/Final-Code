@@ -377,7 +377,7 @@ export default function BarristerView() {
     .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
-    .report-header { background: #0f766e; color: #fff; padding: 28px 32px; }
+    .report-header { background: #14b8a6; color: #fff; padding: 28px 32px; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
@@ -390,7 +390,7 @@ export default function BarristerView() {
     .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
     .sections { padding: 24px 32px; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
-    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #0f766e; padding-left: 12px; margin-bottom: 12px; }
+    .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #14b8a6; padding-left: 12px; margin-bottom: 12px; }
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
     .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
@@ -407,7 +407,7 @@ export default function BarristerView() {
     .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt !important; table-layout: fixed; }
     .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
-    .section-body blockquote { border-left: 4px solid #0f766e; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
+    .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
     .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
     .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
@@ -792,7 +792,7 @@ export default function BarristerView() {
         {isCompleted && (
           <article className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xl" data-testid="barrister-print-frame">
             {/* ===== COLOUR-CODED BARRISTER HEADER (matches other reports) ===== */}
-            <div className="bg-teal-700 text-white p-6 sm:p-8" data-testid="barrister-hero">
+            <div className="bg-teal-500 text-white p-6 sm:p-8" data-testid="barrister-hero">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
                   <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Barrister Brief</p>
@@ -877,13 +877,13 @@ export default function BarristerView() {
             <div className="p-5 sm:p-6 md:p-8 space-y-6" data-testid="barrister-sections-wrapper">
               {sections.map((section, index) => (
                 <article key={section.id} id={section.id} className="scroll-mt-24" data-testid={`barrister-section-${index + 1}`}>
-                  <div className="border-l-4 border-teal-600 pl-4 mb-4">
+                  <div className="border-l-4 border-teal-500 pl-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-teal-100 text-teal-800 text-xs font-bold" data-testid={`barrister-section-number-${index + 1}`}>
+                      <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-teal-50 text-teal-700 text-xs font-bold" data-testid={`barrister-section-number-${index + 1}`}>
                         {index + 1}
                       </span>
                       <h3
-                        className="text-xl sm:text-2xl font-bold text-teal-800 tracking-tight"
+                        className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
                         style={{ fontFamily: "Crimson Pro, serif" }}
                         data-testid={`barrister-section-heading-${index + 1}`}
                       >

@@ -13,7 +13,7 @@ export default function DocumentPreviewPage() {
 
   const payload = useMemo(() => {
     try {
-      const raw = localStorage.getItem("document-preview-payload");
+      const raw = sessionStorage.getItem("document-preview-payload") || localStorage.getItem("document-preview-payload");
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (error) {

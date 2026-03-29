@@ -139,7 +139,6 @@ const GroundsOfMerit = ({
   const buildGroundsPreviewHtml = () => {
     const contentMarkup = renderToStaticMarkup(
       <div className="grounds-export-shell">
-        <div className="grounds-export-brand">Created and Designed by Deb King</div>
         <div className="grounds-export-header">
           <p className="grounds-export-kicker">Grounds of Merit</p>
           <h1>Detailed Grounds Analysis</h1>
@@ -332,7 +331,6 @@ table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #
 .disclaimer p{font-size:11px;color:#1e293b;margin:0;line-height:1.5}
 @media print{body{padding:0}}
 </style></head><body>
-<p style="text-align:center;font-weight:700;font-size:14px">Created and Designed by Deb King</p>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
 <p class="desc">${escHtml(ground.description)}</p>

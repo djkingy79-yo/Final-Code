@@ -854,14 +854,14 @@ const CaseDetail = ({ user }) => {
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildPrintAllHtml();
-                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
                 window.open("/document-preview?mode=print", "_blank");
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-print-btn">
                 <Printer className="w-4 h-4 mr-1" />Print All
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildPrintAllHtml();
-                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
                 window.open("/document-preview?mode=pdf", "_blank");
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-pdf-btn">
                 <Download className="w-4 h-4 mr-1" />PDF All
@@ -870,7 +870,8 @@ const CaseDetail = ({ user }) => {
                 try {
                   toast.info("Generating Word document...");
                   const html = buildPrintAllHtml();
-                  const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a"); a.href = url; a.download = "complete_case_bundle.doc"; document.body.appendChild(a); a.click(); a.remove();
                   setTimeout(() => URL.revokeObjectURL(url), 5000);
@@ -1241,19 +1242,20 @@ const CaseDetail = ({ user }) => {
             <div className="flex items-center gap-2 flex-wrap" data-testid="progress-export-bar">
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildProgressHtml();
-                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
                 window.open("/document-preview?mode=print", "_blank");
               }} className="text-slate-700" data-testid="progress-print-btn"><Printer className="w-4 h-4 mr-1" />Print</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildProgressHtml();
-                sessionStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
                 window.open("/document-preview?mode=pdf", "_blank");
               }} className="text-slate-700" data-testid="progress-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
                   toast.info("Generating Word document...");
                   const html = buildProgressHtml();
-                  const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a"); a.href = url; a.download = "progress.doc"; document.body.appendChild(a); a.click(); a.remove();
                   setTimeout(() => URL.revokeObjectURL(url), 5000);

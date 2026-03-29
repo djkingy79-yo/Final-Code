@@ -121,7 +121,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 }
 
 export function openExportPreview(html, mode = "print") {
-  sessionStorage.setItem("document-preview-payload", JSON.stringify({
+  localStorage.setItem("document-preview-payload", JSON.stringify({
     html,
     title: "Export Preview",
   }));

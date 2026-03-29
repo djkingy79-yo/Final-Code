@@ -376,7 +376,8 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
     try {
       toast.info("Generating Word document...");
       const html = buildNotesHtml();
-      const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+      const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = "notes.doc"; document.body.appendChild(a); a.click(); a.remove();
