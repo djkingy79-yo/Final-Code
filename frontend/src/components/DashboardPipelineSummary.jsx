@@ -1,31 +1,6 @@
 import React from "react";
-
-async function apiRequest(url, options = {}) {
-  const token = localStorage.getItem("session_token");
-  const response = await fetch(url, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data?.detail || data?.message || "Request failed");
-  }
-
-  return data;
-}
-
-async function getDashboardPipelineSummary() {
-  return apiRequest("/api/pipeline/dashboard-summary", {
-    method: "GET",
-  });
-}
+import axios from "axios";
+import { API } from "../App";
 
 export default function DashboardPipelineSummary() {
   const [summary, setSummary] = React.useState(null);
@@ -36,10 +11,10 @@ export default function DashboardPipelineSummary() {
     try {
       setLoading(true);
       setError("");
-      const data = await getDashboardPipelineSummary();
-      setSummary(data);
+      const response = await axios.get(`${API}/pipeline/dashboard-summary`);
+      setSummary(response.data);
     } catch (err) {
-      setError(err.message || "Failed to load pipeline dashboard summary");
+      setError(err.response?.data?.detail || err.message || "Failed to load pipeline dashboard summary");
     } finally {
       setLoading(false);
     }
@@ -56,8 +31,6 @@ export default function DashboardPipelineSummary() {
     return `${Math.round((value / totalCases) * 100)}%`;
   };
 
-  // If there's an error or no data, hide the panel entirely
-  if (error && !summary) return null;
   if (!summary && !loading) return null;
 
   return (

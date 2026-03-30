@@ -1,31 +1,6 @@
 import React from "react";
-
-async function apiRequest(url, options = {}) {
-  const token = localStorage.getItem("session_token");
-  const response = await fetch(url, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data?.detail || data?.message || "Request failed");
-  }
-
-  return data;
-}
-
-async function getPipelineStaleness(caseId) {
-  return apiRequest(`/api/pipeline/cases/${caseId}/staleness`, {
-    method: "GET",
-  });
-}
+import axios from "axios";
+import { API } from "../App";
 
 export default function PipelineStalenessAlert({ caseId }) {
   const [staleness, setStaleness] = React.useState(null);
@@ -36,10 +11,10 @@ export default function PipelineStalenessAlert({ caseId }) {
     try {
       setLoading(true);
       setError("");
-      const data = await getPipelineStaleness(caseId);
-      setStaleness(data);
+      const response = await axios.get(`${API}/pipeline/cases/${caseId}/staleness`);
+      setStaleness(response.data);
     } catch (err) {
-      setError(err.message || "Failed to load pipeline staleness");
+      setError(err.response?.data?.detail || err.message || "Failed to load pipeline staleness");
     } finally {
       setLoading(false);
     }

@@ -1,31 +1,6 @@
 import React from "react";
-
-async function apiRequest(url, options = {}) {
-  const token = localStorage.getItem("session_token");
-  const response = await fetch(url, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data?.detail || data?.message || "Request failed");
-  }
-
-  return data;
-}
-
-async function getPipelineSummary(caseId) {
-  return apiRequest(`/api/pipeline/cases/${caseId}/summary`, {
-    method: "GET",
-  });
-}
+import axios from "axios";
+import { API } from "../App";
 
 export default function CasePipelineSummary({ caseId }) {
   const [summary, setSummary] = React.useState(null);
@@ -36,23 +11,20 @@ export default function CasePipelineSummary({ caseId }) {
     try {
       setLoading(true);
       setError("");
-      const data = await getPipelineSummary(caseId);
-      setSummary(data);
+      const response = await axios.get(`${API}/pipeline/cases/${caseId}/summary`);
+      setSummary(response.data);
     } catch (err) {
-      setError(err.message || "Failed to load pipeline summary");
+      setError(err.response?.data?.detail || err.message || "Failed to load pipeline summary");
     } finally {
       setLoading(false);
     }
   }, [caseId]);
 
   React.useEffect(() => {
-    if (caseId) {
-      loadSummary();
-    }
+    if (caseId) loadSummary();
   }, [caseId, loadSummary]);
 
   if (!caseId) return null;
-  if (error && !summary) return null;
   if (!summary && !loading) return null;
 
   return (

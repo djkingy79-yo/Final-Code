@@ -1,31 +1,6 @@
 import React from "react";
-
-async function apiRequest(url, options = {}) {
-  const token = localStorage.getItem("session_token");
-  const response = await fetch(url, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(data?.detail || data?.message || "Request failed");
-  }
-
-  return data;
-}
-
-async function getSubmissionsDraft(caseId) {
-  return apiRequest(`/api/cases/${caseId}/submissions-draft-view`, {
-    method: "GET",
-  });
-}
+import axios from "axios";
+import { API } from "../App";
 
 export default function SubmissionsDraftPanel({ caseId }) {
   const [draft, setDraft] = React.useState(null);
@@ -39,10 +14,10 @@ export default function SubmissionsDraftPanel({ caseId }) {
       try {
         setLoading(true);
         setError("");
-        const data = await getSubmissionsDraft(caseId);
-        if (!cancelled) setDraft(data);
+        const response = await axios.get(`${API}/cases/${caseId}/submissions-draft-view`);
+        if (!cancelled) setDraft(response.data);
       } catch (err) {
-        if (!cancelled) setError(err.message || "Failed to load submissions draft");
+        if (!cancelled) setError(err.response?.data?.detail || err.message || "Failed to load submissions draft");
       } finally {
         if (!cancelled) setLoading(false);
       }
