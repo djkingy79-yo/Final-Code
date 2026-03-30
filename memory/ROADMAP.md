@@ -21,10 +21,10 @@
 - [ ] **Native Mobile App** - Capacitor configured, needs build and test
 
 ## P2 - Medium Priority
-- [ ] Real-time Collaboration/Chat for Notes section
-- [ ] Case Sharing between registered users
 - [ ] Verified Case Law Database integration
-- [ ] Finalise marketing launch plan (/app/memory/mobile_app_launch_plan.md)
+- [ ] Counsel conference prep attachment for Barrister View
+- [x] Real-time Collaboration/Chat for Notes section (DONE — collaboration.py, messages.py, NotesSection.jsx)
+- [x] Case Sharing between registered users (DONE — ShareCaseModal.jsx, NotificationBell.jsx, collaboration.py)
 
 ## Maintenance
 - [ ] Database normalisation script for legacy records (convert old loose dicts to strict Pydantic structures)

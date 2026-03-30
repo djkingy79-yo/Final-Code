@@ -72,8 +72,6 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 ## Prioritised Backlog
 - P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
-- P2: Real-time Collaboration/Chat for Notes
-- P2: Case Sharing between users
 - P2: Verified Case Law Database integration
 - P3: Database normalisation for legacy records
 - P3: Backend refactoring (decompose server.py)
