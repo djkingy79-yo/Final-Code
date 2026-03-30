@@ -64,6 +64,7 @@ import ShareCaseModal from "../components/ShareCaseModal";
 import CaseChat from "../components/CaseChat";
 import ActivityFeed from "../components/ActivityFeed";
 import CaseStrengthMeter from "../components/CaseStrengthMeter";
+import PipelineProgress from "../components/PipelineProgress";
 import { buildExportHtml } from "../utils/exportHtml";
 
 const EVENT_TYPES = [
@@ -1281,6 +1282,15 @@ const CaseDetail = ({ user }) => {
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>
+
+            {/* Analysis Pipeline */}
+            <PipelineProgress
+              caseId={caseId}
+              sessionToken={localStorage.getItem("session_token")}
+              onRunStage={(stage) => {
+                if (stage === "project") fetchCaseData();
+              }}
+            />
 
             {/* Appeal Preparation Readiness */}
             <CaseStrengthMeter caseId={caseId} />

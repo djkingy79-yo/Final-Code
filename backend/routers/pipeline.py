@@ -898,3 +898,285 @@ async def get_pipeline_status(case_id: str, request: Request):
             },
         },
     }
+
+
+
+# ============================================================================
+# BARRISTER ACCEPTANCE PACK
+# ============================================================================
+
+@router.get("/{case_id}/barrister-pack/generate")
+async def generate_barrister_pack(case_id: str, request: Request):
+    """Generate a Barrister Acceptance Pack as PDF.
+    Contains: case summary, ranked grounds, timeline, evidence annexures, verification summary.
+    """
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, HRFlowable
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
+    from io import BytesIO
+    from fastapi.responses import StreamingResponse
+
+    user = await get_current_user(request)
+    await _require_case_ownership(case_id, user.user_id)
+
+    # Gather all data
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort("created_at", 1).to_list(100)
+
+    timeline = await db.timeline_events.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort("event_date", 1).to_list(200)
+
+    verifications = await db.issue_verifications.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).to_list(100)
+
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "document_id": 1, "filename": 1}
+    ).to_list(200)
+
+    # Build PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        rightMargin=20*mm, leftMargin=20*mm,
+        topMargin=25*mm, bottomMargin=25*mm,
+    )
+
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name="PackTitle", fontName="Helvetica-Bold", fontSize=18, spaceAfter=6, textColor=colors.HexColor("#0f172a"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="PackSubtitle", fontName="Helvetica", fontSize=10, spaceAfter=12, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="SectionHead", fontName="Helvetica-Bold", fontSize=13, spaceAfter=8, spaceBefore=16, textColor=colors.HexColor("#0f4c81")))
+    styles.add(ParagraphStyle(name="SubHead", fontName="Helvetica-Bold", fontSize=11, spaceAfter=4, spaceBefore=10, textColor=colors.HexColor("#1e293b")))
+    styles.add(ParagraphStyle(name="BodyText2", fontName="Helvetica", fontSize=9, spaceAfter=4, leading=13, alignment=TA_JUSTIFY))
+    styles.add(ParagraphStyle(name="Small", fontName="Helvetica", fontSize=8, spaceAfter=2, textColor=colors.HexColor("#94a3b8")))
+    styles.add(ParagraphStyle(name="Disclaimer", fontName="Helvetica-Oblique", fontSize=7, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
+
+    elements = []
+
+    # ── COVER PAGE ──
+    elements.append(Spacer(1, 40*mm))
+    elements.append(Paragraph("BARRISTER ACCEPTANCE PACK", styles["PackTitle"]))
+    elements.append(Spacer(1, 4*mm))
+    elements.append(Paragraph("Appeal Case Manager — Confidential Preparation Material", styles["PackSubtitle"]))
+    elements.append(Spacer(1, 10*mm))
+
+    cover_data = []
+    if case.get("title"): cover_data.append(["Case Title", case["title"]])
+    if case.get("defendant_name"): cover_data.append(["Defendant", case["defendant_name"]])
+    if case.get("case_number"): cover_data.append(["Case Number", case["case_number"]])
+    if case.get("court"): cover_data.append(["Court", case["court"]])
+    if case.get("state"): cover_data.append(["Jurisdiction", str(case["state"]).upper()])
+    if case.get("offence_category"): cover_data.append(["Offence Category", case["offence_category"].replace("_", " ").title()])
+    if case.get("offence_type"): cover_data.append(["Offence Type", case["offence_type"]])
+    if case.get("sentence"): cover_data.append(["Sentence", case["sentence"]])
+    cover_data.append(["Generated", datetime.now(timezone.utc).strftime("%d %B %Y")])
+    cover_data.append(["Documents", str(len(documents))])
+    cover_data.append(["Grounds of Merit", str(len(grounds))])
+
+    if cover_data:
+        t = Table(cover_data, colWidths=[45*mm, 110*mm])
+        t.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#475569")),
+            ("TEXTCOLOR", (1, 0), (1, -1), colors.HexColor("#0f172a")),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("LINEBELOW", (0, 0), (-1, -2), 0.5, colors.HexColor("#e2e8f0")),
+        ]))
+        elements.append(t)
+
+    elements.append(Spacer(1, 15*mm))
+    elements.append(Paragraph("NOT LEGAL ADVICE — This document is AI-assisted preparation material for legal review. It does not constitute legal advice and should not be relied upon as a substitute for independent legal judgment.", styles["Disclaimer"]))
+    elements.append(PageBreak())
+
+    # ── SECTION 1: GROUNDS OF MERIT (RANKED) ──
+    elements.append(Paragraph("1. Grounds of Merit", styles["SectionHead"]))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+    elements.append(Spacer(1, 3*mm))
+
+    if not grounds:
+        elements.append(Paragraph("No grounds of merit have been identified for this case.", styles["BodyText2"]))
+    else:
+        # Sort by strength: strong first, then moderate, then weak
+        strength_order = {"strong": 0, "moderate": 1, "weak": 2}
+        sorted_grounds = sorted(grounds, key=lambda g: strength_order.get(g.get("strength", "moderate"), 1))
+
+        for idx, g in enumerate(sorted_grounds, 1):
+            strength = str(g.get("strength", "moderate")).upper()
+            elements.append(Paragraph(f"Ground {idx}: {g.get('title', 'Untitled')}", styles["SubHead"]))
+
+            # Strength and verification
+            meta_parts = [f"<b>Strength:</b> {strength}"]
+            vs = g.get("verification_status", "unverified")
+            meta_parts.append(f"<b>Verification:</b> {vs}")
+            gt = g.get("ground_type", "")
+            if gt:
+                meta_parts.append(f"<b>Type:</b> {gt.replace('_', ' ').title()}")
+            elements.append(Paragraph(" &nbsp;|&nbsp; ".join(meta_parts), styles["Small"]))
+
+            # Description
+            desc = g.get("description", "")
+            if desc:
+                elements.append(Paragraph(desc, styles["BodyText2"]))
+
+            # Legitimacy scores
+            ls = g.get("legitimacy_scores")
+            if ls:
+                score_text = f"Legal basis: {ls.get('legal_score', 0)}/3 &nbsp;|&nbsp; Evidence support: {ls.get('evidence_score', 0)}/3 &nbsp;|&nbsp; Appellate viability: {ls.get('viability_score', 0)}/3 &nbsp;|&nbsp; <b>Total: {ls.get('total_score', 0)}/9</b>"
+                elements.append(Paragraph(score_text, styles["Small"]))
+
+            # Supporting evidence
+            evidence = g.get("supporting_evidence", [])
+            if evidence:
+                elements.append(Paragraph(f"<b>Supporting Evidence ({len(evidence)}):</b>", styles["Small"]))
+                for e in evidence[:3]:
+                    quote = e.get("quote", e) if isinstance(e, dict) else str(e)
+                    fname = e.get("filename", "") if isinstance(e, dict) else ""
+                    prefix = f"{fname}: " if fname else ""
+                    elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {prefix}{quote[:200]}", styles["Small"]))
+
+            # Law sections
+            law = g.get("law_sections", [])
+            if law:
+                elements.append(Paragraph(f"<b>Legislation ({len(law)}):</b>", styles["Small"]))
+                for l in law[:3]:
+                    if isinstance(l, dict):
+                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {l.get('section', '')} {l.get('act', '')} {('— ' + l.get('title', '')) if l.get('title') else ''}", styles["Small"]))
+
+            # Human review warning
+            if g.get("requires_human_review"):
+                elements.append(Paragraph("<b>Requires human review before filing or reliance in advice.</b>", styles["Small"]))
+
+            elements.append(Spacer(1, 4*mm))
+
+    elements.append(PageBreak())
+
+    # ── SECTION 2: PROCEDURAL TIMELINE ──
+    elements.append(Paragraph("2. Procedural Timeline", styles["SectionHead"]))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+    elements.append(Spacer(1, 3*mm))
+
+    if not timeline:
+        elements.append(Paragraph("No timeline events recorded.", styles["BodyText2"]))
+    else:
+        tl_data = [["Date", "Event", "Category"]]
+        for evt in timeline:
+            date_str = str(evt.get("event_date", "Unknown"))[:10]
+            tl_data.append([date_str, str(evt.get("title", ""))[:80], str(evt.get("event_category", evt.get("category", "")))[:30]])
+
+        tl_table = Table(tl_data, colWidths=[25*mm, 100*mm, 35*mm])
+        tl_table.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 8),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f4c81")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("LINEBELOW", (0, 0), (-1, -2), 0.5, colors.HexColor("#e2e8f0")),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8fafc")]),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ]))
+        elements.append(tl_table)
+
+    elements.append(PageBreak())
+
+    # ── SECTION 3: EVIDENCE ANNEXURES ──
+    elements.append(Paragraph("3. Evidence Annexures", styles["SectionHead"]))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+    elements.append(Spacer(1, 3*mm))
+
+    ver_map = {v.get("issue_id"): v for v in verifications}
+
+    if not verifications:
+        elements.append(Paragraph("No verified evidence annexures available. Run the pipeline verification stage to populate.", styles["BodyText2"]))
+    else:
+        for ver in verifications:
+            issue = await db.issue_classifications.find_one(
+                {"issue_id": ver.get("issue_id"), "case_id": case_id},
+                {"_id": 0, "title": 1}
+            )
+            issue_title = issue.get("title", "Unknown Issue") if issue else "Unknown Issue"
+            elements.append(Paragraph(f"Issue: {issue_title}", styles["SubHead"]))
+
+            # Supporting items
+            for item in ver.get("supporting_items", [])[:5]:
+                elements.append(Paragraph(f"&nbsp;&nbsp;<font color='#16a34a'>[SUPPORTS]</font> {item.get('filename', '')}: \"{item.get('quote', '')[:150]}\" (Confidence: {item.get('confidence', 'moderate')})", styles["Small"]))
+
+            # Undermining items
+            for item in ver.get("undermining_items", [])[:5]:
+                elements.append(Paragraph(f"&nbsp;&nbsp;<font color='#dc2626'>[UNDERMINES]</font> {item.get('filename', '')}: \"{item.get('quote', '')[:150]}\" (Confidence: {item.get('confidence', 'moderate')})", styles["Small"]))
+
+            # Missing items
+            missing = ver.get("missing_items", [])
+            if missing:
+                elements.append(Paragraph(f"&nbsp;&nbsp;<font color='#d97706'>[MISSING]</font> {', '.join(m.get('description', str(m))[:80] for m in missing[:3])}", styles["Small"]))
+
+            elements.append(Spacer(1, 3*mm))
+
+    elements.append(PageBreak())
+
+    # ── SECTION 4: VERIFICATION SUMMARY ──
+    elements.append(Paragraph("4. Verification Summary", styles["SectionHead"]))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+    elements.append(Spacer(1, 3*mm))
+
+    verified_count = len([g for g in grounds if g.get("verification_status") in ("reviewed", "verified")])
+    unverified_count = len([g for g in grounds if g.get("verification_status") not in ("reviewed", "verified")])
+    human_review_count = len([g for g in grounds if g.get("requires_human_review")])
+
+    summary_data = [
+        ["Total grounds identified", str(len(grounds))],
+        ["Verified/Reviewed grounds", str(verified_count)],
+        ["Unverified grounds", str(unverified_count)],
+        ["Grounds requiring human review", str(human_review_count)],
+        ["Timeline events", str(len(timeline))],
+        ["Documents on file", str(len(documents))],
+        ["Issue verifications completed", str(len(verifications))],
+    ]
+    sum_table = Table(summary_data, colWidths=[80*mm, 40*mm])
+    sum_table.setStyle(TableStyle([
+        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("LINEBELOW", (0, 0), (-1, -2), 0.5, colors.HexColor("#e2e8f0")),
+    ]))
+    elements.append(sum_table)
+
+    elements.append(Spacer(1, 8*mm))
+
+    # Document list
+    elements.append(Paragraph("Documents on File", styles["SubHead"]))
+    for d in documents:
+        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {d.get('filename', 'Unknown')}", styles["Small"]))
+
+    elements.append(Spacer(1, 10*mm))
+    elements.append(Paragraph("NOT LEGAL ADVICE — AI-assisted preparation material for legal review. All grounds, authorities, and procedural issues should be independently verified before use in court or formal advice.", styles["Disclaimer"]))
+    elements.append(Paragraph(f"Generated {datetime.now(timezone.utc).strftime('%d %B %Y %H:%M UTC')} by Appeal Case Manager", styles["Disclaimer"]))
+
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+
+    defendant = case.get("defendant_name", "case").replace(" ", "_")
+    filename = f"Barrister_Acceptance_Pack_{defendant}_{datetime.now(timezone.utc).strftime('%Y%m%d')}.pdf"
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
