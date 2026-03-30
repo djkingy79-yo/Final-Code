@@ -190,20 +190,54 @@ const BarristerGroundBlock = ({ ground }) => (
       <VerificationBadge status={ground.verification_status} />
     </div>
 
-    <div className="text-sm text-slate-600 mb-2">{ground.description}</div>
+    {ground.ground_type && (
+      <div className="text-xs uppercase tracking-wide text-slate-400 mb-2">
+        {String(ground.ground_type).replace(/_/g, " ")}
+      </div>
+    )}
+
+    {ground.description && (
+      <div className="text-sm text-slate-600 mb-2 whitespace-pre-wrap">{ground.description}</div>
+    )}
 
     <LegitimacyPanel scores={ground.legitimacy_scores} />
 
-    <EvidenceSummary items={ground.supporting_evidence} />
+    <EvidenceSummary items={ground.supporting_evidence} expanded />
 
-    {ground.similar_cases?.length > 0 && (
-      <div className="mt-3 text-sm">
-        <div className="font-medium mb-1 text-slate-700">Comparable Cases</div>
-        {ground.similar_cases.map((c, i) => (
-          <div key={i} className="text-slate-600">
-            {c.case_name}{c.citation ? ` \u2014 ${c.citation}` : ""} {c.verification_status ? `(${c.verification_status})` : ""}
-          </div>
-        ))}
+    {/* Comparable Cases — with jurisdiction and relevance note */}
+    {Array.isArray(ground.similar_cases) && ground.similar_cases.length > 0 && (
+      <div className="mt-3">
+        <div className="font-medium text-sm mb-2 text-slate-700">Comparable Cases</div>
+        <div className="space-y-2">
+          {ground.similar_cases.map((c, i) => (
+            <div key={i} className="text-xs border border-slate-100 rounded p-2">
+              <div className="font-medium text-slate-700">{c.case_name || "Unnamed case"}</div>
+              {c.citation && <div className="text-slate-600">{c.citation}</div>}
+              <div className="text-slate-400 mt-1">
+                {c.jurisdiction ? `${String(c.jurisdiction).toUpperCase()} \u2022 ` : ""}
+                {c.verification_status || "unverified"}
+              </div>
+              {c.relevance_note && <div className="mt-1 text-slate-500">{c.relevance_note}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Law Sections */}
+    {Array.isArray(ground.law_sections) && ground.law_sections.length > 0 && (
+      <div className="mt-3">
+        <div className="font-medium text-sm mb-2 text-slate-700">Law Sections</div>
+        <div className="space-y-1">
+          {ground.law_sections.map((section, idx) => (
+            <div key={idx} className="text-xs text-slate-600">
+              {section.section ? `${section.section} ` : ""}
+              {section.act || ""}
+              {section.title ? ` \u2014 ${section.title}` : ""}
+              {section.verification_status ? ` (${section.verification_status})` : ""}
+            </div>
+          ))}
+        </div>
       </div>
     )}
 
@@ -956,6 +990,43 @@ export default function BarristerView() {
                   {grounds.map((ground) => (
                     <BarristerGroundBlock key={ground.ground_id} ground={ground} />
                   ))}
+                </div>
+              )}
+
+              {/* Verification and Review Status Section */}
+              {grounds.length > 0 && (
+                <div data-testid="barrister-verification-section">
+                  <div className="border-l-4 border-teal-500 pl-4 mb-4">
+                    <h3
+                      className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
+                      style={{ fontFamily: "Crimson Pro, serif" }}
+                    >
+                      Verification and Review Status
+                    </h3>
+                  </div>
+                  <div className="border border-slate-200 rounded-lg p-4 text-sm space-y-2 bg-slate-50">
+                    <div className="text-slate-700">
+                      Grounds requiring human review:{" "}
+                      <span className="font-semibold text-slate-900">
+                        {grounds.filter((g) => g?.requires_human_review).length}
+                      </span>
+                    </div>
+                    <div className="text-slate-700">
+                      Unverified grounds:{" "}
+                      <span className="font-semibold text-slate-900">
+                        {grounds.filter((g) => !g?.verification_status || g?.verification_status === "unverified" || g?.verification_status === "draft").length}
+                      </span>
+                    </div>
+                    <div className="text-slate-700">
+                      Verified grounds:{" "}
+                      <span className="font-semibold text-slate-900">
+                        {grounds.filter((g) => g?.verification_status === "verified" || g?.verification_status === "reviewed").length}
+                      </span>
+                    </div>
+                    <div className="text-xs text-slate-500 pt-2 border-t border-slate-200">
+                      All authorities, statutory references, procedural pathways, and evidentiary propositions should be independently verified before reliance in advice, filing, or hearing preparation.
+                    </div>
+                  </div>
                 </div>
               )}
 

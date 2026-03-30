@@ -77,25 +77,25 @@ const CaseStrengthMeter = ({ caseId }) => {
 
   const breakdownItems = [
     {
-      label: "Grounds of Merit",
+      label: "Grounds Review Progress",
       icon: Gavel,
       score: strength.breakdown.grounds.score,
       detail: `${strength.breakdown.grounds.strong} strong, ${strength.breakdown.grounds.moderate} moderate, ${strength.breakdown.grounds.weak} weak`
     },
     {
-      label: "Documentation",
+      label: "Documentation Completeness",
       icon: FileText,
       score: strength.breakdown.documentation.score,
       detail: `${strength.breakdown.documentation.with_text}/${strength.breakdown.documentation.total_docs} docs with extracted text`
     },
     {
-      label: "Timeline",
+      label: "Timeline Development",
       icon: Clock,
       score: strength.breakdown.timeline.score,
       detail: `${strength.breakdown.timeline.event_count} events documented`
     },
     {
-      label: "Preparation",
+      label: "Preparation Checklist Completion",
       icon: CheckCircle2,
       score: strength.breakdown.preparation.score,
       detail: `${strength.breakdown.preparation.completed}/${strength.breakdown.preparation.total} checklist items`
