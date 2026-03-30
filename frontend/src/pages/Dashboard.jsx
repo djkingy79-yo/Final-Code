@@ -125,7 +125,14 @@ const Dashboard = ({ user }) => {
     }
 
     try {
-      const response = await axios.post(`${API}/cases`, newCase);
+      // Strip empty strings so backend defaults apply
+      const payload = {};
+      for (const [key, value] of Object.entries(newCase)) {
+        if (value !== "" && value !== null && value !== undefined) {
+          payload[key] = value;
+        }
+      }
+      const response = await axios.post(`${API}/cases`, payload);
       setCases([response.data, ...cases]);
       setShowNewCaseDialog(false);
       setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "", offence_type: "", sentence: "", summary: "" });
@@ -134,6 +141,8 @@ const Dashboard = ({ user }) => {
       const detail = error?.response?.data?.detail;
       if (typeof detail === "string") {
         toast.error(detail);
+      } else if (Array.isArray(detail) && detail.length > 0) {
+        toast.error(detail[0]?.msg || "Validation error — check your inputs");
       } else if (detail?.message) {
         toast.error(detail.message);
       } else if (error?.response?.status === 401) {
