@@ -1,0 +1,98 @@
+{
+  "summary": "Completed testing of the auto-detect bug fix. The critical bug where creating a case with 'Auto-detect' (empty state/offence_category) would default to NSW/Homicide has been FIXED. Backend tests confirm: (1) Case creation with empty state/offence_category results in None values, NOT nsw/homicide, (2) Explicit state/offence_category values are preserved, (3) Document upload triggers background auto-detection that populates case metadata from document content via LLM.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration134_auto_detect_fix.py",
+    "/app/test_reports/pytest/iteration134_auto_detect_fix.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED FIX: CaseCreate model (lines 214-215) correctly defines state: Optional[StateType] = None and offence_category: Optional[OffenceCategoryType] = None",
+    "VERIFIED FIX: Frontend handleCreateCase (lines 128-134) strips empty strings from payload so backend receives undefined for empty fields",
+    "VERIFIED: Document upload triggers _background_auto_detect_metadata which uses LLM to extract state, offence_category, offence_type, sentence, court from document content",
+    "VERIFIED: Background task only runs if content_text > 200 characters (line 228-229 in documents.py)",
+    "VERIFIED: Auto-detection validates against valid_cats and valid_sts lists before updating case"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration134_auto_detect_fix.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "N/A - App uses Emergent Google Auth which requires OAuth flow that cannot be automated in Playwright"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88",
+    "note": "Email/password login works via API but frontend uses Emergent Google Auth"
+  },
+  "seed_data_creation": "Test cases created and cleaned up during testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "The auto-detect bug fix has been verified. Case creation with empty state/offence_category now correctly results in None values (not nsw/homicide). Document upload triggers background LLM task that auto-detects metadata - wait 20-30 seconds after upload for task to complete. The app uses Emergent Google Auth so UI testing requires Google OAuth flow.",
+  "verified_features": {
+    "case_creation_empty_fields": {
+      "endpoint": "POST /api/cases",
+      "payload": {"title": "Test", "defendant_name": "Test"},
+      "expected_result": "state=None, offence_category=None",
+      "actual_result": "state=None, offence_category=None",
+      "status": "PASS - BUG FIXED"
+    },
+    "case_creation_explicit_fields": {
+      "endpoint": "POST /api/cases",
+      "payload": {"title": "Test", "defendant_name": "Test", "state": "qld", "offence_category": "robbery_theft"},
+      "expected_result": "state=qld, offence_category=robbery_theft",
+      "actual_result": "state=qld, offence_category=robbery_theft",
+      "status": "PASS"
+    },
+    "document_upload_auto_detection": {
+      "endpoint": "POST /api/cases/{case_id}/documents",
+      "description": "Upload document with QLD armed robbery content",
+      "expected_result": "Background task populates state, offence_category, offence_type, sentence, court",
+      "actual_result": "Fields populated after ~25 seconds",
+      "status": "PASS"
+    },
+    "dashboard_api": {
+      "endpoint": "GET /api/cases",
+      "status": "PASS"
+    },
+    "case_detail_api": {
+      "endpoint": "GET /api/cases/{case_id}",
+      "status": "PASS"
+    },
+    "offence_categories_api": {
+      "endpoint": "GET /api/offence-categories",
+      "status": "PASS"
+    },
+    "states_api": {
+      "endpoint": "GET /api/states",
+      "status": "PASS"
+    }
+  },
+  "tests_executed": {
+    "test_health_endpoint": "PASS",
+    "test_login_returns_session_token": "PASS",
+    "test_create_case_with_empty_state_and_offence_category": "PASS - CRITICAL BUG FIX VERIFIED",
+    "test_create_case_with_explicit_state_and_offence_category": "PASS",
+    "test_create_case_with_only_state_set": "PASS",
+    "test_create_case_with_only_offence_category_set": "PASS",
+    "test_document_upload_triggers_auto_detection": "PASS",
+    "test_get_cases_returns_list": "PASS",
+    "test_get_case_detail": "PASS",
+    "test_get_offence_categories": "PASS",
+    "test_get_states": "PASS",
+    "test_update_case_preserves_none_values": "PASS"
+  },
+  "bug_fix_verification": {
+    "original_bug": "Creating a case with 'Auto-detect' (leaving state and offence_category empty) would default to NSW/Homicide",
+    "fix_applied": "Made state and offence_category Optional[None] in Pydantic models. Frontend strips empty strings from payload.",
+    "verification_result": "FIXED - Case creation with empty fields now results in state=None, offence_category=None"
+  }
+}
