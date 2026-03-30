@@ -287,6 +287,60 @@ async def get_pipeline_summary(case_id: str, request: Request):
     }
 
 
+@router.get("/dashboard-summary", response_model=dict)
+async def get_pipeline_dashboard_summary(request: Request):
+    """Portfolio-level pipeline summary across all user cases."""
+    user = await get_current_user(request)
+
+    cases = await db.cases.find(
+        {"user_id": user.user_id},
+        {"_id": 0, "case_id": 1}
+    ).to_list(5000)
+
+    case_ids = [c["case_id"] for c in cases]
+
+    if not case_ids:
+        return {
+            "total_cases": 0,
+            "cases_with_case_extract": 0,
+            "cases_with_classified_issues": 0,
+            "cases_with_verified_issues": 0,
+            "cases_with_pipeline_reports": 0,
+        }
+
+    case_extract_ids = await db.case_extracts.distinct(
+        "case_id",
+        {"user_id": user.user_id, "case_id": {"$in": case_ids}}
+    )
+
+    classified_issue_case_ids = await db.issue_classifications.distinct(
+        "case_id",
+        {"user_id": user.user_id, "case_id": {"$in": case_ids}}
+    )
+
+    verified_issue_case_ids = await db.issue_verifications.distinct(
+        "case_id",
+        {"user_id": user.user_id, "case_id": {"$in": case_ids}}
+    )
+
+    pipeline_report_case_ids = await db.reports.distinct(
+        "case_id",
+        {
+            "user_id": user.user_id,
+            "case_id": {"$in": case_ids},
+            "content.draft_source": "pipeline",
+        }
+    )
+
+    return {
+        "total_cases": len(case_ids),
+        "cases_with_case_extract": len(case_extract_ids),
+        "cases_with_classified_issues": len(classified_issue_case_ids),
+        "cases_with_verified_issues": len(verified_issue_case_ids),
+        "cases_with_pipeline_reports": len(pipeline_report_case_ids),
+    }
+
+
 @router.post("/cases/{case_id}/reports/draft", response_model=dict)
 async def draft_report(case_id: str, request: Request):
     user = await get_current_user(request)

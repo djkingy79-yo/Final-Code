@@ -39,6 +39,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import DisclaimerReminder from "../components/DisclaimerReminder";
 import ShareCaseModal from "../components/ShareCaseModal";
 import NotificationBell from "../components/NotificationBell";
+import DashboardPipelineSummary from "../components/DashboardPipelineSummary";
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate();
@@ -429,6 +430,9 @@ const Dashboard = ({ user }) => {
               </p>
             </div>
           </section>
+
+          {/* Pipeline Portfolio Summary */}
+          <DashboardPipelineSummary />
 
           {/* Cases Section */}
           <section>
