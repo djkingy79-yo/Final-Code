@@ -80,8 +80,8 @@ TASK_CONFIGS: dict[str, dict] = {
         "temperature": 0.1,
     },
     "document_extraction": {
-        "max_tokens": 12000,
-        "timeout_seconds": 120,
+        "max_tokens": 8000,
+        "timeout_seconds": 90,
         "require_json": True,
         "temperature": 0.1,
     },
@@ -92,10 +92,10 @@ TASK_CONFIGS: dict[str, dict] = {
         "temperature": 0.15,
     },
     "issue_verification": {
-        "max_tokens": 12000,
-        "timeout_seconds": 150,
+        "max_tokens": 10000,
+        "timeout_seconds": 120,
         "require_json": True,
-        "temperature": 0.15,
+        "temperature": 0.1,
     },
 }
 

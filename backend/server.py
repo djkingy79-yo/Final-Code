@@ -56,6 +56,7 @@ from routers.payments import router as payments_router
 from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
 from routers.pipeline import router as pipeline_router
+from routers.pipeline_staged import router as pipeline_staged_router
 
 # ── MongoDB client reference (for shutdown) ──
 MONGO_URL = os.environ.get("MONGO_URL")
@@ -3802,6 +3803,7 @@ app.include_router(payments_router)
 app.include_router(resources_router)
 app.include_router(analysis_router)
 app.include_router(pipeline_router)
+app.include_router(pipeline_staged_router)
 
 # ── CORS Middleware ──
 app.add_middleware(

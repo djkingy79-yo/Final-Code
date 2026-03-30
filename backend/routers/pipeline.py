@@ -1123,7 +1123,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
             # Missing items
             missing = ver.get("missing_items", [])
             if missing:
-                elements.append(Paragraph(f"&nbsp;&nbsp;<font color='#d97706'>[MISSING]</font> {', '.join(m.get('description', str(m))[:80] for m in missing[:3])}", styles["Small"]))
+                elements.append(Paragraph(f"&nbsp;&nbsp;<font color='#d97706'>[MISSING]</font> {', '.join(str(m.get('description', m) if isinstance(m, dict) else m)[:80] for m in missing[:3])}", styles["Small"]))
 
             elements.append(Spacer(1, 3*mm))
 
