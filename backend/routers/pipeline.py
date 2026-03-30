@@ -6,6 +6,7 @@ Extract → Classify → Verify → Project → Draft
 ADDITIVE: Does not remove any existing route, feature, or collection.
 """
 from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
+from pydantic import BaseModel
 from datetime import datetime, timezone
 import uuid
 import logging
@@ -14,14 +15,82 @@ from config import db
 from auth_utils import get_current_user
 from services.llm_service import call_llm_for_json
 from services.legitimacy_engine import calculate_ground_rating
+from services.pipeline.verify import verify_issue as pipeline_verify_issue
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cases", tags=["pipeline"])
 
 
+class VerifyBatchRequest(BaseModel):
+    limit: int = 3
+
+
 # ============================================================================
 # HELPERS
 # ============================================================================
+
+def _issue_priority_rank(issue: dict) -> tuple:
+    """Lower tuple sorts earlier."""
+    preferred_ground_order = {
+        "judicial_error": 0,
+        "procedural_error": 1,
+        "miscarriage_of_justice": 2,
+        "fresh_evidence": 3,
+        "sentencing_error": 4,
+        "jury_irregularity": 5,
+        "ineffective_counsel": 6,
+        "prosecution_misconduct": 7,
+        "constitutional_violation": 8,
+        "other": 9,
+    }
+    confidence_order = {
+        "strong": 0,
+        "moderate": 1,
+        "weak": 2,
+    }
+    return (
+        preferred_ground_order.get(issue.get("ground_type", "other"), 9),
+        confidence_order.get(issue.get("classification_confidence", "moderate"), 1),
+        str(issue.get("title", "")).lower(),
+    )
+
+
+async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> int:
+    """Project staged issues/verifications into grounds_of_merit."""
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    ).to_list(500)
+    synced = 0
+    for issue in issues:
+        verification = await db.issue_verifications.find_one(
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user_id}, {"_id": 0}
+        )
+        ground_doc = {
+            "case_id": case_id,
+            "user_id": user_id,
+            "title": issue.get("title"),
+            "ground_type": issue.get("ground_type", "other"),
+            "description": issue.get("description", ""),
+            "strength": (verification or {}).get("legitimacy_scores", {}).get(
+                "rating", issue.get("classification_confidence", "moderate")
+            ),
+            "status": "investigated" if verification else "identified",
+            "supporting_evidence": (verification or {}).get("supporting_items", []),
+            "law_sections": (verification or {}).get("law_sections", []),
+            "similar_cases": (verification or {}).get("similar_cases", []),
+            "legitimacy_scores": (verification or {}).get("legitimacy_scores", {}),
+            "source_mode": "derived",
+            "requires_human_review": (verification or {}).get("requires_human_review", True),
+            "verification_status": (verification or {}).get("verification_status", "unverified"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.grounds_of_merit.update_one(
+            {"case_id": case_id, "user_id": user_id, "title": ground_doc["title"], "ground_type": ground_doc["ground_type"]},
+            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{uuid.uuid4().hex[:12]}", "created_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True,
+        )
+        synced += 1
+    return synced
 
 def _gen_id(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex[:12]}"
@@ -711,6 +780,86 @@ async def get_issue_verification(case_id: str, issue_id: str, request: Request):
         return {"status": "not_verified", "message": "No verification found for this issue."}
 
     return verification
+
+
+@router.post("/{case_id}/issues/verify-batch", response_model=dict)
+async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Request):
+    """Verify a batch of top unverified issues and sync the projection into grounds_of_merit."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case_extract:
+        raise HTTPException(status_code=400, detail="Case extract not found. Run extraction first.")
+
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(500)
+    if not issues:
+        raise HTTPException(status_code=400, detail="No classified issues found. Run classification first.")
+
+    eligible = []
+    for issue in issues:
+        existing_verification = await db.issue_verifications.find_one(
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id}, {"_id": 0}
+        )
+        if existing_verification:
+            continue
+        eligible.append(issue)
+
+    eligible.sort(key=_issue_priority_rank)
+    limit = max(1, min(int(payload.limit or 1), 20))
+    selected_issues = eligible[:limit]
+
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+
+    verified = 0
+    failed = 0
+    verified_issue_ids = []
+
+    for issue in selected_issues:
+        try:
+            verification = await pipeline_verify_issue(case, issue, supporting_context)
+            verification_dict = verification.model_dump()
+            verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+            await db.issue_verifications.update_one(
+                {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id},
+                {"$set": verification_dict},
+                upsert=True,
+            )
+            verified += 1
+            verified_issue_ids.append(issue["issue_id"])
+        except Exception as e:
+            logger.warning(f"Batch verification failed for issue {issue.get('issue_id')}: {e}")
+            failed += 1
+
+    synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
+
+    return {
+        "requested_limit": payload.limit,
+        "applied_limit": limit,
+        "eligible_issues": len(eligible),
+        "attempted": len(selected_issues),
+        "verified": verified,
+        "failed": failed,
+        "verified_issue_ids": verified_issue_ids,
+        "synced_count": synced_count,
+        "message": (
+            f"Attempted verification for {len(selected_issues)} issue(s); "
+            f"verified {verified}, failed {failed}, synced {synced_count} projected ground(s)."
+        ),
+    }
 
 
 # ============================================================================

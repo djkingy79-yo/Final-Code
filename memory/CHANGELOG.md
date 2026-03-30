@@ -1,5 +1,21 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Batch Verification Endpoint
+
+### Summary
+Added `POST /api/cases/{case_id}/issues/verify-batch` to `pipeline.py` for priority-ranked batch verification of classified issues.
+
+### New Components
+- `VerifyBatchRequest` Pydantic model (limit field, default=3, max=20)
+- `_issue_priority_rank()` — sorts by ground type importance then confidence
+- `_sync_pipeline_projection_to_grounds()` — projects issues/verifications into grounds_of_merit
+- `verify_batch` route — selects unverified issues, verifies them, syncs to grounds
+
+### Testing
+- `verify-batch` with limit=2: eligible=9, attempted=2, verified=2, failed=0, synced=17 grounds ✅
+
+---
+
 ## 30 March 2026 — Tiered Auto-Verification in Report Generation
 
 ### Summary
