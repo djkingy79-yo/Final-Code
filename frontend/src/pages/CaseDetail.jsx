@@ -64,6 +64,7 @@ import ShareCaseModal from "../components/ShareCaseModal";
 import CaseChat from "../components/CaseChat";
 import ActivityFeed from "../components/ActivityFeed";
 import CaseStrengthMeter from "../components/CaseStrengthMeter";
+import CasePipelineSummary from "../components/CasePipelineSummary";
 import PipelineProgress from "../components/PipelineProgress";
 import { buildExportHtml } from "../utils/exportHtml";
 
@@ -1292,8 +1293,11 @@ const CaseDetail = ({ user }) => {
               }}
             />
 
-            {/* Appeal Preparation Readiness */}
-            <CaseStrengthMeter caseId={caseId} />
+            {/* Appeal Preparation Readiness + Pipeline Summary */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
+              <CaseStrengthMeter caseId={caseId} />
+              <CasePipelineSummary caseId={caseId} />
+            </div>
 
             {/* AI Progress Analysis Button */}
             <Card>

@@ -227,6 +227,66 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
     return {"synced_count": count}
 
 
+@router.get("/cases/{case_id}/summary", response_model=dict)
+async def get_pipeline_summary(case_id: str, request: Request):
+    """Return a high-level summary of the pipeline state for a case."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+
+    document_extract_count = await db.document_extracts.count_documents(
+        {"case_id": case_id, "user_id": user.user_id}
+    )
+
+    issue_classification_count = await db.issue_classifications.count_documents(
+        {"case_id": case_id, "user_id": user.user_id}
+    )
+
+    issue_verification_count = await db.issue_verifications.count_documents(
+        {"case_id": case_id, "user_id": user.user_id}
+    )
+
+    synced_grounds_count = await db.grounds_of_merit.count_documents(
+        {"case_id": case_id, "user_id": user.user_id, "source_mode": "derived"}
+    )
+
+    pipeline_drafted_reports_count = await db.reports.count_documents(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "content.draft_source": "pipeline",
+        }
+    )
+
+    total_reports_count = await db.reports.count_documents(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+        }
+    )
+
+    return {
+        "case_extract_present": case_extract is not None,
+        "case_extract_id": case_extract.get("case_extract_id") if case_extract else None,
+        "case_extract_created_at": case_extract.get("created_at") if case_extract else None,
+        "case_extract_verification_status": case_extract.get("verification_status") if case_extract else None,
+        "document_extract_count": document_extract_count,
+        "issue_classification_count": issue_classification_count,
+        "issue_verification_count": issue_verification_count,
+        "synced_grounds_count": synced_grounds_count,
+        "pipeline_drafted_reports_count": pipeline_drafted_reports_count,
+        "total_reports_count": total_reports_count,
+    }
+
+
 @router.post("/cases/{case_id}/reports/draft", response_model=dict)
 async def draft_report(case_id: str, request: Request):
     user = await get_current_user(request)
