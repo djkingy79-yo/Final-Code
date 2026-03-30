@@ -59,7 +59,7 @@ const Dashboard = ({ user }) => {
     case_number: "",
     court: "",
     judge: "",
-    state: "nsw",
+    state: "",
     offence_category: "",
     offence_type: "",
     sentence: "",
@@ -135,7 +135,7 @@ const Dashboard = ({ user }) => {
       const response = await axios.post(`${API}/cases`, payload);
       setCases([response.data, ...cases]);
       setShowNewCaseDialog(false);
-      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "nsw", offence_category: "", offence_type: "", sentence: "", summary: "" });
+      setNewCase({ title: "", defendant_name: "", case_number: "", court: "", judge: "", state: "", offence_category: "", offence_type: "", sentence: "", summary: "" });
       toast.success("Case created successfully");
     } catch (error) {
       const detail = error?.response?.data?.detail;
@@ -670,7 +670,7 @@ const Dashboard = ({ user }) => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="offence_category">Offence Category *</Label>
+                  <Label htmlFor="offence_category">Offence Category</Label>
                   <select
                     id="offence_category"
                     value={newCase.offence_category}
@@ -685,7 +685,7 @@ const Dashboard = ({ user }) => {
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="state">State/Territory *</Label>
+                  <Label htmlFor="state">State/Territory</Label>
                   <select
                     id="state"
                     value={newCase.state}
@@ -693,6 +693,7 @@ const Dashboard = ({ user }) => {
                     className="w-full h-12 px-3 mt-1.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
                     data-testid="new-case-state"
                   >
+                    <option value="">Auto-detect from documents</option>
                     {australianStates.map(state => (
                       <option key={state.id} value={state.id}>{state.name} ({state.abbreviation})</option>
                     ))}
