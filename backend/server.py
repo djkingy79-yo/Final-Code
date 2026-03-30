@@ -851,6 +851,13 @@ async def _load_issue_arguments(case_id: str, user_id: str) -> list:
     ).to_list(500)
 
 
+async def _load_submission_draft(case_id: str, user_id: str):
+    return await db.submissions_drafts.find_one(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0}
+    )
+
+
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
     
@@ -893,6 +900,7 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
 
     # Load issue arguments (if any exist)
     pipeline_arguments = await _load_issue_arguments(case_id, user_id) if high_value_report else []
+    submission_draft = await _load_submission_draft(case_id, user_id) if high_value_report else None
 
     # Get documents with full content
     documents = await db.documents.find(
@@ -2160,6 +2168,7 @@ REPORT TO EXPAND:
             "staleness": pipeline_status.get("staleness") if pipeline_status else None,
             "auto_refreshed": pipeline_status.get("status") == "refreshed" if pipeline_status else False,
             "pipeline_argument_count": len(pipeline_arguments),
+            "submission_draft_present": bool(submission_draft),
         },
     }
 

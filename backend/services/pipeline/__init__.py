@@ -3,3 +3,4 @@ from services.pipeline.classify import classify_case_issues
 from services.pipeline.verify import verify_issue
 from services.pipeline.draft import draft_report_from_verified_material
 from services.pipeline.argue import build_issue_argument
+from services.pipeline.submit import build_submissions_draft

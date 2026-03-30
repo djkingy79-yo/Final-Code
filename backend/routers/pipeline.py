@@ -17,6 +17,7 @@ from services.llm_service import call_llm_for_json
 from services.legitimacy_engine import calculate_ground_rating
 from services.pipeline.verify import verify_issue as pipeline_verify_issue
 from services.pipeline.argue import build_issue_argument
+from services.pipeline.submit import build_submissions_draft
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cases", tags=["pipeline"])
@@ -975,6 +976,104 @@ async def argue_batch(case_id: str, request: Request):
         "failed": failed,
         "message": f"Attempted {attempted} issue arguments; completed {completed}, failed {failed}.",
     }
+
+
+async def _load_case_pipeline_materials(case_id: str, user_id: str) -> dict:
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    )
+
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    ).to_list(500)
+
+    verifications = await db.issue_verifications.find(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    ).to_list(500)
+
+    arguments = await db.issue_arguments.find(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    ).to_list(500)
+
+    return {
+        "case_extract": case_extract,
+        "issues": issues,
+        "verifications": verifications,
+        "arguments": arguments,
+    }
+
+
+# ============================================================================
+# STAGE 3c — SUBMISSIONS DRAFT
+# ============================================================================
+
+@router.post("/{case_id}/submissions-draft", response_model=dict)
+async def build_case_submissions_draft(case_id: str, request: Request):
+    """Build structured appellate submissions draft from staged pipeline artifacts."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    materials = await _load_case_pipeline_materials(case_id, user.user_id)
+
+    if not materials["case_extract"]:
+        raise HTTPException(status_code=400, detail="Case extract not found. Run extraction first.")
+    if not materials["issues"]:
+        raise HTTPException(status_code=400, detail="No classified issues found. Run classification first.")
+    if not materials["verifications"]:
+        raise HTTPException(status_code=400, detail="No verified issues found. Verify issues first.")
+    if not materials["arguments"]:
+        raise HTTPException(status_code=400, detail="No issue arguments found. Build arguments first.")
+
+    draft = await build_submissions_draft(
+        case=case,
+        case_extract=materials["case_extract"],
+        issues=materials["issues"],
+        verifications=materials["verifications"],
+        arguments=materials["arguments"],
+    )
+
+    draft_doc = {
+        "submission_draft_id": f"sub_{uuid.uuid4().hex[:12]}",
+        "case_id": case_id,
+        "user_id": user.user_id,
+        "stage": "submit",
+        "status": "completed",
+        **draft,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+    await db.submissions_drafts.update_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"$set": draft_doc},
+        upsert=True,
+    )
+
+    return draft_doc
+
+
+@router.get("/{case_id}/submissions-draft-view", response_model=dict)
+async def get_case_submissions_draft(case_id: str, request: Request):
+    """Get saved submissions draft for a case."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    draft = await db.submissions_drafts.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not draft:
+        raise HTTPException(status_code=404, detail="Submissions draft not found")
+
+    return draft
 
 
 # ============================================================================

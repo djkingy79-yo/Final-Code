@@ -54,6 +54,12 @@ async function argueBatch(caseId) {
   });
 }
 
+async function buildSubmissionsDraft(caseId) {
+  return apiRequest(`/cases/${caseId}/submissions-draft`, {
+    method: "POST",
+  });
+}
+
 export default function PipelineProgress({
   caseId,
   documents = [],
@@ -168,6 +174,9 @@ export default function PipelineProgress({
         <Button variant="outline" size="sm" onClick={() => runAction(() => argueBatch(caseId))} disabled={loading} className="bg-teal-700 text-white hover:bg-teal-600" data-testid="pipeline-argue-batch-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Build Arguments"}
         </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => buildSubmissionsDraft(caseId))} disabled={loading} className="bg-purple-700 text-white hover:bg-purple-600" data-testid="pipeline-submissions-draft-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Build Submissions Draft"}
+        </Button>
       </div>
 
       {error && <div className="mt-3 text-sm text-red-700" data-testid="pipeline-error">{error}</div>}
@@ -231,6 +240,17 @@ export default function PipelineProgress({
               <div>Attempted: {result.attempted ?? 0}</div>
               <div>Completed: {result.completed ?? 0}</div>
               <div>Failed: {result.failed ?? 0}</div>
+            </>
+          ) : null}
+
+          {"draft_title" in result ? (
+            <>
+              <div className="font-medium mt-2">Submissions Draft</div>
+              <div>Title: {result.draft_title}</div>
+              <div>Proposed grounds: {Array.isArray(result.proposed_grounds) ? result.proposed_grounds.length : 0}</div>
+              <div>Ground submissions: {Array.isArray(result.ground_submissions) ? result.ground_submissions.length : 0}</div>
+              <div>Authorities: {Array.isArray(result.authority_list) ? result.authority_list.length : 0}</div>
+              <div>Evidence references: {Array.isArray(result.evidence_reference_list) ? result.evidence_reference_list.length : 0}</div>
             </>
           ) : null}
         </div>

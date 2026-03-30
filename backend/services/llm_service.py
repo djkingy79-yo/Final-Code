@@ -103,6 +103,12 @@ TASK_CONFIGS: dict[str, dict] = {
         "require_json": True,
         "temperature": 0.15,
     },
+    "submissions_draft": {
+        "max_tokens": 12000,
+        "timeout_seconds": 150,
+        "require_json": True,
+        "temperature": 0.15,
+    },
 }
 
 
