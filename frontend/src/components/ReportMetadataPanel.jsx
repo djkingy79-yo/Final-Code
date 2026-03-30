@@ -17,6 +17,12 @@ const ReportMetadataPanel = ({ metadata, verificationStatus }) => {
       {typeof metadata?.grounds_considered === "number" && (
         <div className="text-slate-600">Grounds considered: {metadata.grounds_considered}</div>
       )}
+      {typeof metadata?.pipeline_issue_count === "number" && (
+        <div className="text-slate-600">Pipeline issues considered: {metadata.pipeline_issue_count}</div>
+      )}
+      {typeof metadata?.pipeline_verification_count === "number" && (
+        <div className="text-slate-600">Verified issues considered: {metadata.pipeline_verification_count}</div>
+      )}
       <div className="text-slate-600">Status: {verificationStatus || metadata?.verification_status || "draft"}</div>
       {metadata?.confidence_note && <div className="mt-2 text-slate-500 italic">{metadata.confidence_note}</div>}
     </div>

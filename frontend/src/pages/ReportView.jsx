@@ -32,6 +32,26 @@ import { API } from "../App";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
 import VerificationBadge from "../components/VerificationBadge";
 
+const DraftSourceBadge = ({ draftSource }) => {
+  const value = String(draftSource || "legacy").toLowerCase();
+
+  const classes = {
+    pipeline: "border-green-700 text-green-700",
+    legacy: "border-yellow-700 text-yellow-700",
+  };
+
+  const labels = {
+    pipeline: "Drafted from verified material",
+    legacy: "Drafted from legacy inputs",
+  };
+
+  return (
+    <span className={`px-2 py-1 rounded text-xs font-medium border ${classes[value] || classes.legacy}`} data-testid="draft-source-badge">
+      {labels[value] || "Draft source unknown"}
+    </span>
+  );
+};
+
 const titleFromSnake = (value) => {
   if (!value) return "Not specified";
   return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -1081,10 +1101,57 @@ const ReportView = () => {
 
           {/* AI-analysis warning + metadata */}
           <div className="px-6 sm:px-8 py-4 bg-slate-50 border-t border-slate-200" data-testid="report-ai-footer">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <VerificationBadge status={report?.verification_status || report?.source_mode || "draft"} />
+              <DraftSourceBadge draftSource={report?.content?.draft_source} />
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            {report?.content?.draft_source === "pipeline" ? (
+              <div className="mt-2 mb-2 text-xs opacity-80">
+                This report was drafted from extracted, classified, and verified pipeline materials rather than raw document blobs.
+              </div>
+            ) : null}
+
+            {/* Pipeline Draft Summary */}
+            {report?.content?.draft_source === "pipeline" || (report?.metadata?.pipeline_issue_count ?? 0) > 0 ? (
+              <div className="mt-4 rounded border p-3 text-xs" data-testid="pipeline-draft-summary">
+                <div className="font-semibold mb-1">Pipeline Draft Summary</div>
+                <div>Pipeline issues considered: {report?.metadata?.pipeline_issue_count ?? 0}</div>
+                <div>Verified issues considered: {report?.metadata?.pipeline_verification_count ?? 0}</div>
+
+                {report?.metadata?.pipeline_refresh_before_draft ? (
+                  <>
+                    <div className="mt-2 font-medium">Pre-draft pipeline activity</div>
+                    <div>
+                      Refreshed: {report.metadata.pipeline_refresh_before_draft.refreshed ? "Yes" : "No"}
+                    </div>
+                    <div>
+                      Extracted: {report.metadata.pipeline_refresh_before_draft.extracted_count ?? 0}
+                    </div>
+                    <div>
+                      Classified: {report.metadata.pipeline_refresh_before_draft.classified_count ?? 0}
+                    </div>
+                    <div>
+                      Synced: {report.metadata.pipeline_refresh_before_draft.synced_count ?? 0}
+                    </div>
+                    {report.metadata.pipeline_refresh_before_draft.auto_verify_result ? (
+                      <>
+                        <div>
+                          Auto-verify attempted: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.attempted ?? 0}
+                        </div>
+                        <div>
+                          Auto-verify verified: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.verified ?? 0}
+                        </div>
+                        <div>
+                          Auto-verify failed: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.failed ?? 0}
+                        </div>
+                      </>
+                    ) : null}
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+
+            <p className="text-xs text-slate-400 leading-relaxed mt-2">
               This report is AI-assisted analysis for case preparation and legal review. It is not a determination of legal merit or appeal outcome.
             </p>
             <ReportMetadataPanel

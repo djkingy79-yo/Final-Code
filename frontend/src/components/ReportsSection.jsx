@@ -31,6 +31,7 @@ import {
 import { API } from "../App";
 import PaymentModal from "./PaymentModal";
 import ReportMetadataPanel from "./ReportMetadataPanel";
+import VerificationBadge from "./VerificationBadge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,6 +51,72 @@ async function verifyTopIssues(apiBase, caseId, limit) {
   );
   return response.data;
 }
+
+const DraftSourceBadge = ({ draftSource }) => {
+  const value = String(draftSource || "legacy").toLowerCase();
+
+  const classes = {
+    pipeline: "border-green-700 text-green-700",
+    legacy: "border-yellow-700 text-yellow-700",
+  };
+
+  const labels = {
+    pipeline: "Drafted from verified material",
+    legacy: "Drafted from legacy inputs",
+  };
+
+  return (
+    <span className={`px-2 py-1 rounded text-xs font-medium border ${classes[value] || classes.legacy}`} data-testid="draft-source-badge">
+      {labels[value] || "Draft source unknown"}
+    </span>
+  );
+};
+
+const PipelineDraftPanel = ({ report }) => {
+  if (!report) return null;
+
+  const metadata = report.metadata || {};
+  const refresh = metadata.pipeline_refresh_before_draft || {};
+  const draftSource = report.content?.draft_source || "legacy";
+
+  const pipelineIssueCount = metadata.pipeline_issue_count ?? 0;
+  const pipelineVerificationCount = metadata.pipeline_verification_count ?? 0;
+
+  const hasPipelineData =
+    draftSource === "pipeline" ||
+    pipelineIssueCount > 0 ||
+    pipelineVerificationCount > 0 ||
+    Object.keys(refresh).length > 0;
+
+  if (!hasPipelineData) return null;
+
+  return (
+    <div className="mt-3 rounded border p-3 text-xs" data-testid="pipeline-draft-panel">
+      <div className="font-semibold mb-1">Pipeline Draft Status</div>
+      <div>Draft source: {draftSource}</div>
+      <div>Pipeline issues considered: {pipelineIssueCount}</div>
+      <div>Verified issues considered: {pipelineVerificationCount}</div>
+
+      {"refreshed" in refresh ? (
+        <>
+          <div className="mt-2 font-medium">Pre-draft refresh</div>
+          <div>Refreshed before draft: {refresh.refreshed ? "Yes" : "No"}</div>
+          <div>Extracted: {refresh.extracted_count ?? 0}</div>
+          <div>Classified: {refresh.classified_count ?? 0}</div>
+          <div>Synced: {refresh.synced_count ?? 0}</div>
+
+          {refresh.auto_verify_result ? (
+            <>
+              <div>Auto-verify attempted: {refresh.auto_verify_result.attempted ?? 0}</div>
+              <div>Auto-verify verified: {refresh.auto_verify_result.verified ?? 0}</div>
+              <div>Auto-verify failed: {refresh.auto_verify_result.failed ?? 0}</div>
+            </>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  );
+};
 
 const REPORT_TYPES = [
   { 
@@ -688,6 +755,10 @@ const ReportsSection = ({
                               })}
                             </span>
                           </div>
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                            <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
+                            <DraftSourceBadge draftSource={report.content?.draft_source} />
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -784,6 +855,18 @@ const ReportsSection = ({
                           Print
                         </Button>
                       </div>
+
+                      {/* Draft source & verification badges */}
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
+                        <DraftSourceBadge draftSource={report.content?.draft_source} />
+                      </div>
+                      {report?.content?.draft_source === "pipeline" ? (
+                        <div className="mt-2 mb-3 text-xs opacity-80">
+                          This report was drafted from extracted, classified, and verified pipeline materials rather than raw document blobs.
+                        </div>
+                      ) : null}
+                      <PipelineDraftPanel report={report} />
 
                       {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
