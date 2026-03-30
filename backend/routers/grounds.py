@@ -395,22 +395,28 @@ For EACH ground you identify, cite the specific documentary evidence that suppor
             parsed = json.loads(json_match.group())
             grounds_data = parsed.get("grounds", [])
             for g in grounds_data:
-                new_title = g.get("title", "Identified Ground")
-                new_type = validate_ground_type(g.get("ground_type", "other"))
+                new_title = str(g.get("title", "Identified Ground") or "Identified Ground")
+                raw_type = g.get("ground_type", "other")
+                new_type = validate_ground_type(raw_type)
                 if is_duplicate_ground(new_title, new_type, existing_grounds + identified_grounds):
                     skipped_duplicates += 1
                     continue
+                # Normalise key_evidence to list of strings
+                raw_evidence = g.get("key_evidence") or []
+                if isinstance(raw_evidence, str):
+                    raw_evidence = [raw_evidence]
+                evidence_list = [str(e) for e in raw_evidence if e]
                 # Calculate legitimacy score — overrides AI-guessed strength
                 scored = calculate_ground_rating({
                     "ground_type": new_type,
-                    "supporting_evidence": [{"quote": q} for q in g.get("key_evidence", [])]
+                    "supporting_evidence": [{"quote": q} for q in evidence_list]
                 })
                 ground = GroundOfMerit(
                     case_id=case_id, user_id=user.user_id,
                     title=new_title, ground_type=new_type,
-                    description=g.get("description", ""),
+                    description=str(g.get("description", "") or ""),
                     strength=scored["rating"],  # Legitimacy engine rating, not AI guess
-                    supporting_evidence=g.get("key_evidence", []),
+                    supporting_evidence=evidence_list,
                     status="identified"
                 )
                 ground_dict = ground.model_dump()

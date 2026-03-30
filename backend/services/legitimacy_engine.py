@@ -58,9 +58,13 @@ def score_evidence(evidence_list: List) -> int:
     for item in evidence_list:
         text = ""
         if isinstance(item, dict):
-            text = (item.get("quote") or item.get("text") or "").strip()
+            text = str(item.get("quote") or item.get("text") or "").strip()
         elif isinstance(item, str):
             text = item.strip()
+        elif isinstance(item, list):
+            text = " ".join(str(x) for x in item).strip()
+        else:
+            text = str(item).strip()
 
         if text and len(text) > 50:
             max_score = max(max_score, 3)
@@ -151,9 +155,11 @@ def calculate_ground_rating(ground: Dict) -> Dict:
     }
 
 
-def validate_ground_type(ground_type: str) -> str:
+def validate_ground_type(ground_type) -> str:
     """Normalise and validate ground type. Returns valid type or 'other'."""
-    normalised = (ground_type or "").strip().lower().replace(" ", "_")
+    if isinstance(ground_type, list):
+        ground_type = ground_type[0] if ground_type else "other"
+    normalised = str(ground_type or "").strip().lower().replace(" ", "_")
     if normalised in LEGAL_BASIS_SCORES:
         return normalised
     return "other"
