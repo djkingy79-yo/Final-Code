@@ -311,10 +311,15 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
+    STRENGTH_ORDER = {"strong": 0, "moderate": 1, "weak": 2, "unknown": 3}
+
     grounds = await db.grounds_of_merit.find(
         {"case_id": case_id},
         {"_id": 0}
-    ).sort([("strength", 1), ("created_at", -1)]).to_list(100)
+    ).sort([("created_at", -1)]).to_list(200)
+
+    # Sort: strong first, then moderate, then weak
+    grounds.sort(key=lambda g: (STRENGTH_ORDER.get(g.get("strength", "unknown"), 3), g.get("title", "")))
 
     payment = await db.payments.find_one({
         "case_id": case_id,
