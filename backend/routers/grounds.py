@@ -16,6 +16,7 @@ from models import GroundOfMerit, GroundOfMeritCreate, GroundOfMeritUpdate, FEAT
 from services.llm_service import call_llm_with_fallback
 from services.offence_helpers import get_offence_context, get_offence_system_prompt
 from services.document_helpers import build_document_context
+from services.legitimacy_engine import calculate_ground_rating, validate_ground_type
 from offence_framework import OFFENCE_CATEGORIES
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,20 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     })
     is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or []) or is_admin_user(user.email)
     if is_unlocked:
+        # Retroactively score any grounds missing legitimacy_scores
+        for g in grounds:
+            if not g.get("legitimacy_scores"):
+                scored = calculate_ground_rating({
+                    "ground_type": g.get("ground_type", "other"),
+                    "supporting_evidence": [{"quote": e} for e in (g.get("supporting_evidence") or [])]
+                })
+                g["legitimacy_scores"] = scored
+                g["strength"] = scored["rating"]
+                # Persist the score for future reads
+                await db.grounds_of_merit.update_one(
+                    {"ground_id": g["ground_id"]},
+                    {"$set": {"legitimacy_scores": scored, "strength": scored["rating"]}}
+                )
         return {"grounds": grounds, "count": len(grounds), "is_unlocked": True, "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]}
     else:
         return {
@@ -159,13 +174,16 @@ Supporting Evidence Listed: {', '.join(ground.get('supporting_evidence', []))}
             context += f"- {event.get('event_date')}: {event.get('title')} - {event.get('description', '')[:180]}\n"
         if len(timeline) > timeline_limit:
             context += f"[... {len(timeline) - timeline_limit} additional timeline events omitted for speed ...]\n"
-    system_prompt = get_offence_system_prompt(offence_category)
-    system_prompt += "\n\nIMPORTANT: You must search through the provided document content and cite specific evidence.\nQuote directly from documents to support your analysis."
+    system_prompt = get_offence_system_prompt(offence_category, case.get('state', ''))
+    system_prompt += "\n\nIMPORTANT: You must search through the provided document content and cite specific evidence.\nQuote directly from documents to support your analysis.\nDo NOT invent case citations. Only reference cases you are confident are real."
+    # Build legislation examples from case jurisdiction, not NSW default
+    case_state = case.get('state', 'nsw')
+    state_leg_key = f"{case_state}_legislation"
+    state_legislation = category_data.get(state_leg_key, category_data.get('nsw_legislation', {}))
     law_examples = []
-    for act_name, sections in category_data.get('nsw_legislation', {}).items():
+    for act_name, sections in state_legislation.items():
         for section in sections[:3]:
             law_examples.append(f"   - {section.get('section')} {act_name} - {section.get('title')}")
-    law_examples.append("   - s.6 Criminal Appeal Act 1912 (NSW) - Grounds for appeal")
     law_examples_str = "\n".join(law_examples)
     user_prompt = f"""Conduct a THOROUGH investigation of this ground of merit.
 
@@ -186,14 +204,18 @@ REQUIRED ANALYSIS (search the documents above for evidence):
    - Other relevant sections with explanations
 
 4. SIMILAR CASES
-   - Name 2-3 Australian cases with citations relevant to {category_data.get('name', 'this type of')} appeals
+   - Name 2-3 well-established Australian cases relevant to {category_data.get('name', 'this type of')} appeals
+   - Only reference cases you are confident are real — do NOT fabricate citations
    - Explain relevance to this ground
 
 5. EVIDENCE GAPS
    - What additional evidence would strengthen this ground?
+   - What material appears to be missing from the analysis?
 
-6. STRATEGIC RECOMMENDATION
-   - How to present this ground to the court"""
+6. ASSESSMENT
+   - Assess the arguability of this ground based on the available material
+   - Use conditional language: 'It is arguable that...' / 'The material suggests...'
+   - Do NOT state that an appeal will succeed or is likely to succeed"""
     try:
         response = await call_llm_with_fallback(system_prompt, user_prompt, f"ground_{ground_id}_{uuid.uuid4().hex[:8]}")
     except Exception as e:
@@ -202,18 +224,22 @@ REQUIRED ANALYSIS (search the documents above for evidence):
     law_sections = []
     similar_cases = []
     section_patterns = re.findall(r'[sS]\.?\s*(\d+[A-Za-z]?)\s+([A-Za-z\s]+(?:Act|Code))\s*(?:\d{4})?', response)
+    case_state_upper = (case.get('state', 'nsw') or 'nsw').upper()
     for section_num, act_name in section_patterns[:10]:
-        law_sections.append({"section": section_num, "act": act_name.strip(), "jurisdiction": "NSW" if "NSW" in act_name or "1900" in response else "Federal"})
+        act_stripped = act_name.strip()
+        # Determine jurisdiction from act name, not from arbitrary string matching
+        jurisdiction = "Federal" if any(kw in act_stripped for kw in ["Commonwealth", "Cth", "Criminal Code Act"]) else case_state_upper
+        law_sections.append({"section": section_num, "act": act_stripped, "jurisdiction": jurisdiction})
     case_patterns = re.findall(r'([A-Z][a-z]+(?:\s+v\s+)[A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)', response)
     for case_name in list(set(case_patterns))[:5]:
-        similar_cases.append({"case_name": case_name, "year": "", "citation": ""})
+        similar_cases.append({"case_name": case_name, "year": "", "citation": "", "verified": False})
     deep_analysis = {
         "full_analysis": response, "investigated_at": datetime.now(timezone.utc).isoformat(),
         "law_sections_identified": len(law_sections), "similar_cases_found": len(similar_cases),
         "documents_analyzed": len(documents)
     }
     await db.grounds_of_merit.update_one(
-        {"ground_id": ground_id},
+        {"ground_id": ground_id, "case_id": case_id, "user_id": user.user_id},
         {"$set": {
             "status": "investigated",
             "analysis": response[:2000] + "..." if len(response) > 2000 else response,
@@ -288,12 +314,14 @@ CASE DETAILS:
         if len(notes) > notes_limit:
             context += f"[... {len(notes) - notes_limit} additional notes omitted for speed ...]\n"
         context += "\n"
-    base_system_prompt = get_offence_system_prompt(offence_category)
+    base_system_prompt = get_offence_system_prompt(offence_category, case.get('state', ''))
     system_prompt = f"""{base_system_prompt}
 
-YOUR TASK: Conduct an EXHAUSTIVE, METICULOUS analysis of ALL provided case documents to identify EVERY possible ground of appeal. Leave no stone unturned.
+YOUR TASK: Conduct a thorough analysis of ALL provided case documents to identify potential grounds of appeal.
 
 IMPORTANT: If grounds are listed in "ALREADY IDENTIFIED GROUNDS", do NOT duplicate them. Only add NEW grounds.
+
+NOTE ON DOCUMENT COVERAGE: The analysis is based on the document excerpts provided. Not all documents may be included in full. Where documents have been truncated or omitted, this is noted. Do not overstate confidence where document coverage is incomplete.
 
 Return your analysis in this JSON format:
 {{
@@ -301,31 +329,37 @@ Return your analysis in this JSON format:
     {{
       "title": "Specific, descriptive title",
       "ground_type": "procedural_error|fresh_evidence|miscarriage_of_justice|sentencing_error|judicial_error|ineffective_counsel|prosecution_misconduct|jury_irregularity|constitutional_violation|other",
-      "description": "DETAILED description (at least 3-4 sentences) explaining the ground, citing specific evidence from the documents",
+      "description": "DETAILED description (at least 3-4 sentences) explaining the ground, citing specific evidence from the documents. Use conditional language: 'It is arguable that...' / 'The material suggests...'",
       "strength": "strong|moderate|weak",
       "key_evidence": ["Specific document references and quotes that support this ground"],
       "relevant_law": ["Specific law sections e.g., 's.18 Crimes Act 1900 (NSW)', 'Evidence Act 1995 s.137'"]
     }}
   ],
-  "summary": "Overall assessment of appeal prospects and most promising grounds",
-  "analysis_notes": "Any additional observations about the case"
+  "summary": "Overall assessment of identified issues requiring further legal review",
+  "analysis_notes": "Any additional observations about the case, including gaps in available material"
 }}
 
-BE THOROUGH. Identify ALL potential grounds. The appellant's freedom may depend on this analysis."""
-    user_prompt = f"""CONDUCT A COMPREHENSIVE LEGAL ANALYSIS OF THIS CRIMINAL APPEAL CASE:
+ANALYTICAL DISCIPLINE:
+- Identify potential grounds supported by the supplied material
+- Use conditional language for all conclusions
+- Do NOT state that an appeal will succeed or is likely to succeed
+- Flag where evidence is incomplete or further investigation needed
+- Do NOT invent case citations"""
+    user_prompt = f"""CONDUCT A STRUCTURED LEGAL ANALYSIS OF THIS CRIMINAL APPEAL CASE:
 
 {context}
 
 INSTRUCTIONS:
-1. Analyse EVERY document provided - read the full content carefully
-2. Compare witness statements for inconsistencies
-3. Identify ANY procedural irregularities
+1. Analyse the document excerpts provided — note that some may be truncated
+2. Compare witness statements for inconsistencies where available
+3. Identify any procedural irregularities suggested by the material
 4. Look for evidence that may have been improperly handled or excluded
-5. Consider whether the defence was adequate
+5. Consider whether the defence appears to have been adequate
 6. Check for any fresh evidence possibilities
-7. Assess whether the verdict was safe
+7. Assess whether the verdict appears safe on the available material
+8. Use conditional language for all conclusions
 
-For EACH ground you identify, provide DETAILED analysis."""
+For EACH ground you identify, cite the specific documentary evidence that supports it."""
     try:
         response = await call_llm_with_fallback(system_prompt, user_prompt, f"auto_identify_{case_id}_{uuid.uuid4().hex[:8]}")
     except Exception as e:
@@ -362,36 +396,48 @@ For EACH ground you identify, provide DETAILED analysis."""
             grounds_data = parsed.get("grounds", [])
             for g in grounds_data:
                 new_title = g.get("title", "Identified Ground")
-                new_type = g.get("ground_type", "other")
+                new_type = validate_ground_type(g.get("ground_type", "other"))
                 if is_duplicate_ground(new_title, new_type, existing_grounds + identified_grounds):
                     skipped_duplicates += 1
                     continue
+                # Calculate legitimacy score — overrides AI-guessed strength
+                scored = calculate_ground_rating({
+                    "ground_type": new_type,
+                    "supporting_evidence": [{"quote": q} for q in g.get("key_evidence", [])]
+                })
                 ground = GroundOfMerit(
                     case_id=case_id, user_id=user.user_id,
                     title=new_title, ground_type=new_type,
                     description=g.get("description", ""),
-                    strength=g.get("strength", "moderate"),
+                    strength=scored["rating"],  # Legitimacy engine rating, not AI guess
                     supporting_evidence=g.get("key_evidence", []),
                     status="identified"
                 )
                 ground_dict = ground.model_dump()
                 ground_dict["created_at"] = ground_dict["created_at"].isoformat()
                 ground_dict["updated_at"] = ground_dict["updated_at"].isoformat()
+                ground_dict["legitimacy_scores"] = scored
                 await db.grounds_of_merit.insert_one(ground_dict)
                 created_ground = await db.grounds_of_merit.find_one({"ground_id": ground.ground_id}, {"_id": 0})
                 identified_grounds.append(created_ground)
     except Exception as e:
         logger.error(f"Failed to parse AI response: {e}")
         if len(identified_grounds) == 0:
+            # Fallback — mark as needs_review, not moderate
             ground = GroundOfMerit(
                 case_id=case_id, user_id=user.user_id,
-                title="AI Analysis Results", ground_type="other",
-                description="See analysis for identified grounds",
-                strength="moderate", analysis=response, status="identified"
+                title="AI Analysis — Review Required", ground_type="other",
+                description="The AI analysis produced results that require manual review. See raw analysis below.",
+                strength="weak", analysis=response, status="needs_review"
             )
             ground_dict = ground.model_dump()
             ground_dict["created_at"] = ground_dict["created_at"].isoformat()
             ground_dict["updated_at"] = ground_dict["updated_at"].isoformat()
+            ground_dict["legitimacy_scores"] = {
+                "legal_score": 1, "evidence_score": 0, "viability_score": 0,
+                "total_score": 1, "rating": "weak",
+                "confidence_note": "AI output could not be parsed into structured grounds — manual review required"
+            }
             await db.grounds_of_merit.insert_one(ground_dict)
             created_ground = await db.grounds_of_merit.find_one({"ground_id": ground.ground_id}, {"_id": 0})
             identified_grounds.append(created_ground)

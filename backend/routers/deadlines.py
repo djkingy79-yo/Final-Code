@@ -1,6 +1,8 @@
 """
-Criminal Appeal AI - Deadlines, Checklist & Case Strength Router
+Criminal Appeal AI - Deadlines, Checklist & Case Readiness Router
 Extracted from server.py monolith.
+
+IMPORTANT: "Case Readiness" measures preparation completeness, NOT legal merit.
 """
 from fastapi import APIRouter, HTTPException, Request
 from typing import List
@@ -45,9 +47,9 @@ async def create_deadline(case_id: str, deadline_data: DeadlineCreate, request: 
 @router.patch("/cases/{case_id}/deadlines/{deadline_id}", response_model=dict)
 async def update_deadline(case_id: str, deadline_id: str, request: Request):
     """Update a deadline (mark complete, etc.)"""
-    await get_current_user(request)
+    user = await get_current_user(request)
     body = await request.json()
-    deadline = await db.deadlines.find_one({"deadline_id": deadline_id, "case_id": case_id})
+    deadline = await db.deadlines.find_one({"deadline_id": deadline_id, "case_id": case_id, "user_id": user.user_id})
     if not deadline:
         raise HTTPException(status_code=404, detail="Deadline not found")
     update_data = {}
@@ -62,15 +64,18 @@ async def update_deadline(case_id: str, deadline_id: str, request: Request):
     if "priority" in body:
         update_data["priority"] = body["priority"]
     if update_data:
-        await db.deadlines.update_one({"deadline_id": deadline_id}, {"$set": update_data})
+        await db.deadlines.update_one(
+            {"deadline_id": deadline_id, "case_id": case_id, "user_id": user.user_id},
+            {"$set": update_data}
+        )
     return await db.deadlines.find_one({"deadline_id": deadline_id}, {"_id": 0})
 
 
 @router.delete("/cases/{case_id}/deadlines/{deadline_id}")
 async def delete_deadline(case_id: str, deadline_id: str, request: Request):
     """Delete a deadline"""
-    await get_current_user(request)
-    result = await db.deadlines.delete_one({"deadline_id": deadline_id, "case_id": case_id})
+    user = await get_current_user(request)
+    result = await db.deadlines.delete_one({"deadline_id": deadline_id, "case_id": case_id, "user_id": user.user_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Deadline not found")
     return {"message": "Deadline deleted"}
@@ -97,9 +102,9 @@ async def get_checklist(case_id: str, request: Request):
 @router.patch("/cases/{case_id}/checklist/{item_id}", response_model=dict)
 async def update_checklist_item(case_id: str, item_id: str, request: Request):
     """Update a checklist item"""
-    await get_current_user(request)
+    user = await get_current_user(request)
     body = await request.json()
-    item = await db.checklist_items.find_one({"item_id": item_id, "case_id": case_id})
+    item = await db.checklist_items.find_one({"item_id": item_id, "case_id": case_id, "user_id": user.user_id})
     if not item:
         raise HTTPException(status_code=404, detail="Checklist item not found")
     update_data = {}
@@ -110,13 +115,21 @@ async def update_checklist_item(case_id: str, item_id: str, request: Request):
         else:
             update_data["completed_at"] = None
     if update_data:
-        await db.checklist_items.update_one({"item_id": item_id}, {"$set": update_data})
+        await db.checklist_items.update_one(
+            {"item_id": item_id, "case_id": case_id, "user_id": user.user_id},
+            {"$set": update_data}
+        )
     return await db.checklist_items.find_one({"item_id": item_id}, {"_id": 0})
 
 
 @router.get("/cases/{case_id}/strength", response_model=dict)
 async def get_case_strength(case_id: str, request: Request):
-    """Calculate overall case strength"""
+    """
+    Calculate overall case READINESS score.
+
+    This measures preparation completeness and documentation coverage.
+    It is NOT a determination of legal merit or likelihood of appeal success.
+    """
     user = await get_current_user(request)
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
@@ -125,6 +138,7 @@ async def get_case_strength(case_id: str, request: Request):
     documents = await db.documents.find({"case_id": case_id}, {"_id": 0}).to_list(500)
     timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).to_list(500)
     checklist = await db.checklist_items.find({"case_id": case_id}, {"_id": 0}).to_list(100)
+
     strength_scores = {"strong": 3, "moderate": 2, "weak": 1}
     grounds_score = 0
     ground_breakdown = {"strong": 0, "moderate": 0, "weak": 0}
@@ -135,44 +149,59 @@ async def get_case_strength(case_id: str, request: Request):
             grounds_score += strength_scores.get(strength, 1)
         max_possible = len(grounds) * 3
         grounds_score = min(100, int((grounds_score / max_possible) * 100) + (len(grounds) * 5))
+
     doc_score = 0
     docs_with_text = len([d for d in documents if d.get("content_text")])
     if documents:
         doc_score = min(100, int((docs_with_text / len(documents)) * 50) + (len(documents) * 5))
+
     timeline_score = 0
     if timeline:
         timeline_score = min(100, len(timeline) * 5)
         critical_events = len([t for t in timeline if t.get("significance") == "critical"])
         timeline_score = min(100, timeline_score + (critical_events * 10))
+
     prep_score = 0
     if checklist:
         completed = len([c for c in checklist if c.get("is_completed")])
         prep_score = int((completed / len(checklist)) * 100)
-    overall_score = int((grounds_score * 0.40) + (doc_score * 0.25) + (timeline_score * 0.15) + (prep_score * 0.20))
+
+    overall_score = int(
+        (grounds_score * 0.40) + (doc_score * 0.25) +
+        (timeline_score * 0.15) + (prep_score * 0.20)
+    )
+
+    # Readiness labels — NOT legal merit indicators
     if overall_score >= 75:
-        rating, rating_color = "Strong", "green"
+        rating, rating_color = "Advanced", "green"
     elif overall_score >= 50:
-        rating, rating_color = "Moderate", "amber"
+        rating, rating_color = "Progressing", "blue"
     elif overall_score >= 25:
         rating, rating_color = "Developing", "orange"
     else:
         rating, rating_color = "Early Stage", "red"
+
     recommendations = []
     if not grounds:
-        recommendations.append("Run AI Grounds Identification to find potential appeal grounds")
+        recommendations.append("Run AI Grounds Identification to flag potential appeal issues")
     if len(documents) < 3:
-        recommendations.append("Upload more case documents for better analysis")
+        recommendations.append("Upload more case documents for broader analysis coverage")
     if len(timeline) < 5:
-        recommendations.append("Build out your timeline with key case events")
+        recommendations.append("Build out the timeline with key case events")
     if prep_score < 50:
-        recommendations.append("Work through the appeal checklist")
+        recommendations.append("Work through the appeal preparation checklist")
+
     return {
-        "overall_score": overall_score, "rating": rating, "rating_color": rating_color,
+        "overall_score": overall_score,
+        "rating": rating,
+        "rating_color": rating_color,
+        "score_type": "readiness",
+        "disclaimer": "This score reflects case preparation and documentation completeness. It is not a determination of legal merit or likelihood of appeal success. All grounds require independent assessment by qualified counsel.",
         "breakdown": {
             "grounds": {"score": grounds_score, "count": len(grounds), **ground_breakdown},
             "documentation": {"score": doc_score, "total_docs": len(documents), "with_text": docs_with_text},
             "timeline": {"score": timeline_score, "event_count": len(timeline)},
             "preparation": {"score": prep_score, "completed": len([c for c in checklist if c.get("is_completed")]), "total": len(checklist)}
         },
-        "recommendations": recommendations
+        "recommendations": recommendations,
     }

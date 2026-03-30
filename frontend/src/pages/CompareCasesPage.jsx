@@ -43,7 +43,7 @@ const CompareCasesPage = ({ user }) => {
   
   // Success factors state
   const [successFactors, setSuccessFactors] = useState(null);
-  const [setLoadingFactors] = useState(false);
+  const [loadingFactors, setLoadingFactors] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -116,10 +116,10 @@ const CompareCasesPage = ({ user }) => {
       const params = new URLSearchParams();
       if (patternFilters.offence_category) params.append("offence_category", patternFilters.offence_category);
       
-      const response = await axios.get(`${API}/compare/success-factors?${params.toString()}`);
+      const response = await axios.get(`${API}/compare/case-composition?${params.toString()}`);
       setSuccessFactors(response.data);
     } catch (error) {
-      toast.error("Failed to fetch success factors");
+      toast.error("Failed to fetch case composition data");
     } finally {
       setLoadingFactors(false);
     }
@@ -605,24 +605,28 @@ const CompareCasesPage = ({ user }) => {
                   </Card>
                 )}
 
-                {/* Success Factors */}
-                {successFactors && successFactors.success_factors?.length > 0 && (
+                {/* Case Composition Insights */}
+                {successFactors && successFactors.insights?.length > 0 && (
                   <Card className="bg-white border-slate-200">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                        <TrendingUp className="w-5 h-5 text-emerald-600" />
-                        Success Factors
+                        <TrendingUp className="w-5 h-5 text-blue-600" />
+                        Case Composition Patterns
                       </CardTitle>
+                      <p className="text-xs text-slate-500 italic mt-1">
+                        {successFactors.disclaimer || "These patterns reflect platform data, not legal merit."}
+                      </p>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {successFactors.success_factors.map((factor, i) => (
+                        {successFactors.insights.map((insight, i) => (
                           <div key={i} className="p-4 bg-slate-50 rounded-xl">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge className="bg-emerald-600 text-white">{factor.factor}</Badge>
-                            </div>
-                            <p className="text-slate-900 font-medium mb-1">{factor.finding}</p>
-                            <p className="text-sm text-slate-600">{factor.recommendation}</p>
+                            <p className="text-slate-900 text-sm">{insight}</p>
+                          </div>
+                        ))}
+                        {successFactors.recommendations?.map((rec, i) => (
+                          <div key={`rec-${i}`} className="p-4 bg-blue-50 rounded-xl">
+                            <p className="text-sm text-blue-800">{rec}</p>
                           </div>
                         ))}
                       </div>

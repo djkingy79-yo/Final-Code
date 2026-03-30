@@ -105,10 +105,14 @@ const CaseStrengthMeter = ({ caseId }) => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-red-600 flex items-center justify-center">
             <TrendingUp className="w-4 h-4 text-white" />
           </div>
-          Case Strength Meter
+          Case Readiness Score
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Readiness disclaimer */}
+        <p className="text-xs text-slate-500 italic leading-tight">
+          {strength.disclaimer || "This score reflects case preparation and documentation completeness. It is not a determination of legal merit or likelihood of appeal success."}
+        </p>
         {/* Overall Score - Circular Display */}
         <div className="flex flex-col items-center py-4">
           <div className="relative">
@@ -162,7 +166,7 @@ const CaseStrengthMeter = ({ caseId }) => {
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <p className="text-sm font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
-              Recommendations to Improve
+              Recommendations to Improve Readiness
             </p>
             <ul className="space-y-2">
               {strength.recommendations.map((rec, i) => (
@@ -175,15 +179,15 @@ const CaseStrengthMeter = ({ caseId }) => {
           </div>
         )}
 
-        {/* Success indicator */}
+        {/* Readiness indicator */}
         {strength.overall_score >= 75 && (
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
             <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
             <p className="text-sm font-semibold text-emerald-800">
-              Strong Appeal Potential
+              Thorough Case Preparation
             </p>
             <p className="text-xs text-emerald-700 mt-1">
-              Your case preparation is looking solid. Consider consulting with a barrister.
+              Case documentation and preparation appear comprehensive. All identified grounds require independent assessment by qualified counsel.
             </p>
           </div>
         )}

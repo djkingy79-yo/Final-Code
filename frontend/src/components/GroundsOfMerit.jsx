@@ -62,8 +62,32 @@ const STATUS_CONFIG = {
   identified: { color: "bg-blue-100 text-blue-700", label: "Identified" },
   investigating: { color: "bg-blue-100 text-blue-700", label: "Investigating" },
   confirmed: { color: "bg-emerald-100 text-emerald-700", label: "Confirmed" },
-  rejected: { color: "bg-red-100 text-red-700", label: "Rejected" }
+  rejected: { color: "bg-red-100 text-red-700", label: "Rejected" },
+  needs_review: { color: "bg-amber-100 text-amber-700", label: "Needs Review" }
 };
+
+const LegitimacyBreakdown = ({ scores }) => {
+  if (!scores) return null;
+  return (
+    <div data-testid="legitimacy-breakdown" className="mt-2 text-xs bg-slate-100 p-3 rounded-lg border border-slate-200">
+      <div className="grid grid-cols-3 gap-2 mb-1">
+        <div><span className="text-slate-500">Legal:</span> <span className="font-semibold">{scores.legal_score}/3</span></div>
+        <div><span className="text-slate-500">Evidence:</span> <span className="font-semibold">{scores.evidence_score}/3</span></div>
+        <div><span className="text-slate-500">Viability:</span> <span className="font-semibold">{scores.viability_score}/3</span></div>
+      </div>
+      <div className="font-bold text-slate-700">Total: {scores.total_score}/9</div>
+      {scores.confidence_note && (
+        <p className="italic text-slate-500 mt-1 leading-tight">{scores.confidence_note}</p>
+      )}
+    </div>
+  );
+};
+
+const UnverifiedBadge = () => (
+  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">
+    UNVERIFIED
+  </span>
+);
 
 const GroundsOfMerit = ({ 
   grounds, 
@@ -516,10 +540,13 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         <div className="flex items-center gap-2 mt-1">
                           <Gavel className="w-4 h-4 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {ground.similar_cases.length} similar case{ground.similar_cases.length > 1 ? 's' : ''} found
+                            {ground.similar_cases.length} similar case{ground.similar_cases.length > 1 ? 's' : ''} referenced
                           </span>
                         </div>
                       )}
+                      
+                      {/* Legitimacy Score Breakdown */}
+                      {ground.legitimacy_scores && <LegitimacyBreakdown scores={ground.legitimacy_scores} />}
                       
                       <p className="text-xs text-slate-400 mt-3">
                         Added {formatDate(ground.created_at)}
@@ -721,12 +748,14 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                     <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                       <Gavel className="w-4 h-4" />
                       Similar Cases
+                      <span className="text-xs font-normal text-amber-600">(AI-referenced — requires verification)</span>
                     </h4>
                     <div className="space-y-2">
                       {detailGround.similar_cases.map((caseItem, idx) => (
                         <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <div className="font-medium text-blue-900">
                             {caseItem.case_name}
+                            {!caseItem.verified && <UnverifiedBadge />}
                           </div>
                           {caseItem.citation && (
                             <div className="font-mono text-xs text-blue-700 mt-1">
@@ -736,6 +765,16 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Legitimacy Score in Detail View */}
+                {detailGround.legitimacy_scores && (
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                      Ground Scoring
+                    </h4>
+                    <LegitimacyBreakdown scores={detailGround.legitimacy_scores} />
                   </div>
                 )}
 
