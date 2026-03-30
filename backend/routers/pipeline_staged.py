@@ -178,6 +178,10 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
     """Compatibility projection layer into existing grounds_of_merit collection."""
     user = await get_current_user(request)
 
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
     issues = await db.issue_classifications.find(
         {"case_id": case_id, "user_id": user.user_id},
         {"_id": 0}

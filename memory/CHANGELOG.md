@@ -1,5 +1,36 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — 5-Stage Staged Pipeline Architecture
+
+### Summary
+Implemented decomposed pipeline service modules replacing monolithic inline LLM calls. New `/api/pipeline` router runs in parallel with existing `/api/cases` routes.
+
+### New Files Created
+- `backend/services/pipeline_models.py` — Strict Pydantic models (DocumentExtract, CaseExtract, IssueClassification, IssueVerification)
+- `backend/services/pipeline/extract.py` — Document artifact extraction (facts, events, findings)
+- `backend/services/pipeline/classify.py` — Appellate issue classification
+- `backend/services/pipeline/verify.py` — Issue verification with legitimacy scoring
+- `backend/services/pipeline/draft.py` — Report drafting from verified materials
+- `backend/routers/pipeline_staged.py` — New router at `/api/pipeline` prefix
+
+### Endpoints
+- `POST /api/pipeline/cases/{id}/documents/{doc_id}/extract`
+- `POST /api/pipeline/cases/{id}/extract/refresh`
+- `POST /api/pipeline/cases/{id}/issues/classify`
+- `POST /api/pipeline/cases/{id}/issues/{issue_id}/verify`
+- `POST /api/pipeline/cases/{id}/grounds/sync-from-issues`
+- `POST /api/pipeline/cases/{id}/reports/draft`
+
+### Bug Fixes
+- Fixed `missing_items` type error in Barrister Acceptance Pack PDF (strings vs dicts)
+- Updated LLM task configs: `document_extraction` (8000 tokens, 90s), `issue_verification` (10000 tokens, 120s)
+
+### Testing
+- Backend: 27/27 tests passed (100%) — iteration_131.json
+- All regression tests pass (health, cases, old pipeline, barrister pack)
+
+---
+
 ## 30 March 2026 — Document Upload Timeout Fix (CRITICAL)
 
 ### Root Cause
