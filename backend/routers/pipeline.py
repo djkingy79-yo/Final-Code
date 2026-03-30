@@ -16,6 +16,7 @@ from auth_utils import get_current_user
 from services.llm_service import call_llm_for_json
 from services.legitimacy_engine import calculate_ground_rating
 from services.pipeline.verify import verify_issue as pipeline_verify_issue
+from services.pipeline.argue import build_issue_argument
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/cases", tags=["pipeline"])
@@ -859,6 +860,120 @@ async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Reque
             f"Attempted verification for {len(selected_issues)} issue(s); "
             f"verified {verified}, failed {failed}, synced {synced_count} projected ground(s)."
         ),
+    }
+
+
+# ============================================================================
+# STAGE 3b — ARGUE (build structured appellate reasoning)
+# ============================================================================
+
+@router.post("/{case_id}/issues/{issue_id}/argue", response_model=dict)
+async def argue_issue(case_id: str, issue_id: str, request: Request):
+    """Build structured appellate reasoning from a verified issue."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    issue = await db.issue_classifications.find_one(
+        {"case_id": case_id, "issue_id": issue_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+
+    verification = await db.issue_verifications.find_one(
+        {"case_id": case_id, "issue_id": issue_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not verification:
+        raise HTTPException(status_code=400, detail="Issue verification not found. Verify the issue first.")
+
+    argument = await build_issue_argument(case, issue, verification)
+
+    argument_doc = {
+        "argument_id": f"arg_{uuid.uuid4().hex[:12]}",
+        "case_id": case_id,
+        "issue_id": issue_id,
+        "user_id": user.user_id,
+        "stage": "argue",
+        "status": "completed",
+        **argument,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+    await db.issue_arguments.update_one(
+        {"case_id": case_id, "issue_id": issue_id, "user_id": user.user_id},
+        {"$set": argument_doc},
+        upsert=True,
+    )
+
+    return argument_doc
+
+
+@router.post("/{case_id}/issues/argue-batch", response_model=dict)
+async def argue_batch(case_id: str, request: Request):
+    """Build structured arguments for all verified issues in the case."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(500)
+
+    verifications = await db.issue_verifications.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(500)
+
+    verification_map = {v.get("issue_id"): v for v in verifications}
+
+    attempted = 0
+    completed = 0
+    failed = 0
+
+    for issue in issues:
+        verification = verification_map.get(issue.get("issue_id"))
+        if not verification:
+            continue
+
+        attempted += 1
+
+        try:
+            argument = await build_issue_argument(case, issue, verification)
+
+            argument_doc = {
+                "argument_id": f"arg_{uuid.uuid4().hex[:12]}",
+                "case_id": case_id,
+                "issue_id": issue["issue_id"],
+                "user_id": user.user_id,
+                "stage": "argue",
+                "status": "completed",
+                **argument,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            }
+
+            await db.issue_arguments.update_one(
+                {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id},
+                {"$set": argument_doc},
+                upsert=True,
+            )
+
+            completed += 1
+        except Exception as e:
+            logger.warning(f"Argument build failed for issue {issue.get('issue_id')}: {e}")
+            failed += 1
+
+    return {
+        "attempted": attempted,
+        "completed": completed,
+        "failed": failed,
+        "message": f"Attempted {attempted} issue arguments; completed {completed}, failed {failed}.",
     }
 
 

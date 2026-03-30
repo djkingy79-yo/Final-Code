@@ -48,6 +48,12 @@ async function refreshAllPipeline(caseId, verifyLimit = 0) {
   });
 }
 
+async function argueBatch(caseId) {
+  return apiRequest(`/cases/${caseId}/issues/argue-batch`, {
+    method: "POST",
+  });
+}
+
 export default function PipelineProgress({
   caseId,
   documents = [],
@@ -159,6 +165,9 @@ export default function PipelineProgress({
         <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 6))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-verify-6-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh + Verify Top 6"}
         </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => argueBatch(caseId))} disabled={loading} className="bg-teal-700 text-white hover:bg-teal-600" data-testid="pipeline-argue-batch-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Build Arguments"}
+        </Button>
       </div>
 
       {error && <div className="mt-3 text-sm text-red-700" data-testid="pipeline-error">{error}</div>}
@@ -213,6 +222,15 @@ export default function PipelineProgress({
             <>
               <div className="font-medium mt-2">Projection</div>
               <div>Synced grounds: {result.projection.synced_count ?? 0}</div>
+            </>
+          ) : null}
+
+          {"completed" in result && "failed" in result && "attempted" in result && !("documents" in result) ? (
+            <>
+              <div className="font-medium mt-2">Argument Build</div>
+              <div>Attempted: {result.attempted ?? 0}</div>
+              <div>Completed: {result.completed ?? 0}</div>
+              <div>Failed: {result.failed ?? 0}</div>
             </>
           ) : null}
         </div>

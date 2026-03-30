@@ -844,6 +844,13 @@ async def _enforce_pipeline_freshness(case_id: str, user_id: str, auto_refresh: 
     }
 
 
+async def _load_issue_arguments(case_id: str, user_id: str) -> list:
+    return await db.issue_arguments.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0}
+    ).to_list(500)
+
+
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
     
@@ -883,6 +890,9 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
             "findings": case_extract_data.get("merged_findings", []) if case_extract_data else [],
             "verified_issues": issue_verifications_data,
         }
+
+    # Load issue arguments (if any exist)
+    pipeline_arguments = await _load_issue_arguments(case_id, user_id) if high_value_report else []
 
     # Get documents with full content
     documents = await db.documents.find(
@@ -2149,6 +2159,7 @@ REPORT TO EXPAND:
             "status": pipeline_status.get("status") if pipeline_status else "not_checked",
             "staleness": pipeline_status.get("staleness") if pipeline_status else None,
             "auto_refreshed": pipeline_status.get("status") == "refreshed" if pipeline_status else False,
+            "pipeline_argument_count": len(pipeline_arguments),
         },
     }
 
