@@ -14,7 +14,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 ## Architecture
 ```
 /app/
-├── .github/workflows/ci.yml  # CI pipeline (Node 22, Python 3.11)
+├── .github/workflows/ci.yml  # CI pipeline (Node 22, Python 3.11, FORCE_JAVASCRIPT_ACTIONS_TO_NODE24)
 ├── backend/
 │   ├── server.py, config.py, auth_utils.py
 │   ├── routers/ (20+ modular routers)
@@ -22,13 +22,21 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 │   └── tests/
 └── frontend/
     └── src/
-        ├── components/ (ReportsSection, GroundsOfMerit, TimelineEnhanced, LegalFrameworkViewer, NotesSection)
-        ├── pages/ (BarristerView, ReportView, CaseDetail, DocumentPreviewPage, HowItWorksPage, AppealStatisticsPage, LandingPage)
-        ├── utils/ (exportHtml.js)
+        ├── components/ (ReportsSection, GroundsOfMerit, TimelineEnhanced, LegalFrameworkViewer, NotesSection, InstallPrompt)
+        ├── pages/ (BarristerView, ReportView, CaseDetail, DocumentPreviewPage, HowItWorksPage, AppealStatisticsPage, LandingPage, FormTemplates)
+        ├── utils/ (exportHtml.js, isIOS.js)
         └── App.js
 ```
 
 ## What's Been Implemented
+
+### Session - 30 Mar 2026
+- **CI/CD Pipeline Fix:** Updated node-version 20->22, added FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true, excluded tests/ from ruff lint, auto-fixed 53 backend lint issues
+- **iOS Detection Fix (CRITICAL):** Created shared `isIOSDevice()` utility at `/app/frontend/src/utils/isIOS.js` that properly detects iPadOS (desktop user agent: Macintosh + maxTouchPoints > 1). Replaced all 8 inline iOS checks across 7 files. This fixes "Failed to export PDF", "Preview unavailable", and blob download failures on iPadOS.
+- **Document Preview Fix:** Removed stale sessionStorage fallback from DocumentPreviewPage — now reads only from localStorage.
+- **PDF Print Fix:** Added `-webkit-print-color-adjust: exact !important` to report header and case-info-grid for better iOS PDF rendering.
+
+### Previous Sessions
 - Multi-pass AI report generation (4 tiers) with GPT-4o
 - Document export (PDF/DOCX) with iOS-safe localStorage-based preview
 - Barrister View with teal UI, "Attachment A — Barrister Issue Matrix"
@@ -36,13 +44,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - Google OAuth via Emergent Auth
 - Email notifications via Resend
 - Landing page, stats page, How It Works page
-- GitHub Actions CI (Node 22, Python 3.11, actions v5/v4)
 - Professional README.md
-
-## Recent Fix (Feb 2026)
-- CI workflow: Updated node-version 20 -> 22 to eliminate GitHub Actions deprecation warnings
-- package.json engines updated to >=18.0.0
-- yarn.lock verified in sync
 
 ## 3rd Party Integrations
 - OpenAI GPT-4o (via Emergent LLM Key)
