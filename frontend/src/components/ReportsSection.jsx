@@ -385,6 +385,12 @@ const ReportsSection = ({
         return;
       }
       const detail = error?.response?.data?.detail;
+      const statusCode = error?.response?.status;
+      if (statusCode === 409 && (typeof detail === 'object' ? detail?.message : detail || '').includes("Pipeline is stale")) {
+        toast.error("Pipeline is out of date. Please refresh pipeline before generating report.");
+        stopGenerating();
+        return;
+      }
       if (typeof detail === 'string') {
         toast.error(detail);
       } else if (detail?.message) {

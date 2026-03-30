@@ -57,6 +57,14 @@ from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
 from routers.pipeline import router as pipeline_router
 from routers.pipeline_staged import router as pipeline_staged_router
+from routers.pipeline_staged import (
+    RefreshPipelineRequest as _StagedRefreshRequest,
+    _ensure_document_extracts as _staged_ensure_extracts,
+    _refresh_case_extract as _staged_refresh_case,
+    _classify_issues as _staged_classify,
+    _verify_top_issues as _staged_verify,
+    _sync_pipeline_projection_to_grounds as _staged_sync_grounds,
+)
 from services.pipeline import (
     extract_document_artifacts,
     classify_case_issues,
@@ -718,6 +726,124 @@ def _auto_verification_limit_for_report_type(report_type: str) -> int:
     return 0
 
 
+async def _check_case_pipeline_staleness(case_id: str, user_id: str) -> dict:
+    """Check pipeline staleness without needing a Request object."""
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "document_id": 1, "uploaded_at": 1}
+    ).to_list(1000)
+
+    doc_extracts = await db.document_extracts.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "document_id": 1, "created_at": 1}
+    ).to_list(1000)
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "created_at": 1}
+    )
+
+    issue_classifications = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "created_at": 1}
+    ).to_list(1000)
+
+    issue_verifications = await db.issue_verifications.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "created_at": 1}
+    ).to_list(1000)
+
+    reports = await db.reports.find(
+        {"case_id": case_id, "user_id": user_id, "content.draft_source": "pipeline"},
+        {"_id": 0, "generated_at": 1}
+    ).to_list(1000)
+
+    def _to_iso(value):
+        if not value:
+            return None
+        if isinstance(value, str):
+            return value
+        try:
+            return value.isoformat()
+        except Exception:
+            return str(value)
+
+    def _latest_iso(items, field):
+        values = [i.get(field) for i in items if i.get(field)]
+        if not values:
+            return None
+        values = [v if isinstance(v, str) else v.isoformat() for v in values]
+        return max(values)
+
+    latest_document_upload = _latest_iso(documents, "uploaded_at")
+    latest_document_extract = _latest_iso(doc_extracts, "created_at")
+    latest_issue_classification = _latest_iso(issue_classifications, "created_at")
+    latest_issue_verification = _latest_iso(issue_verifications, "created_at")
+    latest_pipeline_report = _latest_iso(reports, "generated_at")
+    case_extract_created_at = _to_iso(case_extract.get("created_at")) if case_extract else None
+
+    extract_map = {d.get("document_id"): d for d in doc_extracts}
+    extract_missing = [d.get("document_id") for d in documents if d.get("document_id") not in extract_map]
+
+    documents_newer = (latest_document_upload > latest_document_extract) if (latest_document_upload and latest_document_extract) else bool(latest_document_upload and not latest_document_extract)
+    case_extract_stale = (latest_document_extract > case_extract_created_at) if (latest_document_extract and case_extract_created_at) else bool(latest_document_extract and not case_extract_created_at)
+    classifications_stale = (case_extract_created_at > latest_issue_classification) if (case_extract_created_at and latest_issue_classification) else bool(case_extract_created_at and not latest_issue_classification)
+    verifications_stale = (latest_issue_classification > latest_issue_verification) if (latest_issue_classification and latest_issue_verification) else bool(latest_issue_classification and not latest_issue_verification)
+    reports_stale = (latest_issue_verification > latest_pipeline_report) if (latest_issue_verification and latest_pipeline_report) else bool(latest_issue_verification and not latest_pipeline_report)
+
+    overall_stale = any([len(extract_missing) > 0, documents_newer, case_extract_stale, classifications_stale, verifications_stale, reports_stale])
+
+    return {
+        "overall_stale": overall_stale,
+        "extract_missing_for_documents": extract_missing,
+        "documents_newer_than_extracts": documents_newer,
+        "case_extract_stale": case_extract_stale,
+        "classifications_stale": classifications_stale,
+        "verifications_stale": verifications_stale,
+        "reports_stale": reports_stale,
+    }
+
+
+async def _enforce_pipeline_freshness(case_id: str, user_id: str, auto_refresh: bool = False) -> dict:
+    """Ensure pipeline artifacts are current before report generation."""
+    staleness = await _check_case_pipeline_staleness(case_id, user_id)
+
+    if not staleness.get("overall_stale"):
+        return {"status": "fresh", "staleness": staleness}
+
+    if not auto_refresh:
+        return {"status": "stale", "staleness": staleness}
+
+    # Auto-refresh pipeline
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+    if not case:
+        return {"status": "stale", "staleness": staleness}
+
+    docs = await db.documents.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "file_data": 0}
+    ).to_list(1000)
+
+    extract_result = await _staged_ensure_extracts(case, docs)
+    case_extract_result = await _staged_refresh_case(case)
+    ce = await db.case_extracts.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+    classify_result = await _staged_classify(case, ce)
+    verify_result = await _staged_verify(case, 3)
+    synced = await _staged_sync_grounds(case_id, user_id)
+
+    return {
+        "status": "refreshed",
+        "staleness": staleness,
+        "refresh_result": {
+            "documents": extract_result,
+            "case_extract": case_extract_result,
+            "classification": classify_result,
+            "verification": verify_result,
+            "projection": {"synced_count": synced},
+        },
+    }
+
+
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
     
@@ -726,6 +852,38 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
     
+    # ================= PIPELINE GUARD =================
+    high_value_report = report_type in ["full_detailed", "extensive_log"]
+    pipeline_status = None
+
+    if high_value_report:
+        try:
+            pipeline_status = await _enforce_pipeline_freshness(
+                case_id,
+                user_id,
+                auto_refresh=True,
+            )
+            logger.info(f"Pipeline guard for {case_id}/{report_type}: {pipeline_status.get('status')}")
+        except Exception as pg_err:
+            logger.warning(f"Pipeline guard failed (non-fatal) for {case_id}: {pg_err}")
+
+    # ================= LOAD PIPELINE DATA =================
+    structured_context = None
+    if high_value_report:
+        case_extract_data = await db.case_extracts.find_one(
+            {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+        )
+        issue_verifications_data = await db.issue_verifications.find(
+            {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+        ).to_list(100)
+
+        structured_context = {
+            "facts": case_extract_data.get("merged_facts", []) if case_extract_data else [],
+            "events": case_extract_data.get("merged_events", []) if case_extract_data else [],
+            "findings": case_extract_data.get("merged_findings", []) if case_extract_data else [],
+            "verified_issues": issue_verifications_data,
+        }
+
     # Get documents with full content
     documents = await db.documents.find(
         {"case_id": case_id},
@@ -930,6 +1088,39 @@ Summary: {case.get('summary', 'N/A')}
 
     grounds_titles = [g.get('title') for g in grounds if g.get('title')]
     grounds_enumerated = "\n".join([f"{idx + 1}. {title}" for idx, title in enumerate(grounds_titles)])
+
+    # ================= INJECT STRUCTURED PIPELINE DATA =================
+    if high_value_report and structured_context:
+        facts_text = "\n".join([f"- {f}" if isinstance(f, str) else f"- {f}" for f in structured_context["facts"]]) if structured_context["facts"] else "No extracted facts available."
+        events_text = "\n".join([f"- {e}" if isinstance(e, str) else f"- {e}" for e in structured_context["events"]]) if structured_context["events"] else "No extracted events available."
+        findings_text = "\n".join([f"- {f}" if isinstance(f, str) else f"- {f}" for f in structured_context["findings"]]) if structured_context["findings"] else "No extracted findings available."
+
+        verified_text = ""
+        for vi in structured_context["verified_issues"]:
+            verified_text += f"\n--- Issue: {vi.get('title', 'Untitled')} (Type: {vi.get('ground_type', 'unknown')}) ---\n"
+            verified_text += f"  Verification status: {vi.get('verification_status', 'unverified')}\n"
+            if vi.get("supporting_items"):
+                verified_text += f"  Supporting items: {len(vi['supporting_items'])}\n"
+            if vi.get("undermining_items"):
+                verified_text += f"  Undermining items: {len(vi['undermining_items'])}\n"
+            if vi.get("legitimacy_scores"):
+                verified_text += f"  Legitimacy: {vi['legitimacy_scores']}\n"
+
+        case_context += f"""
+=== STRUCTURED PIPELINE DATA (VERIFIED MATERIAL) ===
+
+CASE FACTS:
+{facts_text}
+
+TIMELINE EVENTS:
+{events_text}
+
+KEY FINDINGS:
+{findings_text}
+
+VERIFIED APPEAL ISSUES:
+{verified_text if verified_text else "No verified issues available."}
+"""
 
     # Define prompts based on report type with offence-specific language
     base_system = get_offence_system_prompt(offence_category)
@@ -1954,6 +2145,11 @@ REPORT TO EXPAND:
         "document_count": len(documents),
         "event_count": len(timeline),
         "metadata": report_metadata.model_dump(),
+        "pipeline_metadata": {
+            "status": pipeline_status.get("status") if pipeline_status else "not_checked",
+            "staleness": pipeline_status.get("staleness") if pipeline_status else None,
+            "auto_refreshed": pipeline_status.get("status") == "refreshed" if pipeline_status else False,
+        },
     }
 
 
@@ -2719,10 +2915,17 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "defendant": analysis_result["case_data"].get("defendant_name", ""),
                     "document_count": analysis_result["document_count"],
                     "event_count": analysis_result["event_count"],
-                    "aggressive_mode": aggressive_mode
+                    "aggressive_mode": aggressive_mode,
+                    "draft_source": "pipeline" if analysis_result.get("pipeline_metadata", {}).get("status") in ("fresh", "refreshed") else "legacy",
                 },
                 "grounds_of_merit": analysis_result["grounds_of_merit"],
-                "metadata": {**(analysis_result.get("metadata") or {}), "pipeline_refresh_before_draft": pipeline_refresh_result},
+                "metadata": {
+                    **(analysis_result.get("metadata") or {}),
+                    "pipeline_refresh_before_draft": pipeline_refresh_result,
+                    "pipeline_issue_count": len(analysis_result.get("pipeline_metadata", {}).get("staleness", {}).get("extract_missing_for_documents", []) or []) if analysis_result.get("pipeline_metadata") else 0,
+                    "pipeline_verification_count": 0,
+                    **(analysis_result.get("pipeline_metadata") or {}),
+                },
                 "source_mode": "ai_generated",
                 "verification_status": "draft",
             }}
