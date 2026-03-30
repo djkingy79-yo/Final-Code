@@ -1,5 +1,26 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Pipeline Verification UI in ReportsSection
+
+### Summary
+Added Pipeline Verification UI block to ReportsSection.jsx with "Verify Top 3" and "Verify Top 6" buttons, workflow guidance, and pipeline metadata display in report cards.
+
+### Frontend Changes (ReportsSection.jsx)
+- `verifyTopIssues()` API helper for calling `/api/cases/{id}/issues/verify-batch`
+- Pipeline state: `pipelineVerifyLoading`, `pipelineVerifyResult`, `pipelineVerifyError`
+- `handleVerifyTopIssues()` handler with loading/error/result display
+- Pipeline Verification block with two action buttons (Verify Top 3, Verify Top 6)
+- Report workflow guidance: Quick Summary → generate directly, Full Detailed → verify 3 first, Extensive Log → verify 6 first
+- Generate report button disabled during verification
+- Pre-Draft Pipeline Activity metadata display in expanded report cards
+
+### Testing
+- Backend: verify-batch limit=3 (3 verified, 46 synced), limit=6 (6 verified, 46 synced) ✅
+- Frontend: All UI elements present, loading states, button disabling ✅
+- iteration_133.json: 100% pass rate
+
+---
+
 ## 30 March 2026 — Batch Verification Endpoint
 
 ### Summary
