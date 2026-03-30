@@ -60,6 +60,7 @@ from routers.pipeline_staged import router as pipeline_staged_router
 from services.pipeline import (
     extract_document_artifacts,
     classify_case_issues,
+    verify_issue,
 )
 from services.pipeline_models import CaseExtract
 
@@ -600,23 +601,121 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
     return synced
 
 
-async def _refresh_pipeline_for_reporting(case: dict, documents: list) -> dict:
+async def _refresh_pipeline_for_reporting(case: dict, documents: list, report_type: str = "quick_summary") -> dict:
     """
     Reporting-time pipeline refresh:
     1. ensure document extracts
     2. refresh case extract
     3. ensure issue classifications
-    4. sync projection into grounds
+    4. optionally auto-verify top issues by report tier
+    5. sync projection into grounds
     """
     extracted_count = await _ensure_document_extracts_for_case(case, documents)
     case_extract = await _refresh_case_extract_for_case(case)
     issues = await _ensure_issue_classifications(case, case_extract)
+
+    auto_verify_limit = _auto_verification_limit_for_report_type(report_type)
+    selected_issues = await _select_issues_for_auto_verification(case, auto_verify_limit)
+    auto_verify_result = await _auto_verify_selected_issues(case, selected_issues)
+
     synced_count = await _sync_pipeline_projection_to_grounds(case)
+
     return {
         "extracted_count": extracted_count,
         "classified_count": len(issues),
         "synced_count": synced_count,
+        "auto_verify_limit": auto_verify_limit,
+        "auto_verify_result": auto_verify_result,
     }
+
+
+def _issue_priority_rank(issue: dict) -> tuple:
+    """Lower tuple sorts earlier."""
+    preferred_ground_order = {
+        "judicial_error": 0,
+        "procedural_error": 1,
+        "miscarriage_of_justice": 2,
+        "fresh_evidence": 3,
+        "sentencing_error": 4,
+        "jury_irregularity": 5,
+        "ineffective_counsel": 6,
+        "prosecution_misconduct": 7,
+        "constitutional_violation": 8,
+        "other": 9,
+    }
+    confidence_order = {
+        "strong": 0,
+        "moderate": 1,
+        "weak": 2,
+    }
+    return (
+        preferred_ground_order.get(issue.get("ground_type", "other"), 9),
+        confidence_order.get(issue.get("classification_confidence", "moderate"), 1),
+        str(issue.get("title", "")).lower(),
+    )
+
+
+async def _select_issues_for_auto_verification(case: dict, limit: int) -> list[dict]:
+    """Select issues that do not yet have verifications."""
+    if limit <= 0:
+        return []
+    issues = await db.issue_classifications.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+    ).to_list(500)
+    if not issues:
+        return []
+    eligible = []
+    for issue in issues:
+        existing_verification = await db.issue_verifications.find_one(
+            {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
+            {"_id": 0}
+        )
+        if existing_verification:
+            continue
+        eligible.append(issue)
+    eligible.sort(key=_issue_priority_rank)
+    return eligible[:limit]
+
+
+async def _auto_verify_selected_issues(case: dict, selected_issues: list[dict]) -> dict:
+    """Verify selected issues and persist results."""
+    if not selected_issues:
+        return {"attempted": 0, "verified": 0, "failed": 0}
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+    )
+    if not case_extract:
+        return {"attempted": len(selected_issues), "verified": 0, "failed": len(selected_issues)}
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+    verified = 0
+    failed = 0
+    for issue in selected_issues:
+        try:
+            verification = await verify_issue(case, issue, supporting_context)
+            verification_dict = verification.model_dump()
+            verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+            await db.issue_verifications.update_one(
+                {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
+                {"$set": verification_dict},
+                upsert=True,
+            )
+            verified += 1
+        except Exception as e:
+            logger.warning(f"Auto-verification failed for case {case['case_id']} issue {issue.get('issue_id')}: {e}")
+            failed += 1
+    return {"attempted": len(selected_issues), "verified": verified, "failed": failed}
+
+
+def _auto_verification_limit_for_report_type(report_type: str) -> int:
+    if report_type in ("full_report", "full_detailed"):
+        return 3
+    if report_type in ("extensive_report", "extensive_log"):
+        return 6
+    return 0
 
 
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
@@ -2568,7 +2667,7 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
 
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
     """Background task that generates the AI report and updates the DB record — HARDENED with metadata."""
-    pipeline_refresh_result = {"refreshed": False, "extracted_count": 0, "classified_count": 0, "synced_count": 0}
+    pipeline_refresh_result = {"refreshed": False, "extracted_count": 0, "classified_count": 0, "synced_count": 0, "auto_verify_limit": 0, "auto_verify_result": {"attempted": 0, "verified": 0, "failed": 0}}
     try:
         # Pre-draft pipeline refresh: ensure staged artifacts are current
         case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
@@ -2579,9 +2678,24 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
             try:
                 needs_refresh = await _pipeline_artifacts_missing_or_stale(case, documents)
                 if needs_refresh:
-                    refreshed = await _refresh_pipeline_for_reporting(case, documents)
+                    refreshed = await _refresh_pipeline_for_reporting(case, documents, report_type)
                     pipeline_refresh_result = {"refreshed": True, **refreshed}
                     logger.info(f"Pipeline refreshed for report {report_id}: {pipeline_refresh_result}")
+                else:
+                    # Even if artifacts exist, paid report tiers may justify additional auto-verification
+                    auto_verify_limit = _auto_verification_limit_for_report_type(report_type)
+                    if auto_verify_limit > 0:
+                        selected_issues = await _select_issues_for_auto_verification(case, auto_verify_limit)
+                        auto_verify_result = await _auto_verify_selected_issues(case, selected_issues)
+                        synced_count = await _sync_pipeline_projection_to_grounds(case)
+                        pipeline_refresh_result = {
+                            "refreshed": False,
+                            "extracted_count": 0,
+                            "classified_count": 0,
+                            "synced_count": synced_count,
+                            "auto_verify_limit": auto_verify_limit,
+                            "auto_verify_result": auto_verify_result,
+                        }
             except Exception as pe:
                 logger.warning(f"Pipeline refresh before report {report_id} failed (non-fatal): {pe}")
 

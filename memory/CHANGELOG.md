@@ -1,5 +1,29 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Tiered Auto-Verification in Report Generation
+
+### Summary
+Added priority-ranked auto-verification of classified issues during report generation, scaled by report tier.
+
+### New Helpers
+- `_issue_priority_rank()` — Sorts issues by ground type importance then confidence
+- `_select_issues_for_auto_verification()` — Selects unverified issues up to a tier limit
+- `_auto_verify_selected_issues()` — Runs pipeline verify on selected issues
+- `_auto_verification_limit_for_report_type()` — `quick_summary`=0, `full_detailed`=3, `extensive_log`=6
+
+### Behaviour
+- `quick_summary`: No auto-verification (speed priority)
+- `full_detailed`: Top 3 unverified issues auto-verified before draft
+- `extensive_log`: Top 6 unverified issues auto-verified before draft
+- Even when pipeline artifacts already exist, paid tiers still run auto-verification for unverified issues
+- Result metadata attached: `pipeline_refresh_before_draft.auto_verify_result`
+
+### Testing
+- `quick_summary`: auto_verify_limit=0, attempted=0, verified=0 ✅
+- `full_detailed`: auto_verify_limit=3, attempted=3, verified=3 ✅
+
+---
+
 ## 30 March 2026 — Report Generation Pipeline Integration
 
 ### Summary
