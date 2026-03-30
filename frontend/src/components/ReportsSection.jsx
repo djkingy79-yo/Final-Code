@@ -42,6 +42,15 @@ import {
   AlertDialogTitle,
 } from "./ui/alert-dialog";
 
+async function verifyTopIssues(apiBase, caseId, limit) {
+  const response = await axios.post(
+    `${apiBase}/cases/${caseId}/issues/verify-batch`,
+    { limit },
+    { timeout: 300000 }
+  );
+  return response.data;
+}
+
 const REPORT_TYPES = [
   { 
     value: "quick_summary", 
@@ -95,6 +104,9 @@ const ReportsSection = ({
   const [expandedReports, setExpandedReports] = useState({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pendingReportType, setPendingReportType] = useState(null);
+  const [pipelineVerifyLoading, setPipelineVerifyLoading] = useState(false);
+  const [pipelineVerifyResult, setPipelineVerifyResult] = useState(null);
+  const [pipelineVerifyError, setPipelineVerifyError] = useState("");
 
   const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
   const latestPaymentStatus = paymentSummary?.latest_status_by_feature || {};
@@ -363,6 +375,23 @@ const ReportsSection = ({
     }
   };
 
+  const handleVerifyTopIssues = async (limit) => {
+    try {
+      setPipelineVerifyLoading(true);
+      setPipelineVerifyError("");
+      setPipelineVerifyResult(null);
+      const result = await verifyTopIssues(API, caseId, limit);
+      setPipelineVerifyResult(result);
+      if (typeof onReportsChange === "function") {
+        await onReportsChange();
+      }
+    } catch (err) {
+      setPipelineVerifyError(err?.response?.data?.detail || err.message || "Verification failed");
+    } finally {
+      setPipelineVerifyLoading(false);
+    }
+  };
+
   const [deleteReportId, setDeleteReportId] = useState(null);
 
   const handleDeleteReport = (reportId) => {
@@ -394,11 +423,61 @@ const ReportsSection = ({
 
   return (
     <>
+      {/* Pipeline Verification Block */}
+      <div className="rounded-lg border border-slate-200 p-4 mb-4 bg-white" data-testid="pipeline-verification-block">
+        <div className="font-semibold text-sm text-slate-900 mb-2">Pipeline Verification</div>
+        <div className="text-xs text-slate-600 mb-3">
+          Verify classified issues before drafting a report. This improves evidentiary linkage and gives stronger barrister-facing output.
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleVerifyTopIssues(3)}
+            disabled={pipelineVerifyLoading || generatingReport}
+            className="bg-blue-700 text-white hover:bg-blue-600"
+            data-testid="verify-top-3-btn"
+          >
+            {pipelineVerifyLoading ? (
+              <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Verifying...</>
+            ) : "Verify Top 3 Issues"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleVerifyTopIssues(6)}
+            disabled={pipelineVerifyLoading || generatingReport}
+            className="bg-blue-700 text-white hover:bg-blue-600"
+            data-testid="verify-top-6-btn"
+          >
+            {pipelineVerifyLoading ? (
+              <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Verifying...</>
+            ) : "Verify Top 6 Issues"}
+          </Button>
+        </div>
+        {pipelineVerifyError && (
+          <div className="mt-3 text-sm text-red-700" data-testid="pipeline-verify-error">{pipelineVerifyError}</div>
+        )}
+        {pipelineVerifyResult && (
+          <div className="mt-3 rounded border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid="pipeline-verify-result">
+            <div className="font-medium text-slate-900 mb-1">Verification Result</div>
+            <div>Eligible issues: {pipelineVerifyResult.eligible_issues}</div>
+            <div>Attempted: {pipelineVerifyResult.attempted}</div>
+            <div>Verified: {pipelineVerifyResult.verified}</div>
+            <div>Failed: {pipelineVerifyResult.failed}</div>
+            <div>Projected grounds synced: {pipelineVerifyResult.synced_count}</div>
+            {pipelineVerifyResult.message && (
+              <div className="mt-2 text-slate-500">{pipelineVerifyResult.message}</div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Action Button */}
       <div className="flex justify-end mb-4">
         <Button 
           onClick={() => setShowReportDialog(true)}
-          disabled={generatingReport}
+          disabled={generatingReport || pipelineVerifyLoading}
           className="landing-cta-primary"
           data-testid="generate-report-btn"
         >
@@ -728,6 +807,23 @@ const ReportsSection = ({
                         <div className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100" data-testid={`report-ai-warning-${report.report_id}`}>
                           This report is AI-assisted analysis for case preparation and legal review. It is not a determination of legal merit or appeal outcome.
                         </div>
+
+                        {/* Pre-Draft Pipeline Activity */}
+                        {report?.metadata?.pipeline_refresh_before_draft && (
+                          <div className="mt-3 rounded border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid={`pipeline-metadata-${report.report_id}`}>
+                            <div className="font-medium text-slate-900 mb-1">Pre-Draft Pipeline Activity</div>
+                            <div>Refreshed before draft: {report.metadata.pipeline_refresh_before_draft.refreshed ? "Yes" : "No"}</div>
+                            <div>Extracted: {report.metadata.pipeline_refresh_before_draft.extracted_count ?? 0}</div>
+                            <div>Classified: {report.metadata.pipeline_refresh_before_draft.classified_count ?? 0}</div>
+                            <div>Synced: {report.metadata.pipeline_refresh_before_draft.synced_count ?? 0}</div>
+                            {report.metadata.pipeline_refresh_before_draft.auto_verify_result && (
+                              <>
+                                <div>Auto-verify attempted: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.attempted ?? 0}</div>
+                                <div>Auto-verify succeeded: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.verified ?? 0}</div>
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {/* Report Metadata Panel */}
@@ -880,6 +976,17 @@ const ReportsSection = ({
               </div>
             </div>
 
+            {/* Report tier workflow guidance */}
+            <div className="text-xs text-slate-500 mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3" data-testid="report-workflow-guidance">
+              Recommended workflow:
+              <br />
+              &bull; Quick Summary: generate directly
+              <br />
+              &bull; Full Detailed Report: verify top 3 issues first
+              <br />
+              &bull; Extensive Log: verify top 6 issues first
+            </div>
+
             {/* Report generation time info */}
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3" data-testid="report-generation-warning">
               <div className="flex items-center gap-2">
@@ -909,7 +1016,7 @@ const ReportsSection = ({
                 }
                 handleGenerateReport(selectedReportType);
               }}
-              disabled={!selectedReportType || generatingReport || (selectedReportType === 'barrister_view' && !hasAllReports)}
+              disabled={!selectedReportType || generatingReport || pipelineVerifyLoading || (selectedReportType === 'barrister_view' && !hasAllReports)}
               className="w-full sm:w-auto landing-cta-primary px-6 py-4 text-base font-semibold justify-center"
               data-testid="report-dialog-generate"
             >
