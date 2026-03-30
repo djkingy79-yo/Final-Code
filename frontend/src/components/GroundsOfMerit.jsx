@@ -530,12 +530,12 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
       )}
 
       {groundsCount === 0 && grounds.length === 0 ? (
-        <Card className="p-12 text-center">
+        <Card className="p-8 text-center">
           <Scale className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             No grounds of merit identified
           </h3>
-          <p className="text-slate-600 mb-4">
+          <p className="text-xs text-slate-500 mb-4">
             Use AI to automatically identify potential grounds or add them manually.
           </p>
         </Card>

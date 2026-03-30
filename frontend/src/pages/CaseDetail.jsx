@@ -623,14 +623,14 @@ const CaseDetail = ({ user }) => {
       
       const { identified_count, skipped_duplicates, existing_grounds, unlock_price } = response.data;
       
+      // ALWAYS refresh grounds list after auto-identify — DO NOT skip this
+      const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`);
+      setGrounds(groundsRes.data.grounds || []);
+      setGroundsCount(groundsRes.data.count || 0);
+      setGroundsUnlocked(groundsRes.data.is_unlocked || false);
+      setGroundsUnlockPrice(groundsRes.data.unlock_price || 99.00);
+
       if (identified_count > 0) {
-        // Refresh grounds list to get updated data with proper paywall state
-        const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`);
-        setGrounds(groundsRes.data.grounds || []);
-        setGroundsCount(groundsRes.data.count || 0);
-        setGroundsUnlocked(groundsRes.data.is_unlocked || false);
-        setGroundsUnlockPrice(groundsRes.data.unlock_price || 50.00);
-        
         // Show appropriate message
         if (skipped_duplicates > 0) {
           toast.success(`Found ${identified_count} new ground(s)! ${skipped_duplicates} duplicate(s) skipped. Pay $${unlock_price?.toFixed(2)} to see full details.`);
@@ -889,10 +889,10 @@ const CaseDetail = ({ user }) => {
                 variant="destructive" 
                 size="sm" 
                 onClick={handleDeleteCase}
-                className="bg-red-600 hover:bg-red-700 text-white rounded-xl"
+                className="bg-red-600 hover:bg-red-700 text-white rounded-xl text-base font-extrabold"
                 data-testid="delete-case-btn"
               >
-                <Trash2 className="w-4 h-4 mr-1" />
+                <Trash2 className="w-5 h-5 mr-1" />
                 Delete Case
               </Button>
             </div>
@@ -1153,14 +1153,14 @@ const CaseDetail = ({ user }) => {
                 </div>
               </div>
             )}
-            {grounds.length === 0 && !groundsCount ? (
+            {grounds.length === 0 && !groundsCount && !autoIdentifying ? (
               <Card className="p-12 text-center card-elevated">
                 <Gavel className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   No grounds of merit identified
                 </h3>
-                <p className="text-slate-600 mb-4 max-w-md mx-auto">
-                  Use AI to automatically analyse your case materials and identify potential grounds for appeal, 
+                <p className="text-xs text-slate-500 mb-4 max-w-md mx-auto">
+                  Use AI to automatically analyse case materials and identify potential grounds for appeal, 
                   or add grounds manually.
                 </p>
                 <div className="flex gap-3 justify-center">
