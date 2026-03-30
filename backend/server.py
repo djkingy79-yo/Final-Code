@@ -59,7 +59,7 @@ from routers.pipeline import router as pipeline_router
 
 # ── MongoDB client reference (for shutdown) ──
 MONGO_URL = os.environ.get("MONGO_URL")
-DB_NAME = os.environ.get("DB_NAME", "criminal_appeals")
+DB_NAME = os.environ["DB_NAME"]
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
 
 # ── Admin helpers ──
