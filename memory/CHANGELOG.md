@@ -1,5 +1,22 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Document Upload Timeout Fix (CRITICAL)
+
+### Root Cause
+The document upload endpoint (`POST /api/cases/{case_id}/documents`) was running an LLM metadata detection call **synchronously** within the upload request. This 60-second blocking call caused proxy/ingress timeouts and "Network Error" on mobile devices.
+
+### Fix
+- Moved LLM metadata detection into `_background_auto_detect_metadata()` background task
+- Upload now returns immediately after saving to MongoDB (~200-500ms)
+- Metadata detection runs asynchronously and updates case data in the background
+- File: `/app/backend/routers/documents.py`
+
+### Before vs After
+- **Before:** Upload → Read file → Extract text → Insert to DB → **LLM call (60s)** → Return response = **60+ seconds**
+- **After:** Upload → Read file → Extract text → Insert to DB → Return response → *(background: LLM call)* = **~200-500ms**
+
+---
+
 ## 30 March 2026 — Barrister Acceptance Pack & Pipeline Progress Widget
 
 ### Summary

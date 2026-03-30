@@ -24,6 +24,65 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["documents"])
 
 
+async def _background_auto_detect_metadata(case_id: str, user_id: str, content_text: str, filename: str):
+    """Background task: auto-detect case metadata from uploaded document via LLM"""
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+        if not case:
+            return
+        if case.get('offence_type') and case.get('sentence') and case.get('offence_category') and case.get('offence_category') != 'homicide':
+            return
+        detect_prompt = f"""Analyse this criminal case document and extract metadata.
+Return ONLY valid JSON (no markdown):
+{{
+  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
+  "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH>",
+  "sentence": "<exact sentence if stated, else null>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act>",
+  "court": "<court name if found>",
+  "case_number": "<case number if found>",
+  "defendant_name": "<defendant full name if found>"
+}}
+Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unknown, set null. state must be lowercase.
+
+DOCUMENT ({filename}):
+{content_text[:20000]}"""
+        detect_chat = LlmChat(
+            api_key=os.environ.get("EMERGENT_LLM_KEY"),
+            session_id=f"upload_detect_{case_id}",
+            system_message="Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+        ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
+        raw = await asyncio.wait_for(detect_chat.send_message(UserMessage(text=detect_prompt)), timeout=60)
+        raw = (raw or "").strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        meta = json.loads(raw)
+        valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
+        valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+        update_fields = {}
+        if meta.get("offence_category") in valid_cats:
+            update_fields["offence_category"] = meta["offence_category"]
+        if meta.get("offence_type"):
+            update_fields["offence_type"] = meta["offence_type"]
+        if meta.get("sentence"):
+            update_fields["sentence"] = meta["sentence"]
+        if meta.get("state") and meta["state"].lower() in valid_sts:
+            update_fields["state"] = meta["state"].lower()
+        if meta.get("court"):
+            update_fields["court"] = meta["court"]
+        if meta.get("case_number") and not case.get("case_number"):
+            update_fields["case_number"] = meta["case_number"]
+        if meta.get("defendant_name") and not case.get("defendant_name"):
+            update_fields["defendant_name"] = meta["defendant_name"]
+        if update_fields:
+            update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+            await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
+            logger.info(f"Background auto-detected metadata for {case_id}: {list(update_fields.keys())}")
+    except Exception as e:
+        logger.warning(f"Background auto-detect failed for {case_id}: {e}")
+
+
 async def _background_auto_generate(case_id: str, user_id: str):
     """Background task: auto-generate timeline events + case summary from documents"""
     try:
@@ -165,61 +224,9 @@ async def upload_document(
         doc_dict["event_date"] = parsed_event_date
     await db.documents.insert_one(doc_dict)
     await db.cases.update_one({"case_id": case_id}, {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}})
-    # Auto-detect case metadata
+    # Schedule background tasks for metadata detection and auto-generation
     if content_text and len(content_text) > 200:
-        case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
-        if case and (not case.get('offence_category') or case.get('offence_category') == 'homicide') and not case.get('offence_type') and not case.get('sentence'):
-            try:
-                from emergentintegrations.llm.chat import LlmChat, UserMessage
-                detect_prompt = f"""Analyse this criminal case document and extract metadata.
-Return ONLY valid JSON (no markdown):
-{{
-  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
-  "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH>",
-  "sentence": "<exact sentence if stated, else null>",
-  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act>",
-  "court": "<court name if found>",
-  "case_number": "<case number if found>",
-  "defendant_name": "<defendant full name if found>"
-}}
-Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unknown, set null. state must be lowercase.
-
-DOCUMENT ({file.filename}):
-{content_text[:20000]}"""
-                detect_chat = LlmChat(
-                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                    session_id=f"upload_detect_{case_id}",
-                    system_message="Extract factual metadata from Australian criminal case documents. Return only valid JSON."
-                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
-                raw = await asyncio.wait_for(detect_chat.send_message(UserMessage(text=detect_prompt)), timeout=60)
-                raw = (raw or "").strip()
-                if raw.startswith("```"):
-                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-                meta = json.loads(raw)
-                valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
-                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
-                update_fields = {}
-                if meta.get("offence_category") in valid_cats:
-                    update_fields["offence_category"] = meta["offence_category"]
-                if meta.get("offence_type"):
-                    update_fields["offence_type"] = meta["offence_type"]
-                if meta.get("sentence"):
-                    update_fields["sentence"] = meta["sentence"]
-                if meta.get("state") and meta["state"].lower() in valid_sts:
-                    update_fields["state"] = meta["state"].lower()
-                if meta.get("court"):
-                    update_fields["court"] = meta["court"]
-                if meta.get("case_number") and not case.get("case_number"):
-                    update_fields["case_number"] = meta["case_number"]
-                if meta.get("defendant_name") and not case.get("defendant_name"):
-                    update_fields["defendant_name"] = meta["defendant_name"]
-                if update_fields:
-                    update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
-                    await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
-                    logger.info(f"Upload auto-detected metadata for {case_id}: {update_fields}")
-            except Exception as e:
-                logger.warning(f"Upload auto-detect failed for {case_id}: {e}")
-    if content_text and len(content_text) > 200:
+        background_tasks.add_task(_background_auto_detect_metadata, case_id, user.user_id, content_text, file.filename)
         background_tasks.add_task(_background_auto_generate, case_id, user.user_id)
     created_doc = await db.documents.find_one({"document_id": doc.document_id}, {"_id": 0, "file_data": 0})
     return created_doc
