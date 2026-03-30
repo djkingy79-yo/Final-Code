@@ -36,11 +36,11 @@ def _norm_ground_type(value: str) -> str:
 
 
 async def classify_case_issues(case: dict, case_extract: dict) -> list[IssueClassification]:
-    system_prompt = """Classify possible appellate issues from the extracted record.
-Use conditional language.
-Do not verify the issues.
-Do not draft final conclusions.
-Do not state that any appeal will succeed."""
+    system_prompt = """You are a specialist Australian appellate lawyer conducting a preliminary issue-spot.
+Your task is to identify ONLY the most significant and distinct potential grounds of appeal.
+Quality over quantity — a real appeal typically has 3 to 8 grounds at most.
+Do NOT list every conceivable complaint. Merge related sub-issues into a single ground.
+Use conditional language. Do not verify the issues. Do not state that any appeal will succeed."""
 
     facts_text = "\n".join([
         f"[{f.get('fact_id', '')}] ({f.get('type', 'general')}) {f.get('text', '')}"
@@ -58,7 +58,7 @@ Do not state that any appeal will succeed."""
     state = case.get("state", "nsw")
     offence_cat = case.get("offence_category", "unknown")
 
-    user_prompt = f"""Based on the extracted record below, classify possible appellate issues.
+    user_prompt = f"""Based on the extracted record below, identify the MOST SIGNIFICANT potential grounds of appeal.
 
 Jurisdiction: {state.upper()}
 Offence category: {offence_cat}
@@ -88,11 +88,19 @@ Return ONLY valid JSON:
   ]
 }}
 
-Rules:
+STRICT RULES:
+- Return a MAXIMUM of 10 grounds. Focus only on the strongest, most distinct issues.
+- MERGE related sub-issues into a single ground (e.g., all sentencing complaints become one "Sentencing Error" ground, all psychiatric evidence issues become one ground).
+- Do NOT split the same underlying complaint into multiple grounds.
+- Each ground MUST be materially distinct from every other ground.
 - Use conditional language (possible issue, potential ground, may warrant).
-- Do NOT verify or draft final conclusions at this stage.
 - Link each issue to specific extracted fact/event/finding IDs.
 - ground_type MUST be from the listed values.
+- classification_confidence should reflect genuine assessment:
+  * "strong" = clear factual/legal basis in the record, likely arguable
+  * "moderate" = some supporting evidence, warrants further investigation  
+  * "weak" = only a marginal indicator, limited evidence in the record
+  If an issue is significant enough to list, it should be at least "moderate" unless the evidence is genuinely thin.
 - Only classify issues genuinely supported by the extracted record."""
 
     parsed = await call_llm_for_json(
@@ -104,7 +112,7 @@ Rules:
     )
 
     issues = []
-    for raw in parsed.get("issues", []):
+    for raw in parsed.get("issues", [])[:10]:  # Hard cap at 10 — a real appeal has 3-8 grounds
         issues.append(IssueClassification(
             case_id=case["case_id"],
             user_id=case["user_id"],

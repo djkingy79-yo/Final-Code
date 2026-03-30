@@ -237,7 +237,9 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "title": issue.get("title"),
             "ground_type": issue.get("ground_type", "other"),
             "description": issue.get("description", ""),
-            "strength": (verification or {}).get("legitimacy_scores", {}).get("rating", issue.get("classification_confidence", "moderate")),
+            # If fully verified, use the verification's rating. Otherwise "moderate" — these are
+            # preliminary identifications, significant enough to list but not yet deeply investigated.
+            "strength": (verification or {}).get("legitimacy_scores", {}).get("rating", "moderate"),
             "status": "investigated" if verification else "identified",
             "supporting_evidence": (verification or {}).get("supporting_items", []),
             "law_sections": (verification or {}).get("law_sections", []),
