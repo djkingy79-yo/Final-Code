@@ -1,234 +1,163 @@
-import { useState, useEffect, useCallback } from "react";
+import React from "react";
 import axios from "axios";
-import { toast } from "sonner";
 import { API } from "../App";
-import { CheckCircle2, Circle, Loader2, ArrowRight, FileSearch, Brain, Shield, GitMerge } from "lucide-react";
-import { Button } from "./ui/button";
+import { Loader2 } from "lucide-react";
+import { Button } from "../components/ui/button";
 
-const STAGES = [
-  { key: "extract", label: "Extract", icon: FileSearch, description: "Structured extraction from documents" },
-  { key: "classify", label: "Classify", icon: Brain, description: "Identify candidate appeal issues" },
-  { key: "verify", label: "Verify", icon: Shield, description: "Assess supporting and undermining material" },
-  { key: "project", label: "Project", icon: GitMerge, description: "Sync verified issues to grounds" },
-];
+async function apiRequest(url, options = {}) {
+  const response = await axios({
+    url: `${API}${url}`,
+    method: options.method || "GET",
+    data: options.body ? JSON.parse(options.body) : undefined,
+    timeout: 300000,
+  });
+  return response.data;
+}
 
-const StageIcon = ({ stage, status }) => {
-  if (status === "complete") return <CheckCircle2 className="w-5 h-5 text-green-600" />;
-  if (status === "partial") return <div className="w-5 h-5 rounded-full border-2 border-blue-500 bg-blue-100 flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-blue-500" /></div>;
-  if (status === "running") return <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />;
-  return <Circle className="w-5 h-5 text-slate-300" />;
-};
+async function getPipelineSummary(caseId) {
+  return apiRequest(`/pipeline/cases/${caseId}/summary`);
+}
 
-const PipelineProgress = ({ caseId, sessionToken, onRunStage }) => {
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [runningStage, setRunningStage] = useState(null);
+async function refreshCaseExtract(caseId) {
+  return apiRequest(`/pipeline/cases/${caseId}/extract/refresh`, { method: "POST" });
+}
 
-  const fetchStatus = useCallback(async () => {
-    if (!caseId || !sessionToken) return;
+async function classifyIssues(caseId) {
+  return apiRequest(`/pipeline/cases/${caseId}/issues/classify`, { method: "POST" });
+}
+
+async function verifyBatch(caseId, limit) {
+  return apiRequest(`/cases/${caseId}/issues/verify-batch`, {
+    method: "POST",
+    body: JSON.stringify({ limit }),
+  });
+}
+
+async function extractDocument(caseId, documentId) {
+  return apiRequest(`/pipeline/cases/${caseId}/documents/${documentId}/extract`, { method: "POST" });
+}
+
+async function syncGrounds(caseId) {
+  return apiRequest(`/pipeline/cases/${caseId}/grounds/sync-from-issues`, { method: "POST" });
+}
+
+export default function PipelineProgress({
+  caseId,
+  documents = [],
+  onRefreshCase,
+  onRefreshGrounds,
+  onRefreshReports,
+}) {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [result, setResult] = React.useState(null);
+  const [summary, setSummary] = React.useState(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const data = await getPipelineSummary(caseId);
+        if (!cancelled) setSummary(data);
+      } catch (_) { /* silent */ }
+    };
+    if (caseId) load();
+    return () => { cancelled = true; };
+  }, [caseId]);
+
+  const extractedDocs = summary?.document_extract_count ?? 0;
+  const classifiedIssues = summary?.issue_classification_count ?? 0;
+  const verifiedIssues = summary?.issue_verification_count ?? 0;
+  const syncedGrounds = summary?.synced_grounds_count ?? 0;
+
+  const runAction = async (fn) => {
     try {
-      const { data } = await axios.get(`${API}/api/cases/${caseId}/pipeline/status`, {
-        headers: { Authorization: `Bearer ${sessionToken}` },
-      });
-      setStatus(data.stages);
-    } catch {
-      // silently fail — pipeline may not have data yet
+      setLoading(true);
+      setError("");
+      setResult(null);
+      const data = await fn();
+      setResult(data);
+      try {
+        const freshSummary = await getPipelineSummary(caseId);
+        setSummary(freshSummary);
+      } catch (_) { /* ignore */ }
+      if (typeof onRefreshCase === "function") await onRefreshCase();
+      if (typeof onRefreshGrounds === "function") await onRefreshGrounds();
+      if (typeof onRefreshReports === "function") await onRefreshReports();
+    } catch (err) {
+      setError(err?.response?.data?.detail || err.message || "Pipeline action failed");
     } finally {
       setLoading(false);
     }
-  }, [caseId, sessionToken]);
-
-  useEffect(() => { fetchStatus(); }, [fetchStatus]);
-
-  const getStageStatus = (key) => {
-    if (!status) return "pending";
-    if (key === "extract") {
-      if (status.extract.case_extract_ready) return "complete";
-      if (status.extract.documents_extracted > 0) return "partial";
-      return "pending";
-    }
-    if (key === "classify") {
-      if (status.classify.issues_identified > 0) return "complete";
-      return "pending";
-    }
-    if (key === "verify") {
-      if (status.verify.issues_pending === 0 && status.verify.issues_verified > 0) return "complete";
-      if (status.verify.issues_verified > 0) return "partial";
-      return "pending";
-    }
-    if (key === "project") {
-      if (status.project.grounds_synced > 0) return "complete";
-      return "pending";
-    }
-    return "pending";
   };
 
-  const getStageDetail = (key) => {
-    if (!status) return "";
-    if (key === "extract") {
-      return `${status.extract.documents_extracted}/${status.extract.documents_total} documents extracted`;
+  const handleExtractAllDocuments = () => runAction(async () => {
+    let completed = 0, failed = 0;
+    for (const doc of documents) {
+      try { await extractDocument(caseId, doc.document_id); completed++; }
+      catch (_) { failed++; }
     }
-    if (key === "classify") {
-      return status.classify.issues_identified > 0
-        ? `${status.classify.issues_identified} issues identified`
-        : "Not yet classified";
-    }
-    if (key === "verify") {
-      if (status.verify.issues_verified === 0) return "Not yet verified";
-      return `${status.verify.issues_verified} verified, ${status.verify.issues_pending} pending`;
-    }
-    if (key === "project") {
-      return status.project.grounds_synced > 0
-        ? `${status.project.grounds_synced} grounds synced`
-        : "Not yet projected";
-    }
-    return "";
-  };
-
-  const canRun = (key) => {
-    if (!status || runningStage) return false;
-    if (key === "extract") return status.extract.documents_total > 0;
-    if (key === "classify") return status.extract.case_extract_ready;
-    if (key === "verify") return status.classify.issues_identified > 0;
-    if (key === "project") return status.classify.issues_identified > 0;
-    return false;
-  };
-
-  const handleRunStage = async (key) => {
-    if (!canRun(key)) return;
-    setRunningStage(key);
-    try {
-      if (key === "extract") {
-        // Extract all unextracted documents, then refresh
-        const { data: docs } = await axios.get(`${API}/api/cases/${caseId}/documents`, {
-          headers: { Authorization: `Bearer ${sessionToken}` },
-        });
-        const textDocs = docs.filter(d => (d.content_text || "").length > 50);
-        let extracted = 0;
-        for (const doc of textDocs) {
-          try {
-            await axios.post(`${API}/api/cases/${caseId}/documents/${doc.document_id}/extract`, {}, {
-              headers: { Authorization: `Bearer ${sessionToken}` },
-            });
-            extracted++;
-          } catch { /* skip failed docs */ }
-        }
-        if (extracted > 0) {
-          await axios.post(`${API}/api/cases/${caseId}/extract/refresh`, {}, {
-            headers: { Authorization: `Bearer ${sessionToken}` },
-          });
-        }
-        toast.success(`Extracted ${extracted} documents and merged case extract`);
-      } else if (key === "classify") {
-        await axios.post(`${API}/api/cases/${caseId}/issues/classify`, {}, {
-          headers: { Authorization: `Bearer ${sessionToken}` },
-        });
-        toast.success("Issues classified successfully");
-      } else if (key === "verify") {
-        await axios.post(`${API}/api/cases/${caseId}/issues/verify-all`, {}, {
-          headers: { Authorization: `Bearer ${sessionToken}` },
-        });
-        toast.success("All issues verified");
-      } else if (key === "project") {
-        await axios.post(`${API}/api/cases/${caseId}/grounds/sync-from-issues`, {}, {
-          headers: { Authorization: `Bearer ${sessionToken}` },
-        });
-        toast.success("Grounds synced from verified issues");
-        if (onRunStage) onRunStage("project");
-      }
-      await fetchStatus();
-    } catch (err) {
-      toast.error(`Pipeline stage failed: ${err?.response?.data?.detail || err.message}`);
-    } finally {
-      setRunningStage(null);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="rounded-lg border border-slate-200 p-4 bg-white" data-testid="pipeline-progress-loading">
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <Loader2 className="w-4 h-4 animate-spin" /> Loading pipeline status...
-        </div>
-      </div>
-    );
-  }
+    return { message: `Extraction attempted for ${documents.length} document(s). Completed ${completed}, failed ${failed}.`, attempted: documents.length, completed, failed };
+  });
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden" data-testid="pipeline-progress-widget">
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200">
-        <h3 className="text-sm font-semibold text-slate-800">Analysis Pipeline</h3>
-        <p className="text-xs text-slate-500 mt-0.5">Document upload to counsel-ready output</p>
-      </div>
+    <div className="rounded-lg border border-slate-200 bg-white p-4 mb-4" data-testid="pipeline-progress-widget">
+      <div className="font-semibold text-sm text-slate-900 mb-2">Pipeline Progress</div>
+      <div className="text-xs text-slate-500 mb-3">Staged workflow: extract &rarr; classify &rarr; verify &rarr; draft</div>
 
-      <div className="p-4">
-        <div className="space-y-3">
-          {STAGES.map((stage, idx) => {
-            const stageStatus = runningStage === stage.key ? "running" : getStageStatus(stage.key);
-            const detail = getStageDetail(stage.key);
-            const isRunnable = canRun(stage.key);
-
-            return (
-              <div key={stage.key}>
-                <div className="flex items-center gap-3" data-testid={`pipeline-stage-${stage.key}`}>
-                  <StageIcon stage={stage.key} status={stageStatus} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-slate-800">{stage.label}</span>
-                      {stageStatus === "complete" && <span className="text-xs text-green-600 font-medium">Done</span>}
-                      {stageStatus === "partial" && <span className="text-xs text-blue-600 font-medium">Partial</span>}
-                    </div>
-                    <p className="text-xs text-slate-400">{detail || stage.description}</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant={stageStatus === "complete" ? "outline" : "default"}
-                    className={stageStatus === "complete" ? "text-slate-500 border-slate-200" : "bg-blue-600 hover:bg-blue-700 text-white"}
-                    disabled={!isRunnable || runningStage !== null}
-                    onClick={() => handleRunStage(stage.key)}
-                    data-testid={`pipeline-run-${stage.key}`}
-                  >
-                    {runningStage === stage.key ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : stageStatus === "complete" ? (
-                      "Re-run"
-                    ) : (
-                      "Run"
-                    )}
-                  </Button>
-                </div>
-                {idx < STAGES.length - 1 && (
-                  <div className="ml-2.5 mt-1 mb-1 h-3 border-l-2 border-dashed border-slate-200" />
-                )}
-              </div>
-            );
-          })}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
+        <div className="rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="pipeline-stat-extracted">
+          <div className="text-xs text-slate-500">Extracted Docs</div>
+          <div className="text-lg font-semibold text-slate-900">{extractedDocs}</div>
         </div>
-
-        {/* Run All button */}
-        <div className="mt-4 pt-3 border-t border-slate-100">
-          <Button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={runningStage !== null || !status || status.extract.documents_total === 0}
-            onClick={async () => {
-              for (const stage of STAGES) {
-                if (canRun(stage.key)) {
-                  await handleRunStage(stage.key);
-                }
-              }
-            }}
-            data-testid="pipeline-run-all"
-          >
-            {runningStage ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Running {STAGES.find(s => s.key === runningStage)?.label}...</>
-            ) : (
-              <><ArrowRight className="w-4 h-4 mr-2" /> Run Full Pipeline</>
-            )}
-          </Button>
+        <div className="rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="pipeline-stat-classified">
+          <div className="text-xs text-slate-500">Classified Issues</div>
+          <div className="text-lg font-semibold text-slate-900">{classifiedIssues}</div>
+        </div>
+        <div className="rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="pipeline-stat-verified">
+          <div className="text-xs text-slate-500">Verified Issues</div>
+          <div className="text-lg font-semibold text-slate-900">{verifiedIssues}</div>
+        </div>
+        <div className="rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="pipeline-stat-synced">
+          <div className="text-xs text-slate-500">Synced Grounds</div>
+          <div className="text-lg font-semibold text-slate-900">{syncedGrounds}</div>
         </div>
       </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" size="sm" onClick={handleExtractAllDocuments} disabled={loading || documents.length === 0} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-extract-all-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Extract All Documents"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshCaseExtract(caseId))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-refresh-extract-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh Case Extract"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => classifyIssues(caseId))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-classify-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Classify Issues"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => verifyBatch(caseId, 3))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-verify-3-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Verify Top 3"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => verifyBatch(caseId, 6))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-verify-6-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Verify Top 6"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => syncGrounds(caseId))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-sync-grounds-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Sync Grounds"}
+        </Button>
+      </div>
+
+      {error && <div className="mt-3 text-sm text-red-700" data-testid="pipeline-error">{error}</div>}
+
+      {result && (
+        <div className="mt-3 rounded-lg border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid="pipeline-result">
+          <div className="font-medium text-slate-900 mb-1">Last Pipeline Result</div>
+          {"message" in result && <div>{result.message}</div>}
+          {"identified_count" in result && <div>Identified: {result.identified_count}</div>}
+          {"document_extracts_used" in result && <div>Document extracts used: {result.document_extracts_used}</div>}
+          {"verified" in result && <div>Verified: {result.verified}</div>}
+          {"failed" in result && <div>Failed: {result.failed}</div>}
+          {"synced_count" in result && <div>Synced grounds: {result.synced_count}</div>}
+        </div>
+      )}
     </div>
   );
-};
-
-export default PipelineProgress;
+}
