@@ -67,6 +67,7 @@ import CaseStrengthMeter from "../components/CaseStrengthMeter";
 import CasePipelineSummary from "../components/CasePipelineSummary";
 import PipelineStalenessAlert from "../components/PipelineStalenessAlert";
 import PipelineProgress from "../components/PipelineProgress";
+import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
 
 const EVENT_TYPES = [
@@ -1005,6 +1006,10 @@ const CaseDetail = ({ user }) => {
                   <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Legal
                 </TabsTrigger>
+                <TabsTrigger value="caselaw" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-caselaw">
+                  <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Case Law</span><span className="sm:hidden">Law</span>
+                </TabsTrigger>
                 <TabsTrigger value="progress" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-progress">
                   <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Progress
@@ -1254,6 +1259,23 @@ const CaseDetail = ({ user }) => {
               offenceType={caseData?.offence_type}
               state={caseData?.state}
             />
+          </TabsContent>
+
+          {/* Case Law Tab — Verified case law database search */}
+          <TabsContent value="caselaw" className="space-y-4" data-tab-content>
+            <Card className="p-4">
+              <h3 className="text-base font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Verified Case Law Search
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">
+                Search official Australian court databases directly. All results open in the source 
+                database and are not AI-generated.
+              </p>
+              <CaseLawPanel 
+                caseId={caseId}
+                state={caseData?.state}
+              />
+            </Card>
           </TabsContent>
 
           {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}

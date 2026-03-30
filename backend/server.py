@@ -57,6 +57,7 @@ from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
 from routers.pipeline import router as pipeline_router
 from routers.pipeline_staged import router as pipeline_staged_router
+from routers.caselaw import router as caselaw_router
 from routers.pipeline_staged import (
     RefreshPipelineRequest as _StagedRefreshRequest,
     _ensure_document_extracts as _staged_ensure_extracts,
@@ -4343,6 +4344,7 @@ app.include_router(resources_router)
 app.include_router(analysis_router)
 app.include_router(pipeline_router)
 app.include_router(pipeline_staged_router)
+app.include_router(caselaw_router)
 
 # ── CORS Middleware ──
 app.add_middleware(

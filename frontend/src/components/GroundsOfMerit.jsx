@@ -734,9 +734,9 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
 
                   {/* DO NOT UNDO — Caselaw Search Box for each ground */}
                   {searchOpen[ground.ground_id] && (
-                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
-                      <p className="text-xs font-semibold text-green-800 mb-2">Search AustLII for cases related to this ground</p>
-                      <div className="flex gap-2">
+                    <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
+                      <p className="text-xs font-bold text-slate-700 mb-2">Search verified case law databases for this ground</p>
+                      <div className="flex gap-2 mb-2">
                         <Input
                           placeholder={ground.title || "Search caselaw..."}
                           value={searchTerms[ground.ground_id] || ""}
@@ -747,12 +747,26 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         <Button
                           size="sm"
                           onClick={() => handleCaselawSearch(ground.ground_id, ground.title)}
-                          className="bg-green-600 hover:bg-green-700 text-white flex-shrink-0"
+                          className="bg-blue-600 hover:bg-blue-500 text-white flex-shrink-0"
                           data-testid={`search-submit-${ground.ground_id}`}
                         >
                           <ExternalLink className="w-4 h-4 mr-1" />
-                          Search
+                          AustLII
                         </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        <a href={`https://jade.io/search/?q=${encodeURIComponent(searchTerms[ground.ground_id] || ground.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+                          JADE <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <a href={`https://www.caselaw.nsw.gov.au/search/advanced?query=${encodeURIComponent(searchTerms[ground.ground_id] || ground.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+                          NSW CaseLaw <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <a href={`https://www.queenslandjudgments.com.au/caselaw/search?keyword=${encodeURIComponent(searchTerms[ground.ground_id] || ground.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+                          QLD Judgments <ExternalLink className="w-3 h-3" />
+                        </a>
+                        <a href={`https://scholar.google.com.au/scholar?q=${encodeURIComponent(searchTerms[ground.ground_id] || ground.title)}&hl=en&as_sdt=4`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
+                          Google Scholar <ExternalLink className="w-3 h-3" />
+                        </a>
                       </div>
                     </div>
                   )}
