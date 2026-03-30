@@ -57,6 +57,11 @@ from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
 from routers.pipeline import router as pipeline_router
 from routers.pipeline_staged import router as pipeline_staged_router
+from services.pipeline import (
+    extract_document_artifacts,
+    classify_case_issues,
+)
+from services.pipeline_models import CaseExtract
 
 # ── MongoDB client reference (for shutdown) ──
 MONGO_URL = os.environ.get("MONGO_URL")
@@ -431,6 +436,187 @@ def _strip_report_placeholders(text: str) -> str:
     cleaned = re.sub(r'<(Search [^>]+)>', r'\1', cleaned)
     
     return cleaned
+
+
+# ============================================================================
+# PIPELINE HELPERS FOR REPORT GENERATION
+# ============================================================================
+
+async def _ensure_document_extracts_for_case(case: dict, documents: list) -> int:
+    """Ensure every uploaded document has a staged extraction record."""
+    created = 0
+    for document in documents:
+        existing = await db.document_extracts.find_one(
+            {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
+            {"_id": 0}
+        )
+        if existing:
+            continue
+        extract = await extract_document_artifacts(case, document)
+        extract_dict = extract.model_dump()
+        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+        await db.document_extracts.update_one(
+            {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
+            {"$set": extract_dict},
+            upsert=True,
+        )
+        created += 1
+    return created
+
+
+async def _refresh_case_extract_for_case(case: dict) -> dict:
+    """Merge all document extracts into a case-level extract."""
+    extracts = await db.document_extracts.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+    ).to_list(500)
+    merged_facts, merged_events, merged_findings, extract_ids = [], [], [], []
+    for ext in extracts:
+        extract_ids.append(ext.get("extract_id"))
+        merged_facts.extend(ext.get("facts", []))
+        merged_events.extend(ext.get("events", []))
+        merged_findings.extend(ext.get("findings", []))
+    case_extract = CaseExtract(
+        case_id=case["case_id"],
+        user_id=case["user_id"],
+        metadata={
+            "state": case.get("state"),
+            "offence_category": case.get("offence_category"),
+            "offence_type": case.get("offence_type"),
+            "sentence": case.get("sentence"),
+            "court": case.get("court"),
+        },
+        merged_facts=merged_facts,
+        merged_events=merged_events,
+        merged_findings=merged_findings,
+        document_extract_ids=extract_ids,
+    )
+    case_extract_dict = case_extract.model_dump()
+    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+    await db.case_extracts.update_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"$set": case_extract_dict},
+        upsert=True,
+    )
+    return case_extract_dict
+
+
+async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[dict]:
+    """Run staged issue classification and persist results."""
+    issues = await classify_case_issues(case, case_extract)
+    persisted = []
+    for issue in issues:
+        issue_dict = issue.model_dump()
+        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+        await db.issue_classifications.update_one(
+            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
+            {"$set": issue_dict},
+            upsert=True,
+        )
+        saved = await db.issue_classifications.find_one(
+            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
+            {"_id": 0}
+        )
+        if saved:
+            persisted.append(saved)
+    return persisted
+
+
+async def _pipeline_artifacts_missing_or_stale(case: dict, documents: list) -> bool:
+    """
+    Conservative staleness check.
+    Returns True if:
+    - no case_extract exists, or
+    - no issue classifications exist, or
+    - any uploaded document lacks a document_extract
+    """
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0}
+    )
+    if not case_extract:
+        return True
+
+    issue_count = await db.issue_classifications.count_documents(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}
+    )
+    if issue_count == 0:
+        return True
+
+    for document in documents:
+        existing = await db.document_extracts.find_one(
+            {
+                "case_id": case["case_id"],
+                "document_id": document["document_id"],
+                "user_id": case["user_id"],
+            },
+            {"_id": 0}
+        )
+        if not existing:
+            return True
+
+    return False
+
+
+async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
+    """
+    Sync staged issues/verifications into grounds_of_merit so report consumers
+    and existing frontend views remain aligned.
+    """
+    issues = await db.issue_classifications.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0}
+    ).to_list(500)
+    synced = 0
+    for issue in issues:
+        verification = await db.issue_verifications.find_one(
+            {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
+            {"_id": 0}
+        )
+        ground_doc = {
+            "case_id": case["case_id"],
+            "user_id": case["user_id"],
+            "title": issue.get("title"),
+            "ground_type": issue.get("ground_type", "other"),
+            "description": issue.get("description", ""),
+            "strength": (verification or {}).get("legitimacy_scores", {}).get(
+                "rating", issue.get("classification_confidence", "moderate")
+            ),
+            "status": "investigated" if verification else "identified",
+            "supporting_evidence": (verification or {}).get("supporting_items", []),
+            "law_sections": (verification or {}).get("law_sections", []),
+            "similar_cases": (verification or {}).get("similar_cases", []),
+            "legitimacy_scores": (verification or {}).get("legitimacy_scores", {}),
+            "source_mode": "derived",
+            "requires_human_review": (verification or {}).get("requires_human_review", True),
+            "verification_status": (verification or {}).get("verification_status", "unverified"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.grounds_of_merit.update_one(
+            {"case_id": case["case_id"], "user_id": case["user_id"], "title": ground_doc["title"], "ground_type": ground_doc["ground_type"]},
+            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{uuid.uuid4().hex[:12]}", "created_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True,
+        )
+        synced += 1
+    return synced
+
+
+async def _refresh_pipeline_for_reporting(case: dict, documents: list) -> dict:
+    """
+    Reporting-time pipeline refresh:
+    1. ensure document extracts
+    2. refresh case extract
+    3. ensure issue classifications
+    4. sync projection into grounds
+    """
+    extracted_count = await _ensure_document_extracts_for_case(case, documents)
+    case_extract = await _refresh_case_extract_for_case(case)
+    issues = await _ensure_issue_classifications(case, case_extract)
+    synced_count = await _sync_pipeline_projection_to_grounds(case)
+    return {
+        "extracted_count": extracted_count,
+        "classified_count": len(issues),
+        "synced_count": synced_count,
+    }
 
 
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
@@ -2382,7 +2568,23 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
 
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
     """Background task that generates the AI report and updates the DB record — HARDENED with metadata."""
+    pipeline_refresh_result = {"refreshed": False, "extracted_count": 0, "classified_count": 0, "synced_count": 0}
     try:
+        # Pre-draft pipeline refresh: ensure staged artifacts are current
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+        if case:
+            documents = await db.documents.find(
+                {"case_id": case_id, "user_id": user_id}, {"_id": 0, "file_data": 0}
+            ).to_list(500)
+            try:
+                needs_refresh = await _pipeline_artifacts_missing_or_stale(case, documents)
+                if needs_refresh:
+                    refreshed = await _refresh_pipeline_for_reporting(case, documents)
+                    pipeline_refresh_result = {"refreshed": True, **refreshed}
+                    logger.info(f"Pipeline refreshed for report {report_id}: {pipeline_refresh_result}")
+            except Exception as pe:
+                logger.warning(f"Pipeline refresh before report {report_id} failed (non-fatal): {pe}")
+
         report_titles = {
             "quick_summary": "Quick Case Summary",
             "full_detailed": "Full Detailed Legal Analysis",
@@ -2406,7 +2608,7 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "aggressive_mode": aggressive_mode
                 },
                 "grounds_of_merit": analysis_result["grounds_of_merit"],
-                "metadata": analysis_result.get("metadata"),
+                "metadata": {**(analysis_result.get("metadata") or {}), "pipeline_refresh_before_draft": pipeline_refresh_result},
                 "source_mode": "ai_generated",
                 "verification_status": "draft",
             }}

@@ -1,5 +1,23 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Report Generation Pipeline Integration
+
+### Summary
+Patched `server.py` to refresh pipeline artifacts before report generation. Added staleness check so extraction/classification only runs when needed.
+
+### What Changed
+- Added 6 pipeline helpers to `server.py`: `_ensure_document_extracts_for_case`, `_refresh_case_extract_for_case`, `_ensure_issue_classifications`, `_pipeline_artifacts_missing_or_stale`, `_sync_pipeline_projection_to_grounds`, `_refresh_pipeline_for_reporting`
+- `_run_report_generation` now runs a pipeline refresh (extract → classify → sync) before calling `analyze_case_with_ai` — only when artifacts are missing or stale
+- Pipeline refresh result stored in report metadata (`pipeline_refresh_before_draft`)
+- Non-fatal: if pipeline refresh fails, report generation still proceeds via legacy path
+
+### Testing
+- Report generation confirmed working with pipeline metadata attached
+- Staleness check correctly skips when artifacts already exist
+- All regression tests pass (health, cases, upload, grounds, barrister pack)
+
+---
+
 ## 30 March 2026 — Grounds Router Pipeline Delegation
 
 ### Summary
