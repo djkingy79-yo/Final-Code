@@ -1,6 +1,8 @@
 # DO NOT UNDO — staged pipeline router. Additive module.
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel
 from datetime import datetime, timezone
+import logging
 
 from config import db
 from auth_utils import get_current_user
@@ -12,7 +14,294 @@ from services.pipeline import (
 )
 from services.pipeline_models import CaseExtract
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/pipeline", tags=["pipeline-staged"])
+
+
+class RefreshPipelineRequest(BaseModel):
+    verify_limit: int = 0
+
+
+def _issue_priority_rank(issue: dict) -> tuple:
+    preferred_ground_order = {
+        "judicial_error": 0,
+        "procedural_error": 1,
+        "miscarriage_of_justice": 2,
+        "fresh_evidence": 3,
+        "sentencing_error": 4,
+        "jury_irregularity": 5,
+        "ineffective_counsel": 6,
+        "prosecution_misconduct": 7,
+        "constitutional_violation": 8,
+        "other": 9,
+    }
+
+    confidence_order = {
+        "strong": 0,
+        "moderate": 1,
+        "weak": 2,
+    }
+
+    return (
+        preferred_ground_order.get(issue.get("ground_type", "other"), 9),
+        confidence_order.get(issue.get("classification_confidence", "moderate"), 1),
+        str(issue.get("title", "")).lower(),
+    )
+
+
+async def _ensure_document_extracts(case: dict, documents: list) -> dict:
+    created = 0
+    skipped = 0
+
+    for document in documents:
+        existing = await db.document_extracts.find_one(
+            {
+                "case_id": case["case_id"],
+                "document_id": document["document_id"],
+                "user_id": case["user_id"],
+            },
+            {"_id": 0}
+        )
+        if existing:
+            skipped += 1
+            continue
+
+        extract = await extract_document_artifacts(case, document)
+        extract_dict = extract.model_dump()
+        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+
+        await db.document_extracts.update_one(
+            {
+                "case_id": case["case_id"],
+                "document_id": document["document_id"],
+                "user_id": case["user_id"],
+            },
+            {"$set": extract_dict},
+            upsert=True,
+        )
+        created += 1
+
+    return {
+        "created": created,
+        "skipped_existing": skipped,
+    }
+
+
+async def _refresh_case_extract(case: dict) -> dict:
+    extracts = await db.document_extracts.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0}
+    ).to_list(500)
+
+    merged_facts = []
+    merged_events = []
+    merged_findings = []
+    extract_ids = []
+
+    for ext in extracts:
+        extract_ids.append(ext.get("extract_id"))
+        merged_facts.extend(ext.get("facts", []))
+        merged_events.extend(ext.get("events", []))
+        merged_findings.extend(ext.get("findings", []))
+
+    case_extract = CaseExtract(
+        case_id=case["case_id"],
+        user_id=case["user_id"],
+        metadata={
+            "state": case.get("state"),
+            "offence_category": case.get("offence_category"),
+            "offence_type": case.get("offence_type"),
+            "sentence": case.get("sentence"),
+            "court": case.get("court"),
+            "classification_source": case.get("classification_source", "existing"),
+        },
+        merged_facts=merged_facts,
+        merged_events=merged_events,
+        merged_findings=merged_findings,
+        document_extract_ids=extract_ids,
+    )
+
+    case_extract_dict = case_extract.model_dump()
+    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+
+    await db.case_extracts.update_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"$set": case_extract_dict},
+        upsert=True,
+    )
+
+    return {
+        "case_extract_id": case_extract.case_extract_id,
+        "facts": len(merged_facts),
+        "events": len(merged_events),
+        "findings": len(merged_findings),
+    }
+
+
+async def _classify_issues(case: dict, case_extract: dict) -> dict:
+    issues = await classify_case_issues(case, case_extract)
+    upserted = 0
+
+    for issue in issues:
+        issue_dict = issue.model_dump()
+        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+
+        await db.issue_classifications.update_one(
+            {
+                "case_id": case["case_id"],
+                "user_id": case["user_id"],
+                "title": issue.title,
+                "ground_type": issue.ground_type,
+            },
+            {"$set": issue_dict},
+            upsert=True,
+        )
+        upserted += 1
+
+    return {
+        "classified": upserted,
+    }
+
+
+async def _verify_top_issues(case: dict, verify_limit: int) -> dict:
+    if verify_limit <= 0:
+        return {
+            "requested_limit": verify_limit,
+            "applied_limit": 0,
+            "attempted": 0,
+            "verified": 0,
+            "failed": 0,
+        }
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0}
+    )
+    if not case_extract:
+        return {
+            "requested_limit": verify_limit,
+            "applied_limit": 0,
+            "attempted": 0,
+            "verified": 0,
+            "failed": 0,
+        }
+
+    issues = await db.issue_classifications.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0}
+    ).to_list(500)
+
+    eligible = []
+    for issue in issues:
+        existing_verification = await db.issue_verifications.find_one(
+            {
+                "case_id": case["case_id"],
+                "issue_id": issue["issue_id"],
+                "user_id": case["user_id"],
+            },
+            {"_id": 0}
+        )
+        if existing_verification:
+            continue
+        eligible.append(issue)
+
+    eligible.sort(key=_issue_priority_rank)
+
+    applied_limit = max(0, min(int(verify_limit or 0), 20))
+    selected = eligible[:applied_limit]
+
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+
+    verified = 0
+    failed = 0
+
+    for issue in selected:
+        try:
+            verification = await verify_issue(case, issue, supporting_context)
+            verification_dict = verification.model_dump()
+            verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+
+            await db.issue_verifications.update_one(
+                {
+                    "case_id": case["case_id"],
+                    "issue_id": issue["issue_id"],
+                    "user_id": case["user_id"],
+                },
+                {"$set": verification_dict},
+                upsert=True,
+            )
+            verified += 1
+        except Exception as e:
+            logger.warning(f"Refresh-all verification failed for issue {issue.get('issue_id')}: {e}")
+            failed += 1
+
+    return {
+        "requested_limit": verify_limit,
+        "applied_limit": applied_limit,
+        "attempted": len(selected),
+        "verified": verified,
+        "failed": failed,
+    }
+
+
+async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> int:
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0}
+    ).to_list(500)
+
+    synced = 0
+    for issue in issues:
+        verification = await db.issue_verifications.find_one(
+            {
+                "case_id": case_id,
+                "issue_id": issue["issue_id"],
+                "user_id": user_id,
+            },
+            {"_id": 0}
+        )
+
+        ground_doc = {
+            "case_id": case_id,
+            "user_id": user_id,
+            "title": issue.get("title"),
+            "ground_type": issue.get("ground_type", "other"),
+            "description": issue.get("description", ""),
+            "strength": (verification or {}).get("legitimacy_scores", {}).get(
+                "rating",
+                issue.get("classification_confidence", "moderate")
+            ),
+            "status": "investigated" if verification else "identified",
+            "supporting_evidence": (verification or {}).get("supporting_items", []),
+            "law_sections": (verification or {}).get("law_sections", []),
+            "similar_cases": (verification or {}).get("similar_cases", []),
+            "legitimacy_scores": (verification or {}).get("legitimacy_scores", {}),
+            "source_mode": "derived",
+            "requires_human_review": (verification or {}).get("requires_human_review", True),
+            "verification_status": (verification or {}).get("verification_status", "unverified"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+        await db.grounds_of_merit.update_one(
+            {
+                "case_id": case_id,
+                "user_id": user_id,
+                "title": ground_doc["title"],
+                "ground_type": ground_doc["ground_type"],
+            },
+            {
+                "$set": ground_doc,
+                "$setOnInsert": {"created_at": datetime.now(timezone.utc).isoformat()},
+            },
+            upsert=True,
+        )
+        synced += 1
+
+    return synced
 
 
 @router.post("/cases/{case_id}/documents/{document_id}/extract", response_model=dict)
@@ -284,6 +573,52 @@ async def get_pipeline_summary(case_id: str, request: Request):
         "synced_grounds_count": synced_grounds_count,
         "pipeline_drafted_reports_count": pipeline_drafted_reports_count,
         "total_reports_count": total_reports_count,
+    }
+
+
+@router.post("/cases/{case_id}/refresh-all", response_model=dict)
+async def refresh_all_pipeline(case_id: str, payload: RefreshPipelineRequest, request: Request):
+    """
+    One-click orchestration route for the staged pipeline.
+    """
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "file_data": 0}
+    ).to_list(1000)
+
+    extract_result = await _ensure_document_extracts(case, documents)
+    case_extract_result = await _refresh_case_extract(case)
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    )
+    classify_result = await _classify_issues(case, case_extract)
+
+    verify_result = await _verify_top_issues(case, payload.verify_limit)
+    synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
+
+    return {
+        "message": "Pipeline refresh completed",
+        "documents": {
+            "total_documents": len(documents),
+            **extract_result,
+        },
+        "case_extract": case_extract_result,
+        "classification": classify_result,
+        "verification": verify_result,
+        "projection": {
+            "synced_count": synced_count,
+        },
     }
 
 

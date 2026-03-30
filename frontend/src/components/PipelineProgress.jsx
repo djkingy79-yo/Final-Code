@@ -41,6 +41,13 @@ async function syncGrounds(caseId) {
   return apiRequest(`/pipeline/cases/${caseId}/grounds/sync-from-issues`, { method: "POST" });
 }
 
+async function refreshAllPipeline(caseId, verifyLimit = 0) {
+  return apiRequest(`/pipeline/cases/${caseId}/refresh-all`, {
+    method: "POST",
+    body: JSON.stringify({ verify_limit: verifyLimit }),
+  });
+}
+
 export default function PipelineProgress({
   caseId,
   documents = [],
@@ -143,6 +150,15 @@ export default function PipelineProgress({
         <Button variant="outline" size="sm" onClick={() => runAction(() => syncGrounds(caseId))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-sync-grounds-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Sync Grounds"}
         </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 0))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-all-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh Pipeline Now"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 3))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-verify-3-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh + Verify Top 3"}
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 6))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-verify-6-btn">
+          {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh + Verify Top 6"}
+        </Button>
       </div>
 
       {error && <div className="mt-3 text-sm text-red-700" data-testid="pipeline-error">{error}</div>}
@@ -153,9 +169,52 @@ export default function PipelineProgress({
           {"message" in result && <div>{result.message}</div>}
           {"identified_count" in result && <div>Identified: {result.identified_count}</div>}
           {"document_extracts_used" in result && <div>Document extracts used: {result.document_extracts_used}</div>}
-          {"verified" in result && <div>Verified: {result.verified}</div>}
-          {"failed" in result && <div>Failed: {result.failed}</div>}
+          {"verified" in result && !("verification" in result) && <div>Verified: {result.verified}</div>}
+          {"failed" in result && !("verification" in result) && <div>Failed: {result.failed}</div>}
           {"synced_count" in result && <div>Synced grounds: {result.synced_count}</div>}
+
+          {"documents" in result ? (
+            <>
+              <div className="font-medium mt-2">Documents</div>
+              <div>Total: {result.documents.total_documents ?? 0}</div>
+              <div>New extracts: {result.documents.created ?? 0}</div>
+              <div>Existing extracts skipped: {result.documents.skipped_existing ?? 0}</div>
+            </>
+          ) : null}
+
+          {"case_extract" in result ? (
+            <>
+              <div className="font-medium mt-2">Case Extract</div>
+              <div>Facts: {result.case_extract.facts ?? 0}</div>
+              <div>Events: {result.case_extract.events ?? 0}</div>
+              <div>Findings: {result.case_extract.findings ?? 0}</div>
+            </>
+          ) : null}
+
+          {"classification" in result ? (
+            <>
+              <div className="font-medium mt-2">Classification</div>
+              <div>Classified: {result.classification.classified ?? 0}</div>
+            </>
+          ) : null}
+
+          {"verification" in result ? (
+            <>
+              <div className="font-medium mt-2">Verification</div>
+              <div>Requested limit: {result.verification.requested_limit ?? 0}</div>
+              <div>Applied limit: {result.verification.applied_limit ?? 0}</div>
+              <div>Attempted: {result.verification.attempted ?? 0}</div>
+              <div>Verified: {result.verification.verified ?? 0}</div>
+              <div>Failed: {result.verification.failed ?? 0}</div>
+            </>
+          ) : null}
+
+          {"projection" in result ? (
+            <>
+              <div className="font-medium mt-2">Projection</div>
+              <div>Synced grounds: {result.projection.synced_count ?? 0}</div>
+            </>
+          ) : null}
         </div>
       )}
     </div>
