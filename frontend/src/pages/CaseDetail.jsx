@@ -65,6 +65,7 @@ import CaseChat from "../components/CaseChat";
 import ActivityFeed from "../components/ActivityFeed";
 import CaseStrengthMeter from "../components/CaseStrengthMeter";
 import CasePipelineSummary from "../components/CasePipelineSummary";
+import PipelineStalenessAlert from "../components/PipelineStalenessAlert";
 import PipelineProgress from "../components/PipelineProgress";
 import { buildExportHtml } from "../utils/exportHtml";
 
@@ -1283,6 +1284,9 @@ const CaseDetail = ({ user }) => {
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>
+
+            {/* Pipeline Staleness Check */}
+            <PipelineStalenessAlert caseId={caseId} />
 
             {/* Analysis Pipeline */}
             <PipelineProgress

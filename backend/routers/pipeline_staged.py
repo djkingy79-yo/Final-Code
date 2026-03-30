@@ -341,6 +341,134 @@ async def get_pipeline_dashboard_summary(request: Request):
     }
 
 
+@router.get("/cases/{case_id}/staleness", response_model=dict)
+async def get_pipeline_staleness(case_id: str, request: Request):
+    """Check whether pipeline artifacts are stale relative to source materials."""
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "case_id": 1, "updated_at": 1}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "document_id": 1, "uploaded_at": 1}
+    ).to_list(1000)
+
+    doc_extracts = await db.document_extracts.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "document_id": 1, "created_at": 1}
+    ).to_list(1000)
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "created_at": 1}
+    )
+
+    issue_classifications = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "created_at": 1}
+    ).to_list(1000)
+
+    issue_verifications = await db.issue_verifications.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "created_at": 1}
+    ).to_list(1000)
+
+    reports = await db.reports.find(
+        {"case_id": case_id, "user_id": user.user_id, "content.draft_source": "pipeline"},
+        {"_id": 0, "generated_at": 1}
+    ).to_list(1000)
+
+    def _to_iso(value):
+        if not value:
+            return None
+        if isinstance(value, str):
+            return value
+        try:
+            return value.isoformat()
+        except Exception:
+            return str(value)
+
+    def _latest_iso(items, field):
+        values = [i.get(field) for i in items if i.get(field)]
+        if not values:
+            return None
+        values = [v if isinstance(v, str) else v.isoformat() for v in values]
+        return max(values)
+
+    latest_document_upload = _latest_iso(documents, "uploaded_at")
+    latest_document_extract = _latest_iso(doc_extracts, "created_at")
+    latest_issue_classification = _latest_iso(issue_classifications, "created_at")
+    latest_issue_verification = _latest_iso(issue_verifications, "created_at")
+    latest_pipeline_report = _latest_iso(reports, "generated_at")
+    case_extract_created_at = _to_iso(case_extract.get("created_at")) if case_extract else None
+
+    extract_missing_for_documents = []
+    extract_map = {d.get("document_id"): d for d in doc_extracts}
+    for doc in documents:
+        if doc.get("document_id") not in extract_map:
+            extract_missing_for_documents.append(doc.get("document_id"))
+
+    documents_newer_than_extracts = False
+    if latest_document_upload and latest_document_extract:
+        documents_newer_than_extracts = latest_document_upload > latest_document_extract
+    elif latest_document_upload and not latest_document_extract:
+        documents_newer_than_extracts = True
+
+    case_extract_stale = False
+    if latest_document_extract and case_extract_created_at:
+        case_extract_stale = latest_document_extract > case_extract_created_at
+    elif latest_document_extract and not case_extract_created_at:
+        case_extract_stale = True
+
+    classifications_stale = False
+    if case_extract_created_at and latest_issue_classification:
+        classifications_stale = case_extract_created_at > latest_issue_classification
+    elif case_extract_created_at and not latest_issue_classification:
+        classifications_stale = True
+
+    verifications_stale = False
+    if latest_issue_classification and latest_issue_verification:
+        verifications_stale = latest_issue_classification > latest_issue_verification
+    elif latest_issue_classification and not latest_issue_verification:
+        verifications_stale = True
+
+    reports_stale = False
+    if latest_issue_verification and latest_pipeline_report:
+        reports_stale = latest_issue_verification > latest_pipeline_report
+    elif latest_issue_verification and not latest_pipeline_report:
+        reports_stale = True
+
+    overall_stale = any([
+        len(extract_missing_for_documents) > 0,
+        documents_newer_than_extracts,
+        case_extract_stale,
+        classifications_stale,
+        verifications_stale,
+        reports_stale,
+    ])
+
+    return {
+        "overall_stale": overall_stale,
+        "extract_missing_for_documents": extract_missing_for_documents,
+        "documents_newer_than_extracts": documents_newer_than_extracts,
+        "case_extract_stale": case_extract_stale,
+        "classifications_stale": classifications_stale,
+        "verifications_stale": verifications_stale,
+        "reports_stale": reports_stale,
+        "latest_document_upload": latest_document_upload,
+        "latest_document_extract": latest_document_extract,
+        "case_extract_created_at": case_extract_created_at,
+        "latest_issue_classification": latest_issue_classification,
+        "latest_issue_verification": latest_issue_verification,
+        "latest_pipeline_report": latest_pipeline_report,
+    }
+
+
 @router.post("/cases/{case_id}/reports/draft", response_model=dict)
 async def draft_report(case_id: str, request: Request):
     user = await get_current_user(request)
