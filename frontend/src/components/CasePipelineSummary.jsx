@@ -52,6 +52,8 @@ export default function CasePipelineSummary({ caseId }) {
   }, [caseId, loadSummary]);
 
   if (!caseId) return null;
+  if (error && !summary) return null;
+  if (!summary && !loading) return null;
 
   return (
     <div className="rounded border p-4 mb-4" data-testid="case-pipeline-summary">

@@ -56,6 +56,10 @@ export default function DashboardPipelineSummary() {
     return `${Math.round((value / totalCases) * 100)}%`;
   };
 
+  // If there's an error or no data, hide the panel entirely
+  if (error && !summary) return null;
+  if (!summary && !loading) return null;
+
   return (
     <div className="rounded border p-4 mb-4" data-testid="dashboard-pipeline-summary">
       <div className="flex items-center justify-between gap-3 mb-2">

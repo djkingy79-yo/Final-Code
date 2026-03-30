@@ -50,7 +50,7 @@ export default function PipelineStalenessAlert({ caseId }) {
   }, [caseId, load]);
 
   if (!caseId) return null;
-  if (error) return <div className="rounded border p-3 mb-4 text-sm text-red-700" data-testid="staleness-error">{error}</div>;
+  if (error) return null;
   if (!staleness && loading) return <div className="rounded border p-3 mb-4 text-sm opacity-75">Checking pipeline freshness...</div>;
   if (!staleness) return null;
 
