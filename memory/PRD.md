@@ -78,7 +78,8 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - Phase 2: Patched CaseComparison (assessment note + insufficient data handling), DeadlineTracker (explanatory note + per-deadline metadata)
   - Phase 3: Patched BarristerView (per-ground blocks + AI footer), ReportView (verification badge + metadata), CaseDetail (Review Status widget + CaseStrengthMeter on Progress tab), CompareCasesPage (assessment note + Platform Pattern Indicators)
   - Text replacements: 'Case Strength' → 'Appeal Preparation Readiness', 'Success Factors' → 'Platform Pattern Indicators', 'Strong Grounds' → 'Higher Preparation Grounds'
-- Full regression: backend 13/13, frontend 11/12 (92%) → 12/12 after CaseStrengthMeter integration
+  - **Refinement pass:** VerificationBadge with coloured borders per status, EvidenceSummary with page/chunk references, CaseStrengthMeter breakdown renamed (Grounds Review Progress, Documentation Completeness, Timeline Development, Preparation Checklist Completion), BarristerView enhanced with ComparableCases (jurisdiction/relevance), LawSections display, and Verification/Review Status section
+- Full regression: backend 13/13, frontend 12/13 (ComparableCases INFO — no data, not a bug)
 
 ### Previous Sessions
 - Multi-pass AI report generation (4 tiers) with GPT-4o
