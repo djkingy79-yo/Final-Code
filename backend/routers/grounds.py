@@ -28,6 +28,12 @@ from services.offence_helpers import get_offence_context, get_offence_system_pro
 from services.document_helpers import build_document_context
 from services.legitimacy_engine import calculate_ground_rating
 from offence_framework import OFFENCE_CATEGORIES
+from services.pipeline import (
+    extract_document_artifacts,
+    classify_case_issues,
+    verify_issue,
+)
+from services.pipeline_models import CaseExtract
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +138,168 @@ def _similar_cases_dump(items):
 
 
 # ============================================================================
+# PIPELINE DELEGATION HELPERS
+# ============================================================================
+
+async def _ensure_document_extracts(case: dict, documents: list):
+    """Ensure every uploaded document has a staged extraction record. Additive only."""
+    created_or_updated = 0
+    for document in documents:
+        existing = await db.document_extracts.find_one(
+            {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
+            {"_id": 0}
+        )
+        if existing:
+            continue
+        extract = await extract_document_artifacts(case, document)
+        extract_dict = extract.model_dump()
+        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+        await db.document_extracts.update_one(
+            {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
+            {"$set": extract_dict},
+            upsert=True,
+        )
+        created_or_updated += 1
+    return created_or_updated
+
+
+async def _refresh_case_extract_from_pipeline(case: dict) -> dict:
+    """Merge all document extracts into a case-level extract."""
+    extracts = await db.document_extracts.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+    ).to_list(500)
+    merged_facts, merged_events, merged_findings, extract_ids = [], [], [], []
+    for ext in extracts:
+        extract_ids.append(ext.get("extract_id"))
+        merged_facts.extend(ext.get("facts", []))
+        merged_events.extend(ext.get("events", []))
+        merged_findings.extend(ext.get("findings", []))
+    case_extract = CaseExtract(
+        case_id=case["case_id"],
+        user_id=case["user_id"],
+        metadata={
+            "state": case.get("state"),
+            "offence_category": case.get("offence_category"),
+            "offence_type": case.get("offence_type"),
+            "sentence": case.get("sentence"),
+            "court": case.get("court"),
+            "classification_source": case.get("classification_source", "existing"),
+        },
+        merged_facts=merged_facts,
+        merged_events=merged_events,
+        merged_findings=merged_findings,
+        document_extract_ids=extract_ids,
+    )
+    case_extract_dict = case_extract.model_dump()
+    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+    await db.case_extracts.update_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"$set": case_extract_dict},
+        upsert=True,
+    )
+    return case_extract_dict
+
+
+async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict]:
+    """Run staged issue classification and persist results."""
+    issues = await classify_case_issues(case, case_extract)
+    persisted = []
+    for issue in issues:
+        issue_dict = issue.model_dump()
+        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+        await db.issue_classifications.update_one(
+            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
+            {"$set": issue_dict},
+            upsert=True,
+        )
+        saved = await db.issue_classifications.find_one(
+            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
+            {"_id": 0}
+        )
+        if saved:
+            persisted.append(saved)
+    return persisted
+
+
+async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
+    """Project pipeline issues + verifications into existing grounds_of_merit collection."""
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+    ).to_list(500)
+    count = 0
+    for issue in issues:
+        verification = await db.issue_verifications.find_one(
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user_id}, {"_id": 0}
+        )
+        ground_doc = {
+            "case_id": case_id,
+            "user_id": user_id,
+            "title": issue.get("title"),
+            "ground_type": issue.get("ground_type", "other"),
+            "description": issue.get("description", ""),
+            "strength": (verification or {}).get("legitimacy_scores", {}).get("rating", issue.get("classification_confidence", "moderate")),
+            "status": "investigated" if verification else "identified",
+            "supporting_evidence": (verification or {}).get("supporting_items", []),
+            "law_sections": (verification or {}).get("law_sections", []),
+            "similar_cases": (verification or {}).get("similar_cases", []),
+            "legitimacy_scores": (verification or {}).get("legitimacy_scores", {}),
+            "source_mode": "derived",
+            "requires_human_review": (verification or {}).get("requires_human_review", True),
+            "verification_status": (verification or {}).get("verification_status", "unverified"),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        await db.grounds_of_merit.update_one(
+            {"case_id": case_id, "user_id": user_id, "title": ground_doc["title"], "ground_type": ground_doc["ground_type"]},
+            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{uuid.uuid4().hex[:12]}", "created_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True,
+        )
+        count += 1
+    return count
+
+
+async def _ensure_pipeline_identification(case: dict, documents: list) -> dict:
+    """Full staged path: extract → refresh → classify → sync to grounds."""
+    extracted_count = await _ensure_document_extracts(case, documents)
+    case_extract = await _refresh_case_extract_from_pipeline(case)
+    issues = await _classify_pipeline_issues(case, case_extract)
+    synced_count = await _sync_pipeline_issues_to_grounds(case["case_id"], case["user_id"])
+    return {"extracted_count": extracted_count, "classified_count": len(issues), "synced_count": synced_count}
+
+
+async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None = None) -> dict:
+    """Verify one classified issue, then sync the projection back into grounds_of_merit."""
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+    )
+    if not case_extract:
+        case_extract = await _refresh_case_extract_from_pipeline(case)
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+    verification = await verify_issue(case, issue, supporting_context)
+    verification_dict = verification.model_dump()
+    verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+    await db.issue_verifications.update_one(
+        {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
+        {"$set": verification_dict},
+        upsert=True,
+    )
+    await _sync_pipeline_issues_to_grounds(case["case_id"], case["user_id"])
+    if ground_id:
+        projected = await db.grounds_of_merit.find_one(
+            {"ground_id": ground_id, "case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}
+        )
+        if projected:
+            return projected
+    projected = await db.grounds_of_merit.find_one(
+        {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.get("title"), "ground_type": issue.get("ground_type")}, {"_id": 0}
+    )
+    return projected or verification_dict
+
+
+# ============================================================================
 # CRUD ENDPOINTS
 # ============================================================================
 
@@ -160,6 +328,16 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     if is_unlocked:
         # Retroactively score any grounds missing legitimacy_scores
         for g in grounds:
+            if not g.get("ground_id"):
+                g["ground_id"] = f"gnd_{uuid.uuid4().hex[:12]}"
+                await db.grounds_of_merit.update_one(
+                    {"case_id": case_id, "title": g.get("title"), "ground_type": g.get("ground_type")},
+                    {"$set": {"ground_id": g["ground_id"]}}
+                )
+            if "source_mode" not in g:
+                g["source_mode"] = "legacy"
+            if "verification_status" not in g:
+                g["verification_status"] = "unverified"
             if not g.get("legitimacy_scores"):
                 scored = calculate_ground_rating({
                     "ground_type": g.get("ground_type", "other"),
@@ -240,6 +418,10 @@ async def get_ground_of_merit(case_id: str, ground_id: str, request: Request):
     )
     if not ground:
         raise HTTPException(status_code=404, detail="Ground of merit not found")
+    if "source_mode" not in ground:
+        ground["source_mode"] = "legacy"
+    if "verification_status" not in ground:
+        ground["verification_status"] = "unverified"
     return ground
 
 
@@ -300,7 +482,7 @@ async def delete_ground_of_merit(case_id: str, ground_id: str, request: Request)
 
 @router.post("/cases/{case_id}/grounds/{ground_id}/investigate", response_model=dict)
 async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Request):
-    """Deep AI investigation of a specific ground of merit"""
+    """Deep investigation of a specific ground via staged pipeline verification"""
     user = await get_current_user(request)
 
     ground = await db.grounds_of_merit.find_one(
@@ -322,158 +504,41 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
         {"_id": 0, "file_data": 0}
     ).to_list(500)
 
-    timeline = await db.timeline_events.find(
-        {"case_id": case_id, "user_id": user.user_id},
-        {"_id": 0}
-    ).sort("event_date", 1).to_list(500)
-
-    offence_category = case.get("offence_category", "homicide")
-    offence_context = get_offence_context(case)
-    category_data = OFFENCE_CATEGORIES.get(offence_category, OFFENCE_CATEGORIES.get("homicide"))
-
-    context = f"""
-=== CASE INFORMATION ===
-Title: {case.get('title', 'Unknown')}
-Defendant: {case.get('defendant_name', 'Unknown')}
-Case Number: {case.get('case_number', 'N/A')}
-Court: {case.get('court', 'N/A')}
-
-{offence_context}
-
-=== GROUND OF MERIT TO INVESTIGATE ===
-Title: {ground.get('title')}
-Type: {ground.get('ground_type')}
-Description: {ground.get('description')}
-Current Strength: {ground.get('strength')}
-Supporting Evidence Listed: {', '.join([e.get('quote', '') if isinstance(e, dict) else str(e) for e in ground.get('supporting_evidence', [])])}
-"""
-
-    doc_context = build_document_context(
-        documents,
-        per_doc_char_limit=1500,
-        total_char_budget=12000,
-        include_description=False,
-        content_heading="CONTENT"
-    )
-
-    if documents:
-        context += f"=== CASE DOCUMENTS ({doc_context['included_docs']} included / {len(documents)} total) - SEARCH THESE FOR EVIDENCE ===\n"
-        context += doc_context["text"] + "\n"
-        if doc_context["omitted_docs"] > 0:
-            context += f"[Note: {doc_context['omitted_docs']} document(s) omitted from prompt for speed optimisation.]\n"
-
-    if timeline:
-        timeline_limit = 100
-        timeline_slice = timeline[:timeline_limit]
-        context += f"\n=== TIMELINE ({len(timeline_slice)} included / {len(timeline)} total events) ===\n"
-        for event in timeline_slice:
-            context += f"- {event.get('event_date')}: {event.get('title')} - {event.get('description', '')[:180]}\n"
-        if len(timeline) > timeline_limit:
-            context += f"[... {len(timeline) - timeline_limit} additional timeline events omitted for speed ...]\n"
-
-    system_prompt = get_offence_system_prompt(offence_category)
-    system_prompt += "\n\nIMPORTANT: You must search through the provided document content and cite specific evidence. Quote directly from documents to support your analysis."
-
-    law_examples = []
-    state_key = case.get("state", "nsw")
-    state_leg_key = f"{state_key}_legislation"
-    for act_name, sections in category_data.get(state_leg_key, category_data.get("nsw_legislation", {})).items():
-        for section in sections[:3]:
-            law_examples.append(f"   - {section.get('section')} {act_name} - {section.get('title')}")
-    if state_key == "nsw":
-        law_examples.append("   - s.6 Criminal Appeal Act 1912 (NSW) - Grounds for appeal")
-
-    law_examples_str = "\n".join(law_examples)
-
-    user_prompt = f"""Conduct a THOROUGH investigation of this ground of merit.
-
-{context}
-
-REQUIRED ANALYSIS (search the documents above for evidence):
-
-1. VIABILITY ASSESSMENT
-   - Rate: Strong/Moderate/Weak with detailed justification
-   - Quote specific evidence FROM THE DOCUMENTS above
-
-2. DOCUMENT EVIDENCE
-   - For EACH document, explain what it contains relevant to this ground
-   - Quote specific passages that support or undermine this ground
-
-3. RELEVANT LAW SECTIONS (be specific to this {category_data.get('name', 'criminal')} case)
-{law_examples_str}
-   - Other relevant sections with explanations
-
-4. SIMILAR CASES
-   - Name 2-3 Australian cases with citations relevant to {category_data.get('name', 'this type of')} appeals
-   - Explain relevance to this ground
-   - If uncertain, state that verification is required
-
-5. EVIDENCE GAPS
-   - What additional evidence would strengthen this ground?
-
-6. STRATEGIC RECOMMENDATION
-   - How to present this ground to the court in cautious, conditional terms
-"""
-
     try:
-        response = await call_llm_with_fallback(
-            system_prompt,
-            user_prompt,
-            f"ground_{ground_id}_{uuid.uuid4().hex[:8]}"
+        await _ensure_pipeline_identification(case, documents)
+
+        issue = await db.issue_classifications.find_one(
+            {
+                "case_id": case_id,
+                "user_id": user.user_id,
+                "title": ground.get("title"),
+                "ground_type": ground.get("ground_type"),
+            },
+            {"_id": 0}
         )
+
+        if not issue:
+            issue = {
+                "issue_id": f"compat_{ground_id}",
+                "case_id": case_id,
+                "user_id": user.user_id,
+                "title": ground.get("title", "Untitled ground"),
+                "ground_type": ground.get("ground_type", "other"),
+                "description": ground.get("description", ""),
+            }
+
+        projected_ground = await _verify_issue_and_sync(case, issue, ground_id=ground_id)
+
+        if projected_ground:
+            return projected_ground
+
+        raise HTTPException(status_code=500, detail="Verification completed but no projected ground was returned")
+
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Ground investigation LLM failed: {e}")
-        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(e)}")
-
-    # Legacy regex extraction preserved, wrapped into structured models
-    law_sections = []
-    similar_cases = []
-
-    section_patterns = re.findall(r'[sS]\.?\s*(\d+[A-Za-z]?)\s+([A-Za-z\s]+(?:Act|Code))\s*(?:\d{4})?', response)
-    for section_num, act_name in section_patterns[:10]:
-        law_sections.append({
-            "section": section_num,
-            "act": act_name.strip(),
-            "jurisdiction": case.get("state", "nsw"),
-            "verification_status": "unverified"
-        })
-
-    case_patterns = re.findall(r'([A-Z][A-Za-z\'\u2018\u2019\-]+(?:\s+v\s+)[A-Z][A-Za-z\'\u2018\u2019\-]+(?:\s+[A-Z][A-Za-z\'\u2018\u2019\-]+)?)', response)
-    for case_name in list(set(case_patterns))[:5]:
-        similar_cases.append({
-            "case_name": case_name,
-            "citation": None,
-            "jurisdiction": case.get("state", "nsw"),
-            "verification_status": "unverified"
-        })
-
-    wrapped_law_sections = _wrap_law_sections(law_sections)
-    wrapped_similar_cases = _wrap_similar_cases(similar_cases)
-
-    deep_analysis = {
-        "full_analysis": response,
-        "investigated_at": datetime.now(timezone.utc).isoformat(),
-        "law_sections_identified": len(wrapped_law_sections),
-        "similar_cases_found": len(wrapped_similar_cases),
-        "documents_analyzed": len(documents)
-    }
-
-    await db.grounds_of_merit.update_one(
-        {"ground_id": ground_id, "case_id": case_id, "user_id": user.user_id},
-        {"$set": {
-            "status": "investigated",
-            "analysis": response[:2000] + "..." if len(response) > 2000 else response,
-            "deep_analysis": deep_analysis,
-            "law_sections": _law_sections_dump(wrapped_law_sections) if wrapped_law_sections else ground.get("law_sections", []),
-            "similar_cases": _similar_cases_dump(wrapped_similar_cases) if wrapped_similar_cases else ground.get("similar_cases", []),
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }}
-    )
-
-    return await db.grounds_of_merit.find_one(
-        {"ground_id": ground_id, "case_id": case_id, "user_id": user.user_id},
-        {"_id": 0}
-    )
+        logger.error(f"Ground investigation pipeline failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Ground investigation failed: {str(e)}")
 
 
 # ============================================================================
@@ -482,255 +547,40 @@ REQUIRED ANALYSIS (search the documents above for evidence):
 
 @router.post("/cases/{case_id}/grounds/auto-identify", response_model=dict)
 async def auto_identify_grounds(case_id: str, request: Request):
-    """AI automatically identifies potential grounds of merit from case materials - prevents duplicates"""
+    """AI automatically identifies potential grounds of merit from case materials using staged pipeline"""
     user = await get_current_user(request)
 
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
-    existing_grounds = await db.grounds_of_merit.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).to_list(100)
-    documents = await db.documents.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "file_data": 0}).to_list(500)
-    timeline = await db.timeline_events.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
-    notes = await db.notes.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).to_list(500)
+    existing_grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(100)
 
-    offence_category = case.get("offence_category", "homicide")
-    offence_context = get_offence_context(case)
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "file_data": 0}
+    ).to_list(500)
 
-    context = f"""
-CRIMINAL APPEAL CASE ANALYSIS
-
-CASE DETAILS:
-- Title: {case.get('title', 'Unknown')}
-- Defendant: {case.get('defendant_name', 'Unknown')}
-- Case Number: {case.get('case_number', 'N/A')}
-- Court: {case.get('court', 'N/A')}
-- Judge: {case.get('judge', 'N/A')}
-- Summary: {case.get('summary', 'No summary provided')}
-
-{offence_context}
-"""
-
-    doc_context = build_document_context(
-        documents,
-        per_doc_char_limit=2200,
-        total_char_budget=20000,
-        include_description=True,
-        content_heading="CONTENT"
-    )
-
-    if existing_grounds:
-        context += f"=== ALREADY IDENTIFIED GROUNDS ({len(existing_grounds)}) ===\n"
-        context += "DO NOT re-identify these grounds. Only identify NEW grounds not listed here:\n\n"
-        for g in existing_grounds:
-            context += f"- [{g.get('ground_type')}] {g.get('title')}\n"
-            context += f"  Status: {g.get('status')}, Strength: {g.get('strength')}\n"
-        context += "\n"
-
-    if documents:
-        context += f"=== CASE DOCUMENTS ({doc_context['included_docs']} included / {len(documents)} total files) ===\n\n"
-        context += doc_context["text"] + "\n"
-        if doc_context["omitted_docs"] > 0:
-            context += f"[Note: {doc_context['omitted_docs']} document(s) omitted from prompt for speed optimisation.]\n\n"
-    else:
-        context += "NO DOCUMENTS UPLOADED YET - Analysis based on case summary only.\n\n"
-
-    if timeline:
-        timeline_limit = 120
-        timeline_slice = timeline[:timeline_limit]
-        context += f"=== TIMELINE OF EVENTS ({len(timeline_slice)} included / {len(timeline)} total events) ===\n"
-        for event in timeline_slice:
-            context += f"- {event.get('event_date', 'Unknown date')} [{event.get('event_type', 'event')}]: {event.get('title')}\n"
-            if event.get('description'):
-                context += f"  Details: {event.get('description')}\n"
-        if len(timeline) > timeline_limit:
-            context += f"[... {len(timeline) - timeline_limit} additional events omitted for speed ...]\n"
-        context += "\n"
-
-    if notes:
-        notes_limit = 80
-        notes_slice = notes[:notes_limit]
-        context += f"=== LEGAL NOTES & OBSERVATIONS ({len(notes_slice)} included / {len(notes)} total notes) ===\n"
-        for note in notes_slice:
-            context += f"- [{note.get('category', 'general')}] {note.get('title')}:\n"
-            context += f"  {note.get('content', '')[:300]}\n"
-        if len(notes) > notes_limit:
-            context += f"[... {len(notes) - notes_limit} additional notes omitted for speed ...]\n"
-        context += "\n"
-
-    base_system_prompt = get_offence_system_prompt(offence_category)
-    system_prompt = f"""{base_system_prompt}
-
-YOUR TASK: Conduct a METICULOUS analysis of the provided case materials to identify possible grounds of appeal.
-
-IMPORTANT:
-- If grounds are listed in "ALREADY IDENTIFIED GROUNDS", do NOT duplicate them.
-- Only add NEW grounds.
-- Use cautious, conditional legal language.
-- Do not present appeal success as certain.
-- Return ONLY valid JSON.
-
-Return this JSON format:
-{{
-  "grounds": [
-    {{
-      "title": "Specific, descriptive title",
-      "ground_type": "procedural_error|fresh_evidence|miscarriage_of_justice|sentencing_error|judicial_error|ineffective_counsel|prosecution_misconduct|jury_irregularity|constitutional_violation|other",
-      "description": "Detailed explanation citing specific document content",
-      "strength": "strong|moderate|weak",
-      "key_evidence": ["Specific document references and quotes that support this ground"],
-      "law_sections": [
-        {{"act": "Act name", "section": "s.X", "jurisdiction": "{case.get('state', 'nsw')}"}}
-      ],
-      "similar_cases": [
-        {{"case_name": "Case Name", "citation": null, "jurisdiction": "{case.get('state', 'nsw')}", "verification_status": "unverified"}}
-      ]
-    }}
-  ],
-  "summary": "Overall assessment of identified issues",
-  "analysis_notes": "Additional observations"
-}}
-"""
-
-    user_prompt = f"""CONDUCT A COMPREHENSIVE LEGAL ANALYSIS OF THIS CRIMINAL APPEAL CASE:
-
-{context}
-
-INSTRUCTIONS:
-1. Analyse the provided case material carefully
-2. Compare witness statements and descriptions for inconsistencies where possible
-3. Identify procedural irregularities
-4. Look for evidence that may have been improperly handled or excluded
-5. Consider whether the defence was adequate
-6. Check for any fresh evidence possibilities
-7. Assess whether the verdict may be arguable as unsafe
-
-For EACH ground identified, provide detailed analysis and evidence linkage.
-"""
+    if not documents and not case.get("summary"):
+        raise HTTPException(status_code=400, detail="No documents or case summary available for analysis")
 
     try:
-        response = await call_llm_with_fallback(
-            system_prompt,
-            user_prompt,
-            f"auto_identify_{case_id}_{uuid.uuid4().hex[:8]}"
-        )
+        pipeline_result = await _ensure_pipeline_identification(case, documents)
     except Exception as e:
-        logger.error(f"Auto-identify LLM failed: {e}")
-        raise HTTPException(status_code=500, detail=f"AI analysis failed after retries: {str(e)}")
+        logger.error(f"Pipeline auto-identify failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Pipeline identification failed: {str(e)}")
 
-    def is_duplicate_ground(new_title, new_type, existing_grounds_list):
-        new_title_lower = new_title.lower().strip()
-        new_type_lower = new_type.lower().strip()
-        for existing in existing_grounds_list:
-            existing_title = existing.get('title', '').lower().strip()
-            existing_type = existing.get('ground_type', '').lower().strip()
+    updated_grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(200)
 
-            if existing_type == new_type_lower:
-                new_words = set(new_title_lower.split())
-                existing_words = set(existing_title.split())
-                common_words = new_words & existing_words
-                stop_words = {'the', 'a', 'an', 'of', 'in', 'to', 'for', 'and', 'or', 'at', 'by', 'on', 'with'}
-                common_meaningful = common_words - stop_words
-                new_meaningful = new_words - stop_words
-                if len(new_meaningful) > 0:
-                    overlap_ratio = len(common_meaningful) / len(new_meaningful)
-                    if overlap_ratio > 0.5:
-                        return True
-
-            if new_title_lower == existing_title:
-                return True
-
-        return False
-
-    identified_grounds = []
-    skipped_duplicates = 0
-
-    try:
-        json_match = re.search(r'\{[\s\S]*"grounds"[\s\S]*\}', response)
-        if json_match:
-            parsed = json.loads(json_match.group())
-            grounds_data = parsed.get("grounds", [])
-
-            for g in grounds_data:
-                new_title = g.get("title", "Identified Ground")
-                new_type = _normalise_ground_type(g.get("ground_type", "other"))
-
-                if is_duplicate_ground(new_title, new_type, existing_grounds + identified_grounds):
-                    skipped_duplicates += 1
-                    continue
-
-                evidence_items = _wrap_evidence_items(g.get("key_evidence", []))
-                law_section_items = _wrap_law_sections(g.get("law_sections", []))
-                similar_case_items = _wrap_similar_cases(g.get("similar_cases", []))
-
-                scored = calculate_ground_rating({
-                    "ground_type": new_type,
-                    "supporting_evidence": [{"quote": e.quote} for e in evidence_items]
-                })
-
-                ground = GroundOfMerit(
-                    case_id=case_id,
-                    user_id=user.user_id,
-                    title=new_title,
-                    ground_type=new_type,
-                    description=g.get("description", ""),
-                    strength=scored["rating"],
-                    supporting_evidence=evidence_items,
-                    law_sections=law_section_items,
-                    similar_cases=similar_case_items,
-                    legitimacy_scores=scored,
-                    source_mode="ai_generated",
-                    requires_human_review=True,
-                    verification_status="unverified",
-                    status="identified"
-                )
-
-                ground_dict = ground.model_dump()
-                ground_dict["created_at"] = ground_dict["created_at"].isoformat()
-                ground_dict["updated_at"] = ground_dict["updated_at"].isoformat()
-
-                await db.grounds_of_merit.insert_one(ground_dict)
-
-                created_ground = await db.grounds_of_merit.find_one(
-                    {"ground_id": ground.ground_id, "case_id": case_id, "user_id": user.user_id},
-                    {"_id": 0}
-                )
-                identified_grounds.append(created_ground)
-
-    except Exception as e:
-        logger.error(f"Failed to parse AI response: {e}")
-
-        if len(identified_grounds) == 0:
-            scored = calculate_ground_rating({
-                "ground_type": "other",
-                "supporting_evidence": []
-            })
-
-            ground = GroundOfMerit(
-                case_id=case_id,
-                user_id=user.user_id,
-                title="AI Analysis Results",
-                ground_type="other",
-                description="AI analysis completed but structured parsing failed. Review analysis manually.",
-                strength=scored["rating"],
-                analysis=response,
-                legitimacy_scores=scored,
-                source_mode="ai_generated",
-                requires_human_review=True,
-                verification_status="unverified",
-                status="needs_review"
-            )
-            ground_dict = ground.model_dump()
-            ground_dict["created_at"] = ground_dict["created_at"].isoformat()
-            ground_dict["updated_at"] = ground_dict["updated_at"].isoformat()
-
-            await db.grounds_of_merit.insert_one(ground_dict)
-
-            created_ground = await db.grounds_of_merit.find_one(
-                {"ground_id": ground.ground_id, "case_id": case_id, "user_id": user.user_id},
-                {"_id": 0}
-            )
-            identified_grounds.append(created_ground)
+    existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
+    new_grounds = [
+        g for g in updated_grounds
+        if (g.get("title"), g.get("ground_type")) not in existing_titles
+    ]
+    skipped_duplicates = max(0, pipeline_result["classified_count"] - len(new_grounds))
 
     await db.cases.update_one(
         {"case_id": case_id, "user_id": user.user_id},
@@ -738,13 +588,14 @@ For EACH ground identified, provide detailed analysis and evidence linkage.
     )
 
     return {
-        "identified_count": len(identified_grounds),
+        "identified_count": len(new_grounds),
         "skipped_duplicates": skipped_duplicates,
         "existing_grounds": len(existing_grounds),
         "message": (
-            f"Found {len(identified_grounds)} new grounds. Skipped {skipped_duplicates} duplicates."
-            if skipped_duplicates > 0
-            else f"Found {len(identified_grounds)} new grounds."
+            f"Found {len(new_grounds)} new grounds. "
+            f"Pipeline extracted {pipeline_result['extracted_count']} new document extract(s), "
+            f"classified {pipeline_result['classified_count']} issue(s), "
+            f"and synced {pipeline_result['synced_count']} projected ground(s)."
         ),
         "unlock_required": True,
         "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]

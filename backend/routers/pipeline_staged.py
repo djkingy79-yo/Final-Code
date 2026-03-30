@@ -219,7 +219,7 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
                 "title": ground_doc["title"],
                 "ground_type": ground_doc["ground_type"],
             },
-            {"$set": ground_doc, "$setOnInsert": {"created_at": datetime.now(timezone.utc).isoformat()}},
+            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{count}", "created_at": datetime.now(timezone.utc).isoformat()}},
             upsert=True,
         )
         count += 1

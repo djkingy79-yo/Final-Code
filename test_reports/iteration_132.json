@@ -1,0 +1,119 @@
+{
+  "summary": "Completed backend testing of grounds.py pipeline delegation patch. All 29 tests passed (100%). auto-identify and investigate endpoints now properly delegate to the 5-stage pipeline (Extract → Classify → Verify → Project → Draft). GET grounds endpoints correctly return ground_id, source_mode, and verification_status fields.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_grounds_pipeline_iteration132.py",
+    "/app/test_reports/pytest/iteration132_grounds_pipeline.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "auto-identify endpoint properly delegates to pipeline: extract all docs → refresh case extract → classify issues → sync to grounds",
+    "investigate endpoint properly delegates to pipeline verify and returns projected ground with legitimacy_scores, supporting_evidence, law_sections, similar_cases",
+    "GET grounds endpoint correctly backfills ground_id for pipeline-synced grounds and enriches with source_mode and verification_status",
+    "GET single ground endpoint correctly enriches with source_mode and verification_status for legacy grounds",
+    "CRUD operations (create, update, delete) continue to work correctly",
+    "Staged pipeline extract endpoint still works correctly (regression verified)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_grounds_pipeline_iteration132.py"
+  ],
+  "success_rate": {
+    "backend": "100% (29/29 tests passed)",
+    "frontend": "N/A - backend only testing requested"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88",
+    "test_case_1": "case_87ef925be713 (Scott Joshua v R)",
+    "test_case_2": "case_a97ea91f0692 (Dummy Murder Appeal)"
+  },
+  "seed_data_creation": "None - used existing case data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Grounds pipeline delegation fully tested. auto-identify returns identified_count, skipped_duplicates, existing_grounds, message, unlock_required, unlock_price. investigate returns projected ground with legitimacy_scores, supporting_evidence, law_sections, similar_cases, verification_status, source_mode. Legacy grounds may have ground_ prefix (not gnd_) and ai_generated source_mode. LLM calls take 5-60 seconds so use generous timeouts (180s for auto-identify and investigate).",
+  "tests_executed": {
+    "backend": {
+      "test_login_returns_session_token": {"status": "PASS"},
+      "test_health_endpoint_returns_healthy": {"status": "PASS"},
+      "test_get_grounds_returns_list": {"status": "PASS"},
+      "test_get_grounds_has_ground_id_field": {"status": "PASS"},
+      "test_get_grounds_has_source_mode_field": {"status": "PASS"},
+      "test_get_grounds_has_verification_status_field": {"status": "PASS"},
+      "test_get_grounds_case_not_found": {"status": "PASS"},
+      "test_get_single_ground_returns_ground": {"status": "PASS"},
+      "test_get_single_ground_has_source_mode": {"status": "PASS"},
+      "test_get_single_ground_has_verification_status": {"status": "PASS"},
+      "test_get_single_ground_not_found": {"status": "PASS"},
+      "test_auto_identify_returns_expected_fields": {"status": "PASS", "details": "Returns identified_count, skipped_duplicates, existing_grounds, message, unlock_required, unlock_price"},
+      "test_auto_identify_message_mentions_pipeline": {"status": "PASS", "details": "Message mentions pipeline operations (extracted, classified, synced)"},
+      "test_auto_identify_case_not_found": {"status": "PASS"},
+      "test_auto_identify_unauthorized": {"status": "PASS"},
+      "test_investigate_returns_projected_ground": {"status": "PASS"},
+      "test_investigate_returns_legitimacy_scores": {"status": "PASS"},
+      "test_investigate_returns_supporting_evidence": {"status": "PASS"},
+      "test_investigate_returns_law_sections": {"status": "PASS"},
+      "test_investigate_returns_similar_cases": {"status": "PASS"},
+      "test_investigate_returns_verification_status": {"status": "PASS"},
+      "test_investigate_returns_source_mode": {"status": "PASS"},
+      "test_investigate_ground_not_found": {"status": "PASS"},
+      "test_investigate_case_not_found": {"status": "PASS"},
+      "test_investigate_unauthorized": {"status": "PASS"},
+      "test_create_ground_works": {"status": "PASS"},
+      "test_update_ground_works": {"status": "PASS"},
+      "test_delete_ground_works": {"status": "PASS"},
+      "test_staged_pipeline_extract_works": {"status": "PASS"}
+    }
+  },
+  "verified_features": {
+    "auto_identify_pipeline_delegation": {
+      "endpoint": "POST /api/cases/{case_id}/grounds/auto-identify",
+      "response": {
+        "identified_count": "int",
+        "skipped_duplicates": "int",
+        "existing_grounds": "int",
+        "message": "string (mentions pipeline operations)",
+        "unlock_required": "bool",
+        "unlock_price": "float"
+      },
+      "authentication": "Required"
+    },
+    "investigate_pipeline_delegation": {
+      "endpoint": "POST /api/cases/{case_id}/grounds/{ground_id}/investigate",
+      "response": {
+        "ground_id": "string",
+        "legitimacy_scores": "object",
+        "supporting_evidence": "array",
+        "law_sections": "array",
+        "similar_cases": "array",
+        "verification_status": "string",
+        "source_mode": "string"
+      },
+      "authentication": "Required"
+    },
+    "get_grounds_enrichment": {
+      "endpoint": "GET /api/cases/{case_id}/grounds",
+      "enrichment_fields": ["ground_id", "source_mode", "verification_status"],
+      "authentication": "Required"
+    },
+    "get_single_ground_enrichment": {
+      "endpoint": "GET /api/cases/{case_id}/grounds/{ground_id}",
+      "enrichment_fields": ["source_mode", "verification_status"],
+      "authentication": "Required"
+    }
+  },
+  "regression_tests_passed": [
+    "GET /api/health - returns healthy",
+    "POST /api/cases/{case_id}/grounds - create ground works",
+    "PUT /api/cases/{case_id}/grounds/{ground_id} - update ground works",
+    "DELETE /api/cases/{case_id}/grounds/{ground_id} - delete ground works",
+    "POST /api/pipeline/cases/{case_id}/documents/{doc_id}/extract - staged pipeline still works"
+  ]
+}
