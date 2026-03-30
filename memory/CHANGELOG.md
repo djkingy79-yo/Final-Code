@@ -1,5 +1,28 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Grounds Router Pipeline Delegation
+
+### Summary
+Patched `grounds.py` to delegate `auto-identify` and `investigate` through the staged pipeline instead of raw single-pass LLM calls.
+
+### What Changed
+- `auto_identify_grounds()`: Now runs extract → refresh → classify → sync to grounds
+- `investigate_ground_of_merit()`: Now runs pipeline verify → sync back to grounds
+- `get_grounds_of_merit()`: Backfills `ground_id` for pipeline-synced grounds, enriches with `source_mode` and `verification_status`
+- `get_ground_of_merit()`: Enriches legacy grounds with `source_mode` and `verification_status`
+- Added 7 pipeline delegation helpers (`_ensure_document_extracts`, `_refresh_case_extract_from_pipeline`, `_classify_pipeline_issues`, `_sync_pipeline_issues_to_grounds`, `_ensure_pipeline_identification`, `_verify_issue_and_sync`)
+
+### Architecture
+- Pipeline collections (`document_extracts`, `case_extracts`, `issue_classifications`, `issue_verifications`) = **truth layer**
+- `grounds_of_merit` = **compatibility/presentation layer** (projected from pipeline data)
+
+### Testing
+- Backend: 29/29 tests passed (100%) — iteration_132.json
+- All CRUD operations verified (create, update, delete)
+- All regression tests pass
+
+---
+
 ## 30 March 2026 — 5-Stage Staged Pipeline Architecture
 
 ### Summary
