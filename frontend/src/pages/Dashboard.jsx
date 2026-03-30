@@ -439,11 +439,11 @@ const Dashboard = ({ user }) => {
               </div>
             </div>
             
-            {/* Privacy Notice - Compact */}
-            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl">
-              <Shield className="w-5 h-5 text-red-600 shrink-0" />
-              <p className="text-xs text-blue-800">
-                <strong>Privacy:</strong> Ensure you have lawful authority to upload court documents or personal information.
+            {/* Privacy Notice - Bright blue with bold white text */}
+            <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-xl">
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="#dc2626" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <p className="text-xs text-white font-bold">
+                Privacy: Ensure you have lawful authority to upload court documents or personal information.
               </p>
             </div>
           </section>

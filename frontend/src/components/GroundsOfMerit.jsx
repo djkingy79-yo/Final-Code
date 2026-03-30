@@ -74,10 +74,10 @@ const LegitimacyBreakdown = ({ scores }) => {
   if (!scores) return null;
   return (
     <div data-testid="legitimacy-breakdown" className="mt-2 text-xs bg-slate-100 p-3 rounded-lg border border-slate-200">
-      <div className="grid grid-cols-3 gap-2 mb-1">
-        <div><span className="text-slate-500">Legal:</span> <span className="font-semibold">{scores.legal_score}/3</span></div>
-        <div><span className="text-slate-500">Evidence:</span> <span className="font-semibold">{scores.evidence_score}/3</span></div>
-        <div><span className="text-slate-500">Viability:</span> <span className="font-semibold">{scores.viability_score}/3</span></div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 mb-1">
+        <div className="flex justify-between sm:block"><span className="text-slate-500">Legal:</span> <span className="font-semibold">{scores.legal_score}/3</span></div>
+        <div className="flex justify-between sm:block"><span className="text-slate-500">Evidence:</span> <span className="font-semibold">{scores.evidence_score}/3</span></div>
+        <div className="flex justify-between sm:block"><span className="text-slate-500">Viability:</span> <span className="font-semibold">{scores.viability_score}/3</span></div>
       </div>
       <div className="font-bold text-slate-700">Total: {scores.total_score}/9</div>
       {scores.confidence_note && (
@@ -282,7 +282,10 @@ const GroundsOfMerit = ({
               <div className="grounds-export-block">
                 <h3>Supporting Evidence</h3>
                 <ul>
-                  {ground.supporting_evidence.map((item, idx) => <li key={idx}>{item}</li>)}
+                  {ground.supporting_evidence.map((item, idx) => {
+                    const text = typeof item === "string" ? item : (item?.quote || item?.text || item?.filename || "Evidence item");
+                    return <li key={idx}>{text}</li>;
+                  })}
                 </ul>
               </div>
             )}
@@ -454,7 +457,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
 <p class="desc">${escHtml(ground.description)}</p>
-${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e=>'<li>'+escHtml(e)+'</li>').join('') + '</ul>' : ''}
+${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e=>'<li>'+escHtml(typeof e === 'string' ? e : (e?.quote || e?.text || e?.filename || 'Evidence item'))+'</li>').join('') + '</ul>' : ''}
 ${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).length ? '<h2>Similar Cases</h2>' + ground.similar_cases.map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
@@ -834,9 +837,10 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       Supporting Evidence
                     </h4>
                     <ul className="list-disc pl-5 space-y-1 text-slate-700">
-                      {detailGround.supporting_evidence.map((ev, idx) => (
-                        <li key={idx}>{ev}</li>
-                      ))}
+                      {detailGround.supporting_evidence.map((ev, idx) => {
+                        const text = typeof ev === "string" ? ev : (ev?.quote || ev?.text || ev?.filename || "Evidence item");
+                        return <li key={idx}>{text}</li>;
+                      })}
                     </ul>
                   </div>
                 )}
