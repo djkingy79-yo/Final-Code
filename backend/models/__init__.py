@@ -188,8 +188,8 @@ class Case(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: StateType = "nsw"
-    offence_category: OffenceCategoryType = "homicide"
+    state: Optional[StateType] = None
+    offence_category: Optional[OffenceCategoryType] = None
     offence_type: Optional[str] = None
     sentence: Optional[str] = None
     status: CaseStatusType = "active"
@@ -211,8 +211,8 @@ class CaseCreate(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: StateType = "nsw"
-    offence_category: OffenceCategoryType = "homicide"
+    state: Optional[StateType] = None
+    offence_category: Optional[OffenceCategoryType] = None
     offence_type: Optional[str] = None
     sentence: Optional[str] = None
     summary: Optional[str] = None
