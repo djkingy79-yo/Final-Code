@@ -93,6 +93,98 @@ const UnverifiedBadge = () => (
   </span>
 );
 
+const SourceModeBadge = ({ sourceMode }) => {
+  const value = String(sourceMode || "legacy").toLowerCase();
+
+  const classes = {
+    derived: "border-green-700 text-green-700",
+    ai_generated: "border-blue-700 text-blue-700",
+    manual: "border-purple-700 text-purple-700",
+    imported: "border-slate-700 text-slate-700",
+    legacy: "border-yellow-700 text-yellow-700",
+  };
+
+  const labels = {
+    derived: "Pipeline-derived",
+    ai_generated: "AI-generated",
+    manual: "Manual",
+    imported: "Imported",
+    legacy: "Legacy",
+  };
+
+  return (
+    <span className={`px-2 py-1 rounded text-xs font-medium border ${classes[value] || classes.legacy}`} data-testid="source-mode-badge">
+      {labels[value] || "Unknown source"}
+    </span>
+  );
+};
+
+const GroundProvenancePanel = ({ ground }) => {
+  if (!ground) return null;
+
+  const supportingEvidence = Array.isArray(ground.supporting_evidence)
+    ? ground.supporting_evidence
+    : [];
+
+  const lawSections = Array.isArray(ground.law_sections)
+    ? ground.law_sections
+    : [];
+
+  const similarCases = Array.isArray(ground.similar_cases)
+    ? ground.similar_cases
+    : [];
+
+  const sourceMode = ground.source_mode || "legacy";
+  const verificationStatus = ground.verification_status || "unverified";
+
+  return (
+    <div className="mt-3 rounded border p-3 text-xs" data-testid="ground-provenance-panel">
+      <div className="font-semibold mb-1">Ground Provenance</div>
+      <div>Source mode: {sourceMode}</div>
+      <div>Verification status: {verificationStatus}</div>
+      <div>Supporting evidence items: {supportingEvidence.length}</div>
+      <div>Law sections linked: {lawSections.length}</div>
+      <div>Comparable cases linked: {similarCases.length}</div>
+      <div>Human review required: {ground.requires_human_review ? "Yes" : "No"}</div>
+    </div>
+  );
+};
+
+const GroundConfidenceNote = ({ ground }) => {
+  const note =
+    ground?.legitimacy_scores?.confidence_note ||
+    ground?.deep_analysis?.confidence_note ||
+    "";
+
+  if (!note) return null;
+
+  return (
+    <div className="mt-2 text-xs opacity-80" data-testid="ground-confidence-note">
+      {note}
+    </div>
+  );
+};
+
+const GroundPipelineStatus = ({ ground }) => {
+  const isPipelineBacked =
+    ground?.source_mode === "derived" ||
+    ground?.source_mode === "ai_generated";
+
+  return (
+    <div className="mt-2 text-xs" data-testid="ground-pipeline-status">
+      {isPipelineBacked ? (
+        <span className="text-green-700 font-medium">
+          Pipeline-backed ground
+        </span>
+      ) : (
+        <span className="text-yellow-700 font-medium">
+          Legacy or manually created ground
+        </span>
+      )}
+    </div>
+  );
+};
+
 const GroundsOfMerit = ({ 
   grounds, 
   groundsCount,
@@ -540,17 +632,42 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       {/* Legitimacy Score Breakdown */}
                       {ground.legitimacy_scores && <LegitimacyPanel scores={ground.legitimacy_scores} />}
                       
-                      {/* Verification + Human Review */}
-                      <div className="flex items-center gap-2 mt-3">
+                      {/* Verification + Source + Human Review */}
+                      <div className="flex flex-wrap items-center gap-2 mt-3">
                         <StrengthBadge rating={ground.strength} />
                         <VerificationBadge status={ground.verification_status} />
+                        <SourceModeBadge sourceMode={ground.source_mode} />
+                        {ground.ground_type ? (
+                          <span className="text-xs opacity-75">
+                            {String(ground.ground_type).replaceAll("_", " ")}
+                          </span>
+                        ) : null}
                       </div>
+
+                      <GroundProvenancePanel ground={ground} />
+                      <GroundConfidenceNote ground={ground} />
+
+                      {ground.source_mode === "derived" && ground.verification_status !== "verified" ? (
+                        <div className="mt-2 text-xs text-yellow-700 font-medium">
+                          This ground has been projected from staged pipeline analysis and should be reviewed before legal reliance.
+                        </div>
+                      ) : null}
+
+                      <GroundPipelineStatus ground={ground} />
 
                       {ground.requires_human_review && (
                         <div className="mt-2 text-xs text-red-700 font-medium">
                           Requires human review before legal reliance
                         </div>
                       )}
+
+                      <div className="text-xs opacity-75 mt-1">
+                        Evidence: {Array.isArray(ground.supporting_evidence) ? ground.supporting_evidence.length : 0}
+                        {" \u2022 "}
+                        Source: {ground.source_mode || "legacy"}
+                        {" \u2022 "}
+                        Status: {ground.verification_status || "unverified"}
+                      </div>
 
                       <p className="text-xs text-slate-400 mt-3">
                         Added {formatDate(ground.created_at)}
@@ -782,11 +899,28 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   </div>
                 )}
 
-                {/* Verification + Human Review in Detail View */}
-                <div className="flex items-center gap-2">
+                {/* Verification + Source + Human Review in Detail View */}
+                <div className="flex flex-wrap items-center gap-2">
                   <StrengthBadge rating={detailGround.strength} />
                   <VerificationBadge status={detailGround.verification_status} />
+                  <SourceModeBadge sourceMode={detailGround.source_mode} />
+                  {detailGround.ground_type ? (
+                    <span className="text-xs opacity-75">
+                      {String(detailGround.ground_type).replaceAll("_", " ")}
+                    </span>
+                  ) : null}
                 </div>
+
+                <GroundProvenancePanel ground={detailGround} />
+                <GroundConfidenceNote ground={detailGround} />
+
+                {detailGround.source_mode === "derived" && detailGround.verification_status !== "verified" ? (
+                  <div className="mt-2 text-xs text-yellow-700 font-medium">
+                    This ground has been projected from staged pipeline analysis and should be reviewed before legal reliance.
+                  </div>
+                ) : null}
+
+                <GroundPipelineStatus ground={detailGround} />
 
                 {detailGround.requires_human_review && (
                   <div className="text-xs text-red-700 font-medium">
