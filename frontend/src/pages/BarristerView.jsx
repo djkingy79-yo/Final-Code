@@ -13,6 +13,7 @@ import { isIOSDevice } from "../utils/isIOS";
 import {
   AlertTriangle,
   ArrowLeft,
+  Briefcase,
   Clock,
   Download,
   FileText,
@@ -650,6 +651,25 @@ export default function BarristerView() {
     }
   };
 
+  const handleDownloadAcceptancePack = async () => {
+    try {
+      toast.info("Generating Acceptance Pack PDF...");
+      const response = await axios.get(`${API}/cases/${caseId}/barrister-pack/generate`, {
+        responseType: "blob",
+        timeout: 120000,
+      });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      await iosShareOrDownload(
+        blob,
+        `Barrister_Acceptance_Pack_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.pdf`,
+        "application/pdf"
+      );
+      toast.success("Acceptance Pack downloaded.");
+    } catch (error) {
+      toast.error("Failed to generate the Acceptance Pack PDF.");
+    }
+  };
+
   const handleBackToCase = () => {
     window.location.assign(`/cases/${caseId}`);
   };
@@ -765,6 +785,15 @@ export default function BarristerView() {
               data-testid="barrister-export-pdf-button"
             >
               <Download className="w-4 h-4 mr-2" /> Export PDF
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleDownloadAcceptancePack}
+              disabled={!isCompleted}
+              className="bg-teal-600 text-white hover:bg-teal-700"
+              data-testid="barrister-acceptance-pack-button"
+            >
+              <Briefcase className="w-4 h-4 mr-2" /> Acceptance Pack
             </Button>
           </div>
         </div>
