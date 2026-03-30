@@ -1,5 +1,38 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — 5-Stage Pipeline Implementation
+
+### Summary
+Implemented the Extract → Classify → Verify → Project → Draft pipeline with 5 new MongoDB collections and 12 new API endpoints.
+
+### New Collections
+1. **document_extracts** — Per-document structured extraction (facts, events, findings)
+2. **case_extracts** — Case-level merged extraction from all documents
+3. **issue_classifications** — Candidate appeal issues after classification
+4. **issue_verifications** — Structured support/undermine/missing verification layer
+
+### New Endpoints (pipeline.py)
+- `POST /api/cases/{case_id}/documents/{document_id}/extract` — per-doc extraction
+- `POST /api/cases/{case_id}/extract/refresh` — merge to case-level
+- `GET /api/cases/{case_id}/extract` — view merged extract
+- `POST /api/cases/{case_id}/issues/classify` — classify issues
+- `GET /api/cases/{case_id}/issues` — list issues
+- `POST /api/cases/{case_id}/issues/{issue_id}/verify` — verify single issue
+- `POST /api/cases/{case_id}/issues/verify-all` — batch verify
+- `GET /api/cases/{case_id}/issues/{issue_id}/verification` — inspect verification
+- `POST /api/cases/{case_id}/grounds/sync-from-issues` — project to grounds_of_merit
+- `GET /api/cases/{case_id}/pipeline/status` — pipeline progress
+
+### Pipeline Guardrails
+- Extract stage: never classifies
+- Classify stage: never verifies
+- Verify stage: never drafts prose
+- Draft stage: never invents new issues
+
+### Testing
+- Backend: 19/19 tests passed (100%)
+- Pipeline verified with real case data: 2 docs extracted → 20 facts, 5 events, 5 findings → 5 issues classified → all verified → 5 grounds synced
+
 ## 30 March 2026 — Frontend Hardening Patch (Forensic Barrister Review)
 
 ### Summary

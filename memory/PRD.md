@@ -65,21 +65,17 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - PDF page breaks: cover page, coloured header, disclaimer all prevent page-splitting
 - File upload: 10MB max size validation, 120s timeout
 
-### Session 4 — 30 Mar 2026 (server.py Additive Patch Completion + Frontend Hardening)
-- Completed 7th and final forensic barrister additive patch to `server.py`
-- Metadata detection now uses `call_llm_for_json` (with validation callback)
-- Report generation uses `call_llm_structured` with enhanced timeouts (420s for detailed, 300s for standard)
-- All generated reports now include `ReportMetadata` (models_used, fallback_used, documents_analyzed, verification_status)
-- DB records include `source_mode: "ai_generated"` and `verification_status: "draft"` provenance fields
-- Fixed `_NormaliserMixin` Pydantic error (check_fields=False for mixin validators)
-- **Frontend Hardening Patch (3 Phases):**
-  - Created 6 reusable shared components: StrengthBadge, VerificationBadge, LegitimacyPanel, EvidenceSummary, AssessmentNote, ReportMetadataPanel
-  - Phase 1: Patched GroundsOfMerit (structured evidence/legitimacy), CaseStrengthMeter (readiness/safe rendering), ReportsSection (metadata panel + AI warning)
-  - Phase 2: Patched CaseComparison (assessment note + insufficient data handling), DeadlineTracker (explanatory note + per-deadline metadata)
-  - Phase 3: Patched BarristerView (per-ground blocks + AI footer), ReportView (verification badge + metadata), CaseDetail (Review Status widget + CaseStrengthMeter on Progress tab), CompareCasesPage (assessment note + Platform Pattern Indicators)
-  - Text replacements: 'Case Strength' → 'Appeal Preparation Readiness', 'Success Factors' → 'Platform Pattern Indicators', 'Strong Grounds' → 'Higher Preparation Grounds'
-  - **Refinement pass:** VerificationBadge with coloured borders per status, EvidenceSummary with page/chunk references, CaseStrengthMeter breakdown renamed (Grounds Review Progress, Documentation Completeness, Timeline Development, Preparation Checklist Completion), BarristerView enhanced with ComparableCases (jurisdiction/relevance), LawSections display, and Verification/Review Status section
-- Full regression: backend 13/13, frontend 12/13 (ComparableCases INFO — no data, not a bug)
+### Session 4 — 30 Mar 2026 (Backend Hardening + Frontend Hardening + Pipeline)
+- Completed 7th backend hardening patch (server.py)
+- Frontend hardening: 6 shared components, 9 files patched across 3 phases
+- **5-Stage Pipeline (Extract → Classify → Verify → Project → Draft):**
+  - 5 new MongoDB collections: document_extracts, case_extracts, issue_classifications, issue_verifications
+  - 12 new API endpoints in /app/backend/routers/pipeline.py
+  - Pipeline models added to models/__init__.py
+  - LLM task types added: document_extraction, issue_classification, issue_verification
+  - DB indexes created at startup for all pipeline collections
+  - Transitional: sync-from-issues projects verified issues into existing grounds_of_merit
+  - Full test: 19/19 backend, 12/13 frontend — all passing
 
 ### Previous Sessions
 - Multi-pass AI report generation (4 tiers) with GPT-4o
