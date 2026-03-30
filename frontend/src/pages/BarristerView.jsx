@@ -378,7 +378,7 @@ export default function BarristerView() {
     .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
-    .report-header { background: #14b8a6; color: #fff; padding: 28px 32px; }
+    .report-header { background: #14b8a6; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
@@ -386,7 +386,7 @@ export default function BarristerView() {
     .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
     .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
     .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
-    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-header .case-info-grid .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
     .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
     .sections { padding: 24px 32px; }
@@ -409,7 +409,7 @@ export default function BarristerView() {
     .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
     .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
-    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; }
+    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
@@ -418,12 +418,18 @@ export default function BarristerView() {
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
     @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .report-container { max-width: none; }
-      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .cover-page { page-break-after: always; break-after: page; }
+      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
+      .report-header .case-info-grid { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: inherit; }
       .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .section { page-break-inside: avoid; }
+      .disclaimer-bold { page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .report-branding { page-break-inside: avoid; break-inside: avoid; }
+      .disclaimer-bold + .report-branding { page-break-before: avoid; break-before: avoid; }
       .section-body .legal-report-table-wrap { overflow: visible; }
       .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .preview-notice { display: none; }
@@ -506,7 +512,7 @@ export default function BarristerView() {
         This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service.
       </div>
     </div>
-    <div style="text-align:center;margin:24px 32px;padding:16px 0;">
+    <div style="text-align:center;margin:24px 32px;padding:16px 0;page-break-inside:avoid;" class="report-branding">
       <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
       <div style="display:inline-flex;align-items:center;gap:10px;">
         <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">

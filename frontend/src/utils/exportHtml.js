@@ -28,7 +28,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Manrope', sans-serif; font-size: 14px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; }
   .export-container { max-width: 900px; margin: 0 auto; }
-  .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; }
+  .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
   .export-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; }
   .export-header p { font-size: 12px; opacity: 0.85; }
   .export-meta { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px 32px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
@@ -51,10 +51,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body .note-content { font-size: 13px; color: #1e293b; white-space: pre-wrap; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
-  .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #991b1b; border-radius: 8px; }
+  .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #991b1b; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .disclaimer strong { display: block; font-size: 13px; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
   .disclaimer p { font-size: 11px; color: #fecaca; line-height: 1.6; margin: 0; }
-  .branding { text-align: center; margin: 24px 32px; padding: 16px 0; }
+  .branding { text-align: center; margin: 24px 32px; padding: 16px 0; page-break-inside: avoid; break-inside: avoid; }
   .branding .by-line { font-size: 12px; font-weight: 700; color: #334155; margin: 0 0 10px; }
   .branding-inner { display: inline-flex; align-items: center; gap: 10px; }
   .branding-icon { width: 36px; height: 36px; background: #dc2626; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
@@ -66,12 +66,15 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .print-footer-page-print::after { content: ''; }
   .page-break { page-break-before: always; }
   @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     body { background: #fff; }
     .export-container { max-width: none; }
     .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     .print-footer-page-print::after { content: "Page " counter(page); }
-    .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-    .export-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
+    .branding { page-break-inside: avoid; break-inside: avoid; }
+    .disclaimer + .branding { page-break-before: avoid; break-before: avoid; }
+    .export-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
     .export-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   }
   @media (max-width: 768px) {

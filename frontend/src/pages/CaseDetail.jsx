@@ -458,11 +458,11 @@ const CaseDetail = ({ user }) => {
     th { background: #dbeafe; font-weight: 700; color: #0f172a; }
     ul, ol { padding-left: 18px; }
     li { margin-bottom: 4px; }
-    .disclaimer-box { background: #fef2f2; border: 3px solid #ef4444; padding: 16px 20px; border-radius: 8px; margin-top: 32px; }
+    .disclaimer-box { background: #fef2f2; border: 3px solid #ef4444; padding: 16px 20px; border-radius: 8px; margin-top: 32px; page-break-inside: avoid; break-inside: avoid; }
     .disclaimer-box strong { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: #dc2626; display: block; margin-bottom: 6px; }
     .disclaimer-box p { font-size: 12px; color: #1e293b; margin: 0; line-height: 1.6; }
     .no-print { display: none !important; }
-    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    @media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } .disclaimer-box { page-break-inside: avoid; break-inside: avoid; } }
   </style>
 </head>
 <body>

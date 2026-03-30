@@ -80,6 +80,14 @@ const DocumentsSection = ({
       return;
     }
     
+    // Check file sizes (max 10MB per file due to MongoDB storage limits)
+    const maxSize = 10 * 1024 * 1024;
+    const oversized = uploadFiles.filter(f => f.size > maxSize);
+    if (oversized.length > 0) {
+      toast.error(`Files too large (max 10MB): ${oversized.map(f => f.name).join(", ")}`);
+      return;
+    }
+    
     setUploading(true);
     setUploadProgress({ current: 0, total: uploadFiles.length });
     const uploadedDocs = [];
@@ -96,12 +104,14 @@ const DocumentsSection = ({
       
       try {
         const response = await axios.post(`${API}/cases/${caseId}/documents`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 120000
         });
         uploadedDocs.push(response.data);
       } catch (error) {
         console.error(`Failed to upload ${file.name}:`, error);
-        failedFiles.push(file.name);
+        const msg = error.response?.data?.detail || error.message || "Upload failed";
+        failedFiles.push(`${file.name} (${msg})`);
       }
     }
     
