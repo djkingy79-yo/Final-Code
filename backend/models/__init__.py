@@ -632,37 +632,41 @@ class SearchMatch(BaseModel):
 # ============================================================================
 
 class _NormaliserMixin(BaseModel):
+    """
+    Optional normaliser mixin for models that include these fields.
+    Use check_fields=False because the mixin itself does not define these fields.
+    """
     model_config = ConfigDict(extra="ignore")
 
-    @field_validator("state", mode="before")
+    @field_validator("state", mode="before", check_fields=False)
     @classmethod
     def _normalise_state(cls, v):
         if v is None:
             return v
         return str(v).strip().lower()
 
-    @field_validator("offence_category", mode="before")
+    @field_validator("offence_category", mode="before", check_fields=False)
     @classmethod
     def _normalise_offence_category(cls, v):
         if v is None:
             return v
         return str(v).strip().lower()
 
-    @field_validator("ground_type", mode="before")
+    @field_validator("ground_type", mode="before", check_fields=False)
     @classmethod
     def _normalise_ground_type(cls, v):
         if v is None:
             return v
         return str(v).strip().lower()
 
-    @field_validator("strength", mode="before")
+    @field_validator("strength", mode="before", check_fields=False)
     @classmethod
     def _normalise_strength(cls, v):
         if v is None:
             return v
         return str(v).strip().lower()
 
-    @field_validator("status", mode="before")
+    @field_validator("status", mode="before", check_fields=False)
     @classmethod
     def _normalise_status(cls, v):
         if v is None:

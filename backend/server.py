@@ -1,5 +1,7 @@
+# DO NOT UNDO — server.py. All endpoints in this file are approved and must be preserved.
 # ===========================================================================
 # Criminal Appeal AI - Main Server (Refactored)
+# ADDITIVE HARDENING PATCH
 # ===========================================================================
 # After extraction, this file contains:
 #   - App factory, CORS, health check
@@ -27,8 +29,9 @@ from config import db, logger
 from auth_utils import get_current_user
 from models import (
     ReportRequest, FEATURE_PRICES, feature_type_variants,
+    ReportMetadata,
 )
-from services.llm_service import call_llm_with_fallback
+from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_for_report, call_llm_structured
 from services.offence_helpers import get_offence_context, get_offence_system_prompt
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
@@ -429,8 +432,7 @@ def _strip_report_placeholders(text: str) -> str:
 
 
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
-    """Use OpenAI GPT-5.2 to analyse case and generate report"""
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
     
     # Get case data
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
@@ -461,7 +463,7 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
         {"_id": 0}
     ).to_list(100)
     
-    # ── Auto-detect case metadata if still defaults ──
+    # ── Auto-detect case metadata if still defaults (HARDENED via call_llm_for_json) ──
     needs_detection = (
         (not case.get('offence_category') or case.get('offence_category') == 'homicide')
         and not case.get('offence_type')
@@ -491,21 +493,20 @@ Rules:
 
 DOCUMENTS:
 {combined_text[:30000]}"""
-                detect_chat = LlmChat(
-                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
+
+                def _validate_metadata(parsed: dict) -> bool:
+                    valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
+                    cat = parsed.get("offence_category")
+                    return cat in valid_cats if cat else True
+
+                meta = await call_llm_for_json(
+                    system_prompt="You are a legal document analyst. Extract factual metadata only. Return valid JSON.",
+                    user_prompt=detect_prompt,
                     session_id=f"rpt_detect_{case_id}",
-                    system_message="You are a legal document analyst. Extract factual metadata only. Return valid JSON."
-                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
-                raw = await asyncio.wait_for(
-                    detect_chat.send_message(UserMessage(text=detect_prompt)),
-                    timeout=60
+                    task_type="metadata_detection",
+                    validation_fn=_validate_metadata,
                 )
-                raw = (raw or "").strip()
-                raw = (raw or "").strip()
-                if raw.startswith("```"):
-                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-                import json as _json
-                meta = _json.loads(raw)
+
                 valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
                 valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
                 update_fields = {}
@@ -515,12 +516,14 @@ DOCUMENTS:
                     update_fields["offence_type"] = meta["offence_type"]
                 if meta.get("sentence"):
                     update_fields["sentence"] = meta["sentence"]
-                if meta.get("state") and meta["state"].lower() in valid_sts:
-                    update_fields["state"] = meta["state"].lower()
+                if meta.get("state") and str(meta["state"]).lower() in valid_sts:
+                    update_fields["state"] = str(meta["state"]).lower()
                 if meta.get("court"):
                     update_fields["court"] = meta["court"]
                 if update_fields:
                     update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                    update_fields["classification_source"] = "ai_detected"
+                    update_fields["requires_metadata_review"] = True
                     await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
                     # Re-read case with updated metadata
                     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
@@ -1140,53 +1143,36 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
 - Attack Crown weaknesses directly and confidently.
 - Write the opening line you would use to address the Court of Appeal for each key argument."""
 
-    # Call AI — run in SUBPROCESS to isolate from FastAPI network stack
-    # Direct subprocess calls work reliably (tested: 6 seconds)
+    # Call AI — HARDENED via call_llm_structured with enhanced report-generation timeouts
     api_key = os.environ.get('EMERGENT_LLM_KEY')
     if not api_key:
-        raise HTTPException(status_code=500, detail="AI service not configured")
+        raise HTTPException(status_code=500, detail="AI service not configured — EMERGENT_LLM_KEY missing")
+
+    _report_generation_metadata = {"models_used": [], "fallback_used": False}
 
     async def _subprocess_llm(prompt_text):
-        """Run LLM call directly — retries across multiple models with exponential backoff."""
-        
-        models = [
-            ("openai", "gpt-4o"),
-            ("openai", "gpt-4o"),
-            ("openai", "gpt-4o"),
-            ("anthropic", "claude-sonnet-4-20250514"),
-            ("openai", "gpt-4o-mini"),
-            ("openai", "gpt-4o-mini"),
-        ]
+        """Run LLM call via structured layer — enhanced timeouts for report generation."""
         call_timeout = 420 if report_type in ("full_detailed", "extensive_log") else 300
-        
-        last_err = None
-        for idx, (provider, model_name) in enumerate(models):
-            try:
-                chat = LlmChat(api_key=api_key, session_id="rpt_gen", system_message=system_prompt).with_model(provider, model_name).with_params(max_tokens=16384)
-                result = await asyncio.wait_for(
-                    chat.send_message(UserMessage(text=prompt_text)),
-                    timeout=call_timeout
-                )
-                if result and len(result.strip()) > 200 and "I'm sorry" not in result[:100] and "I can't assist" not in result[:100]:
-                    logger.info(f"LLM success with {provider}/{model_name} on attempt {idx+1}")
-                    return result
-                if "I'm sorry" in result[:100] or "I can't assist" in result[:100]:
-                    last_err = f"Model refused: {result[:100]}"
-                else:
-                    last_err = f"Short response ({len(result)} chars)"
-                logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}): {last_err}")
-            except asyncio.TimeoutError:
-                last_err = f"Timeout after {call_timeout}s with {provider}/{model_name}"
-                logger.warning(last_err)
-            except Exception as e:
-                last_err = str(e)[:200]
-                logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) failed: {last_err}")
-            # Exponential backoff: 5s, 10s, 20s, 30s, 45s, 60s
-            delay = min(60, 5 * (2 ** idx))
-            logger.info(f"Retrying in {delay}s...")
-            await asyncio.sleep(delay)
-        
-        raise Exception(f"All LLM attempts failed. Last error: {last_err}")
+
+        response = await call_llm_structured(
+            system_prompt=system_prompt,
+            user_prompt=prompt_text,
+            session_id=f"rpt_gen_{case_id}",
+            task_type="report_generation",
+            max_tokens=16384,
+            timeout_seconds=call_timeout,
+            require_json=False,
+            validation_fn=None,
+        )
+
+        if response["ok"]:
+            if response.get("model"):
+                _report_generation_metadata["models_used"].append(response["model"])
+            if response.get("fallback_used"):
+                _report_generation_metadata["fallback_used"] = True
+            return response["content"]
+
+        raise Exception(f"All LLM attempts failed. Last error: {response['error']}")
 
     response = None
     last_error = None
@@ -1663,12 +1649,24 @@ REPORT TO EXPAND:
 **IMPORTANT DISCLAIMER:** This report is for educational and research purposes only. It does not constitute legal advice. Always consult a qualified legal practitioner before taking any action.
 """
 
+    # Build provenance metadata
+    report_metadata = ReportMetadata(
+        generated_by_model=_report_generation_metadata["models_used"][-1] if _report_generation_metadata["models_used"] else None,
+        fallback_used=_report_generation_metadata["fallback_used"],
+        documents_analyzed=len(documents),
+        timeline_events_analyzed=len(timeline),
+        grounds_considered=len(grounds),
+        verification_status="draft",
+        confidence_note="AI-generated output requiring legal review",
+    )
+
     return {
         "analysis": response,
         "grounds_of_merit": grounds_of_merit,
         "case_data": case,
         "document_count": len(documents),
-        "event_count": len(timeline)
+        "event_count": len(timeline),
+        "metadata": report_metadata.model_dump(),
     }
 
 
@@ -2329,10 +2327,18 @@ CURRENT BARRISTER BRIEF
             for report in source_reports
         ],
         "source_signature": _build_barrister_source_signature(source_reports),
+        "metadata": ReportMetadata(
+            documents_analyzed=len(documents),
+            timeline_events_analyzed=len(timeline),
+            grounds_considered=len(grounds),
+            verification_status="draft",
+            confidence_note="AI-generated barrister brief requiring legal review",
+        ).model_dump(),
     }
 
 
 async def _run_barrister_report_generation(report_id: str, case_id: str, user_id: str):
+    """Background task for barrister brief generation — HARDENED with metadata."""
     try:
         analysis_result = await generate_barrister_brief(case_id, user_id, report_id=report_id)
         await db.reports.update_one(
@@ -2355,6 +2361,9 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
                         "partial_analysis": "",
                     },
                     "grounds_of_merit": analysis_result["grounds_of_merit"],
+                    "metadata": analysis_result.get("metadata"),
+                    "source_mode": "ai_generated",
+                    "verification_status": "draft",
                     "error": None,
                     "technical_error": None,
                 }
@@ -2370,7 +2379,7 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
         )
 
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
-    """Background task that generates the AI report and updates the DB record."""
+    """Background task that generates the AI report and updates the DB record — HARDENED with metadata."""
     try:
         report_titles = {
             "quick_summary": "Quick Case Summary",
@@ -2395,6 +2404,9 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "aggressive_mode": aggressive_mode
                 },
                 "grounds_of_merit": analysis_result["grounds_of_merit"],
+                "metadata": analysis_result.get("metadata"),
+                "source_mode": "ai_generated",
+                "verification_status": "draft",
             }}
         )
         logger.info(f"Report {report_id} generated successfully")
@@ -2498,6 +2510,8 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         "grounds_of_merit": [],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "status": "generating",
+        "source_mode": "ai_generated",
+        "verification_status": "draft",
     }
     insert_doc = {k: v for k, v in placeholder.items()}
     await db.reports.insert_one(insert_doc)
