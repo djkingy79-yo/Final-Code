@@ -24,6 +24,16 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["documents"])
 
 
+# ==========================================================================
+# DO NOT UNDO — AUTO-DETECT METADATA FUNCTION
+# ==========================================================================
+# This function auto-detects state, offence_category, offence_type,
+# sentence, court, case_number from uploaded documents via LLM.
+# It relies on CaseCreate having Optional[None] defaults (models/__init__.py).
+# DO NOT remove this function. DO NOT skip calling it on upload.
+# DO NOT hardcode "nsw" or "homicide" anywhere in models or routes.
+# This has been broken and re-fixed 15+ times. LEAVE IT ALONE.
+# ==========================================================================
 async def _background_auto_detect_metadata(case_id: str, user_id: str, content_text: str, filename: str):
     """Background task: auto-detect case metadata from uploaded document via LLM"""
     try:

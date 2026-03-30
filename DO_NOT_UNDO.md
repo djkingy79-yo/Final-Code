@@ -93,6 +93,38 @@
 - frontend/src/hooks/use-toast.js
 - frontend/src/lib/utils.js
 
+## CRITICAL: AUTO-DETECT PROTECTION (BROKEN 15+ TIMES — DO NOT TOUCH)
+
+The following code enables auto-detection of state, offence category, offence type, 
+sentence, court, case number, and timeline events from uploaded documents via LLM.
+
+**Files involved — DO NOT modify these sections:**
+
+1. `backend/models/__init__.py` — `CaseCreate` and `Case` models:
+   - `state: Optional[StateType] = None` — MUST remain None
+   - `offence_category: Optional[OffenceCategoryType] = None` — MUST remain None
+   - `offence_type: Optional[str] = None` — MUST remain None
+   - `sentence: Optional[str] = None` — MUST remain None
+   - **NEVER** add defaults like `"nsw"` or `"homicide"`
+
+2. `backend/routers/documents.py` — `_background_auto_detect_metadata()`:
+   - This function runs after every document upload (if content > 200 chars)
+   - It sends document text to GPT-4o and parses state/offence/sentence/court
+   - **NEVER** remove this function or the `background_tasks.add_task()` call
+
+3. `frontend/src/pages/Dashboard.jsx` — `handleCreateCase()`:
+   - Empty strings are stripped from the payload before sending to backend
+   - **NEVER** send empty strings or hardcoded defaults for state/offence_category
+
+4. `backend/routers/documents.py` — `_background_auto_generate()`:
+   - Auto-generates timeline events and case summary from documents
+   - **NEVER** remove this function or the `background_tasks.add_task()` call
+
+**What happens if you break this:**
+- Every new case defaults to "NSW / Murder" regardless of actual documents
+- The user has to manually fix every single case
+- This has been broken and re-fixed 15+ times. You WILL be the reason it breaks again.
+
 ## Rules for Future Agents:
 1. NEVER delete any file listed above
 2. NEVER remove any existing feature, function, or component
@@ -103,3 +135,6 @@
 7. NEVER remove the "DO NOT UNDO" comments from any file
 8. You may ADD new features but NEVER remove existing ones
 9. The user (Deb King) has paid for all of this work. Respect it.
+10. NEVER change CaseCreate state/offence_category/offence_type/sentence defaults from None
+11. NEVER remove _background_auto_detect_metadata or _background_auto_generate from documents.py
+12. NEVER send hardcoded "nsw" or "homicide" from the frontend case creation form

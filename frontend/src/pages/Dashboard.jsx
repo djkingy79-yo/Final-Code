@@ -125,7 +125,15 @@ const Dashboard = ({ user }) => {
     }
 
     try {
-      // Strip empty strings so backend defaults apply
+      // =============================================================
+      // DO NOT UNDO — AUTO-DETECT PROTECTION
+      // =============================================================
+      // Empty strings MUST be stripped so the backend receives None
+      // for state/offence_category, enabling LLM auto-detection
+      // from uploaded documents. DO NOT send empty strings.
+      // DO NOT hardcode "nsw" or "homicide" as fallback values.
+      // This has been broken and re-fixed 15+ times. LEAVE IT ALONE.
+      // =============================================================
       const payload = {};
       for (const [key, value] of Object.entries(newCase)) {
         if (value !== "" && value !== null && value !== undefined) {

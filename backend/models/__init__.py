@@ -188,10 +188,10 @@ class Case(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: Optional[StateType] = None
-    offence_category: Optional[OffenceCategoryType] = None
-    offence_type: Optional[str] = None
-    sentence: Optional[str] = None
+    state: Optional[StateType] = None                        # DO NOT UNDO — must be None for auto-detect
+    offence_category: Optional[OffenceCategoryType] = None   # DO NOT UNDO — must be None for auto-detect
+    offence_type: Optional[str] = None                       # DO NOT UNDO — must be None for auto-detect
+    sentence: Optional[str] = None                           # DO NOT UNDO — must be None for auto-detect
     status: CaseStatusType = "active"
     summary: Optional[str] = None
 
@@ -204,6 +204,19 @@ class Case(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+# ==========================================================================
+# DO NOT UNDO — AUTO-DETECT PROTECTION
+# ==========================================================================
+# state and offence_category MUST remain Optional = None.
+# DO NOT add default values like "nsw" or "homicide".
+# DO NOT change these back to required fields.
+# DO NOT add Field(default=...) with any non-None value.
+# The background task _background_auto_detect_metadata in
+# routers/documents.py detects these from uploaded documents via LLM.
+# If you set defaults here, auto-detection breaks and every case
+# shows "NSW / Murder" regardless of the actual documents.
+# This has been broken and re-fixed 15+ times. LEAVE IT ALONE.
+# ==========================================================================
 class CaseCreate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     title: str
@@ -211,10 +224,10 @@ class CaseCreate(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: Optional[StateType] = None
-    offence_category: Optional[OffenceCategoryType] = None
-    offence_type: Optional[str] = None
-    sentence: Optional[str] = None
+    state: Optional[StateType] = None                        # DO NOT UNDO — must be None for auto-detect
+    offence_category: Optional[OffenceCategoryType] = None   # DO NOT UNDO — must be None for auto-detect
+    offence_type: Optional[str] = None                       # DO NOT UNDO — must be None for auto-detect
+    sentence: Optional[str] = None                           # DO NOT UNDO — must be None for auto-detect
     summary: Optional[str] = None
 
 
