@@ -1,56 +1,183 @@
+# DO NOT UNDO — timeline router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Timeline Router
-Extracted from server.py monolith.
+ADDITIVE HARDENING PATCH
 """
 from fastapi import APIRouter, HTTPException, Request, Response
-from typing import List
 from datetime import datetime, timezone
 import uuid
 import json
-import re
 import logging
+import re
 
 from config import db
 from auth_utils import get_current_user
 from models import TimelineEvent, TimelineEventCreate
-from services.llm_service import call_llm_with_fallback
+from services.document_helpers import build_document_context
+from services.llm_service import call_llm_with_fallback, call_llm_for_json
+from services.offence_helpers import get_offence_context
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["timeline"])
 
 
-@router.get("/cases/{case_id}/timeline", response_model=List[dict])
+# ============================================================================
+# INTERNAL HELPERS
+# ============================================================================
+
+ALLOWED_SIGNIFICANCE = {"low", "normal", "important", "critical"}
+ALLOWED_PERSPECTIVE = {"neutral", "defence", "prosecution", "court"}
+
+
+def _safe_str(value, default=""):
+    if value is None:
+        return default
+    return str(value).strip()
+
+
+def _normalise_significance(value: str) -> str:
+    v = _safe_str(value, "normal").lower()
+    return v if v in ALLOWED_SIGNIFICANCE else "normal"
+
+
+def _normalise_perspective(value: str) -> str:
+    v = _safe_str(value, "neutral").lower()
+    return v if v in ALLOWED_PERSPECTIVE else "neutral"
+
+
+def _normalise_date_string(value):
+    if not value:
+        return None
+
+    text = str(value).strip()
+
+    # YYYY-MM-DD
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        return f"{text}T00:00:00+00:00"
+
+    try:
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.isoformat()
+    except Exception:
+        pass
+
+    # Try common date formats
+    for fmt in ['%Y-%m-%d', '%Y-%m', '%Y', '%d/%m/%Y', '%d-%m-%Y']:
+        try:
+            dt = datetime.strptime(text, fmt)
+            return dt.replace(tzinfo=timezone.utc).isoformat()
+        except ValueError:
+            continue
+
+    # Try to extract a year
+    year_match = re.search(r'(19|20)\d{2}', text)
+    if year_match:
+        try:
+            dt = datetime.strptime(year_match.group(), '%Y')
+            return dt.replace(tzinfo=timezone.utc).isoformat()
+        except ValueError:
+            pass
+
+    return None
+
+
+def _validate_timeline_payload(payload: dict) -> bool:
+    if not isinstance(payload, dict):
+        return False
+
+    events = payload.get("events")
+    if not isinstance(events, list):
+        return False
+
+    for event in events:
+        if not isinstance(event, dict):
+            return False
+        if not event.get("title"):
+            return False
+        if not event.get("event_date"):
+            return False
+
+    return True
+
+
+def _timeline_event_dump(event: TimelineEvent) -> dict:
+    dumped = event.model_dump()
+    dumped["event_date"] = dumped["event_date"].isoformat()
+    dumped["created_at"] = dumped["created_at"].isoformat()
+    return dumped
+
+
+# ============================================================================
+# CRUD
+# ============================================================================
+
+@router.get("/cases/{case_id}/timeline", response_model=list[dict])
 async def get_timeline(case_id: str, request: Request):
-    """Get timeline events for a case"""
+    """Get all timeline events for a case"""
     user = await get_current_user(request)
+
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    events = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
+
+    events = await db.timeline_events.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort("event_date", 1).to_list(500)
+
     return events
 
 
 @router.post("/cases/{case_id}/timeline", response_model=dict)
 async def create_timeline_event(case_id: str, event_data: TimelineEventCreate, request: Request):
-    """Create a timeline event"""
+    """Create a manual timeline event"""
     user = await get_current_user(request)
+
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    event = TimelineEvent(case_id=case_id, user_id=user.user_id, **event_data.model_dump())
-    event_dict = event.model_dump()
-    event_dict["event_date"] = event_dict["event_date"].isoformat()
-    event_dict["created_at"] = event_dict["created_at"].isoformat()
+
+    event = TimelineEvent(
+        case_id=case_id,
+        user_id=user.user_id,
+        title=event_data.title,
+        description=event_data.description,
+        event_date=event_data.event_date,
+        event_type=event_data.event_type,
+        event_category=event_data.event_category,
+        linked_documents=event_data.linked_documents,
+        participants=event_data.participants,
+        significance=_normalise_significance(event_data.significance),
+        source_citation=event_data.source_citation,
+        perspective=_normalise_perspective(event_data.perspective),
+        is_contested=event_data.is_contested,
+        contested_details=event_data.contested_details,
+        related_grounds=event_data.related_grounds,
+        inconsistency_notes=event_data.inconsistency_notes,
+        source_mode="manual",
+        verification_status="unverified",
+    )
+
+    event_dict = _timeline_event_dump(event)
     await db.timeline_events.insert_one(event_dict)
-    await db.cases.update_one({"case_id": case_id}, {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}})
-    created_event = await db.timeline_events.find_one({"event_id": event.event_id}, {"_id": 0})
-    return created_event
+
+    await db.cases.update_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+
+    return await db.timeline_events.find_one(
+        {"event_id": event.event_id, "case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    )
 
 
 @router.put("/cases/{case_id}/timeline/{event_id}", response_model=dict)
-async def update_timeline_event(case_id: str, event_id: str, event_data: TimelineEventCreate, request: Request):
-    """Update a timeline event"""
+async def update_timeline_event_put(case_id: str, event_id: str, event_data: TimelineEventCreate, request: Request):
+    """Update a timeline event (PUT - full replace)"""
     user = await get_current_user(request)
     update_data = event_data.model_dump()
     update_data["event_date"] = update_data["event_date"].isoformat()
@@ -62,119 +189,283 @@ async def update_timeline_event(case_id: str, event_id: str, event_data: Timelin
     return await db.timeline_events.find_one({"event_id": event_id}, {"_id": 0})
 
 
+@router.patch("/cases/{case_id}/timeline/{event_id}", response_model=dict)
+async def update_timeline_event(case_id: str, event_id: str, request: Request):
+    """Update a timeline event (PATCH - partial update)"""
+    user = await get_current_user(request)
+    body = await request.json()
+
+    event = await db.timeline_events.find_one({
+        "event_id": event_id,
+        "case_id": case_id,
+        "user_id": user.user_id
+    })
+    if not event:
+        raise HTTPException(status_code=404, detail="Timeline event not found")
+
+    update_data = {}
+
+    allowed_fields = {
+        "title", "description", "event_type", "event_category", "linked_documents",
+        "participants", "source_citation", "is_contested", "contested_details",
+        "related_grounds", "inconsistency_notes"
+    }
+    for field in allowed_fields:
+        if field in body:
+            update_data[field] = body[field]
+
+    if "event_date" in body:
+        normalised = _normalise_date_string(body["event_date"])
+        if not normalised:
+            raise HTTPException(status_code=400, detail="Invalid event_date")
+        update_data["event_date"] = normalised
+
+    if "significance" in body:
+        update_data["significance"] = _normalise_significance(body["significance"])
+
+    if "perspective" in body:
+        update_data["perspective"] = _normalise_perspective(body["perspective"])
+
+    if update_data:
+        await db.timeline_events.update_one(
+            {"event_id": event_id, "case_id": case_id, "user_id": user.user_id},
+            {"$set": update_data}
+        )
+
+    return await db.timeline_events.find_one(
+        {"event_id": event_id, "case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    )
+
+
 @router.delete("/cases/{case_id}/timeline/{event_id}")
 async def delete_timeline_event(case_id: str, event_id: str, request: Request):
     """Delete a timeline event"""
     user = await get_current_user(request)
-    result = await db.timeline_events.delete_one({"event_id": event_id, "case_id": case_id, "user_id": user.user_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Event not found")
-    return {"message": "Event deleted"}
 
+    result = await db.timeline_events.delete_one({
+        "event_id": event_id,
+        "case_id": case_id,
+        "user_id": user.user_id
+    })
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Timeline event not found")
+
+    return {"message": "Timeline event deleted"}
+
+
+# ============================================================================
+# AI TIMELINE GENERATION (HARDENED - JSON-SAFE)
+# ============================================================================
 
 @router.post("/cases/{case_id}/timeline/auto-generate", response_model=dict)
 async def auto_generate_timeline(case_id: str, request: Request):
-    """AI-powered timeline generation from uploaded documents"""
+    """
+    AI generates timeline events from uploaded documents.
+    Existing timeline events are preserved; duplicates are skipped heuristically.
+    """
     user = await get_current_user(request)
+
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    documents = await db.documents.find({"case_id": case_id}, {"_id": 0, "file_data": 0}).to_list(500)
+
+    documents = await db.documents.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, "file_data": 0}
+    ).to_list(500)
+
+    existing_events = await db.timeline_events.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort("event_date", 1).to_list(500)
+
     if not documents:
-        raise HTTPException(status_code=400, detail="No documents found. Please upload documents first.")
+        raise HTTPException(status_code=400, detail="No documents uploaded for this case")
+
     documents_with_text = [doc for doc in documents if doc.get("content_text")]
-    missing_docs = [doc for doc in documents if not doc.get("content_text")]
     if not documents_with_text:
         raise HTTPException(status_code=400, detail="No documents with extracted text found. Please extract text before generating a timeline.")
-    doc_context = f"CASE: {case.get('title', 'Unknown')}\nDEFENDANT: {case.get('defendant_name', 'Unknown')}\n\n"
-    doc_context += f"DOCUMENT COUNT: {len(documents)} (with text: {len(documents_with_text)}; missing text: {len(missing_docs)})\n\n"
-    doc_context += "=== DOCUMENTS WITH TEXT ===\n\n"
-    for doc in documents_with_text:
-        content = doc.get('content_text', '')[:4000]
-        doc_context += f"DOCUMENT: {doc.get('filename', 'Untitled')}\n"
-        if doc.get("document_type"):
-            doc_context += f"TYPE: {doc.get('document_type')}\n"
-        doc_context += f"CONTENT:\n{content}\n\n"
-    if missing_docs:
-        doc_context += "=== DOCUMENTS WITHOUT EXTRACTED TEXT (metadata only) ===\n\n"
-        for doc in missing_docs:
-            uploaded_at = doc.get('uploaded_at')
-            uploaded_label = uploaded_at.isoformat() if hasattr(uploaded_at, 'isoformat') else str(uploaded_at)
-            doc_context += f"DOCUMENT: {doc.get('filename', 'Untitled')} | Uploaded: {uploaded_label}\n"
-            if doc.get("document_type"):
-                doc_context += f"TYPE: {doc.get('document_type')}\n"
-            doc_context += "NOTE: No extracted text available.\n\n"
-    system_prompt = """You are an expert legal analyst specialising in criminal cases. Use Australian English spelling throughout.
-Your task is to extract a chronological timeline of events from case documents.
 
-For each event, identify:
-1. The DATE (in YYYY-MM-DD format if possible, or approximate like "2020-01" or "Early 2020")
-2. A clear TITLE for the event (brief, descriptive)
-3. A DESCRIPTION with relevant details
-4. The EVENT TYPE: one of [incident, arrest, court_hearing, evidence, witness, legal_filing, verdict, appeal, other]
+    offence_context = get_offence_context(case)
 
-Return your response as a JSON array of events, ordered chronologically. Example:
-[
-  {"date": "2019-05-15", "title": "Initial Incident", "description": "The alleged incident occurred at...", "event_type": "incident"},
-  {"date": "2019-05-16", "title": "Arrest of Defendant", "description": "Police arrested...", "event_type": "arrest"}
-]
+    doc_context = build_document_context(
+        documents,
+        per_doc_char_limit=2500,
+        total_char_budget=22000,
+        include_description=True,
+        content_heading="CONTENT"
+    )
 
-Only include events you can clearly identify from the documents. Be thorough - extract ALL dates and events mentioned. If any documents are listed without extracted text, add a timeline entry noting the document exists and that text extraction is missing (date can be approximate or the upload date if provided)."""
-    user_prompt = f"""Analyse these documents and extract a complete chronological timeline of all events. Ensure every document listed is represented in the timeline.
+    existing_summary = ""
+    for event in existing_events[:120]:
+        existing_summary += (
+            f"- {event.get('event_date', 'Unknown date')} | "
+            f"{event.get('title', 'Untitled')} | "
+            f"{event.get('event_type', 'event')}\n"
+        )
 
-{doc_context}
+    system_prompt = f"""You are extracting a chronology for a criminal appeal matter.
 
-Return ONLY a valid JSON array of timeline events. No other text."""
+Use cautious evidentiary discipline:
+- extract only events actually supported by the provided documents
+- do not invent dates
+- if a date is approximate or partial, prefer the best supported date form
+- distinguish clearly between factual events and procedural events
+- return machine-parseable JSON only
+
+{offence_context}
+"""
+
+    user_prompt = f"""Analyse the case documents below and extract a chronology.
+
+CASE:
+- Title: {case.get('title', 'Unknown')}
+- Defendant: {case.get('defendant_name', 'Unknown')}
+- Court: {case.get('court', 'N/A')}
+- State: {case.get('state', 'nsw')}
+- Offence Category: {case.get('offence_category', 'unknown')}
+- Offence Type: {case.get('offence_type', 'N/A')}
+
+DOCUMENTS:
+{doc_context["text"]}
+
+EXISTING TIMELINE EVENTS (DO NOT DUPLICATE THESE):
+{existing_summary if existing_summary else "[No existing events]"}
+
+Return ONLY valid JSON in this format:
+{{
+  "events": [
+    {{
+      "title": "Short event title",
+      "description": "Source-grounded description of what happened",
+      "event_date": "ISO date or datetime",
+      "event_type": "incident|investigation|arrest|charge|hearing|application|ruling|trial|verdict|sentence|appeal|court_hearing|evidence|witness|legal_filing|other",
+      "event_category": "factual|procedural|evidentiary|medical|general|other",
+      "linked_documents": [],
+      "significance": "low|normal|important|critical",
+      "source_citation": "Filename or source note",
+      "perspective": "neutral",
+      "is_contested": false,
+      "contested_details": "",
+      "related_grounds": [],
+      "inconsistency_notes": ""
+    }}
+  ]
+}}
+
+Rules:
+- Prefer specific, document-supported dates
+- Include major procedural events (application, ruling, sentence, etc.)
+- Include major factual events only if document-supported
+- Do not duplicate the existing timeline
+"""
+
     try:
-        response = await call_llm_with_fallback(system_prompt, user_prompt, f"timeline_{case_id}")
+        parsed = await call_llm_for_json(
+            system_prompt,
+            user_prompt,
+            session_id=f"timeline_{case_id}_{uuid.uuid4().hex[:8]}",
+            task_type="timeline_extraction",
+            validation_fn=_validate_timeline_payload,
+        )
     except Exception as e:
-        logger.error(f"All timeline generation attempts failed: {e}")
-        raise HTTPException(status_code=500, detail=f"AI timeline generation failed after retries: {str(e)}")
-    json_match = re.search(r'\[[\s\S]*\]', response)
-    if not json_match:
-        raise HTTPException(status_code=500, detail="Failed to parse timeline from AI response")
-    try:
-        events_data = json.loads(json_match.group())
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Failed to parse timeline JSON")
-    created_events = []
-    for event in events_data:
-        event_date = event.get('date', '')
-        parsed_date = None
-        if event_date:
-            for fmt in ['%Y-%m-%d', '%Y-%m', '%Y', '%d/%m/%Y', '%d-%m-%Y']:
-                try:
-                    parsed_date = datetime.strptime(event_date, fmt)
-                    break
-                except ValueError:
-                    continue
-            if not parsed_date:
-                year_match = re.search(r'(19|20)\d{2}', event_date)
-                if year_match:
-                    parsed_date = datetime.strptime(year_match.group(), '%Y')
-        if not parsed_date:
-            parsed_date = datetime.now(timezone.utc)
-        valid_types = ['incident', 'arrest', 'court_hearing', 'evidence', 'witness', 'legal_filing', 'verdict', 'appeal', 'other']
-        event_type = event.get('event_type', 'other')
-        if event_type not in valid_types:
-            event_type = 'other'
-        timeline_event = {
-            "event_id": f"evt_{uuid.uuid4().hex[:12]}",
-            "case_id": case_id, "user_id": user.user_id,
-            "title": event.get('title', 'Unknown Event')[:200],
-            "description": event.get('description', '')[:2000],
-            "event_date": parsed_date.isoformat(),
-            "event_type": event_type,
-            "auto_generated": True,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
-        await db.timeline_events.insert_one(timeline_event)
-        if '_id' in timeline_event:
-            del timeline_event['_id']
-        created_events.append(timeline_event)
-    created_events.sort(key=lambda x: x.get('event_date', ''))
-    return {"message": f"Successfully generated {len(created_events)} timeline events", "events_created": len(created_events), "events": created_events}
+        logger.error(f"Timeline auto-generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"AI timeline generation failed: {str(e)}")
 
+    generated_events = parsed.get("events", [])
+    created_events = []
+    skipped_duplicates = 0
+
+    existing_fingerprints = set()
+    for event in existing_events:
+        fingerprint = (
+            _safe_str(event.get("title")).lower(),
+            _safe_str(event.get("event_date"))[:10],
+            _safe_str(event.get("event_type")).lower(),
+        )
+        existing_fingerprints.add(fingerprint)
+
+    for raw_event in generated_events:
+        try:
+            event_date_iso = _normalise_date_string(raw_event.get("event_date"))
+            if not event_date_iso:
+                continue
+
+            fingerprint = (
+                _safe_str(raw_event.get("title")).lower(),
+                event_date_iso[:10],
+                _safe_str(raw_event.get("event_type")).lower(),
+            )
+
+            if fingerprint in existing_fingerprints:
+                skipped_duplicates += 1
+                continue
+
+            dt = datetime.fromisoformat(event_date_iso.replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+
+            event = TimelineEvent(
+                case_id=case_id,
+                user_id=user.user_id,
+                title=_safe_str(raw_event.get("title"), "Untitled event"),
+                description=_safe_str(raw_event.get("description")),
+                event_date=dt,
+                event_type=_safe_str(raw_event.get("event_type"), "event"),
+                event_category=_safe_str(raw_event.get("event_category"), "general"),
+                linked_documents=raw_event.get("linked_documents", []) or [],
+                participants=raw_event.get("participants", []) or [],
+                significance=_normalise_significance(raw_event.get("significance", "normal")),
+                source_citation=_safe_str(raw_event.get("source_citation")),
+                perspective=_normalise_perspective(raw_event.get("perspective", "neutral")),
+                is_contested=bool(raw_event.get("is_contested", False)),
+                contested_details=_safe_str(raw_event.get("contested_details")),
+                related_grounds=raw_event.get("related_grounds", []) or [],
+                inconsistency_notes=_safe_str(raw_event.get("inconsistency_notes")),
+                source_mode="ai_generated",
+                verification_status="unverified",
+            )
+
+            event_dict = _timeline_event_dump(event)
+            await db.timeline_events.insert_one(event_dict)
+
+            created = await db.timeline_events.find_one(
+                {"event_id": event.event_id, "case_id": case_id, "user_id": user.user_id},
+                {"_id": 0}
+            )
+            created_events.append(created)
+            existing_fingerprints.add(fingerprint)
+
+        except Exception as e:
+            logger.warning(f"Skipping malformed generated timeline event: {e}")
+            continue
+
+    await db.cases.update_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+
+    return {
+        "message": (
+            f"Successfully generated {len(created_events)} timeline events"
+            + (f". Skipped {skipped_duplicates} duplicates." if skipped_duplicates else "")
+        ),
+        "created_count": len(created_events),
+        "events_created": len(created_events),
+        "skipped_duplicates": skipped_duplicates,
+        "events": created_events,
+        "assessment_note": (
+            "These timeline events were AI-generated from uploaded case documents and should be reviewed "
+            "against the source material before being relied on."
+        )
+    }
+
+
+# ============================================================================
+# TIMELINE ANALYSIS (PRESERVED FROM EXISTING CODEBASE)
+# ============================================================================
 
 @router.post("/cases/{case_id}/timeline/analyze", response_model=dict)
 async def analyze_timeline(case_id: str, request: Request):
@@ -183,10 +474,10 @@ async def analyze_timeline(case_id: str, request: Request):
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    events = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
+    events = await db.timeline_events.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
     if len(events) < 2:
         raise HTTPException(status_code=400, detail="Need at least 2 timeline events for analysis")
-    grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
+    grounds = await db.grounds_of_merit.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).to_list(100)
     system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law. Use Australian English spelling throughout.
 Analyse this timeline of events and provide detailed insights for an appeal case.
 
@@ -241,6 +532,10 @@ Provide a comprehensive analysis identifying gaps, inconsistencies, and appeal-r
     return {"analysis": analysis, "event_count": len(events), "analyzed_at": datetime.now(timezone.utc).isoformat()}
 
 
+# ============================================================================
+# TIMELINE PDF EXPORT (PRESERVED FROM EXISTING CODEBASE)
+# ============================================================================
+
 @router.get("/cases/{case_id}/timeline/export-pdf")
 async def export_timeline_pdf(case_id: str, request: Request):
     """Export timeline as a formatted PDF"""
@@ -248,10 +543,10 @@ async def export_timeline_pdf(case_id: str, request: Request):
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    events = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
-    documents = await db.documents.find({"case_id": case_id}, {"_id": 0, "document_id": 1, "filename": 1}).to_list(500)
+    events = await db.timeline_events.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
+    documents = await db.documents.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "document_id": 1, "filename": 1}).to_list(500)
     doc_map = {d["document_id"]: d["filename"] for d in documents}
-    grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0, "ground_id": 1, "title": 1}).to_list(100)
+    grounds = await db.grounds_of_merit.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "ground_id": 1, "title": 1}).to_list(100)
     ground_map = {g["ground_id"]: g["title"] for g in grounds}
 
     from reportlab.lib import colors

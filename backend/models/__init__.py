@@ -1,15 +1,170 @@
 # DO NOT UNDO — All models in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Pydantic Models
+HARDENED / ADDITIVE PATCH
 """
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+from typing import List, Optional, Literal
 from datetime import datetime, timezone
 import uuid
 import secrets
 
 
-# ============ USER MODELS ============
+# ============================================================================
+# SHARED TYPES / ENUM-LIKE LITERALS
+# ============================================================================
+
+StateType = Literal["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act", "federal"]
+
+OffenceCategoryType = Literal[
+    "homicide",
+    "assault",
+    "sexual_offences",
+    "robbery_theft",
+    "drug_offences",
+    "fraud_dishonesty",
+    "firearms_weapons",
+    "domestic_violence",
+    "public_order",
+    "terrorism",
+    "driving_offences",
+]
+
+GroundType = Literal[
+    "procedural_error",
+    "fresh_evidence",
+    "miscarriage_of_justice",
+    "sentencing_error",
+    "judicial_error",
+    "ineffective_counsel",
+    "prosecution_misconduct",
+    "jury_irregularity",
+    "constitutional_violation",
+    "other",
+]
+
+StrengthType = Literal["strong", "moderate", "weak"]
+
+GroundStatusType = Literal[
+    "identified",
+    "investigated",
+    "confirmed",
+    "needs_review",
+    "dismissed",
+]
+
+PriorityType = Literal["low", "medium", "high", "urgent"]
+
+ChecklistPhaseType = Literal[
+    "preparation",
+    "grounds_identification",
+    "investigation",
+    "documentation",
+    "lodgement",
+    "hearing",
+]
+
+VerificationStatusType = Literal[
+    "unverified",
+    "draft",
+    "reviewed",
+    "verified",
+]
+
+SourceModeType = Literal[
+    "default",
+    "ai_generated",
+    "ai_detected",
+    "manual",
+    "imported",
+    "user_set",
+    "verified",
+]
+
+TimelineSignificanceType = Literal["low", "normal", "important", "critical"]
+
+TimelinePerspectiveType = Literal["neutral", "defence", "prosecution", "court"]
+
+CaseStatusType = Literal["active", "archived", "closed"]
+
+SharePermissionType = Literal["view_comment"]
+
+ShareStatusType = Literal["pending", "accepted", "revoked"]
+
+NotificationType = Literal["share_invite", "new_message", "new_note", "case_update"]
+
+ActivityActionType = Literal[
+    "shared_case",
+    "added_note",
+    "sent_message",
+    "viewed_case",
+    "added_document",
+]
+
+PaymentStatusType = Literal["pending", "completed", "failed", "refunded"]
+
+EvidenceRoleType = Literal["supports", "undermines", "contextual"]
+
+
+# ============================================================================
+# SHARED SUBMODELS
+# ============================================================================
+
+class EvidenceItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    document_id: Optional[str] = None
+    filename: Optional[str] = None
+    quote: str = ""
+    page_reference: Optional[str] = None
+    chunk_reference: Optional[str] = None
+    confidence: StrengthType = "moderate"
+    role: EvidenceRoleType = "supports"
+    source_mode: SourceModeType = "ai_generated"
+    verification_status: VerificationStatusType = "unverified"
+
+
+class LawSection(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    act: str
+    section: str
+    jurisdiction: Optional[StateType] = None
+    title: Optional[str] = None
+    verification_status: VerificationStatusType = "unverified"
+
+
+class SimilarCase(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    case_name: str
+    citation: Optional[str] = None
+    jurisdiction: Optional[StateType] = None
+    relevance_note: Optional[str] = None
+    verification_status: VerificationStatusType = "unverified"
+
+
+class LegitimacyScores(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    legal_score: int = 0
+    evidence_score: int = 0
+    viability_score: int = 0
+    total_score: int = 0
+    rating: StrengthType = "moderate"
+    confidence_note: str = ""
+
+
+class ReportMetadata(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    generated_by_model: Optional[str] = None
+    fallback_used: bool = False
+    documents_analyzed: int = 0
+    timeline_events_analyzed: int = 0
+    grounds_considered: int = 0
+    verification_status: VerificationStatusType = "draft"
+    confidence_note: str = ""
+
+
+# ============================================================================
+# USER MODELS
+# ============================================================================
 
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -20,7 +175,9 @@ class User(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-# ============ CASE MODELS ============
+# ============================================================================
+# CASE MODELS
+# ============================================================================
 
 class Case(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -31,12 +188,18 @@ class Case(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: str = "nsw"
-    offence_category: str = "homicide"
+    state: StateType = "nsw"
+    offence_category: OffenceCategoryType = "homicide"
     offence_type: Optional[str] = None
     sentence: Optional[str] = None
-    status: str = "active"
+    status: CaseStatusType = "active"
     summary: Optional[str] = None
+
+    # ADDITIVE provenance / reliability fields
+    classification_source: SourceModeType = "default"
+    requires_metadata_review: bool = False
+    verification_status: VerificationStatusType = "unverified"
+
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -48,14 +211,16 @@ class CaseCreate(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: str = "nsw"
-    offence_category: str = "homicide"
+    state: StateType = "nsw"
+    offence_category: OffenceCategoryType = "homicide"
     offence_type: Optional[str] = None
     sentence: Optional[str] = None
     summary: Optional[str] = None
 
 
-# ============ DOCUMENT MODELS ============
+# ============================================================================
+# DOCUMENT MODELS
+# ============================================================================
 
 class Document(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -64,15 +229,24 @@ class Document(BaseModel):
     user_id: str
     filename: str
     file_type: str
-    category: str  # brief, case_note, public_advertising, evidence, court_document, other
+    category: str
     description: Optional[str] = None
-    content_text: Optional[str] = None  # Extracted text for analysis
-    file_data: Optional[str] = None  # Base64 encoded file data
+    content_text: Optional[str] = None
+    file_data: Optional[str] = None
     event_date: Optional[datetime] = None
+
+    # ADDITIVE provenance fields
+    extraction_method: Optional[str] = None
+    extraction_confidence: Optional[StrengthType] = None
+    source_mode: SourceModeType = "manual"
+    verification_status: VerificationStatusType = "unverified"
+
     uploaded_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-# ============ TIMELINE MODELS ============
+# ============================================================================
+# TIMELINE MODELS
+# ============================================================================
 
 class TimelineEvent(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -84,15 +258,20 @@ class TimelineEvent(BaseModel):
     event_date: datetime
     event_type: str
     event_category: str = "general"
-    linked_documents: List[str] = []
-    participants: List[dict] = []
-    significance: str = "normal"
+    linked_documents: List[str] = Field(default_factory=list)
+    participants: List[dict] = Field(default_factory=list)
+    significance: TimelineSignificanceType = "normal"
     source_citation: str = ""
-    perspective: str = "neutral"
+    perspective: TimelinePerspectiveType = "neutral"
     is_contested: bool = False
     contested_details: str = ""
-    related_grounds: List[str] = []
+    related_grounds: List[str] = Field(default_factory=list)
     inconsistency_notes: str = ""
+
+    # ADDITIVE provenance fields
+    source_mode: SourceModeType = "ai_generated"
+    verification_status: VerificationStatusType = "unverified"
+
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -102,18 +281,20 @@ class TimelineEventCreate(BaseModel):
     event_date: datetime
     event_type: str
     event_category: str = "general"
-    linked_documents: List[str] = []
-    participants: List[dict] = []
-    significance: str = "normal"
+    linked_documents: List[str] = Field(default_factory=list)
+    participants: List[dict] = Field(default_factory=list)
+    significance: TimelineSignificanceType = "normal"
     source_citation: str = ""
-    perspective: str = "neutral"
+    perspective: TimelinePerspectiveType = "neutral"
     is_contested: bool = False
     contested_details: str = ""
-    related_grounds: List[str] = []
+    related_grounds: List[str] = Field(default_factory=list)
     inconsistency_notes: str = ""
 
 
-# ============ GROUNDS OF MERIT MODELS ============
+# ============================================================================
+# GROUNDS OF MERIT MODELS
+# ============================================================================
 
 class GroundOfMerit(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -121,37 +302,51 @@ class GroundOfMerit(BaseModel):
     case_id: str
     user_id: str
     title: str
-    ground_type: str
+    ground_type: GroundType
     description: str
-    strength: str = "moderate"
-    status: str = "identified"
-    supporting_evidence: List[str] = []
-    law_sections: List[dict] = []
-    similar_cases: List[dict] = []
+    strength: StrengthType = "moderate"
+    status: GroundStatusType = "identified"
+
+    # HARDENED structured fields
+    supporting_evidence: List[EvidenceItem] = Field(default_factory=list)
+    law_sections: List[LawSection] = Field(default_factory=list)
+    similar_cases: List[SimilarCase] = Field(default_factory=list)
+
     analysis: Optional[str] = None
     deep_analysis: Optional[dict] = None
+
+    # ADDITIVE reliability / legitimacy fields
+    legitimacy_scores: Optional[LegitimacyScores] = None
+    source_mode: SourceModeType = "ai_generated"
+    requires_human_review: bool = True
+    verified_by: Optional[str] = None
+    verified_at: Optional[datetime] = None
+    verification_status: VerificationStatusType = "unverified"
+
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class GroundOfMeritCreate(BaseModel):
     title: str
-    ground_type: str = "other"
+    ground_type: GroundType = "other"
     description: str
-    strength: str = "moderate"
-    supporting_evidence: List[str] = []
+    strength: StrengthType = "moderate"
+    supporting_evidence: List[EvidenceItem] = Field(default_factory=list)
 
 
 class GroundOfMeritUpdate(BaseModel):
     title: Optional[str] = None
-    ground_type: Optional[str] = None
+    ground_type: Optional[GroundType] = None
     description: Optional[str] = None
-    strength: Optional[str] = None
-    status: Optional[str] = None
-    supporting_evidence: Optional[List[str]] = None
+    strength: Optional[StrengthType] = None
+    status: Optional[GroundStatusType] = None
+    supporting_evidence: Optional[List[EvidenceItem]] = None
 
 
-# ============ REPORT MODELS ============
+# ============================================================================
+# REPORT MODELS
+# ============================================================================
 
 class ReportRequest(BaseModel):
     report_type: str = "quick_summary"
@@ -166,11 +361,19 @@ class Report(BaseModel):
     report_type: str
     title: str
     content: dict
-    grounds_of_merit: List[dict] = []
+    grounds_of_merit: List[dict] = Field(default_factory=list)
+
+    # ADDITIVE report envelope
+    metadata: Optional[ReportMetadata] = None
+    source_mode: SourceModeType = "ai_generated"
+    verification_status: VerificationStatusType = "draft"
+
     generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-# ============ NOTE MODELS ============
+# ============================================================================
+# NOTE MODELS
+# ============================================================================
 
 class Note(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -185,8 +388,8 @@ class Note(BaseModel):
     is_pinned: bool = False
     document_id: Optional[str] = None
     report_id: Optional[str] = None
-    mentions: List[str] = []
-    comments: List[dict] = []
+    mentions: List[str] = Field(default_factory=list)
+    comments: List[dict] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -198,7 +401,7 @@ class NoteCreate(BaseModel):
     is_pinned: bool = False
     document_id: Optional[str] = None
     report_id: Optional[str] = None
-    mentions: List[str] = []
+    mentions: List[str] = Field(default_factory=list)
 
 
 class NoteUpdate(BaseModel):
@@ -212,8 +415,9 @@ class NoteCommentCreate(BaseModel):
     content: str
 
 
-
-# ============ SHARING MODELS ============
+# ============================================================================
+# SHARING MODELS
+# ============================================================================
 
 class CaseShare(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -222,8 +426,8 @@ class CaseShare(BaseModel):
     owner_id: str
     shared_with_user_id: Optional[str] = None
     shared_with_email: str
-    permission: str = "view_comment"  # view_comment = view + add notes/comments
-    status: str = "pending"  # pending, accepted, revoked
+    permission: SharePermissionType = "view_comment"
+    status: ShareStatusType = "pending"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -233,7 +437,7 @@ class ShareLink(BaseModel):
     case_id: str
     owner_id: str
     token: str = Field(default_factory=lambda: secrets.token_urlsafe(32))
-    permission: str = "view_comment"
+    permission: SharePermissionType = "view_comment"
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: Optional[datetime] = None
@@ -254,7 +458,7 @@ class Notification(BaseModel):
     model_config = ConfigDict(extra="ignore")
     notification_id: str = Field(default_factory=lambda: f"notif_{uuid.uuid4().hex[:12]}")
     user_id: str
-    type: str  # share_invite, new_message, new_note, case_update
+    type: NotificationType
     title: str
     message: str
     case_id: Optional[str] = None
@@ -269,13 +473,14 @@ class Activity(BaseModel):
     case_id: str
     user_id: str
     user_name: str
-    action: str  # shared_case, added_note, sent_message, viewed_case, added_document
+    action: ActivityActionType
     detail: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-
-# ============ DEADLINE MODELS ============
+# ============================================================================
+# DEADLINE MODELS
+# ============================================================================
 
 class Deadline(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -286,10 +491,17 @@ class Deadline(BaseModel):
     description: str = ""
     deadline_type: str
     due_date: datetime
-    reminder_days: List[int] = [7, 3, 1]
+    reminder_days: List[int] = Field(default_factory=lambda: [7, 3, 1])
     is_completed: bool = False
     completed_at: Optional[datetime] = None
-    priority: str = "high"
+    priority: PriorityType = "high"
+
+    # ADDITIVE localisation / provenance
+    jurisdiction: Optional[StateType] = None
+    is_jurisdiction_default: bool = True
+    source_mode: SourceModeType = "manual"
+    verification_status: VerificationStatusType = "unverified"
+
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -298,24 +510,32 @@ class DeadlineCreate(BaseModel):
     description: str = ""
     deadline_type: str = "other"
     due_date: datetime
-    reminder_days: List[int] = [7, 3, 1]
-    priority: str = "high"
+    reminder_days: List[int] = Field(default_factory=lambda: [7, 3, 1])
+    priority: PriorityType = "high"
 
 
-# ============ CHECKLIST MODELS ============
+# ============================================================================
+# CHECKLIST MODELS
+# ============================================================================
 
 class ChecklistItem(BaseModel):
     model_config = ConfigDict(extra="ignore")
     item_id: str = Field(default_factory=lambda: f"chk_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
-    phase: str
+    phase: ChecklistPhaseType
     title: str
     description: str = ""
     is_completed: bool = False
     completed_at: Optional[datetime] = None
     order: int = 0
     is_custom: bool = False
+
+    # ADDITIVE localisation / provenance
+    jurisdiction: Optional[StateType] = None
+    is_jurisdiction_default: bool = True
+    source_mode: SourceModeType = "default"
+
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -346,7 +566,9 @@ DEFAULT_CHECKLIST = [
 ]
 
 
-# ============ PAYMENT MODELS ============
+# ============================================================================
+# PAYMENT MODELS
+# ============================================================================
 
 class Payment(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -356,7 +578,7 @@ class Payment(BaseModel):
     feature_type: str
     amount: float
     currency: str = "AUD"
-    status: str = "pending"
+    status: PaymentStatusType = "pending"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
 
@@ -384,10 +606,14 @@ def canonical_feature_type(feature_type: str | None) -> str | None:
 
 def feature_type_variants(feature_type: str | None) -> list[str]:
     canonical = canonical_feature_type(feature_type)
-    return sorted({key for key, value in FEATURE_TYPE_ALIASES.items() if value == canonical} | ({canonical} if canonical else set()))
+    return sorted({
+        key for key, value in FEATURE_TYPE_ALIASES.items() if value == canonical
+    } | ({canonical} if canonical else set()))
 
 
-# ============ DOCUMENT SEARCH MODELS ============
+# ============================================================================
+# DOCUMENT SEARCH MODELS
+# ============================================================================
 
 class DocumentSearchRequest(BaseModel):
     query: str
@@ -398,5 +624,47 @@ class SearchMatch(BaseModel):
     document_id: str
     filename: str
     category: str
-    matches: List[dict]
-    match_count: int
+    matches: List[dict] = Field(default_factory=list)
+
+
+# ============================================================================
+# OPTIONAL NORMALISERS (ADDITIVE / SAFE)
+# ============================================================================
+
+class _NormaliserMixin(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    @field_validator("state", mode="before")
+    @classmethod
+    def _normalise_state(cls, v):
+        if v is None:
+            return v
+        return str(v).strip().lower()
+
+    @field_validator("offence_category", mode="before")
+    @classmethod
+    def _normalise_offence_category(cls, v):
+        if v is None:
+            return v
+        return str(v).strip().lower()
+
+    @field_validator("ground_type", mode="before")
+    @classmethod
+    def _normalise_ground_type(cls, v):
+        if v is None:
+            return v
+        return str(v).strip().lower()
+
+    @field_validator("strength", mode="before")
+    @classmethod
+    def _normalise_strength(cls, v):
+        if v is None:
+            return v
+        return str(v).strip().lower()
+
+    @field_validator("status", mode="before")
+    @classmethod
+    def _normalise_status(cls, v):
+        if v is None:
+            return v
+        return str(v).strip().lower()
