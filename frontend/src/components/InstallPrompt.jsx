@@ -4,6 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from 'react';
+import { isIOSDevice } from '../utils/isIOS';
 import { Button } from '../components/ui/button';
 import { Download, X } from 'lucide-react';
 
@@ -29,10 +30,10 @@ const InstallPrompt = () => {
     }
 
     // Check for iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    setIsIOS(isIOSDevice);
+    const isIOSCheck = isIOSDevice();
+    setIsIOS(isIOSCheck);
 
-    if (isIOSDevice) {
+    if (isIOSCheck) {
       // Show iOS instructions after a delay
       setTimeout(() => setShowPrompt(true), 3000);
     } else {

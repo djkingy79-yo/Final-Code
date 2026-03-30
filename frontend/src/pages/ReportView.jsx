@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { isIOSDevice } from "../utils/isIOS";
 import {
   Scale,
   ArrowLeft,
@@ -621,7 +622,7 @@ const ReportView = () => {
   };
 
   const iosShareOrDownload = async (blob, filename, mimeType) => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isIOS = isIOSDevice();
     if (isIOS && navigator.share) {
       try {
         const file = new File([blob], filename, { type: mimeType });
@@ -697,7 +698,7 @@ const ReportView = () => {
     .cover-page-card-value { font-size: 14px; font-weight: 700; color: #0f172a; }
     .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
     .page-break { page-break-after: always; break-after: page; }
-    .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; }
+    .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 28px; font-weight: 700; color: #fff; text-align: right; }
@@ -705,7 +706,7 @@ const ReportView = () => {
     .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
     .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
     .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
-    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-header .case-info-grid .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
     .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
     .toc { padding: 14px 32px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }

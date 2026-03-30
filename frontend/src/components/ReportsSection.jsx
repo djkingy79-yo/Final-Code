@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { isIOSDevice } from "../utils/isIOS";
 import {
   FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
 } from "lucide-react";
@@ -131,7 +132,7 @@ const ReportsSection = ({
   const handleExportPDF = async (reportId) => {
     try {
       toast.info("Generating PDF...");
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isIOS = isIOSDevice();
       if (isIOS) {
         const token = localStorage.getItem("session_token");
         const baseUrl = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
@@ -169,7 +170,7 @@ const ReportsSection = ({
   const handleExportDOCX = async (reportId) => {
     try {
       toast.info("Generating Word document...");
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isIOS = isIOSDevice();
       const response = await axios.get(
         `${API}/cases/${caseId}/reports/${reportId}/export-docx`,
         { responseType: 'blob', timeout: 60000 }

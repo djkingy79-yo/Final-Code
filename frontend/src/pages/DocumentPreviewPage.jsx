@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { isIOSDevice } from "../utils/isIOS";
 import { ArrowLeft, Printer } from "lucide-react";
 import { Button } from "../components/ui/button";
 
@@ -13,7 +14,7 @@ export default function DocumentPreviewPage() {
 
   const payload = useMemo(() => {
     try {
-      const raw = sessionStorage.getItem("document-preview-payload") || localStorage.getItem("document-preview-payload");
+      const raw = localStorage.getItem("document-preview-payload");
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (error) {
@@ -21,7 +22,7 @@ export default function DocumentPreviewPage() {
     }
   }, []);
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isIOS = isIOSDevice();
   const returnTo = payload?.returnTo || -1;
 
   const handleBack = () => {

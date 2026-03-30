@@ -4,6 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
+import { isIOSDevice } from "../utils/isIOS";
 import { Scale, ArrowLeft, Download, FileText, Search, ChevronDown, ChevronRight, Gavel, Shield, Users, Lock, AlertTriangle, Clock } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -119,7 +120,7 @@ const FormTemplates = () => {
     const url = URL.createObjectURL(blob);
     
     // iOS Safari doesn't support blob downloads — open in new tab instead
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isIOS = isIOSDevice();
     if (isIOS) {
       const win = window.open(url, '_blank');
       if (!win) {

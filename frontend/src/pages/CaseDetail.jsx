@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { isIOSDevice } from "../utils/isIOS";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
@@ -407,7 +408,7 @@ const CaseDetail = ({ user }) => {
 
   const handleExportTimelinePDF = async () => {
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isIOS = isIOSDevice();
       if (isIOS) {
         const a = document.createElement('a');
         a.href = `${API}/cases/${caseId}/timeline/export-pdf`;

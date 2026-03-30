@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { isIOSDevice } from "../utils/isIOS";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -310,7 +311,7 @@ export default function BarristerView() {
   };
 
   const iosShareOrDownload = async (blob, filename, mimeType) => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isIOS = isIOSDevice();
     if (isIOS && navigator.share) {
       try {
         const file = new File([blob], filename, { type: mimeType });
