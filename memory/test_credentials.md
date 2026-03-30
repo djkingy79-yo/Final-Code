@@ -5,6 +5,7 @@
 - Password: Grubbygrub88
 
 ## Test Case
-- Case ID: case_b24f94577da6
-- Case Title: R v Perry
-- Reports: 4 (quick_summary, full_detailed, extensive_log, barrister_view)
+- Case ID: case_87ef925be713
+- Reports: 4 (quick_summary x2, full_detailed, extensive_log)
+- Grounds: 4
+- Timeline Events: 9

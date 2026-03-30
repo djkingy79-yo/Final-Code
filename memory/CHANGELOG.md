@@ -1,5 +1,24 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Backend Schema Hardening (Forensic Barrister Additive Patches)
+
+### Summary
+Completed 7/7 additive backend patches from the forensic barrister review. All patches harden data models, LLM services, and routers with strict provenance tracking, JSON-safe AI calls, and backward-compatible structured data models.
+
+### Changes Applied
+1. **models/__init__.py**: Typed submodels (EvidenceItem, LawSection, SimilarCase, LegitimacyScores, ReportMetadata) with ConfigDict(extra='ignore'). Fixed _NormaliserMixin with check_fields=False.
+2. **llm_service.py**: call_llm_for_json (strict JSON parsing + retry), call_llm_for_report, call_llm_structured (provider/model fallback with metadata return).
+3. **grounds.py**: Compatibility wrappers (_wrap_evidence_items) bridging legacy List[str] to EvidenceItem objects. Legitimacy scores returned per-ground.
+4. **deadlines.py**: Ownership hardening (user_id checks), "Case Readiness" framing with assessment_note and assessment_type fields.
+5. **compare.py**: Platform pattern framing, disclaimers and assessment_note on all endpoints. Removed pseudo-success language.
+6. **timeline.py**: JSON-safe extraction via call_llm_for_json, provenance fields (source_mode, verification_status) on events.
+7. **server.py**: Metadata detection via call_llm_for_json, report generation via call_llm_structured, ReportMetadata provenance on all generated reports (models_used, fallback_used, documents_analyzed, verification_status).
+
+### Testing
+- Backend: 13/13 tests passed (100%)
+- Frontend: Homepage, login, dashboard all verified working
+- Backward compatibility: All existing frontend data contracts maintained
+
 ## 21 March 2026 - Report Content Quality Overhaul (P0 Final Fix)
 
 ### Root Cause

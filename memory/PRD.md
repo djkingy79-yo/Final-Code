@@ -65,6 +65,15 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - PDF page breaks: cover page, coloured header, disclaimer all prevent page-splitting
 - File upload: 10MB max size validation, 120s timeout
 
+### Session 4 — 30 Mar 2026 (server.py Additive Patch Completion)
+- Completed 7th and final forensic barrister additive patch to `server.py`
+- Metadata detection now uses `call_llm_for_json` (with validation callback)
+- Report generation uses `call_llm_structured` with enhanced timeouts (420s for detailed, 300s for standard)
+- All generated reports now include `ReportMetadata` (models_used, fallback_used, documents_analyzed, verification_status)
+- DB records include `source_mode: "ai_generated"` and `verification_status: "draft"` provenance fields
+- Fixed `_NormaliserMixin` Pydantic error (check_fields=False for mixin validators)
+- Full regression test: 13/13 backend, 100% frontend — all passing
+
 ### Previous Sessions
 - Multi-pass AI report generation (4 tiers) with GPT-4o
 - Document export (PDF/DOCX) with iOS-safe localStorage-based preview
