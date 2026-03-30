@@ -1,5 +1,28 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Barrister Acceptance Pack & Pipeline Progress Widget
+
+### Summary
+Completed and tested two P0 features: Barrister Acceptance Pack PDF export and Pipeline Progress widget.
+
+### Barrister Acceptance Pack
+- Backend: `GET /api/cases/{case_id}/barrister-pack/generate` returns downloadable PDF
+- PDF contains: cover page, ranked grounds of merit, procedural timeline, evidence annexures, verification summary
+- Frontend: Teal "Acceptance Pack" button added to BarristerView header toolbar
+- iOS-compatible download via `iosShareOrDownload` utility
+
+### Pipeline Progress Widget
+- `PipelineProgress.jsx` verified rendering in CaseDetail Progress tab
+- Displays 4 stages: Extract, Classify, Verify, Project
+- Per-stage Run/Re-run buttons + "Run Full Pipeline" batch button
+- Fetches live status from `/api/cases/{case_id}/pipeline/status`
+
+### Testing
+- Backend: 12/12 tests passed (100%) — iteration_130.json
+- Frontend: All UI elements verified via Playwright
+
+---
+
 ## 30 March 2026 — 5-Stage Pipeline Implementation
 
 ### Summary
