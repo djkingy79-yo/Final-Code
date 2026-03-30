@@ -26,6 +26,9 @@ LLMTaskType = Literal[
     "timeline_extraction",
     "report_generation",
     "report_cleanup",
+    "document_extraction",
+    "issue_classification",
+    "issue_verification",
 ]
 
 
@@ -75,6 +78,24 @@ TASK_CONFIGS: dict[str, dict] = {
         "timeout_seconds": 90,
         "require_json": False,
         "temperature": 0.1,
+    },
+    "document_extraction": {
+        "max_tokens": 12000,
+        "timeout_seconds": 120,
+        "require_json": True,
+        "temperature": 0.1,
+    },
+    "issue_classification": {
+        "max_tokens": 12000,
+        "timeout_seconds": 120,
+        "require_json": True,
+        "temperature": 0.15,
+    },
+    "issue_verification": {
+        "max_tokens": 12000,
+        "timeout_seconds": 150,
+        "require_json": True,
+        "temperature": 0.15,
     },
 }
 

@@ -628,6 +628,69 @@ class SearchMatch(BaseModel):
 
 
 # ============================================================================
+# PIPELINE MODELS — Extract → Classify → Verify → Project → Draft
+# ============================================================================
+
+PipelineStageType = Literal["extract", "classify", "verify", "project", "draft"]
+
+DocumentCategoryType = Literal[
+    "court_document", "sentencing_remarks", "judgment", "transcript",
+    "submissions", "affidavit", "expert_report", "correspondence",
+    "legislation", "case_law", "other",
+]
+
+ClassificationConfidenceType = Literal["strong", "moderate", "weak"]
+
+VerificationRoleType = Literal["supports", "undermines", "missing"]
+
+
+class ExtractedFact(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    fact_id: str = Field(default_factory=lambda: f"fact_{uuid.uuid4().hex[:8]}")
+    type: str = "general"
+    text: str
+    quote: Optional[str] = None
+    page_reference: Optional[str] = None
+    confidence: ClassificationConfidenceType = "moderate"
+
+
+class ExtractedEvent(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    event_id: str = Field(default_factory=lambda: f"evt_{uuid.uuid4().hex[:8]}")
+    title: str
+    event_date: Optional[str] = None
+    event_type: Optional[str] = None
+    event_category: Optional[str] = "procedural"
+    quote: Optional[str] = None
+    page_reference: Optional[str] = None
+
+
+class ExtractedFinding(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    finding_id: str = Field(default_factory=lambda: f"find_{uuid.uuid4().hex[:8]}")
+    type: str = "judicial_finding"
+    text: str
+    quote: Optional[str] = None
+    page_reference: Optional[str] = None
+
+
+class SupportingItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    document_id: Optional[str] = None
+    filename: Optional[str] = None
+    quote: str = ""
+    page_reference: Optional[str] = None
+    role: VerificationRoleType = "supports"
+    confidence: ClassificationConfidenceType = "moderate"
+
+
+class MissingItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    description: str
+
+
+
+# ============================================================================
 # OPTIONAL NORMALISERS (ADDITIVE / SAFE)
 # ============================================================================
 

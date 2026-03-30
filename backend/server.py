@@ -55,6 +55,7 @@ from routers.grounds import router as grounds_router
 from routers.payments import router as payments_router
 from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
+from routers.pipeline import router as pipeline_router
 
 # ── MongoDB client reference (for shutdown) ──
 MONGO_URL = os.environ.get("MONGO_URL")
@@ -3800,6 +3801,7 @@ app.include_router(grounds_router)
 app.include_router(payments_router)
 app.include_router(resources_router)
 app.include_router(analysis_router)
+app.include_router(pipeline_router)
 
 # ── CORS Middleware ──
 app.add_middleware(
@@ -3814,6 +3816,17 @@ app.add_middleware(
 @app.on_event("startup")
 async def cleanup_orphaned_reports():
     """Auto-fail or recover reports stuck in 'generating' from server restarts."""
+    # Create indexes for pipeline collections
+    await db.document_extracts.create_index([("case_id", 1), ("user_id", 1)])
+    await db.document_extracts.create_index([("extract_id", 1)], unique=True)
+    await db.document_extracts.create_index([("document_id", 1), ("case_id", 1)])
+    await db.case_extracts.create_index([("case_id", 1), ("user_id", 1)])
+    await db.case_extracts.create_index([("case_extract_id", 1)], unique=True)
+    await db.issue_classifications.create_index([("case_id", 1), ("user_id", 1)])
+    await db.issue_classifications.create_index([("issue_id", 1)], unique=True)
+    await db.issue_verifications.create_index([("issue_id", 1), ("case_id", 1)])
+    await db.issue_verifications.create_index([("verification_id", 1)], unique=True)
+
     five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
     async for report in db.reports.find({"status": "generating", "generated_at": {"$lt": five_min_ago}}):
         partial = report.get("content", {}).get("analysis", "") or report.get("content", {}).get("partial_analysis", "")
