@@ -225,6 +225,11 @@ const DeadlineTracker = ({ caseId }) => {
         </div>
       </CardHeader>
       <CardContent>
+        {/* Explanatory note */}
+        <div className="text-xs text-slate-400 mb-3 leading-relaxed" data-testid="deadline-explanatory-note">
+          Deadlines may include user-managed procedural reminders and should be checked against the applicable court rules and forms.
+        </div>
+
         <Tabs value={viewMode} onValueChange={setViewMode} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="list" className="flex items-center gap-2">
@@ -298,6 +303,16 @@ const DeadlineTracker = ({ caseId }) => {
                             </div>
 
                             <div className="flex flex-wrap gap-2 mt-2" data-testid={`deadline-calendar-actions-${deadline.deadline_id}`}>
+                              {/* Per-deadline metadata */}
+                              {(deadline.jurisdiction || deadline.verification_status || deadline.source_mode) && (
+                                <div className="text-xs text-slate-400 w-full mb-1" data-testid={`deadline-metadata-${deadline.deadline_id}`}>
+                                  {deadline.jurisdiction ? `Jurisdiction: ${deadline.jurisdiction.toUpperCase()}` : ""}
+                                  {deadline.jurisdiction && deadline.verification_status ? " \u2022 " : ""}
+                                  {deadline.verification_status ? `Status: ${deadline.verification_status}` : ""}
+                                  {(deadline.jurisdiction || deadline.verification_status) && deadline.source_mode ? " \u2022 " : ""}
+                                  {deadline.source_mode ? `Source: ${deadline.source_mode}` : ""}
+                                </div>
+                              )}
                               <a
                                 href={getGoogleCalendarUrl(deadline)}
                                 target="_blank"

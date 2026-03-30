@@ -30,6 +30,7 @@ import {
 } from "./ui/collapsible";
 import { API } from "../App";
 import PaymentModal from "./PaymentModal";
+import ReportMetadataPanel from "./ReportMetadataPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -722,7 +723,18 @@ const ReportsSection = ({
                             {reportText}
                           </ReactMarkdown>
                         </div>
+
+                        {/* AI-analysis warning */}
+                        <div className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100" data-testid={`report-ai-warning-${report.report_id}`}>
+                          This report is AI-assisted analysis for case preparation and legal review. It is not a determination of legal merit or appeal outcome.
+                        </div>
                       </div>
+
+                      {/* Report Metadata Panel */}
+                      <ReportMetadataPanel
+                        metadata={report.metadata}
+                        verificationStatus={report.verification_status || report.source_mode}
+                      />
                     </div>
                   </CollapsibleContent>
                 </Collapsible>

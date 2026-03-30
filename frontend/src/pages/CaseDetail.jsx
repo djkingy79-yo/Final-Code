@@ -954,6 +954,22 @@ const CaseDetail = ({ user }) => {
           {caseData?.summary && activeTab !== "grounds" && (
             <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
           )}
+
+          {/* Review Status Summary Widget */}
+          <div className="mt-4 rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="review-status-widget">
+            <div className="font-semibold mb-2 text-sm text-slate-800">Review Status</div>
+            <div className="grid grid-cols-3 gap-3 text-sm text-slate-600">
+              <div>Unverified grounds: <span className="font-semibold text-slate-900">
+                {grounds.filter(g => !g.verification_status || g.verification_status === "unverified" || g.verification_status === "draft").length}
+              </span></div>
+              <div>AI-generated timeline events: <span className="font-semibold text-slate-900">
+                {timeline.filter(e => e.source_mode === "ai_generated" || !e.source_mode).length}
+              </span></div>
+              <div>Draft reports: <span className="font-semibold text-slate-900">
+                {reports.filter(r => r.status === "completed" && (!r.verification_status || r.verification_status === "draft")).length}
+              </span></div>
+            </div>
+          </div>
         </div>
 
         {/* Tabs */}

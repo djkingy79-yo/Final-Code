@@ -19,6 +19,7 @@ import { Checkbox } from "../components/ui/checkbox";
 import { API } from "../App";
 import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
+import AssessmentNote from "../components/AssessmentNote";
 
 const CompareCasesPage = ({ user }) => {
   const navigate = useNavigate();
@@ -44,6 +45,10 @@ const CompareCasesPage = ({ user }) => {
   // Success factors state
   const [successFactors, setSuccessFactors] = useState(null);
   const [loadingFactors, setLoadingFactors] = useState(false);
+
+  // Insufficient data handling
+  const hasInsufficientPatterns = patterns?.message?.toLowerCase().includes("insufficient");
+  const hasInsufficientFactors = successFactors?.message?.toLowerCase().includes("insufficient");
 
   useEffect(() => {
     if (user) {
@@ -436,6 +441,12 @@ const CompareCasesPage = ({ user }) => {
         ) : (
           /* Patterns Tab */
           <div className="space-y-8">
+            {/* Assessment Note */}
+            <AssessmentNote
+              note={patterns?.assessment_note || successFactors?.assessment_note || "These comparisons are descriptive platform indicators and do not determine legal merit or likely appeal outcome."}
+              className="mb-4"
+            />
+
             {/* Filters */}
             <Card className="bg-white border-slate-200">
               <CardHeader>
@@ -507,6 +518,15 @@ const CompareCasesPage = ({ user }) => {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
                 <p className="text-slate-600">Loading patterns...</p>
               </div>
+            ) : hasInsufficientPatterns ? (
+              <Card className="bg-white border-slate-200">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <Info className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                    <p className="text-sm text-slate-700">{patterns.message}</p>
+                  </div>
+                </CardContent>
+              </Card>
             ) : patterns ? (
               <div className="space-y-6">
                 {/* Overview Stats */}
@@ -535,7 +555,7 @@ const CompareCasesPage = ({ user }) => {
                         <TrendingUp className="w-6 h-6 text-emerald-600" />
                       </div>
                       <p className="text-2xl font-bold text-slate-900">{patterns.success_indicators?.strong_grounds_count || 0}</p>
-                      <p className="text-sm text-slate-600">Strong Grounds</p>
+                      <p className="text-sm text-slate-600">Higher Preparation Grounds</p>
                     </CardContent>
                   </Card>
                   <Card className="bg-white border-slate-200">
@@ -605,16 +625,16 @@ const CompareCasesPage = ({ user }) => {
                   </Card>
                 )}
 
-                {/* Case Composition Insights */}
-                {successFactors && successFactors.insights?.length > 0 && (
+                {/* Platform Pattern Indicators */}
+                {successFactors && !hasInsufficientFactors && successFactors.insights?.length > 0 && (
                   <Card className="bg-white border-slate-200">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                         <TrendingUp className="w-5 h-5 text-blue-600" />
-                        Case Composition Patterns
+                        Platform Pattern Indicators
                       </CardTitle>
                       <p className="text-xs text-slate-500 italic mt-1">
-                        {successFactors.disclaimer || "These patterns reflect platform data, not legal merit."}
+                        {successFactors.disclaimer || successFactors.assessment_note || "These patterns reflect internal platform indicators, not court success analytics."}
                       </p>
                     </CardHeader>
                     <CardContent>

@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { API } from "../App";
+import ReportMetadataPanel from "../components/ReportMetadataPanel";
+import VerificationBadge from "../components/VerificationBadge";
 
 const titleFromSnake = (value) => {
   if (!value) return "Not specified";
@@ -1075,6 +1077,20 @@ const ReportView = () => {
                 </button>
               </article>
             ))}
+          </div>
+
+          {/* AI-analysis warning + metadata */}
+          <div className="px-6 sm:px-8 py-4 bg-slate-50 border-t border-slate-200" data-testid="report-ai-footer">
+            <div className="flex items-center gap-2 mb-2">
+              <VerificationBadge status={report?.verification_status || report?.source_mode || "draft"} />
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              This report is AI-assisted analysis for case preparation and legal review. It is not a determination of legal merit or appeal outcome.
+            </p>
+            <ReportMetadataPanel
+              metadata={report?.metadata || report?.content?.metadata}
+              verificationStatus={report?.verification_status || report?.source_mode}
+            />
           </div>
 
           {/* ===== DISCLAIMER FOOTER ===== */}

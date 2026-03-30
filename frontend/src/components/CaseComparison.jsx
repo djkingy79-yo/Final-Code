@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import axios from "axios";
 import { API } from "../App";
+import AssessmentNote from "./AssessmentNote";
 
 const CaseComparison = ({ caseId }) => {
   const [comparison, setComparison] = useState(null);
@@ -57,6 +58,23 @@ const CaseComparison = ({ caseId }) => {
 
   const { your_case, similar_cases, comparison: comp, common_grounds_for_offence } = comparison;
 
+  // Handle insufficient data prominently
+  if (comparison.message?.toLowerCase().includes("insufficient")) {
+    return (
+      <div className="space-y-4">
+        <AssessmentNote note={comparison.assessment_note} />
+        <Card className="bg-white border-slate-200">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-2">
+              <AlertTriangle className="w-5 h-5 text-blue-500" />
+              <p className="text-sm font-medium text-slate-700">{comparison.message}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const getTrendIcon = (status) => {
     if (status === "above") return <TrendingUp className="w-4 h-4 text-emerald-500" />;
     if (status === "below") return <TrendingDown className="w-4 h-4 text-blue-500" />;
@@ -71,6 +89,12 @@ const CaseComparison = ({ caseId }) => {
 
   return (
     <div className="space-y-6">
+      {/* Assessment Note */}
+      <AssessmentNote
+        note={comparison.assessment_note || "These comparisons are descriptive platform indicators and do not determine legal merit or likely appeal outcome."}
+        className="mb-4"
+      />
+
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -177,7 +201,7 @@ const CaseComparison = ({ caseId }) => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Shield className="w-4 h-4" />
-              Most Common Grounds for {your_case.offence_category} Cases
+              Most Frequently Identified Grounds for {your_case.offence_category} Cases
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -206,9 +230,9 @@ const CaseComparison = ({ caseId }) => {
       {/* Insights */}
       <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
         <p className="text-sm text-blue-800">
-          <strong>Insight:</strong> Your case has {comp.documents_vs_avg === "above" ? "more" : comp.documents_vs_avg === "below" ? "fewer" : "the same number of"} documents 
-          than the average {your_case.offence_category.toLowerCase()} case. 
-          {comp.documents_vs_avg === "below" && " Consider uploading more relevant documents to strengthen your analysis."}
+          <strong>Note:</strong> This case has {comp.documents_vs_avg === "above" ? "more" : comp.documents_vs_avg === "below" ? "fewer" : "the same number of"} documents 
+          than the average {your_case.offence_category.toLowerCase()} case on the platform. 
+          {comp.documents_vs_avg === "below" && " Consider uploading more relevant documents to strengthen the analysis."}
           {comp.grounds_vs_avg === "below" && " Try running the AI Identify Grounds feature to find potential appeal grounds."}
         </p>
       </div>

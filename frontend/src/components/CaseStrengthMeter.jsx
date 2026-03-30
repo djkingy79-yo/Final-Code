@@ -50,6 +50,10 @@ const CaseStrengthMeter = ({ caseId }) => {
 
   if (!strength) return null;
 
+  const readinessLevel = strength.readiness_level || strength.rating || "Developing";
+  const readinessScore = strength.readiness_score ?? strength.overall_score ?? 0;
+  const assessmentNote = strength.assessment_note || strength.disclaimer || "This score reflects case preparation and documentation completeness. It is not a determination of legal merit or likelihood of appeal success.";
+
   const getScoreGradient = (score) => {
     if (score >= 75) return "from-emerald-500 to-emerald-600";
     if (score >= 50) return "from-blue-500 to-red-600";
@@ -111,29 +115,35 @@ const CaseStrengthMeter = ({ caseId }) => {
       <CardContent className="space-y-6">
         {/* Readiness disclaimer */}
         <p className="text-xs text-slate-500 italic leading-tight">
-          {strength.disclaimer || "This score reflects case preparation and documentation completeness. It is not a determination of legal merit or likelihood of appeal success."}
+          {assessmentNote}
         </p>
+        {/* Appeal Preparation Readiness summary */}
+        <div className="rounded border border-slate-200 p-4 bg-slate-50">
+          <div className="text-sm font-semibold text-slate-700">Appeal Preparation Readiness</div>
+          <div className="text-2xl font-bold mt-1 text-slate-900">{readinessScore}/100</div>
+          <div className="mt-1 text-sm text-slate-600">{readinessLevel}</div>
+        </div>
         {/* Overall Score - Circular Display */}
         <div className="flex flex-col items-center py-4">
           <div className="relative">
             {/* Outer ring */}
-            <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${getScoreGradient(strength.overall_score)} p-1 shadow-lg`}>
+            <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${getScoreGradient(readinessScore)} p-1 shadow-lg`}>
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                 <div className="text-center">
-                  <span className="text-4xl font-bold text-slate-900">{strength.overall_score}</span>
+                  <span className="text-4xl font-bold text-slate-900">{readinessScore}</span>
                   <span className="text-lg text-slate-600">/100</span>
                 </div>
               </div>
             </div>
             {/* Sparkle indicator */}
-            {strength.overall_score >= 75 && (
+            {readinessScore >= 75 && (
               <div className="absolute -top-1 -right-1 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
             )}
           </div>
-          <p className={`mt-3 px-4 py-1.5 rounded-full text-sm font-semibold ${getScoreBg(strength.overall_score)}`}>
-            {strength.rating}
+          <p className={`mt-3 px-4 py-1.5 rounded-full text-sm font-semibold ${getScoreBg(readinessScore)}`}>
+            {readinessLevel}
           </p>
         </div>
 
@@ -180,7 +190,7 @@ const CaseStrengthMeter = ({ caseId }) => {
         )}
 
         {/* Readiness indicator */}
-        {strength.overall_score >= 75 && (
+        {readinessScore >= 75 && (
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
             <Shield className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
             <p className="text-sm font-semibold text-emerald-800">

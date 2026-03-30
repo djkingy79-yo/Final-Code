@@ -23,6 +23,11 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { API } from "../App";
+import StrengthBadge from "../components/StrengthBadge";
+import VerificationBadge from "../components/VerificationBadge";
+import LegitimacyPanel from "../components/LegitimacyPanel";
+import EvidenceSummary from "../components/EvidenceSummary";
+import ReportMetadataPanel from "../components/ReportMetadataPanel";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "N/A";
@@ -174,6 +179,39 @@ const MarkdownBlock = ({ text, testId }) => (
     >
       {text}
     </ReactMarkdown>
+  </div>
+);
+
+const BarristerGroundBlock = ({ ground }) => (
+  <div className="border border-slate-200 rounded-lg p-4 mb-4" data-testid={`barrister-ground-block-${ground.ground_id}`}>
+    <div className="flex items-center gap-2 mb-2 flex-wrap">
+      <div className="font-semibold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{ground.title}</div>
+      <StrengthBadge rating={ground.strength} />
+      <VerificationBadge status={ground.verification_status} />
+    </div>
+
+    <div className="text-sm text-slate-600 mb-2">{ground.description}</div>
+
+    <LegitimacyPanel scores={ground.legitimacy_scores} />
+
+    <EvidenceSummary items={ground.supporting_evidence} />
+
+    {ground.similar_cases?.length > 0 && (
+      <div className="mt-3 text-sm">
+        <div className="font-medium mb-1 text-slate-700">Comparable Cases</div>
+        {ground.similar_cases.map((c, i) => (
+          <div key={i} className="text-slate-600">
+            {c.case_name}{c.citation ? ` \u2014 ${c.citation}` : ""} {c.verification_status ? `(${c.verification_status})` : ""}
+          </div>
+        ))}
+      </div>
+    )}
+
+    {ground.requires_human_review && (
+      <div className="mt-3 text-xs text-red-700 font-medium">
+        Requires human review before filing or reliance in advice.
+      </div>
+    )}
   </div>
 );
 
@@ -903,6 +941,36 @@ export default function BarristerView() {
                   </div>
                 </article>
               ))}
+
+              {/* Per-Ground Barrister Blocks */}
+              {grounds.length > 0 && (
+                <div data-testid="barrister-grounds-detail-section">
+                  <div className="border-l-4 border-teal-500 pl-4 mb-4">
+                    <h3
+                      className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
+                      style={{ fontFamily: "Crimson Pro, serif" }}
+                    >
+                      Grounds of Merit — Detailed Assessment
+                    </h3>
+                  </div>
+                  {grounds.map((ground) => (
+                    <BarristerGroundBlock key={ground.ground_id} ground={ground} />
+                  ))}
+                </div>
+              )}
+
+              {/* Report Metadata Panel */}
+              <ReportMetadataPanel
+                metadata={report?.metadata || report?.content?.metadata}
+                verificationStatus={report?.verification_status || report?.source_mode}
+              />
+            </div>
+
+            {/* AI-analysis footer */}
+            <div className="px-6 sm:px-10 py-4 bg-slate-50 border-t border-slate-200" data-testid="barrister-ai-footer">
+              <p className="text-xs text-slate-400 leading-relaxed">
+                AI-assisted analysis prepared for legal review. All grounds, authorities, and procedural issues should be independently verified before use in court or formal advice.
+              </p>
             </div>
 
             <div className="bg-red-700 px-6 sm:px-10 py-6" data-testid="barrister-footer">

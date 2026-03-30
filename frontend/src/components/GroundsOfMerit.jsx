@@ -25,6 +25,10 @@ import {
 import { ScrollArea } from "./ui/scroll-area";
 import { toast } from "sonner";
 import PaymentModal from "./PaymentModal";
+import StrengthBadge from "./StrengthBadge";
+import VerificationBadge from "./VerificationBadge";
+import LegitimacyPanel from "./LegitimacyPanel";
+import EvidenceSummary from "./EvidenceSummary";
 
 const GROUND_TYPE_LABELS = {
   procedural_error: "Procedural Error",
@@ -510,19 +514,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       
                       {/* Supporting Evidence Tags */}
                       {ground.supporting_evidence && ground.supporting_evidence.length > 0 && (
-                        <div className="flex items-center gap-2 mt-3 flex-wrap">
-                          <FileText className="w-4 h-4 text-slate-400" />
-                          {ground.supporting_evidence.slice(0, 3).map((evidence, idx) => (
-                            <span key={idx} className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600">
-                              {evidence}
-                            </span>
-                          ))}
-                          {ground.supporting_evidence.length > 3 && (
-                            <span className="text-xs text-slate-500">
-                              +{ground.supporting_evidence.length - 3} more
-                            </span>
-                          )}
-                        </div>
+                        <EvidenceSummary items={ground.supporting_evidence} />
                       )}
                       
                       {/* Law Sections Preview */}
@@ -546,8 +538,20 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       )}
                       
                       {/* Legitimacy Score Breakdown */}
-                      {ground.legitimacy_scores && <LegitimacyBreakdown scores={ground.legitimacy_scores} />}
+                      {ground.legitimacy_scores && <LegitimacyPanel scores={ground.legitimacy_scores} />}
                       
+                      {/* Verification + Human Review */}
+                      <div className="flex items-center gap-2 mt-3">
+                        <StrengthBadge rating={ground.strength} />
+                        <VerificationBadge status={ground.verification_status} />
+                      </div>
+
+                      {ground.requires_human_review && (
+                        <div className="mt-2 text-xs text-red-700 font-medium">
+                          Requires human review before legal reliance
+                        </div>
+                      )}
+
                       <p className="text-xs text-slate-400 mt-3">
                         Added {formatDate(ground.created_at)}
                         {ground.deep_analysis && " • Has deep analysis"}
@@ -774,7 +778,19 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                     <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                       Ground Scoring
                     </h4>
-                    <LegitimacyBreakdown scores={detailGround.legitimacy_scores} />
+                    <LegitimacyPanel scores={detailGround.legitimacy_scores} />
+                  </div>
+                )}
+
+                {/* Verification + Human Review in Detail View */}
+                <div className="flex items-center gap-2">
+                  <StrengthBadge rating={detailGround.strength} />
+                  <VerificationBadge status={detailGround.verification_status} />
+                </div>
+
+                {detailGround.requires_human_review && (
+                  <div className="text-xs text-red-700 font-medium">
+                    Requires human review before legal reliance
                   </div>
                 )}
 
