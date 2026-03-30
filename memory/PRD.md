@@ -65,14 +65,20 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - PDF page breaks: cover page, coloured header, disclaimer all prevent page-splitting
 - File upload: 10MB max size validation, 120s timeout
 
-### Session 4 — 30 Mar 2026 (server.py Additive Patch Completion)
+### Session 4 — 30 Mar 2026 (server.py Additive Patch Completion + Frontend Hardening)
 - Completed 7th and final forensic barrister additive patch to `server.py`
 - Metadata detection now uses `call_llm_for_json` (with validation callback)
 - Report generation uses `call_llm_structured` with enhanced timeouts (420s for detailed, 300s for standard)
 - All generated reports now include `ReportMetadata` (models_used, fallback_used, documents_analyzed, verification_status)
 - DB records include `source_mode: "ai_generated"` and `verification_status: "draft"` provenance fields
 - Fixed `_NormaliserMixin` Pydantic error (check_fields=False for mixin validators)
-- Full regression test: 13/13 backend, 100% frontend — all passing
+- **Frontend Hardening Patch (3 Phases):**
+  - Created 6 reusable shared components: StrengthBadge, VerificationBadge, LegitimacyPanel, EvidenceSummary, AssessmentNote, ReportMetadataPanel
+  - Phase 1: Patched GroundsOfMerit (structured evidence/legitimacy), CaseStrengthMeter (readiness/safe rendering), ReportsSection (metadata panel + AI warning)
+  - Phase 2: Patched CaseComparison (assessment note + insufficient data handling), DeadlineTracker (explanatory note + per-deadline metadata)
+  - Phase 3: Patched BarristerView (per-ground blocks + AI footer), ReportView (verification badge + metadata), CaseDetail (Review Status widget + CaseStrengthMeter on Progress tab), CompareCasesPage (assessment note + Platform Pattern Indicators)
+  - Text replacements: 'Case Strength' → 'Appeal Preparation Readiness', 'Success Factors' → 'Platform Pattern Indicators', 'Strong Grounds' → 'Higher Preparation Grounds'
+- Full regression: backend 13/13, frontend 11/12 (92%) → 12/12 after CaseStrengthMeter integration
 
 ### Previous Sessions
 - Multi-pass AI report generation (4 tiers) with GPT-4o

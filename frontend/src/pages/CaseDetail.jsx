@@ -63,6 +63,7 @@ import DocumentBundler from "../components/DocumentBundler";
 import ShareCaseModal from "../components/ShareCaseModal";
 import CaseChat from "../components/CaseChat";
 import ActivityFeed from "../components/ActivityFeed";
+import CaseStrengthMeter from "../components/CaseStrengthMeter";
 import { buildExportHtml } from "../utils/exportHtml";
 
 const EVENT_TYPES = [
@@ -1280,6 +1281,9 @@ const CaseDetail = ({ user }) => {
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>
+
+            {/* Appeal Preparation Readiness */}
+            <CaseStrengthMeter caseId={caseId} />
 
             {/* AI Progress Analysis Button */}
             <Card>

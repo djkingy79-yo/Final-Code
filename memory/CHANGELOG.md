@@ -1,5 +1,43 @@
 # Appeal Case Manager - Changelog
 
+## 30 March 2026 — Frontend Hardening Patch (Forensic Barrister Review)
+
+### Summary
+Implemented comprehensive frontend hardening patch in 3 phases. Created 6 reusable shared components and patched 9 existing files to display legitimacy scores, verification badges, evidence summaries, assessment notes, and report metadata.
+
+### Components Created
+1. **StrengthBadge.jsx**: STRONG/MODERATE/WEAK coloured badge
+2. **VerificationBadge.jsx**: Draft/Unverified/Reviewed/Verified status
+3. **LegitimacyPanel.jsx**: Legal basis, Evidence support, Appellate viability scores (X/3)
+4. **EvidenceSummary.jsx**: Supporting evidence with filename + quote preview
+5. **AssessmentNote.jsx**: Reusable disclaimer/assessment note block
+6. **ReportMetadataPanel.jsx**: Model, fallback, documents analysed, verification status
+
+### Phase 1 (Highest Credibility Impact)
+- **GroundsOfMerit.jsx**: StrengthBadge, VerificationBadge, LegitimacyPanel, EvidenceSummary per ground card + detail dialog
+- **CaseStrengthMeter.jsx**: Safe rendering (readinessLevel/readinessScore/assessmentNote), Appeal Preparation Readiness block
+- **ReportsSection.jsx**: ReportMetadataPanel + AI-analysis warning per report
+
+### Phase 2 (Misleading Analytics Removal)
+- **CaseComparison.jsx**: AssessmentNote at top, insufficient data handling
+- **DeadlineTracker.jsx**: Explanatory note, per-deadline jurisdiction/verification/source metadata
+
+### Phase 3 (Professional Defensibility)
+- **BarristerView.jsx**: BarristerGroundBlock (per-ground: StrengthBadge, VerificationBadge, LegitimacyPanel, EvidenceSummary, similar_cases), ReportMetadataPanel, AI-analysis footer
+- **ReportView.jsx**: VerificationBadge, ReportMetadataPanel, AI-analysis warning
+- **CaseDetail.jsx**: Review Status widget (unverified grounds, AI timeline events, draft reports), CaseStrengthMeter on Progress tab
+- **CompareCasesPage.jsx**: AssessmentNote, insufficient data handling, 'Platform Pattern Indicators' label
+
+### Text Replacements
+- 'Case Strength' → 'Appeal Preparation Readiness'
+- 'Success Factors' → 'Platform Pattern Indicators'
+- 'Strong Grounds' → 'Higher Preparation Grounds'
+
+### Testing
+- Backend: 13/13 tests passed (100%)
+- Frontend: 12/12 features verified (100%)
+- Iterations: 126 (backend), 127 (frontend)
+
 ## 30 March 2026 — Backend Schema Hardening (Forensic Barrister Additive Patches)
 
 ### Summary
