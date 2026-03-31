@@ -345,10 +345,13 @@ async def get_grounds_of_merit(case_id: str, request: Request):
                 g["source_mode"] = "legacy"
             if "verification_status" not in g:
                 g["verification_status"] = "unverified"
-            if not g.get("legitimacy_scores"):
+            # Only calculate legitimacy scores for grounds that have been investigated
+            # and have actual evidence. Newly identified grounds stay at their assigned strength.
+            if not g.get("legitimacy_scores") and g.get("status") == "investigated" and g.get("supporting_evidence"):
                 scored = calculate_ground_rating({
                     "ground_type": g.get("ground_type", "other"),
-                    "supporting_evidence": [{"quote": e.get("quote", "") if isinstance(e, dict) else str(e)} for e in (g.get("supporting_evidence") or [])]
+                    "supporting_evidence": [{"quote": e.get("quote", "") if isinstance(e, dict) else str(e)} for e in (g.get("supporting_evidence") or [])],
+                    "undermining_items": g.get("undermining_items") or [],
                 })
                 g["legitimacy_scores"] = scored
                 g["strength"] = scored["rating"]
@@ -512,7 +515,8 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
     ).to_list(500)
 
     try:
-        await _ensure_pipeline_identification(case, documents)
+        # DO NOT re-run _ensure_pipeline_identification here — it re-classifies
+        # ALL issues and creates new grounds. We only want to verify THIS ground.
 
         issue = await db.issue_classifications.find_one(
             {
@@ -534,12 +538,57 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
                 "description": ground.get("description", ""),
             }
 
-        projected_ground = await _verify_issue_and_sync(case, issue, ground_id=ground_id)
+        # Verify ONLY this issue and update ONLY this ground — not all grounds
+        case_extract = await db.case_extracts.find_one(
+            {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+        )
+        if not case_extract:
+            case_extract = {"merged_facts": [], "merged_events": [], "merged_findings": []}
 
-        if projected_ground:
-            return projected_ground
+        supporting_context = {
+            "facts": case_extract.get("merged_facts", []),
+            "events": case_extract.get("merged_events", []),
+            "findings": case_extract.get("merged_findings", []),
+        }
+        verification = await verify_issue(case, issue, supporting_context)
+        verification_dict = verification.model_dump()
+        verification_dict["created_at"] = verification_dict["created_at"].isoformat()
 
-        raise HTTPException(status_code=500, detail="Verification completed but no projected ground was returned")
+        # Store verification
+        await db.issue_verifications.update_one(
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id},
+            {"$set": verification_dict},
+            upsert=True,
+        )
+
+        # Update ONLY this ground with verification results — DO NOT re-sync all
+        update_fields = {
+            "status": "investigated",
+            "verification_status": "verified",
+        }
+        if verification_dict.get("legitimacy_scores"):
+            scores = verification_dict["legitimacy_scores"]
+            update_fields["legitimacy_scores"] = scores
+            update_fields["strength"] = scores.get("rating", ground.get("strength", "moderate"))
+        if verification_dict.get("detailed_analysis"):
+            update_fields["detailed_analysis"] = verification_dict["detailed_analysis"]
+        if verification_dict.get("relevant_law_sections"):
+            update_fields["relevant_law_sections"] = verification_dict["relevant_law_sections"]
+        if verification_dict.get("similar_cases"):
+            update_fields["similar_cases"] = verification_dict["similar_cases"]
+        if verification_dict.get("supporting_evidence"):
+            update_fields["supporting_evidence"] = verification_dict["supporting_evidence"]
+
+        await db.grounds_of_merit.update_one(
+            {"ground_id": ground_id, "case_id": case_id},
+            {"$set": update_fields}
+        )
+
+        # Return updated ground
+        updated = await db.grounds_of_merit.find_one(
+            {"ground_id": ground_id, "case_id": case_id}, {"_id": 0}
+        )
+        return updated or verification_dict
 
     except HTTPException:
         raise

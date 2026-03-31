@@ -43,18 +43,24 @@ def score_legal_basis(ground_type: str) -> int:
     return LEGAL_BASIS_SCORES.get(ground_type, 1)
 
 
-def score_evidence(evidence_list: List) -> int:
+def score_evidence(evidence_list: List, undermining_list: List = None) -> int:
     """
-    Evidence scoring based on specificity:
-      3 = direct quote (>50 chars of quoted material)
-      2 = factual extract (shorter quote or document reference)
-      1 = inference only (vague reference)
+    Evidence scoring based on specificity and quantity:
+      3 = multiple strong evidence items (3+ items, at least one direct quote >50 chars)
+      2 = some evidence (2+ items or 1 strong direct quote >80 chars)
+      1 = minimal evidence (1 item or short references)
       0 = no evidence provided
+    
+    Undermining evidence reduces the score:
+      - If undermining >= supporting, cap at 1
+      - If undermining > 0, reduce by 1
     """
     if not evidence_list:
         return 0
 
-    max_score = 0
+    # Count substantive items
+    strong_items = 0
+    any_items = 0
     for item in evidence_list:
         text = ""
         if isinstance(item, dict):
@@ -66,14 +72,30 @@ def score_evidence(evidence_list: List) -> int:
         else:
             text = str(item).strip()
 
-        if text and len(text) > 50:
-            max_score = max(max_score, 3)
-        elif text and len(text) > 15:
-            max_score = max(max_score, 2)
-        elif text:
-            max_score = max(max_score, 1)
+        if text:
+            any_items += 1
+            if len(text) > 80:
+                strong_items += 1
 
-    return max_score
+    # Base score from quantity and quality
+    if strong_items >= 2 and any_items >= 3:
+        base_score = 3
+    elif strong_items >= 1 and any_items >= 2:
+        base_score = 2
+    elif any_items >= 1:
+        base_score = 1
+    else:
+        base_score = 0
+
+    # Apply undermining penalty
+    undermining_count = len(undermining_list) if undermining_list else 0
+    if undermining_count > 0:
+        if undermining_count >= any_items:
+            base_score = min(base_score, 1)
+        else:
+            base_score = max(0, base_score - 1)
+
+    return base_score
 
 
 def score_appellate_viability(ground_type: str, evidence_score: int) -> int:
@@ -127,14 +149,15 @@ def calculate_ground_rating(ground: Dict) -> Dict:
     """
     ground_type = ground.get("ground_type", "other")
     evidence_list = ground.get("supporting_evidence") or ground.get("key_evidence") or []
+    undermining_list = ground.get("undermining_items") or ground.get("undermining_evidence") or []
 
     legal_score = score_legal_basis(ground_type)
-    evidence_score = score_evidence(evidence_list)
+    evidence_score = score_evidence(evidence_list, undermining_list)
     viability_score = score_appellate_viability(ground_type, evidence_score)
 
     total = legal_score + evidence_score + viability_score
 
-    if total >= 7:
+    if total >= 8:
         rating = "strong"
     elif total >= 4:
         rating = "moderate"

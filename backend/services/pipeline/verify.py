@@ -91,6 +91,7 @@ Return ONLY valid JSON:
     scores = calculate_ground_rating({
         "ground_type": issue.get("ground_type", "other"),
         "supporting_evidence": parsed.get("supporting_items", []),
+        "undermining_items": parsed.get("undermining_items", []),
     })
 
     return IssueVerification(
