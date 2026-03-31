@@ -65,12 +65,12 @@ axios.interceptors.request.use((config) => {
 });
 
 // Auth Callback Component
+// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
 
   useEffect(() => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
     if (hasProcessed.current) return;
     hasProcessed.current = true;
 
@@ -82,25 +82,29 @@ const AuthCallback = () => {
       if (sessionId) {
         try {
           const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
-          // Store session token in localStorage as fallback for iOS Safari cookie issues
           if (response.data?.session_token) {
             localStorage.setItem("session_token", response.data.session_token);
           }
-          // Clean the hash from URL
-          window.history.replaceState(null, "", window.location.pathname);
-          window.location.replace("/dashboard");
+          // Clean the hash from URL and navigate via SPA (no full page reload)
+          window.history.replaceState(null, "", "/dashboard");
+          navigate("/dashboard", { replace: true, state: { user: response.data } });
           return;
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("Auth callback error:", error);
+          // Don't silently redirect — retry with existing token first
         }
       }
 
+      // Fallback: check existing localStorage token
       const existingToken = localStorage.getItem("session_token");
       if (existingToken) {
         try {
           const me = await axios.get(`${API}/auth/me`);
-          window.location.replace("/dashboard");
-          return;
+          if (me.data) {
+            window.history.replaceState(null, "", "/dashboard");
+            navigate("/dashboard", { replace: true, state: { user: me.data } });
+            return;
+          }
         } catch (error) {
           localStorage.removeItem("session_token");
         }
@@ -114,9 +118,9 @@ const AuthCallback = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="text-center text-slate-100">
+      <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
-        <p className="mt-4 text-slate-300 font-medium">Authenticating...</p>
+        <p className="mt-4 text-slate-700 font-medium">Authenticating...</p>
       </div>
     </div>
   );

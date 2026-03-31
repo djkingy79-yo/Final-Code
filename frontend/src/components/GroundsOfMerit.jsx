@@ -88,8 +88,8 @@ const LegitimacyBreakdown = ({ scores }) => {
 };
 
 const UnverifiedBadge = () => (
-  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">
-    UNVERIFIED
+  <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">
+    AI-SUGGESTED
   </span>
 );
 

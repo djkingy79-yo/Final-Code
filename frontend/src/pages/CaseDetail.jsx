@@ -739,21 +739,68 @@ const CaseDetail = ({ user }) => {
     body += `<p><strong>Sentence:</strong> ${caseData?.sentence || "N/A"}</p>`;
     if (caseData?.summary) body += `<p><strong>Summary:</strong> ${caseData.summary}</p>`;
     body += `</div>`;
+    // Documents list
+    if (documents.length > 0) {
+      body += `<div class="page-break"></div><div class="export-body"><h2>Uploaded Documents</h2>`;
+      body += `<table><thead><tr><th>#</th><th>Filename</th><th>Type</th><th>Uploaded</th></tr></thead><tbody>`;
+      documents.forEach((d, i) => {
+        const date = d.created_at ? new Date(d.created_at).toLocaleDateString("en-AU") : "";
+        body += `<tr><td>${i + 1}</td><td>${d.filename || d.name || "Document"}</td><td>${d.doc_type || d.type || "—"}</td><td>${date}</td></tr>`;
+      });
+      body += `</tbody></table></div>`;
+    }
     // Timeline
     body += `<div class="page-break"></div><div class="export-body"><h2>Timeline Events</h2>`;
     if (timeline.length > 0) {
       body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
       timeline.forEach(e => {
-        body += `<tr><td>${e.event_date || ""}</td><td>${e.title || ""}</td><td>${(e.description || "").substring(0, 200)}</td></tr>`;
+        body += `<tr><td>${e.event_date || ""}</td><td>${e.title || ""}</td><td>${(e.description || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</td></tr>`;
       });
       body += `</tbody></table>`;
     } else { body += `<p>No timeline events.</p>`; }
     body += `</div>`;
-    // Grounds
+    // Grounds — full details
     body += `<div class="page-break"></div><div class="export-body"><h2>Grounds of Merit</h2>`;
     if (grounds.length > 0) {
       grounds.forEach((g, i) => {
-        body += `<div class="section-block"><h3>Ground ${i + 1}: ${g.title || ""}</h3><p>${g.description || ""}</p><p><strong>Strength:</strong> ${g.strength || "N/A"}</p></div>`;
+        body += `<div class="section-block"><h3>Ground ${i + 1}: ${g.title || ""}</h3>`;
+        body += `<p>${(g.description || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>`;
+        body += `<p><strong>Strength:</strong> ${g.strength || "N/A"} &nbsp; <strong>Type:</strong> ${g.ground_type || "N/A"}</p>`;
+        // Supporting evidence
+        const evidence = Array.isArray(g.supporting_evidence) ? g.supporting_evidence : [];
+        if (evidence.length > 0) {
+          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Supporting Evidence</h4><ul>`;
+          evidence.forEach(item => {
+            const text = typeof item === "string" ? item : (item?.quote || item?.text || item?.filename || "Evidence item");
+            body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
+          });
+          body += `</ul>`;
+        }
+        // Law sections
+        const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
+        if (laws.length > 0) {
+          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Relevant Legislation</h4><ul>`;
+          laws.forEach(s => {
+            body += `<li>s.${s.section || ""} ${s.act || ""} (${s.jurisdiction || "NSW"})</li>`;
+          });
+          body += `</ul>`;
+        }
+        // Similar cases
+        const cases = Array.isArray(g.similar_cases) ? g.similar_cases : [];
+        if (cases.length > 0) {
+          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Similar Cases (AI-Suggested)</h4><ul>`;
+          cases.forEach(c => {
+            body += `<li>${c.case_name || ""}${c.citation ? ` — ${c.citation}` : ""}${c.relevance_note ? `: ${c.relevance_note}` : ""}</li>`;
+          });
+          body += `</ul>`;
+        }
+        // Deep analysis
+        const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
+        if (analysis) {
+          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Deep Investigation Analysis</h4>`;
+          body += `<div style="white-space:pre-wrap;font-size:13px;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+        }
+        body += `</div>`;
       });
     } else { body += `<p>${groundsCount > 0 ? groundsCount + " grounds identified (locked)." : "No grounds identified."}</p>`; }
     body += `</div>`;
