@@ -1,80 +1,58 @@
-# Appeal Case Manager — Product Requirements Document
+# Appeal Case Manager — PRD
 
 ## Original Problem Statement
-Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features secure document management, AI-powered case analysis via a 5-stage pipeline, and a tiered reporting system.
+Criminal Appeal Case Manager for Australian jurisdictions. Features secure document management, AI-powered case analysis via a 5-Stage Data Pipeline (Extract → Classify → Verify → Project → Draft), and a tiered reporting system. Built with React + FastAPI + MongoDB.
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) -> $150 (2x depth) -> $200 (3x depth)
-- **Barrister View:** Locked until all 3 standard reports generated/paid. Capstone synthesis. TEAL colour.
-- **Report Language:** STRICT third-person educational tool. NO "we/us/our/you/your".
-- **UI/UX:** Forced light mode. High contrast. Bright blue action buttons. No amber/brown.
-- **Language:** Australian English throughout (analyse, organise, defence, offence, colour).
-- **Terminology:** "Appeal Preparation Readiness" (not "Case Strength"), "Platform Pattern Indicators" (not "Likelihood of Success").
+- **Report Language:** Strict third-person educational tool. No "we/us/our/you/your".
+- **Branding & UI:** Forced light mode. High contrast. No amber/brown. Bright blue action buttons.
+- **Australian English:** analyse, organise, barrister, defence, offence, colour.
+- **Issue Spotter:** NOT a legal predictor. Uses "Appeal Preparation Readiness".
+- **DO_NOT_UNDO Guards:** Critical functions protected (case auto-detect, models).
 
 ## Architecture
 ```
 /app/
 ├── backend/
-│   ├── server.py, config.py, auth_utils.py
-│   ├── models/__init__.py     # DO NOT UNDO: state/offence = Optional[None]
-│   ├── routers/
-│   │   ├── caselaw.py         # NEW: Verified case law search
-│   │   └── ... (20+ modules)
-│   ├── services/
-│   │   ├── caselaw_search.py  # NEW: State database configs + URL builders
-│   │   └── pipeline/          # extract, classify, verify, draft, argue, submit
-│   └── tests/
-└── frontend/
-    └── src/
-        ├── components/
-        │   ├── CaseLawPanel.jsx   # NEW: Verified case law database search UI
-        │   └── ... (existing components)
-        └── pages/
+│   ├── models/           # Pydantic models (DO NOT UNDO guards)
+│   ├── routers/          # auth, cases, grounds, payments, caselaw
+│   ├── services/pipeline # AI pipeline stages
+│   └── server.py         # Core logic (~7000 lines)
+├── frontend/src/
+│   ├── components/       # GroundsOfMerit, CaseLawPanel, etc.
+│   ├── pages/            # Dashboard, CaseDetail, ReportView, etc.
+│   └── App.js            # Routing and Auth (DO NOT UNDO)
 ```
 
+## Integrations
+- OpenAI GPT-4o via Emergent LLM Key
+- Emergent Google Auth (social login)
+- Resend (emails)
+- PayPal / Stripe (payments)
+
 ## What's Been Implemented
+- Full authentication (Google OAuth + email/password)
+- Document upload & management
+- AI pipeline: Extract → Classify → Verify → Project → Argue
+- Grounds of merit identification and investigation
+- Tiered report generation (Free, $150, $200, Barrister)
+- PDF/DOCX export with branded footers
+- Timeline generation and analysis
+- Case Law search integration (AustLII, NSW Caselaw, etc.)
+- Print All / PDF All / Word All export
+- Case sharing & collaboration
+- Admin dashboard & stats
+- Verified Case Law Database (Law tab)
+- Pipeline Progress tracking
+- Deadline Tracker with Google Calendar
+- DO_NOT_UNDO permanent guards
 
-### Session 6 — 30 Mar 2026
-**Verified Case Law Database Integration (P2):**
-- Backend service `caselaw_search.py` with all 8 Australian jurisdictions configured
-- State-specific databases: NSW CaseLaw, QLD Judgments, Supreme Court Library QLD, Courts SA, eCourts WA, Victorian Supreme Court, ACT Courts
-- National databases: AustLII (all jurisdictions), High Court of Australia, JADE, Google Scholar
-- API endpoints: `/api/cases/{case_id}/caselaw/search`, `/api/cases/{case_id}/caselaw/ground/{ground_id}`, `/api/caselaw/databases`
-- Frontend CaseLawPanel component with search bar, state-specific database links, collapsible national databases
-- Per-ground quick search links in GroundsOfMerit (AustLII, JADE, NSW CaseLaw, QLD Judgments, Google Scholar)
-- All searches open directly in official databases (not AI-generated)
+## Key DB Collections
+- `users`, `user_sessions`, `cases`, `documents`
+- `grounds_of_merit`, `reports`, `notes`, `timeline_events`
+- `payments`, `case_shares`
 
-**UI Bug Fixes:**
-- Runtime error fix: supporting_evidence objects no longer crash React
-- Legitimacy Assessment: no longer overlaps on mobile (grid-cols-1 sm:grid-cols-3)
-- Dashboard Privacy notice: bright blue bg, bold white text, solid red shield
-- Grounds refresh: auto-identify always refreshes grounds list after completion
-- Delete Case button: bigger, bolder white text
-- Empty state hidden during AI scan
-
-### Previous Sessions
-- 5-Stage Pipeline (Extract → Classify → Verify → Project → Draft) + Argue + Submit
-- Pipeline Dashboard, Staleness Engine, One-Click Orchestration
-- Case Creation Auto-Detect Fix (state/offence/sentence from documents via LLM)
-- Multi-pass AI report generation (4 tiers) with GPT-4o
-- Document export (PDF/DOCX) with iOS-safe preview
-- Barrister View with teal UI + Issue Matrix
-- PayPal/PayID/Stripe payment integration
-- Google OAuth via Emergent Auth, Email via Resend
-- Case sharing, collaboration, messages, notes, notifications
-- Landing page, stats page, How It Works page
-
-## DO NOT UNDO (Critical)
-See /app/DO_NOT_UNDO.md for full list.
-
-## 3rd Party Integrations
-- OpenAI GPT-4o (via Emergent LLM Key)
-- Emergent Auth (Google OAuth)
-- Resend (email notifications)
-- PayPal/PayID/Stripe (payments)
-
-## Prioritised Backlog
-- P1: Build Native Mobile App (Capacitor configured)
+## P0/P1/P2 Remaining
+- P1: Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
-- P3: Database normalisation for legacy records
-- P3: Backend refactoring (decompose server.py)
+- P3: Database normalisation script for legacy entries
