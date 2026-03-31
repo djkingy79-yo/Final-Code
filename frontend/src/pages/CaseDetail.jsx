@@ -969,40 +969,33 @@ const CaseDetail = ({ user }) => {
               Edit
             </Button>
           </div>
-          <div className="flex flex-wrap items-center gap-4 mt-3 text-slate-700">
-            <span className="font-medium text-slate-900">{caseData?.defendant_name}</span>
-            {caseData?.case_number && (
-              <span className="font-mono text-sm bg-white border border-slate-200 px-2 py-1 rounded-lg">
-                {caseData.case_number}
-              </span>
+          {/* DO_NOT_UNDO — Case Identity Card. Must always show defendant, offence, state, sentence prominently with colour. */}
+          <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-4" data-testid="case-identity-card">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Defendant</div>
+                <div className="text-base sm:text-lg font-bold text-slate-900">{caseData?.defendant_name || "—"}</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Offence</div>
+                <div className="text-base sm:text-lg font-bold text-slate-900 capitalize">{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">State / Jurisdiction</div>
+                <div className="text-base sm:text-lg font-bold text-slate-900 uppercase">{caseData?.state || "—"}</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Sentence</div>
+                <div className="text-sm font-bold text-slate-900">{caseData?.sentence || "—"}</div>
+              </div>
+            </div>
+            {caseData?.court && (
+              <div className="mt-2 pt-2 border-t border-blue-200 text-xs text-blue-700 font-medium">
+                {caseData.court}{caseData?.case_number ? ` — ${caseData.case_number}` : ""}
+              </div>
             )}
-            {caseData?.court && <span>{caseData.court}</span>}
           </div>
-          {caseData?.sentence && (
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 rounded-lg">
-                Sentence: {caseData.sentence}
-              </Badge>
-            </div>
-          )}
-          {/* Offence Type Display */}
-          {caseData?.offence_category && (
-            <div className="flex flex-wrap items-center gap-2 mt-3">
-              {caseData?.state && (
-                <Badge variant="outline" className="bg-blue-700 text-white border-blue-700 uppercase rounded-lg">
-                  {caseData.state}
-                </Badge>
-              )}
-              <Badge variant="outline" className="bg-blue-700 text-white border-blue-700 capitalize rounded-lg">
-                {caseData.offence_category.replace(/_/g, ' ')}
-              </Badge>
-              {caseData?.offence_type && (
-                <Badge variant="outline" className="bg-white border border-slate-200 text-slate-900 rounded-lg">
-                  {caseData.offence_type}
-                </Badge>
-              )}
-            </div>
-          )}
+
           {caseData?.summary && activeTab !== "grounds" && (
             <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
           )}
@@ -1233,6 +1226,7 @@ const CaseDetail = ({ user }) => {
                 isUnlocked={groundsUnlocked}
                 unlockPrice={groundsUnlockPrice}
                 caseId={caseId}
+                caseData={caseData}
                 onInvestigate={handleInvestigateGround}
                 onDelete={handleDeleteGround}
                 investigating={investigatingGround}

@@ -69,10 +69,10 @@ Return ONLY valid JSON:
   ],
   "similar_cases": [
     {{
-      "case_name": "Case name",
+      "case_name": "R v [Surname] [Year]",
       "citation": null,
       "jurisdiction": "{case.get('state', 'nsw')}",
-      "relevance_note": "optional",
+      "relevance_note": "brief note on how this case is relevant",
       "verification_status": "unverified"
     }}
   ],

@@ -561,6 +561,47 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
             upsert=True,
         )
 
+        # Generate deep analysis text for this ground
+        deep_analysis_text = ""
+        try:
+            analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({case.get('state', 'NSW')}).
+
+Ground: {ground.get('title', '')}
+Type: {ground.get('ground_type', '')}
+Description: {ground.get('description', '')}
+
+Supporting evidence found:
+{json.dumps(verification_dict.get('supporting_items', []), indent=2, default=str)[:2000]}
+
+Undermining factors:
+{json.dumps(verification_dict.get('undermining_items', []), indent=2, default=str)[:1000]}
+
+Relevant legislation:
+{json.dumps(verification_dict.get('law_sections', []), indent=2, default=str)[:1000]}
+
+Similar cases:
+{json.dumps(verification_dict.get('similar_cases', []), indent=2, default=str)[:1000]}
+
+Legitimacy assessment: {json.dumps(verification_dict.get('legitimacy_scores', {}), default=str)}
+
+Write a detailed investigative analysis of this ground (500-800 words). Use third person only. Write in paragraphs, NOT bullet points. Cover:
+1. The factual basis and evidentiary foundation
+2. The applicable legal framework and statutory provisions
+3. How supporting and undermining evidence interacts
+4. Comparable case law and precedent
+5. Overall viability assessment and what further material could strengthen or weaken this ground
+
+Use Australian English spelling (analyse, defence, offence). Do NOT use first or second person."""
+
+            deep_analysis_text = await call_llm_with_fallback(
+                system_prompt="You are a senior Australian criminal appellate researcher conducting deep issue analysis. Write in formal third person. Use paragraphs, not bullet points. Australian English only.",
+                user_prompt=analysis_prompt,
+                session_id=f"deep_analysis_{ground_id}",
+                task_type="ground_deep_analysis",
+            )
+        except Exception as e:
+            logger.warning(f"Deep analysis generation failed for ground {ground_id}: {e}")
+
         # Update ONLY this ground with verification results — DO NOT re-sync all
         update_fields = {
             "status": "investigated",
@@ -570,14 +611,18 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
             scores = verification_dict["legitimacy_scores"]
             update_fields["legitimacy_scores"] = scores
             update_fields["strength"] = scores.get("rating", ground.get("strength", "moderate"))
-        if verification_dict.get("detailed_analysis"):
-            update_fields["detailed_analysis"] = verification_dict["detailed_analysis"]
-        if verification_dict.get("relevant_law_sections"):
-            update_fields["relevant_law_sections"] = verification_dict["relevant_law_sections"]
+        if verification_dict.get("law_sections"):
+            update_fields["law_sections"] = verification_dict["law_sections"]
         if verification_dict.get("similar_cases"):
             update_fields["similar_cases"] = verification_dict["similar_cases"]
-        if verification_dict.get("supporting_evidence"):
-            update_fields["supporting_evidence"] = verification_dict["supporting_evidence"]
+        if verification_dict.get("supporting_items"):
+            update_fields["supporting_evidence"] = verification_dict["supporting_items"]
+        if deep_analysis_text:
+            update_fields["deep_analysis"] = {
+                "full_analysis": deep_analysis_text,
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+            }
+            update_fields["analysis"] = deep_analysis_text
 
         await db.grounds_of_merit.update_one(
             {"ground_id": ground_id, "case_id": case_id},

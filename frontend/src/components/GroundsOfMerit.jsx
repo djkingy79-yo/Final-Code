@@ -131,7 +131,7 @@ const GroundProvenancePanel = ({ ground }) => {
     : [];
 
   const similarCases = Array.isArray(ground.similar_cases)
-    ? ground.similar_cases
+    ? ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && c.case_name !== "optional")
     : [];
 
   const sourceMode = ground.source_mode || "legacy";
@@ -191,6 +191,7 @@ const GroundsOfMerit = ({
   isUnlocked,
   unlockPrice,
   caseId,
+  caseData,
   onInvestigate, 
   onDelete, 
   investigating,
@@ -262,7 +263,15 @@ const GroundsOfMerit = ({
         <div className="grounds-export-header">
           <p className="grounds-export-kicker">Grounds of Merit</p>
           <h1>Detailed Grounds Analysis</h1>
-          <p>Full grounds file including descriptions, supporting evidence, legal references, similar cases, and deep investigation analysis.</p>
+          {/* DO_NOT_UNDO — Case identity must always display in export */}
+          <div style={{margin:'16px 0', padding:'12px', border:'2px solid #1d4ed8', borderRadius:'10px', background:'#eff6ff'}}>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'13px'}}>
+              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong>{caseData?.defendant_name || "—"}</strong></div>
+              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
+              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase'}}>{caseData?.state || "—"}</strong></div>
+              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong>{caseData?.sentence || "—"}</strong></div>
+            </div>
+          </div>
         </div>
 
         {grounds.map((ground, index) => (
@@ -301,11 +310,11 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {ground.similar_cases?.length > 0 && (
+            {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]")?.length > 0 && (
               <div className="grounds-export-block">
-                <h3>Similar Cases</h3>
+                <h3>Similar Cases (AI-Suggested)</h3>
                 <ul>
-                  {ground.similar_cases.map((caseItem, idx) => (
+                  {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").map((caseItem, idx) => (
                     <li key={idx}>{caseItem.citation ? `${caseItem.case_name} — ${caseItem.citation}` : caseItem.case_name}</li>
                   ))}
                 </ul>
@@ -459,7 +468,7 @@ table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #
 <p class="desc">${escHtml(ground.description)}</p>
 ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e=>'<li>'+escHtml(typeof e === 'string' ? e : (e?.quote || e?.text || e?.filename || 'Evidence item'))+'</li>').join('') + '</ul>' : ''}
 ${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
-${(ground.similar_cases||[]).length ? '<h2>Similar Cases</h2>' + ground.similar_cases.map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
+${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').length ? '<h2>Similar Cases (AI-Suggested)</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div>
 <div style="text-align:center;margin:24px 0;padding:16px 0;">
@@ -623,11 +632,11 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       )}
                       
                       {/* Similar Cases Preview */}
-                      {ground.similar_cases && ground.similar_cases.length > 0 && (
+                      {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 0 && (
                         <div className="flex items-center gap-2 mt-1">
                           <Gavel className="w-4 h-4 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {ground.similar_cases.length} similar case{ground.similar_cases.length > 1 ? 's' : ''} referenced
+                            {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length} similar case{ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 1 ? 's' : ''} referenced
                           </span>
                         </div>
                       )}
@@ -882,19 +891,19 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 )}
 
                 {/* Similar Cases */}
-                {detailGround.similar_cases && detailGround.similar_cases.length > 0 && (
+                {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 0 && (
                   <div>
                     <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                       <Gavel className="w-4 h-4" />
                       Similar Cases
-                      <span className="text-xs font-normal text-amber-600">(AI-referenced — requires verification)</span>
+                      <span className="text-xs font-normal text-blue-600">(AI-suggested — requires verification)</span>
                     </h4>
                     <div className="space-y-2">
-                      {detailGround.similar_cases.map((caseItem, idx) => (
+                      {detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").map((caseItem, idx) => (
                         <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <div className="font-medium text-blue-900">
                             {caseItem.case_name}
-                            {!caseItem.verified && <UnverifiedBadge />}
+                            <UnverifiedBadge />
                           </div>
                           {caseItem.citation && (
                             <div className="font-mono text-xs text-blue-700 mt-1">

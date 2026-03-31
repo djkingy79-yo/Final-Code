@@ -138,3 +138,26 @@ sentence, court, case number, and timeline events from uploaded documents via LL
 10. NEVER change CaseCreate state/offence_category/offence_type/sentence defaults from None
 11. NEVER remove _background_auto_detect_metadata or _background_auto_generate from documents.py
 12. NEVER send hardcoded "nsw" or "homicide" from the frontend case creation form
+
+## CRITICAL: CASE IDENTITY CARD PROTECTION (DO NOT TOUCH)
+
+The Case Identity Card in `CaseDetail.jsx` (data-testid="case-identity-card") and in 
+`GroundsOfMerit.jsx` export view MUST always display these four fields prominently with 
+blue colour styling:
+
+1. **Defendant** — `caseData.defendant_name`
+2. **Offence** — `caseData.offence_type` or `caseData.offence_category`
+3. **State / Jurisdiction** — `caseData.state`
+4. **Sentence** — `caseData.sentence`
+
+**NEVER remove the Case Identity Card. NEVER hide these fields. NEVER change the blue styling.**
+These fields must appear on EVERY view of the case — case detail, grounds export, print view.
+
+## CRITICAL: "Case name" PLACEHOLDER PREVENTION
+
+The LLM verification prompt in `backend/services/pipeline/verify.py` uses example 
+JSON structure. The `similar_cases[].case_name` example MUST be `"R v [Surname] [Year]"` — 
+NEVER use `"Case name"` as the example as the LLM copies it literally as data.
+
+Frontend filters in `GroundsOfMerit.jsx` strip out any similar case with case_name equal to 
+"Case name" or "R v [Surname] [Year]" or "optional" — NEVER remove these filters.
