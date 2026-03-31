@@ -199,14 +199,24 @@ def _basic_text_validation(result: str) -> bool:
 
 
 def _apply_task_guardrails(system_prompt: str, task_type: str, require_json: bool) -> str:
-    guardrails = (
-        "\n\nSAFETY / RELIABILITY RULES:\n"
-        "- Do not invent authorities, statutory provisions, or case citations.\n"
-        "- If uncertain, say that verification is required.\n"
-        "- Distinguish factual extraction from legal inference.\n"
-        "- Use cautious, conditional language for legal analysis.\n"
-        "- Do not state that an appeal will succeed.\n"
-    )
+    # For report generation, the system prompt already contains comprehensive guardrails.
+    # Adding conflicting "cautious language" rules undermines the report quality.
+    if task_type == "report_generation":
+        guardrails = (
+            "\n\nSAFETY RULES:\n"
+            "- Do not invent authorities, statutory provisions, or case citations.\n"
+            "- If uncertain about a specific citation, say that verification is required.\n"
+            "- Distinguish factual extraction from legal inference.\n"
+        )
+    else:
+        guardrails = (
+            "\n\nSAFETY / RELIABILITY RULES:\n"
+            "- Do not invent authorities, statutory provisions, or case citations.\n"
+            "- If uncertain, say that verification is required.\n"
+            "- Distinguish factual extraction from legal inference.\n"
+            "- Use cautious, conditional language for legal analysis.\n"
+            "- Do not state that an appeal will succeed.\n"
+        )
 
     if require_json:
         guardrails += (

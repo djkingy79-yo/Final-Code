@@ -198,9 +198,17 @@ def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> st
     if not text:
         return text
 
+    # Multi-pass reports (full_detailed, extensive_log) should NOT be deduped aggressively
+    # because different sections legitimately discuss the same grounds/case facts from different angles.
+    # Over-aggressive dedup was stripping ~50% of valid content.
+    if report_type in ("full_detailed", "extensive_log"):
+        # Only strip exact duplicates for multi-pass reports
+        similarity_threshold = 0.97
+    else:
+        similarity_threshold = 0.90
+
     sections = _split_report_sections(text)
     cleaned_sections = []
-    similarity_threshold = 0.85 if report_type == "quick_summary" else 0.82
 
     for heading, content in sections:
         paragraphs = [p.strip() for p in re.split(r"\n\s*\n+", content) if p.strip()]
@@ -216,6 +224,7 @@ def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> st
             paragraph_set = _token_set(paragraph)
             is_duplicate = False
             for existing_set, existing_text in zip(seen_sets, seen_texts):
+                # Only strip if one paragraph is a substring of another (exact containment)
                 if paragraph in existing_text or existing_text in paragraph:
                     is_duplicate = True
                     break
@@ -1675,127 +1684,172 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     last_error = None
     try:
         if report_type == "full_detailed":
-            # Five-pass generation for full_detailed (3 sections per pass)
+            # Eight-pass generation for full_detailed — one or two sections per pass for maximum depth
+            half_grounds = max(1, len(grounds) // 2)
+            first_grounds = grounds_enumerated.split('\n')[:half_grounds * 3]  # ~3 lines per ground
+            second_grounds = grounds_enumerated.split('\n')[half_grounds * 3:]
+            first_grounds_text = '\n'.join(first_grounds) if first_grounds else grounds_enumerated
+            second_grounds_text = '\n'.join(second_grounds) if second_grounds else ""
+            
             passes = [
-                ("PASS 1/5", f"""
+                ("PASS 1/8", f"""
+NOW GENERATE ONLY SECTIONS 1-2. Write 3000+ WORDS for this pass. Every paragraph must reference specific case facts.
 
-NOW GENERATE ONLY SECTIONS 1-3. Write 4000+ WORDS for this pass. DO NOT BE LAZY. This is a $150 paid report.
+## 1. EXECUTIVE BRIEF (1200+ words)
+Write 6 FULL paragraphs — each paragraph must be 150+ words. NOT a case snapshot rehash.
+- Paragraph 1: "This analysis is based on {len(documents)} documents and {len(timeline)} timeline events. {len(grounds)} grounds of appeal have been identified." Then strategic overview of appeal strength.
+- Paragraph 2: The 2 strongest grounds — name specific legal tests, cite specific evidence, explain why these grounds have the best chance.
+- Paragraph 3: Most likely outcome pathway and what the applicant should realistically prepare for.
+- Paragraph 4: Key risks — what the prosecution will exploit, what weaknesses exist.
+- Paragraph 5: Recommended immediate actions with specific deadlines and who to contact.
+- Paragraph 6: Primary issues identified — list 6-8 specific legal issues with document references and brief explanations.
 
-## 1. EXECUTIVE BRIEF (800+ words)
-Write 4-6 FULL paragraphs — NOT a rehash of the case snapshot. Include:
-- Paragraph 1: Document/timeline/grounds counts, then strategic overview of the appeal's overall strength
-- Paragraph 2: The 2 strongest grounds and why they have the best chance of success — name specific legal tests
-- Paragraph 3: The most likely outcome pathway and what the client should prepare for
-- Paragraph 4: Key risks and vulnerabilities the prosecution will exploit
-- Paragraph 5: Recommended immediate actions with specific deadlines
-- Paragraph 6: Primary issues identified (list 6-8 specific legal issues with document references)
+## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
+Write 15+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
+"On [DATE], [WHAT HAPPENED]. This is evidenced by [SOURCE DOCUMENT]. The legal significance is [WHY IT MATTERS FOR APPEAL]. This event [IMPACT]."
+Cover ALL of: offence date and circumstances, arrest, charges, bail, committal, psychiatric assessments, trial dates, key evidence, verdict, sentencing, appeal filing.
 
-## 2. FORENSIC CASE CHRONOLOGY (1200+ words)
-Write 12+ dated events as FULL PARAGRAPHS (3-4 sentences each). NOT bullet points. Format each as:
-"On [DATE], [WHAT HAPPENED]. This is evidenced by [SOURCE DOCUMENT]. The legal significance is [SIGNIFICANCE]. This event [IMPACT ON APPEAL]."
-Cover: the offence date, arrest, charges, key witness statements, psychiatric assessments, trial dates, sentencing, appeal filing.
+STOP after section 2. Write every paragraph in full."""),
 
-## 3. DOCUMENT EVIDENCE DIGEST (800+ words)
-For EACH of the {len(documents)} uploaded documents, write a FULL PARAGRAPH analysing: document title, key extracts (quote directly where possible), reliability, probative value, and specific appellate relevance. If there are 10 documents, write 10 paragraphs.
+                ("PASS 2/8", f"""
+NOW GENERATE ONLY SECTION 3. Write 2000+ WORDS for this pass. Analyse EVERY single uploaded document.
 
-STOP after section 3. Write ALL content — do NOT truncate or summarise."""),
-                ("PASS 2/5", f"""
+## 3. DOCUMENT EVIDENCE DIGEST (2000+ words)
+For EACH of the {len(documents)} uploaded documents, write a FULL PARAGRAPH (150+ words each) covering:
+- Document title and type
+- Key extracts — quote directly from the content where possible
+- Reliability and credibility assessment
+- Probative value — what does this document prove or disprove?
+- Which specific grounds of appeal does this document support?
+- Rating: Critical / Important / Supporting / Peripheral
 
-NOW GENERATE ONLY SECTIONS 4-6. Write 5000+ WORDS for this pass. Section 4 is the MOST IMPORTANT section — do NOT rush it.
+If there are {len(documents)} documents, write {len(documents)} detailed paragraphs minimum.
 
-## 4. GROUNDS OF MERIT PORTFOLIO
-You MUST write about EVERY ground listed below. If there are 5 grounds, write 5 complete analyses. NO OMISSIONS.
-GROUNDS TO COVER:
-{grounds_enumerated}
+STOP after section 3."""),
 
-For EACH ground, write 800+ words as flowing paragraphs (NOT bullet points) covering:
-1. "Ground X: [Exact Title from above]" as the heading
-2. The legal test/threshold for this ground (cite the specific statutory provision and leading case)
-3. How the case facts satisfy this test (reference specific evidence, dates, witnesses)
-4. Viability rating: Strong / Moderate / Weak — with 3-4 sentences explaining WHY
-5. PREDICTED CROWN RESPONSE: What will the prosecution argue against this ground? (3-4 sentences)
-6. DEFENCE REBUTTAL: How should the defence counter the Crown's argument? (3-4 sentences)
-7. APPEAL IMPACT: If this ground succeeds, what happens? (conviction quashed? sentence reduced? retrial?)
+                ("PASS 3/8", f"""
+NOW GENERATE ONLY SECTION 4 (FIRST HALF OF GROUNDS). Write 4000+ WORDS for this pass.
+
+## 4. GROUNDS OF MERIT PORTFOLIO (Part 1)
+Write detailed analyses for the FIRST {half_grounds} grounds listed below. Each ground must be 800+ words of flowing paragraphs.
+
+GROUNDS TO COVER IN THIS PASS:
+{first_grounds_text}
+
+For EACH ground, write as "Ground X: [Exact Title]" then 800+ words covering:
+1. Legal test/threshold — cite the specific statutory provision (section + Act + year) and leading case
+2. How THIS case's specific facts satisfy the test — reference documents, dates, witnesses by name
+3. Viability rating: Strong / Moderate / Weak — with 4-5 sentences of detailed reasoning
+4. PREDICTED CROWN RESPONSE: What will the prosecution argue? Name specific authorities they'll rely on (4-5 sentences)
+5. DEFENCE REBUTTAL: How to counter the Crown? Name specific authorities that override theirs (4-5 sentences)
+6. APPEAL IMPACT: If this ground succeeds — conviction quashed? Sentence reduced? Retrial? What specific order to seek?
+
+Write 800+ words per ground. Do NOT compress into bullet points.
+
+STOP after covering the first {half_grounds} grounds."""),
+
+                ("PASS 4/8", f"""
+NOW GENERATE ONLY SECTION 4 (SECOND HALF OF GROUNDS) AND SECTION 5. Write 4000+ WORDS for this pass.
+
+## 4. GROUNDS OF MERIT PORTFOLIO (Part 2)
+Continue with the REMAINING grounds. Each must be 800+ words of flowing paragraphs.
+
+GROUNDS TO COVER IN THIS PASS:
+{second_grounds_text if second_grounds_text.strip() else grounds_enumerated}
+
+For EACH ground, write as "Ground X: [Exact Title]" then 800+ words covering:
+1. Legal test/threshold with statutory reference
+2. How case facts satisfy the test — specific evidence, dates, witnesses
+3. Viability rating with detailed reasoning (4-5 sentences)
+4. PREDICTED CROWN RESPONSE (4-5 sentences)
+5. DEFENCE REBUTTAL with authority (4-5 sentences)
+6. APPEAL IMPACT — specific orders to seek
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
-CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text.
-Write a markdown table with 8+ rows. After the table, write a Detailed Outcome Analysis PARAGRAPH for each case.
+PRODUCE AN ACTUAL POPULATED MARKDOWN TABLE with real case data. Then write a Detailed Outcome Analysis paragraph for EACH case in the table.
+| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
+
+STOP after section 5."""),
+
+                ("PASS 5/8", f"""
+NOW GENERATE ONLY SECTIONS 6-7. Write 3000+ WORDS for this pass.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
-Markdown table with 8+ rows.
-
-STOP after section 6."""),
-                ("PASS 3/5", f"""
-
-NOW GENERATE ONLY SECTIONS 7-9. Write 4000+ WORDS for this pass.
+Markdown table with 8+ rows:
+| Common Ground | Frequency in Comparable Appeals | Typical Success Pattern | Best Supporting Evidence |
+Then for each common ground, explain how it applies or does not apply to THIS specific case.
 
 ## 7. OUTCOME OPTIONS AVAILABLE
-First provide the summary table, then write 300+ WORDS for EACH of these 5 pathways:
-- **Conviction quashed**: Which of the {len(grounds)} grounds support this? What is the legal threshold (e.g., miscarriage of justice under s.6(1) Criminal Appeal Act)? How likely given this case's facts?
-- **Retrial ordered**: What triggers a retrial vs outright quashing? What changes at retrial? Timeframes?
-- **Conviction substituted/downgraded**: Could murder be reduced to manslaughter? Under what legal basis? Sentence impact?
-- **Sentence reduced as manifestly excessive**: Show the exact before/after — Original sentence/NPP → what a reduced sentence might look like, with percentage reduction
-- **Appeal dismissed**: What happens? Consequences? Can the client seek special leave to the High Court?
+Summary table first, then write 400+ WORDS for EACH of these 5 pathways:
+- **Conviction quashed** — which grounds support this, legal threshold, likelihood (300+ words)
+- **Retrial ordered** — triggers, what changes, timeframes (200+ words)
+- **Conviction substituted/downgraded** — legal basis, sentence impact (200+ words)
+- **Sentence reduced as manifestly excessive** — show exact before/after numbers (300+ words)
+- **Appeal dismissed** — consequences, High Court special leave options (200+ words)
 
-## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (600+ words)
-List 8+ specific gaps with urgency ratings and exact remediation steps.
+STOP after section 7."""),
+
+                ("PASS 6/8", f"""
+NOW GENERATE ONLY SECTIONS 8-10. Write 3000+ WORDS for this pass.
+
+## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (800+ words)
+List 8+ specific gaps with urgency ratings. For each: what's missing, why it matters, exact steps to obtain it, priority, impact on which grounds.
 
 ## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
-Full citations, factual similarities, outcomes, and extracted principles for each case.
+For each case write a FULL PARAGRAPH: citation, factual similarity, outcome, extracted principle, how it applies to THIS case.
 
-STOP after section 9."""),
-                ("PASS 4/5", f"""
+## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (1000+ words)
+For EACH relevant provision write a paragraph APPLYING it to THIS case — section + Act + year + jurisdiction + specific relevance. Not generic descriptions.
 
-NOW GENERATE ONLY SECTIONS 10-12. Write 4000+ WORDS for this pass. Sections 11 and 12 are critical — do NOT write thin bullet-point summaries.
+STOP after section 10."""),
 
-## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (800+ words)
-For EACH relevant statutory provision, write a paragraph APPLYING it to THIS case. Not generic descriptions of what the Act covers.
+                ("PASS 7/8", f"""
+NOW GENERATE ONLY SECTIONS 11-12. Write 3000+ WORDS for this pass.
 
 ## 11. HOW TO ARGUE EACH TOP GROUND
-You MUST cover EVERY ground — ALL {len(grounds)} of them. For EACH ground, write 400+ words covering:
+You MUST cover EVERY ground — ALL {len(grounds)} of them. For EACH ground write 400+ words:
 GROUNDS TO COVER:
 {grounds_enumerated}
 
 For each ground:
-- **Lead Proposition**: The core argument in 2 sentences
-- **Supporting Authority Cluster**: Specific statute section + 2-3 precedent cases with citations
-- **Expected Prosecution Answer**: What the Crown will argue (3-4 sentences, be specific)
-- **Rebuttal Strategy**: How to counter the Crown's argument at hearing (3-4 sentences)
-- **If Established**: What outcome this ground achieves
+- **Lead Proposition**: Core argument in 2 powerful sentences
+- **Supporting Authority Cluster**: Statute + 3 precedent cases with full citations and explanations
+- **Expected Prosecution Answer**: 4-5 sentences with specific authorities
+- **Rebuttal Strategy**: 4-5 sentences with counter-authorities
+- **If Established**: Specific court order to seek
 
-## 12. SUBMISSIONS BLUEPRINT (800+ words)
-Write ACTUAL DRAFT SUBMISSION TEXT ready for court — not bullet point summaries.
-**Written Submission Strategy**: Full argument sequence paragraphs that could be filed with the court. Include specific argument structure, authority placement, and framing of each ground.
-**Oral Submission Strategy**: Likely bench questions with prepared response lines. Time allocation per ground. Opening and closing strategies.
+## 12. SUBMISSIONS BLUEPRINT (1200+ words)
+Write ACTUAL DRAFT SUBMISSION TEXT ready for court.
+**Written Submissions**: Full argument sequence paragraphs with authority placement. Write the opening paragraph and closing paragraph.
+**Oral Submissions**: Bench questions with prepared responses. Time allocation per ground. Opening and closing strategies.
 
 STOP after section 12."""),
-                ("PASS 5/5", f"""
 
-NOW GENERATE ONLY SECTIONS 13-15. Write 4000+ WORDS for this pass. Section 15 is critical — it must be thorough and cover EVERY ground.
+                ("PASS 8/8", f"""
+NOW GENERATE ONLY SECTIONS 13-15. Write 4000+ WORDS for this pass. Section 15 is critical.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS (800+ words)
-Step-by-step guide with forms table. Each step: what to do in plain English, required form, deadline, and link.
+Step-by-step guide with forms table. Each step: plain English explanation, required form, deadline, link.
 
-## 14. PRIORITISED ACTION PLAN (600+ words)
-72-hour actions (urgent filings, time-sensitive steps) — at least 5 specific actions.
-7-day actions (evidence gathering, legal research) — at least 5 specific actions.
-28-day actions (submission drafting, hearing preparation) — at least 5 specific actions.
-Each action: what to do, who to contact, objective, and deadline.
+## 14. PRIORITISED ACTION PLAN (800+ words)
+72-hour actions (at least 5): exact action, who to contact, deadline, objective.
+7-day actions (at least 5): exact action, resources needed, dependencies.
+28-day actions (at least 5): exact action, preparation steps, milestones.
 
-## 15. CLIENT PLAIN-ENGLISH BRIEF (1500+ words)
-THIS IS NOT GENERIC WAFFLE. For EACH of the {len(grounds)} grounds, explain in plain English using ONLY third-person language:
-- What this ground means in simple terms
-- Why it matters for the appeal
-- What the chances of success are
-- What happens if it succeeds
+## 15. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
+For EACH of the {len(grounds)} grounds individually:
+- What this ground means in simple terms (3-4 sentences)
+- Why it matters (2-3 sentences)
+- Chances of success (honest assessment)
+- What happens if it succeeds (specific outcome)
 
 Then cover:
-- The overall appeal: what it is, why it's happening, and the timeline
-- The realistic possible outcomes and what each means for the applicant
-- Exactly what the applicant should do right now, this week, and this month
-- ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional". WRONG: "your opportunity" RIGHT: "the opportunity for the applicant"
+- The overall appeal: what, why, timeline
+- Each possible outcome and what it means personally
+- What the applicant should do right now, this week, this month
+- ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional".
 
-Do NOT truncate. Write ALL content for all 3 sections."""),
+Do NOT truncate. Write ALL content."""),
             ]
             
             parts = []
@@ -2099,29 +2153,99 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
     min_lengths = {
-        "quick_summary": 9000,
-        "full_detailed": 35000,
-        "extensive_log": 120000
+        "quick_summary": 14000,
+        "full_detailed": 80000,
+        "extensive_log": 150000
     }
     target_length = min_lengths.get(report_type, 12000)
     if aggressive_mode:
         target_length = int(target_length * 2.0)
 
-    # Skip expansion for full_detailed and extensive_log — multi-pass already produces substantial content
-    if len(response) < target_length and report_type not in ("extensive_log", "full_detailed"):
-        try:
-            expansion_prompt = f"""{case_context}
+    # Expand ANY report that falls below target — multi-pass reports can still be short
+    if len(response) < target_length:
+        logger.info(f"Report below target ({len(response)} < {target_length}), running expansion pass(es)")
+        
+        if report_type in ("full_detailed", "extensive_log"):
+            # For multi-pass reports, expand the THINNEST sections individually to avoid 502 errors
+            sections = _split_report_sections(response)
+            # Sort sections by content length (shortest first) and expand the thin ones
+            thin_sections = [(heading, content) for heading, content in sections if heading and len(content) < 3000]
+            thin_sections.sort(key=lambda x: len(x[1]))
+            
+            for heading, content in thin_sections[:6]:  # Expand up to 6 thin sections
+                try:
+                    section_expand_prompt = f"""You are expanding one section of a legal report for a criminal appeal case.
 
-You must expand the report below to at least {target_length} characters. Keep ALL headings exactly as-is. Do NOT remove or rewrite any existing text — only ADD new paragraphs with case-specific details, dates, document references, and authorities. Avoid repetition. Maintain the tone of the report. If aggressive mode is on, keep the assertive advocacy style and add stronger authority chains.
+CASE CONTEXT:
+{case_context[:15000]}
+
+SECTION TO EXPAND: {heading}
+Current content ({len(content)} chars — this is TOO SHORT, must be 4000+ chars):
+
+{content}
+
+INSTRUCTIONS:
+- Rewrite this ENTIRE section with MUCH MORE detail. Target 4000-6000 characters minimum.
+- Reference specific case facts: names, dates, section numbers, case citations.
+- Write in flowing paragraphs, NOT bullet points.
+- Use Australian English and strict third-person language.
+- Include statutory references with full citations (section + Act + year + jurisdiction).
+- The section heading must remain exactly: {heading}
+- Do NOT include any other section headings. Write ONLY this one section.
+- Make the content case-specific — avoid generic legal advice.
+
+GROUNDS COVERED IN THIS CASE:
+{grounds_enumerated}
+"""
+                    expanded_section = await _subprocess_llm(section_expand_prompt)
+                    if expanded_section and len(expanded_section) > len(content) * 1.3:
+                        # Replace the thin section with the expanded version
+                        # Find the section in the response and replace it
+                        escaped_heading = re.escape(heading)
+                        section_pattern = rf"({escaped_heading})\n([\s\S]*?)(?=\n## \d+\.|$)"
+                        match = re.search(section_pattern, response)
+                        if match:
+                            # Extract just the new content (strip the heading if the LLM repeated it)
+                            new_content = expanded_section
+                            if new_content.strip().startswith(heading):
+                                new_content = new_content.strip()[len(heading):].strip()
+                            response = response[:match.start(2)] + new_content + response[match.end(2):]
+                            logger.info(f"Section expanded: {heading} ({len(content)} → {len(new_content)} chars)")
+                except Exception as exc:
+                    logger.warning(f"Section expansion failed for {heading}: {exc}")
+                    continue
+        else:
+            # For single-pass reports (quick_summary), try a full expansion
+            expansion_attempts = 0
+            while len(response) < target_length and expansion_attempts < 2:
+                expansion_attempts += 1
+                try:
+                    expansion_prompt = f"""{case_context}
+
+The report below is {len(response)} characters but must be at least {target_length} characters. EXPAND IT SUBSTANTIALLY. 
+
+RULES:
+- Keep ALL existing ## section headings exactly as-is. Do NOT rename or reorder sections.
+- Do NOT remove or rewrite any existing text — only ADD new paragraphs.
+- Add case-specific details: names, dates, section numbers, case citations, document references.
+- Every added paragraph must reference specific facts from THIS case.
+- Avoid repetition — add NEW analysis, additional authorities, deeper reasoning.
+- Write in FLOWING PARAGRAPHS, not bullet points.
+- Maintain Australian English and third-person language throughout.
 
 REPORT TO EXPAND:
 {response}
 """
-            expanded = await _subprocess_llm(expansion_prompt)
-            if expanded and len(expanded) > len(response):
-                response = expanded
-        except Exception as exc:
-            logger.warning(f"Report expansion skipped: {exc}")
+                    expanded = await _subprocess_llm(expansion_prompt)
+                    if expanded and len(expanded) > len(response) * 1.05:
+                        response = expanded
+                        logger.info(f"Expansion attempt {expansion_attempts}: {len(response)} chars")
+                    else:
+                        logger.warning(f"Expansion attempt {expansion_attempts} did not add enough content")
+                        break
+                except Exception as exc:
+                    logger.warning(f"Report expansion attempt {expansion_attempts} failed: {exc}")
+                    break
 
     response = _strip_report_placeholders(response)
     response = response.strip()
@@ -2499,8 +2623,9 @@ SOURCE REPORTS
             system_prompt,
             group_prompt,
             session_id=f"barrister-{case_id}-{group['slug']}",
-            max_tokens=14000,
-            timeout_seconds=240,
+            max_tokens=16384,
+            timeout_seconds=300,
+            task_type="report_generation",
         )
         group_response = _strip_report_placeholders(group_response)
         group_response = re.sub(r"\n{3,}", "\n\n", group_response).strip()
@@ -2549,7 +2674,8 @@ CURRENT BARRISTER BRIEF
                 expansion_prompt,
                 session_id=f"barrister-{case_id}-expand",
                 max_tokens=16384,
-                timeout_seconds=240,
+                timeout_seconds=300,
+                task_type="report_generation",
             )
             expanded_response = _strip_report_placeholders(expanded_response)
             expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
@@ -2595,8 +2721,9 @@ CURRENT BARRISTER BRIEF
                     system_prompt,
                     ground_prompt,
                     session_id=f"barrister-{case_id}-ground-{ground_index}-expand",
-                    max_tokens=12000,
-                    timeout_seconds=240,
+                    max_tokens=16384,
+                    timeout_seconds=300,
+                    task_type="report_generation",
                 )
                 subsection = _strip_report_placeholders(subsection)
                 subsection = re.sub(r"\n{3,}", "\n\n", subsection).strip()
@@ -2640,7 +2767,8 @@ CURRENT BARRISTER BRIEF
                 cross_analysis_prompt,
                 session_id=f"barrister-{case_id}-cross-analysis",
                 max_tokens=16384,
-                timeout_seconds=240,
+                timeout_seconds=300,
+                task_type="report_generation",
             )
             cross_analysis = _strip_report_placeholders(cross_analysis)
             cross_analysis = re.sub(r"\n{3,}", "\n\n", cross_analysis).strip()
@@ -2675,7 +2803,8 @@ CURRENT BARRISTER BRIEF
                 strategy_expansion_prompt,
                 session_id=f"barrister-{case_id}-strategy-expand",
                 max_tokens=16384,
-                timeout_seconds=240,
+                timeout_seconds=300,
+                task_type="report_generation",
             )
             rewritten_strategy = _strip_report_placeholders(rewritten_strategy)
             rewritten_strategy = re.sub(r"\n{3,}", "\n\n", rewritten_strategy).strip()
@@ -2720,8 +2849,9 @@ CURRENT BARRISTER BRIEF
             system_prompt,
             comparison_tables_prompt,
             session_id=f"barrister-{case_id}-comparison-tables",
-            max_tokens=12000,
-            timeout_seconds=240,
+            max_tokens=16384,
+            timeout_seconds=300,
+            task_type="report_generation",
         )
         comparison_tables = _strip_report_placeholders(comparison_tables)
         comparison_tables = re.sub(r"\n{3,}", "\n\n", comparison_tables).strip()
@@ -2800,8 +2930,9 @@ CURRENT BARRISTER BRIEF
                 system_prompt,
                 issue_matrix_prompt,
                 session_id=f"barrister-{case_id}-issue-matrix",
-                max_tokens=8000,
-                timeout_seconds=240,
+                max_tokens=16384,
+                timeout_seconds=300,
+                task_type="report_generation",
             )
             issue_matrix = _strip_report_placeholders(issue_matrix)
             issue_matrix = re.sub(r"\n{3,}", "\n\n", issue_matrix).strip()
@@ -3032,6 +3163,33 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         resumed_report["status"] = "generating"
         resumed_report["error"] = None
         return resumed_report
+
+    # If a completed report of this type already exists, reuse its ID (regenerate in-place)
+    existing_completed = await db.reports.find_one(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "report_type": report_type,
+            "status": "completed",
+            "content.aggressive_mode": {"$ne": True},
+        },
+        {"_id": 0, "report_id": 1},
+    )
+    if existing_completed:
+        report_id = existing_completed["report_id"]
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$set": {
+                "status": "generating",
+                "error": None,
+                "generated_at": datetime.now(timezone.utc).isoformat(),
+                "content": {"analysis": "", "aggressive_mode": False, "partial_analysis": "", "passes_completed": 0},
+            }}
+        )
+        asyncio.create_task(
+            _run_report_generation(report_id, case_id, user.user_id, report_type, False)
+        )
+        return {"report_id": report_id, "status": "generating", "report_type": report_type}
 
     # Create a placeholder report with "generating" status and return immediately
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
