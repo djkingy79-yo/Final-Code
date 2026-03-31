@@ -1172,11 +1172,25 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        # Check if a ground already exists from this issue
+        # Check if a ground already exists from this issue OR with a similar title
         existing = await db.grounds_of_merit.find_one(
             {"case_id": case_id, "user_id": user.user_id, "pipeline_source.issue_id": issue["issue_id"]},
             {"_id": 0, "ground_id": 1},
         )
+        # Fallback: check by fuzzy title match to prevent duplicates
+        if not existing:
+            title_words = set(w.lower() for w in issue.get("title", "").split() if len(w) > 3)
+            if title_words:
+                existing_grounds_cursor = db.grounds_of_merit.find(
+                    {"case_id": case_id, "user_id": user.user_id},
+                    {"_id": 0, "ground_id": 1, "title": 1},
+                )
+                async for eg in existing_grounds_cursor:
+                    eg_words = set(w.lower() for w in (eg.get("title") or "").split() if len(w) > 3)
+                    if eg_words and len(title_words & eg_words) / max(len(title_words), 1) > 0.5:
+                        existing = eg
+                        break
+
         if existing:
             ground_doc["ground_id"] = existing["ground_id"]
             await db.grounds_of_merit.replace_one(

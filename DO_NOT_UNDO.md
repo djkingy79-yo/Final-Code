@@ -161,3 +161,32 @@ NEVER use `"Case name"` as the example as the LLM copies it literally as data.
 
 Frontend filters in `GroundsOfMerit.jsx` strip out any similar case with case_name equal to 
 "Case name" or "R v [Surname] [Year]" or "optional" — NEVER remove these filters.
+
+## CRITICAL: PIPELINE VERIFICATION (DO NOT REMOVE)
+
+The Pipeline Verification section in `ReportsSection.jsx` with buttons "Verify Top 3 Issues" 
+and "Verify Top 6 Issues" MUST remain visible and functional. These call:
+`POST /api/cases/{case_id}/issues/verify-batch` with `{limit: 3}` or `{limit: 6}`.
+**NEVER hide or remove the Pipeline Verification block.**
+
+## CRITICAL: FUZZY DEDUPLICATION (DO NOT REMOVE)
+
+The ground deduplication logic in `backend/routers/grounds.py` and `backend/routers/pipeline.py` 
+uses fuzzy keyword matching (>50% word overlap) to prevent duplicate grounds from being created.
+**NEVER revert to exact-match-only deduplication.** The old approach caused grounds to multiply 
+from 5 to 13+ because slightly different titles about the same topic bypassed the check.
+
+## CRITICAL: REPORT TYPE COLOURS (DO NOT CHANGE)
+
+- Quick Summary (Free) → **Green** (emerald)
+- Full Detailed ($150) → **Blue**
+- Extensive Log ($200) → **Purple**
+- Barrister View → **Teal**
+
+These colours are used in `ReportView.jsx` (REPORT_THEME), `BarristerView.jsx` (teal header), 
+and `ReportsSection.jsx` (card colours). **NEVER make all reports the same colour.**
+
+## CRITICAL: WORD/PDF EXPORT → PREVIEW (DO NOT CHANGE TO DOWNLOAD)
+
+Word export buttons (Word All, Export Word) MUST open the document-preview page, NOT download 
+a .doc file. The user explicitly requested preview mode.

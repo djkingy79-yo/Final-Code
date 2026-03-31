@@ -729,16 +729,20 @@ const CaseDetail = ({ user }) => {
   const buildPrintAllHtml = () => {
     const defendant = caseData?.defendant_name || "Unknown";
     const title = caseData?.title || "Case";
+    const offence = (caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "N/A");
+    const offenceCapitalised = offence.charAt(0).toUpperCase() + offence.slice(1);
     let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${title} - ${defendant}</p></div>`;
-    // Case Summary
-    body += `<div class="export-body"><h2>Case Summary</h2>`;
-    body += `<p><strong>Title:</strong> ${title}</p>`;
-    body += `<p><strong>Defendant:</strong> ${defendant}</p>`;
-    body += `<p><strong>State:</strong> ${caseData?.state || "N/A"}</p>`;
-    body += `<p><strong>Offence:</strong> ${caseData?.offence_type || caseData?.offence_category || "N/A"}</p>`;
-    body += `<p><strong>Sentence:</strong> ${caseData?.sentence || "N/A"}</p>`;
-    if (caseData?.summary) body += `<p><strong>Summary:</strong> ${caseData.summary}</p>`;
-    body += `</div>`;
+    // DO_NOT_UNDO — Case Identity Card (inline styles for print compatibility)
+    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:15px;color:#0f172a;">${defendant}</strong></div>
+        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:15px;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
+        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:15px;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
+        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:13px;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
+      </div>
+      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11px;color:#1d4ed8;font-weight:600;">${caseData.court}${caseData?.case_number ? ' — ' + caseData.case_number : ''}</div>` : ''}
+    </div>`;
+    if (caseData?.summary) body += `<div class="export-body"><p>${caseData.summary}</p></div>`;
     // Documents list
     if (documents.length > 0) {
       body += `<div class="page-break"></div><div class="export-body"><h2>Uploaded Documents</h2>`;
