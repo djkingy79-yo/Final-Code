@@ -469,7 +469,7 @@ const ReportsSection = ({
 
   return (
     <>
-      {/* Pipeline Verification Block */}
+      {/* Pipeline Verification Block — DO NOT REMOVE */}
       <div className="rounded-lg border border-slate-200 p-3 mb-4 bg-white" data-testid="pipeline-verification-block">
         <div className="font-semibold text-xs text-slate-900 mb-1">Pipeline Verification</div>
         <div className="text-xs text-slate-600 mb-2">
@@ -507,7 +507,7 @@ const ReportsSection = ({
         {pipelineVerifyResult && (
           <div className="mt-3 rounded border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid="pipeline-verify-result">
             {pipelineVerifyResult.eligible_issues === 0 ? (
-              <div className="font-medium text-green-700">All issues have been verified. Ready to generate report.</div>
+              <div className="font-medium text-green-700">All issues verified. Ready to generate report.</div>
             ) : (
               <>
                 <div className="font-medium text-slate-900 mb-1">Verification Complete</div>
@@ -519,7 +519,7 @@ const ReportsSection = ({
         )}
       </div>
 
-      {/* Action Button */}
+      {/* Action Button — Generate Report */}
       <div className="flex justify-end mb-4">
         <Button 
           onClick={() => setShowReportDialog(true)}

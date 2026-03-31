@@ -1,51 +1,36 @@
 # Changelog
 
-## 31 March 2026 (Session 2 — continued)
+## 31 March 2026 (Session 2 — Final)
+### Fixes From User Screenshots
+1. **Pipeline Verification RESTORED** — Verify Top 3/6 buttons are back on Reports tab.
+2. **Duplicate Grounds Cleaned** — Removed 7 duplicate grounds (13 → 6 unique). Added fuzzy keyword matching to prevent future duplicates (>50% word overlap = duplicate).
+3. **Offence Capitalised** — "murder" → "Murder" in Report View header. Strips "The" prefix.
+4. **Barrister View → Teal** — Header background changed from blue to teal. Action buttons stay blue.
+5. **Word Export → Preview** — Word All, Export Word buttons now open in document-preview page instead of downloading .doc files.
+6. **ReportView.jsx cleaned** — Removed duplicate DraftSourceBadge, Pipeline Draft Summary, Pre-Draft Pipeline Activity. "Generated" badge everywhere.
+7. **Footer text shrunk** — "Created and Designed by Deb King" made smaller.
+8. **Report title font reduced** — text-3xl → text-xl on mobile.
+
+### Deep Analysis Integration
+- Investigate endpoint generates 500-800 word deep analysis via LLM after structured verification
+- Stored in `deep_analysis.full_analysis` AND `analysis` fields
+- Shows in grounds export/print view
+
+### "Case name" Placeholder Prevention
+- Fixed verify.py LLM prompt template (example was "Case name" → now "R v [Surname] [Year]")
+- Frontend filters strip placeholders in GroundsOfMerit.jsx
+- All DB placeholders cleaned
+
 ### Case Identity Card (DO_NOT_UNDO Protected)
-- Added prominent blue Case Identity Card to CaseDetail.jsx showing Defendant, Offence, State, Sentence in a 2x2 grid with blue border and labels
-- Added same card to GroundsOfMerit.jsx export/print view so all printed outputs include case details
-- Updated DO_NOT_UNDO.md with explicit protection for Case Identity Card
-
-### Deep Analysis Generation
-- Investigate endpoint now generates a 500-800 word deep analysis via LLM after structured verification
-- Deep analysis stored in `deep_analysis.full_analysis` AND `analysis` fields on the ground
-- Grounds export/print view already renders this via ReactMarkdown
-
-### "Case name" Placeholder Prevention (Permanent Fix)
-- Fixed verify.py LLM prompt template: changed example from `"Case name"` to `"R v [Surname] [Year]"` — the LLM was copying the example literally
-- Added frontend filters in GroundsOfMerit.jsx to strip out any similar case with case_name = "Case name" / "R v [Surname] [Year]" / "optional"
-- Cleaned ALL placeholder similar cases from database (4 fixed across all grounds)
-- Updated DO_NOT_UNDO.md with permanent guard against "Case name" placeholder
-
-### ReportView.jsx Cleanup
-- Removed duplicate DraftSourceBadge (showed "Drafted from legacy inputs")
-- Removed "Pipeline Draft Summary" section (Pipeline issues/Verified issues/Pre-draft activity)
-- VerificationBadge now maps draft/unverified to "Generated" in blue across all views
+- Prominent blue card on CaseDetail showing Defendant, Offence, State, Sentence
+- Same card in GroundsOfMerit export/print view
 
 ### Database Cleanup
-- Updated ALL 52 reports to verification_status: "generated" and draft_source: "pipeline"
-- Removed ALL "Case name" placeholder similar cases from grounds_of_merit
-
-## 31 March 2026 (Session 2)
-### UI Cleanup — Removed Confusing Pipeline Internals
-1. "Draft" badge → "Generated" in blue
-2. "Drafted from legacy inputs" REMOVED (DraftSourceBadge returns null)
-3. Report Metadata simplified (no more pipeline_issue_count etc.)
-4. Review Status widget REMOVED from case detail
-5. Pipeline Verification improved feedback ("All issues verified")
-6. Font sizes reduced on mobile
-7. "UNVERIFIED" badge → "AI-SUGGESTED" in blue
-
-### Bug Fixes (5 Critical)
-1. Google Auth Redirect — redirect to /dashboard, SPA navigate()
-2. Not Authenticated — logout checks Bearer header
-3. Print All enhanced — full ground details, documents, evidence
-4. iOS PDF — direct render instead of iframe srcDoc
-5. Similar Cases badge — AI-SUGGESTED
+- Reports: all 52 set to verification_status "generated", draft_source "pipeline"
+- Grounds: 7 duplicates deleted, 4 placeholder similar cases removed
 
 ## 30 March 2026
 - Auto-Detect Permanent Guards with DO_NOT_UNDO
-- UI Bug Fixes (React child error, legitimacy panel)
 - Verified Case Law Database Integration (Law tab)
 - Grounds Over-Generation Fix (capped to 8-10)
 - Investigate Duplicate Bug Fix

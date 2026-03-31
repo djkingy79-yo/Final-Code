@@ -921,15 +921,11 @@ const CaseDetail = ({ user }) => {
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
-                  toast.info("Generating Word document...");
                   const html = buildPrintAllHtml();
-                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
-                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a"); a.href = url; a.download = "complete_case_bundle.doc"; document.body.appendChild(a); a.click(); a.remove();
-                  setTimeout(() => URL.revokeObjectURL(url), 5000);
-                  toast.success("Word document ready!");
-                } catch { toast.error("Failed to export Word"); }
+                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View" }));
+                  window.open("/document-preview?mode=pdf", "_blank");
+                  toast.success("Word preview opened — use Print / Save as PDF");
+                } catch { toast.error("Failed to open Word preview"); }
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>

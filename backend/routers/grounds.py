@@ -677,9 +677,27 @@ async def auto_identify_grounds(case_id: str, request: Request):
     ).to_list(200)
 
     existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
+    existing_title_words = set()
+    for g in existing_grounds:
+        words = set(w.lower() for w in (g.get("title") or "").split() if len(w) > 3)
+        existing_title_words.update(words)
+
+    def is_duplicate(new_ground):
+        """Check if a ground is a duplicate by exact match OR keyword overlap"""
+        if (new_ground.get("title"), new_ground.get("ground_type")) in existing_titles:
+            return True
+        new_words = set(w.lower() for w in (new_ground.get("title") or "").split() if len(w) > 3)
+        if not new_words:
+            return False
+        overlap = new_words & existing_title_words
+        # If more than 50% of the new title's keywords are in existing grounds, it's a duplicate
+        if len(overlap) / len(new_words) > 0.5:
+            return True
+        return False
+
     new_grounds = [
         g for g in updated_grounds
-        if (g.get("title"), g.get("ground_type")) not in existing_titles
+        if not is_duplicate(g)
     ]
     skipped_duplicates = max(0, pipeline_result["classified_count"] - len(new_grounds))
 

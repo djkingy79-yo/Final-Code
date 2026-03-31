@@ -631,24 +631,9 @@ export default function BarristerView() {
   };
 
   const handleExportDOCX = async () => {
-    if (!report?.report_id || report?.status !== "completed") return;
-    try {
-      const response = await axios.get(`${API}/cases/${caseId}/reports/${report.report_id}/export-docx`, {
-        responseType: "blob",
-        timeout: 60000,
-      });
-      const blob = new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      });
-      await iosShareOrDownload(
-        blob,
-        `${caseData?.title || "Case"}_barrister_brief.docx`,
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      );
-      toast.success("Barrister brief Word document downloaded.");
-    } catch (error) {
-      toast.error("Failed to export the barrister brief Word document.");
-    }
+    // Open in preview mode instead of downloading
+    openBarristerPreview("pdf");
+    toast.success("Word preview opened — use Print / Save as PDF");
   };
 
   const handleDownloadAcceptancePack = async () => {
@@ -677,8 +662,8 @@ export default function BarristerView() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4" data-testid="barrister-view-loading">
-        <div className="w-full max-w-2xl rounded-xl overflow-hidden shadow-lg border-2 border-blue-300">
-          <div className="bg-blue-700 text-white px-6 py-4">
+        <div className="w-full max-w-2xl rounded-xl overflow-hidden shadow-lg border-2 border-teal-300">
+          <div className="bg-teal-600 text-white px-6 py-4">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -790,7 +775,7 @@ export default function BarristerView() {
               size="sm"
               onClick={handleDownloadAcceptancePack}
               disabled={!isCompleted}
-              className="bg-teal-600 text-white hover:bg-teal-700"
+              className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="barrister-acceptance-pack-button"
             >
               <Briefcase className="w-4 h-4 mr-2" /> Acceptance Pack
@@ -813,8 +798,8 @@ export default function BarristerView() {
         )}
 
         {isGenerating && (
-          <div className="rounded-xl overflow-hidden shadow-lg border-2 border-blue-300" data-testid="barrister-generating-state">
-            <div className="bg-blue-700 text-white px-6 py-4">
+          <div className="rounded-xl overflow-hidden shadow-lg border-2 border-teal-300" data-testid="barrister-generating-state">
+            <div className="bg-teal-600 text-white px-6 py-4">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
