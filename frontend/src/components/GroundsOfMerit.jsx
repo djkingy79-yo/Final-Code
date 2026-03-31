@@ -508,7 +508,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   <Lock className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     {groundsCount} Grounds of Merit Found!
                   </h3>
                   <p className="text-slate-600">
@@ -587,7 +587,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       </div>
                       
                       <h4 
-                        className="font-semibold text-slate-900 text-lg group-hover:text-blue-700 transition-colors"
+                        className="font-semibold text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
                         {ground.title}

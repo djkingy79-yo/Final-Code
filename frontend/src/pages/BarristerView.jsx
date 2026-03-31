@@ -1027,7 +1027,7 @@ export default function BarristerView() {
                 <div data-testid="barrister-verification-section">
                   <div className="border-l-4 border-teal-500 pl-4 mb-4">
                     <h3
-                      className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
+                      className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
                       style={{ fontFamily: "Crimson Pro, serif" }}
                     >
                       Verification and Review Status
@@ -1041,13 +1041,13 @@ export default function BarristerView() {
                       </span>
                     </div>
                     <div className="text-slate-700">
-                      Unverified grounds:{" "}
+                      Grounds pending investigation:{" "}
                       <span className="font-semibold text-slate-900">
                         {grounds.filter((g) => !g?.verification_status || g?.verification_status === "unverified" || g?.verification_status === "draft").length}
                       </span>
                     </div>
                     <div className="text-slate-700">
-                      Verified grounds:{" "}
+                      Investigated grounds:{" "}
                       <span className="font-semibold text-slate-900">
                         {grounds.filter((g) => g?.verification_status === "verified" || g?.verification_status === "reviewed").length}
                       </span>

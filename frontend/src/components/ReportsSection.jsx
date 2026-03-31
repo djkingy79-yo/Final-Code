@@ -53,23 +53,8 @@ async function verifyTopIssues(apiBase, caseId, limit) {
 }
 
 const DraftSourceBadge = ({ draftSource }) => {
-  const value = String(draftSource || "legacy").toLowerCase();
-
-  const classes = {
-    pipeline: "border-green-700 text-green-700",
-    legacy: "border-yellow-700 text-yellow-700",
-  };
-
-  const labels = {
-    pipeline: "Drafted from verified material",
-    legacy: "Drafted from legacy inputs",
-  };
-
-  return (
-    <span className={`px-2 py-1 rounded text-xs font-medium border ${classes[value] || classes.legacy}`} data-testid="draft-source-badge">
-      {labels[value] || "Draft source unknown"}
-    </span>
-  );
+  // Simplified — no need to expose pipeline internals to the user
+  return null;
 };
 
 const PipelineDraftPanel = ({ report }) => {
@@ -77,25 +62,13 @@ const PipelineDraftPanel = ({ report }) => {
 
   const metadata = report.metadata || {};
   const refresh = metadata.pipeline_refresh_before_draft || {};
-  const draftSource = report.content?.draft_source || "legacy";
 
-  const pipelineIssueCount = metadata.pipeline_issue_count ?? 0;
-  const pipelineVerificationCount = metadata.pipeline_verification_count ?? 0;
-
-  const hasPipelineData =
-    draftSource === "pipeline" ||
-    pipelineIssueCount > 0 ||
-    pipelineVerificationCount > 0 ||
-    Object.keys(refresh).length > 0;
-
-  if (!hasPipelineData) return null;
+  const hasRefreshData = Object.keys(refresh).length > 0 && refresh.refreshed;
+  if (!hasRefreshData) return null;
 
   return (
     <div className="mt-3 rounded border p-3 text-xs" data-testid="pipeline-draft-panel">
-      <div className="font-semibold mb-1">Pipeline Draft Status</div>
-      <div>Draft source: {draftSource}</div>
-      <div>Pipeline issues considered: {pipelineIssueCount}</div>
-      <div>Verified issues considered: {pipelineVerificationCount}</div>
+      <div className="font-semibold mb-1">Report Generation Details</div>
 
       {"refreshed" in refresh ? (
         <>
@@ -497,10 +470,10 @@ const ReportsSection = ({
   return (
     <>
       {/* Pipeline Verification Block */}
-      <div className="rounded-lg border border-slate-200 p-4 mb-4 bg-white" data-testid="pipeline-verification-block">
-        <div className="font-semibold text-sm text-slate-900 mb-2">Pipeline Verification</div>
-        <div className="text-xs text-slate-600 mb-3">
-          Verify classified issues before drafting a report. This improves evidentiary linkage and gives stronger barrister-facing output.
+      <div className="rounded-lg border border-slate-200 p-3 mb-4 bg-white" data-testid="pipeline-verification-block">
+        <div className="font-semibold text-xs text-slate-900 mb-1">Pipeline Verification</div>
+        <div className="text-xs text-slate-600 mb-2">
+          Verify classified issues before generating a report. This strengthens evidentiary linkage for better output.
         </div>
         <div className="flex flex-wrap gap-2">
           <Button
@@ -533,14 +506,14 @@ const ReportsSection = ({
         )}
         {pipelineVerifyResult && (
           <div className="mt-3 rounded border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid="pipeline-verify-result">
-            <div className="font-medium text-slate-900 mb-1">Verification Result</div>
-            <div>Eligible issues: {pipelineVerifyResult.eligible_issues}</div>
-            <div>Attempted: {pipelineVerifyResult.attempted}</div>
-            <div>Verified: {pipelineVerifyResult.verified}</div>
-            <div>Failed: {pipelineVerifyResult.failed}</div>
-            <div>Projected grounds synced: {pipelineVerifyResult.synced_count}</div>
-            {pipelineVerifyResult.message && (
-              <div className="mt-2 text-slate-500">{pipelineVerifyResult.message}</div>
+            {pipelineVerifyResult.eligible_issues === 0 ? (
+              <div className="font-medium text-green-700">All issues have been verified. Ready to generate report.</div>
+            ) : (
+              <>
+                <div className="font-medium text-slate-900 mb-1">Verification Complete</div>
+                <div>Verified: {pipelineVerifyResult.verified} of {pipelineVerifyResult.attempted} issues</div>
+                <div>Grounds synced: {pipelineVerifyResult.synced_count}</div>
+              </>
             )}
           </div>
         )}
@@ -763,7 +736,6 @@ const ReportsSection = ({
                           </div>
                           <div className="flex flex-wrap items-center gap-2 mt-2">
                             <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
-                            <DraftSourceBadge draftSource={report.content?.draft_source} />
                           </div>
                         </div>
                       </div>
@@ -865,14 +837,7 @@ const ReportsSection = ({
                       {/* Draft source & verification badges */}
                       <div className="flex flex-wrap items-center gap-2 mb-3">
                         <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
-                        <DraftSourceBadge draftSource={report.content?.draft_source} />
                       </div>
-                      {report?.content?.draft_source === "pipeline" ? (
-                        <div className="mt-2 mb-3 text-xs opacity-80">
-                          This report was drafted from extracted, classified, and verified pipeline materials rather than raw document blobs.
-                        </div>
-                      ) : null}
-                      <PipelineDraftPanel report={report} />
 
                       {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
@@ -896,23 +861,6 @@ const ReportsSection = ({
                         <div className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100" data-testid={`report-ai-warning-${report.report_id}`}>
                           This report is AI-assisted analysis for case preparation and legal review. It is not a determination of legal merit or appeal outcome.
                         </div>
-
-                        {/* Pre-Draft Pipeline Activity */}
-                        {report?.metadata?.pipeline_refresh_before_draft && (
-                          <div className="mt-3 rounded border border-slate-200 p-3 text-xs text-slate-700 bg-slate-50" data-testid={`pipeline-metadata-${report.report_id}`}>
-                            <div className="font-medium text-slate-900 mb-1">Pre-Draft Pipeline Activity</div>
-                            <div>Refreshed before draft: {report.metadata.pipeline_refresh_before_draft.refreshed ? "Yes" : "No"}</div>
-                            <div>Extracted: {report.metadata.pipeline_refresh_before_draft.extracted_count ?? 0}</div>
-                            <div>Classified: {report.metadata.pipeline_refresh_before_draft.classified_count ?? 0}</div>
-                            <div>Synced: {report.metadata.pipeline_refresh_before_draft.synced_count ?? 0}</div>
-                            {report.metadata.pipeline_refresh_before_draft.auto_verify_result && (
-                              <>
-                                <div>Auto-verify attempted: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.attempted ?? 0}</div>
-                                <div>Auto-verify succeeded: {report.metadata.pipeline_refresh_before_draft.auto_verify_result.verified ?? 0}</div>
-                              </>
-                            )}
-                          </div>
-                        )}
                       </div>
 
                       {/* Report Metadata Panel */}

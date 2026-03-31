@@ -1,25 +1,27 @@
 const LABELS = {
-  unverified: "Unverified",
-  draft: "Draft",
+  unverified: "Generated",
+  draft: "Generated",
   reviewed: "Reviewed",
   verified: "Verified",
+  completed: "Complete",
 };
 
 const CLASSES = {
   verified: "border-green-600 text-green-700",
   reviewed: "border-blue-600 text-blue-700",
-  draft: "border-yellow-600 text-yellow-700",
-  unverified: "border-red-600 text-red-700",
+  completed: "border-green-600 text-green-700",
+  draft: "border-blue-600 text-blue-700",
+  unverified: "border-blue-600 text-blue-700",
 };
 
 const VerificationBadge = ({ status }) => {
-  const normalised = String(status || "unverified").toLowerCase();
+  const normalised = String(status || "draft").toLowerCase();
   return (
     <span
       data-testid="verification-badge"
-      className={`px-2 py-1 rounded text-xs font-medium border ${CLASSES[normalised] || CLASSES.unverified}`}
+      className={`px-2 py-1 rounded text-xs font-medium border ${CLASSES[normalised] || CLASSES.draft}`}
     >
-      {LABELS[normalised] || "Unverified"}
+      {LABELS[normalised] || "Generated"}
     </span>
   );
 };

@@ -953,7 +953,7 @@ const CaseDetail = ({ user }) => {
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4">
             <h1 
-              className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight"
+              className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight"
               style={{ fontFamily: 'Crimson Pro, serif' }}
               data-testid="case-title"
             >
@@ -1007,21 +1007,7 @@ const CaseDetail = ({ user }) => {
             <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
           )}
 
-          {/* Review Status Summary Widget */}
-          <div className="mt-4 rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="review-status-widget">
-            <div className="font-semibold mb-2 text-sm text-slate-800">Review Status</div>
-            <div className="grid grid-cols-3 gap-3 text-sm text-slate-600">
-              <div>Unverified grounds: <span className="font-semibold text-slate-900">
-                {grounds.filter(g => !g.verification_status || g.verification_status === "unverified" || g.verification_status === "draft").length}
-              </span></div>
-              <div>AI-generated timeline events: <span className="font-semibold text-slate-900">
-                {timeline.filter(e => e.source_mode === "ai_generated" || !e.source_mode).length}
-              </span></div>
-              <div>Draft reports: <span className="font-semibold text-slate-900">
-                {reports.filter(r => r.status === "completed" && (!r.verification_status || r.verification_status === "draft")).length}
-              </span></div>
-            </div>
-          </div>
+          {/* Review Status — hidden for clarity, the tabs themselves convey status */}
         </div>
 
         {/* Tabs */}
