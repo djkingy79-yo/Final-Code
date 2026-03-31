@@ -15,13 +15,13 @@ Criminal Appeal Case Manager for Australian jurisdictions. Features secure docum
 /app/
 ├── backend/
 │   ├── models/           # Pydantic models (DO NOT UNDO guards)
-│   ├── routers/          # auth, cases, grounds, payments, caselaw
+│   ├── routers/          # auth, cases, grounds, payments, caselaw, pipeline
 │   ├── services/pipeline # AI pipeline stages
-│   └── server.py         # Core logic (~7000 lines)
+│   └── server.py         # Core logic
 ├── frontend/src/
-│   ├── components/       # GroundsOfMerit, CaseLawPanel, etc.
-│   ├── pages/            # Dashboard, CaseDetail, ReportView, etc.
-│   └── App.js            # Routing and Auth (DO NOT UNDO)
+│   ├── components/       # GroundsOfMerit, CaseLawPanel, ReportsSection, etc.
+│   ├── pages/            # Dashboard, CaseDetail, ReportView, BarristerView, etc.
+│   └── App.js            # Routing and Auth
 ```
 
 ## Integrations
@@ -32,25 +32,24 @@ Criminal Appeal Case Manager for Australian jurisdictions. Features secure docum
 
 ## What's Been Implemented
 - Full authentication (Google OAuth + email/password)
-- Document upload & management
+- Document upload & management (22 docs)
 - AI pipeline: Extract → Classify → Verify → Project → Argue
-- Grounds of merit identification and investigation
+- Grounds of merit identification and investigation (5 grounds)
 - Tiered report generation (Free, $150, $200, Barrister)
 - PDF/DOCX export with branded footers
 - Timeline generation and analysis
 - Case Law search integration (AustLII, NSW Caselaw, etc.)
-- Print All / PDF All / Word All export
+- Print All / PDF All / Word All export (enhanced with full content)
 - Case sharing & collaboration
 - Admin dashboard & stats
-- Verified Case Law Database (Law tab)
-- Pipeline Progress tracking
-- Deadline Tracker with Google Calendar
+- Pipeline Verification (Verify Top 3/6 Issues)
 - DO_NOT_UNDO permanent guards
+- iOS-compatible document preview (direct render)
 
 ## Key DB Collections
 - `users`, `user_sessions`, `cases`, `documents`
 - `grounds_of_merit`, `reports`, `notes`, `timeline_events`
-- `payments`, `case_shares`
+- `payments`, `case_shares`, `issue_classifications`, `issue_verifications`
 
 ## P0/P1/P2 Remaining
 - P1: Native Mobile App (Capacitor configured)
