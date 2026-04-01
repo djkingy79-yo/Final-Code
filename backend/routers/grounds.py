@@ -328,11 +328,17 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
 
 
 async def _ensure_pipeline_identification(case: dict, documents: list) -> dict:
-    """Full staged path: extract → refresh → classify → sync to grounds."""
+    """Full staged path: extract → refresh → classify → sync to grounds.
+    DO_NOT_UNDO — Final safety net: runs cleanup_duplicate_grounds AFTER sync.
+    """
+    from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
     extracted_count = await _ensure_document_extracts(case, documents)
     case_extract = await _refresh_case_extract_from_pipeline(case)
     issues = await _classify_pipeline_issues(case, case_extract)
     synced_count = await _sync_pipeline_issues_to_grounds(case["case_id"], case["user_id"])
+    # Safety net: clean up any duplicates that may have slipped through
+    await cleanup_duplicate_grounds(db, case["case_id"], case["user_id"])
+    await cleanup_duplicate_issues(db, case["case_id"], case["user_id"])
     return {"extracted_count": extracted_count, "classified_count": len(issues), "synced_count": synced_count}
 
 
@@ -785,4 +791,31 @@ async def auto_identify_grounds(case_id: str, request: Request):
         ),
         "unlock_required": True,
         "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]
+    }
+
+
+
+# ============================================================================
+# DEDUP CLEANUP ENDPOINT
+# ============================================================================
+
+@router.post("/cases/{case_id}/grounds/cleanup-duplicates", response_model=dict)
+async def cleanup_ground_duplicates(case_id: str, request: Request):
+    """DO_NOT_UNDO — Remove duplicate grounds using fuzzy deduplication.
+    Merges data from duplicates into the kept ground (first by created_at).
+    """
+    user = await get_current_user(request)
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
+
+    grounds_result = await cleanup_duplicate_grounds(db, case_id, user.user_id)
+    issues_result = await cleanup_duplicate_issues(db, case_id, user.user_id)
+
+    return {
+        "grounds": grounds_result,
+        "issues": issues_result,
+        "message": f"Cleaned up {grounds_result['removed']} duplicate grounds and {issues_result['removed']} duplicate issues.",
     }

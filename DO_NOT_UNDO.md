@@ -172,18 +172,25 @@ and "Verify Top 6 Issues" MUST remain visible and functional. These call:
 ## CRITICAL: FUZZY DEDUPLICATION (DO NOT WEAKEN — BROKE 41+ TIMES)
 
 The ground deduplication logic uses THREE methods via `backend/services/ground_dedup.py`:
-1. **Legal Topic Classification** — maps titles to topic buckets (judge_alone_trial, psychiatric_evidence,
-   media_coverage, jury_misconduct, sentencing_error, etc.). If two titles share ANY topic, they're duplicates.
-   Keywords must cover all word variants (e.g. "juror"/"jury", "manifest"/"manifestly").
-2. **fuzzywuzzy token_set_ratio** — threshold >= 55.
+1. **Legal Topic Classification** — maps titles to 12 topic buckets (judge_alone_trial, psychiatric_evidence,
+   media_coverage, jury_misconduct, sentencing_error, ineffective_counsel, evidence_admissibility,
+   fresh_evidence, prosecutorial_misconduct, judicial_direction, unreasonable_verdict, procedural_error).
+   If two titles share ANY topic, they're duplicates.
+   Keywords must cover all word variants (e.g. "juror"/"jury", "manifest"/"manifestly", "ineffective counsel"/"ineffective assistance").
+2. **fuzzywuzzy token_set_ratio** — threshold >= 65.
 3. **Bidirectional word overlap** — threshold > 0.45 in BOTH directions.
 
-Applied in **ALL FIVE** ground creation paths:
-- `backend/routers/grounds.py` — `_classify_pipeline_issues` AND `_sync_pipeline_issues_to_grounds`
-- `backend/routers/pipeline.py` — `_verify_issue_and_sync`
-- `backend/routers/grounds.py` — `auto_identify_grounds`
-- `backend/routers/pipeline_staged.py` — `classify_issues` AND `sync_grounds_from_issues`
-- `backend/server.py` — `_sync_pipeline_to_grounds` (FIXED: was using exact-title upsert, now uses fuzzy dedup)
+Applied in **ALL** ground creation paths — every insert/upsert to `grounds_of_merit` or `issue_classifications` MUST use fuzzy dedup:
+- `backend/routers/grounds.py` — `_classify_pipeline_issues`, `_sync_pipeline_issues_to_grounds`, `auto_identify_grounds`
+- `backend/routers/pipeline.py` — `_sync_pipeline_projection_to_grounds`, `_verify_issue_and_sync`
+- `backend/routers/pipeline_staged.py` — `_classify_issues`, `_sync_pipeline_projection_to_grounds`, `classify_issues`, `sync_grounds_from_issues`
+- `backend/server.py` — `_ensure_issue_classifications`, `_sync_pipeline_projection_to_grounds`
+
+**SAFETY NETS (2 Apr 2026):**
+- `startup_dedup_grounds` in `server.py` — runs `cleanup_duplicate_grounds()` on EVERY server start
+- `_ensure_pipeline_identification` in `grounds.py` — runs `cleanup_duplicate_grounds()` AFTER every sync
+- `_refresh_pipeline_for_reporting` in `server.py` — runs `cleanup_duplicate_grounds()` AFTER every report generation sync
+- `POST /cases/{case_id}/grounds/cleanup-duplicates` — manual dedup endpoint
 
 **NEVER remove the topic classification step.** Previous fuzzywuzzy-only (threshold 65) still let grounds
 multiply because titles like "Sentencing Error Related to Non-Parole Period" vs "Sentencing Error Due to
@@ -191,8 +198,11 @@ Misapplication of Psychological Evidence" scored only 59 (below threshold).
 
 **NEVER revert to exact-title-match upserts.** Every slight wording change creates a new ground.
 
-**NEVER remove word variants from LEGAL_TOPICS keywords.** Missing variants like "juror impartial" (vs "jury impartial")
-and "manifest excessive" (vs "manifestly excessive") caused grounds to multiply from 4 to 15 in one session.
+**NEVER remove word variants from LEGAL_TOPICS keywords.** Missing variants like "juror impartial" (vs "jury impartial"),
+"manifest excessive" (vs "manifestly excessive"), "ineffective assistance" (vs "ineffective counsel"),
+and "improper admission" (vs "improperly admitted") caused grounds to multiply from 4 to 15+ in one session.
+
+**NEVER remove the startup dedup or post-sync dedup safety nets.** These are the final defence against any future bypass.
 
 ## CRITICAL: REPORT TYPE COLOURS (DO NOT CHANGE)
 

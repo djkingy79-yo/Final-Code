@@ -697,7 +697,10 @@ async def _refresh_pipeline_for_reporting(case: dict, documents: list, report_ty
     3. ensure issue classifications
     4. optionally auto-verify top issues by report tier
     5. sync projection into grounds
+    6. DO_NOT_UNDO — safety net dedup cleanup after sync
     """
+    from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
+
     extracted_count = await _ensure_document_extracts_for_case(case, documents)
     case_extract = await _refresh_case_extract_for_case(case)
     issues = await _ensure_issue_classifications(case, case_extract)
@@ -707,6 +710,10 @@ async def _refresh_pipeline_for_reporting(case: dict, documents: list, report_ty
     auto_verify_result = await _auto_verify_selected_issues(case, selected_issues)
 
     synced_count = await _sync_pipeline_projection_to_grounds(case)
+
+    # Safety net: clean up any duplicates that may have slipped through
+    await cleanup_duplicate_grounds(db, case["case_id"], case["user_id"])
+    await cleanup_duplicate_issues(db, case["case_id"], case["user_id"])
 
     return {
         "extracted_count": extracted_count,
@@ -4680,6 +4687,44 @@ async def cleanup_orphaned_reports():
                     }}
                 )
                 logger.info(f"Restored report {report['report_id']} to completed ({len(analysis)} chars)")
+
+
+@app.on_event("startup")
+async def startup_dedup_grounds():
+    """DO_NOT_UNDO — Auto-cleanup duplicate grounds on every server start.
+    
+    Runs the fuzzy deduplication cleanup across ALL cases to merge any duplicates
+    that slipped through before the dedup logic was fully applied.
+    This prevents the recurring 'grounds multiplying' bug from ever persisting.
+    """
+    from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
+
+    try:
+        # Get all unique (case_id, user_id) pairs that have grounds
+        pipeline = [
+            {"$group": {"_id": {"case_id": "$case_id", "user_id": "$user_id"}}},
+        ]
+        case_pairs = await db.grounds_of_merit.aggregate(pipeline).to_list(500)
+
+        total_removed = 0
+        for pair in case_pairs:
+            cid = pair["_id"]["case_id"]
+            uid = pair["_id"]["user_id"]
+
+            # Cleanup grounds
+            result = await cleanup_duplicate_grounds(db, cid, uid)
+            if result["removed"] > 0:
+                total_removed += result["removed"]
+
+            # Also cleanup issue_classifications
+            await cleanup_duplicate_issues(db, cid, uid)
+
+        if total_removed > 0:
+            logger.info(f"Startup dedup: removed {total_removed} duplicate grounds across {len(case_pairs)} cases")
+        else:
+            logger.info(f"Startup dedup: no duplicates found across {len(case_pairs)} cases")
+    except Exception as e:
+        logger.error(f"Startup dedup failed (non-fatal): {e}")
 
 
 @app.on_event("shutdown")
