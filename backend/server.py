@@ -3250,10 +3250,28 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
     except Exception as exc:
         logger.error(f"Barrister brief {report_id} generation failed: {exc}")
         friendly_error = "Barrister brief generation was interrupted by a temporary AI service error. Please generate again."
-        await db.reports.update_one(
+        # DO_NOT_UNDO — Restore backup on failure
+        backup_doc = await db.reports.find_one(
             {"report_id": report_id},
-            {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}},
+            {"_id": 0, "content.backup_analysis": 1}
         )
+        backup = (backup_doc or {}).get("content", {}).get("backup_analysis", "")
+        if backup and len(backup) > 5000:
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {
+                    "status": "completed",
+                    "error": None,
+                    "content.analysis": backup,
+                },
+                "$unset": {"content.backup_analysis": 1}}
+            )
+            logger.info(f"Barrister {report_id} generation failed but restored from backup ({len(backup)} chars)")
+        else:
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}},
+            )
 
 async def _run_report_generation(report_id: str, case_id: str, user_id: str, report_type: str, aggressive_mode: bool):
     """Background task that generates the AI report and updates the DB record — HARDENED with metadata."""
@@ -3458,8 +3476,10 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     )
     if existing_completed:
         report_id = existing_completed["report_id"]
-        # DO_NOT_UNDO — Backup existing content before regeneration.
-        # If generation fails or server restarts, the old content is preserved.
+        # DO_NOT_UNDO — NEVER wipe content.analysis during regeneration.
+        # Keep the old report visible to the user while the new one generates.
+        # Only clear partial_analysis and passes_completed (used by the generation engine).
+        # The old analysis stays visible until the new generation completes and overwrites it.
         existing_doc = await db.reports.find_one({"report_id": report_id}, {"_id": 0, "content.analysis": 1})
         old_analysis = existing_doc.get("content", {}).get("analysis", "") if existing_doc else ""
         await db.reports.update_one(
@@ -3468,13 +3488,10 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
                 "status": "generating",
                 "error": None,
                 "generated_at": datetime.now(timezone.utc).isoformat(),
-                "content": {
-                    "analysis": "",
-                    "aggressive_mode": False,
-                    "partial_analysis": "",
-                    "passes_completed": 0,
-                    "backup_analysis": old_analysis,
-                },
+                "content.partial_analysis": "",
+                "content.passes_completed": 0,
+                "content.aggressive_mode": False,
+                "content.backup_analysis": old_analysis,
             }}
         )
         asyncio.create_task(
@@ -3572,28 +3589,35 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
     current_report = existing_reports[0] if existing_reports else None
     if current_report and not regenerate:
         current_status = current_report.get("status")
+        report_id_cur = current_report.get("report_id")
         if current_status == "completed":
             current_analysis = ((current_report.get("content") or {}).get("analysis") or "").strip()
             if len(current_analysis) < 4000:
+                # DO_NOT_UNDO — Backup before auto-regen of thin barrister report
                 await db.reports.update_one(
-                    {"report_id": current_report.get("report_id")},
-                    {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+                    {"report_id": report_id_cur},
+                    {"$set": {
+                        "status": "generating",
+                        "error": None,
+                        "generated_at": datetime.now(timezone.utc).isoformat(),
+                        "content.backup_analysis": current_analysis,
+                    }},
                 )
                 current_report["status"] = "generating"
                 current_report["error"] = None
-                asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
+                asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
                 return current_report
             return current_report
         if current_status == "failed":
             temporary_error = str(current_report.get("technical_error") or current_report.get("error") or "")
             if re.search(r"502|BadGateway|OpenAIException|temporary AI service error|timed out", temporary_error, re.I):
                 await db.reports.update_one(
-                    {"report_id": current_report.get("report_id")},
+                    {"report_id": report_id_cur},
                     {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
                 )
                 current_report["status"] = "generating"
                 current_report["error"] = None
-                asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
+                asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
                 return current_report
             return current_report
         if current_status == "generating":
@@ -3604,16 +3628,16 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
 
             timeout_message = "Barrister brief generation timed out. Please generate again."
             await db.reports.update_one(
-                {"report_id": current_report.get("report_id")},
+                {"report_id": report_id_cur},
                 {"$set": {"status": "failed", "error": timeout_message, "technical_error": timeout_message}},
             )
             await db.reports.update_one(
-                {"report_id": current_report.get("report_id")},
+                {"report_id": report_id_cur},
                 {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
             )
             current_report["status"] = "generating"
             current_report["error"] = None
-            asyncio.create_task(_run_barrister_report_generation(current_report.get("report_id"), case_id, user.user_id))
+            asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
             return current_report
 
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"

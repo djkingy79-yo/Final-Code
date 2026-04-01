@@ -425,6 +425,17 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER remove the missing section repair block** in server.py (between dedup and expansion)
 - **NEVER remove the repair_report.py script** — it's the only way to fix existing broken reports
 
+### Content Backup During Regeneration (DO NOT UNDO)
+- When a user clicks Generate on an existing completed report, the old `content.analysis` is saved to `content.backup_analysis`
+- The old analysis STAYS VISIBLE (NOT wiped) while the new generation runs
+- If generation FAILS: backup is automatically restored → user never loses their report
+- If server RESTARTS mid-generation: startup cleanup restores from backup
+- If generation SUCCEEDS: backup is cleared, new content replaces old
+- This applies to BOTH standard reports AND barrister view
+- **NEVER wipe `content.analysis` to empty string when starting regeneration**
+- **NEVER remove the backup_analysis save/restore logic**
+- **NEVER remove the startup cleanup backup restoration code**
+
 ### Condensed Prompt for Multi-Pass Reports (DO NOT UNDO)
 - `backend/server.py` builds a `condensed_prompt` (~18-21k chars) alongside the full `user_prompt` (~134k chars)
 - Pass 1 (and sometimes Pass 2 for full_detailed) uses the full prompt with raw document text
