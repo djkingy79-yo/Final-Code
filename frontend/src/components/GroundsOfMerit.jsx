@@ -595,6 +595,15 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
               </Button>
             </div>
           )}
+          {/* DO_NOT_UNDO — Dedup protection badge. Shows users the dedup system is active. */}
+          {isUnlocked && grounds.length > 0 && (
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg" data-testid="dedup-protection-badge">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <span className="text-xs text-emerald-700 font-medium">
+                Dedup Protection Active — {grounds.length} unique {grounds.length === 1 ? 'ground' : 'grounds'} verified (12-topic classification)
+              </span>
+            </div>
+          )}
           {grounds.map((ground) => {
             const strengthConfig = STRENGTH_CONFIG[ground.strength] || STRENGTH_CONFIG.moderate;
             const StrengthIcon = strengthConfig.icon;

@@ -245,3 +245,41 @@ async def get_submitted_stories(request: Request):
     
     stories = await db.success_stories.find({}, {"_id": 0}).sort("timestamp", -1).to_list(100)
     return {"stories": stories}
+
+
+# ============ DATABASE NORMALISATION ============
+
+@router.post("/admin/normalise-db")
+async def normalise_database(request: Request):
+    """DO_NOT_UNDO — Run database normalisation script (admin only).
+    Fixes missing fields, removes stale sessions, and cleans up duplicate grounds.
+    Safe to run multiple times (idempotent).
+    """
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    from scripts.normalise_db import (
+        normalise_cases, normalise_grounds, normalise_reports,
+        normalise_documents, normalise_timeline_events,
+        normalise_issue_classifications, cleanup_stale_sessions,
+        run_ground_dedup,
+    )
+
+    results = {}
+    results["cases"] = await normalise_cases(db)
+    results["grounds"] = await normalise_grounds(db)
+    results["reports"] = await normalise_reports(db)
+    results["documents"] = await normalise_documents(db)
+    results["timeline_events"] = await normalise_timeline_events(db)
+    results["issue_classifications"] = await normalise_issue_classifications(db)
+    results["sessions"] = await cleanup_stale_sessions(db)
+    results["dedup"] = await run_ground_dedup(db)
+
+    total_updated = sum(r.get("updated", 0) for r in results.values())
+    total_removed = results["sessions"].get("removed", 0) + results["dedup"].get("grounds_removed", 0) + results["dedup"].get("issues_removed", 0)
+
+    return {
+        "results": results,
+        "summary": f"{total_updated} documents updated, {total_removed} stale entries removed",
+    }

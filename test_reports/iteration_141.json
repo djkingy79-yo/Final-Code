@@ -1,0 +1,55 @@
+{
+  "summary": "Verified P3 Database Normalisation and Dedup Protection Badge features. All tests pass: normalise_db.py is idempotent (0 updates on second run), admin endpoint works, cleanup-duplicates endpoint returns stats, dedup test suite passes all 6 tests, frontend dedup badge displays correctly with green CheckCircle icon showing '6 unique grounds verified (12-topic classification)'.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/scripts/normalise_db.py",
+    "/app/backend/tests/test_ground_dedup.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "normalise_db.py correctly handles 8 normalisation functions: cases, grounds, reports, documents, timeline_events, issue_classifications, sessions cleanup, and dedup",
+    "Script is idempotent - second run shows 0 updates across all collections",
+    "POST /api/admin/normalise-db endpoint requires admin auth (ADMIN_EMAILS env var)",
+    "POST /api/cases/{case_id}/grounds/cleanup-duplicates returns detailed stats",
+    "Dedup badge in GroundsOfMerit.jsx uses data-testid='dedup-protection-badge' with green CheckCircle icon",
+    "Badge only shows when isUnlocked && grounds.length > 0",
+    "Startup dedup confirmed in backend logs: 'Startup dedup: no duplicates found across 39 cases'"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (health endpoint, normalise-db endpoint, cleanup-duplicates endpoint, dedup test suite all pass)",
+    "frontend": "100% (landing page loads, login works, dashboard shows 3 cases, case detail shows dedup badge)"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88"
+  },
+  "seed_data_creation": "None - used existing test data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "P3 Database Normalisation and Dedup Badge features verified. normalise_db.py is idempotent (362 docs fixed on first run, 0 on subsequent runs). Admin endpoint at /api/admin/normalise-db works with admin auth. Dedup badge shows in GroundsOfMerit.jsx with green CheckCircle icon and text 'Dedup Protection Active — X unique grounds verified (12-topic classification)'. Case case_f8bf63e9dcbe (Homann v R) has 6 grounds with dedup badge visible.",
+  "verified_features": {
+    "health_endpoint": "PASS - returns healthy with database connected",
+    "normalise_db_script_runs": "PASS - script executes successfully",
+    "normalise_db_idempotent": "PASS - second run shows 0 updates (all collections already normalised)",
+    "admin_normalise_db_endpoint": "PASS - returns detailed results with summary",
+    "cleanup_duplicates_endpoint": "PASS - returns grounds and issues stats",
+    "ground_dedup_test_suite": "PASS - all 6 tests pass",
+    "startup_dedup_logs": "PASS - confirmed 'Startup dedup' message in backend logs",
+    "frontend_landing_page": "PASS - loads correctly",
+    "frontend_login": "PASS - email/password login works",
+    "frontend_dashboard": "PASS - shows 3 cases",
+    "frontend_case_detail": "PASS - loads with tabs",
+    "dedup_protection_badge": "PASS - visible with green CheckCircle icon, shows '6 unique grounds verified (12-topic classification)'",
+    "dedup_badge_data_testid": "PASS - data-testid='dedup-protection-badge' present",
+    "grounds_export_buttons": "PASS - Print View, PDF View, Word View visible when unlocked"
+  }
+}
