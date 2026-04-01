@@ -4645,6 +4645,29 @@ async def cleanup_orphaned_reports():
             )
             logger.info(f"Failed orphaned report {report['report_id']}")
 
+    # ── FIX EXISTING UNDERSIZED "COMPLETED" REPORTS ──
+    # Reports that were previously recovered as "completed" but are actually below depth target.
+    # Mark them as "failed" so the user sees a "Generate" button and can regenerate with full depth.
+    min_completed_targets = {
+        "full_detailed": 70000,
+        "extensive_log": 120000,
+    }
+    for rtype, min_chars in min_completed_targets.items():
+        async for report in db.reports.find({"status": "completed", "report_type": rtype}):
+            analysis = (report.get("content", {}).get("analysis") or "")
+            if len(analysis) < min_chars:
+                passes = report.get("content", {}).get("passes_completed", 0)
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {
+                        "status": "failed",
+                        "error": f"Report was only {len(analysis)} chars ({passes} passes). Full depth requires {min_chars}+ chars. Click Generate to resume.",
+                        "content.partial": True,
+                        "content.partial_analysis": analysis,
+                    }}
+                )
+                logger.info(f"Fixed undersized completed report {report['report_id']}: {len(analysis)} < {min_chars} chars, marked for regeneration")
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

@@ -279,14 +279,12 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Both were using **exact-title-match upserts** which was the ROOT CAUSE of grounds multiplying every time "Analyse Grounds" was clicked.
 - **NEVER revert EITHER of these to exact-title-match upserts.**
 
-### cleanup_orphaned_reports — Character Target Recovery
-- Reports stuck in "generating" are recovered on server startup.
-- Recovery uses MINIMUM CHARACTER TARGETS (not a flat 5000) per report type:
-  - quick_summary: 10,000 chars
-  - full_detailed: 70,000 chars
-  - extensive_log: 120,000 chars
-- Reports below minimum target are marked **"failed"** (not "completed"), preserving partial content for resume.
-- **NEVER lower these recovery thresholds.** Previous 5000 threshold caused half-generated Full Detailed reports (42k chars) to be marked as "completed", losing half the report depth.
+### Report Recovery — Minimum Character Targets
+- `cleanup_orphaned_reports()` uses per-type minimum targets, NOT a flat 5000 threshold
+- full_detailed: 70,000 chars minimum. extensive_log: 120,000 chars minimum
+- Reports below target: marked "failed" (not "completed") so user can regenerate with resume
+- Startup migration auto-fixes any existing undersized "completed" reports
+- **NEVER lower these recovery thresholds**
 
 ### pipeline_staged.py — ALL THREE FUNCTIONS MUST Use Fuzzy Dedup
 - `_classify_issues()` (line ~141) — internal function called during report generation. MUST use fuzzy dedup for issue_classifications.
