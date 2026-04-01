@@ -194,7 +194,7 @@ const LandingPage = () => {
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
-                <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-sm text-slate-700">
+                <ul className="grid grid-cols-3 gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-700">
                   <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Homicide</li>
                   <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Assault</li>
                   <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Sexual Offences</li>
@@ -404,32 +404,6 @@ const LandingPage = () => {
               From document management to legal research, everything you need to build and understand your appeal — all in one place.
             </p>
           </div>
-
-          {/* Stats Row — Real Australian Criminal Appeal Data */}
-          <div className="text-center mb-4">
-            <p className="text-blue-700 text-xs uppercase tracking-widest font-semibold" data-testid="landing-statistics-label">Australian Appeal Statistics</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" data-testid="landing-statistics-row">
-            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-1">8,700+</div>
-              <div className="text-slate-700 text-sm">Criminal Appeals Filed Annually</div>
-            </div>
-            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-emerald-400 mb-1">~40%</div>
-              <div className="text-slate-700 text-sm">Appeals Heard Result in Change</div>
-            </div>
-            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-1">98%</div>
-              <div className="text-slate-700 text-sm">Resolved Within 12 Months</div>
-            </div>
-            <div className="bg-white/50 border border-slate-700 rounded-xl p-5 text-center">
-              <div className="text-3xl font-bold text-red-400 mb-1">1 in 80</div>
-              <div className="text-slate-700 text-sm">Convicted Australians Appeal</div>
-            </div>
-          </div>
-          <p className="text-xs text-slate-600 text-center mb-12" data-testid="landing-stats-source">
-            Sources: public annual reports and criminal appeal statistics from state courts (figures aggregated nationally).
-          </p>
 
           {/* Feature Grid - All Pages & Capabilities */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -650,6 +624,41 @@ const LandingPage = () => {
       </section>
 
       <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-resources" />
+
+      {/* ============================================ */}
+      {/* AUSTRALIAN APPEAL STATISTICS — Moved here above State Stats */}
+      {/* ============================================ */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Australian Appeal Statistics
+            </h2>
+            <p className="text-slate-600 text-sm">Key figures from Australian criminal appeal courts</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4" data-testid="landing-statistics-row">
+            <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
+              <div className="text-3xl font-bold text-blue-600 mb-1">8,700+</div>
+              <div className="text-slate-700 text-sm">Criminal Appeals Filed Annually</div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
+              <div className="text-3xl font-bold text-emerald-600 mb-1">~40%</div>
+              <div className="text-slate-700 text-sm">Appeals Heard Result in Change</div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
+              <div className="text-3xl font-bold text-blue-600 mb-1">98%</div>
+              <div className="text-slate-700 text-sm">Resolved Within 12 Months</div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
+              <div className="text-3xl font-bold text-red-600 mb-1">1 in 80</div>
+              <div className="text-slate-700 text-sm">Convicted Australians Appeal</div>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 text-center" data-testid="landing-stats-source">
+            Sources: public annual reports and criminal appeal statistics from state courts (figures aggregated nationally).
+          </p>
+        </div>
+      </section>
 
       {/* ============================================ */}
       {/* STATE APPEAL STATS - Interactive Widget */}

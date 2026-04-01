@@ -1,5 +1,19 @@
 # Changelog
 
+## 1 Apr 2026 — Landing Page UI Fixes
+
+### Australian Appeal Statistics Repositioned
+- Moved from hero section to its own section with proper heading
+- Positioned directly above "How Many Appeals In Your State" (StateAppealStats)
+
+### Sentence Word Wrap Fixed
+- Added `break-words` class to sentence text in Case Identity Card
+- Long sentences now wrap properly on mobile
+
+### Types of Crimes — 3 Column Grid
+- Changed from `grid-cols-2 sm:grid-cols-3` to `grid-cols-3` on all screen sizes
+- Text reduced to `text-xs sm:text-sm` to fit 3 columns on mobile
+
 ## 1 Apr 2026 — Report Depth Loss + Google Auth Fix
 
 ### Full Detailed Reports Regenerated

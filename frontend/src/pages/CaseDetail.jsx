@@ -986,7 +986,7 @@ const CaseDetail = ({ user }) => {
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Sentence</div>
-                <div className="text-sm font-bold text-slate-900">{caseData?.sentence || "—"}</div>
+                <div className="text-sm font-bold text-slate-900 break-words">{caseData?.sentence || "—"}</div>
               </div>
             </div>
             {caseData?.court && (
