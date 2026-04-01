@@ -1,5 +1,20 @@
 # Changelog
 
+## 2 Apr 2026 — Database Normalisation + Dedup Badge
+
+### Database Normalisation Script (P3)
+- Created `/app/backend/scripts/normalise_db.py` — idempotent script fixing missing fields across 6 collections
+- Fixed: 66 cases (missing state/offence fields), 142 grounds (missing source_mode/verification_status), 37 reports (missing status), 117 documents (missing created_at, using uploaded_at)
+- Added `POST /api/admin/normalise-db` admin endpoint for on-demand runs
+- Includes stale session cleanup (>30 days) and full ground dedup sweep
+- Safe to run repeatedly — second run shows 0 updates
+
+### Dedup Protection Badge
+- Added green badge to Grounds of Merit showing "Dedup Protection Active — X unique grounds verified (12-topic classification)"
+- Visible when grounds are unlocked and count > 0 (data-testid="dedup-protection-badge")
+- Uses CheckCircle icon with emerald colour scheme
+
+
 ## 2 Apr 2026 — Grounds Dedup Nuclear Fix (FINAL)
 
 ### LEGAL_TOPICS Expanded (11 → 12 categories)
