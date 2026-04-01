@@ -4,41 +4,41 @@ import { Scale, AlertTriangle } from "lucide-react";
 const AppFooter = () => {
   return (
     <footer data-testid="app-footer">
-      <div className="py-8 px-6 border-t border-slate-200 bg-white">
+      <div className="py-6 px-6 bg-slate-800">
         <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 items-start">
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2">
-              <Scale className="w-5 h-5 text-slate-700" />
-              <span className="text-slate-900 text-sm font-semibold">Appeal Case Manager</span>
+              <Scale className="w-4 h-4 text-white" />
+              <span className="text-white text-xs font-bold">Appeal Case Manager</span>
             </div>
-            <span className="text-slate-600 text-xs mt-1">Founded by Debra King</span>
-            <span className="text-slate-600 text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
+            <span className="text-white/70 text-xs mt-1">Founded by Debra King</span>
+            <span className="text-white/70 text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Explore</p>
-            <div className="grid gap-y-1 text-xs text-slate-700">
-              <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-it-works">How It Works</Link>
-              <Link to="/how-to-use" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-how-to-use">How To Use</Link>
-              <Link to="/professional-summary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-professional-summary">For Legal Professionals</Link>
-              <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-resources">Resources & Contacts</Link>
-              <Link to="/forms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-forms">Forms & Templates</Link>
-              <Link to="/lawyers" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/contact" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-contact">Contact</Link>
-              <Link to="/success-stories" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-success-stories">Success Stories</Link>
+            <p className="text-xs uppercase tracking-wide text-white/50 font-bold mb-2">Explore</p>
+            <div className="grid gap-y-0.5 text-xs">
+              <Link to="/how-it-works" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-it-works">How It Works</Link>
+              <Link to="/how-to-use" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-to-use">How To Use</Link>
+              <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
+              <Link to="/legal-resources" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-resources">Resources & Contacts</Link>
+              <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
+              <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
+              <Link to="/contact" className="text-white font-bold hover:text-blue-300" data-testid="footer-contact">Contact</Link>
+              <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500 font-semibold mb-2">Legal</p>
-            <div className="grid gap-y-1 text-xs text-slate-700">
-              <Link to="/appeal-statistics" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
-              <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-legal-framework">Legal Framework</Link>
-              <Link to="/glossary" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-glossary">Legal Glossary</Link>
-              <Link to="/faq" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-faq">FAQ</Link>
-              <Link to="/contact" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-contact-legal">Contact</Link>
-              <Link to="/about" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-about">About</Link>
-              <Link to="/terms" className="text-slate-700 hover:text-blue-700 visited:text-slate-700" data-testid="footer-terms">Terms & Privacy</Link>
+            <p className="text-xs uppercase tracking-wide text-white/50 font-bold mb-2">Legal</p>
+            <div className="grid gap-y-0.5 text-xs">
+              <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+              <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
+              <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
+              <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
+              <Link to="/contact" className="text-white font-bold hover:text-blue-300" data-testid="footer-contact-legal">Contact</Link>
+              <Link to="/about" className="text-white font-bold hover:text-blue-300" data-testid="footer-about">About</Link>
+              <Link to="/terms" className="text-white font-bold hover:text-blue-300" data-testid="footer-terms">Terms & Privacy</Link>
             </div>
           </div>
         </div>
