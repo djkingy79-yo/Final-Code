@@ -295,6 +295,9 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Reports below target: marked "failed" (not "completed") so user can regenerate with resume
 - Startup migration auto-fixes any existing undersized "completed" reports
 - **NEVER lower these recovery thresholds**
+- The "restore accidentally failed" logic (line ~4672) ONLY restores if `len(analysis) >= min_chars`.
+  **NEVER restore with >5000 chars threshold** — that was a bug that restored 9,462-char partial reports
+  as "completed" when they needed 70,000+ chars. Fixed 2 Apr 2026.
 
 ### pipeline_staged.py — ALL THREE FUNCTIONS MUST Use Fuzzy Dedup
 - `_classify_issues()` (line ~141) — internal function called during report generation. MUST use fuzzy dedup for issue_classifications.

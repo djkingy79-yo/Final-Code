@@ -4670,23 +4670,25 @@ async def cleanup_orphaned_reports():
                 logger.info(f"Flagged undersized report {report['report_id']}: {len(analysis)} < {min_chars} chars")
 
     # Also restore any reports that were accidentally set to "failed" by a previous migration
+    # DO_NOT_UNDO — Only restore if the report actually meets the minimum target.
+    # Reports below the target MUST stay failed so the user can regenerate them.
     for rtype, min_chars in min_completed_targets.items():
         async for report in db.reports.find({"status": "failed", "report_type": rtype}):
             analysis = (report.get("content", {}).get("analysis") or report.get("content", {}).get("partial_analysis") or "")
-            if analysis and len(analysis) > 5000:
+            if analysis and len(analysis) >= min_chars:
                 await db.reports.update_one(
                     {"report_id": report["report_id"]},
                     {"$set": {
                         "status": "completed",
                         "content.analysis": analysis,
                         "content.partial": False,
-                        "content.below_target": len(analysis) < min_chars,
+                        "content.below_target": False,
                         "content.actual_chars": len(analysis),
                         "content.target_chars": min_chars,
                         "error": None,
                     }}
                 )
-                logger.info(f"Restored report {report['report_id']} to completed ({len(analysis)} chars)")
+                logger.info(f"Restored report {report['report_id']} to completed ({len(analysis)} chars >= {min_chars} target)")
 
 
 @app.on_event("startup")
