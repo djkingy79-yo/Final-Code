@@ -58,19 +58,42 @@ def _issue_priority_rank(issue: dict) -> tuple:
 
 
 async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> int:
-    """Project staged issues/verifications into grounds_of_merit."""
+    """Project staged issues/verifications into grounds_of_merit.
+
+    DO_NOT_UNDO — MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title
+    upsert. Exact-title upsert was the ROOT CAUSE of grounds multiplying from 4 to 27+.
+    """
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
+
     issues = await db.issue_classifications.find(
         {"case_id": case_id, "user_id": user_id}, {"_id": 0}
     ).to_list(500)
+
+    # Pre-load existing grounds for fuzzy matching
+    all_existing_grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user_id},
+        {"_id": 0, "ground_id": 1, "title": 1},
+    ).to_list(200)
+
     synced = 0
     for issue in issues:
         verification = await db.issue_verifications.find_one(
             {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user_id}, {"_id": 0}
         )
+        issue_title = normalise_au_spelling((issue.get("title") or "").strip())
+
+        # Fuzzy match against all existing grounds
+        existing_ground = None
+        for eg in all_existing_grounds:
+            eg_title = (eg.get("title") or "").strip()
+            if is_ground_duplicate(issue_title, eg_title):
+                existing_ground = eg
+                break
+
         ground_doc = {
             "case_id": case_id,
             "user_id": user_id,
-            "title": issue.get("title"),
+            "title": existing_ground["title"] if existing_ground else issue_title,
             "ground_type": issue.get("ground_type", "other"),
             "description": issue.get("description", ""),
             "strength": (verification or {}).get("legitimacy_scores", {}).get(
@@ -86,11 +109,18 @@ async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> in
             "verification_status": (verification or {}).get("verification_status", "unverified"),
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
-        await db.grounds_of_merit.update_one(
-            {"case_id": case_id, "user_id": user_id, "title": ground_doc["title"], "ground_type": ground_doc["ground_type"]},
-            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{uuid.uuid4().hex[:12]}", "created_at": datetime.now(timezone.utc).isoformat()}},
-            upsert=True,
-        )
+
+        if existing_ground:
+            await db.grounds_of_merit.update_one(
+                {"ground_id": existing_ground["ground_id"]},
+                {"$set": ground_doc},
+            )
+        else:
+            ground_doc["ground_id"] = f"gnd_{uuid.uuid4().hex[:12]}"
+            ground_doc["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.grounds_of_merit.insert_one(ground_doc)
+            all_existing_grounds.append({"ground_id": ground_doc["ground_id"], "title": issue_title})
+
         synced += 1
     return synced
 

@@ -249,10 +249,10 @@ const HowToUsePage = () => {
             <div>
               <h2 className="font-bold text-slate-900 mb-2 text-sm">Before You Start</h2>
               <ul className="text-xs sm:text-sm text-slate-700 space-y-1">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /><strong>Gather your documents</strong> — transcripts, evidence, court records, witness statements</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /><strong>Note key dates</strong> — incident date, arrest, trial, sentencing</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /><strong>Know your deadline</strong> — you usually have 28 days from sentencing to file an appeal</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /><strong>This is NOT legal advice</strong> — always consult a qualified lawyer</li>
+                <li>- <strong>Gather your documents</strong> — transcripts, evidence, court records, witness statements</li>
+                <li>- <strong>Note key dates</strong> — incident date, arrest, trial, sentencing</li>
+                <li>- <strong>Know your deadline</strong> — you usually have 28 days from sentencing to file an appeal</li>
+                <li>- <strong>This is NOT legal advice</strong> — always consult a qualified lawyer</li>
               </ul>
             </div>
           </div>
@@ -298,7 +298,7 @@ const HowToUsePage = () => {
                     <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
                       {step.instructions.map((inst, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />
+                          <ChevronRight className="w-4 h-4 shrink-0 mt-0.5" />
                           {inst}
                         </li>
                       ))}
@@ -354,11 +354,11 @@ const HowToUsePage = () => {
             </h3>
             <p className="text-xs sm:text-sm text-slate-700 mb-4">Export your case data for use outside the app.</p>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-700 mb-4">
-              <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /> Use 'Quick Export' to download everything</li>
-              <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /> Creates a ZIP file with all documents and reports</li>
-              <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /> Timeline and summary as editable DOCX files</li>
-              <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /> Use 'Bundle Documents' to merge PDFs into one file</li>
-              <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" /> Share with lawyers, barristers, or Legal Aid</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Creates a ZIP file with all documents and reports</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Timeline and summary as editable DOCX files</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Bundle Documents' to merge PDFs into one file</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
             <div className="p-3 bg-pink-50 rounded-lg text-xs sm:text-sm text-pink-800">
               <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court.
@@ -375,19 +375,19 @@ const HowToUsePage = () => {
             <div>
               <h3 className="font-semibold text-slate-900 mb-2">If Grounds Are Found</h3>
               <ul className="text-slate-700 space-y-1">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Review the detailed analysis for each ground</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Generate a Full Report to share with a lawyer</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Seek legal advice on the strength of your appeal</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />File Notice of Intention to Appeal within deadline</li>
+                <li>- Review the detailed analysis for each ground</li>
+                <li>- Generate a Full Report to share with a lawyer</li>
+                <li>- Seek legal advice on the strength of your appeal</li>
+                <li>- File Notice of Intention to Appeal within deadline</li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-2">Getting Legal Help</h3>
               <ul className="text-slate-700 space-y-1">
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline">Legal Aid</Link> in your state</li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Contact <Link to="/legal-resources" className="text-blue-700 hover:underline">Pro Bono services</Link></li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Find a lawyer via your <Link to="/legal-resources" className="text-blue-700 hover:underline">Law Society</Link></li>
-                <li className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-white border border-slate-400 mt-1.5 shrink-0" />Use the Barrister View when meeting with counsel</li>
+                <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline">Legal Aid</Link> in your state</li>
+                <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline">Pro Bono services</Link></li>
+                <li>- Find a lawyer via your <Link to="/legal-resources" className="text-blue-700 hover:underline">Law Society</Link></li>
+                <li>- Use the Barrister View when meeting with counsel</li>
               </ul>
             </div>
           </div>
