@@ -80,18 +80,24 @@ const AuthCallback = () => {
       const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
       if (sessionId) {
-        try {
-          const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
-          if (response.data?.session_token) {
-            localStorage.setItem("session_token", response.data.session_token);
+        // DO_NOT_UNDO — Retry auth session exchange up to 3 times.
+        // Previous code had zero retries — a single 502/timeout during the Google
+        // redirect callback would silently fail and dump the user to the landing page.
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
+            if (response.data?.session_token) {
+              localStorage.setItem("session_token", response.data.session_token);
+            }
+            window.history.replaceState(null, "", "/dashboard");
+            navigate("/dashboard", { replace: true, state: { user: response.data } });
+            return;
+          } catch (error) {
+            console.error(`Auth callback attempt ${attempt}/3 failed:`, error);
+            if (attempt < 3) {
+              await new Promise(r => setTimeout(r, 2000 * attempt));
+            }
           }
-          // Clean the hash from URL and navigate via SPA (no full page reload)
-          window.history.replaceState(null, "", "/dashboard");
-          navigate("/dashboard", { replace: true, state: { user: response.data } });
-          return;
-        } catch (error) {
-          console.error("Auth callback error:", error);
-          // Don't silently redirect — retry with existing token first
         }
       }
 
@@ -147,11 +153,29 @@ const ProtectedRoute = ({ children }) => {
       return;
     }
 
-    const checkAuth = async () => {
+    // DO_NOT_UNDO — Auth check with retry. Previous code redirected to landing page
+    // on the FIRST /auth/me failure, which caused "Google login goes back to landing page"
+    // because iOS Safari loses location.state on redirect and a single transient network
+    // error during the token check would boot the user back to the landing page.
+    const checkAuth = async (attempt = 1) => {
+      const token = localStorage.getItem("session_token");
+      if (!token) {
+        setIsAuthenticated(false);
+        navigate("/", { replace: true });
+        return;
+      }
+
       try {
         const response = await axios.get(`${API}/auth/me`);
         checkUserStatus(response.data);
       } catch (error) {
+        if (attempt < 3) {
+          // Retry after a short delay — transient network errors should not boot the user
+          await new Promise(r => setTimeout(r, 1500 * attempt));
+          return checkAuth(attempt + 1);
+        }
+        // Only give up after 3 attempts
+        localStorage.removeItem("session_token");
         setIsAuthenticated(false);
         navigate("/", { replace: true });
       }

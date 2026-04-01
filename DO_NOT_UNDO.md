@@ -382,6 +382,14 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Only visible when grounds are unlocked and count > 0
 - **NEVER remove this badge**
 
+### Google Login — Auth Retry Logic (DO NOT UNDO)
+- `frontend/src/App.js` AuthCallback retries `POST /auth/session` up to 3 times with 2/4s backoff
+- `frontend/src/App.js` ProtectedRoute `checkAuth()` retries `GET /auth/me` up to 3 times with 1.5/3s backoff
+- Only redirects to landing page after ALL 3 retries fail AND no token in localStorage
+- **NEVER redirect to "/" on the first /auth/me failure** — this was the root cause of "Google login goes back to landing page"
+- **NEVER remove the retry loops in AuthCallback or ProtectedRoute**
+
+
 ### Ground Dedup — 12 Legal Topics (DO NOT UNDO)
 - `backend/services/ground_dedup.py` has 12 topic categories with comprehensive keyword coverage
 - Topics: judge_alone_trial, psychiatric_evidence, media_coverage, jury_misconduct, sentencing_error, ineffective_counsel, evidence_admissibility, fresh_evidence, prosecutorial_misconduct, judicial_direction, unreasonable_verdict, procedural_error
