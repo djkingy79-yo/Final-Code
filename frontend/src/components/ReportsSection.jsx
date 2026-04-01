@@ -626,15 +626,24 @@ const ReportsSection = ({
           {reports.map((report) => {
             const reportStatus = report.status || 'completed';
 
-            // Show inline card for generating/failed reports
-            if (reportStatus === 'generating') {
+            // DO NOT UNDO — Extract report content BEFORE status checks so content stays visible during generating/failed
+            const rawReportText = typeof report.content === 'string'
+              ? report.content
+              : report.content?.analysis || report.content?.backup_analysis || '';
+            const reportText = (rawReportText || "")
+              .replace(/^\s*DO NOT UNDO\.?\s*$/gim, "")
+              .replace(/\n{3,}/g, "\n\n")
+              .trim();
+
+            // For generating/failed with NO existing content, show just the status card
+            if (reportStatus === 'generating' && !reportText) {
               return (
                 <Card key={report.report_id} className="overflow-hidden border border-blue-200 bg-blue-50 shadow-sm">
                   <div className="px-5 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
                       <div>
-                        <p className="text-sm font-semibold text-blue-900">Generating {getReportTypeLabel(report.report_type)}...</p>
+                        <p className="text-sm font-semibold text-blue-900" data-testid={`generating-label-${report.report_id}`}>Generating {getReportTypeLabel(report.report_type)}...</p>
                         <p className="text-xs text-blue-600">This usually takes 1-3 minutes. Please wait.</p>
                       </div>
                     </div>
@@ -652,18 +661,17 @@ const ReportsSection = ({
               );
             }
 
-            if (reportStatus === 'failed') {
+            if (reportStatus === 'failed' && !reportText) {
               const failedMessage = typeof report.error === 'string' && /BadGatewayError|OpenAIException|litellm|502|All LLM attempts failed/i.test(report.error)
                 ? 'Report generation was interrupted by a temporary AI service error. Retry resumes from the last completed section.'
                 : (report.error || 'Generation was interrupted. Retry resumes from the last completed section.');
-
               return (
                 <Card key={report.report_id} className="overflow-hidden border border-red-200 bg-red-50 shadow-sm">
                   <div className="px-5 py-4 flex items-center justify-between flex-wrap gap-3">
                     <div className="flex items-center gap-3">
                       <AlertCircle className="w-5 h-5 text-red-600" />
                       <div>
-                        <p className="text-sm font-semibold text-red-900">Report generation failed</p>
+                        <p className="text-sm font-semibold text-red-900" data-testid={`failed-label-${report.report_id}`}>Report generation failed</p>
                         <p className="text-xs text-red-600">{failedMessage}</p>
                       </div>
                     </div>
@@ -692,13 +700,65 @@ const ReportsSection = ({
               );
             }
 
-            const rawReportText = typeof report.content === 'string'
-              ? report.content
-              : report.content?.analysis || 'No analysis available';
-            const reportText = (rawReportText || "")
-              .replace(/^\s*DO NOT UNDO\.?\s*$/gim, "")
-              .replace(/\n{3,}/g, "\n\n")
-              .trim();
+            // DO NOT UNDO — Status banner shown ABOVE preserved content for generating/failed states
+            const statusBanner = reportStatus === 'generating' ? (
+              <Card className="overflow-hidden border border-blue-200 bg-blue-50 shadow-sm" data-testid={`generating-banner-${report.report_id}`}>
+                <div className="px-5 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                    <div>
+                      <p className="text-sm font-semibold text-blue-900">Regenerating {getReportTypeLabel(report.report_type)}...</p>
+                      <p className="text-xs text-blue-600">Your existing report is preserved below while the new version generates.</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleDeleteReport(report.report_id)}
+                    className="bg-red-600 hover:bg-red-700 text-white rounded-full"
+                    data-testid={`delete-report-btn-${report.report_id}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </Card>
+            ) : reportStatus === 'failed' ? (
+              <Card className="overflow-hidden border border-red-200 bg-red-50 shadow-sm" data-testid={`failed-banner-${report.report_id}`}>
+                <div className="px-5 py-3 flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600" />
+                    <div>
+                      <p className="text-sm font-semibold text-red-900">Generation failed — your existing report is preserved below</p>
+                      <p className="text-xs text-red-600">
+                        {typeof report.error === 'string' && /BadGatewayError|OpenAIException|litellm|502|All LLM attempts failed/i.test(report.error)
+                          ? 'Temporary AI service error. Retry resumes from the last completed section.'
+                          : (report.error || 'Generation was interrupted. Retry resumes from the last completed section.')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => generateReport(report.report_type)}
+                      className="border-red-300 text-red-700 hover:bg-red-100"
+                      data-testid={`retry-report-btn-${report.report_id}`}
+                    >
+                      Retry
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteReport(report.report_id)}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-full"
+                      data-testid={`delete-report-btn-${report.report_id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ) : null;
             
             /* Colour theme per report type - matches landing page */
             const rTheme = {
@@ -709,7 +769,9 @@ const ReportsSection = ({
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             return (
-              <Card key={report.report_id} className="overflow-hidden border-0 shadow-md">
+              <div key={report.report_id} className="space-y-3">
+                {statusBanner}
+              <Card className="overflow-hidden border-0 shadow-md">
                 <Collapsible
                   open={Boolean(expandedReports[report.report_id])}
                   onOpenChange={(isOpen) => toggleReportExpand(report.report_id, isOpen)}
@@ -872,6 +934,7 @@ const ReportsSection = ({
                   </CollapsibleContent>
                 </Collapsible>
               </Card>
+              </div>
             );
           })}
         </div>
