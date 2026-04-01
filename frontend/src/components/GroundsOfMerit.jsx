@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Scale, Trash2, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
@@ -224,6 +224,16 @@ const GroundsOfMerit = ({
   /* DO NOT UNDO — Search box state for each ground. Uses object to track per-ground search visibility */
   const [searchOpen, setSearchOpen] = useState({});
   const [searchTerms, setSearchTerms] = useState({});
+
+  /* DO_NOT_UNDO — Investigate elapsed timer. Starts counting when investigation begins,
+     resets when investigation completes. Matches the report generation timer block. */
+  const [investElapsed, setInvestElapsed] = useState(0);
+  useEffect(() => {
+    if (!investigating) { setInvestElapsed(0); return; }
+    setInvestElapsed(0);
+    const interval = setInterval(() => setInvestElapsed(prev => prev + 1), 1000);
+    return () => clearInterval(interval);
+  }, [investigating]);
 
   const toggleSearch = (groundId) => {
     setSearchOpen(prev => ({ ...prev, [groundId]: !prev[groundId] }));
@@ -746,16 +756,65 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                     </div>
                   </div>
 
-                  {/* DO NOT UNDO — AI Investigation Progress Bar shown on THIS ground */}
+                  {/* DO_NOT_UNDO — Full Investigation Timer Block matching report generation UI.
+                       Shows elapsed timer, stage labels, and progress bar when investigating a ground. */}
                   {investigating === ground.ground_id && (
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`ai-investigate-progress-${ground.ground_id}`}>
-                      <div className="flex items-center gap-3 mb-2">
-                        <Loader2 className="w-5 h-5 animate-spin text-blue-600 flex-shrink-0" />
-                        <p className="text-sm font-semibold text-blue-900">AI Scan in Progress — Investigating This Ground</p>
+                    <div className="mt-3 rounded-xl overflow-hidden shadow-lg border-2 border-blue-300" data-testid={`ai-investigate-progress-${ground.ground_id}`}>
+                      <div className="bg-blue-700 text-white px-4 py-3 sm:px-6 sm:py-4">
+                        <div className="flex items-center justify-between flex-wrap gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                              <Loader2 className="w-5 h-5 animate-spin text-white" />
+                            </div>
+                            <div>
+                              <p className="text-base sm:text-lg font-bold text-white">
+                                {investElapsed < 10
+                                  ? "Scanning Documents"
+                                  : investElapsed < 30
+                                  ? "Analysing Case Law"
+                                  : investElapsed < 60
+                                  ? "Building Deep Analysis"
+                                  : "Finalising Investigation"}
+                              </p>
+                              <p className="text-xs sm:text-sm text-white/80">
+                                {investElapsed < 10
+                                  ? "Reading case documents and extracting relevant passages..."
+                                  : investElapsed < 30
+                                  ? "AI is cross-referencing legislation and precedents..."
+                                  : investElapsed < 60
+                                  ? "Constructing a thorough deep investigation analysis..."
+                                  : "Completing final sections. Deep analysis can take 1-3 minutes."}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-2xl font-mono font-bold text-white">
+                              {investElapsed < 60 ? `${investElapsed}s` : `${Math.floor(investElapsed / 60)}m ${String(investElapsed % 60).padStart(2, '0')}s`}
+                            </span>
+                            <p className="text-xs text-white/60">elapsed</p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-xs text-blue-700 mb-3">Deep analysis can take 1-3 minutes. Searching documents, case law, and legislation.</p>
-                      <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-                        <div className="h-full w-3/4 bg-blue-600 rounded-full animate-pulse"></div>
+                      <div className="bg-blue-50 px-4 py-2 sm:px-6 sm:py-3">
+                        <div className="flex items-center gap-3 mb-2">
+                          {[
+                            { label: "Scanning", active: investElapsed >= 0 },
+                            { label: "Analysing", active: investElapsed >= 10 },
+                            { label: "Writing", active: investElapsed >= 30 },
+                            { label: "Finalising", active: investElapsed >= 60 },
+                          ].map((step, i) => (
+                            <div key={i} className="flex items-center gap-1.5">
+                              <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
+                              <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-blue-600 rounded-full transition-all duration-1000"
+                            style={{ width: `${Math.min(98, (investElapsed / 180) * 100)}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
