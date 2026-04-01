@@ -350,7 +350,8 @@ const cleanAIContent = (text) => {
     cleaned = cleaned.replace(pattern, replacer);
   }
 
-  // Convert American spellings to Australian
+  // DO_NOT_UNDO — Convert American spellings to Australian English in all report content.
+  // This normaliser runs on every report render to ensure consistent Australian spelling.
   const ausReplacements = [
     [/\bfinalized\b/gi, (m) => m[0] === 'F' ? 'Finalised' : 'finalised'],
     [/\brecognized\b/gi, (m) => m[0] === 'R' ? 'Recognised' : 'recognised'],

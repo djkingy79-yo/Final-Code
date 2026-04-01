@@ -1,6 +1,8 @@
 """
+DO NOT UNDO — ENTIRE FILE PROTECTED
 Criminal Appeal AI - Documents Router (CRUD + OCR + Text Extraction)
-Extracted from server.py monolith.
+All features in this file are approved. Do not remove, rename, or refactor.
+Timeline auto-generation uses fuzzy dedup and year-only dates for unknown dates.
 """
 from fastapi import APIRouter, HTTPException, Request, UploadFile, File, Form
 from starlette.background import BackgroundTasks
@@ -149,7 +151,8 @@ DOCUMENTS:
                 events = json.loads(raw)
                 if isinstance(events, list):
                     created = 0
-                    # Build fingerprints of existing events for dedup
+                    # DO_NOT_UNDO — Timeline fuzzy dedup. Build fingerprints of existing events.
+                    # Without this, identical events multiply every time documents are processed.
                     existing = await db.timeline_events.find({"case_id": case_id}, {"_id": 0, "title": 1}).to_list(200)
                     existing_titles = [e.get("title", "").lower().strip() for e in existing]
                     from fuzzywuzzy import fuzz
@@ -162,7 +165,7 @@ DOCUMENTS:
                         if is_dup:
                             continue
                         event_date = evt.get("date", "")
-                        # Fix Jan 1 placeholder dates
+                        # DO_NOT_UNDO — Fix Jan 1 placeholder dates. Use year only when exact date unknown.
                         if event_date and event_date.endswith("-01-01"):
                             event_date = event_date[:4]  # Keep year only
                         event_doc = {

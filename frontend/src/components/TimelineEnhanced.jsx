@@ -151,6 +151,8 @@ const Timeline = ({
     });
   }, [events, searchQuery, categoryFilter, significanceFilter, perspectiveFilter, showContestedOnly]);
 
+  /* DO_NOT_UNDO — formatDate handles year-only ("2018"), year-month ("2018-06"), and
+     full ISO dates. Never convert year-only to "Mon, 1 Jan" — display just the year. */
   const formatDate = (dateStr) => {
     if (!dateStr) return "Unknown date";
     const s = String(dateStr).trim();

@@ -254,3 +254,43 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Extensive Log: ~15,467 words
 - Barrister View: ~12,585 words
 - **If any future generation produces LESS than 80% of these counts, the engine has been broken. Investigate immediately.**
+
+
+---
+
+## SESSION 2 PROTECTIONS (1 Apr 2026)
+
+### Timeline Dedup & Date Handling
+- `backend/routers/documents.py` — Background timeline generation uses **fuzzy dedup** (fuzzywuzzy token_set_ratio >= 65) to prevent duplicate events.
+- `backend/routers/timeline.py` — Auto-generate endpoint uses **fingerprint + fuzzy title dedup**.
+- `frontend/src/components/TimelineEnhanced.jsx` — `formatDate()` handles year-only ("2018"), year-month ("2018-06"), and full ISO dates. **NEVER convert year-only dates to "Mon, 1 Jan".**
+- LLM prompt explicitly instructs: do NOT use Jan 1 as placeholder, use year-only format when exact date unknown.
+
+### server.py — _sync_pipeline_to_grounds MUST Use Fuzzy Dedup
+- The `_sync_pipeline_to_grounds` function in `server.py` (line ~583) MUST use `is_ground_duplicate()` from `ground_dedup.py`.
+- **NEVER revert to exact-title-match upserts.** This was the root cause of grounds multiplying from 4 to 15+.
+- Also applies `normalise_au_spelling()` to all new ground titles.
+
+### Australian Spelling — Full Stack Coverage
+- **Backend:** `ground_dedup.py::normalise_au_spelling()` auto-corrects American English in ground/issue titles at creation time.
+- **Frontend:** `GroundsOfMerit.jsx::auSpelling()` normalises displayed titles, descriptions, and evidence text.
+- **Reports:** `ReportView.jsx` has a comprehensive `ausReplacements` array that converts American to Australian spelling in all rendered report content.
+- Protected words: characterisation, behaviour, organisation, recognised, organised, analysing, defence, offence, favouring, utilised.
+- **NEVER remove these normalisers.**
+
+### Investigation Timer Block
+- `GroundsOfMerit.jsx` displays a **full timer block** (blue box, elapsed counter, stage labels: Scanning → Analysing → Writing → Finalising, progress bar) when `investigating === ground.ground_id`.
+- This matches the report generation timer UI in `ReportsSection.jsx`.
+- **NEVER revert to the old simple pulse bar.**
+
+### Ground Text Sizing in Detail Dialog
+- Supporting Evidence: `text-sm` class on `<ul>`.
+- Section headings (Evidence, Law, Cases, Scoring): `text-base font-bold`.
+- Deep Investigation Analysis heading: `text-lg font-bold`.
+- Deep analysis container: `text-sm`.
+- **NEVER increase these sizes back to default.**
+
+### PDF/Print Export Font Sizes
+- Single ground HTML: body 11px, h1 18px, h2 14px, li 10px, max-width 800px.
+- Multi-ground export: body 11px, h1 22px, h2 16px, h3 14px, li 10px, max-width 800px.
+- **NEVER increase these export font sizes.**
