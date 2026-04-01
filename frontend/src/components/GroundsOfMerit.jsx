@@ -30,6 +30,25 @@ import VerificationBadge from "./VerificationBadge";
 import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
 
+/* DO NOT UNDO — Australian spelling normaliser for ground titles and descriptions.
+   Converts American English to Australian English in user-visible text. */
+const auSpelling = (text) => {
+  if (!text) return text;
+  return text
+    .replace(/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation')
+    .replace(/\bMischaracterization\b/g, 'Mischaracterisation')
+    .replace(/\bmischaracterization\b/g, 'mischaracterisation')
+    .replace(/\bBehavior\b/g, 'Behaviour')
+    .replace(/\bbehavior\b/g, 'behaviour')
+    .replace(/\bfavoring\b/gi, (m) => m[0] === 'F' ? 'Favouring' : 'favouring')
+    .replace(/\banalyzing\b/gi, (m) => m[0] === 'A' ? 'Analysing' : 'analysing')
+    .replace(/\brecognized\b/gi, (m) => m[0] === 'R' ? 'Recognised' : 'recognised')
+    .replace(/\borganized\b/gi, (m) => m[0] === 'O' ? 'Organised' : 'organised')
+    .replace(/\bdefense\b/gi, (m) => m[0] === 'D' ? 'Defence' : 'defence')
+    .replace(/\boffense\b/gi, (m) => m[0] === 'O' ? 'Offence' : 'offence')
+    .replace(/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised');
+};
+
 const GROUND_TYPE_LABELS = {
   procedural_error: "Procedural Error",
   fresh_evidence: "Fresh Evidence",
@@ -277,7 +296,7 @@ const GroundsOfMerit = ({
         {grounds.map((ground, index) => (
           <section key={ground.ground_id || index} className="grounds-export-section">
             <div className="grounds-export-title-wrap">
-              <h2>{`Ground ${index + 1}: ${ground.title}`}</h2>
+              <h2>{`Ground ${index + 1}: ${auSpelling(ground.title)}`}</h2>
               <div className="grounds-export-meta">
                 <span>{GROUND_TYPE_LABELS[ground.ground_type] || ground.ground_type}</span>
                 <span>{STATUS_CONFIG[ground.status]?.label || ground.status || "Identified"}</span>
@@ -285,7 +304,7 @@ const GroundsOfMerit = ({
               </div>
             </div>
 
-            <p className="grounds-export-description">{ground.description}</p>
+            <p className="grounds-export-description">{auSpelling(ground.description)}</p>
 
             {ground.supporting_evidence?.length > 0 && (
               <div className="grounds-export-block">
@@ -368,27 +387,27 @@ const GroundsOfMerit = ({
   <title>Grounds of Merit Export</title>
   <style>
     @page { size: A4; margin: 12mm; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 12px; }
-    .grounds-export-shell { max-width: 1000px; margin: 0 auto; background: #ffffff; padding: 28px; }
-    .grounds-export-brand { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 11px; }
+    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; }
+    .grounds-export-brand { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 11px; margin: 0 0 8px; }
-    .grounds-export-header h1 { margin: 0 0 8px; font-size: 26px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 12px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10px; margin: 0 0 8px; }
+    .grounds-export-header h1 { margin: 0 0 8px; font-size: 22px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 11px; }
     .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
-    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 20px; }
-    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 12px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 15px; }
-    .grounds-export-block ul { margin: 0 0 12px; padding-left: 18px; line-height: 1.45; font-size: 11px; }
+    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 16px; }
+    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 11px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 10px; }
     .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 11px; }
-    .legal-report p { line-height: 1.5; margin: 0 0 8px; font-size: 11px; }
+    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 10px; }
+    .legal-report p { line-height: 1.5; margin: 0 0 8px; font-size: 10px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 10px; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 6px 7px; vertical-align: top; }
+    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 5px 6px; vertical-align: top; }
     .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
@@ -447,20 +466,20 @@ const GroundsOfMerit = ({
 
   const buildSingleGroundHtml = (ground) => {
     const analysis = ground.deep_analysis?.full_analysis || ground.analysis || "";
-    const escHtml = (s) => (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const escHtml = (s) => auSpelling((s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
     return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8" /><title>Ground: ${escHtml(ground.title)}</title>
+<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
-@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;font-size:12px;color:#0f172a;padding:28px;line-height:1.6}
-h1{font-size:22px;margin:0 0 6px}h2{font-size:16px;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px}
-.meta{display:flex;gap:8px;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
-.desc{margin:0 0 14px;font-size:13px}ul{padding-left:18px;margin:0 0 12px}li{margin-bottom:4px;font-size:12px}
-.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:8px 12px;border-radius:6px;margin-bottom:6px;font-size:12px}
-.analysis{margin-top:16px;white-space:pre-wrap;font-size:12px}
-table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:6px 10px;text-align:left;font-size:11px}th{background:#dbeafe;font-weight:700}
-.disclaimer{background:#fef2f2;border:3px solid #ef4444;padding:14px 18px;border-radius:8px;margin-top:28px;page-break-inside:avoid}
-.disclaimer strong{font-size:13px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
-.disclaimer p{font-size:11px;color:#1e293b;margin:0;line-height:1.5}
+@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;font-size:11px;color:#0f172a;padding:20px;line-height:1.6;max-width:800px;margin:0 auto}
+h1{font-size:18px;margin:0 0 6px}h2{font-size:14px;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700}
+.desc{margin:0 0 14px;font-size:11px}ul{padding-left:16px;margin:0 0 12px}li{margin-bottom:3px;font-size:10px;line-height:1.5}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:11px}
+.analysis{margin-top:16px;white-space:pre-wrap;font-size:11px}
+table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:5px 8px;text-align:left;font-size:10px}th{background:#dbeafe;font-weight:700}
+.disclaimer{background:#fef2f2;border:3px solid #ef4444;padding:12px 16px;border-radius:8px;margin-top:28px;page-break-inside:avoid}
+.disclaimer strong{font-size:12px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
+.disclaimer p{font-size:10px;color:#1e293b;margin:0;line-height:1.5}
 @media print{body{padding:0}}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
@@ -599,7 +618,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         className="font-semibold text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
-                        {ground.title}
+                        {auSpelling(ground.title)}
                       </h4>
                       
                       {/* Show locked message or actual description */}
@@ -612,7 +631,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         </div>
                       ) : (
                         <p className="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-snug">
-                          {ground.description}
+                          {auSpelling(ground.description)}
                         </p>
                       )}
                       
@@ -867,25 +886,25 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                     })()}
                   </div>
                   <h3 
-                    className="text-xl font-bold text-slate-900"
+                    className="text-base md:text-xl font-bold text-slate-900"
                     style={{ fontFamily: 'Crimson Pro, serif' }}
                   >
-                    {detailGround.title}
+                    {auSpelling(detailGround.title)}
                   </h3>
-                  <p className="text-slate-600 mt-2">{detailGround.description}</p>
+                  <p className="text-sm text-slate-600 mt-2">{auSpelling(detailGround.description)}</p>
                 </div>
 
                 {/* Supporting Evidence */}
                 {detailGround.supporting_evidence && detailGround.supporting_evidence.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                    <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <FileText className="w-4 h-4" />
                       Supporting Evidence
                     </h4>
-                    <ul className="list-disc pl-5 space-y-1 text-slate-700">
+                    <ul className="list-disc pl-5 space-y-1 text-slate-700 text-sm">
                       {detailGround.supporting_evidence.map((ev, idx) => {
                         const text = typeof ev === "string" ? ev : (ev?.quote || ev?.text || ev?.filename || "Evidence item");
-                        return <li key={idx}>{text}</li>;
+                        return <li key={idx}>{auSpelling(text)}</li>;
                       })}
                     </ul>
                   </div>
@@ -894,7 +913,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 {/* Law Sections */}
                 {detailGround.law_sections && detailGround.law_sections.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                    <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <BookOpen className="w-4 h-4" />
                       Relevant Law Sections
                     </h4>
@@ -916,7 +935,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 {/* Similar Cases */}
                 {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                    <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <Gavel className="w-4 h-4" />
                       Similar Cases
                       <span className="text-xs font-normal text-blue-600">(AI-suggested — requires verification)</span>
@@ -942,7 +961,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 {/* Legitimacy Score in Detail View */}
                 {detailGround.legitimacy_scores && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                    <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       Ground Scoring
                     </h4>
                     <LegitimacyPanel scores={detailGround.legitimacy_scores} />
@@ -981,14 +1000,14 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 {/* Deep Analysis */}
                 {detailGround.deep_analysis?.full_analysis && (
                   <div>
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-red-600" />
-                      Deep Analysis
+                    <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-red-600" />
+                      Deep Investigation Analysis
                       <span className="text-xs font-normal text-slate-500">
                         Generated {formatDate(detailGround.deep_analysis.investigated_at)}
                       </span>
                     </h4>
-                    <div className="bg-white border border-slate-200 rounded-lg p-4">
+                    <div className="bg-white border border-slate-200 rounded-lg p-4 text-sm">
                       {formatAnalysis(detailGround.deep_analysis.full_analysis)}
                     </div>
                   </div>

@@ -584,7 +584,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
     via ground_dedup.is_ground_duplicate(). Previous exact-title upsert let grounds
     multiply from 6 to 41+. NEVER revert to exact-title matching.
     """
-    from services.ground_dedup import is_ground_duplicate
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
     issues = await db.issue_classifications.find(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
@@ -604,7 +604,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
             {"_id": 0}
         )
 
-        issue_title = (issue.get("title") or "").strip()
+        issue_title = normalise_au_spelling((issue.get("title") or "").strip())
 
         # Fuzzy match against all existing grounds
         existing_ground = None

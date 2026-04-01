@@ -410,7 +410,7 @@ async def classify_issues(case_id: str, request: Request):
     issues = await classify_case_issues(case, case_extract)
 
     # DO_NOT_UNDO — Fuzzy dedup on issue_classifications to stop them multiplying.
-    from services.ground_dedup import is_ground_duplicate
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
     # Get existing classifications for this case
     existing_issues = await db.issue_classifications.find(
@@ -422,8 +422,7 @@ async def classify_issues(case_id: str, request: Request):
     for issue in issues:
         issue_dict = issue.model_dump()
         issue_dict["created_at"] = issue_dict["created_at"].isoformat()
-        issue_title = (issue.title or "").strip()
-
+        issue_title = normalise_au_spelling((issue.title or "").strip())
         # Find existing issue with topic + fuzzy match
         matched_existing = None
         for ei in existing_issues:
@@ -505,7 +504,7 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
 
     # DO_NOT_UNDO — Fuzzy ground deduplication in staged pipeline sync.
     # Previous exact-title match let grounds multiply on every pipeline run.
-    from services.ground_dedup import is_ground_duplicate
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
     # Pre-load all existing grounds for efficient matching
     all_existing_grounds = await db.grounds_of_merit.find(
@@ -520,8 +519,7 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             {"_id": 0}
         )
 
-        issue_title = (issue.get("title") or "").strip()
-
+        issue_title = normalise_au_spelling((issue.get("title") or "").strip())
         # Check for existing ground with topic + fuzzy match
         existing_ground = None
         for eg in all_existing_grounds:

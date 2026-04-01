@@ -679,13 +679,13 @@ async def auto_identify_grounds(case_id: str, request: Request):
     existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
 
     # DO_NOT_UNDO — Fuzzy ground deduplication with topic classification + fuzzywuzzy + overlap.
-    from services.ground_dedup import is_ground_duplicate
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
     def is_duplicate(new_ground):
         """Check if a ground is duplicate by exact match, topic classification, fuzzywuzzy, or word overlap"""
         if (new_ground.get("title"), new_ground.get("ground_type")) in existing_titles:
             return True
-        new_title = (new_ground.get("title") or "").strip()
+        new_title = normalise_au_spelling((new_ground.get("title") or "").strip())
         if not new_title:
             return False
         for eg in existing_grounds:

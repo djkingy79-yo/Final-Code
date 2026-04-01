@@ -371,6 +371,8 @@ const cleanAIContent = (text) => {
     [/\bcenter\b/gi, (m) => m[0] === 'C' ? 'Centre' : 'centre'],
     [/\bspecialized\b/gi, (m) => m[0] === 'S' ? 'Specialised' : 'specialised'],
     [/\bcharacterized\b/gi, (m) => m[0] === 'C' ? 'Characterised' : 'characterised'],
+    [/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation'],
+    [/\bmischaracterization\b/gi, (m) => m[0] === 'M' ? 'Mischaracterisation' : 'mischaracterisation'],
     [/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised'],
     [/\bemphasized\b/gi, (m) => m[0] === 'E' ? 'Emphasised' : 'emphasised'],
     [/\bemphasize\b/gi, (m) => m[0] === 'E' ? 'Emphasise' : 'emphasise'],

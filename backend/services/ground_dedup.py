@@ -79,3 +79,31 @@ def find_matching_ground(new_title: str, existing_grounds: list) -> dict | None:
         if is_ground_duplicate(new_title, eg_title):
             return eg
     return None
+
+
+# DO_NOT_UNDO — Australian spelling normaliser for ground titles.
+# Applied when grounds are created/synced so titles always use Australian English.
+import re
+_AU_REPLACEMENTS = [
+    (re.compile(r'\bcharacterization\b', re.I), lambda m: 'Characterisation' if m.group()[0].isupper() else 'characterisation'),
+    (re.compile(r'\bmischaracterization\b', re.I), lambda m: 'Mischaracterisation' if m.group()[0].isupper() else 'mischaracterisation'),
+    (re.compile(r'\bbehavior\b', re.I), lambda m: 'Behaviour' if m.group()[0].isupper() else 'behaviour'),
+    (re.compile(r'\borganization\b', re.I), lambda m: 'Organisation' if m.group()[0].isupper() else 'organisation'),
+    (re.compile(r'\brecognize\b', re.I), lambda m: 'Recognise' if m.group()[0].isupper() else 'recognise'),
+    (re.compile(r'\brecognized\b', re.I), lambda m: 'Recognised' if m.group()[0].isupper() else 'recognised'),
+    (re.compile(r'\banalyze\b', re.I), lambda m: 'Analyse' if m.group()[0].isupper() else 'analyse'),
+    (re.compile(r'\banalyzing\b', re.I), lambda m: 'Analysing' if m.group()[0].isupper() else 'analysing'),
+    (re.compile(r'\bdefense\b', re.I), lambda m: 'Defence' if m.group()[0].isupper() else 'defence'),
+    (re.compile(r'\boffense\b', re.I), lambda m: 'Offence' if m.group()[0].isupper() else 'offence'),
+    (re.compile(r'\bfavoring\b', re.I), lambda m: 'Favouring' if m.group()[0].isupper() else 'favouring'),
+    (re.compile(r'\butilize\b', re.I), lambda m: 'Utilise' if m.group()[0].isupper() else 'utilise'),
+    (re.compile(r'\butilized\b', re.I), lambda m: 'Utilised' if m.group()[0].isupper() else 'utilised'),
+]
+
+def normalise_au_spelling(text: str) -> str:
+    """Convert American English to Australian English in ground titles."""
+    if not text:
+        return text
+    for pattern, replacement in _AU_REPLACEMENTS:
+        text = pattern.sub(replacement, text)
+    return text
