@@ -42,7 +42,8 @@ LEGAL_TOPICS = {
     },
     "sentencing_error": {
         "sentencing error", "sentencing disparity", "non-parole",
-        "manifestly excessive", "manifest excessive", "sentencing above",
+        "manifestly excessive", "manifest excessive", "manifest excess",
+        "sentencing above",
         "excessive sentence", "sentencing: manifest", "potential sentencing",
         "sentencing excess", "sentence manifest", "sentence excessive",
         "sentencing inadequa", "manifestly inadequate", "manifest inadequa",
@@ -54,6 +55,7 @@ LEGAL_TOPICS = {
         "aggravating features", "sentencing approach", "moral culpability",
         "sentencing: possible", "possible error in", "error in approach to",
         "sentence: ", "adequacy of reasons",
+        "excess in sentencing", "excessive in sentencing",
     },
     "ineffective_counsel": {
         "ineffective counsel", "ineffective assistance", "counsel regarding",
@@ -64,6 +66,10 @@ LEGAL_TOPICS = {
         "counsel failure", "counsel error", "counsel competence",
         "counsel incompeten", "defence counsel", "defense counsel",
         "trial counsel", "appellate counsel",
+        "inadequate defence", "inadequate defense",
+        "defence advocacy", "defense advocacy",
+        "inadequate advocacy", "inadequate counsel",
+        "failure to file", "failure to lodge", "failure to appeal",
     },
     "evidence_admissibility": {
         "admissibility", "inadmissible", "improperly admitted",
@@ -118,6 +124,7 @@ LEGAL_TOPICS = {
         "due process", "natural justice", "process error",
         "trial procedure", "trial process", "procedural failure",
         "refusal of", "trial application refused",
+        "failure to comply", "late filing", "time limitation",
     },
 }
 
