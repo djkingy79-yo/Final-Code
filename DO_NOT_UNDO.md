@@ -400,6 +400,16 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER remove `cleanup_duplicate_grounds` or `cleanup_duplicate_issues`**
 
 
+### LLM Thread Pool — Event Loop Fix (DO NOT UNDO)
+- `backend/services/llm_service.py` uses `_llm_thread_pool` (ThreadPoolExecutor, 4 workers) for ALL LLM calls
+- `_sync_llm_send()` runs `chat.send_message()` in a separate thread with its own event loop
+- ROOT CAUSE: `emergentintegrations` uses sync `litellm.completion()` inside an async wrapper, blocking the main FastAPI event loop for 30-60+ seconds per LLM call
+- Without this fix, the ENTIRE API becomes unresponsive during report generation (53+ second response times)
+- With this fix, API responds in <0.2s even during active 8-pass report generation with 502 retries
+- **NEVER remove `_llm_thread_pool` or `_sync_llm_send`**
+- **NEVER change `loop.run_in_executor(_llm_thread_pool, ...)` back to direct `await chat.send_message()`**
+- **NEVER reduce `max_workers` below 4** — concurrent LLM calls (expansion, retries) need threads
+
 ### Condensed Prompt for Multi-Pass Reports (DO NOT UNDO)
 - `backend/server.py` builds a `condensed_prompt` (~18-21k chars) alongside the full `user_prompt` (~134k chars)
 - Pass 1 (and sometimes Pass 2 for full_detailed) uses the full prompt with raw document text

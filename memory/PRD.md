@@ -26,11 +26,13 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **Bulletproof ground deduplication** (12 legal topics, 3-layer matching, startup+post-sync safety nets)
 - **Condensed prompts** for multi-pass generation (prevents 502 proxy errors)
 - **Pass-level retry** with exponential backoff for 502/503 errors
+- **LLM Thread Pool** — all LLM calls run in ThreadPoolExecutor to prevent event loop blocking
 - **Database normalisation** script (normalise_db.py) on startup
 
 ## Protected Systems (DO NOT UNDO)
 - **Report Engine:** 8-pass Full Detailed, 7-8 pass Extensive Log, dedup thresholds 0.97/0.90
 - **Condensed Prompt:** Passes 2+ use ~20k char prompt instead of 134k, no output reduction
+- **LLM Thread Pool:** 4-worker ThreadPoolExecutor prevents sync litellm.completion() from blocking event loop
 - **Ground Dedup:** Topic classification (12 categories) + fuzzywuzzy (≥65) + bidirectional overlap (>0.45)
 - **Case Identity Card:** Blue card with inline CSS for print
 - **Auth Retry:** 3x retry on /auth/me and /auth/session before logout
@@ -44,3 +46,4 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 ## Upcoming Tasks
 - P1: Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
+- P3: Report Health Dashboard (live pass-by-pass progress with ETA)

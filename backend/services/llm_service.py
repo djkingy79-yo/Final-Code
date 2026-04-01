@@ -10,8 +10,26 @@ import asyncio
 import logging
 import json
 from typing import Optional, Callable, Any, Dict, Literal
+from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
+
+# DO_NOT_UNDO — Thread pool for LLM calls. The emergentintegrations library
+# uses litellm.completion() (SYNCHRONOUS) inside an async wrapper, which blocks
+# the FastAPI event loop for 30-60+ seconds per call. Running LLM calls in a
+# thread pool keeps the API responsive during report generation.
+_llm_thread_pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix="llm_worker")
+
+
+def _sync_llm_send(chat, message):
+    """Run the async chat.send_message in a dedicated thread with its own event loop.
+    This prevents the sync litellm.completion() inside emergentintegrations from
+    blocking the main FastAPI event loop."""
+    loop = asyncio.new_event_loop()
+    try:
+        return loop.run_until_complete(chat.send_message(message))
+    finally:
+        loop.close()
 
 
 # ============================================================================
@@ -272,8 +290,16 @@ async def call_llm_structured(
                 .with_params(max_tokens=resolved_max_tokens)
             )
 
+            # DO_NOT_UNDO — Run LLM call in thread pool to prevent event loop blocking.
+            # emergentintegrations uses sync litellm.completion() internally.
+            loop = asyncio.get_running_loop()
             result = await asyncio.wait_for(
-                chat.send_message(UserMessage(text=effective_user_prompt)),
+                loop.run_in_executor(
+                    _llm_thread_pool,
+                    _sync_llm_send,
+                    chat,
+                    UserMessage(text=effective_user_prompt)
+                ),
                 timeout=resolved_timeout
             )
 
