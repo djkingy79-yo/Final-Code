@@ -190,3 +190,50 @@ and `ReportsSection.jsx` (card colours). **NEVER make all reports the same colou
 
 Word export buttons (Word All, Export Word) MUST open the document-preview page, NOT download 
 a .doc file. The user explicitly requested preview mode.
+
+## CRITICAL: REPORT GENERATION ENGINE (DO NOT REVERT — BROKEN 39+ TIMES)
+
+The report generation engine in `backend/server.py` and `backend/services/llm_service.py` has been 
+carefully tuned to produce deep, case-specific, legally rigorous output. These settings are FINAL.
+
+### Deduplication Thresholds — DO NOT LOWER
+- `_dedupe_report_content()` in `server.py`:
+  - Multi-pass reports (full_detailed, extensive_log): **threshold = 0.97** (near-exact only)
+  - Single-pass reports (quick_summary): **threshold = 0.90**
+  - **NEVER lower these thresholds below 0.90.** Previous 0.82 threshold stripped ~50% of valid content.
+
+### Full Detailed Report — 8 PASSES (DO NOT REDUCE)
+- Full Detailed ($150) uses **8 generation passes** covering 1-2 sections per pass.
+- Pass structure: Sections 1-2 / Section 3 / Grounds Part 1 / Grounds Part 2 + Section 5 / Sections 6-7 / Sections 8-10 / Sections 11-12 / Sections 13-15.
+- **NEVER reduce to fewer than 8 passes.** Previous 5-pass structure produced ~7,890 words. Current 8-pass produces ~12,000+ words.
+
+### Section-by-Section Expansion — DO NOT DISABLE
+- After multi-pass generation, thin sections (<3000 chars) are individually expanded via targeted LLM calls.
+- This is in the `if len(response) < target_length` block in `_run_report_generation()`.
+- **NEVER disable or remove this expansion logic.** It adds ~20% more depth to thin sections.
+
+### Minimum Character Targets — DO NOT LOWER
+- quick_summary: **14,000 chars** minimum
+- full_detailed: **80,000 chars** minimum
+- extensive_log: **150,000 chars** minimum
+- **NEVER lower these targets.**
+
+### LLM Guardrails — DO NOT ADD "CAUTIOUS LANGUAGE" TO REPORTS
+- `_apply_task_guardrails()` in `llm_service.py` uses `task_type="report_generation"` for all reports.
+- Report generation guardrails do NOT include "Use cautious, conditional language" — that rule fights against assertive legal analysis.
+- **NEVER add cautious/hedging language rules to the report_generation task type.**
+
+### Barrister View — task_type="report_generation" + max_tokens=16384
+- All Barrister View LLM calls use `task_type="report_generation"` and `max_tokens=16384`.
+- **NEVER downgrade max_tokens or change task_type for Barrister calls.**
+
+### Regeneration — In-Place Replacement
+- Regenerating a report replaces the existing report in the database (same report_id).
+- **NEVER create duplicate reports on regeneration.** The `generate` endpoint checks for existing completed reports first.
+
+### Current Verified Word Counts (31 Mar 2026):
+- Quick Summary: ~1,486 words
+- Full Detailed: ~12,309 words
+- Extensive Log: ~15,830 words
+- Barrister View: ~6,333 words
+- **If any future generation produces LESS than 80% of these counts, the engine has been broken. Investigate immediately.**

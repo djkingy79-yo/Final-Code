@@ -1,37 +1,26 @@
 # Changelog
 
-## 31 March 2026 (Session 2 — Final)
-### Fixes From User Screenshots
-1. **Pipeline Verification RESTORED** — Verify Top 3/6 buttons are back on Reports tab.
-2. **Duplicate Grounds Cleaned** — Removed 7 duplicate grounds (13 → 6 unique). Added fuzzy keyword matching to prevent future duplicates (>50% word overlap = duplicate).
-3. **Offence Capitalised** — "murder" → "Murder" in Report View header. Strips "The" prefix.
-4. **Barrister View → Teal** — Header background changed from blue to teal. Action buttons stay blue.
-5. **Word Export → Preview** — Word All, Export Word buttons now open in document-preview page instead of downloading .doc files.
-6. **ReportView.jsx cleaned** — Removed duplicate DraftSourceBadge, Pipeline Draft Summary, Pre-Draft Pipeline Activity. "Generated" badge everywhere.
-7. **Footer text shrunk** — "Created and Designed by Deb King" made smaller.
-8. **Report title font reduced** — text-3xl → text-xl on mobile.
+## 31 Mar 2026 — Report Quality Engine Overhaul
+- Fixed over-aggressive dedup (0.82 → 0.97 for multi-pass, 0.90 for single-pass)
+- Full Detailed restructured from 5 → 8 generation passes (7,890 → 12,309 words, +56%)
+- Extensive Log: 13,050 → 15,830 words (+21%) with section expansion
+- Barrister View: 3,934 → 6,333 words (+61%) with task_type="report_generation" and ground-by-ground expansion
+- Quick Summary: expansion enabled (1,417 → 1,486 words)
+- Removed conflicting "cautious language" guardrail from report generation
+- Section-by-section expansion for thin sections (replaces broken full-report expansion that hit 502 errors)
+- In-place report regeneration (no more duplicate reports)
+- Cleaned 4 duplicate reports from database
+- Added comprehensive DO_NOT_UNDO protections for entire report engine
+- Added inline code comments (DO_NOT_UNDO) on all critical thresholds and pass counts
 
-### Deep Analysis Integration
-- Investigate endpoint generates 500-800 word deep analysis via LLM after structured verification
-- Stored in `deep_analysis.full_analysis` AND `analysis` fields
-- Shows in grounds export/print view
-
-### "Case name" Placeholder Prevention
-- Fixed verify.py LLM prompt template (example was "Case name" → now "R v [Surname] [Year]")
-- Frontend filters strip placeholders in GroundsOfMerit.jsx
-- All DB placeholders cleaned
-
-### Case Identity Card (DO_NOT_UNDO Protected)
-- Prominent blue card on CaseDetail showing Defendant, Offence, State, Sentence
-- Same card in GroundsOfMerit export/print view
-
-### Database Cleanup
-- Reports: all 52 set to verification_status "generated", draft_source "pipeline"
-- Grounds: 7 duplicates deleted, 4 placeholder similar cases removed
-
-## 30 March 2026
-- Auto-Detect Permanent Guards with DO_NOT_UNDO
-- Verified Case Law Database Integration (Law tab)
-- Grounds Over-Generation Fix (capped to 8-10)
-- Investigate Duplicate Bug Fix
-- Grounds Scoring Fix (stricter legitimacy)
+## 31 Mar 2026 (earlier session)
+- Google Auth Redirect Loop Fix
+- PDF/Word Preview Mode
+- LLM "Case name" Hallucination Fix
+- Deep Analysis Generation (investigate endpoint)
+- UI Badge Cleanup (Draft → Generated)
+- Report Colour Coding (Green/Blue/Purple/Teal)
+- Grounds Deduplication (fuzzy matching, 13 → 6 grounds)
+- DO_NOT_UNDO Guards Added
+- Case Identity Card Protection
+- Print View Inline CSS Fix

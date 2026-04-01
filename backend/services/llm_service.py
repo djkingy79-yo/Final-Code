@@ -199,6 +199,8 @@ def _basic_text_validation(result: str) -> bool:
 
 
 def _apply_task_guardrails(system_prompt: str, task_type: str, require_json: bool) -> str:
+    """DO_NOT_UNDO — Report generation MUST NOT include 'cautious language' guardrail.
+    That rule was stripping assertive legal analysis and making reports weak/generic."""
     # For report generation, the system prompt already contains comprehensive guardrails.
     # Adding conflicting "cautious language" rules undermines the report quality.
     if task_type == "report_generation":

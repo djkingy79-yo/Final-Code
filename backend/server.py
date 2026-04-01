@@ -195,14 +195,13 @@ def _split_report_sections(text: str) -> list:
 
 
 def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> str:
+    """DO_NOT_UNDO — Dedup thresholds are FINAL. 0.97 for multi-pass, 0.90 for single-pass.
+    Previous 0.82 threshold stripped ~50% of valid report content. NEVER lower below 0.90."""
     if not text:
         return text
 
-    # Multi-pass reports (full_detailed, extensive_log) should NOT be deduped aggressively
-    # because different sections legitimately discuss the same grounds/case facts from different angles.
-    # Over-aggressive dedup was stripping ~50% of valid content.
+    # DO_NOT_UNDO — Multi-pass reports must NOT be deduped aggressively
     if report_type in ("full_detailed", "extensive_log"):
-        # Only strip exact duplicates for multi-pass reports
         similarity_threshold = 0.97
     else:
         similarity_threshold = 0.90
@@ -1684,7 +1683,8 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     last_error = None
     try:
         if report_type == "full_detailed":
-            # Eight-pass generation for full_detailed — one or two sections per pass for maximum depth
+            # DO_NOT_UNDO — 8-pass generation is FINAL. Previous 5-pass produced only ~7,890 words.
+            # Current 8-pass produces ~12,000+ words. NEVER reduce pass count.
             half_grounds = max(1, len(grounds) // 2)
             first_grounds = grounds_enumerated.split('\n')[:half_grounds * 3]  # ~3 lines per ground
             second_grounds = grounds_enumerated.split('\n')[half_grounds * 3:]
@@ -2152,6 +2152,7 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
     anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
+    # DO_NOT_UNDO — Minimum character targets. NEVER lower these values.
     min_lengths = {
         "quick_summary": 14000,
         "full_detailed": 80000,

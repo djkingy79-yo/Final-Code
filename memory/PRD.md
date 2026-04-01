@@ -1,49 +1,44 @@
-# Appeal Case Manager — PRD
+# Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Criminal Appeal Case Manager for Australian jurisdictions. Secure document management, AI-powered case analysis via 5-Stage Pipeline (Extract → Classify → Verify → Project → Draft), tiered reporting system. React + FastAPI + MongoDB.
+Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, a 5-Stage Data Pipeline (Extract → Classify → Verify → Project → Draft), and a tiered reporting system.
 
 ## Core Requirements
-- **Report Language:** Strict third-person. No "we/us/our/you/your".
-- **UI:** Forced light mode. High contrast. No amber/brown. Bright blue action buttons.
-- **Report Colours:** Green (Quick Summary), Blue (Full Detailed), Purple (Extensive Log), Teal (Barrister).
-- **Australian English:** analyse, organise, barrister, defence, offence, colour.
-- **DO_NOT_UNDO Guards:** Case auto-detect, models, Case Identity Card, "Case name" prevention.
+- **Report Tiers:** Free (Quick Summary) → $150 (Full Detailed) → $200 (Extensive Log) → Barrister View (locked until all 3 paid)
+- **Report Language:** STRICT third-person educational tool. No "we", "us", "our", "you", "your"
+- **Branding & UI:** Forced light mode. High contrast. No amber/brown. Blue/slate/navy only. Action buttons = bright blue
+- **Report Colours:** Green (Quick), Blue (Full Detailed), Purple (Extensive), Teal (Barrister)
+- **Australian English:** "analyse", "organise", "barrister", "defence", "offence", "colour"
 
 ## Architecture
-```
-/app/
-├── backend/
-│   ├── models/           # Pydantic models (DO NOT UNDO)
-│   ├── routers/          # auth, cases, grounds, payments, caselaw, pipeline
-│   ├── services/pipeline # AI pipeline stages (extract, classify, verify, project, argue)
-│   └── server.py         # Report generation (~4400 lines)
-├── frontend/src/
-│   ├── components/       # GroundsOfMerit, CaseLawPanel, ReportsSection, PipelineProgress
-│   ├── pages/            # Dashboard, CaseDetail, ReportView, BarristerView
-│   └── App.js            # Routing and Auth
-```
+- Frontend: React + Tailwind + Shadcn/UI
+- Backend: FastAPI + MongoDB
+- AI: OpenAI GPT-4o via Emergent LLM Key
+- Auth: Emergent Google Auth + JWT
+- Payments: PayPal/PayID/Stripe
+- Email: Resend
 
-## Integrations
-- OpenAI GPT-4o via Emergent LLM Key
-- Emergent Google Auth (social login)
-- Resend (emails)
-- PayPal / Stripe (payments)
+## What's Been Implemented
+- Full case management (CRUD, documents, timeline, grounds, notes)
+- 5-Stage Data Pipeline with fuzzy deduplication
+- 4-tier report generation (Quick Summary, Full Detailed, Extensive Log, Barrister View)
+- PDF/DOCX export with preview mode
+- Case Identity Card (blue, prominent, on all views)
+- Chat collaboration (WebSocket)
+- Case sharing
+- Pipeline verification (Verify Top 3/6 Issues)
+- Admin dashboard, statistics, legal resources
+- Mobile-responsive UI
 
-## What's Implemented
-- Authentication (Google OAuth + email/password)
-- Document upload & auto-detect (state, offence, sentence, timeline)
-- AI pipeline: Extract → Classify → Verify → Project → Argue
-- Grounds of merit with Investigation (deep analysis)
-- Pipeline Verification (Verify Top 3/6 Issues)
-- Tiered reports (Free/Quick, $150/Full, $200/Extensive, Barrister)
-- PDF/DOCX/Print export via document preview (no downloads)
-- Case Law search (AustLII, NSW Caselaw)
-- Case Identity Card (defendant, offence, state, sentence)
-- Fuzzy deduplication for grounds
-- Chat, Collab, Share features
+## Report Generation Engine (PROTECTED — DO NOT UNDO)
+- Full Detailed: 8 passes, ~12,000+ words
+- Extensive Log: 8 passes, ~15,000+ words
+- Barrister View: Multi-group synthesis + ground expansion, ~6,000+ words
+- Dedup: 0.97 threshold for multi-pass, 0.90 for single-pass
+- Section expansion for thin sections
+- No "cautious language" guardrail on reports
 
-## P0/P1/P2 Remaining
+## Upcoming Tasks
 - P1: Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
 - P3: Database normalisation script
