@@ -193,21 +193,14 @@ const LandingPage = () => {
               
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
-                <ul className="grid grid-cols-3 gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-700">
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Homicide</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Assault</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Sexual Offences</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Drug Offences</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Robbery</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Fraud &amp; Dishonesty</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Firearms &amp; Weapons</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Arson &amp; Property</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Child Abuse Material</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Manslaughter</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />Kidnapping</li>
-                  <li className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />All Indictable Offences</li>
-                </ul>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
+                <div className="flex flex-wrap gap-2" data-testid="hero-crimes-list">
+                  {["Homicide", "Assault", "Sexual Offences", "Drug Offences", "Robbery", "Fraud & Dishonesty", "Firearms & Weapons", "Arson & Property", "Child Abuse Material", "Manslaughter", "Kidnapping", "All Indictable Offences"].map((crime) => (
+                    <span key={crime} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                      {crime}
+                    </span>
+                  ))}
+                </div>
               </div>
               
               {/* CTA Buttons — DO NOT UNDO */}
@@ -1120,6 +1113,9 @@ const LandingPage = () => {
           </Button>
         </div>
       </section>
+
+      {/* Bottom spacer for Emergent badge */}
+      <div className="h-16" />
 
     </div>
   );

@@ -36,22 +36,14 @@ export const FastScrollTop = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-20 right-5 z-[70] flex flex-col gap-2">
-      <button
-        onClick={() => navigate("/")}
-        className="h-12 w-12 rounded-full bg-blue-700 hover:bg-blue-600 text-white shadow-xl border-2 border-white/60 flex items-center justify-center transition-colors"
-        data-testid="global-quick-home-btn"
-        aria-label="Go to home"
-      >
-        <Home className="w-5 h-5" />
-      </button>
+    <div className="fixed bottom-5 right-4 z-[70] flex flex-col gap-2">
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl border-2 border-white/60 flex items-center justify-center transition-colors"
+        className="h-10 w-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-2 border-white/60 flex items-center justify-center transition-colors"
         data-testid="global-fast-scroll-top-btn"
         aria-label="Back to top"
       >
-        <ArrowUp className="w-5 h-5" />
+        <ArrowUp className="w-4 h-4" />
       </button>
     </div>
   );
