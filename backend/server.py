@@ -2806,7 +2806,7 @@ DOCUMENT INVENTORY
         {
             "slug": "case-analysis",
             "target_chars": 28000,
-            "source_limits": {"quick_summary": 12000, "full_detailed": 30000, "extensive_log": 40000},
+            "source_limits": {"quick_summary": 12000, "full_detailed": 28000, "extensive_log": 36000},
             "required_headings": [
                 "## Evidentiary Tensions and Appeal Pressure Points",
                 "## Grounds of Merit",
@@ -2818,7 +2818,7 @@ DOCUMENT INVENTORY
         {
             "slug": "strategy",
             "target_chars": 26000,
-            "source_limits": {"quick_summary": 10000, "full_detailed": 26000, "extensive_log": 36000},
+            "source_limits": {"quick_summary": 10000, "full_detailed": 22000, "extensive_log": 32000},
             "required_headings": [
                 "## Sentencing Comparison and Relief Pathways",
                 "## Proposed Submissions and Hearing Strategy",
@@ -2891,46 +2891,12 @@ SOURCE REPORTS
 
     response = "\n\n".join(part for part in section_outputs if part).strip()
 
-    target_length = 120000
-    if len(response) < target_length:
-        expansion_source_text = _build_barrister_group_source_text(
-            source_reports,
-            {"quick_summary": 10000, "full_detailed": 26000, "extensive_log": 32000},
-        )
-        expansion_prompt = f"""Expand the Barrister Brief below to at least {target_length} characters.
-
-Keep every existing heading exactly as written.
-Do not remove or shorten any existing material.
-Add more factual depth, procedural detail, case-specific analysis, statutory interpretation, authority comparison, sentencing detail, and hearing strategy under the existing sections only.
-The result must read like the definitive barrister brief — more detailed than any individual source report.
-Every ground in the mandatory ground list must remain in the final text with its own dedicated discussion that includes factual foundation, legal test, authorities, prosecution response, reply, and fallback positions.
-Under ## Source Report Synthesis, deepen each of the 3 report sub-sections with further unique material rather than rephrasing the same content.
-Under ## Proposed Submissions and Hearing Strategy, add specific submission themes, ground sequencing, hearing time estimates, and oral advocacy structure.
-
-MANDATORY GROUND LIST
-{grounds_heading_text}
-
-SOURCE REPORTS
-{expansion_source_text}
-
-CURRENT BARRISTER BRIEF
-{response}
-"""
-        try:
-            expanded_response = await call_llm_with_fallback(
-                system_prompt,
-                expansion_prompt,
-                session_id=f"barrister-{case_id}-expand",
-                max_tokens=16384,
-                timeout_seconds=300,
-                task_type="report_generation",
-            )
-            expanded_response = _strip_report_placeholders(expanded_response)
-            expanded_response = re.sub(r"\n{3,}", "\n\n", expanded_response).strip()
-            if len(expanded_response) > len(response):
-                response = expanded_response
-        except Exception as exc:
-            logger.warning(f"Barrister whole-brief expansion skipped for {case_id}: {exc}")
+    # General whole-brief expansion DISABLED — causes 502 proxy errors and wastes LLM budget.
+    # Section-by-section expansion below is more effective and reliable.
+    expansion_source_text = _build_barrister_group_source_text(
+        source_reports,
+        {"quick_summary": 10000, "full_detailed": 24000, "extensive_log": 32000},
+    )
 
     # DO NOT UNDO — Section-by-section expansion for thin sections
     thin_section_targets = {
@@ -2942,6 +2908,9 @@ CURRENT BARRISTER BRIEF
         "## Statutory Framework and Governing Tests": 5000,
         "## Authorities and Comparative Cases": 5000,
         "## Sentencing Comparison and Relief Pathways": 5000,
+        "## Proposed Submissions and Hearing Strategy": 5000,
+        "## Conference Questions, Filing Priorities and Risks": 4000,
+        "## Final Barrister Briefing Note": 4000,
     }
     section_expansion_source = _build_barrister_group_source_text(
         source_reports,
@@ -3306,9 +3275,99 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Barrister issue matrix skipped for {case_id}: {exc}")
 
+    # DO NOT UNDO — Final quality validation pass: expand any remaining thin sections
+    final_min_chars = {
+        "## Executive Overview for Counsel": 5000,
+        "## Source Report Synthesis": 5000,
+        "## Case Background and Procedural History": 4000,
+        "## Conviction, Offence and Sentence Analysis": 4000,
+        "## Evidentiary Tensions and Appeal Pressure Points": 5000,
+        "## Grounds of Merit": 20000,
+        "## Statutory Framework and Governing Tests": 4000,
+        "## Authorities and Comparative Cases": 4000,
+        "## Sentencing Comparison and Relief Pathways": 5000,
+        "## Proposed Submissions and Hearing Strategy": 4000,
+        "## Conference Questions, Filing Priorities and Risks": 3000,
+        "## Final Barrister Briefing Note": 3000,
+    }
+    final_source = _build_barrister_group_source_text(
+        source_reports,
+        {"quick_summary": 8000, "full_detailed": 20000, "extensive_log": 28000},
+    )
+    for heading, min_c in final_min_chars.items():
+        section_match = re.search(
+            rf"({re.escape(heading)}\n[\s\S]*?)(?=\n## |\Z)",
+            response,
+        )
+        if section_match and len(section_match.group(1)) < min_c:
+            try:
+                current_section = section_match.group(1)
+                final_expand_prompt = f"""Rewrite and substantially expand the following section. Output ONLY this one section with its heading.
+
+{current_section}
+
+Requirements:
+- Keep ALL existing content and ADD significantly more depth, factual detail, legal reasoning, and practical counsel advice.
+- Minimum target: {min_c} characters.
+- Dense, counsel-facing, Australian English, strict third-person.
+- Use flowing paragraphs with concrete factual anchors, not generic observations.
+
+SOURCE REPORTS
+{final_source}
+"""
+                expanded = await call_llm_with_fallback(
+                    system_prompt, final_expand_prompt,
+                    session_id=f"barrister-{case_id}-final-{heading[3:15].lower().replace(' ','-')}",
+                    max_tokens=16384, timeout_seconds=300, task_type="report_generation",
+                )
+                expanded = _strip_report_placeholders(expanded)
+                expanded = re.sub(r"\n{3,}", "\n\n", expanded).strip()
+                if expanded.startswith(heading) and len(expanded) > len(current_section):
+                    response = response.replace(current_section, expanded, 1)
+                    logger.info(f"Final QA expanded: {heading} ({len(current_section)} → {len(expanded)} chars)")
+            except Exception as exc:
+                logger.warning(f"Final QA expansion skipped for {heading}: {exc}")
+
     response = _strip_report_placeholders(response)
     response = _normalise_barrister_table_titles(response)
     response = _dedupe_barrister_ground_subsections(response)
+
+    # DO NOT UNDO — Strip rogue H2 sections not in the expected structure
+    expected_h2s = {
+        "## Executive Overview for Counsel",
+        "## Source Report Synthesis",
+        "## Case Background and Procedural History",
+        "## Conviction, Offence and Sentence Analysis",
+        "## Evidentiary Tensions and Appeal Pressure Points",
+        "## Grounds of Merit",
+        "## Statutory Framework and Governing Tests",
+        "## Authorities and Comparative Cases",
+        "## Report-to-Report Cross-Analysis",
+        "## Document and Evidence Deployment for Counsel",
+        "## Sentencing Comparison and Relief Pathways",
+        "## Proposed Submissions and Hearing Strategy",
+        "## Conference Questions, Filing Priorities and Risks",
+        "## Conference Questions, Filing Priorities, and Risks",
+        "## Final Barrister Briefing Note",
+        "## Attachment A — Barrister Issue Matrix",
+        "## Attachment A - Barrister Issue Matrix",
+    }
+    cleaned_lines = []
+    skip_section = False
+    for line in response.split("\n"):
+        if line.startswith("## "):
+            if line.strip() in expected_h2s:
+                skip_section = False
+                cleaned_lines.append(line)
+            else:
+                skip_section = True
+                logger.info(f"Stripped rogue section: {line.strip()}")
+        elif skip_section and not line.startswith("## "):
+            continue
+        else:
+            cleaned_lines.append(line)
+    response = "\n".join(cleaned_lines)
+
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
 
     return {
