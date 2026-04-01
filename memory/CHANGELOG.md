@@ -1,5 +1,24 @@
 # Changelog
 
+## 2 Apr 2026 — Login Lag Fix + 502 Resilience + All 4 Reports Generated
+
+### Fixed: Invisible Loading Spinner After Google Login
+- The ProtectedRoute loading spinner used `text-slate-100`/`text-slate-300` — nearly invisible on white background
+- User saw blank white screen and thought login was lagging
+- Fixed to visible `text-slate-700` with clear "Loading your dashboard..." message
+
+### Fixed: Report Generation 502 Resilience (DO_NOT_UNDO)
+- Added pass-level retry in `_subprocess_llm()` (3 attempts with 30/60s exponential backoff)
+- Added 502-specific backoff in `call_llm_structured()` (15-45s instead of 2-5s)
+- Reports now fight through upstream proxy 502 storms instead of failing immediately
+
+### All 4 Reports Generated Successfully for "Hom vs R"
+- Quick Summary: Completed
+- Full Detailed: 83,987 chars / ~11,302 words (8 passes)
+- Extensive Log: 123,614 chars / ~16,637 words (8 passes)  
+- Barrister View: 78,165 chars / ~10,247 words (auto-generated)
+
+
 ## 2 Apr 2026 — Report Recovery Bug Fix + Full Detailed Regenerated
 
 ### Fixed: Stuck "Generating..." Report (Full Detailed)
