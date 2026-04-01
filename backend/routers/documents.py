@@ -125,9 +125,14 @@ async def _background_auto_generate(case_id: str, user_id: str):
             try:
                 tl_prompt = f"""Extract a chronological timeline of events from these case documents.
 Return ONLY a JSON array (no markdown). Each event:
-{{"date":"YYYY-MM-DD","title":"Brief title","description":"Details","event_type":"incident|arrest|court_hearing|evidence|witness|legal_filing|verdict|appeal|other"}}
+{{"date":"YYYY-MM-DD or YYYY if exact date unknown","title":"Brief title","description":"Details","event_type":"incident|arrest|court_hearing|evidence|witness|legal_filing|verdict|appeal|other"}}
 
-Only include events clearly identifiable. Use Australian English.
+CRITICAL RULES:
+- Only include events clearly identifiable in the documents
+- Do NOT invent dates. If the exact date is unknown, use just the year (e.g. "2018")
+- Do NOT use 1 January as a placeholder — use the year only instead
+- Do NOT create duplicate events. Each distinct event should appear only once
+- Use Australian English spelling (analyse, defence, offence, behaviour, characterisation)
 
 CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
 DOCUMENTS:
@@ -144,17 +149,31 @@ DOCUMENTS:
                 events = json.loads(raw)
                 if isinstance(events, list):
                     created = 0
+                    # Build fingerprints of existing events for dedup
+                    existing = await db.timeline_events.find({"case_id": case_id}, {"_id": 0, "title": 1}).to_list(200)
+                    existing_titles = [e.get("title", "").lower().strip() for e in existing]
+                    from fuzzywuzzy import fuzz
                     for evt in events:
                         if not evt.get("title"):
                             continue
+                        new_title = evt["title"].lower().strip()
+                        # Skip if fuzzy duplicate of existing event
+                        is_dup = any(fuzz.token_set_ratio(new_title, et) >= 65 for et in existing_titles)
+                        if is_dup:
+                            continue
+                        event_date = evt.get("date", "")
+                        # Fix Jan 1 placeholder dates
+                        if event_date and event_date.endswith("-01-01"):
+                            event_date = event_date[:4]  # Keep year only
                         event_doc = {
                             "event_id": f"evt_{uuid.uuid4().hex[:12]}",
                             "case_id": case_id, "user_id": user_id,
                             "title": evt.get("title", ""), "description": evt.get("description", ""),
-                            "event_date": evt.get("date", ""), "event_type": evt.get("event_type", "other"),
+                            "event_date": event_date, "event_type": evt.get("event_type", "other"),
                             "source": "ai_generated", "created_at": datetime.now(timezone.utc).isoformat()
                         }
                         await db.timeline_events.insert_one(event_doc)
+                        existing_titles.append(new_title)
                         created += 1
                     logger.info(f"Auto-generated {created} timeline events for {case_id}")
             except Exception as e:

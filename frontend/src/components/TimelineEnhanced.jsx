@@ -153,7 +153,17 @@ const Timeline = ({
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "Unknown date";
-    const date = new Date(dateStr);
+    const s = String(dateStr).trim();
+    // Year-only: "2018" or "2022" — display just the year
+    if (/^\d{4}$/.test(s)) return s;
+    // Year-month only: "2018-06" — display month + year
+    if (/^\d{4}-\d{2}$/.test(s)) {
+      const [y, m] = s.split("-");
+      const d = new Date(Number(y), Number(m) - 1, 1);
+      return d.toLocaleDateString("en-AU", { month: "short", year: "numeric" });
+    }
+    const date = new Date(s);
+    if (isNaN(date.getTime())) return s;
     return date.toLocaleDateString("en-AU", {
       weekday: "short",
       day: "numeric",

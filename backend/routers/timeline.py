@@ -379,6 +379,7 @@ Rules:
     skipped_duplicates = 0
 
     existing_fingerprints = set()
+    existing_titles = []
     for event in existing_events:
         fingerprint = (
             _safe_str(event.get("title")).lower(),
@@ -386,6 +387,9 @@ Rules:
             _safe_str(event.get("event_type")).lower(),
         )
         existing_fingerprints.add(fingerprint)
+        existing_titles.append(_safe_str(event.get("title")).lower())
+
+    from fuzzywuzzy import fuzz as _fuzz
 
     for raw_event in generated_events:
         try:
@@ -400,6 +404,12 @@ Rules:
             )
 
             if fingerprint in existing_fingerprints:
+                skipped_duplicates += 1
+                continue
+
+            # DO_NOT_UNDO — Fuzzy title dedup for timeline events
+            new_title = _safe_str(raw_event.get("title")).lower()
+            if any(_fuzz.token_set_ratio(new_title, et) >= 65 for et in existing_titles):
                 skipped_duplicates += 1
                 continue
 
@@ -437,6 +447,7 @@ Rules:
             )
             created_events.append(created)
             existing_fingerprints.add(fingerprint)
+            existing_titles.append(new_title)
 
         except Exception as e:
             logger.warning(f"Skipping malformed generated timeline event: {e}")
