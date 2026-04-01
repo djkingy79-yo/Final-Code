@@ -398,3 +398,14 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER reduce LEGAL_TOPICS keyword coverage**
 - **NEVER remove the startup dedup or post-sync safety nets**
 - **NEVER remove `cleanup_duplicate_grounds` or `cleanup_duplicate_issues`**
+
+
+### Condensed Prompt for Multi-Pass Reports (DO NOT UNDO)
+- `backend/server.py` builds a `condensed_prompt` (~18-21k chars) alongside the full `user_prompt` (~134k chars)
+- Pass 1 (and sometimes Pass 2 for full_detailed) uses the full prompt with raw document text
+- All subsequent passes use the `condensed_prompt` which includes: case context, document list, timeline events, grounds of merit, and pipeline data — but OMITS the raw 100k+ document text
+- This prevents 502 proxy timeout errors on upstream LLM servers without reducing output depth or word count
+- **NEVER remove the `condensed_prompt` construction block** (starts at line ~1781 in server.py)
+- **NEVER change passes 2-7+ back to using `user_prompt`** — the 134k payload causes consistent 502 errors
+- **NEVER reduce the content of `condensed_prompt`** — it must include timeline, grounds, and pipeline data for analysis quality
+- The output word count is UNCHANGED: Extensive Log still produces ~15,700+ words across 25 sections
