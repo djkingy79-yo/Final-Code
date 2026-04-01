@@ -445,3 +445,76 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER change passes 2-7+ back to using `user_prompt`** — the 134k payload causes consistent 502 errors
 - **NEVER reduce the content of `condensed_prompt`** — it must include timeline, grounds, and pipeline data for analysis quality
 - The output word count is UNCHANGED: Extensive Log still produces ~15,700+ words across 25 sections
+
+
+### Frontend Report Content Visibility During Generation/Failure (DO NOT UNDO)
+- `frontend/src/components/ReportsSection.jsx` — Lines 629-770 (approx)
+- When a report has status 'generating' or 'failed', the existing report content (from `report.content.analysis` or `report.content.backup_analysis`) MUST remain visible below a status banner
+- The `rawReportText` extraction MUST happen BEFORE the status checks — this is what preserves content visibility
+- For generating/failed reports WITH existing content: a `statusBanner` variable is set and rendered ABOVE the full content card
+- For generating/failed reports WITHOUT content: early return with just the status card is acceptable
+- The return wraps content in `<div className="space-y-3">{statusBanner}<Card>...</Card></div>`
+- **NEVER return early from generating/failed status checks if `reportText` has content**
+- **NEVER move rawReportText extraction AFTER the status checks**
+- **NEVER hide existing report content during regeneration — this is what caused the user's "lost all content" rage**
+
+### Barrister View Multi-Pass Generation Architecture (DO NOT UNDO)
+- `backend/server.py` — `generate_barrister_brief()` function
+- The Barrister View uses a multi-pass architecture to build a 120k+ char report:
+  1. **Three section groups** (source-synthesis, case-analysis, strategy) — initial generation ~60-80k chars
+  2. **Section-by-section expansion** — expands ANY thin section (<5000 chars) individually, generates missing sections fresh
+  3. **Ground expansion** — rewrites each ground as a ### subsection with 7000+ char target
+  4. **Cross-analysis** — inserts ## Report-to-Report Cross-Analysis and ## Document and Evidence Deployment BEFORE ## Sentencing Comparison
+  5. **Strategy expansion** — rewrites Proposed Submissions, Conference Questions, and Final Briefing Note sections
+  6. **Comparison tables** — inserts markdown tables into relevant sections
+  7. **Issue matrix** — appends Attachment A — Barrister Issue Matrix
+  8. **Final QA pass** — catches ANY remaining thin section after all expansion passes
+  9. **Rogue section cleanup** — strips any hallucinated H2 headings not in the expected structure
+- **NEVER remove the section-by-section expansion pass** — it catches missing sections when a group fails with 502
+- **NEVER remove the Final QA validation pass** — it's the last defence against thin sections
+- **NEVER remove the rogue section cleanup** — it strips hallucinated H2 headings
+- **NEVER move cross-analysis AFTER strategy expansion** — strategy expansion regex eats everything after Proposed Submissions
+- **NEVER change strategy expansion regex back to `[\s\S]*$`** — it must stop at `(?=\n## (?:Attachment A|Report-to-Report|Document and Evidence)|$)`
+- **NEVER add back the general whole-brief expansion** — it causes 502 proxy errors because the entire brief + source text exceeds proxy payload limits
+- **NEVER reduce max_tokens below 16384 for Barrister View calls**
+
+### Barrister View Source Limits (DO NOT UNDO)
+- Source limits per section group MUST stay at or below these values to avoid 502 proxy errors:
+  - source-synthesis: quick_summary=14k, full_detailed=28k, extensive_log=36k
+  - case-analysis: quick_summary=12k, full_detailed=28k, extensive_log=36k
+  - strategy: quick_summary=10k, full_detailed=22k, extensive_log=32k
+- The depth improvement comes from the PROMPTS and EXPANSION PASSES, NOT from larger source limits
+- Increasing source limits causes 502 proxy errors on the LLM upstream servers
+- **NEVER increase source_limits beyond these values**
+
+### Barrister View System Prompt (DO NOT UNDO)
+- The system prompt requires:
+  - Australian English, strict third-person
+  - ZERO "we", "us", "our", "you", "your"
+  - Flowing paragraphs, not bullet-heavy exposition
+  - Each ground must include: factual foundation, legal test, authorities, prosecution response, reply, fallback positions
+  - Strategy sections must include: submission themes, hearing time estimates, ground sequencing
+  - Generic filler like "this ground has merit" or "further investigation recommended" is UNACCEPTABLE
+- **NEVER weaken the depth requirements in the system prompt**
+- **NEVER allow bullet-heavy output in the Barrister View**
+
+### Ground Deduplication Keywords (DO NOT UNDO)
+- `backend/services/ground_dedup.py` — `_extract_topics()` keyword dictionary
+- The following keywords MUST remain in their respective topics:
+  - sentencing_error: "manifest excess", "excess in sentencing", "excessive in sentencing"
+  - ineffective_counsel: "inadequate defence", "inadequate defense", "defence advocacy", "defense advocacy", "inadequate advocacy", "failure to file", "failure to lodge", "failure to appeal"
+  - procedural_error: "failure to comply", "late filing", "time limitation" (but NOT "failure to file" — that's in ineffective_counsel)
+- **NEVER remove these keywords** — they prevent duplicate grounds from multiplying
+- **NEVER put "failure to file/lodge/appeal" in procedural_error** — it creates false duplicates with "Refusal of Judge-Alone Trial"
+
+### Ground Expansion Heading Format (DO NOT UNDO)
+- `backend/server.py` — ground expansion post-processing
+- The LLM often generates `## Ground Title` instead of `### Ground Title` for subsections
+- The code MUST strip any heading format (##, ###, ####) and re-apply `### {ground_title}\n\n`
+- Uses regex: `re.sub(r'^#{1,4}\s*' + re.escape(ground_title) + r'\s*\n+', '', subsection)`
+- **NEVER rely on the LLM to produce correct heading format** — always enforce ### post-generation
+
+### expansion_source_text Variable (DO NOT UNDO)
+- `backend/server.py` — defined after the disabled general expansion comment
+- This variable MUST be defined even though general expansion is disabled, because ground expansion, cross-analysis, strategy expansion, and final QA pass all reference it
+- **NEVER remove this variable definition** — it will crash the entire Barrister generation

@@ -2,6 +2,8 @@
 # Prevents grounds from multiplying by using topic-based classification + fuzzy matching.
 # Previous approaches (word overlap only, fuzzywuzzy only) let grounds multiply from 6 to 41.
 # LEGAL_TOPICS expanded massively on 2 Apr 2026 to cover ALL real-world title variants.
+# DO NOT UNDO — Keywords for "manifest excess", "inadequate defence", "failure to file" etc. added 2 Apr 2026.
+# DO NOT UNDO — "failure to file/lodge/appeal" is in ineffective_counsel, NOT procedural_error (prevents false merge with judge-alone trial)
 
 from fuzzywuzzy import fuzz
 import re

@@ -768,8 +768,10 @@ const ReportsSection = ({
               barrister_view: { headerBg: "bg-teal-500", badge: "bg-teal-400", label: "Barrister Brief", price: "BARRISTER" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
+            /* DO NOT UNDO — Content card wrapped with statusBanner above it */
             return (
               <div key={report.report_id} className="space-y-3">
+                {/* DO NOT UNDO — statusBanner renders generating/failed indicator ABOVE the content */}
                 {statusBanner}
               <Card className="overflow-hidden border-0 shadow-md">
                 <Collapsible
