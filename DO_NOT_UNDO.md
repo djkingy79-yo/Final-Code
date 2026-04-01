@@ -417,6 +417,14 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER increase backoff back to 15+ seconds per model** — the proxy recovers quickly, long waits just add lag
 - **NEVER put duplicate models adjacent** in fallback list
 
+### Missing Section Repair (DO NOT UNDO)
+- `server.py` post-generation repair step detects MISSING main sections after all passes complete
+- Runs targeted LLM calls for just the missing sections and stitches them into the correct position
+- Prevents broken reports from the resume logic (which can save incomplete pass outputs)
+- `scripts/repair_report.py` can also repair existing completed reports directly
+- **NEVER remove the missing section repair block** in server.py (between dedup and expansion)
+- **NEVER remove the repair_report.py script** — it's the only way to fix existing broken reports
+
 ### Condensed Prompt for Multi-Pass Reports (DO NOT UNDO)
 - `backend/server.py` builds a `condensed_prompt` (~18-21k chars) alongside the full `user_prompt` (~134k chars)
 - Pass 1 (and sometimes Pass 2 for full_detailed) uses the full prompt with raw document text

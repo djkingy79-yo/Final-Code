@@ -2311,6 +2311,88 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
     anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
+    # DO_NOT_UNDO — Missing section repair. The resume logic can produce reports with
+    # missing sections if a pass's LLM output truncated. This step detects missing
+    # sections and generates them in-place BEFORE the expansion step runs.
+    if report_type in ("full_detailed", "extensive_log"):
+        # Define expected main sections for each report type
+        expected_sections_map = {
+            "full_detailed": {
+                "## 1.": "EXECUTIVE BRIEF",
+                "## 2.": "FORENSIC CASE CHRONOLOGY",
+                "## 3.": "DOCUMENT EVIDENCE DIGEST",
+                "## 4.": "GROUNDS OF MERIT",
+                "## 5.": "COMPARATIVE SENTENCING TABLE",
+                "## 7.": "OUTCOME OPTIONS",
+            },
+            "extensive_log": {
+                "## 1.": "EXECUTIVE BRIEF",
+                "## 2.": "FORENSIC CASE CHRONOLOGY",
+                "## 3.": "DOCUMENT EVIDENCE DIGEST",
+                "## 4.": "GROUNDS OF MERIT",
+                "## 5.": "COMPARATIVE SENTENCING TABLE",
+                "## 9.": "PRECEDENT OUTCOME MATRIX",
+                "## 11.": "HOW TO ARGUE EACH TOP GROUND",
+                "## 18.": "PRIORITISED ACTION PLAN",
+                "## 20.": "CLIENT PLAIN-ENGLISH BRIEF",
+            },
+        }
+        expected = expected_sections_map.get(report_type, {})
+        sections_in_report = _split_report_sections(response)
+        section_headings = {h.split(".")[0].strip() + "." for h, _ in sections_in_report if h}
+
+        for prefix, name in expected.items():
+            # Check if this section exists in the report (match "## N." prefix)
+            if not any(h.startswith(prefix.rstrip()) for h, _ in sections_in_report if h):
+                logger.warning(f"Missing section detected: {prefix} {name}. Generating repair.")
+                try:
+                    doc_list = "\n".join([f"- {d.get('original_filename', d.get('filename', 'Unknown'))}" for d in documents[:20]])
+                    repair_prompt = f"""Generate the MISSING section for a legal appeal report.
+
+CASE: {case.get('title', 'Unknown')} ({case.get('state', 'NSW')})
+SENTENCE: {case.get('sentence', 'Not specified')}
+DOCUMENTS ({len(documents)}):
+{doc_list}
+
+GROUNDS:
+{grounds_enumerated}
+
+WRITE THIS SECTION:
+{prefix} {name}
+
+INSTRUCTIONS:
+- Write 4000-6000 characters of substantive, case-specific content
+- Reference specific case facts, dates, documents, and legal authorities
+- Use flowing paragraphs, NOT bullet points
+- Australian English, strict third-person only (NEVER "you", "your", "we", "us")
+- Start the section with exactly: {prefix} {name}
+- Do NOT include any other section headings
+"""
+                    repaired = await _subprocess_llm(repair_prompt)
+                    if repaired and len(repaired.strip()) > 500:
+                        # Find the insertion point — insert before the NEXT numbered section
+                        section_num = int(prefix.replace("##", "").replace(".", "").strip())
+                        insert_point = len(response)
+                        for h, _ in sections_in_report:
+                            if h:
+                                try:
+                                    h_num = int(re.search(r"(\d+)", h).group(1))
+                                    if h_num > section_num:
+                                        insert_point = response.find(h)
+                                        break
+                                except (ValueError, AttributeError):
+                                    continue
+                        # Clean up the repair output
+                        cleaned_repair = repaired.strip()
+                        if not cleaned_repair.startswith("##"):
+                            cleaned_repair = f"{prefix} {name}\n\n{cleaned_repair}"
+                        response = response[:insert_point] + "\n\n" + cleaned_repair + "\n\n" + response[insert_point:]
+                        logger.info(f"Repaired missing section: {prefix} {name} ({len(cleaned_repair)} chars)")
+                        # Re-split after insertion
+                        sections_in_report = _split_report_sections(response)
+                except Exception as exc:
+                    logger.warning(f"Section repair failed for {prefix} {name}: {exc}")
+
     # DO_NOT_UNDO — Minimum character targets. NEVER lower these values.
     min_lengths = {
         "quick_summary": 14000,
