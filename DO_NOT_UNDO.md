@@ -299,6 +299,15 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
   **NEVER restore with >5000 chars threshold** — that was a bug that restored 9,462-char partial reports
   as "completed" when they needed 70,000+ chars. Fixed 2 Apr 2026.
 
+### Report Generation — 502 Resilience (DO NOT REMOVE)
+- `_subprocess_llm()` in server.py has pass-level retry (3 attempts with 30/60s backoff).
+  If ALL 4 LLM models fail on a pass, it waits 30s and retries the entire pass up to 3 times.
+- `call_llm_structured()` in llm_service.py has exponential backoff for 502/503 errors
+  during report_generation tasks (15/25/35/45s instead of 2-5s).
+- Without these retries, the Extensive Log report consistently failed due to upstream proxy 502 storms.
+- **NEVER remove the pass-level retry in _subprocess_llm().**
+- **NEVER reduce the 502 backoff times in call_llm_structured().**
+
 ### pipeline_staged.py — ALL THREE FUNCTIONS MUST Use Fuzzy Dedup
 - `_classify_issues()` (line ~141) — internal function called during report generation. MUST use fuzzy dedup for issue_classifications.
 - `_sync_pipeline_projection_to_grounds()` (line ~251) — syncs issues to grounds. MUST use fuzzy dedup.

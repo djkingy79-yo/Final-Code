@@ -326,7 +326,15 @@ async def call_llm_structured(
             last_err = str(e)[:200]
 
         logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) for {session_id}: {last_err}")
-        await asyncio.sleep(2 + idx)
+        # DO_NOT_UNDO — Exponential backoff for 502/service errors on large report prompts.
+        # 2+idx seconds is not enough when the upstream proxy is overloaded.
+        is_server_error = "502" in str(last_err) or "503" in str(last_err) or "ServiceUnavailable" in str(last_err) or "BadGateway" in str(last_err)
+        if is_server_error and task_type == "report_generation":
+            backoff = min(15 + idx * 10, 45)
+            logger.info(f"Report generation 502 backoff: waiting {backoff}s before retry")
+            await asyncio.sleep(backoff)
+        else:
+            await asyncio.sleep(2 + idx)
 
     return {
         "ok": False,

@@ -1734,28 +1734,41 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     _report_generation_metadata = {"models_used": [], "fallback_used": False}
 
     async def _subprocess_llm(prompt_text):
-        """Run LLM call via structured layer — enhanced timeouts for report generation."""
+        """DO_NOT_UNDO — Run LLM call with pass-level retry for 502/service errors.
+        
+        The 4 model fallbacks inside call_llm_structured handle per-call retries.
+        This outer retry handles cases where ALL 4 models fail on the same pass
+        (e.g., upstream proxy 502 storm). Waits 30-60s between outer retries.
+        """
         call_timeout = 420 if report_type in ("full_detailed", "extensive_log") else 300
+        max_pass_retries = 3
 
-        response = await call_llm_structured(
-            system_prompt=system_prompt,
-            user_prompt=prompt_text,
-            session_id=f"rpt_gen_{case_id}",
-            task_type="report_generation",
-            max_tokens=16384,
-            timeout_seconds=call_timeout,
-            require_json=False,
-            validation_fn=None,
-        )
+        for retry in range(max_pass_retries):
+            response = await call_llm_structured(
+                system_prompt=system_prompt,
+                user_prompt=prompt_text,
+                session_id=f"rpt_gen_{case_id}",
+                task_type="report_generation",
+                max_tokens=16384,
+                timeout_seconds=call_timeout,
+                require_json=False,
+                validation_fn=None,
+            )
 
-        if response["ok"]:
-            if response.get("model"):
-                _report_generation_metadata["models_used"].append(response["model"])
-            if response.get("fallback_used"):
-                _report_generation_metadata["fallback_used"] = True
-            return response["content"]
+            if response["ok"]:
+                if response.get("model"):
+                    _report_generation_metadata["models_used"].append(response["model"])
+                if response.get("fallback_used"):
+                    _report_generation_metadata["fallback_used"] = True
+                return response["content"]
 
-        raise Exception(f"All LLM attempts failed. Last error: {response['error']}")
+            # All 4 models failed — wait and retry the entire pass
+            if retry < max_pass_retries - 1:
+                backoff = 30 + retry * 30  # 30s, 60s
+                logger.warning(f"All models failed for pass (attempt {retry+1}/{max_pass_retries}). Waiting {backoff}s before retry. Error: {response['error']}")
+                await asyncio.sleep(backoff)
+
+        raise Exception(f"All LLM attempts failed after {max_pass_retries} pass retries. Last error: {response['error']}")
 
     response = None
     last_error = None
