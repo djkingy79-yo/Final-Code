@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
@@ -443,41 +443,12 @@ const MarkdownBlock = ({ text, testId }) => (
         td: ({ children }) => (
           <td style={{ color: '#0f172a', padding: '8px 10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', verticalAlign: 'top', whiteSpace: 'normal', wordBreak: 'break-word' }}>{children}</td>
         ),
-        strong: ({ children }) => {
-          const childText = typeof children === 'string' ? children : (Array.isArray(children) ? children.join('') : '');
-          if (/^Strength Rating$/i.test(childText)) {
-            return <strong className="text-slate-900 font-bold">{children}</strong>;
-          }
-          return <strong>{children}</strong>;
-        },
-        li: ({ children, ...props }) => {
-          // Colour-code strength ratings in list items
-          const processChildren = (kids) => {
-            if (!kids) return kids;
-            if (typeof kids === 'string') {
-              // Colour "Strong" red and "Moderate" blue in strength rating contexts
-              if (/Strength Rating:\s*Strong/i.test(kids)) {
-                return kids.replace(/(Strong)/i, '|||STRONG|||');
-              }
-              if (/Strength Rating:\s*Moderate/i.test(kids)) {
-                return kids.replace(/(Moderate)/i, '|||MODERATE|||');
-              }
-              if (/Strength Rating:\s*Weak/i.test(kids)) {
-                return kids.replace(/(Weak)/i, '|||WEAK|||');
-              }
-              return kids;
-            }
-            return kids;
-          };
-          return <li {...props}>{children}</li>;
-        },
+        strong: ({ children }) => <strong>{children}</strong>,
         p: ({ children, ...props }) => {
-          // Apply strength rating colours within paragraphs
           const renderWithColours = (nodes) => {
             if (!Array.isArray(nodes)) nodes = [nodes];
             return nodes.map((node, idx) => {
               if (typeof node === 'string') {
-                // Colour strength values
                 if (/:\s*Strong\b/i.test(node)) {
                   const parts = node.split(/(Strong)/i);
                   return parts.map((part, i) =>
@@ -514,6 +485,67 @@ const MarkdownBlock = ({ text, testId }) => (
     </ReactMarkdown>
   </div>
 );
+
+/* Lazy-loaded section wrapper — only renders markdown when scrolled into view.
+   Prevents the browser from choking on 100K+ char reports (Extensive Log). */
+const LazySection = ({ section, idx, theme, isFirst, forceRender }) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(isFirst || forceRender);
+  
+  useEffect(() => {
+    if (forceRender) setVisible(true);
+  }, [forceRender]);
+  
+  useEffect(() => {
+    if (visible || !ref.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [visible]);
+
+  return (
+    <article key={section.id} id={section.id} className="scroll-mt-24" ref={ref}>
+      <div className={`border-l-4 ${theme.sectionBorder} pl-4 mb-4`}>
+        <div className="flex items-center gap-3">
+          <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${theme.sectionNumberBg} text-xs font-bold`}>
+            {idx + 1}
+          </span>
+          <h3
+            className={`text-xl sm:text-2xl font-bold ${theme.accentText} tracking-tight`}
+            style={{ fontFamily: "Crimson Pro, serif" }}
+            data-testid={`report-section-heading-${idx + 1}`}
+          >
+            {section.title}
+          </h3>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg border border-slate-200 p-6 sm:p-7 shadow-sm" data-testid={`report-section-content-${idx + 1}`}>
+        {visible ? (
+          <MarkdownBlock text={section.content} testId={`report-section-md-${idx + 1}`} />
+        ) : (
+          <div className="h-32 flex items-center justify-center text-slate-400">
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading section...
+          </div>
+        )}
+      </div>
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="mt-2 inline-flex items-center gap-1 text-xs text-slate-700 hover:text-slate-900"
+        data-testid={`report-back-to-top-${idx + 1}`}
+      >
+        <ChevronRight className="w-3 h-3 rotate-[-90deg]" /> Back to top
+      </button>
+    </article>
+  );
+};
 
 /* Colour configs per report type — matches landing page design */
 const REPORT_THEME = {
@@ -574,6 +606,7 @@ const ReportView = () => {
   const [sourceReports, setSourceReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasAllReports, setHasAllReports] = useState(false);
+  const [forceRenderAll, setForceRenderAll] = useState(false);
 
   useEffect(() => {
     const requestId = requestRef.current + 1;
@@ -669,6 +702,14 @@ const ReportView = () => {
   };
 
   const openReportPreview = (mode = "print") => {
+    // Force all lazy sections to render before building print HTML
+    setForceRenderAll(true);
+    setTimeout(() => {
+      _buildAndOpenPreview(mode);
+    }, 500);
+  };
+
+  const _buildAndOpenPreview = (mode) => {
     const contentEl = document.querySelector('[data-testid="report-content"]');
     if (!contentEl) {
       toast.error("Unable to open report preview.");
@@ -1044,36 +1085,14 @@ const ReportView = () => {
           {/* ===== REPORT SECTIONS ===== */}
           <div className="p-5 sm:p-6 md:p-8 space-y-6" data-testid="report-full-analysis-section">
             {sections.map((section, idx) => (
-              <article key={section.id} id={section.id} className="scroll-mt-24">
-                {/* Section header with coloured left border (matches landing page) */}
-                <div className={`border-l-4 ${theme.sectionBorder} pl-4 mb-4`}>
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full ${theme.sectionNumberBg} text-xs font-bold`}>
-                      {idx + 1}
-                    </span>
-                    <h3
-                      className={`text-xl sm:text-2xl font-bold ${theme.accentText} tracking-tight`}
-                      style={{ fontFamily: "Crimson Pro, serif" }}
-                      data-testid={`report-section-heading-${idx + 1}`}
-                    >
-                      {section.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Section content with professional markdown rendering */}
-                <div className="bg-white rounded-lg border border-slate-200 p-6 sm:p-7 shadow-sm" data-testid={`report-section-content-${idx + 1}`}>
-                  <MarkdownBlock text={section.content} testId={`report-section-md-${idx + 1}`} />
-                </div>
-
-                <button
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-slate-700 hover:text-slate-900"
-                  data-testid={`report-back-to-top-${idx + 1}`}
-                >
-                  <ChevronRight className="w-3 h-3 rotate-[-90deg]" /> Back to top
-                </button>
-              </article>
+              <LazySection
+                key={section.id}
+                section={section}
+                idx={idx}
+                theme={theme}
+                isFirst={idx < 3}
+                forceRender={forceRenderAll}
+              />
             ))}
           </div>
 

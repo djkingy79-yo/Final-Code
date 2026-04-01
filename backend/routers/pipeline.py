@@ -1172,24 +1172,45 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        # Check if a ground already exists from this issue OR with a similar title
+        # DO_NOT_UNDO — Fuzzy ground deduplication. MUST use BOTH token_set_ratio AND bidirectional
+        # word overlap. Previous one-directional 50% overlap let grounds multiply from 6 to 39.
+        # First check: exact match by pipeline source issue_id
         existing = await db.grounds_of_merit.find_one(
             {"case_id": case_id, "user_id": user.user_id, "pipeline_source.issue_id": issue["issue_id"]},
             {"_id": 0, "ground_id": 1},
         )
-        # Fallback: check by fuzzy title match to prevent duplicates
+        # Second check: fuzzy title match to prevent duplicates with different wording
         if not existing:
-            title_words = set(w.lower() for w in issue.get("title", "").split() if len(w) > 3)
+            from fuzzywuzzy import fuzz as fz
+            issue_title = (issue.get("title") or "").strip()
+            title_words = set(w.lower() for w in issue_title.split() if len(w) > 3)
             if title_words:
                 existing_grounds_cursor = db.grounds_of_merit.find(
                     {"case_id": case_id, "user_id": user.user_id},
                     {"_id": 0, "ground_id": 1, "title": 1},
                 )
                 async for eg in existing_grounds_cursor:
-                    eg_words = set(w.lower() for w in (eg.get("title") or "").split() if len(w) > 3)
-                    if eg_words and len(title_words & eg_words) / max(len(title_words), 1) > 0.5:
+                    eg_title = (eg.get("title") or "").strip()
+                    eg_words = set(w.lower() for w in eg_title.split() if len(w) > 3)
+                    if not eg_words:
+                        continue
+                    # Method 1: fuzzywuzzy token_set_ratio (handles word order + extra words)
+                    fuzzy_score = fz.token_set_ratio(issue_title.lower(), eg_title.lower())
+                    if fuzzy_score >= 65:
                         existing = eg
+                        logger.info(f"Fuzzy match (score={fuzzy_score}): '{issue_title}' ≈ '{eg_title}'")
                         break
+                    # Method 2: bidirectional word overlap (catches partial matches)
+                    overlap = title_words & eg_words
+                    if overlap:
+                        ratio = max(
+                            len(overlap) / max(len(title_words), 1),
+                            len(overlap) / max(len(eg_words), 1)
+                        )
+                        if ratio > 0.45:
+                            existing = eg
+                            logger.info(f"Word overlap match (ratio={ratio:.2f}): '{issue_title}' ≈ '{eg_title}'")
+                            break
 
         if existing:
             ground_doc["ground_id"] = existing["ground_id"]

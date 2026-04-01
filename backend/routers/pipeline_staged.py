@@ -476,6 +476,10 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
         {"_id": 0}
     ).to_list(500)
 
+    # DO_NOT_UNDO — Fuzzy ground deduplication in staged pipeline sync.
+    # Previous exact-title match let grounds multiply on every pipeline run.
+    from fuzzywuzzy import fuzz as fz
+
     count = 0
     for issue in issues:
         verification = await db.issue_verifications.find_one(
@@ -483,10 +487,40 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             {"_id": 0}
         )
 
+        issue_title = (issue.get("title") or "").strip()
+
+        # Check for existing ground with fuzzy match before creating
+        existing_ground = None
+        existing_grounds_cursor = db.grounds_of_merit.find(
+            {"case_id": case_id, "user_id": user.user_id},
+            {"_id": 0, "ground_id": 1, "title": 1},
+        )
+        issue_words = set(w.lower() for w in issue_title.split() if len(w) > 3)
+        async for eg in existing_grounds_cursor:
+            eg_title = (eg.get("title") or "").strip()
+            # Exact match
+            if eg_title.lower() == issue_title.lower():
+                existing_ground = eg
+                break
+            # Fuzzy match
+            fuzzy_score = fz.token_set_ratio(issue_title.lower(), eg_title.lower())
+            if fuzzy_score >= 65:
+                existing_ground = eg
+                break
+            # Bidirectional word overlap
+            eg_words = set(w.lower() for w in eg_title.split() if len(w) > 3)
+            if issue_words and eg_words:
+                overlap = issue_words & eg_words
+                if overlap:
+                    ratio = max(len(overlap)/max(len(issue_words),1), len(overlap)/max(len(eg_words),1))
+                    if ratio > 0.45:
+                        existing_ground = eg
+                        break
+
         ground_doc = {
             "case_id": case_id,
             "user_id": user.user_id,
-            "title": issue.get("title"),
+            "title": existing_ground["title"] if existing_ground else issue_title,
             "ground_type": issue.get("ground_type", "other"),
             "description": issue.get("description", ""),
             "strength": (verification or {}).get("legitimacy_scores", {}).get("rating", "moderate"),
@@ -501,16 +535,17 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        await db.grounds_of_merit.update_one(
-            {
-                "case_id": case_id,
-                "user_id": user.user_id,
-                "title": ground_doc["title"],
-                "ground_type": ground_doc["ground_type"],
-            },
-            {"$set": ground_doc, "$setOnInsert": {"ground_id": f"gnd_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{count}", "created_at": datetime.now(timezone.utc).isoformat()}},
-            upsert=True,
-        )
+        if existing_ground:
+            # Update existing ground — keep original title
+            await db.grounds_of_merit.update_one(
+                {"ground_id": existing_ground["ground_id"]},
+                {"$set": ground_doc},
+            )
+        else:
+            # Create new ground
+            ground_doc["ground_id"] = f"gnd_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{count}"
+            ground_doc["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.grounds_of_merit.insert_one(ground_doc)
         count += 1
 
     return {"synced_count": count}

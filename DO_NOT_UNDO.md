@@ -169,12 +169,14 @@ and "Verify Top 6 Issues" MUST remain visible and functional. These call:
 `POST /api/cases/{case_id}/issues/verify-batch` with `{limit: 3}` or `{limit: 6}`.
 **NEVER hide or remove the Pipeline Verification block.**
 
-## CRITICAL: FUZZY DEDUPLICATION (DO NOT REMOVE)
+## CRITICAL: FUZZY DEDUPLICATION (DO NOT WEAKEN — BROKE 39+ TIMES)
 
 The ground deduplication logic in `backend/routers/grounds.py` and `backend/routers/pipeline.py` 
-uses fuzzy keyword matching (>50% word overlap) to prevent duplicate grounds from being created.
-**NEVER revert to exact-match-only deduplication.** The old approach caused grounds to multiply 
-from 5 to 13+ because slightly different titles about the same topic bypassed the check.
+uses fuzzywuzzy token_set_ratio (>= 65) AND bidirectional word overlap (> 0.45) to prevent 
+duplicate grounds. Previous one-directional 50% overlap let grounds multiply from 6 to 39.
+**NEVER use one-directional overlap.** ALWAYS check max(overlap/new_words, overlap/existing_words).
+**NEVER lower fuzzywuzzy threshold below 65.**
+**NEVER remove the dedup check** from `_verify_issue_and_sync` or `auto_identify_grounds`.
 
 ## CRITICAL: REPORT TYPE COLOURS (DO NOT CHANGE)
 
@@ -231,9 +233,9 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Regenerating a report replaces the existing report in the database (same report_id).
 - **NEVER create duplicate reports on regeneration.** The `generate` endpoint checks for existing completed reports first.
 
-### Current Verified Word Counts (31 Mar 2026):
-- Quick Summary: ~1,486 words
-- Full Detailed: ~12,309 words
-- Extensive Log: ~15,830 words
-- Barrister View: ~6,333 words
+### Current Verified Word Counts (1 Apr 2026):
+- Quick Summary: ~1,550 words
+- Full Detailed: ~13,122 words
+- Extensive Log: ~15,467 words
+- Barrister View: ~12,585 words
 - **If any future generation produces LESS than 80% of these counts, the engine has been broken. Investigate immediately.**

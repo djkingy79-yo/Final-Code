@@ -677,22 +677,37 @@ async def auto_identify_grounds(case_id: str, request: Request):
     ).to_list(200)
 
     existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
-    existing_title_words = set()
-    for g in existing_grounds:
-        words = set(w.lower() for w in (g.get("title") or "").split() if len(w) > 3)
-        existing_title_words.update(words)
+
+    # DO_NOT_UNDO — Fuzzy ground deduplication with fuzzywuzzy + bidirectional word overlap.
+    # Previous one-directional 50% overlap let grounds multiply from 6 to 39.
+    from fuzzywuzzy import fuzz as fz
 
     def is_duplicate(new_ground):
-        """Check if a ground is a duplicate by exact match OR keyword overlap"""
+        """Check if a ground is a duplicate by exact match, fuzzywuzzy, OR bidirectional keyword overlap"""
         if (new_ground.get("title"), new_ground.get("ground_type")) in existing_titles:
             return True
-        new_words = set(w.lower() for w in (new_ground.get("title") or "").split() if len(w) > 3)
+        new_title = (new_ground.get("title") or "").strip()
+        new_words = set(w.lower() for w in new_title.split() if len(w) > 3)
         if not new_words:
             return False
-        overlap = new_words & existing_title_words
-        # If more than 50% of the new title's keywords are in existing grounds, it's a duplicate
-        if len(overlap) / len(new_words) > 0.5:
-            return True
+        for eg in existing_grounds:
+            eg_title = (eg.get("title") or "").strip()
+            eg_words = set(w.lower() for w in eg_title.split() if len(w) > 3)
+            if not eg_words:
+                continue
+            # Method 1: fuzzywuzzy token_set_ratio
+            fuzzy_score = fz.token_set_ratio(new_title.lower(), eg_title.lower())
+            if fuzzy_score >= 65:
+                return True
+            # Method 2: bidirectional word overlap
+            overlap = new_words & eg_words
+            if overlap:
+                ratio = max(
+                    len(overlap) / max(len(new_words), 1),
+                    len(overlap) / max(len(eg_words), 1)
+                )
+                if ratio > 0.45:
+                    return True
         return False
 
     new_grounds = [
