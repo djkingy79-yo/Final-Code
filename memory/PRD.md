@@ -26,8 +26,9 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 
 ## Protected Systems (DO NOT UNDO)
 - **Report Engine:** 8-pass Full Detailed, dedup thresholds 0.97/0.90, no cautious-language guardrail
-- **Ground Dedup:** Topic classification + fuzzywuzzy (≥55) + bidirectional overlap (>0.45)
+- **Ground Dedup:** Topic classification + fuzzywuzzy (≥65) + bidirectional overlap (>0.45). ALL 5 paths use fuzzy dedup.
 - **Case Identity Card:** Blue card with inline CSS for print
+- **grounds.py:** _classify_pipeline_issues and _sync_pipeline_issues_to_grounds MUST use fuzzy dedup
 
 ## Upcoming Tasks
 - P1: Native Mobile App (Capacitor configured)

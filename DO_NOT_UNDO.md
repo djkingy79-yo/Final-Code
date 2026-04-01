@@ -178,7 +178,8 @@ The ground deduplication logic uses THREE methods via `backend/services/ground_d
 2. **fuzzywuzzy token_set_ratio** — threshold >= 55.
 3. **Bidirectional word overlap** — threshold > 0.45 in BOTH directions.
 
-Applied in **ALL FOUR** ground creation paths:
+Applied in **ALL FIVE** ground creation paths:
+- `backend/routers/grounds.py` — `_classify_pipeline_issues` AND `_sync_pipeline_issues_to_grounds`
 - `backend/routers/pipeline.py` — `_verify_issue_and_sync`
 - `backend/routers/grounds.py` — `auto_identify_grounds`
 - `backend/routers/pipeline_staged.py` — `classify_issues` AND `sync_grounds_from_issues`

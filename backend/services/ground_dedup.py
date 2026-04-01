@@ -9,11 +9,15 @@ from fuzzywuzzy import fuzz
 LEGAL_TOPICS = {
     "judge_alone_trial": {"judge-alone", "judge alone", "trial application", "judge trial"},
     "psychiatric_evidence": {"psychiatric", "psychological", "mental health", "mental impairment", "psychosis", "mental illness", "psychiatric report", "psychiatric opinion", "mitigation due to mental", "chronic psycho", "mitigation", "mitigating"},
-    "media_coverage": {"media coverage", "prejudicial media", "media bias", "juror bias from media", "pretrial publicity"},
+    "media_coverage": {"media coverage", "prejudicial media", "media bias", "juror bias from media", "pretrial publicity", "media influence", "media on jury", "jury media", "media prejudic", "media impact", "publicity bias", "pre-trial publicity", "pre-trial media"},
     "jury_misconduct": {"juror misconduct", "jury misconduct", "jury irregularity", "juror bias", "jury bias", "jury impartial", "juror impartial", "juror prejudic", "jury prejudic", "juror behavio", "jury behavio"},
     "sentencing_error": {"sentencing error", "sentencing disparity", "non-parole", "manifestly excessive", "manifest excessive", "sentencing above", "excessive sentence", "sentencing: manifest", "potential sentencing", "sentencing excess"},
     "ineffective_counsel": {"ineffective counsel", "counsel regarding", "representation", "legal representation"},
     "mental_defences": {"mental health defence", "mental impairment defence", "diminished responsibility", "mental health defences"},
+    "evidence_admissibility": {"admissibility", "inadmissible", "improperly admitted", "wrongful admission", "exclusion of evidence", "evidence exclusion", "evidence admiss", "hearsay", "prejudicial evidence", "unfairly obtained"},
+    "fresh_evidence": {"fresh evidence", "new evidence", "additional evidence", "newly discovered", "post-trial evidence"},
+    "prosecutorial_misconduct": {"prosecutorial misconduct", "prosecution misconduct", "crown misconduct", "prosecution error", "prosecutorial error", "prosecution improper", "crown conduct"},
+    "judicial_direction": {"judicial direction", "judge direction", "misdirection", "jury direction", "direction to jury", "judicial error", "judge error", "summing up"},
 }
 
 

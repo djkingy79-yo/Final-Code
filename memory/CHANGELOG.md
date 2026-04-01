@@ -1,5 +1,25 @@
 # Changelog
 
+## 1 Apr 2026 — Grounds Dedup Final Fix + HowToUse Page Fix
+
+### CRITICAL: Grounds Dedup — Last Bypass Fixed (grounds.py)
+- Root cause: `_classify_pipeline_issues()` and `_sync_pipeline_issues_to_grounds()` in `routers/grounds.py` 
+  were still using **exact-title-match upserts** — the exact pattern that caused 4→27+ multiplication.
+  These two functions are called every time the user clicks "Analyse Grounds" on the frontend.
+- Fix: Rewrote both functions to use `is_ground_duplicate()` from `ground_dedup.py` (topic + fuzzy + overlap).
+- Now ALL FIVE ground creation paths use fuzzy dedup: grounds.py (2), pipeline_staged.py (3), pipeline.py (1), server.py (1).
+- Expanded LEGAL_TOPICS with 4 new categories: evidence_admissibility, fresh_evidence, prosecutorial_misconduct, judicial_direction.
+- Added keywords to media_coverage: "media influence", "media on jury", "jury media", etc.
+- Verified: "Media Influence on Jury" now correctly matches "Prejudicial Media Coverage".
+
+### HowToUsePage.jsx — Typography + Copy Fix
+- Reduced mobile text sizes: headings text-lg md:text-xl, body text-xs sm:text-sm, tips text-xs sm:text-sm.
+- Changed "Reports are generated as PDF documents" → "Reports are generated as PDF and Word (DOCX) documents".
+
+### HowItWorksPage.jsx — Text Sizes Restored
+- Previous agent accidentally reduced text to text-xs on HowItWorksPage (wrong file). 
+- Restored descriptions, list items, captions, and tips back to text-sm baseline.
+
 ## 1 Apr 2026 — Grounds Deduplication Overhaul v2 + UI Fixes
 
 ### Grounds Deduplication — Topic-Based Classification (41 → 6 grounds)

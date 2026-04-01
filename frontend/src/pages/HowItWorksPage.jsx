@@ -521,7 +521,7 @@ const HowItWorksPage = () => {
 
               <div className="p-5 sm:p-6 space-y-5 bg-white">
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed">
                   {step.description}
                 </p>
 
@@ -530,7 +530,7 @@ const HowItWorksPage = () => {
                     <div className={`w-10 h-10 rounded-lg ${step.color} flex items-center justify-center flex-shrink-0`}>
                       <Icon className="w-5 h-5 text-white" />
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-700">{step.visual.caption}</p>
+                    <p className="text-sm text-slate-700">{step.visual.caption}</p>
                   </div>
                 )}
 
@@ -538,7 +538,7 @@ const HowItWorksPage = () => {
                 <div className={`${step.lightColor} rounded-xl p-4 sm:p-5 border ${step.borderColor}`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Eye className={`w-4 h-4 ${step.textColor}`} />
-                    <h3 className={`font-bold text-xs sm:text-base uppercase tracking-wide ${step.textColor}`}>What You'll See on Screen</h3>
+                    <h3 className={`font-bold text-sm sm:text-base uppercase tracking-wide ${step.textColor}`}>What You'll See on Screen</h3>
                   </div>
                   <ul className="space-y-2.5">
                     {step.whatYouSee.map((item, i) => (
@@ -546,7 +546,7 @@ const HowItWorksPage = () => {
                         <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full ${step.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                           <span className="text-white text-xs sm:text-sm font-bold">{i + 1}</span>
                         </div>
-                        <span className="text-xs sm:text-sm text-slate-700">{item}</span>
+                        <span className="text-sm text-slate-700">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -556,7 +556,7 @@ const HowItWorksPage = () => {
                 {step.whatToUpload && (
                   <div className="border border-slate-200 rounded-xl overflow-hidden">
                     <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-                      <h3 className="font-bold text-slate-900 text-xs sm:text-base uppercase tracking-wide flex items-center gap-2">
+                      <h3 className="font-bold text-slate-900 text-sm sm:text-base uppercase tracking-wide flex items-center gap-2">
                         <Upload className="w-4 h-4" /> Recommended Documents to Upload
                       </h3>
                     </div>
@@ -564,8 +564,8 @@ const HowItWorksPage = () => {
                       {step.whatToUpload.map((doc, i) => (
                         <div key={i} className="flex items-center justify-between px-4 py-3">
                           <div>
-                            <span className="font-semibold text-slate-900 text-xs sm:text-sm">{doc.name}</span>
-                            <p className="text-xs sm:text-sm text-slate-700">{doc.desc}</p>
+                            <span className="font-semibold text-slate-900 text-sm">{doc.name}</span>
+                            <p className="text-sm text-slate-700">{doc.desc}</p>
                           </div>
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                             doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700" :
@@ -589,7 +589,7 @@ const HowItWorksPage = () => {
                   </div>
                   <ul className="space-y-2">
                     {step.proTips.map((tip, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
                         <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 flex-shrink-0 mt-0.5" />
                         {tip}
                       </li>
@@ -601,8 +601,8 @@ const HowItWorksPage = () => {
                 {step.interactive?.link && (
                   <div className="bg-blue-50 rounded-xl p-5 border border-blue-200 text-center">
                     <MousePointerClick className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                    <p className="text-xs sm:text-sm font-semibold text-slate-900 mb-1">{step.interactive.label}</p>
-                    <p className="text-xs sm:text-sm text-slate-700 mb-3">{step.interactive.text}</p>
+                    <p className="text-sm font-semibold text-slate-900 mb-1">{step.interactive.label}</p>
+                    <p className="text-sm text-slate-700 mb-3">{step.interactive.text}</p>
                     <Link to={step.interactive.link}>
                       <Button className="landing-cta-primary" data-testid={`how-it-works-step-${idx + 1}-cta`}>
                         {step.interactive.btnText} <ArrowRight className="w-4 h-4 ml-2" />
@@ -673,7 +673,7 @@ const HowItWorksPage = () => {
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">
             Ready to begin your appeal?
           </h2>
-          <p className="text-xs sm:text-sm text-slate-700 mb-5 max-w-xl mx-auto">
+          <p className="text-sm text-slate-700 mb-5 max-w-xl mx-auto">
             Create your case, upload your documents, and get your first AI analysis in under 10 minutes. Your Quick Summary report is completely free.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
