@@ -166,11 +166,16 @@ async def create_session(request: Request, response: Response):
         raise HTTPException(status_code=400, detail="session_id required")
     
     # Call Emergent Auth to get user data
-    async with httpx.AsyncClient() as client:
-        auth_response = await client.get(
-            "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-            headers={"X-Session-ID": session_id}
-        )
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        try:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id}
+            )
+        except httpx.ConnectTimeout:
+            raise HTTPException(status_code=504, detail="Authentication server timed out. Please try again.")
+        except httpx.RequestError as e:
+            raise HTTPException(status_code=502, detail=f"Authentication server unreachable: {str(e)}")
     
     if auth_response.status_code != 200:
         raise HTTPException(status_code=401, detail="Invalid session_id")

@@ -4645,9 +4645,9 @@ async def cleanup_orphaned_reports():
             )
             logger.info(f"Failed orphaned report {report['report_id']}")
 
-    # ── FIX EXISTING UNDERSIZED "COMPLETED" REPORTS ──
-    # Reports that were previously recovered as "completed" but are actually below depth target.
-    # Mark them as "failed" so the user sees a "Generate" button and can regenerate with full depth.
+    # ── FLAG EXISTING UNDERSIZED "COMPLETED" REPORTS (non-destructive) ──
+    # Add a flag to undersized reports so the UI can show a "Regenerate for full depth" option.
+    # DO NOT change status from "completed" — the user must still be able to VIEW their existing reports.
     min_completed_targets = {
         "full_detailed": 70000,
         "extensive_log": 120000,
@@ -4656,17 +4656,30 @@ async def cleanup_orphaned_reports():
         async for report in db.reports.find({"status": "completed", "report_type": rtype}):
             analysis = (report.get("content", {}).get("analysis") or "")
             if len(analysis) < min_chars:
-                passes = report.get("content", {}).get("passes_completed", 0)
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {"content.below_target": True, "content.actual_chars": len(analysis), "content.target_chars": min_chars}}
+                )
+                logger.info(f"Flagged undersized report {report['report_id']}: {len(analysis)} < {min_chars} chars")
+
+    # Also restore any reports that were accidentally set to "failed" by a previous migration
+    for rtype, min_chars in min_completed_targets.items():
+        async for report in db.reports.find({"status": "failed", "report_type": rtype}):
+            analysis = (report.get("content", {}).get("analysis") or report.get("content", {}).get("partial_analysis") or "")
+            if analysis and len(analysis) > 5000:
                 await db.reports.update_one(
                     {"report_id": report["report_id"]},
                     {"$set": {
-                        "status": "failed",
-                        "error": f"Report was only {len(analysis)} chars ({passes} passes). Full depth requires {min_chars}+ chars. Click Generate to resume.",
-                        "content.partial": True,
-                        "content.partial_analysis": analysis,
+                        "status": "completed",
+                        "content.analysis": analysis,
+                        "content.partial": False,
+                        "content.below_target": len(analysis) < min_chars,
+                        "content.actual_chars": len(analysis),
+                        "content.target_chars": min_chars,
+                        "error": None,
                     }}
                 )
-                logger.info(f"Fixed undersized completed report {report['report_id']}: {len(analysis)} < {min_chars} chars, marked for regeneration")
+                logger.info(f"Restored report {report['report_id']} to completed ({len(analysis)} chars)")
 
 
 @app.on_event("shutdown")

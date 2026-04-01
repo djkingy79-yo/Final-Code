@@ -1,5 +1,17 @@
 # Changelog
 
+## 1 Apr 2026 — Report Depth Loss + Google Auth Fix
+
+### Full Detailed Reports Regenerated
+- Root cause: `cleanup_orphaned_reports()` was marking half-generated reports as "completed" (5k threshold instead of 70k+).
+- Fixed with proper per-type minimum targets. Reports below target marked "failed" for resume.
+- Added startup migration to flag existing undersized reports (non-destructive).
+- Regenerated Full Detailed reports for BOTH cases: Homann v R (85,768 chars) and Hom vs R (94,653 chars).
+
+### Google Auth ConnectTimeout Fixed
+- `auth.py` `create_session` was using httpx without a timeout, causing crashes when Emergent auth server was slow.
+- Added 30s timeout and proper error handling (504 for timeout, 502 for connection error).
+
 ## 1 Apr 2026 — Report Recovery Fix + Grounds Dedup Final Fix
 
 ### Report Depth Loss — Root Cause Fixed
