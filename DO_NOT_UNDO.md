@@ -272,6 +272,12 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER revert to exact-title-match upserts.** This was the root cause of grounds multiplying from 4 to 27+.
 - Also applies `normalise_au_spelling()` to all new ground/issue titles.
 
+### grounds.py — BOTH Internal Functions MUST Use Fuzzy Dedup
+- `_classify_pipeline_issues()` — called from `_ensure_pipeline_identification()` during "Analyse Grounds" click. MUST use fuzzy dedup for issue_classifications.
+- `_sync_pipeline_issues_to_grounds()` — syncs issues to grounds. MUST use fuzzy dedup.
+- Both were using **exact-title-match upserts** which was the ROOT CAUSE of grounds multiplying every time "Analyse Grounds" was clicked.
+- **NEVER revert EITHER of these to exact-title-match upserts.**
+
 ### pipeline_staged.py — ALL THREE FUNCTIONS MUST Use Fuzzy Dedup
 - `_classify_issues()` (line ~141) — internal function called during report generation. MUST use fuzzy dedup for issue_classifications.
 - `_sync_pipeline_projection_to_grounds()` (line ~251) — syncs issues to grounds. MUST use fuzzy dedup.

@@ -108,7 +108,7 @@ const HowToUsePage = () => {
         "Go to the 'Reports' tab",
         "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
         "Each report includes a colour-coded cover page and table of contents",
-        "Reports are generated as PDF documents",
+        "Reports are generated as PDF and Word (DOCX) documents",
         "Download and share with your lawyer",
         "All three reports must be generated to unlock the Barrister View"
       ],
@@ -231,10 +231,10 @@ const HowToUsePage = () => {
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 text-slate-900">
             How to Use the App
           </h1>
-          <p className="text-slate-700 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto">
             A step-by-step guide with screenshots to help you get the most out of Appeal Case Manager. 
             Follow these steps to organise your case and identify potential appeal grounds.
           </p>
@@ -247,8 +247,8 @@ const HowToUsePage = () => {
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-1" />
             <div>
-              <h2 className="font-bold text-slate-900 mb-2">Before You Start</h2>
-              <ul className="text-sm text-slate-700 space-y-1">
+              <h2 className="font-bold text-slate-900 mb-2 text-sm">Before You Start</h2>
+              <ul className="text-xs sm:text-sm text-slate-700 space-y-1">
                 <li>- <strong>Gather your documents</strong> — transcripts, evidence, court records, witness statements</li>
                 <li>- <strong>Note key dates</strong> — incident date, arrest, trial, sentencing</li>
                 <li>- <strong>Know your deadline</strong> — you usually have 28 days from sentencing to file an appeal</li>
@@ -276,10 +276,10 @@ const HowToUsePage = () => {
                   </div>
                   <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP {step.num}</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-slate-900">
+                <h3 className="text-lg md:text-xl font-bold text-slate-900">
                   {step.title}
                 </h3>
-                <p className="text-sm text-slate-700 leading-relaxed">{step.description}</p>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{step.description}</p>
 
                 {/* Screenshot */}
                 <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-lg">
@@ -294,8 +294,8 @@ const HowToUsePage = () => {
                 {/* Instructions */}
                 <div className={`grid ${isEven ? 'md:grid-cols-2' : 'md:grid-cols-2'} gap-6`}>
                   <div>
-                    <h4 className="text-base font-semibold text-slate-900 mb-3">Instructions:</h4>
-                    <ul className="space-y-2 text-sm text-slate-700">
+                    <h4 className="text-sm font-semibold text-slate-900 mb-3">Instructions:</h4>
+                    <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
                       {step.instructions.map((inst, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <ChevronRight className="w-4 h-4 shrink-0 mt-0.5" />
@@ -304,7 +304,7 @@ const HowToUsePage = () => {
                       ))}
                     </ul>
                   </div>
-                  <div className={`p-4 ${colors.tipBg} rounded-xl text-sm ${colors.tipText}`}>
+                  <div className={`p-4 ${colors.tipBg} rounded-xl text-xs sm:text-sm ${colors.tipText}`}>
                     <strong>Tip:</strong> {step.tip}
                   </div>
                 </div>
@@ -312,7 +312,7 @@ const HowToUsePage = () => {
                 {/* Report type screenshots for Step 8 */}
                 {step.reportScreenshots && (
                   <div className="mt-8" data-testid="report-type-screenshots">
-                    <h4 className="text-base font-semibold text-slate-900 mb-4">Each Report Type:</h4>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-4">Each Report Type:</h4>
                     <div className="grid md:grid-cols-3 gap-4">
                       {step.reportScreenshots.map((rs, idx) => (
                         <div key={idx} className="border border-slate-200 rounded-xl overflow-hidden">
@@ -349,18 +349,18 @@ const HowToUsePage = () => {
               </div>
               <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 10</span>
             </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
+            <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3">
               Export & Share
             </h3>
-            <p className="text-sm text-slate-700 mb-4">Export your case data for use outside the app.</p>
-            <ul className="space-y-2 text-sm text-slate-700 mb-4">
+            <p className="text-xs sm:text-sm text-slate-700 mb-4">Export your case data for use outside the app.</p>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 mb-4">
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Creates a ZIP file with all documents and reports</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Timeline and summary as editable DOCX files</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Use 'Bundle Documents' to merge PDFs into one file</li>
               <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-0.5" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
-            <div className="p-3 bg-pink-50 rounded-lg text-sm text-pink-800">
+            <div className="p-3 bg-pink-50 rounded-lg text-xs sm:text-sm text-pink-800">
               <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court.
             </div>
           </div>
@@ -368,10 +368,10 @@ const HowToUsePage = () => {
 
         {/* What's Next */}
         <div className="mt-16 bg-white rounded-2xl p-8 border border-emerald-200">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+          <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-4">
             What Happens Next?
           </h2>
-          <div className="grid md:grid-cols-2 gap-6 text-sm">
+          <div className="grid md:grid-cols-2 gap-6 text-xs sm:text-sm">
             <div>
               <h3 className="font-semibold text-slate-900 mb-2">If Grounds Are Found</h3>
               <ul className="text-slate-700 space-y-1">
