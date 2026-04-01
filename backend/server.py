@@ -519,21 +519,58 @@ async def _refresh_case_extract_for_case(case: dict) -> dict:
 
 
 async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[dict]:
-    """Run staged issue classification and persist results."""
+    """Run staged issue classification and persist results.
+    
+    DO_NOT_UNDO — Uses fuzzy dedup to prevent duplicate issue_classifications.
+    """
+    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
+    
     issues = await classify_case_issues(case, case_extract)
+    
+    # Load existing issues for fuzzy dedup
+    existing_issues = await db.issue_classifications.find(
+        {"case_id": case["case_id"], "user_id": case["user_id"]},
+        {"_id": 0, "issue_id": 1, "title": 1, "ground_type": 1}
+    ).to_list(500)
+    
     persisted = []
     for issue in issues:
         issue_dict = issue.model_dump()
         issue_dict["created_at"] = issue_dict["created_at"].isoformat()
-        await db.issue_classifications.update_one(
-            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
-            {"$set": issue_dict},
-            upsert=True,
-        )
-        saved = await db.issue_classifications.find_one(
-            {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue.title, "ground_type": issue.ground_type},
-            {"_id": 0}
-        )
+        issue_title = normalise_au_spelling((issue.title or "").strip())
+        issue_dict["title"] = issue_title
+        
+        # Fuzzy match against existing issues
+        matched = None
+        for ei in existing_issues:
+            ei_title = (ei.get("title") or "").strip()
+            if is_ground_duplicate(issue_title, ei_title):
+                matched = ei
+                break
+        
+        if matched:
+            # Update existing issue
+            await db.issue_classifications.update_one(
+                {"issue_id": matched["issue_id"]},
+                {"$set": issue_dict},
+            )
+            saved = await db.issue_classifications.find_one(
+                {"issue_id": matched["issue_id"]}, {"_id": 0}
+            )
+        else:
+            # Insert new issue
+            await db.issue_classifications.update_one(
+                {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
+                {"$set": issue_dict},
+                upsert=True,
+            )
+            saved = await db.issue_classifications.find_one(
+                {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
+                {"_id": 0}
+            )
+            if saved:
+                existing_issues.append({"issue_id": saved.get("issue_id", ""), "title": issue_title, "ground_type": issue.ground_type})
+        
         if saved:
             persisted.append(saved)
     return persisted
@@ -613,6 +650,9 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
             if is_ground_duplicate(issue_title, eg_title):
                 existing_ground = eg
                 break
+
+        if not existing_ground:
+            logger.info(f"Sync: new ground '{issue_title[:50]}'")
 
         ground_doc = {
             "case_id": case["case_id"],

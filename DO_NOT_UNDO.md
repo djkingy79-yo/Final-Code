@@ -267,9 +267,17 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - LLM prompt explicitly instructs: do NOT use Jan 1 as placeholder, use year-only format when exact date unknown.
 
 ### server.py — _sync_pipeline_to_grounds MUST Use Fuzzy Dedup
-- The `_sync_pipeline_to_grounds` function in `server.py` (line ~583) MUST use `is_ground_duplicate()` from `ground_dedup.py`.
-- **NEVER revert to exact-title-match upserts.** This was the root cause of grounds multiplying from 4 to 15+.
-- Also applies `normalise_au_spelling()` to all new ground titles.
+- The `_sync_pipeline_to_grounds` function in `server.py` MUST use `is_ground_duplicate()` from `ground_dedup.py`.
+- The `_ensure_issue_classifications` function in `server.py` MUST use `is_ground_duplicate()` to dedup issue_classifications.
+- **NEVER revert to exact-title-match upserts.** This was the root cause of grounds multiplying from 4 to 27+.
+- Also applies `normalise_au_spelling()` to all new ground/issue titles.
+
+### pipeline_staged.py — ALL THREE FUNCTIONS MUST Use Fuzzy Dedup
+- `_classify_issues()` (line ~141) — internal function called during report generation. MUST use fuzzy dedup for issue_classifications.
+- `_sync_pipeline_projection_to_grounds()` (line ~251) — syncs issues to grounds. MUST use fuzzy dedup.
+- `classify_issues` endpoint (line ~395) — public API endpoint. Already has fuzzy dedup.
+- **ALL THREE** were the root cause of grounds multiplying. Each was independently using exact-title-match upserts.
+- **NEVER revert ANY of these to exact-title-match.**
 
 ### Australian Spelling — Full Stack Coverage
 - **Backend:** `ground_dedup.py::normalise_au_spelling()` auto-corrects American English in ground/issue titles at creation time.

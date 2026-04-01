@@ -8,10 +8,10 @@ from fuzzywuzzy import fuzz
 # Keywords must cover all common word variants (e.g. "juror"/"jury", "manifest"/"manifestly").
 LEGAL_TOPICS = {
     "judge_alone_trial": {"judge-alone", "judge alone", "trial application", "judge trial"},
-    "psychiatric_evidence": {"psychiatric", "psychological", "mental health", "mental impairment", "psychosis", "mental illness", "psychiatric report", "psychiatric opinion", "mitigation due to mental", "chronic psycho"},
+    "psychiatric_evidence": {"psychiatric", "psychological", "mental health", "mental impairment", "psychosis", "mental illness", "psychiatric report", "psychiatric opinion", "mitigation due to mental", "chronic psycho", "mitigation", "mitigating"},
     "media_coverage": {"media coverage", "prejudicial media", "media bias", "juror bias from media", "pretrial publicity"},
     "jury_misconduct": {"juror misconduct", "jury misconduct", "jury irregularity", "juror bias", "jury bias", "jury impartial", "juror impartial", "juror prejudic", "jury prejudic", "juror behavio", "jury behavio"},
-    "sentencing_error": {"sentencing error", "sentencing disparity", "non-parole", "manifestly excessive", "manifest excessive", "sentencing above", "excessive sentence", "sentencing: manifest", "potential sentencing"},
+    "sentencing_error": {"sentencing error", "sentencing disparity", "non-parole", "manifestly excessive", "manifest excessive", "sentencing above", "excessive sentence", "sentencing: manifest", "potential sentencing", "sentencing excess"},
     "ineffective_counsel": {"ineffective counsel", "counsel regarding", "representation", "legal representation"},
     "mental_defences": {"mental health defence", "mental impairment defence", "diminished responsibility", "mental health defences"},
 }
@@ -29,14 +29,16 @@ def _extract_topics(title: str) -> set:
     return topics
 
 
-def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 55) -> bool:
+def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 65) -> bool:
     """Check if two ground/issue titles are about the same legal topic.
     
-    Uses three methods:
+    DO_NOT_UNDO — Uses three methods:
     1. Legal topic classification (most reliable — catches semantic duplicates)
-    2. fuzzywuzzy token_set_ratio (catches word-reordered variants)
+    2. fuzzywuzzy token_set_ratio (threshold=65, catches word-reordered variants)
     3. Bidirectional word overlap (catches partial matches)
     
+    Threshold was raised from 55→65 because score 56 was creating false positives
+    between genuinely different grounds ("Psychiatric Evidence" vs "Sentencing Error").
     Returns True if ANY method identifies a duplicate.
     """
     if not new_title or not existing_title:
