@@ -1,12 +1,12 @@
 # Changelog
 
-## 2 Apr 2026 — Report Recovery Bug Fix
+## 2 Apr 2026 — Report Recovery Bug Fix + Full Detailed Regenerated
 
 ### Fixed: Stuck "Generating..." Report (Full Detailed)
 - **Root cause**: Backend restart killed the LLM generation mid-Pass 2/8, leaving report stuck in "generating" status
 - **Bug found**: `cleanup_orphaned_reports()` restore logic used `>5000 chars` threshold instead of the per-type minimum (70k for Full Detailed). This would have restored a 9,462-char partial report as "completed" — giving users a shallow report
 - **Fix**: Changed restore threshold from `>5000` to `>= min_chars` (70k for Full Detailed, 120k for Extensive Log). Reports below target now correctly stay as "failed" so users can regenerate
-- **Immediate fix**: Reset stuck report `rpt_c89e7b736254` to "failed" status. User can click "Retry" to regenerate
+- **Regenerated**: Full Detailed report for "Hom vs R" (case_927d110878e7) — 83,987 chars / ~11,302 words across 8 passes. Status: completed.
 - Added to DO_NOT_UNDO.md
 
 

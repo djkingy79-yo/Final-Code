@@ -34,4 +34,3 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 ## Upcoming Tasks
 - P1: Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
-- P3: Database normalisation script
