@@ -135,11 +135,13 @@ TASK_CONFIGS: dict[str, dict] = {
 # ============================================================================
 
 def _default_models_for_task(task_type: str):
+    # DO_NOT_UNDO — Model diversity for 502 resilience. Each slot uses a DIFFERENT
+    # model so retries actually try something new instead of repeating the same failing model.
     return [
-        ("openai", "gpt-4o"),
         ("openai", "gpt-4o"),
         ("anthropic", "claude-sonnet-4-20250514"),
         ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
     ]
 
 
@@ -356,7 +358,7 @@ async def call_llm_structured(
         # 2+idx seconds is not enough when the upstream proxy is overloaded.
         is_server_error = "502" in str(last_err) or "503" in str(last_err) or "ServiceUnavailable" in str(last_err) or "BadGateway" in str(last_err)
         if is_server_error and task_type == "report_generation":
-            backoff = min(15 + idx * 10, 45)
+            backoff = min(5 + idx * 3, 14)
             logger.info(f"Report generation 502 backoff: waiting {backoff}s before retry")
             await asyncio.sleep(backoff)
         else:

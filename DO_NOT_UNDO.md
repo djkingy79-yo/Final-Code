@@ -410,6 +410,13 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - **NEVER change `loop.run_in_executor(_llm_thread_pool, ...)` back to direct `await chat.send_message()`**
 - **NEVER reduce `max_workers` below 4** — concurrent LLM calls (expansion, retries) need threads
 
+### 502 Backoff Timing (DO NOT UNDO)
+- Per-model 502 backoff: `5 + idx * 3` seconds (5s, 8s, 11s, 14s) — old was 15-45s which wasted minutes
+- Pass-level retry wait: `10 + retry * 10` seconds (10s, 20s) — old was 30-60s
+- Model order: gpt-4o → claude → gpt-4o-mini → gpt-4o — diversity prevents wasting retries on same failing model
+- **NEVER increase backoff back to 15+ seconds per model** — the proxy recovers quickly, long waits just add lag
+- **NEVER put duplicate models adjacent** in fallback list
+
 ### Condensed Prompt for Multi-Pass Reports (DO NOT UNDO)
 - `backend/server.py` builds a `condensed_prompt` (~18-21k chars) alongside the full `user_prompt` (~134k chars)
 - Pass 1 (and sometimes Pass 2 for full_detailed) uses the full prompt with raw document text

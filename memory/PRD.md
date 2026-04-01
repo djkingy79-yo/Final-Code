@@ -27,21 +27,17 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - **Condensed prompts** for multi-pass generation (prevents 502 proxy errors)
 - **Pass-level retry** with exponential backoff for 502/503 errors
 - **LLM Thread Pool** — all LLM calls run in ThreadPoolExecutor to prevent event loop blocking
+- **Optimised 502 backoffs** — 5-14s per model (was 15-45s), 10-20s per pass (was 30-60s)
 - **Database normalisation** script (normalise_db.py) on startup
 
 ## Protected Systems (DO NOT UNDO)
 - **Report Engine:** 8-pass Full Detailed, 7-8 pass Extensive Log, dedup thresholds 0.97/0.90
 - **Condensed Prompt:** Passes 2+ use ~20k char prompt instead of 134k, no output reduction
 - **LLM Thread Pool:** 4-worker ThreadPoolExecutor prevents sync litellm.completion() from blocking event loop
+- **502 Backoff Timing:** 5-14s per model, 10-20s per pass. Model order: gpt-4o → claude → gpt-4o-mini → gpt-4o
 - **Ground Dedup:** Topic classification (12 categories) + fuzzywuzzy (≥65) + bidirectional overlap (>0.45)
 - **Case Identity Card:** Blue card with inline CSS for print
 - **Auth Retry:** 3x retry on /auth/me and /auth/session before logout
-
-## Verified Report Stats (1 Apr 2026)
-- Quick Summary: ~1,662 words, 12,677 chars
-- Full Detailed: ~12,915 words, 93,005 chars
-- Extensive Log: ~15,710 words, 117,184 chars, 25 sections
-- Barrister View: ~12,585 words
 
 ## Upcoming Tasks
 - P1: Native Mobile App (Capacitor configured)

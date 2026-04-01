@@ -1764,7 +1764,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
 
             # All 4 models failed — wait and retry the entire pass
             if retry < max_pass_retries - 1:
-                backoff = 30 + retry * 30  # 30s, 60s
+                backoff = 10 + retry * 10  # 10s, 20s
                 logger.warning(f"All models failed for pass (attempt {retry+1}/{max_pass_retries}). Waiting {backoff}s before retry. Error: {response['error']}")
                 await asyncio.sleep(backoff)
 
