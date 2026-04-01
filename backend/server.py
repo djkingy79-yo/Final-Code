@@ -4588,7 +4588,11 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def cleanup_orphaned_reports():
-    """Auto-fail or recover reports stuck in 'generating' from server restarts."""
+    """Auto-fail or recover reports stuck in 'generating' from server restarts.
+    
+    DO_NOT_UNDO — Recovery uses minimum character targets to decide whether a partial
+    report is complete enough to mark as finished, or needs re-generation.
+    """
     # Create indexes for pipeline collections
     await db.document_extracts.create_index([("case_id", 1), ("user_id", 1)])
     await db.document_extracts.create_index([("extract_id", 1)], unique=True)
@@ -4600,15 +4604,40 @@ async def cleanup_orphaned_reports():
     await db.issue_verifications.create_index([("issue_id", 1), ("case_id", 1)])
     await db.issue_verifications.create_index([("verification_id", 1)], unique=True)
 
+    # Minimum character targets — reports below these are incomplete
+    min_recovery_targets = {
+        "quick_summary": 10000,
+        "full_detailed": 70000,
+        "extensive_log": 120000,
+    }
+
     five_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
     async for report in db.reports.find({"status": "generating", "generated_at": {"$lt": five_min_ago}}):
         partial = report.get("content", {}).get("analysis", "") or report.get("content", {}).get("partial_analysis", "")
+        report_type = report.get("report_type", "quick_summary")
+        min_target = min_recovery_targets.get(report_type, 10000)
+        
         if partial and len(partial) > 5000:
-            await db.reports.update_one(
-                {"report_id": report["report_id"]},
-                {"$set": {"status": "completed", "content.analysis": partial, "content.partial": False}}
-            )
-            logger.info(f"Recovered partial report {report['report_id']} ({len(partial)} chars)")
+            if len(partial) >= min_target:
+                # Full recovery — report meets minimum target
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {"status": "completed", "content.analysis": partial, "content.partial": False}}
+                )
+                logger.info(f"Recovered complete report {report['report_id']} ({len(partial)} chars)")
+            else:
+                # Partial recovery — save content but mark as failed so user can regenerate (resume)
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {
+                        "status": "failed",
+                        "error": f"Generation interrupted after {report.get('content', {}).get('passes_completed', '?')}/8 passes ({len(partial)} chars). Click Generate to resume from where it stopped.",
+                        "content.analysis": partial,
+                        "content.partial": True,
+                        "content.partial_analysis": partial,
+                    }}
+                )
+                logger.info(f"Partial report {report['report_id']} below target ({len(partial)} < {min_target}), marked as failed for resume")
         else:
             await db.reports.update_one(
                 {"report_id": report["report_id"]},

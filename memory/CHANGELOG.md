@@ -1,5 +1,22 @@
 # Changelog
 
+## 1 Apr 2026 — Report Recovery Fix + Grounds Dedup Final Fix
+
+### Report Depth Loss — Root Cause Fixed
+- `cleanup_orphaned_reports()` was marking half-generated Full Detailed reports as "completed" (threshold was only 5,000 chars vs the 80,000+ needed).
+- Now uses proper minimum targets per report type: quick_summary=10k, full_detailed=70k, extensive_log=120k.
+- Partial reports below target are now marked "failed" (not "completed"), preserving partial content for resume on regeneration.
+
+### Grounds Dedup — Last Bypass Fixed (grounds.py)
+- `_classify_pipeline_issues()` and `_sync_pipeline_issues_to_grounds()` in `routers/grounds.py` were using exact-title-match upserts.
+- Rewrote both to use `is_ground_duplicate()` from `ground_dedup.py`.
+- Expanded LEGAL_TOPICS with 4 new categories: evidence_admissibility, fresh_evidence, prosecutorial_misconduct, judicial_direction.
+- All 5 ground creation paths now use fuzzy dedup.
+
+### HowItWorksPage Restored + HowToUsePage Fixed
+- Restored HowItWorksPage text from text-xs (accidentally reduced by previous agent) back to text-sm baseline.
+- Fixed HowToUsePage: reduced mobile text sizes, changed "PDF documents" to "PDF and Word (DOCX) documents".
+
 ## 1 Apr 2026 — Grounds Dedup Final Fix + HowToUse Page Fix
 
 ### CRITICAL: Grounds Dedup — Last Bypass Fixed (grounds.py)
