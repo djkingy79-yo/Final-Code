@@ -1773,6 +1773,68 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     response = None
     last_error = None
     try:
+        # DO_NOT_UNDO — Condensed prompt for multi-pass generation.
+        # Full document text is only needed for Pass 1-2 (Executive Brief, Chronology, Document Digest).
+        # Later passes (Grounds analysis, Sentencing, Strategy, etc.) need grounds data, case metadata,
+        # and pipeline data but NOT 100k+ of raw document text. This eliminates 502 proxy timeouts
+        # on large prompts WITHOUT changing report depth or content.
+        condensed_prompt = f"""
+=== CASE INFORMATION ===
+Title: {case.get('title', 'N/A')}
+Defendant: {case.get('defendant_name', 'N/A')}
+Case Number: {case.get('case_number', 'N/A')}
+Court: {case.get('court', 'N/A')}
+Judge: {case.get('judge', 'N/A')}
+Sentence: {case.get('sentence', 'N/A')}
+Summary: {case.get('summary', 'N/A')}
+
+{offence_context}
+
+=== CASE DOCUMENTS ({len(documents)} files — full text was provided in earlier passes) ===
+"""
+        for d in documents:
+            condensed_prompt += f"- {d.get('filename', 'Unknown')} ({d.get('document_type', 'unknown')})\n"
+        condensed_prompt += "\n"
+
+        if timeline:
+            condensed_prompt += f"=== TIMELINE OF EVENTS ({len(timeline)} events) ===\n"
+            for event in timeline[:20]:
+                condensed_prompt += f"- {event.get('event_date', 'Unknown')}: [{event.get('event_type')}] {event.get('title')}\n"
+            condensed_prompt += "\n"
+
+        if grounds:
+            condensed_prompt += f"=== IDENTIFIED GROUNDS OF MERIT ({len(grounds)} grounds) ===\n"
+            for g in grounds:
+                condensed_prompt += f"- [{g.get('ground_type')}] {g.get('title')} (Strength: {g.get('strength')})\n"
+                desc = (g.get('description') or '')[:500]
+                if desc:
+                    condensed_prompt += f"  {desc}\n"
+                analysis = (g.get('analysis') or '')[:500]
+                if analysis:
+                    condensed_prompt += f"  Analysis: {analysis}\n"
+            condensed_prompt += "\n"
+
+        if structured_context:
+            facts = structured_context.get("facts", [])
+            findings = structured_context.get("findings", [])
+            verified = structured_context.get("verified_issues", [])
+            condensed_prompt += "=== STRUCTURED PIPELINE DATA ===\n"
+            if facts:
+                condensed_prompt += "CASE FACTS:\n"
+                for f in facts[:15]:
+                    condensed_prompt += f"- {f}\n" if isinstance(f, str) else f"- {f}\n"
+            if findings:
+                condensed_prompt += "\nKEY FINDINGS:\n"
+                for f in findings[:10]:
+                    condensed_prompt += f"- {f}\n" if isinstance(f, str) else f"- {f}\n"
+            if verified:
+                condensed_prompt += "\nVERIFIED APPEAL ISSUES:\n"
+                for vi in verified:
+                    condensed_prompt += f"- {vi.get('title', 'Untitled')} ({vi.get('ground_type', 'unknown')})\n"
+            condensed_prompt += "\n"
+
+        logger.info(f"Report prompt sizes: full={len(user_prompt)} chars, condensed={len(condensed_prompt)} chars")
+
         if report_type == "full_detailed":
             # DO_NOT_UNDO — 8-pass generation is FINAL. Previous 5-pass produced only ~7,890 words.
             # Current 8-pass produces ~12,000+ words. NEVER reduce pass count.
@@ -1958,8 +2020,12 @@ Do NOT truncate. Write ALL content."""),
                     resume_from = min(existing_passes_completed, len(passes))
                     logger.info(f"Resuming full_detailed report {report_id} from pass {resume_from + 1}")
 
+            # DO_NOT_UNDO — Same condensed context optimisation for full_detailed.
+            # Pass 1 (Exec Brief + Chronology) and Pass 2 (Document Digest) get full context.
+            # Passes 3-8 (Grounds analysis, Sentencing, Strategy) get condensed context.
             for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
-                pass_prompt = user_prompt + instruction
+                base_prompt = user_prompt if pass_index <= 2 else condensed_prompt
+                pass_prompt = base_prompt + instruction
                 logger.info(f"Full detailed {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
@@ -2214,7 +2280,9 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
                     logger.info(f"Resuming extensive_log report {report_id} from pass {resume_from + 1}")
 
             for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
-                pass_prompt = user_prompt + instruction
+                # Pass 1 gets full document context; passes 2-8 get condensed context
+                base_prompt = user_prompt if pass_index == 1 else condensed_prompt
+                pass_prompt = base_prompt + instruction
                 logger.info(f"Extensive log {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
