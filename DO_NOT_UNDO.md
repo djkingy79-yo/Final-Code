@@ -29,6 +29,11 @@
 - backend/routers/statistics.py
 - backend/routers/timeline.py
 - backend/routers/utilities.py
+- backend/routers/pipeline.py
+- backend/routers/pipeline_staged.py
+- backend/services/ground_dedup.py
+- backend/services/llm_service.py
+- backend/scripts/normalise_db.py
 
 ### Frontend Pages
 - frontend/src/pages/AboutPage.jsx
@@ -338,3 +343,50 @@ carefully tuned to produce deep, case-specific, legally rigorous output. These s
 - Single ground HTML: body 11px, h1 18px, h2 14px, li 10px, max-width 800px.
 - Multi-ground export: body 11px, h1 22px, h2 16px, h3 14px, li 10px, max-width 800px.
 - **NEVER increase these export font sizes.**
+
+
+### Login Loading Spinner — Visible Colours (DO NOT UNDO)
+- `frontend/src/App.js` ProtectedRoute loading state uses `text-slate-700` and `border-blue-600`
+- Text reads "Loading your dashboard..." — visible on white background
+- **NEVER change these back to `text-slate-100`, `text-slate-300`, or `border-blue-400`**
+- Previous invisible colours caused users to think Google login was broken/lagging
+
+### Report Generation — Pass-Level Retry (DO NOT UNDO)
+- `backend/server.py` `_subprocess_llm()` has 3-attempt pass-level retry with 30/60s backoff
+- If ALL 4 LLM model fallbacks fail on a single pass, it waits 30s and retries the entire pass
+- Without this, the Extensive Log and Barrister View consistently failed due to upstream 502 storms
+- **NEVER remove the pass-level retry loop in `_subprocess_llm()`**
+- **NEVER reduce `max_pass_retries` below 3**
+
+### LLM Service — 502 Exponential Backoff (DO NOT UNDO)
+- `backend/services/llm_service.py` `call_llm_structured()` uses exponential backoff for 502/503 errors
+- For `report_generation` task type: backoff = 15s, 25s, 35s, 45s (instead of default 2-5s)
+- Detects: "502", "503", "ServiceUnavailable", "BadGateway" in error messages
+- **NEVER remove the `is_server_error` check or reduce backoff times**
+- **NEVER revert to flat `await asyncio.sleep(2 + idx)` for report generation tasks**
+
+### Report Recovery Threshold — Per-Type Minimums (DO NOT UNDO)
+- `backend/server.py` `cleanup_orphaned_reports()` restore logic uses `len(analysis) >= min_chars`
+- full_detailed: 70,000 chars. extensive_log: 120,000 chars.
+- **NEVER restore with `> 5000` threshold** — that was a bug that restored 9,462-char partial reports as "completed"
+
+### Database Normalisation Script (DO NOT UNDO)
+- `backend/scripts/normalise_db.py` — idempotent script fixing missing fields across 6 collections
+- `POST /api/admin/normalise-db` — admin endpoint to trigger normalisation on-demand
+- Fixes: cases (state), grounds (source_mode, verification_status), reports (status), documents (created_at), timeline events (event_date), issues (ground_type, status)
+- **NEVER delete this script or endpoint**
+
+### Dedup Protection Badge (DO NOT UNDO)
+- `frontend/src/components/GroundsOfMerit.jsx` shows green badge: "Dedup Protection Active — X unique grounds verified (12-topic classification)"
+- `data-testid="dedup-protection-badge"` — emerald colour scheme with CheckCircle icon
+- Only visible when grounds are unlocked and count > 0
+- **NEVER remove this badge**
+
+### Ground Dedup — 12 Legal Topics (DO NOT UNDO)
+- `backend/services/ground_dedup.py` has 12 topic categories with comprehensive keyword coverage
+- Topics: judge_alone_trial, psychiatric_evidence, media_coverage, jury_misconduct, sentencing_error, ineffective_counsel, evidence_admissibility, fresh_evidence, prosecutorial_misconduct, judicial_direction, unreasonable_verdict, procedural_error
+- `cleanup_duplicate_grounds()` and `cleanup_duplicate_issues()` merge duplicates safely
+- Startup dedup runs on EVERY server boot. Post-sync safety net runs after every pipeline sync.
+- **NEVER reduce LEGAL_TOPICS keyword coverage**
+- **NEVER remove the startup dedup or post-sync safety nets**
+- **NEVER remove `cleanup_duplicate_grounds` or `cleanup_duplicate_issues`**
