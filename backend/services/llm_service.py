@@ -86,7 +86,7 @@ TASK_CONFIGS: dict[str, dict] = {
         "temperature": 0.1,
     },
     "report_generation": {
-        "max_tokens": 16384,
+        "max_tokens": 8192,
         "timeout_seconds": 150,
         "require_json": False,
         "temperature": 0.2,

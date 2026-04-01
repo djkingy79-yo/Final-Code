@@ -3325,13 +3325,37 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
             }}
         )
         logger.info(f"Report {report_id} generated successfully")
+        # Clear backup after successful generation
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$unset": {"content.backup_analysis": 1}}
+        )
     except Exception as exc:
         logger.error(f"Report {report_id} generation failed: {exc}")
         friendly_error = "Report generation was interrupted by a temporary AI service error. Retry resumes from the last completed section."
-        await db.reports.update_one(
+        # DO_NOT_UNDO — Restore backup on failure. If backup_analysis exists,
+        # restore it so the user doesn't lose their previous report.
+        backup_doc = await db.reports.find_one(
             {"report_id": report_id},
-            {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}}
+            {"_id": 0, "content.backup_analysis": 1}
         )
+        backup = (backup_doc or {}).get("content", {}).get("backup_analysis", "")
+        if backup and len(backup) > 5000:
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {
+                    "status": "completed",
+                    "error": None,
+                    "content.analysis": backup,
+                },
+                "$unset": {"content.backup_analysis": 1}}
+            )
+            logger.info(f"Report {report_id} generation failed but restored from backup ({len(backup)} chars)")
+        else:
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}}
+            )
 
 
 @api_router.post("/cases/{case_id}/reports/generate", response_model=dict)
@@ -3342,6 +3366,21 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     
     if report_type not in ["quick_summary", "full_detailed", "extensive_log"]:
         raise HTTPException(status_code=400, detail="Invalid report type")
+    
+    # DO_NOT_UNDO — Block duplicate generation. If a report of this type is
+    # already generating, return its status instead of creating a duplicate.
+    existing_generating = await db.reports.find_one(
+        {
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "report_type": report_type,
+            "status": "generating",
+            "content.aggressive_mode": {"$ne": True},
+        },
+        {"_id": 0, "report_id": 1},
+    )
+    if existing_generating:
+        return {"report_id": existing_generating["report_id"], "status": "generating", "report_type": report_type}
     
     # Check payment for premium reports (admin bypasses all payments)
     is_admin = is_admin_user(user.email)
@@ -3419,13 +3458,23 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     )
     if existing_completed:
         report_id = existing_completed["report_id"]
+        # DO_NOT_UNDO — Backup existing content before regeneration.
+        # If generation fails or server restarts, the old content is preserved.
+        existing_doc = await db.reports.find_one({"report_id": report_id}, {"_id": 0, "content.analysis": 1})
+        old_analysis = existing_doc.get("content", {}).get("analysis", "") if existing_doc else ""
         await db.reports.update_one(
             {"report_id": report_id},
             {"$set": {
                 "status": "generating",
                 "error": None,
                 "generated_at": datetime.now(timezone.utc).isoformat(),
-                "content": {"analysis": "", "aggressive_mode": False, "partial_analysis": "", "passes_completed": 0},
+                "content": {
+                    "analysis": "",
+                    "aggressive_mode": False,
+                    "partial_analysis": "",
+                    "passes_completed": 0,
+                    "backup_analysis": old_analysis,
+                },
             }}
         )
         asyncio.create_task(
@@ -4809,11 +4858,28 @@ async def cleanup_orphaned_reports():
                 )
                 logger.info(f"Partial report {report['report_id']} below target ({len(partial)} < {min_target}), marked as failed for resume")
         else:
-            await db.reports.update_one(
-                {"report_id": report["report_id"]},
-                {"$set": {"status": "failed", "error": "Generation interrupted by server restart. Please try again."}}
-            )
-            logger.info(f"Failed orphaned report {report['report_id']}")
+            # DO_NOT_UNDO — Restore from backup if available. When a user regenerates
+            # a completed report and the generation fails, restore the old content
+            # so they never lose their existing report.
+            backup = report.get("content", {}).get("backup_analysis", "")
+            if backup and len(backup) > 5000:
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {
+                        "status": "completed",
+                        "error": None,
+                        "content.analysis": backup,
+                        "content.partial": False,
+                    },
+                    "$unset": {"content.backup_analysis": 1}}
+                )
+                logger.info(f"Restored report {report['report_id']} from backup ({len(backup)} chars)")
+            else:
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {"status": "failed", "error": "Generation interrupted by server restart. Please try again."}}
+                )
+                logger.info(f"Failed orphaned report {report['report_id']}")
 
     # ── FLAG EXISTING UNDERSIZED "COMPLETED" REPORTS (non-destructive) ──
     # Add a flag to undersized reports so the UI can show a "Regenerate for full depth" option.
