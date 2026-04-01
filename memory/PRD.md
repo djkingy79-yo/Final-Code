@@ -1,65 +1,63 @@
-# Appeal Case Manager — PRD
+# Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Build "Appeal Case Manager" for criminal appeals across Australian jurisdictions. Features: secure document management, AI-powered case analysis, and a tiered reporting system (Free Quick Summary, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View at $449 total).
+Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
-- Report tiers scale in depth: Free (base) -> $150 (2x) -> $200 (3x) -> Barrister View (capstone synthesis)
-- Barrister View: locked until all 3 standard reports generated/paid. Synthesises all 3 reports + adds counsel-grade analysis
-- Report language: STRICT third-person educational tool. No "we", "us", "our", "you", "your"
-- Branding: forced light mode, high contrast, blue/slate/navy only. Action buttons = bright blue with white text
-- Australian English throughout (analyse, organise, barrister, defence, offence)
+- **Report Tiers:** Free (Base) -> $99 Grounds Unlock -> $150 Full Detailed (15 sections) -> $200 Extensive Log (20 sections) -> Barrister View (unlocked after all 3)
+- **Report Language:** STRICT third-person educational tool. No first/second person pronouns.
+- **Branding:** Forced light mode. High contrast. Blue/slate/navy palette. Bright blue action buttons with white text.
+- **Australian English:** analyse, organise, barrister, defence, offence throughout.
+
+## Tech Stack
+- React (Frontend) + FastAPI (Backend) + MongoDB
+- OpenAI GPT-4o via Emergent LLM Key
+- Emergent Auth (Google social login)
+- Resend (Emails), Stripe/PayPal/PayID (Payments)
 
 ## Architecture
-- Frontend: React + Shadcn/UI
-- Backend: FastAPI + MongoDB
-- LLM: GPT-4o/Claude via LiteLLM with Emergent LLM Key
-- Auth: Emergent Google OAuth + JWT
-- Payments: Stripe/PayPal/PayID
-- Emails: Resend
+```
+/app/
+├── backend/
+│   ├── server.py          # Core LLM generation engine (DO NOT TOUCH)
+│   ├── config.py          # Centralised env vars
+│   ├── services/ground_dedup.py
+│   ├── routers/           # auth, cases, payments, analytics
+├── frontend/src/
+│   ├── pages/             # LandingPage, ReportView, BarristerView, HowItWorksPage, etc.
+│   ├── components/        # AppFooter, FastScrollTop, ReportsSection, AuthModal, etc.
+├── DO_NOT_UNDO.md         # Critical protection rules
+```
 
 ## What's Been Implemented
-### Reports System (DONE)
-- 4-tier report generation with multi-pass LLM engine
-- PDF/DOCX export with proper footers, page numbering, legal disclaimers
+- Full auth flow (Google + email/password)
+- Case CRUD, document upload with OCR
+- Multi-pass AI report generation (section-by-section expansion to avoid 502s)
+- Ground deduplication logic
+- All 4 report tiers + Barrister View with Issue Matrix attachment
+- PDF/DOCX export with proper footers and legal disclaimers
 - iOS-safe PDF preview via /document-preview route
-- Report content safely backed up during regeneration (backend backup/restore)
+- Landing page with states, crimes, statistics, pricing, tier comparison
+- Legal resources, glossary, forms, FAQ, success stories, lawyer directory pages
+- Appeal statistics page (bright blue background, vibrant red text)
+- Floating scroll buttons (bright blue, repositioned above Emergent badge)
+- DO NOT UNDO markers across 75+ critical lines
 
-### Barrister View Multi-Pass Architecture (DONE - Updated 2 Apr 2026)
-- 8-pass generation: 3 section groups + section expansion + ground expansion + cross-analysis + strategy expansion + comparison tables + issue matrix + final QA
-- Section-by-section thin section expansion (catches missing or undersized sections)
-- Final QA validation pass (last defence against thin sections)
-- Rogue section cleanup (strips hallucinated H2 headings)
-- Target output: 120k+ chars / 16k+ words (larger than Extensive Log)
-- All critical code protected with DO NOT UNDO markers
+## Recent Changes (April 2026)
+- Moved "What This Tool Does" section to appear right after hero states/crimes on landing page
+- Barrister View depth overhaul (section-by-section expansion)
+- Frontend report visibility bug fix (content stays visible during regeneration)
+- Ground deduplication keyword mapping fix
+- Floating button overlap fix
+- DO NOT UNDO safeguards added
 
-### Frontend Report Visibility (DONE - 2 Apr 2026)
-- Existing report content visible during regeneration (status banner + content below)
-- No more "content loss" perception — backend saves data, frontend shows it
-
-### Ground Deduplication (DONE - Updated 2 Apr 2026)
-- Topic-based + fuzzy matching keyword system
-- Added coverage for "manifest excess", "inadequate defence", "failure to file" variants
-- Prevents grounds multiplying from 6 to 8+
-
-### Backend Performance (DONE)
-- Threaded LLM calls via asyncio.to_thread()
-- API response time <0.2s during active generation
-- 502 retry backoffs optimised (5-14s)
-- Frontend polling storm fixed
-
-### Other Features (DONE)
-- User authentication (Google OAuth + JWT)
-- Document management and upload
-- Timeline view
-- Notes system
-- Appeal statistics page
-- How It Works tutorial page
-
-## Upcoming Tasks
-- P1: Build Native Mobile App (Capacitor configured)
-
-## Future/Backlog
+## Pending Items
+- P0: Verify AppFooter styling (bold white, dark bg, flowing font)
+- P1: Verify How It Works page images (IMG_4323–IMG_4327)
+- P1: Build Native Mobile App (Capacitor)
 - P2: Counsel conference prep attachment for Barrister View
-- P2: Real-time collaboration/chat in Notes section
-- P2: Case sharing between users
+- P2: Real-time Collaboration/Chat
+- P2: Case Sharing
+
+## Credentials
+- Email: djkingy79@gmail.com / Password: Grubbygrub88
