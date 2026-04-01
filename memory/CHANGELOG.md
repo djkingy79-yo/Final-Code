@@ -1,23 +1,28 @@
 # Changelog
 
-## 1 Apr 2026 — Grounds Deduplication Overhaul + Report Timeout Fix
+## 1 Apr 2026 — Grounds Deduplication Overhaul v2 + UI Fixes
 
-### Grounds Deduplication (39 → 9 grounds)
-- Root cause: one-directional word overlap (only checked new→existing) missed cases where existing title was shorter
-- Fix: bidirectional fuzzy matching using fuzzywuzzy token_set_ratio (≥65) AND max(new/existing overlap ratio) > 0.45
-- Applied to ALL three ground creation paths: pipeline.py, grounds.py, pipeline_staged.py
-- Cleaned database: 39 duplicate grounds → 9 unique grounds
-- DO_NOT_UNDO protections added
+### Grounds Deduplication — Topic-Based Classification (41 → 6 grounds)
+- Root cause v2: fuzzywuzzy alone scored titles like "Sentencing Error Related to Non-Parole Period" vs 
+  "Sentencing Error Due to Misapplication of Psychological Evidence" at only 59 (below 65 threshold)
+- Fix: Created `backend/services/ground_dedup.py` with THREE matching methods:
+  1. Legal Topic Classification (maps "psychiatric", "sentencing", "jury", etc. to topic buckets)
+  2. fuzzywuzzy token_set_ratio (threshold lowered to 55)
+  3. Bidirectional word overlap (> 0.45)
+- Applied to ALL 4 ground creation paths: pipeline.py, grounds.py, pipeline_staged.py (classify + sync)
+- Added batch-awareness: new grounds are added to in-memory list during sync so subsequent issues see them
+- Cleaned issue_classifications from 41 → 6 unique entries
+- Verified: 2 consecutive syncs produce 0 new grounds (6 → 6 → 6)
 
-### Extensive Log Report Timeout Fix
-- Root cause: 117K+ chars of markdown rendered all at once, choking mobile browsers
-- Fix: LazySection component with IntersectionObserver — only renders sections as they scroll into view
-- First 3 sections render immediately; rest load on scroll with 400px margin
-- Print/export forces all sections to render before building HTML
+### UI Fixes
+- Case Summary: added "Case Summary" heading, text reduced from text-base → text-xs/text-sm
+- Grounds description: reduced from text-base → text-xs/text-sm, tighter line spacing
+- Grounds buttons: flex-wrap for mobile (Search, Investigate, Delete stack vertically)
+- Deep Analysis dialog: added Search AustLII button + quick search links (JADE, NSW CaseLaw, QLD Judgments, Google Scholar)
+- Extensive Log report: LazySection with IntersectionObserver (renders sections on scroll, prevents browser choking)
 
-### Report Quality Engine (continued from 31 Mar)
-- Barrister View: 3,519 → 12,585 words (258% increase) — now properly uses task_type="report_generation"
-- Cleaned up 5 duplicate reports (including partial interrupted generations)
+### Report Quality (continued)
+- Barrister View regenerated: 3,519 → 12,585 words
 - Final verified counts: Quick 1,550 / Full 13,122 / Extensive 15,467 / Barrister 12,585
 
 ## 31 Mar 2026 — Report Quality Engine Overhaul
@@ -29,11 +34,5 @@
 
 ## 31 Mar 2026 (earlier session)
 - Google Auth Redirect Loop Fix
-- PDF/Word Preview Mode
-- LLM "Case name" Hallucination Fix
-- Deep Analysis Generation (investigate endpoint)
-- UI Badge Cleanup (Draft → Generated)
-- Report Colour Coding (Green/Blue/Purple/Teal)
-- Grounds Deduplication initial fix (fuzzy matching)
-- Case Identity Card Protection
-- Print View Inline CSS Fix
+- PDF/Word Preview Mode, LLM "Case name" Fix, Deep Analysis, UI Badge Cleanup
+- Report Colour Coding, Case Identity Card Protection, Print View Inline CSS Fix

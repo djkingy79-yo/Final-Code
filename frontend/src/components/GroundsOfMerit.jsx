@@ -611,7 +611,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                           </div>
                         </div>
                       ) : (
-                        <p className="text-slate-600 mt-2 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-snug">
                           {ground.description}
                         </p>
                       )}
@@ -687,7 +687,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       </p>
                     </div>
                     
-                    <div className="flex items-center gap-1 ml-4 flex-shrink-0">
+                    <div className="flex flex-wrap items-center gap-1 mt-2 sm:mt-0 sm:ml-4 sm:flex-shrink-0">
                       <Button
                         variant="outline"
                         size="sm"
@@ -795,7 +795,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
               Ground of Merit Analysis
             </DialogTitle>
             {detailGround && (detailGround.deep_analysis?.full_analysis || detailGround.analysis) && (
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <Button variant="outline" size="sm" onClick={handleGroundPrint} data-testid="ground-print-btn">
                   <Printer className="w-4 h-4 mr-1.5" /> Print
                 </Button>
@@ -816,6 +816,29 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 }} data-testid="ground-word-btn">
                   <FileText className="w-4 h-4 mr-1.5" /> Word
                 </Button>
+                <Button variant="outline" size="sm" className="text-green-700 border-green-200 hover:bg-green-50" onClick={() => {
+                  if (!detailGround) return;
+                  window.open(`https://www.austlii.edu.au/cgi-bin/sinosrch.cgi?query=${encodeURIComponent(detailGround.title)}`, '_blank');
+                }} data-testid="ground-search-austlii-btn">
+                  <Search className="w-4 h-4 mr-1.5" /> Search AustLII
+                </Button>
+              </div>
+            )}
+            {/* Search Panel in Detail Dialog */}
+            {detailGround && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                <a href={`https://jade.io/search/?q=${encodeURIComponent(detailGround.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200" data-testid="detail-search-jade">
+                  JADE <ExternalLink className="w-3 h-3" />
+                </a>
+                <a href={`https://www.caselaw.nsw.gov.au/search/advanced?query=${encodeURIComponent(detailGround.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200" data-testid="detail-search-nsw">
+                  NSW CaseLaw <ExternalLink className="w-3 h-3" />
+                </a>
+                <a href={`https://www.queenslandjudgments.com.au/caselaw/search?keyword=${encodeURIComponent(detailGround.title)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200" data-testid="detail-search-qld">
+                  QLD Judgments <ExternalLink className="w-3 h-3" />
+                </a>
+                <a href={`https://scholar.google.com.au/scholar?q=${encodeURIComponent(detailGround.title)}&hl=en&as_sdt=4`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200" data-testid="detail-search-scholar">
+                  Google Scholar <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             )}
           </DialogHeader>

@@ -997,7 +997,10 @@ const CaseDetail = ({ user }) => {
           </div>
 
           {caseData?.summary && activeTab !== "grounds" && (
-            <p className="mt-4 text-slate-700 max-w-3xl">{caseData.summary}</p>
+            <div className="mt-3">
+              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1" data-testid="case-summary-heading">Case Summary</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl" data-testid="case-summary-text">{caseData.summary}</p>
+            </div>
           )}
 
           {/* Review Status — hidden for clarity, the tabs themselves convey status */}

@@ -169,14 +169,24 @@ and "Verify Top 6 Issues" MUST remain visible and functional. These call:
 `POST /api/cases/{case_id}/issues/verify-batch` with `{limit: 3}` or `{limit: 6}`.
 **NEVER hide or remove the Pipeline Verification block.**
 
-## CRITICAL: FUZZY DEDUPLICATION (DO NOT WEAKEN — BROKE 39+ TIMES)
+## CRITICAL: FUZZY DEDUPLICATION (DO NOT WEAKEN — BROKE 41+ TIMES)
 
-The ground deduplication logic in `backend/routers/grounds.py` and `backend/routers/pipeline.py` 
-uses fuzzywuzzy token_set_ratio (>= 65) AND bidirectional word overlap (> 0.45) to prevent 
-duplicate grounds. Previous one-directional 50% overlap let grounds multiply from 6 to 39.
-**NEVER use one-directional overlap.** ALWAYS check max(overlap/new_words, overlap/existing_words).
-**NEVER lower fuzzywuzzy threshold below 65.**
-**NEVER remove the dedup check** from `_verify_issue_and_sync` or `auto_identify_grounds`.
+The ground deduplication logic uses THREE methods via `backend/services/ground_dedup.py`:
+1. **Legal Topic Classification** — maps titles to topic buckets (judge_alone_trial, psychiatric_evidence,
+   media_coverage, jury_misconduct, sentencing_error, etc.). If two titles share ANY topic, they're duplicates.
+2. **fuzzywuzzy token_set_ratio** — threshold >= 55.
+3. **Bidirectional word overlap** — threshold > 0.45 in BOTH directions.
+
+Applied in ALL ground creation paths:
+- `backend/routers/pipeline.py` — `_verify_issue_and_sync`
+- `backend/routers/grounds.py` — `auto_identify_grounds`
+- `backend/routers/pipeline_staged.py` — `classify_issues` AND `sync_grounds_from_issues`
+
+**NEVER remove the topic classification step.** Previous fuzzywuzzy-only (threshold 65) still let grounds
+multiply because titles like "Sentencing Error Related to Non-Parole Period" vs "Sentencing Error Due to
+Misapplication of Psychological Evidence" scored only 59 (below threshold).
+
+**NEVER revert to exact-title-match upserts.** Every slight wording change creates a new ground.
 
 ## CRITICAL: REPORT TYPE COLOURS (DO NOT CHANGE)
 
