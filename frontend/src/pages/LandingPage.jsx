@@ -260,118 +260,6 @@ const LandingPage = () => {
       <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-hero" />
 
       {/* ============================================ */}
-      {/* APP OVERVIEW - What This Tool Does */}
-      {/* ============================================ */}
-      <section className="py-16 px-6 bg-gradient-to-b from-background to-muted/30">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              Your Complete Appeal Research Companion
-            </h2>
-            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-              This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions. 
-              Whether you're representing yourself or working with a lawyer, get the tools you need to understand your case.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {/* Organise */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-7 h-7 text-blue-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Organise Everything
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Upload all your case documents, create a timeline of events, and keep everything in one secure place. 
-                OCR extracts text from scanned documents automatically.
-              </p>
-            </div>
-
-            {/* Analyse */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-7 h-7 text-emerald-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                AI-Powered Analysis
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Automatically identify potential grounds for appeal based on Australian law. 
-                The AI scans your case for procedural errors, misdirections, and legal issues.
-              </p>
-            </div>
-
-            {/* Generate Reports */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <FileCheck className="w-7 h-7 text-red-600" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Generate Reports
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Create detailed reports with legal citations, case law references, and structured analysis. 
-                Export to PDF or present in Barrister View for legal meetings.
-              </p>
-            </div>
-          </div>
-
-          {/* Key Features Highlight */}
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 border border-indigo-200">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Built for Australian Law</h4>
-                <ul className="space-y-2 text-sm text-slate-600">
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>All 8 states & territories + Commonwealth</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Covers all criminal offence types</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Direct links to legislation & case law</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Progress tracker for appeal process</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Free to Get Started</h4>
-                <ul className="space-y-2 text-sm text-slate-600">
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>No credit card required to begin</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Upload unlimited documents for free</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Pay only for detailed AI analysis reports</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>A fraction of what lawyers charge</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-experience" />
-
-      {/* ============================================ */}
       {/* COMPLETE APP CAPABILITIES - At A Glance */}
       {/* ============================================ */}
       <section className="py-16 px-6 bg-white relative overflow-hidden">
@@ -617,6 +505,118 @@ const LandingPage = () => {
       </section>
 
       <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-resources" />
+
+      {/* ============================================ */}
+      {/* APP OVERVIEW - What This Tool Does */}
+      {/* ============================================ */}
+      <section className="py-16 px-6 bg-gradient-to-b from-background to-muted/30">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Your Complete Appeal Research Companion
+            </h2>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+              This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions. 
+              Whether you're representing yourself or working with a lawyer, get the tools you need to understand your case.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {/* Organise */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-7 h-7 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Organise Everything
+              </h3>
+              <p className="text-slate-600 text-sm">
+                Upload all your case documents, create a timeline of events, and keep everything in one secure place. 
+                OCR extracts text from scanned documents automatically.
+              </p>
+            </div>
+
+            {/* Analyse */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                AI-Powered Analysis
+              </h3>
+              <p className="text-slate-600 text-sm">
+                Automatically identify potential grounds for appeal based on Australian law. 
+                The AI scans your case for procedural errors, misdirections, and legal issues.
+              </p>
+            </div>
+
+            {/* Generate Reports */}
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <FileCheck className="w-7 h-7 text-red-600" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Generate Reports
+              </h3>
+              <p className="text-slate-600 text-sm">
+                Create detailed reports with legal citations, case law references, and structured analysis. 
+                Export to PDF or present in Barrister View for legal meetings.
+              </p>
+            </div>
+          </div>
+
+          {/* Key Features Highlight */}
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 border border-indigo-200">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Built for Australian Law</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>All 8 states & territories + Commonwealth</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Covers all criminal offence types</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Direct links to legislation & case law</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Progress tracker for appeal process</span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Free to Get Started</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>No credit card required to begin</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Upload unlimited documents for free</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Pay only for detailed AI analysis reports</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>A fraction of what lawyers charge</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-experience" />
 
       {/* ============================================ */}
       {/* AUSTRALIAN APPEAL STATISTICS — Moved here above State Stats */}
