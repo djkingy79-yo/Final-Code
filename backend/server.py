@@ -2793,8 +2793,8 @@ DOCUMENT INVENTORY
     section_groups = [
         {
             "slug": "source-synthesis",
-            "target_chars": 30000,
-            "source_limits": {"quick_summary": 14000, "full_detailed": 40000, "extensive_log": 50000},
+            "target_chars": 24000,
+            "source_limits": {"quick_summary": 14000, "full_detailed": 28000, "extensive_log": 36000},
             "required_headings": [
                 "## Executive Overview for Counsel",
                 "## Source Report Synthesis",
@@ -2805,8 +2805,8 @@ DOCUMENT INVENTORY
         },
         {
             "slug": "case-analysis",
-            "target_chars": 35000,
-            "source_limits": {"quick_summary": 12000, "full_detailed": 45000, "extensive_log": 55000},
+            "target_chars": 28000,
+            "source_limits": {"quick_summary": 12000, "full_detailed": 30000, "extensive_log": 40000},
             "required_headings": [
                 "## Evidentiary Tensions and Appeal Pressure Points",
                 "## Grounds of Merit",
@@ -2817,8 +2817,8 @@ DOCUMENT INVENTORY
         },
         {
             "slug": "strategy",
-            "target_chars": 30000,
-            "source_limits": {"quick_summary": 10000, "full_detailed": 35000, "extensive_log": 45000},
+            "target_chars": 26000,
+            "source_limits": {"quick_summary": 10000, "full_detailed": 26000, "extensive_log": 36000},
             "required_headings": [
                 "## Sentencing Comparison and Relief Pathways",
                 "## Proposed Submissions and Hearing Strategy",
@@ -2895,7 +2895,7 @@ SOURCE REPORTS
     if len(response) < target_length:
         expansion_source_text = _build_barrister_group_source_text(
             source_reports,
-            {"quick_summary": 10000, "full_detailed": 35000, "extensive_log": 40000},
+            {"quick_summary": 10000, "full_detailed": 26000, "extensive_log": 32000},
         )
         expansion_prompt = f"""Expand the Barrister Brief below to at least {target_length} characters.
 
@@ -2931,6 +2931,109 @@ CURRENT BARRISTER BRIEF
                 response = expanded_response
         except Exception as exc:
             logger.warning(f"Barrister whole-brief expansion skipped for {case_id}: {exc}")
+
+    # DO NOT UNDO — Section-by-section expansion for thin sections
+    thin_section_targets = {
+        "## Executive Overview for Counsel": 5000,
+        "## Source Report Synthesis": 6000,
+        "## Case Background and Procedural History": 5000,
+        "## Conviction, Offence and Sentence Analysis": 5000,
+        "## Evidentiary Tensions and Appeal Pressure Points": 6000,
+        "## Statutory Framework and Governing Tests": 5000,
+        "## Authorities and Comparative Cases": 5000,
+        "## Sentencing Comparison and Relief Pathways": 5000,
+    }
+    section_expansion_source = _build_barrister_group_source_text(
+        source_reports,
+        {"quick_summary": 10000, "full_detailed": 26000, "extensive_log": 32000},
+    )
+    for section_heading, min_chars in thin_section_targets.items():
+        if section_heading not in response:
+            # Missing section — generate it fresh
+            try:
+                missing_prompt = f"""Write only the following section of a Barrister Brief. Output ONLY this one section with its heading:
+
+{section_heading}
+
+Requirements:
+- Minimum target length: {min_chars} characters.
+- Dense, counsel-facing, case-specific content using the source reports.
+- Australian English, strict third-person tone.
+- No bullet-heavy exposition — use flowing paragraphs.
+
+SOURCE REPORTS
+{section_expansion_source}
+
+CURRENT BARRISTER BRIEF
+{response}
+"""
+                missing_section = await call_llm_with_fallback(
+                    system_prompt, missing_prompt,
+                    session_id=f"barrister-{case_id}-missing-{section_heading[3:20].lower().replace(' ','-')}",
+                    max_tokens=16384, timeout_seconds=300, task_type="report_generation",
+                )
+                missing_section = _strip_report_placeholders(missing_section)
+                missing_section = re.sub(r"\n{3,}", "\n\n", missing_section).strip()
+                if missing_section.startswith(section_heading):
+                    # Find the right insertion point
+                    section_order = list(thin_section_targets.keys())
+                    idx = section_order.index(section_heading)
+                    inserted = False
+                    for later_heading in section_order[idx + 1:]:
+                        if later_heading in response:
+                            response = response.replace(later_heading, missing_section.rstrip() + "\n\n" + later_heading, 1)
+                            inserted = True
+                            break
+                    if not inserted:
+                        # Append before strategy sections
+                        if "## Proposed Submissions and Hearing Strategy" in response:
+                            response = response.replace("## Proposed Submissions and Hearing Strategy",
+                                missing_section.rstrip() + "\n\n## Proposed Submissions and Hearing Strategy", 1)
+                        else:
+                            response = response.rstrip() + "\n\n" + missing_section
+                    logger.info(f"Generated missing section: {section_heading} ({len(missing_section)} chars)")
+            except Exception as exc:
+                logger.warning(f"Missing section generation skipped for {section_heading}: {exc}")
+            continue
+
+        # Existing section — check if it's too thin
+        section_match = re.search(
+            rf"({re.escape(section_heading)}\n[\s\S]*?)(?=\n## |\Z)",
+            response,
+        )
+        if section_match:
+            section_text = section_match.group(1)
+            if len(section_text) < min_chars:
+                try:
+                    expand_prompt = f"""Rewrite and substantially expand the following section of a Barrister Brief. Output ONLY this one section with its heading:
+
+{section_heading}
+
+Current section content (too thin — expand to at least {min_chars} characters):
+{section_text}
+
+Requirements:
+- Keep ALL existing content and ADD more depth, more factual detail, more legal reasoning.
+- Minimum target length: {min_chars} characters.
+- Dense, counsel-facing, case-specific content.
+- Australian English, strict third-person tone.
+- No bullet-heavy exposition — use flowing paragraphs.
+
+SOURCE REPORTS
+{section_expansion_source}
+"""
+                    expanded_section = await call_llm_with_fallback(
+                        system_prompt, expand_prompt,
+                        session_id=f"barrister-{case_id}-thin-{section_heading[3:20].lower().replace(' ','-')}",
+                        max_tokens=16384, timeout_seconds=300, task_type="report_generation",
+                    )
+                    expanded_section = _strip_report_placeholders(expanded_section)
+                    expanded_section = re.sub(r"\n{3,}", "\n\n", expanded_section).strip()
+                    if expanded_section.startswith(section_heading) and len(expanded_section) > len(section_text):
+                        response = response.replace(section_text, expanded_section, 1)
+                        logger.info(f"Expanded thin section: {section_heading} ({len(section_text)} → {len(expanded_section)} chars)")
+                except Exception as exc:
+                    logger.warning(f"Thin section expansion skipped for {section_heading}: {exc}")
 
     if len(response) < 100000 and grounds:
         try:
@@ -2975,8 +3078,9 @@ CURRENT BARRISTER BRIEF
                 )
                 subsection = _strip_report_placeholders(subsection)
                 subsection = re.sub(r"\n{3,}", "\n\n", subsection).strip()
-                if not subsection.startswith(f"### {ground_title}"):
-                    subsection = f"### {ground_title}\n\n{subsection}"
+                # Strip any heading format the LLM used and enforce ### subsection format
+                subsection = re.sub(r'^#{1,4}\s*' + re.escape(ground_title) + r'\s*\n+', '', subsection).strip()
+                subsection = f"### {ground_title}\n\n{subsection}"
                 rewritten_ground_sections.append(subsection)
 
             rewritten_grounds = "## Grounds of Merit\n\n" + "\n\n".join(rewritten_ground_sections).strip()
@@ -2990,7 +3094,10 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Barrister grounds expansion skipped for {case_id}: {exc}")
 
-    if len(response) < 95000:
+    # DO NOT UNDO — Cross-analysis MUST run BEFORE strategy expansion to avoid content loss
+    # Cross-analysis sections insert before Sentencing Comparison, not at end
+    # Always run — these are unique sections not generated elsewhere
+    if "## Report-to-Report Cross-Analysis" not in response:
         cross_analysis_prompt = f"""Produce only the following sections, in this exact order:
 
 ## Report-to-Report Cross-Analysis
@@ -3021,11 +3128,20 @@ CURRENT BARRISTER BRIEF
             cross_analysis = _strip_report_placeholders(cross_analysis)
             cross_analysis = re.sub(r"\n{3,}", "\n\n", cross_analysis).strip()
             if cross_analysis.startswith("## Report-to-Report Cross-Analysis"):
-                response = response.rstrip() + "\n\n" + cross_analysis
+                # Insert before Sentencing Comparison, not at the end
+                if "## Sentencing Comparison and Relief Pathways" in response:
+                    response = response.replace(
+                        "## Sentencing Comparison and Relief Pathways",
+                        cross_analysis.rstrip() + "\n\n## Sentencing Comparison and Relief Pathways",
+                        1,
+                    )
+                else:
+                    response = response.rstrip() + "\n\n" + cross_analysis
         except Exception as exc:
             logger.warning(f"Barrister cross-analysis expansion skipped for {case_id}: {exc}")
 
-    if len(response) < 110000:
+    # Strategy expansion — always run to deepen strategy sections
+    if "## Proposed Submissions and Hearing Strategy" in response:
         strategy_expansion_prompt = f"""Rewrite only the following sections of the Barrister Brief below, keeping the same headings and making them substantially more detailed:
 
 ## Proposed Submissions and Hearing Strategy
@@ -3057,9 +3173,10 @@ CURRENT BARRISTER BRIEF
             rewritten_strategy = _strip_report_placeholders(rewritten_strategy)
             rewritten_strategy = re.sub(r"\n{3,}", "\n\n", rewritten_strategy).strip()
             if rewritten_strategy.startswith("## Proposed Submissions and Hearing Strategy"):
+                # DO NOT UNDO — Match only up to the next major section boundary, not end of document
                 response = re.sub(
-                    r"## Proposed Submissions and Hearing Strategy\n[\s\S]*$",
-                    rewritten_strategy,
+                    r"## Proposed Submissions and Hearing Strategy\n[\s\S]*?(?=\n## (?:Attachment A|Report-to-Report|Document and Evidence)|$)",
+                    rewritten_strategy + "\n\n",
                     response,
                     count=1,
                 )
