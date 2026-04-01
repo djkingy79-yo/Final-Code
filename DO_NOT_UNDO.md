@@ -174,19 +174,24 @@ and "Verify Top 6 Issues" MUST remain visible and functional. These call:
 The ground deduplication logic uses THREE methods via `backend/services/ground_dedup.py`:
 1. **Legal Topic Classification** — maps titles to topic buckets (judge_alone_trial, psychiatric_evidence,
    media_coverage, jury_misconduct, sentencing_error, etc.). If two titles share ANY topic, they're duplicates.
+   Keywords must cover all word variants (e.g. "juror"/"jury", "manifest"/"manifestly").
 2. **fuzzywuzzy token_set_ratio** — threshold >= 55.
 3. **Bidirectional word overlap** — threshold > 0.45 in BOTH directions.
 
-Applied in ALL ground creation paths:
+Applied in **ALL FOUR** ground creation paths:
 - `backend/routers/pipeline.py` — `_verify_issue_and_sync`
 - `backend/routers/grounds.py` — `auto_identify_grounds`
 - `backend/routers/pipeline_staged.py` — `classify_issues` AND `sync_grounds_from_issues`
+- `backend/server.py` — `_sync_pipeline_to_grounds` (FIXED: was using exact-title upsert, now uses fuzzy dedup)
 
 **NEVER remove the topic classification step.** Previous fuzzywuzzy-only (threshold 65) still let grounds
 multiply because titles like "Sentencing Error Related to Non-Parole Period" vs "Sentencing Error Due to
 Misapplication of Psychological Evidence" scored only 59 (below threshold).
 
 **NEVER revert to exact-title-match upserts.** Every slight wording change creates a new ground.
+
+**NEVER remove word variants from LEGAL_TOPICS keywords.** Missing variants like "juror impartial" (vs "jury impartial")
+and "manifest excessive" (vs "manifestly excessive") caused grounds to multiply from 4 to 15 in one session.
 
 ## CRITICAL: REPORT TYPE COLOURS (DO NOT CHANGE)
 

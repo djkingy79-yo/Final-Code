@@ -4,13 +4,14 @@
 
 from fuzzywuzzy import fuzz
 
-# Legal topic keywords — if two titles share ANY topic, they are duplicates.
+# DO_NOT_UNDO — Legal topic keywords. If two titles share ANY topic, they are duplicates.
+# Keywords must cover all common word variants (e.g. "juror"/"jury", "manifest"/"manifestly").
 LEGAL_TOPICS = {
-    "judge_alone_trial": {"judge-alone", "judge alone", "trial application"},
-    "psychiatric_evidence": {"psychiatric", "psychological", "mental health", "mental impairment", "psychosis"},
-    "media_coverage": {"media coverage", "prejudicial media", "media bias", "juror bias from media"},
-    "jury_misconduct": {"juror misconduct", "jury misconduct", "jury irregularity", "juror bias", "jury bias", "jury impartial"},
-    "sentencing_error": {"sentencing error", "sentencing disparity", "non-parole", "manifestly excessive", "sentencing above"},
+    "judge_alone_trial": {"judge-alone", "judge alone", "trial application", "judge trial"},
+    "psychiatric_evidence": {"psychiatric", "psychological", "mental health", "mental impairment", "psychosis", "mental illness", "psychiatric report", "psychiatric opinion", "mitigation due to mental", "chronic psycho"},
+    "media_coverage": {"media coverage", "prejudicial media", "media bias", "juror bias from media", "pretrial publicity"},
+    "jury_misconduct": {"juror misconduct", "jury misconduct", "jury irregularity", "juror bias", "jury bias", "jury impartial", "juror impartial", "juror prejudic", "jury prejudic", "juror behavio", "jury behavio"},
+    "sentencing_error": {"sentencing error", "sentencing disparity", "non-parole", "manifestly excessive", "manifest excessive", "sentencing above", "excessive sentence", "sentencing: manifest", "potential sentencing"},
     "ineffective_counsel": {"ineffective counsel", "counsel regarding", "representation", "legal representation"},
     "mental_defences": {"mental health defence", "mental impairment defence", "diminished responsibility", "mental health defences"},
 }
