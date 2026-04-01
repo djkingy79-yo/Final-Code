@@ -1,5 +1,32 @@
 # Changelog
 
+## 2 Apr 2026 — Grounds Dedup Nuclear Fix (FINAL)
+
+### LEGAL_TOPICS Expanded (11 → 12 categories)
+- Added `unreasonable_verdict` topic: catches "unreasonable verdict", "unsafe verdict", "unsatisfactory verdict", "verdict cannot be supported", "witness inconsistency", "eyewitness", "identification evidence"
+- Added `procedural_error` topic: catches "procedural error", "procedural irregularity", "procedural unfairness", "refusal of", "trial application refused"
+- Expanded `ineffective_counsel`: added "ineffective assistance", "incompetence", "failure to call", "failure to object", "failure to adduce", "inadequate legal"
+- Expanded `evidence_admissibility`: added "improper admission", "chain of custody", "dna evidence", "forensic evidence", "expert evidence"
+- Expanded `judicial_direction`: added "prejudicial comments", "judge conduct", "judicial conduct", "unfair trial", "fair trial", "trial judge"
+- Expanded `sentencing_error`: added "double-counting", "aggravating features", "moral culpability", "sentence: ", "adequacy of reasons"
+- Removed overly broad "key witness" from `unreasonable_verdict` (was causing false positives with ineffective_counsel)
+
+### Safety Net Dedup (Triple Protection)
+1. `startup_dedup_grounds` — runs `cleanup_duplicate_grounds()` and `cleanup_duplicate_issues()` on EVERY server start across ALL cases
+2. `_ensure_pipeline_identification` (grounds.py) — runs dedup cleanup AFTER every pipeline sync
+3. `_refresh_pipeline_for_reporting` (server.py) — runs dedup cleanup AFTER every report generation sync
+4. New endpoint `POST /cases/{case_id}/grounds/cleanup-duplicates` for manual cleanup
+
+### Cleanup Functions Added to ground_dedup.py
+- `cleanup_duplicate_grounds()`: Scans, merges (preserves evidence from investigated duplicates), and deletes duplicate grounds
+- `cleanup_duplicate_issues()`: Scans and deletes duplicate issue_classifications
+
+### Test Suite: /app/backend/tests/test_ground_dedup.py
+- 6 comprehensive tests: Topic Coverage (48 titles), Duplicate Detection (12 pairs), Non-Duplicate Protection (5 pairs), Australian Spelling, DB Cleanup Function, Idempotent Sync (8 consecutive runs stay at 3 grounds)
+- ALL TESTS PASS
+
+
+
 ## 1 Apr 2026 — Landing Page UI Fixes
 
 ### Australian Appeal Statistics Repositioned

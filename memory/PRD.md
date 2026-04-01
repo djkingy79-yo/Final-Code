@@ -23,10 +23,11 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Chat collaboration (WebSocket), Case sharing
 - Pipeline verification, Admin dashboard, statistics, legal resources
 - Mobile-responsive with lazy section loading
+- **Bulletproof ground deduplication** (12 legal topics, 3-layer matching, startup+post-sync safety nets)
 
 ## Protected Systems (DO NOT UNDO)
 - **Report Engine:** 8-pass Full Detailed, dedup thresholds 0.97/0.90, no cautious-language guardrail
-- **Ground Dedup:** Topic classification + fuzzywuzzy (≥65) + bidirectional overlap (>0.45). ALL 5 paths use fuzzy dedup.
+- **Ground Dedup:** Topic classification (12 categories) + fuzzywuzzy (≥65) + bidirectional overlap (>0.45). ALL paths use fuzzy dedup. Startup cleanup + post-sync safety nets.
 - **Case Identity Card:** Blue card with inline CSS for print
 - **grounds.py:** _classify_pipeline_issues and _sync_pipeline_issues_to_grounds MUST use fuzzy dedup
 
