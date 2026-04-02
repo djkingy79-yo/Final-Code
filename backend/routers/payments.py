@@ -3,10 +3,12 @@ Criminal Appeal AI - Payments Router
 Extracted from server.py monolith.
 """
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import HTMLResponse
 from datetime import datetime, timezone
 import uuid
 import os
 import logging
+import secrets
 
 from config import db
 from auth_utils import get_current_user
@@ -138,8 +140,15 @@ async def verify_payid_payment(request: Request):
         "Payment Notice Received - Awaiting Confirmation", "Payment Notice Received",
         "<p style=\"margin:0 0 14px;line-height:1.7;\">This email confirms that the PayID payment notice was received and marked for review. Once the payment is received and confirmed, the feature will unlock automatically.</p>",
     )
-    # Notify admin so they know someone has paid and can confirm
+    # Generate a secure one-click confirmation token for the admin email
+    confirm_token = secrets.token_urlsafe(32)
+    await db.payments.update_one(
+        {"reference": reference},
+        {"$set": {"confirm_token": confirm_token}}
+    )
+    # Notify admin with a one-click confirm link
     frontend_url = get_frontend_url()
+    confirm_url = f"{frontend_url}/api/payments/payid/email-confirm/{confirm_token}"
     await send_admin_payid_alert(
         admin_emails=ADMIN_EMAILS,
         user_email=user.email,
@@ -148,7 +157,8 @@ async def verify_payid_payment(request: Request):
         amount=payment.get("amount") or FEATURE_PRICES.get(canonical_type, {}).get("price", 0),
         reference=reference,
         case_id=case_id or "",
-        frontend_url=frontend_url
+        frontend_url=frontend_url,
+        confirm_url=confirm_url
     )
     return {"status": "submitted_for_review", "message": "Payment submitted! The admin has been notified and will confirm your payment shortly."}
 
@@ -193,3 +203,65 @@ async def admin_confirm_payid_payment(reference: str, request: Request):
         "<p style=\"margin:0 0 14px;line-height:1.7;\">The PayID transfer has been confirmed and the premium feature is now unlocked on the case.</p>",
     )
     return {"status": "confirmed", "reference": reference}
+
+
+@router.get("/payments/payid/email-confirm/{confirm_token}")
+async def email_confirm_payid_payment(confirm_token: str):
+    """One-click payment confirmation from admin email — no login required.
+    Uses a secure token generated when the payment was submitted."""
+    payment = await db.payments.find_one({"confirm_token": confirm_token}, {"_id": 0})
+    if not payment:
+        return HTMLResponse(content="""
+        <html><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#fef2f2;">
+        <h1 style="color:#dc2626;">Invalid or Expired Link</h1>
+        <p>This confirmation link is not valid. It may have already been used or the payment was not found.</p>
+        </body></html>""", status_code=404)
+
+    reference = payment.get("reference", "")
+
+    if payment.get("status") == "completed":
+        return HTMLResponse(content=f"""
+        <html><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#f0fdf4;">
+        <h1 style="color:#16a34a;">Already Confirmed</h1>
+        <p>Payment <strong>{reference}</strong> has already been confirmed and the feature is unlocked.</p>
+        </body></html>""")
+
+    # Confirm the payment
+    await db.payments.update_one(
+        {"confirm_token": confirm_token},
+        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat(), "confirmed_by": "email-link"}}
+    )
+
+    # Unlock the feature on the case
+    canonical = canonical_feature_type(payment.get("feature_type"))
+    if payment.get("case_id") and canonical:
+        await db.cases.update_one(
+            {"case_id": payment["case_id"], "user_id": payment["user_id"]},
+            {"$addToSet": {"unlocked_features": canonical}},
+        )
+
+    # Send confirmation email to the user
+    payment_user = await db.users.find_one({"user_id": payment.get("user_id")}, {"_id": 0, "email": 1, "name": 1})
+    feature_name = FEATURE_PRICES.get(canonical, {}).get("name", canonical or "Feature")
+    amount = payment.get("amount") or FEATURE_PRICES.get(canonical, {}).get("price", 0)
+    if payment_user and payment_user.get("email"):
+        await send_payid_status_email(
+            payment_user["email"], payment_user.get("name", ""),
+            feature_name, amount, reference,
+            "Payment Confirmed - Feature Unlocked", "Payment Confirmed",
+            "<p style=\"margin:0 0 14px;line-height:1.7;\">The PayID transfer has been confirmed and the premium feature is now unlocked on the case.</p>",
+        )
+
+    return HTMLResponse(content=f"""
+    <html><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#f0fdf4;">
+    <div style="max-width:500px;margin:0 auto;background:white;border-radius:16px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,0.1);">
+        <div style="width:64px;height:64px;background:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <span style="color:white;font-size:32px;">&#10003;</span>
+        </div>
+        <h1 style="color:#16a34a;margin:0 0 12px;">Payment Confirmed</h1>
+        <p style="color:#374151;margin:0 0 8px;">Reference: <strong>{reference}</strong></p>
+        <p style="color:#374151;margin:0 0 8px;">Feature: <strong>{feature_name}</strong></p>
+        <p style="color:#374151;margin:0 0 20px;">Amount: <strong>${amount:.2f} AUD</strong></p>
+        <p style="color:#6b7280;font-size:14px;">The user has been notified and their feature is now unlocked.</p>
+    </div>
+    </body></html>""")

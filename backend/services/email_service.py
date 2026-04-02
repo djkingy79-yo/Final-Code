@@ -61,7 +61,7 @@ async def send_payid_status_email(user_email: str, user_name: str, feature_name:
         return False
 
 
-async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name: str, feature_name: str, amount: float, reference: str, case_id: str, frontend_url: str):
+async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name: str, feature_name: str, amount: float, reference: str, case_id: str, frontend_url: str, confirm_url: str = ""):
     """Send email to admin when a user submits a PayID payment for verification"""
     if not RESEND_CONFIGURED or not admin_emails:
         logger.warning("Cannot send admin PayID alert - Resend not configured or no admin emails")
@@ -69,6 +69,16 @@ async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name:
 
     try:
         admin_link = f"{frontend_url}/admin"
+
+        # Build the confirm button — big and obvious if confirm_url is provided
+        confirm_button_html = ""
+        if confirm_url:
+            confirm_button_html = f"""
+              <p style="text-align:center;margin:24px 0 8px;">
+                <a href="{confirm_url}" style="background:#16a34a;color:white;padding:18px 40px;text-decoration:none;border-radius:10px;display:inline-block;font-weight:bold;font-size:18px;letter-spacing:0.5px;">CONFIRM PAYMENT</a>
+              </p>
+              <p style="text-align:center;color:#6b7280;font-size:12px;margin:4px 0 16px;">Click above to instantly confirm and unlock the feature for this user</p>
+            """
 
         html = f"""
         <!DOCTYPE html>
@@ -89,13 +99,10 @@ async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name:
                 <div style="padding:6px 0;border-bottom:1px solid #fde68a;"><strong>Reference:</strong> <span style="font-family:monospace;font-size:16px;color:#dc2626;">{reference}</span></div>
                 <div style="padding:6px 0;"><strong>Case ID:</strong> {case_id}</div>
               </div>
-              <p style="margin:16px 0 8px;"><strong>Next steps:</strong></p>
-              <ol style="margin:0;padding-left:20px;line-height:1.8;">
-                <li>Check your bank account for the incoming transfer with reference <strong>{reference}</strong></li>
-                <li>Go to the Admin Dashboard and click Confirm</li>
-              </ol>
-              <p style="text-align:center;margin:20px 0;">
-                <a href="{admin_link}" style="background:#2563eb;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;">Open Admin Dashboard</a>
+              {confirm_button_html}
+              <p style="margin:16px 0 8px;"><strong>Or confirm via Admin Dashboard:</strong></p>
+              <p style="text-align:center;margin:8px 0;">
+                <a href="{admin_link}" style="background:#2563eb;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;">Open Admin Dashboard</a>
               </p>
             </div>
           </div>

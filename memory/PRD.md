@@ -22,10 +22,10 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 │   ├── server.py              # Core LLM generation engine (DO NOT TOUCH)
 │   ├── config.py              # Centralised env vars
 │   ├── services/
-│   │   ├── email_service.py   # Payment emails + admin PayID alerts
+│   │   ├── email_service.py   # Payment emails + admin PayID alerts with one-click confirm
 │   │   ├── ground_dedup.py
 │   ├── routers/
-│   │   ├── payments.py        # ACTIVE payment router (PayID + PayPal)
+│   │   ├── payments.py        # ACTIVE payment router (PayID with email-confirm endpoint)
 │   │   ├── payments_new.py    # Legacy/unused payment router
 │   │   ├── auth.py, cases.py, analytics.py, etc.
 ├── frontend/src/
@@ -42,21 +42,29 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - All 4 report tiers + Barrister View with Issue Matrix attachment
 - PDF/DOCX export with proper footers and legal disclaimers
 - iOS-safe PDF preview via /document-preview route
-- PayID payment flow with admin email notifications on payment submission
+- PayID payment flow with:
+  - Admin email notifications when user submits payment
+  - One-click "CONFIRM PAYMENT" button in email (no login required)
+  - Secure token-based confirmation via GET endpoint
+  - User notification email on confirmation
 - Landing page with states, crimes, statistics, pricing, tier comparison
 - "What This Tool Does" section positioned after hero states/crimes
 - Legal resources, glossary, forms, FAQ, success stories, lawyer directory pages
-- Appeal statistics page (bright blue background, vibrant red text)
-- Floating scroll buttons (bright blue, repositioned above Emergent badge)
-- DO NOT UNDO markers across 75+ critical lines
 
 ## Recent Changes (April 2026)
-- **PayID Admin Notification**: Added `send_admin_payid_alert()` — admin now receives email when user submits PayID payment with user details, amount, reference, and link to Admin Dashboard
-- Moved "What This Tool Does" section to appear right after hero states/crimes on landing page
+- **PayID One-Click Email Confirm**: Admin can confirm payments directly from Gmail via secure token link — no login needed
+- **PayID Admin Notification**: Admin receives email when user submits PayID payment
+- Moved "What This Tool Does" section after hero on landing page
 - Barrister View depth overhaul (section-by-section expansion)
 - Frontend report visibility bug fix
 - Ground deduplication keyword mapping fix
-- Floating button overlap fix
+
+## Key API Endpoints
+- `GET /api/payments/payid/email-confirm/{confirm_token}` — One-click payment confirmation (no auth, token-secured)
+- `POST /api/payments/payid/verify` — User submits "I've paid" (sends admin + user emails)
+- `POST /api/payments/payid/admin-confirm/{reference}` — Admin confirms via dashboard (auth required)
+- `POST /api/payments/payid/create-reference` — Generate payment reference
+- `GET /api/payments/payid/pending` — Admin: list pending payments
 
 ## Pending Items
 - P0: Verify AppFooter styling (bold white, dark bg, flowing font)
