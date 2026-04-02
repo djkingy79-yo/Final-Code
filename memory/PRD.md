@@ -4,10 +4,11 @@
 Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $99 Grounds Unlock, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) -> $99 Grounds Unlock -> $150 Full Detailed (15 sections) -> $200 Extensive Log (20 sections) -> Barrister View (unlocked after all 3)
+- **Report Tiers:** Free (Base) -> $99 Grounds Unlock -> $150 Full Detailed -> $200 Extensive Log -> Barrister View (after all 3)
 - **Report Language:** STRICT third-person educational tool. No first/second person pronouns.
 - **Branding:** Forced light mode. High contrast. Blue/slate/navy palette. Bright blue action buttons with white text.
 - **Australian English:** analyse, organise, barrister, defence, offence throughout.
+- **Ground Identification:** Must find ALL distinct grounds (8-15 per case). Dedup only merges near-identical titles.
 
 ## Tech Stack
 - React (Frontend) + FastAPI (Backend) + MongoDB
@@ -23,48 +24,37 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 │   ├── config.py              # Centralised env vars
 │   ├── services/
 │   │   ├── email_service.py   # Payment emails + admin PayID alerts with one-click confirm
-│   │   ├── ground_dedup.py
+│   │   ├── ground_dedup.py    # Dedup logic (fuzzy 85 + word overlap 60% only, NO topic merging)
+│   │   ├── pipeline/classify.py  # AI ground identification (thorough, 8-15 grounds)
 │   ├── routers/
 │   │   ├── payments.py        # ACTIVE payment router (PayID with email-confirm endpoint)
-│   │   ├── payments_new.py    # Legacy/unused payment router
-│   │   ├── auth.py, cases.py, analytics.py, etc.
+│   │   ├── grounds.py         # Ground management and sync
 ├── frontend/src/
-│   ├── pages/                 # LandingPage, ReportView, BarristerView, HowItWorksPage, etc.
-│   ├── components/            # PaymentModal, AppFooter, FastScrollTop, ReportsSection, etc.
-├── DO_NOT_UNDO.md             # Critical protection rules
+│   ├── pages/
+│   ├── components/
+│       ├── AuthModal.jsx      # Login/Register with Forgot Password link
+│       ├── PaymentModal.jsx
+├── DO_NOT_UNDO.md
 ```
 
 ## What's Been Implemented
-- Full auth flow (Google + email/password)
+- Full auth flow (Google + email/password + forgot password)
 - Case CRUD, document upload with OCR
-- Multi-pass AI report generation (section-by-section expansion to avoid 502s)
-- Ground deduplication logic
+- Multi-pass AI report generation (section-by-section expansion)
+- Ground identification (thorough, all distinct grounds preserved)
+- Ground deduplication (permissive — only merges near-identical titles)
 - All 4 report tiers + Barrister View with Issue Matrix attachment
-- PDF/DOCX export with proper footers and legal disclaimers
-- iOS-safe PDF preview via /document-preview route
-- PayID payment flow with:
-  - Admin email notifications when user submits payment
-  - One-click "CONFIRM PAYMENT" button in email (no login required)
-  - Secure token-based confirmation via GET endpoint
-  - User notification email on confirmation
-- Landing page with states, crimes, statistics, pricing, tier comparison
-- "What This Tool Does" section positioned after hero states/crimes
-- Legal resources, glossary, forms, FAQ, success stories, lawyer directory pages
+- PDF/DOCX export with proper footers
+- PayID payment with one-click email confirmation (no login required)
+- Landing page with "What This Tool Does" after hero states/crimes
 
 ## Recent Changes (April 2026)
-- **PayID One-Click Email Confirm**: Admin can confirm payments directly from Gmail via secure token link — no login needed
-- **PayID Admin Notification**: Admin receives email when user submits PayID payment
-- Moved "What This Tool Does" section after hero on landing page
-- Barrister View depth overhaul (section-by-section expansion)
-- Frontend report visibility bug fix
-- Ground deduplication keyword mapping fix
-
-## Key API Endpoints
-- `GET /api/payments/payid/email-confirm/{confirm_token}` — One-click payment confirmation (no auth, token-secured)
-- `POST /api/payments/payid/verify` — User submits "I've paid" (sends admin + user emails)
-- `POST /api/payments/payid/admin-confirm/{reference}` — Admin confirms via dashboard (auth required)
-- `POST /api/payments/payid/create-reference` — Generate payment reference
-- `GET /api/payments/payid/pending` — Admin: list pending payments
+- **Ground Identification Overhaul**: AI prompt now identifies ALL grounds (8-15) instead of merging to 3-8
+- **Dedup Fix**: Removed aggressive topic-based merging. Now only merges titles with fuzzy score >= 85 or word overlap > 60%
+- **Forgot Password**: Added link in AuthModal login form
+- **PayID One-Click Email Confirm**: Admin confirms payments directly from Gmail
+- **PayID Admin Notification**: Admin receives email when user submits payment
+- **Landing Page**: "What This Tool Does" section moved after hero
 
 ## Pending Items
 - P0: Verify AppFooter styling (bold white, dark bg, flowing font)

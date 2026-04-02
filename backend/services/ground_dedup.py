@@ -143,17 +143,18 @@ def _extract_topics(title: str) -> set:
     return topics
 
 
-def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 65) -> bool:
-    """Check if two ground/issue titles are about the same legal topic.
+def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85) -> bool:
+    """Check if two ground/issue titles are near-identical duplicates.
     
-    DO_NOT_UNDO — Uses three methods:
-    1. Legal topic classification (most reliable — catches semantic duplicates)
-    2. fuzzywuzzy token_set_ratio (threshold=65, catches word-reordered variants)
-    3. Bidirectional word overlap (catches partial matches)
+    DO_NOT_UNDO — Uses TWO methods only (topic matching removed to prevent over-merging):
+    1. fuzzywuzzy token_set_ratio (threshold=85 — only catches near-identical titles)
+    2. Bidirectional word overlap >60% (catches rephrased but essentially identical titles)
     
-    Threshold was raised from 55->65 because score 56 was creating false positives
-    between genuinely different grounds ("Psychiatric Evidence" vs "Sentencing Error").
-    Returns True if ANY method identifies a duplicate.
+    This is deliberately permissive to keep all distinct legal arguments separate.
+    Two grounds about the same broad topic (e.g. two different sentencing errors)
+    are NOT duplicates if they argue different legal points.
+    
+    Returns True only if the titles are essentially the same argument rephrased.
     """
     if not new_title or not existing_title:
         return False
@@ -161,18 +162,12 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 65
     new_title = new_title.strip()
     existing_title = existing_title.strip()
     
-    # Method 1: Topic-based matching (most reliable)
-    new_topics = _extract_topics(new_title)
-    existing_topics = _extract_topics(existing_title)
-    if new_topics and existing_topics and new_topics & existing_topics:
-        return True
-    
-    # Method 2: fuzzywuzzy token_set_ratio
+    # Method 1: fuzzywuzzy token_set_ratio — very high bar (85) to only catch near-identical
     score = fuzz.token_set_ratio(new_title.lower(), existing_title.lower())
     if score >= threshold:
         return True
     
-    # Method 3: Bidirectional word overlap
+    # Method 2: Bidirectional word overlap — only merge if >60% overlap
     new_words = set(w.lower() for w in new_title.split() if len(w) > 3)
     existing_words = set(w.lower() for w in existing_title.split() if len(w) > 3)
     if new_words and existing_words:
@@ -182,7 +177,7 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 65
                 len(overlap) / max(len(new_words), 1),
                 len(overlap) / max(len(existing_words), 1)
             )
-            if ratio > 0.45:
+            if ratio > 0.60:
                 return True
     
     return False

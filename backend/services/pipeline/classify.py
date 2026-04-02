@@ -36,10 +36,13 @@ def _norm_ground_type(value: str) -> str:
 
 
 async def classify_case_issues(case: dict, case_extract: dict) -> list[IssueClassification]:
-    system_prompt = """You are a specialist Australian appellate lawyer conducting a preliminary issue-spot.
-Your task is to identify ONLY the most significant and distinct potential grounds of appeal.
-Quality over quantity — a real appeal typically has 3 to 8 grounds at most.
-Do NOT list every conceivable complaint. Merge related sub-issues into a single ground.
+    system_prompt = """You are a specialist Australian appellate lawyer conducting a thorough issue-spot.
+Your task is to identify ALL potential grounds of appeal that are supported by the case material.
+Be thorough and exhaustive — identify every distinct legal issue, procedural error, evidential problem,
+sentencing concern, and rights violation that could form a ground of appeal.
+Do NOT merge different issues together. Each distinct legal argument deserves its own ground.
+For example, a sentencing error based on double-counting is DIFFERENT from a sentencing error based
+on manifest excess. A failure to call witnesses is DIFFERENT from a failure to object to evidence.
 Use conditional language. Do not verify the issues. Do not state that any appeal will succeed."""
 
     facts_text = "\n".join([
@@ -58,7 +61,8 @@ Use conditional language. Do not verify the issues. Do not state that any appeal
     state = case.get("state", "nsw")
     offence_cat = case.get("offence_category", "unknown")
 
-    user_prompt = f"""Based on the extracted record below, identify the MOST SIGNIFICANT potential grounds of appeal.
+    user_prompt = f"""Based on the extracted record below, identify ALL potential grounds of appeal.
+Be thorough — examine every aspect of the case for possible appealable issues.
 
 Jurisdiction: {state.upper()}
 Offence category: {offence_cat}
@@ -89,10 +93,12 @@ Return ONLY valid JSON:
 }}
 
 STRICT RULES:
-- Return a MAXIMUM of 10 grounds. Focus only on the strongest, most distinct issues.
-- MERGE related sub-issues into a single ground (e.g., all sentencing complaints become one "Sentencing Error" ground, all psychiatric evidence issues become one ground).
-- Do NOT split the same underlying complaint into multiple grounds.
-- Each ground MUST be materially distinct from every other ground.
+- Identify as many distinct grounds as the evidence supports. Aim for 8-15 grounds if the case material warrants it.
+- Do NOT merge different legal arguments into one ground. Each distinct issue gets its own entry.
+  For example: "Sentencing Error — Manifest Excess" and "Sentencing Error — Double-Counting Aggravating Factors" are TWO separate grounds.
+  "Failure to Call Key Witnesses" and "Failure to Object to Inadmissible Evidence" are TWO separate grounds.
+  "Prejudicial Media Coverage" and "Jury Non-Sequestration" are TWO separate grounds even though both relate to jury.
+- Each ground MUST identify a specific, distinct legal issue or error.
 - Use conditional language (possible issue, potential ground, may warrant).
 - Link each issue to specific extracted fact/event/finding IDs.
 - ground_type MUST be from the listed values.
@@ -100,7 +106,6 @@ STRICT RULES:
   * "strong" = clear factual/legal basis in the record, likely arguable
   * "moderate" = some supporting evidence, warrants further investigation  
   * "weak" = only a marginal indicator, limited evidence in the record
-  If an issue is significant enough to list, it should be at least "moderate" unless the evidence is genuinely thin.
 - Only classify issues genuinely supported by the extracted record."""
 
     parsed = await call_llm_for_json(
@@ -112,7 +117,7 @@ STRICT RULES:
     )
 
     issues = []
-    for raw in parsed.get("issues", [])[:10]:  # Hard cap at 10 — a real appeal has 3-8 grounds
+    for raw in parsed.get("issues", [])[:15]:  # Allow up to 15 grounds for thorough analysis
         issues.append(IssueClassification(
             case_id=case["case_id"],
             user_id=case["user_id"],
