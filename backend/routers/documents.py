@@ -96,7 +96,8 @@ DOCUMENT ({filename}):
 
 
 async def _background_auto_generate(case_id: str, user_id: str):
-    """Background task: auto-generate timeline events + case summary from documents"""
+    """Background task: auto-generate/UPDATE timeline events + case summary from ALL documents.
+    Runs every time a new document is uploaded. Dedup prevents duplicate events."""
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
@@ -106,26 +107,27 @@ async def _background_auto_generate(case_id: str, user_id: str):
         docs_with_text = [d for d in documents if d.get("content_text")]
         if not docs_with_text:
             return
-        existing_events = await db.timeline_events.count_documents({"case_id": case_id})
         doc_context = ""
         for doc in docs_with_text:
             doc_context += f"\n--- {doc.get('filename','')} ---\n{doc.get('content_text','')[:6000]}\n"
-        if not case.get("summary"):
-            try:
-                summary_chat = LlmChat(
-                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                    session_id=f"summary_{case_id}",
-                    system_message="You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum."
-                ).with_model("openai", "gpt-4o").with_params(max_tokens=500)
-                summary = await asyncio.wait_for(summary_chat.send_message(UserMessage(text=f"Summarise this case:\n{doc_context[:15000]}")), timeout=30)
-                if summary:
-                    await db.cases.update_one({"case_id": case_id}, {"$set": {"summary": summary.strip(), "updated_at": datetime.now(timezone.utc).isoformat()}})
-                    logger.info(f"Auto-generated summary for {case_id}")
-            except Exception as e:
-                logger.warning(f"Auto-summary failed for {case_id}: {e}")
-        if existing_events == 0:
-            try:
-                tl_prompt = f"""Extract a chronological timeline of events from these case documents.
+
+        # Always regenerate summary to include ALL documents
+        try:
+            summary_chat = LlmChat(
+                api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                session_id=f"summary_{case_id}_{len(docs_with_text)}",
+                system_message="You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum."
+            ).with_model("openai", "gpt-4o").with_params(max_tokens=500)
+            summary = await asyncio.wait_for(summary_chat.send_message(UserMessage(text=f"Summarise this case based on all available documents:\n{doc_context[:15000]}")), timeout=30)
+            if summary:
+                await db.cases.update_one({"case_id": case_id}, {"$set": {"summary": summary.strip(), "updated_at": datetime.now(timezone.utc).isoformat()}})
+                logger.info(f"Auto-generated/updated summary for {case_id} ({len(docs_with_text)} docs)")
+        except Exception as e:
+            logger.warning(f"Auto-summary failed for {case_id}: {e}")
+
+        # Always extract timeline events — dedup prevents duplicates
+        try:
+            tl_prompt = f"""Extract a chronological timeline of events from these case documents.
 Return ONLY a JSON array (no markdown). Each event:
 {{"date":"YYYY-MM-DD or YYYY if exact date unknown","title":"Brief title","description":"Details","event_type":"incident|arrest|court_hearing|evidence|witness|legal_filing|verdict|appeal|other"}}
 
@@ -139,48 +141,78 @@ CRITICAL RULES:
 CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
 DOCUMENTS:
 {doc_context[:25000]}"""
-                tl_chat = LlmChat(
-                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                    session_id=f"tl_{case_id}",
-                    system_message="Extract timeline events from Australian criminal case documents. Return only valid JSON array."
-                ).with_model("openai", "gpt-4o").with_params(max_tokens=4000)
-                raw = await asyncio.wait_for(tl_chat.send_message(UserMessage(text=tl_prompt)), timeout=90)
-                raw = (raw or "").strip()
-                if raw.startswith("```"):
-                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-                events = json.loads(raw)
-                if isinstance(events, list):
-                    created = 0
-                    # DO_NOT_UNDO — Timeline fuzzy dedup. Build fingerprints of existing events.
-                    # Without this, identical events multiply every time documents are processed.
-                    existing = await db.timeline_events.find({"case_id": case_id}, {"_id": 0, "title": 1}).to_list(200)
-                    existing_titles = [e.get("title", "").lower().strip() for e in existing]
-                    from fuzzywuzzy import fuzz
-                    for evt in events:
-                        if not evt.get("title"):
-                            continue
-                        new_title = evt["title"].lower().strip()
-                        # Skip if fuzzy duplicate of existing event
-                        is_dup = any(fuzz.token_set_ratio(new_title, et) >= 65 for et in existing_titles)
-                        if is_dup:
-                            continue
-                        event_date = evt.get("date", "")
-                        # DO_NOT_UNDO — Fix Jan 1 placeholder dates. Use year only when exact date unknown.
-                        if event_date and event_date.endswith("-01-01"):
-                            event_date = event_date[:4]  # Keep year only
-                        event_doc = {
-                            "event_id": f"evt_{uuid.uuid4().hex[:12]}",
-                            "case_id": case_id, "user_id": user_id,
-                            "title": evt.get("title", ""), "description": evt.get("description", ""),
-                            "event_date": event_date, "event_type": evt.get("event_type", "other"),
-                            "source": "ai_generated", "created_at": datetime.now(timezone.utc).isoformat()
-                        }
-                        await db.timeline_events.insert_one(event_doc)
-                        existing_titles.append(new_title)
-                        created += 1
-                    logger.info(f"Auto-generated {created} timeline events for {case_id}")
-            except Exception as e:
-                logger.warning(f"Auto-timeline failed for {case_id}: {e}")
+            tl_chat = LlmChat(
+                api_key=os.environ.get("EMERGENT_LLM_KEY"),
+                session_id=f"tl_{case_id}_{len(docs_with_text)}",
+                system_message="Extract timeline events from Australian criminal case documents. Return only valid JSON array."
+            ).with_model("openai", "gpt-4o").with_params(max_tokens=4000)
+            raw = await asyncio.wait_for(tl_chat.send_message(UserMessage(text=tl_prompt)), timeout=90)
+            raw = (raw or "").strip()
+            if raw.startswith("```"):
+                raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+            events = json.loads(raw)
+            if isinstance(events, list):
+                created = 0
+                # DO_NOT_UNDO — Timeline fuzzy dedup. Build fingerprints of existing events.
+                # Without this, identical events multiply every time documents are processed.
+                existing = await db.timeline_events.find({"case_id": case_id}, {"_id": 0, "title": 1}).to_list(200)
+                existing_titles = [e.get("title", "").lower().strip() for e in existing]
+                from fuzzywuzzy import fuzz
+                for evt in events:
+                    if not evt.get("title"):
+                        continue
+                    new_title = evt["title"].lower().strip()
+                    # Skip if fuzzy duplicate of existing event
+                    is_dup = any(fuzz.token_set_ratio(new_title, et) >= 65 for et in existing_titles)
+                    if is_dup:
+                        continue
+                    event_date = evt.get("date", "")
+                    # DO_NOT_UNDO — Fix Jan 1 placeholder dates. Use year only when exact date unknown.
+                    if event_date and event_date.endswith("-01-01"):
+                        event_date = event_date[:4]  # Keep year only
+                    event_doc = {
+                        "event_id": f"evt_{uuid.uuid4().hex[:12]}",
+                        "case_id": case_id, "user_id": user_id,
+                        "title": evt.get("title", ""), "description": evt.get("description", ""),
+                        "event_date": event_date, "event_type": evt.get("event_type", "other"),
+                        "source": "ai_generated", "created_at": datetime.now(timezone.utc).isoformat()
+                    }
+                    await db.timeline_events.insert_one(event_doc)
+                    existing_titles.append(new_title)
+                    created += 1
+                logger.info(f"Auto-generated {created} new timeline events for {case_id} (dedup active)")
+        except Exception as e:
+            logger.warning(f"Auto-timeline failed for {case_id}: {e}")
+
+        # Trigger pipeline extraction for any new documents not yet extracted
+        try:
+            from services.pipeline.extract import extract_document_artifacts
+            from services.pipeline_models import CaseExtract
+            # Check which documents don't have extracts yet
+            new_extractions = 0
+            for doc in docs_with_text:
+                existing_extract = await db.document_extracts.find_one(
+                    {"case_id": case_id, "document_id": doc["document_id"]}, {"_id": 1}
+                )
+                if existing_extract:
+                    continue
+                try:
+                    extract = await extract_document_artifacts(case, doc)
+                    extract_dict = extract.model_dump()
+                    extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+                    await db.document_extracts.update_one(
+                        {"case_id": case_id, "document_id": doc["document_id"], "user_id": user_id},
+                        {"$set": extract_dict},
+                        upsert=True,
+                    )
+                    new_extractions += 1
+                except Exception as ex:
+                    logger.warning(f"Pipeline extract failed for doc {doc.get('document_id')}: {ex}")
+            if new_extractions > 0:
+                logger.info(f"Pipeline extracted {new_extractions} new documents for {case_id}")
+        except Exception as e:
+            logger.warning(f"Pipeline re-extraction failed for {case_id}: {e}")
+
     except Exception as e:
         logger.warning(f"Background auto-generate failed for {case_id}: {e}")
 
