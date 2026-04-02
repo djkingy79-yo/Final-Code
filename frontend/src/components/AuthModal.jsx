@@ -233,6 +233,18 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 </button>
               </div>
               {errors.password && <p className="text-red-500 text-xs mt-1.5">{errors.password}</p>}
+              {mode === "login" && (
+                <div className="text-right mt-1">
+                  <a
+                    href="/forgot-password"
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                    data-testid="forgot-password-link"
+                    onClick={(e) => { e.preventDefault(); onClose(); window.location.href = "/forgot-password"; }}
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              )}
             </div>
             
             <Button
