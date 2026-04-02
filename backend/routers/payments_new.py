@@ -161,6 +161,104 @@ async def send_payment_confirmation_email(user_email: str, user_name: str, featu
         return False
 
 
+async def send_admin_payid_notification(user_email: str, user_name: str, feature_name: str, amount: float, reference: str, case_id: str):
+    """Send email to admin when a user submits a PayID payment for verification"""
+    if not RESEND_CONFIGURED:
+        logger.warning("Cannot send admin PayID notification - Resend not configured")
+        return False
+    
+    try:
+        admin_emails = get_admin_emails()
+        if not admin_emails:
+            logger.warning("No admin emails configured for PayID notifications")
+            return False
+        
+        frontend_url = get_frontend_url()
+        admin_link = f"{frontend_url}/admin"
+        
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: 'Georgia', serif; line-height: 1.6; color: #1e293b; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: #dc2626; color: white; padding: 25px; text-align: center; border-radius: 12px 12px 0 0; }}
+                .header h1 {{ margin: 0; font-size: 22px; }}
+                .content {{ background: #ffffff; padding: 25px; border: 1px solid #e2e8f0; }}
+                .alert-badge {{ background: #f59e0b; color: #1e293b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin: 12px 0; }}
+                .details {{ background: #fef3c7; padding: 18px; border-radius: 8px; margin: 16px 0; border: 2px solid #f59e0b; }}
+                .details-row {{ padding: 6px 0; border-bottom: 1px solid #fde68a; }}
+                .details-row:last-child {{ border-bottom: none; }}
+                .button {{ background: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; margin: 16px 0; }}
+                .footer {{ background: #f1f5f9; padding: 15px; text-align: center; font-size: 12px; color: #64748b; border-radius: 0 0 12px 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>NEW PAYID PAYMENT SUBMITTED</h1>
+                    <p style="margin: 8px 0 0 0; opacity: 0.9;">Action Required — Verify &amp; Confirm</p>
+                </div>
+                <div class="content">
+                    <div style="text-align: center;">
+                        <span class="alert-badge">PAYMENT AWAITING CONFIRMATION</span>
+                    </div>
+                    
+                    <p>A user has submitted a PayID bank transfer and is waiting for confirmation.</p>
+                    
+                    <div class="details">
+                        <div class="details-row">
+                            <strong>User:</strong> {user_name or 'Unknown'} ({user_email})
+                        </div>
+                        <div class="details-row">
+                            <strong>Feature:</strong> {feature_name}
+                        </div>
+                        <div class="details-row">
+                            <strong>Amount:</strong> ${amount:.2f} AUD
+                        </div>
+                        <div class="details-row">
+                            <strong>Reference:</strong> <span style="font-family: monospace; font-size: 16px; color: #dc2626;">{reference}</span>
+                        </div>
+                        <div class="details-row">
+                            <strong>Case ID:</strong> {case_id}
+                        </div>
+                    </div>
+                    
+                    <p><strong>Next steps:</strong></p>
+                    <ol>
+                        <li>Check your bank account for the incoming transfer with reference <strong>{reference}</strong></li>
+                        <li>Once verified, go to the Admin Dashboard and click Confirm</li>
+                    </ol>
+                    
+                    <p style="text-align: center;">
+                        <a href="{admin_link}" class="button">Open Admin Dashboard</a>
+                    </p>
+                </div>
+                <div class="footer">
+                    <p>This is an automated notification from Appeal Case Manager.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        params = {
+            "from": "Appeal Case Manager <onboarding@resend.dev>",
+            "to": admin_emails,
+            "subject": f"NEW PAYMENT — {user_name or user_email} paid ${amount:.2f} for {feature_name} (Ref: {reference})",
+            "html": html_content
+        }
+        
+        await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Admin PayID notification sent for reference {reference} to {admin_emails}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to send admin PayID notification: {e}")
+        return False
+
+
 class PayPalOrderRequest(BaseModel):
     feature_type: str
     case_id: str
@@ -430,8 +528,8 @@ async def create_payid_reference(req: PayIDPaymentRequest, request: Request):
 
 @router.post("/payid/verify")
 async def verify_payid_payment(req: VerifyPayIDRequest, request: Request):
-    """Verify a PayID payment (manual verification by admin)"""
-    await get_current_user(request)  # Verify user is authenticated
+    """Verify a PayID payment — notifies admin via email for confirmation"""
+    user = await get_current_user(request)
     
     # Find the pending payment
     transaction = await db.payment_transactions.find_one(
@@ -457,10 +555,27 @@ async def verify_payid_payment(req: VerifyPayIDRequest, request: Request):
         }}
     )
     
+    # Send email notification to admin so they know someone has paid
+    feature_info = FEATURE_PRICES.get(req.feature_type, {})
+    payer_user = await db.users.find_one({"user_id": transaction.get("user_id")}, {"_id": 0})
+    admin_notified = await send_admin_payid_notification(
+        user_email=payer_user.get("email", user.email) if payer_user else user.email,
+        user_name=payer_user.get("name", "") if payer_user else "",
+        feature_name=feature_info.get("name", req.feature_type),
+        amount=transaction.get("amount", 0),
+        reference=req.reference,
+        case_id=req.case_id
+    )
+    
+    if admin_notified:
+        logger.info(f"Admin notified about PayID payment {req.reference}")
+    else:
+        logger.warning(f"Failed to notify admin about PayID payment {req.reference}")
+    
     return {
-        "status": "pending_verification",
+        "status": "submitted_for_review",
         "reference": req.reference,
-        "message": "Your payment is being verified. This usually takes a few minutes during business hours. You'll receive access as soon as it's confirmed."
+        "message": "Payment submitted! The admin has been notified and will confirm your payment shortly. You'll receive access as soon as it's confirmed."
     }
 
 

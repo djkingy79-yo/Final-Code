@@ -59,3 +59,59 @@ async def send_payid_status_email(user_email: str, user_name: str, feature_name:
     except Exception as exc:
         logger.error(f"Failed to send PayID notice email: {exc}")
         return False
+
+
+async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name: str, feature_name: str, amount: float, reference: str, case_id: str, frontend_url: str):
+    """Send email to admin when a user submits a PayID payment for verification"""
+    if not RESEND_CONFIGURED or not admin_emails:
+        logger.warning("Cannot send admin PayID alert - Resend not configured or no admin emails")
+        return False
+
+    try:
+        admin_link = f"{frontend_url}/admin"
+
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a;">
+          <div style="max-width:680px;margin:0 auto;padding:24px;">
+            <div style="background:#dc2626;color:#ffffff;padding:28px 24px;border-radius:18px 18px 0 0;">
+              <div style="font-size:12px;letter-spacing:0.18em;text-transform:uppercase;font-weight:800;opacity:0.92;">Appeal Case Manager</div>
+              <h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;">NEW PAYID PAYMENT SUBMITTED</h1>
+              <p style="margin:8px 0 0;opacity:0.9;">Action Required &mdash; Verify &amp; Confirm</p>
+            </div>
+            <div style="background:#ffffff;border:1px solid #fecaca;border-top:none;padding:24px 24px 16px;">
+              <p style="margin:0 0 16px;line-height:1.7;">A user has submitted a PayID bank transfer and is waiting for confirmation.</p>
+              <div style="margin:20px 0;padding:18px;border-radius:14px;background:#fef3c7;border:2px solid #f59e0b;">
+                <div style="padding:6px 0;border-bottom:1px solid #fde68a;"><strong>User:</strong> {user_name or 'Unknown'} ({user_email})</div>
+                <div style="padding:6px 0;border-bottom:1px solid #fde68a;"><strong>Feature:</strong> {feature_name}</div>
+                <div style="padding:6px 0;border-bottom:1px solid #fde68a;"><strong>Amount:</strong> ${amount:.2f} AUD</div>
+                <div style="padding:6px 0;border-bottom:1px solid #fde68a;"><strong>Reference:</strong> <span style="font-family:monospace;font-size:16px;color:#dc2626;">{reference}</span></div>
+                <div style="padding:6px 0;"><strong>Case ID:</strong> {case_id}</div>
+              </div>
+              <p style="margin:16px 0 8px;"><strong>Next steps:</strong></p>
+              <ol style="margin:0;padding-left:20px;line-height:1.8;">
+                <li>Check your bank account for the incoming transfer with reference <strong>{reference}</strong></li>
+                <li>Go to the Admin Dashboard and click Confirm</li>
+              </ol>
+              <p style="text-align:center;margin:20px 0;">
+                <a href="{admin_link}" style="background:#2563eb;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;display:inline-block;font-weight:bold;">Open Admin Dashboard</a>
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        params = {
+            "from": "Appeal Case Manager <onboarding@resend.dev>",
+            "to": admin_emails,
+            "subject": f"NEW PAYMENT - {user_name or user_email} paid ${amount:.2f} for {feature_name} (Ref: {reference})",
+            "html": html,
+        }
+        await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Admin PayID alert sent for reference {reference} to {admin_emails}")
+        return True
+    except Exception as exc:
+        logger.error(f"Failed to send admin PayID alert: {exc}")
+        return False

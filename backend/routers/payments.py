@@ -11,7 +11,8 @@ import logging
 from config import db
 from auth_utils import get_current_user
 from models import FEATURE_PRICES, canonical_feature_type
-from services.email_service import send_payid_status_email
+from services.email_service import send_payid_status_email, send_admin_payid_alert
+from config import db, get_frontend_url
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +138,19 @@ async def verify_payid_payment(request: Request):
         "Payment Notice Received - Awaiting Confirmation", "Payment Notice Received",
         "<p style=\"margin:0 0 14px;line-height:1.7;\">This email confirms that the PayID payment notice was received and marked for review. Once the payment is received and confirmed, the feature will unlock automatically.</p>",
     )
-    return {"status": "submitted_for_review", "message": "Payment marked as sent. Use refresh after payment is received and confirmed."}
+    # Notify admin so they know someone has paid and can confirm
+    frontend_url = get_frontend_url()
+    await send_admin_payid_alert(
+        admin_emails=ADMIN_EMAILS,
+        user_email=user.email,
+        user_name=user.name if hasattr(user, 'name') else "",
+        feature_name=FEATURE_PRICES.get(canonical_type, {}).get("name", canonical_type or "Feature"),
+        amount=payment.get("amount") or FEATURE_PRICES.get(canonical_type, {}).get("price", 0),
+        reference=reference,
+        case_id=case_id or "",
+        frontend_url=frontend_url
+    )
+    return {"status": "submitted_for_review", "message": "Payment submitted! The admin has been notified and will confirm your payment shortly."}
 
 
 @router.get("/payments/payid/pending")

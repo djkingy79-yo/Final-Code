@@ -127,8 +127,8 @@ export default function PaymentModal({
         toast.success("Payment verified! Feature unlocked.");
         onPaymentSuccess?.();
         onClose();
-      } else if (response.data.status === "submitted_for_review") {
-        toast.success(response.data.message || "Payment submitted. Refresh again after receipt is confirmed.");
+      } else if (response.data.status === "submitted_for_review" || response.data.status === "pending_verification") {
+        toast.success(response.data.message || "Payment submitted! The admin has been notified and will confirm shortly.");
       } else {
         toast.info(response.data.message);
       }

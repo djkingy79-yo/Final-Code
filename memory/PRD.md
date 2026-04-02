@@ -1,7 +1,7 @@
 # Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
+Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $99 Grounds Unlock, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
 - **Report Tiers:** Free (Base) -> $99 Grounds Unlock -> $150 Full Detailed (15 sections) -> $200 Extensive Log (20 sections) -> Barrister View (unlocked after all 3)
@@ -19,14 +19,19 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 ```
 /app/
 ├── backend/
-│   ├── server.py          # Core LLM generation engine (DO NOT TOUCH)
-│   ├── config.py          # Centralised env vars
-│   ├── services/ground_dedup.py
-│   ├── routers/           # auth, cases, payments, analytics
+│   ├── server.py              # Core LLM generation engine (DO NOT TOUCH)
+│   ├── config.py              # Centralised env vars
+│   ├── services/
+│   │   ├── email_service.py   # Payment emails + admin PayID alerts
+│   │   ├── ground_dedup.py
+│   ├── routers/
+│   │   ├── payments.py        # ACTIVE payment router (PayID + PayPal)
+│   │   ├── payments_new.py    # Legacy/unused payment router
+│   │   ├── auth.py, cases.py, analytics.py, etc.
 ├── frontend/src/
-│   ├── pages/             # LandingPage, ReportView, BarristerView, HowItWorksPage, etc.
-│   ├── components/        # AppFooter, FastScrollTop, ReportsSection, AuthModal, etc.
-├── DO_NOT_UNDO.md         # Critical protection rules
+│   ├── pages/                 # LandingPage, ReportView, BarristerView, HowItWorksPage, etc.
+│   ├── components/            # PaymentModal, AppFooter, FastScrollTop, ReportsSection, etc.
+├── DO_NOT_UNDO.md             # Critical protection rules
 ```
 
 ## What's Been Implemented
@@ -37,19 +42,21 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - All 4 report tiers + Barrister View with Issue Matrix attachment
 - PDF/DOCX export with proper footers and legal disclaimers
 - iOS-safe PDF preview via /document-preview route
+- PayID payment flow with admin email notifications on payment submission
 - Landing page with states, crimes, statistics, pricing, tier comparison
+- "What This Tool Does" section positioned after hero states/crimes
 - Legal resources, glossary, forms, FAQ, success stories, lawyer directory pages
 - Appeal statistics page (bright blue background, vibrant red text)
 - Floating scroll buttons (bright blue, repositioned above Emergent badge)
 - DO NOT UNDO markers across 75+ critical lines
 
 ## Recent Changes (April 2026)
+- **PayID Admin Notification**: Added `send_admin_payid_alert()` — admin now receives email when user submits PayID payment with user details, amount, reference, and link to Admin Dashboard
 - Moved "What This Tool Does" section to appear right after hero states/crimes on landing page
 - Barrister View depth overhaul (section-by-section expansion)
-- Frontend report visibility bug fix (content stays visible during regeneration)
+- Frontend report visibility bug fix
 - Ground deduplication keyword mapping fix
 - Floating button overlap fix
-- DO NOT UNDO safeguards added
 
 ## Pending Items
 - P0: Verify AppFooter styling (bold white, dark bg, flowing font)
