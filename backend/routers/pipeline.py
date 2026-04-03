@@ -1384,14 +1384,22 @@ async def generate_barrister_pack(case_id: str, request: Request):
     elements.append(Spacer(1, 10*mm))
 
     cover_data = []
-    if case.get("title"): cover_data.append(["Case Title", case["title"]])
-    if case.get("defendant_name"): cover_data.append(["Defendant", case["defendant_name"]])
-    if case.get("case_number"): cover_data.append(["Case Number", case["case_number"]])
-    if case.get("court"): cover_data.append(["Court", case["court"]])
-    if case.get("state"): cover_data.append(["Jurisdiction", str(case["state"]).upper()])
-    if case.get("offence_category"): cover_data.append(["Offence Category", case["offence_category"].replace("_", " ").title()])
-    if case.get("offence_type"): cover_data.append(["Offence Type", case["offence_type"]])
-    if case.get("sentence"): cover_data.append(["Sentence", case["sentence"]])
+    if case.get("title"):
+        cover_data.append(["Case Title", case["title"]])
+    if case.get("defendant_name"):
+        cover_data.append(["Defendant", case["defendant_name"]])
+    if case.get("case_number"):
+        cover_data.append(["Case Number", case["case_number"]])
+    if case.get("court"):
+        cover_data.append(["Court", case["court"]])
+    if case.get("state"):
+        cover_data.append(["Jurisdiction", str(case["state"]).upper()])
+    if case.get("offence_category"):
+        cover_data.append(["Offence Category", case["offence_category"].replace("_", " ").title()])
+    if case.get("offence_type"):
+        cover_data.append(["Offence Type", case["offence_type"]])
+    if case.get("sentence"):
+        cover_data.append(["Sentence", case["sentence"]])
     cover_data.append(["Generated", datetime.now(timezone.utc).strftime("%d %B %Y")])
     cover_data.append(["Documents", str(len(documents))])
     cover_data.append(["Grounds of Merit", str(len(grounds))])
@@ -1463,9 +1471,9 @@ async def generate_barrister_pack(case_id: str, request: Request):
             law = g.get("law_sections", [])
             if law:
                 elements.append(Paragraph(f"<b>Legislation ({len(law)}):</b>", styles["Small"]))
-                for l in law[:3]:
-                    if isinstance(l, dict):
-                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {l.get('section', '')} {l.get('act', '')} {('— ' + l.get('title', '')) if l.get('title') else ''}", styles["Small"]))
+                for law_item in law[:3]:
+                    if isinstance(law_item, dict):
+                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {law_item.get('section', '')} {law_item.get('act', '')} {('— ' + law_item.get('title', '')) if law_item.get('title') else ''}", styles["Small"]))
 
             # Human review warning
             if g.get("requires_human_review"):
@@ -1508,8 +1516,6 @@ async def generate_barrister_pack(case_id: str, request: Request):
     elements.append(Paragraph("3. Evidence Annexures", styles["SectionHead"]))
     elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
     elements.append(Spacer(1, 3*mm))
-
-    ver_map = {v.get("issue_id"): v for v in verifications}
 
     if not verifications:
         elements.append(Paragraph("No verified evidence annexures available. Run the pipeline verification stage to populate.", styles["BodyText2"]))

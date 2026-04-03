@@ -583,11 +583,6 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
-    documents = await db.documents.find(
-        {"case_id": case_id, "user_id": user.user_id},
-        {"_id": 0, "file_data": 0}
-    ).to_list(500)
-
     try:
         # DO NOT re-run _ensure_pipeline_identification here — it re-classifies
         # ALL issues and creates new grounds. We only want to verify THIS ground.

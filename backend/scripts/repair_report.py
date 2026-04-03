@@ -77,7 +77,6 @@ async def repair_report(report_id: str):
     sentence = case.get("sentence", "Not specified")
 
     sections = split_sections(analysis)
-    section_nums = {get_section_num(h) for h, _ in sections if h}
 
     # Define expected sections for extensive_log
     expected = {
@@ -170,7 +169,7 @@ Do NOT include any other section headings."""
             continue
 
         try:
-            system_prompt = f"You are a senior Australian criminal appeals analyst generating a section of a legal report. Write substantive, case-specific analysis with real legal authorities. Use Australian English and third-person language only."
+            system_prompt = "You are a senior Australian criminal appeals analyst generating a section of a legal report. Write substantive, case-specific analysis with real legal authorities. Use Australian English and third-person language only."
             
             result = await call_llm_with_fallback(
                 system_prompt=system_prompt,

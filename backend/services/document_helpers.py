@@ -82,8 +82,6 @@ def build_document_context(
         filename = doc.get("filename", "Unknown")
         category = doc.get("category", "other")
         description = doc.get("description", "")
-        extraction_method = doc.get("extraction_method", "unknown")
-        ocr_used = doc.get("ocr_used", False)
         pages_processed = doc.get("pages_processed", "unknown")
 
         if not content or not content.strip():
@@ -109,7 +107,7 @@ def build_document_context(
         provenance_parts = [f"--- DOCUMENT: {filename}"]
         if category and category != "other":
             provenance_parts.append(f"category: {category}")
-        if ocr_used:
+        if doc.get("ocr_used"):
             provenance_parts.append("extraction: OCR")
         if pages_processed and pages_processed != "unknown":
             provenance_parts.append(f"pages: {pages_processed}")
@@ -172,7 +170,6 @@ def extract_text_with_ocr(file_data_base64: str, filename: str, file_type: str) 
 
 def _extract_pdf(file_bytes: bytes, filename: str) -> Tuple[str, bool]:
     """Extract text from PDF with page-level provenance."""
-    ocr_used = False
     try:
         reader = PdfReader(io.BytesIO(file_bytes))
         total_pages = len(reader.pages)
@@ -209,7 +206,6 @@ def _extract_pdf(file_bytes: bytes, filename: str) -> Tuple[str, bool]:
                         ocr_parts.append(f"--- Page {idx + 1}/{total_pages} --- [OCR: no text found]")
 
                 if ocr_parts:
-                    ocr_used = True
                     if total_pages > ocr_max:
                         ocr_parts.append(f"\n[Note: {total_pages - ocr_max} additional page(s) not OCR processed — total document is {total_pages} pages]")
                     return "\n\n".join(ocr_parts), True

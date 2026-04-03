@@ -10,11 +10,10 @@ import os
 import logging
 import secrets
 
-from config import db
+from config import db, get_frontend_url
 from auth_utils import get_current_user
 from models import FEATURE_PRICES, canonical_feature_type
 from services.email_service import send_payid_status_email, send_admin_payid_alert
-from config import db, get_frontend_url
 
 logger = logging.getLogger(__name__)
 

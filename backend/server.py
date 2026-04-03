@@ -1924,7 +1924,7 @@ PRODUCE AN ACTUAL POPULATED MARKDOWN TABLE with real case data. Then write a Det
 
 STOP after section 5."""),
 
-                ("PASS 5/8", f"""
+                ("PASS 5/8", """
 NOW GENERATE ONLY SECTIONS 6-7. Write 3000+ WORDS for this pass.
 
 ## 6. COMMON APPEAL GROUNDS FOR THIS OFFENCE TYPE
@@ -1942,7 +1942,7 @@ Summary table first, then write 400+ WORDS for EACH of these 5 pathways:
 
 STOP after section 7."""),
 
-                ("PASS 6/8", f"""
+                ("PASS 6/8", """
 NOW GENERATE ONLY SECTIONS 8-10. Write 3000+ WORDS for this pass.
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (800+ words)
@@ -2339,7 +2339,6 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
         }
         expected = expected_sections_map.get(report_type, {})
         sections_in_report = _split_report_sections(response)
-        section_headings = {h.split(".")[0].strip() + "." for h, _ in sections_in_report if h}
 
         for prefix, name in expected.items():
             # Check if this section exists in the report (match "## N." prefix)

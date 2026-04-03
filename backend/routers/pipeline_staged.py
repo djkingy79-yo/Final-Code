@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from datetime import datetime, timezone
 import logging
+import uuid
 
 from config import db
 from auth_utils import get_current_user
