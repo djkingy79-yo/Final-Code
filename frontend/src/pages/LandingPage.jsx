@@ -952,7 +952,7 @@ const LandingPage = () => {
                 <tr>
                   <th className="text-left p-4 bg-blue-700 border border-slate-200 font-semibold text-white" style={{ minWidth: '240px' }}>Section</th>
                   <th className="p-4 bg-emerald-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
-                    Quick Summary<br /><span className="text-sm font-normal">FREE (7 sections)</span>
+                    Quick Summary<br /><span className="text-sm font-normal">FREE (8 sections)</span>
                   </th>
                   <th className="p-4 bg-blue-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
                     Full Detailed Report<br /><span className="text-sm font-normal">$150 (15 sections)</span>
@@ -964,31 +964,32 @@ const LandingPage = () => {
               </thead>
               <tbody>
                 {[
-                  { section: "Executive Brief / Case Snapshot", qs: true, fd: true, el: true },
-                  { section: "Primary Issues Identified", qs: true, fd: false, el: false },
-                  { section: "All Grounds Identified (Preview)", qs: true, fd: false, el: false },
-                  { section: "Key Legislation & Similar Cases (Preview)", qs: true, fd: false, el: false },
-                  { section: "Sentencing Overview", qs: true, fd: false, el: false },
-                  { section: "Appeal Outlook", qs: true, fd: false, el: false },
-                  { section: "Forensic Case Chronology", qs: false, fd: true, el: true },
-                  { section: "Document Evidence Digest", qs: false, fd: true, el: true },
-                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, fdNote: "800+ words per ground", elNote: "900+ words per ground" },
-                  { section: "Comparative Sentencing Table", qs: false, fd: true, el: true, fdNote: "8+ cases", elNote: "12+ cases" },
-                  { section: "Common Appeal Grounds for This Offence Type", qs: false, fd: true, el: true },
-                  { section: "Outcome Options", qs: false, fd: true, el: true, elNote: "Detailed pathways" },
-                  { section: "Evidentiary Gaps + Remediation Checklist", qs: false, fd: true, el: true },
-                  { section: "Precedent Outcome Matrix", qs: false, fd: true, el: true, fdNote: "10-12 cases", elNote: "15+ cases" },
-                  { section: "Statutory + Doctrinal Framework Map", qs: false, fd: true, el: true },
-                  { section: "How to Argue Each Top Ground", qs: false, fd: true, el: true, elNote: "Detailed strategy" },
-                  { section: "Submissions Blueprint", qs: false, fd: true, el: true },
-                  { section: "Hearing Preparation Notes", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "Conference Preparation Pack", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "Court Pathway Operations Playbook", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "How to Start Your Appeal + Required Forms", qs: false, fd: true, el: true },
-                  { section: "Similar Case Search Options", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "Prioritised Action Plan", qs: false, fd: true, el: true },
-                  { section: "Risk Assessment + Contingency Planning", qs: false, fd: false, el: true, exclusive: true },
-                  { section: "Client Plain-English Brief", qs: true, fd: true, el: true },
+                  { section: "1. Case Snapshot / Executive Brief", qs: true, fd: true, el: true, qsNote: "Case Snapshot", fdNote: "Executive Brief", elNote: "Executive Brief" },
+                  { section: "2. Primary Issues Identified", qs: true, fd: false, el: false },
+                  { section: "3. All Grounds Identified (Preview)", qs: true, fd: false, el: false },
+                  { section: "4. Key Legislation & Similar Cases (Preview)", qs: true, fd: false, el: false },
+                  { section: "5. Sentencing Overview", qs: true, fd: false, el: false },
+                  { section: "6. Appeal Outlook", qs: true, fd: false, el: false },
+                  { section: "7. Client Plain-English Guide / Brief", qs: true, fd: true, el: true, qsNote: "Guide", fdNote: "§15 Brief", elNote: "§20 Brief" },
+                  { section: "8. Appeal Outlook (Detailed)", qs: true, fd: false, el: false },
+                  { section: "Forensic Case Chronology", qs: false, fd: true, el: true, fdNote: "§2 — 12+ events", elNote: "§2 — 15+ events" },
+                  { section: "Document Evidence Digest", qs: false, fd: true, el: true, fdNote: "§3", elNote: "§3" },
+                  { section: "Grounds of Merit Portfolio / Deep Analysis", qs: false, fd: true, el: true, fdNote: "§4 — 800+ words/ground", elNote: "§4 — 900+ words/ground" },
+                  { section: "Comparative Sentencing Table", qs: false, fd: true, el: true, fdNote: "§5 — 8+ cases", elNote: "§5 — 12+ cases" },
+                  { section: "Common Appeal Grounds for This Offence Type", qs: false, fd: true, el: true, fdNote: "§6", elNote: "§6" },
+                  { section: "Outcome Options", qs: false, fd: true, el: true, fdNote: "§7", elNote: "§7 — Detailed pathways" },
+                  { section: "Evidentiary Gaps + Remediation Checklist", qs: false, fd: true, el: true, fdNote: "§8", elNote: "§8" },
+                  { section: "Precedent Outcome Matrix", qs: false, fd: true, el: true, fdNote: "§9 — 10-12 cases", elNote: "§9 — 15+ cases" },
+                  { section: "Statutory + Doctrinal Framework Map", qs: false, fd: true, el: true, fdNote: "§10", elNote: "§10" },
+                  { section: "How to Argue Each Top Ground", qs: false, fd: true, el: true, fdNote: "§11", elNote: "§11 — Detailed strategy" },
+                  { section: "Submissions Blueprint", qs: false, fd: true, el: true, fdNote: "§12", elNote: "§12" },
+                  { section: "Hearing Preparation Notes", qs: false, fd: false, el: true, exclusive: true, elNote: "§13" },
+                  { section: "Conference Preparation Pack", qs: false, fd: false, el: true, exclusive: true, elNote: "§14" },
+                  { section: "Court Pathway Operations Playbook", qs: false, fd: false, el: true, exclusive: true, elNote: "§15" },
+                  { section: "How to Start Your Appeal + Required Forms", qs: false, fd: true, el: true, fdNote: "§13", elNote: "§16" },
+                  { section: "Similar Case Search Options", qs: false, fd: false, el: true, exclusive: true, elNote: "§17" },
+                  { section: "Prioritised Action Plan", qs: false, fd: true, el: true, fdNote: "§14", elNote: "§18" },
+                  { section: "Risk Assessment + Contingency Planning", qs: false, fd: false, el: true, exclusive: true, elNote: "§19" },
                 ].map((row, i) => (
                   <tr key={i} className={`border-b border-slate-200 ${row.exclusive ? 'bg-purple-50' : ''}`}>
                     <td className="p-3 text-slate-900 font-semibold text-sm">
@@ -997,7 +998,10 @@ const LandingPage = () => {
                     </td>
                     <td className="p-2.5 text-center">
                       {row.qs ? (
-                        <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                        <div>
+                          <svg className="w-5 h-5 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                          {row.qsNote && <span className="text-xs text-emerald-700 block">{row.qsNote}</span>}
+                        </div>
                       ) : (
                         <span className="text-slate-500">&mdash;</span>
                       )}
