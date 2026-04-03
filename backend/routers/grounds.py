@@ -203,19 +203,21 @@ async def _refresh_case_extract_from_pipeline(case: dict) -> dict:
 async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict]:
     """Run staged issue classification and persist results.
 
-    DO_NOT_UNDO — MUST use fuzzy dedup via is_ground_duplicate() on issue_classifications.
-    Exact-title upsert was the ROOT CAUSE of issues multiplying, which then caused grounds
-    to multiply via _sync_pipeline_issues_to_grounds. NEVER revert to exact-title match.
+    DO_NOT_UNDO — 3 Apr 2026: If issues already exist, DO NOT re-classify.
+    Re-classification generates new LLM titles that slip past dedup and multiply grounds.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
-    issues = await classify_case_issues(case, case_extract)
-
-    # Pre-load existing issues for fuzzy matching
     existing_issues = await db.issue_classifications.find(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
-        {"_id": 0, "issue_id": 1, "title": 1, "ground_type": 1}
+        {"_id": 0}
     ).to_list(500)
+
+    if existing_issues:
+        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist")
+        return existing_issues
+
+    issues = await classify_case_issues(case, case_extract)
 
     persisted = []
     for issue in issues:
@@ -224,16 +226,14 @@ async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
 
-        # Fuzzy match against existing issues
         matched = None
-        for ei in existing_issues:
+        for ei in persisted:
             ei_title = (ei.get("title") or "").strip()
             if is_ground_duplicate(issue_title, ei_title):
                 matched = ei
                 break
 
         if matched:
-            # Update existing issue, keep original issue_id
             await db.issue_classifications.update_one(
                 {"issue_id": matched["issue_id"]},
                 {"$set": issue_dict},
@@ -242,7 +242,6 @@ async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict
                 {"issue_id": matched["issue_id"]}, {"_id": 0}
             )
         else:
-            # Insert new issue
             await db.issue_classifications.update_one(
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"$set": issue_dict},
@@ -252,8 +251,6 @@ async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"_id": 0}
             )
-            if saved:
-                existing_issues.append({"issue_id": saved.get("issue_id", ""), "title": issue_title, "ground_type": issue.ground_type})
 
         if saved:
             persisted.append(saved)
@@ -363,6 +360,9 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
         upsert=True,
     )
     await _sync_pipeline_issues_to_grounds(case["case_id"], case["user_id"])
+    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    from services.ground_dedup import cleanup_duplicate_grounds
+    await cleanup_duplicate_grounds(db, case["case_id"], case["user_id"])
     if ground_id:
         projected = await db.grounds_of_merit.find_one(
             {"ground_id": ground_id, "case_id": case["case_id"], "user_id": case["user_id"]}, {"_id": 0}

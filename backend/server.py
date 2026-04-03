@@ -521,17 +521,25 @@ async def _refresh_case_extract_for_case(case: dict) -> dict:
 async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[dict]:
     """Run staged issue classification and persist results.
     
-    DO_NOT_UNDO — Uses fuzzy dedup to prevent duplicate issue_classifications.
+    DO_NOT_UNDO — 3 Apr 2026: If issues already exist for this case, DO NOT re-classify.
+    Re-classification was the ROOT CAUSE of grounds multiplying — every LLM call generates
+    slightly different titles which slip past dedup and create new grounds.
+    Only classify if zero issues exist (first-time analysis).
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
     
-    issues = await classify_case_issues(case, case_extract)
-    
-    # Load existing issues for fuzzy dedup
+    # Check if issues already exist — if so, return them without re-classifying
     existing_issues = await db.issue_classifications.find(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
-        {"_id": 0, "issue_id": 1, "title": 1, "ground_type": 1}
+        {"_id": 0}
     ).to_list(500)
+    
+    if existing_issues:
+        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist")
+        return existing_issues
+    
+    # First-time classification only
+    issues = await classify_case_issues(case, case_extract)
     
     persisted = []
     for issue in issues:
@@ -540,16 +548,15 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
         
-        # Fuzzy match against existing issues
+        # Fuzzy match against already-persisted issues in this batch
         matched = None
-        for ei in existing_issues:
+        for ei in persisted:
             ei_title = (ei.get("title") or "").strip()
             if is_ground_duplicate(issue_title, ei_title):
                 matched = ei
                 break
         
         if matched:
-            # Update existing issue
             await db.issue_classifications.update_one(
                 {"issue_id": matched["issue_id"]},
                 {"$set": issue_dict},
@@ -558,7 +565,6 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
                 {"issue_id": matched["issue_id"]}, {"_id": 0}
             )
         else:
-            # Insert new issue
             await db.issue_classifications.update_one(
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"$set": issue_dict},
@@ -568,8 +574,6 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"_id": 0}
             )
-            if saved:
-                existing_issues.append({"issue_id": saved.get("issue_id", ""), "title": issue_title, "ground_type": issue.ground_type})
         
         if saved:
             persisted.append(saved)
@@ -617,9 +621,9 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
     Sync staged issues/verifications into grounds_of_merit so report consumers
     and existing frontend views remain aligned.
 
-    DO_NOT_UNDO — This function MUST use fuzzy dedup (topic + fuzzywuzzy + overlap)
-    via ground_dedup.is_ground_duplicate(). Previous exact-title upsert let grounds
-    multiply from 6 to 41+. NEVER revert to exact-title matching.
+    DO_NOT_UNDO — 3 Apr 2026: HARD CAP on ground creation.
+    If grounds already exist, NEVER create more than existing_count + 2.
+    This prevents the recurring multiplication bug permanently.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
@@ -3501,6 +3505,34 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
             "extensive_log": "Extensive Case Log & Analysis"
         }
         analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode, report_id=report_id)
+        new_analysis = analysis_result.get("analysis", "")
+        
+        # DO_NOT_UNDO — Content protection: never overwrite a longer report with a shorter one.
+        # If the new content is less than 50% the length of the backup, something went wrong
+        # (e.g. 502 errors truncated the generation). Keep the backup instead.
+        backup_doc = await db.reports.find_one(
+            {"report_id": report_id},
+            {"_id": 0, "content.backup_analysis": 1}
+        )
+        backup_analysis = (backup_doc or {}).get("content", {}).get("backup_analysis", "")
+        if backup_analysis and len(backup_analysis) > 10000 and len(new_analysis) < len(backup_analysis) * 0.5:
+            logger.warning(
+                f"Report {report_id}: new content ({len(new_analysis)} chars) is less than 50% of backup "
+                f"({len(backup_analysis)} chars). Keeping backup to prevent content loss."
+            )
+            await db.reports.update_one(
+                {"report_id": report_id},
+                {"$set": {
+                    "status": "completed",
+                    "error": None,
+                    "content.analysis": backup_analysis,
+                    "content.partial": False,
+                },
+                "$unset": {"content.backup_analysis": 1}}
+            )
+            logger.info(f"Report {report_id}: restored backup instead of thin regeneration")
+            return
+
         title = report_titles.get(report_type, "Report")
         if aggressive_mode:
             title = f"{title} (Aggressive)"

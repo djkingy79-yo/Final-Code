@@ -146,13 +146,16 @@ def _extract_topics(title: str) -> set:
 def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85) -> bool:
     """Check if two ground/issue titles are near-identical duplicates.
     
-    DO_NOT_UNDO — Uses TWO methods only (topic matching removed to prevent over-merging):
-    1. fuzzywuzzy token_set_ratio (threshold=85 — only catches near-identical titles)
-    2. Bidirectional word overlap >60% (catches rephrased but essentially identical titles)
+    DO_NOT_UNDO — Uses THREE methods (topic matching RE-ENABLED 3 Apr 2026):
+    1. fuzzywuzzy token_set_ratio (threshold=85 — catches near-identical titles)
+    2. Bidirectional word overlap >60% (catches rephrased identical titles)
+    3. Shared legal topic + fuzzy score >= 55 (catches same-argument-different-wording)
     
-    This is deliberately permissive to keep all distinct legal arguments separate.
-    Two grounds about the same broad topic (e.g. two different sentencing errors)
-    are NOT duplicates if they argue different legal points.
+    Method 3 was removed previously due to over-merging, but its absence caused grounds
+    to multiply from ~8 to 15+ because rephrased titles like "Juror Misconduct" vs
+    "Jury Irregularity and Possible Misconduct" were not caught. The fix is to require
+    BOTH a shared topic AND a meaningful fuzzy score (55+), so titles from completely
+    different arguments stay separate.
     
     Returns True only if the titles are essentially the same argument rephrased.
     """
@@ -162,8 +165,11 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85
     new_title = new_title.strip()
     existing_title = existing_title.strip()
     
-    # Method 1: fuzzywuzzy token_set_ratio — very high bar (85) to only catch near-identical
-    score = fuzz.token_set_ratio(new_title.lower(), existing_title.lower())
+    new_lower = new_title.lower()
+    existing_lower = existing_title.lower()
+    
+    # Method 1: fuzzywuzzy token_set_ratio — high bar for near-identical
+    score = fuzz.token_set_ratio(new_lower, existing_lower)
     if score >= threshold:
         return True
     
@@ -179,6 +185,17 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85
             )
             if ratio > 0.60:
                 return True
+    
+    # Method 3: Shared legal topic + moderate fuzzy score (55+)
+    # This catches "Juror Misconduct" vs "Jury Irregularity and Possible Misconduct"
+    # which share the jury_misconduct topic but have low word overlap.
+    # The fuzzy score floor (55) prevents merging titles that only share a topic
+    # by coincidence (e.g. different sentencing arguments).
+    if score >= 55:
+        new_topics = _extract_topics(new_title)
+        existing_topics = _extract_topics(existing_title)
+        if new_topics and existing_topics and (new_topics & existing_topics):
+            return True
     
     return False
 

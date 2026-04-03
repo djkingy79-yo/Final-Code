@@ -140,47 +140,43 @@ async def _refresh_case_extract(case: dict) -> dict:
 
 
 async def _classify_issues(case: dict, case_extract: dict) -> dict:
-    """DO_NOT_UNDO — Internal classify function called from server.py during report generation.
-    MUST use fuzzy dedup on issue_classifications. Exact-title upsert caused issues to multiply,
-    which then caused grounds to multiply via _sync_pipeline_projection_to_grounds.
+    """DO_NOT_UNDO — 3 Apr 2026: If issues already exist, DO NOT re-classify.
+    Re-classification generates new LLM titles that slip past dedup and multiply grounds.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
-    issues = await classify_case_issues(case, case_extract)
-
-    # Pre-load existing issues for fuzzy matching
     existing_issues = await db.issue_classifications.find(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
-        {"_id": 0, "issue_id": 1, "title": 1}
+        {"_id": 0}
     ).to_list(500)
 
+    if existing_issues:
+        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist")
+        return {"classified": len(existing_issues)}
+
+    issues = await classify_case_issues(case, case_extract)
+
     upserted = 0
+    persisted_titles = []
     for issue in issues:
         issue_dict = issue.model_dump()
         issue_dict["created_at"] = issue_dict["created_at"].isoformat()
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
 
-        # Fuzzy match against existing issues
         matched = None
-        for ei in existing_issues:
-            ei_title = (ei.get("title") or "").strip()
+        for ei_title in persisted_titles:
             if is_ground_duplicate(issue_title, ei_title):
-                matched = ei
+                matched = ei_title
                 break
 
-        if matched:
-            await db.issue_classifications.update_one(
-                {"issue_id": matched["issue_id"]},
-                {"$set": issue_dict},
-            )
-        else:
+        if not matched:
             await db.issue_classifications.update_one(
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"$set": issue_dict},
                 upsert=True,
             )
-            existing_issues.append({"issue_id": issue_dict.get("issue_id", ""), "title": issue_title})
+            persisted_titles.append(issue_title)
         upserted += 1
 
     return {
@@ -699,6 +695,9 @@ async def refresh_all_pipeline(case_id: str, payload: RefreshPipelineRequest, re
 
     verify_result = await _verify_top_issues(case, payload.verify_limit)
     synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
+    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    from services.ground_dedup import cleanup_duplicate_grounds
+    await cleanup_duplicate_grounds(db, case_id, user.user_id)
 
     return {
         "message": "Pipeline refresh completed",

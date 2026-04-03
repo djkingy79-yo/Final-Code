@@ -877,6 +877,9 @@ async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Reque
             failed += 1
 
     synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
+    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    from services.ground_dedup import cleanup_duplicate_grounds
+    await cleanup_duplicate_grounds(db, case_id, user.user_id)
 
     return {
         "requested_limit": payload.limit,
