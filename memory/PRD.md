@@ -43,9 +43,11 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Admin Dashboard with PayID pending payments management
 
 ## Pending Items
-- P0: Verify AppFooter styling (bold white, dark bg, flowing font)
-- P1: Verify How It Works page images (IMG_4323–IMG_4327)
 - P1: Build Native Mobile App (Capacitor)
+- P2: Add counsel conference prep attachment to Barrister View
+
+## Recent Changes (April 2026)
+- Fixed "How To Use" page: removed ZIP reference, added Chat & Collaboration step, zoomed in all screenshots (edge-to-edge, wider container), fixed broken Barrister View image path
 
 ## Credentials
 - Email: djkingy79@gmail.com / Password: Grubbygrub88

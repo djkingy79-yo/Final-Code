@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb } from "lucide-react";
+import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb, MessageSquare } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
@@ -124,7 +124,7 @@ const HowToUsePage = () => {
       title: "Use Barrister View",
       icon: FileCheck,
       color: "teal",
-      image: "/images/howto/live-barrister-unlocked.png",
+      image: "/images/howto/live-barrister.png",
       description: "Once all three reports are generated, the Barrister View unlocks. It synthesises every report into one hearing-ready brief.",
       instructions: [
         "Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)",
@@ -166,6 +166,21 @@ const HowToUsePage = () => {
         "Use 'AI Analyse Progress' for an AI-powered assessment of where your appeal stands"
       ],
       tip: "Appeals have strict deadlines — usually 28 days to file Notice of Intention. Use the checklist to stay on track."
+    },
+    {
+      num: 10,
+      title: "Chat & Collaboration",
+      icon: MessageSquare,
+      color: "emerald",
+      image: "/images/howto/live-notes.png",
+      description: "Collaborate with others involved in the case using the built-in chat and collaboration features.",
+      instructions: [
+        "Use the collaboration tools to share case access with trusted parties",
+        "Communicate securely within the app about case developments",
+        "Keep all discussions linked to the relevant case for easy reference",
+        "Coordinate with lawyers, barristers, or support persons"
+      ],
+      tip: "Keeping all communication within the app ensures nothing gets lost across emails and messages."
     }
   ];
 
@@ -262,7 +277,7 @@ const HowToUsePage = () => {
       </section>
 
       {/* Steps */}
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-4 py-12">
         <div className="space-y-20">
           {steps.map((step, index) => {
             const colors = getColorClasses(step.color);
@@ -284,11 +299,11 @@ const HowToUsePage = () => {
                 <p className="text-slate-700 leading-relaxed text-[11px]">{step.description}</p>
 
                 {/* Screenshot */}
-                <div className="bg-white rounded-2xl p-3 border border-slate-200 shadow-lg">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
                   <img 
                     src={step.image} 
                     alt={`Step ${step.num}: ${step.title}`}
-                    className="w-full rounded-xl border border-slate-200"
+                    className="w-full rounded-none"
                     loading="lazy"
                   />
                 </div>
@@ -349,7 +364,7 @@ const HowToUsePage = () => {
               <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
                 <Download className="w-6 h-6 text-pink-700" />
               </div>
-              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 10</span>
+              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 11</span>
             </div>
             <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3">
               Export & Share
@@ -357,7 +372,7 @@ const HowToUsePage = () => {
             <p className="text-slate-700 mb-4 text-[11px]">Export your case data for use outside the app.</p>
             <ul className="space-y-1 text-slate-700 mb-4 text-[11px] leading-tight">
               <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Creates a ZIP file with all documents and reports</li>
+              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Downloads all documents and reports in one package</li>
               <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Timeline and summary as editable DOCX files</li>
               <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Use 'Bundle Documents' to merge PDFs into one file</li>
               <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Share with lawyers, barristers, or Legal Aid</li>
