@@ -595,6 +595,64 @@ const LandingPage = () => {
 
           </div>
 
+          {/* SEE IT IN ACTION — How The Process Works */}
+          <div className="mt-16 mb-12">
+            <div className="text-center mb-10">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="see-it-in-action-icon">
+                  <Scale className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                How The Process Works
+              </h2>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Here's what you can expect when using the tool — from uploading documents to generating reports.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-6">
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
+                <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Upload className="w-7 h-7 text-blue-400" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 1 — Upload</h3>
+                <p className="text-slate-600">Create a case and upload your documents. The system organises them instantly.</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
+                <div className="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="w-7 h-7 text-emerald-400" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 2 — Free Grounds Count</h3>
+                <p className="text-slate-600">Get the number of potential grounds. Titles and full analysis unlock for $99.</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
+                <div className="w-14 h-14 bg-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <FileCheck className="w-7 h-7 text-red-400" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 3 — Paid Reports</h3>
+                <p className="text-slate-600">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
+              </div>
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
+                <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Presentation className="w-7 h-7 text-indigo-300" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 4 — Barrister View</h3>
+                <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-col items-center gap-4">
+              <p className="text-slate-600 text-sm">Need the full walkthrough with screenshots and step‑by‑step guidance?</p>
+              <Link to="/how-it-works" data-testid="landing-how-it-works-link">
+                <Button className="landing-cta-primary" data-testid="landing-how-it-works-cta">
+                  View How It Works
+                </Button>
+              </Link>
+            </div>
+          </div>
+
           {/* Bottom CTA */}
           <div className="mt-12 text-center">
             <div className="inline-block bg-blue-50 border border-blue-200 rounded-2xl p-8">
@@ -657,73 +715,6 @@ const LandingPage = () => {
       {/* STATE APPEAL STATS - Interactive Widget */}
       {/* ============================================ */}
       <StateAppealStats />
-
-      {/* ============================================ */}
-      {/* SECTION 2: SEE IT IN ACTION (with Features merged) */}
-      {/* ============================================ */}
-      <section className="py-20 px-6 bg-white relative">
-        {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl" />
-        
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="see-it-in-action-icon">
-                <Scale className="w-8 h-8 text-white" />
-              </div>
-            </div>
-            <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              How The Process Works
-            </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Here's what you can expect when using the tool — from uploading documents to generating reports.
-            </p>
-          </div>
-
-          {/* Simple 1–4 step summary (details moved to How It Works page) */}
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
-              <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Upload className="w-7 h-7 text-blue-400" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 1 — Upload</h3>
-              <p className="text-slate-600">Create a case and upload your documents. The system organises them instantly.</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
-              <div className="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-7 h-7 text-emerald-400" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 2 — Free Grounds Count</h3>
-              <p className="text-slate-600">Get the number of potential grounds. Titles and full analysis unlock for $99.</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
-              <div className="w-14 h-14 bg-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileCheck className="w-7 h-7 text-red-400" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 3 — Paid Reports</h3>
-              <p className="text-slate-600">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
-              <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Presentation className="w-7 h-7 text-indigo-300" />
-              </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 4 — Barrister View</h3>
-              <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col items-center gap-4">
-            <p className="text-slate-600 text-sm">Need the full walkthrough with screenshots and step‑by‑step guidance?</p>
-            <Link to="/how-it-works" data-testid="landing-how-it-works-link">
-              <Button className="landing-cta-primary" data-testid="landing-how-it-works-cta">
-                View How It Works
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-pricing" />
 
