@@ -437,7 +437,7 @@ export default function BarristerView() {
   <style>
     @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.75; font-size: 15px; background: #fff; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.75; font-size: 17px; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
@@ -446,8 +446,8 @@ export default function BarristerView() {
     .cover-page p { margin: 0 0 8px; color: #334155; }
     .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 22px 0 18px; text-align: left; }
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
-    .cover-page-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
-    .cover-page-card-value { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .cover-page-card-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
+    .cover-page-card-value { font-size: 18px; font-weight: 700; color: #0f172a; }
     .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
@@ -460,16 +460,16 @@ export default function BarristerView() {
     .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-top: 8px; }
     .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
     .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-header .case-info-grid .ci-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
-    .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
+    .report-header .case-info-grid .ci-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+    .report-header .case-info-grid .ci-value { font-size: 16px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
     .sections { padding: 24px 32px; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
     .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #14b8a6; padding-left: 12px; margin-bottom: 12px; }
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; color: #0f172a; }
+    .section-title { font-family: 'Crimson Pro', serif; font-size: 16px; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #0f766e; margin: 1.2rem 0 0.6rem; }
-    .section-body h2 { font-size: 1.4rem; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
+    .section-body h2 { font-size: 1.15rem; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
     .section-body h3 { font-size: 1.2rem; color: #1e40af; }
     .section-body h4 { font-size: 1.05rem; color: #334155; }
     .section-body p { margin-bottom: 0.7rem; }
@@ -631,9 +631,27 @@ export default function BarristerView() {
   };
 
   const handleExportDOCX = async () => {
-    // Open in preview mode instead of downloading
-    openBarristerPreview("pdf");
-    toast.success("Word preview opened — use Print / Save as PDF");
+    try {
+      const response = await axios.get(
+        `${API}/cases/${caseId}/reports/barrister-view/export-docx`,
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      }));
+      const link = document.createElement("a");
+      link.href = url;
+      const safeTitle = (caseData?.defendant_name || "Barrister_View").replace(/[^a-zA-Z0-9 _-]/g, "").substring(0, 30).trim();
+      link.setAttribute("download", `${safeTitle}_barrister_view.docx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("Word document downloaded");
+    } catch (err) {
+      console.error("DOCX export error:", err);
+      toast.error("Failed to export Word document");
+    }
   };
 
   const handleDownloadAcceptancePack = async () => {
