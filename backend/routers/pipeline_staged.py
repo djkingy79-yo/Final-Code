@@ -150,10 +150,11 @@ async def _classify_issues(case: dict, case_extract: dict) -> dict:
         {"_id": 0}
     ).to_list(500)
 
-    if existing_issues:
-        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist")
+    if len(existing_issues) >= 8:
+        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist (>= 8)")
         return {"classified": len(existing_issues)}
 
+    logger.info(f"Re-classifying case {case['case_id']}: only {len(existing_issues)} issues exist (< 8), looking for more")
     issues = await classify_case_issues(case, case_extract)
 
     upserted = 0

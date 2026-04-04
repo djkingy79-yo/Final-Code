@@ -534,21 +534,23 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
         {"_id": 0}
     ).to_list(500)
     
-    if existing_issues:
-        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist")
+    # Check if enough issues already exist — only skip if 8+ exist (healthy count)
+    # If fewer than 8, re-classify to find missing grounds (previous dedup may have been too aggressive)
+    if len(existing_issues) >= 8:
+        logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist (>= 8)")
         return existing_issues
     
-    # First-time classification only
+    logger.info(f"Re-classifying case {case['case_id']}: only {len(existing_issues)} issues exist (< 8), looking for more")
     issues = await classify_case_issues(case, case_extract)
     
-    persisted = []
+    persisted = list(existing_issues)  # Start with existing issues for dedup comparison
     for issue in issues:
         issue_dict = issue.model_dump()
         issue_dict["created_at"] = issue_dict["created_at"].isoformat()
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
         
-        # Fuzzy match against already-persisted issues in this batch
+        # Fuzzy match against ALL existing + newly-persisted issues
         matched = None
         for ei in persisted:
             ei_title = (ei.get("title") or "").strip()
