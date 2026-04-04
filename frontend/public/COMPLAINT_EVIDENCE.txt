@@ -1,0 +1,208 @@
+================================================================
+COMPLAINT EVIDENCE REPORT
+Appeal Case Manager — Deb King (djkingy79@gmail.com)
+Generated: 4 April 2026
+================================================================
+
+# COMPLETE TASK LIST (30+ TASKS)
+
+All tasks below are for the **SAME APPLICATION** — charged separately:
+
+| #  | Task Name              | Status           | Times "Fixed" |
+|----|------------------------|------------------|---------------|
+| 1  | case-analysis-hub      | Failed           | Multiple      |
+| 2  | case-strength-meter    | Failed           | Multiple      |
+| 3  | criminal-appeals-au-1  | Failed           | Multiple      |
+| 4  | appeal-analyzer-1      | Failed           | Multiple      |
+| 5  | barrister-hub          | Failed           | Multiple      |
+| 6  | appeal-manager         | Failed           | Multiple      |
+| 7  | criminal-appeals-au    | Failed           | Multiple      |
+| 8  | appeal-hub-3           | Failed           | Multiple      |
+| 9  | version-search         | Failed           | Multiple      |
+| 10 | criminal-grounds       | Failed           | Multiple      |
+| 11 | grounds-finder         | Failed           | Multiple      |
+| 12 | appeal-tracker-au      | Failed           | Multiple      |
+| 13 | appeal-hub-2           | Failed           | Multiple      |
+| 14 | criminal-appeals       | Failed           | Multiple      |
+| 15 | appeal-ai-debug        | Failed           | Multiple      |
+| 16 | ai-grounds-check       | Failed           | Multiple      |
+| 17 | appeal-case-manager    | Failed           | Multiple      |
+| 18 | grounds-merit          | Failed           | Multiple      |
+| 19 | criminal-justice-1     | Failed           | Multiple      |
+| 20 | legalaid-appeal        | Failed           | Multiple      |
+| 21 | lawbrief-sorter        | Failed           | Multiple      |
+| 22 | crimappeal             | Deployed - BROKEN| Multiple      |
+| 23 | criminal-appeal        | Failed           | Multiple      |
+| 24 | appeal-timeline-pro    | Current - Breaking| Ongoing      |
+| 25 | Analyze Appeal 1       | Only one works?  | Unknown       |
+| 26-30+ | Additional forks  | Various states   | Unknown       |
+
+**CRITICAL:** 27+ tasks visible, NOT IN ORDER, all for the same app.
+
+================================================================
+CODEBASE EVIDENCE FROM CURRENT TASK (criminal-appeals-au-2)
+================================================================
+
+Total commits: 950
+Total unique fork/job IDs: 887
+Total unique files modified: 624
+Date range: 6 Feb 2026 to 3 Apr 2026 (57 days)
+
+================================================================
+RECURRING BUG #1: GROUNDS OF APPEAL MULTIPLYING
+================================================================
+
+This bug has been "fixed" across ALL of the following files,
+multiple times each, and keeps returning:
+
+  File: ground_dedup.py      — Modified 10 times
+  File: grounds.py (router)  — Modified 20 times
+  File: pipeline.py          — Modified 12 times
+  File: pipeline_staged.py   — Modified 13 times
+  File: server.py            — Modified 230 times
+  File: DO_NOT_UNDO.md       — Modified 26 times (overridden)
+
+ROOT CAUSE (never fixed until 3 Apr 2026):
+  - 4 duplicate sync-to-grounds functions across 4 files
+  - Each agent session fixed ONE file, left the other 3 broken
+  - AI re-classified issues on every pipeline run, generating
+    new titles that slipped past dedup
+  - Every agent tweaked the fuzzy threshold instead of stopping
+    the re-classification at source
+
+================================================================
+RECURRING BUG #2: LLM 502 ERRORS
+================================================================
+
+  File: llm_service.py — Modified 14 times
+  502 errors in current logs: 463+
+  Same retry/backoff logic adjusted repeatedly without fixing root cause
+
+================================================================
+RECURRING BUG #3: REPORTS LOSING CONTENT
+================================================================
+
+  File: server.py — Modified 230 times
+  Report generation overwrites entire content object on completion,
+  wiping backup in the same database write. If generation produces
+  thin content (due to 502 errors), old content is gone permanently.
+
+================================================================
+DO_NOT_UNDO PROTECTIONS — SET AND OVERRIDDEN
+================================================================
+
+  DO_NOT_UNDO.md was modified 26 times.
+  Agents placed protection markers on critical code.
+  Subsequent agent sessions overwrote the protected code anyway.
+
+================================================================
+DAILY COMMIT ACTIVITY
+================================================================
+
+  2026-02-06:   1 commits
+  2026-02-12: 151 commits
+  2026-02-13:   5 commits
+  2026-02-21:  12 commits
+  2026-02-24:  34 commits
+  2026-03-03:   1 commits
+  2026-03-04:  28 commits
+  2026-03-05: 113 commits
+  2026-03-06:  54 commits
+  2026-03-10:   3 commits
+  2026-03-13:  14 commits
+  2026-03-14:  42 commits
+  2026-03-16:   1 commits
+  2026-03-17:   2 commits
+  2026-03-19:  21 commits
+  2026-03-21:  35 commits
+  2026-03-22:  11 commits
+  2026-03-24:  20 commits
+  2026-03-25:   7 commits
+  2026-03-26:  87 commits
+  2026-03-27:  20 commits
+  2026-03-28:  60 commits
+  2026-03-29:  93 commits
+  2026-03-30:  60 commits
+  2026-03-31:  12 commits
+  2026-04-01:  44 commits
+  2026-04-02:   7 commits
+  2026-04-03:  12 commits
+
+================================================================
+ALL 624 FILES MODIFIED (with count)
+================================================================
+
+  238x memory/PRD.md
+  230x backend/server.py
+  132x frontend/src/pages/LandingPage.jsx
+  132x frontend/src/pages/CaseDetail.jsx
+  116x .gitignore
+  103x frontend/src/pages/ReportView.jsx
+   96x frontend/src/pages/BarristerView.jsx
+   72x frontend/src/components/ReportsSection.jsx
+   59x test_result.md
+   56x memory/CHANGELOG.md
+   56x .emergent/emergent.yml
+   50x frontend/src/App.js
+   45x frontend/src/pages/HowItWorksPage.jsx
+   45x backend_test.py
+   42x frontend/src/pages/Dashboard.jsx
+   35x frontend/src/index.css
+   33x frontend/src/components/GroundsOfMerit.jsx
+   32x frontend/src/pages/AppealStatisticsPage.jsx
+   26x backend/tests/test_regression.py
+   26x DO_NOT_UNDO.md
+   25x frontend/src/pages/LegalResourcesPage.jsx
+   24x backend/tests/api_test.py
+   22x frontend/src/pages/SuccessStories.jsx
+   22x backend/tests/test_compare_contradictions.py
+   21x frontend/src/pages/HowToUsePage.jsx
+   21x frontend/src/pages/FAQPage.jsx
+   21x backend/routers/payments_new.py
+   20x backend/routers/grounds.py
+   19x frontend/src/components/AuthModal.jsx
+   19x backend/tests/test_stripe_payments_iteration28.py
+   19x backend/tests/test_barrister_view_iteration27.py
+   19x backend/tests/test_ai_features_iteration26.py
+   18x frontend/src/components/PaymentModal.jsx
+   17x backend/tests/test_reports_iteration32.py
+   17x backend/tests/test_iteration35.py
+   16x backend/tests/test_iteration46.py
+   16x backend/tests/test_iteration44_api.py
+   16x backend/tests/test_iteration42_api.py
+   15x frontend/src/pages/FormTemplates.jsx
+   15x frontend/src/pages/CompareCasesPage.jsx
+   15x frontend/.env
+   14x frontend/src/pages/AboutPage.jsx
+   14x frontend/src/components/TimelineEnhanced.jsx
+   14x frontend/package.json
+   14x backend/tests/test_iteration62_regression.py
+   14x backend/tests/test_iteration61_comprehensive.py
+   14x backend/services/llm_service.py
+   14x backend/requirements.txt
+   13x frontend/src/pages/Statistics.jsx
+   13x frontend/src/pages/LegalGlossary.jsx
+   13x frontend/src/components/LegalFrameworkViewer.jsx
+   13x backend/routers/pipeline_staged.py
+   12x frontend/src/pages/LawyerDirectory.jsx
+   12x frontend/src/pages/AdminDashboard.jsx
+   12x frontend/src/components/NotesSection.jsx
+   12x frontend/src/components/DocumentsSection.jsx
+   12x backend/routers/pipeline.py
+   12x backend/routers/auth.py
+   (+ 566 more files)
+
+================================================================
+CONCLUSION
+================================================================
+
+The git history shows a clear pattern of:
+1. Same bugs being "fixed" and then broken again across sessions
+2. DO_NOT_UNDO protections being set and then overridden
+3. 30+ separate tasks created for the SAME application
+4. Root causes never addressed — only surface-level patches applied
+5. 950 commits over 57 days with the same core issues persisting
+
+================================================================
+END OF COMPLAINT EVIDENCE REPORT
+================================================================
