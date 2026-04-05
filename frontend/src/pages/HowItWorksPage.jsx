@@ -374,7 +374,7 @@ const HowItWorksPage = () => {
       headerColor: "#7e22ce",
       features: [
         "20 sections — everything in Full Detailed plus 5 exclusives",
-        "900+ words per ground with fallback positions and key authority",
+        "1,200+ words per ground with fallback positions and key authority",
         "Hearing preparation notes with anticipated bench questions",
         "Barrister conference pack with authorities shortlist and orders sought",
         "Court pathway playbook with filing sequences for each court level",

@@ -1282,7 +1282,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
 - Every section heading MUST be followed by substantive content (minimum 3-4 detailed paragraphs). If a section cannot be substantiated from the case material, omit it entirely.
 - Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
 - SECTION HEADINGS: Use ONLY ## for numbered section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires...").
-- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (minimum 300 words in Quick Summary, 500+ words in Full Detailed, 900+ words in Extensive). Do NOT use bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
+- FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (minimum 300 words in Quick Summary, 800+ words in Full Detailed, 1200+ words in Extensive). Do NOT use bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
 """
     
     if report_type == "quick_summary":
@@ -1469,14 +1469,14 @@ The user has ALREADY received BOTH:
 2. A PAID Full Detailed Report (executive brief, forensic chronology, evidence digest, grounds portfolio with Crown/defence strategy, 8+ sentencing comparisons, outcome options matrix, evidence gaps checklist, 10-12 precedent cases, statutory framework, argument strategy, submissions blueprint, appeal steps guide, action plan, and plain-English brief)
 
 THIS PREMIUM REPORT MUST BUILD ON — NOT REPEAT — THE FULL DETAILED REPORT. Do NOT re-state the same analysis. Instead:
-- Where the Full Detailed analysed each ground with Crown response and rebuttal, THIS report must provide 900+ word DEEP analysis per ground with fallback positions, additional authorities, and draft submission paragraphs.
+- Where the Full Detailed analysed each ground with Crown response and rebuttal, THIS report must provide 1200+ word DEEP analysis per ground with fallback positions, additional authorities, and draft submission paragraphs.
 - Where the Full Detailed provided 8+ sentencing comparisons, THIS report must provide 12+ with detailed paragraph analysis for EACH case.
 - Where the Full Detailed had a precedent matrix of 10-12 cases, THIS report must have 15+ with specific factual comparisons.
 - THIS report adds 5 ENTIRELY NEW sections not in the Full Detailed: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning.
 - Every shared section must go SIGNIFICANTLY deeper with fresh analysis, additional authorities, and more detailed strategy.
 
 Every section must directly reference the supplied case material. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
-CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 900 words. Reference specific documents, dates, and facts from the case throughout."""
+CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 1200 words. Reference specific documents, dates, and facts from the case throughout."""
         user_prompt = f"""Create a PREMIUM EXTENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be the MOST COMPREHENSIVE report — significantly more detailed and case-specific than the Full Detailed tier.
 
 {case_context}
@@ -1492,7 +1492,7 @@ MATERIAL COUNTS (use these exact numbers in the report):
 Target range 25000-35000 words. Every section must reference specific facts, documents, and dates from this case.
 
 CRITICAL — NO REPETITION FROM FULL DETAILED REPORT:
-The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (900+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
+The user already has a Full Detailed Report covering grounds analysis, sentencing table (8 cases), outcome options, evidence gaps, precedent matrix (10-12 cases), statutory framework, argument strategy, submissions blueprint, appeal steps, and action plan. This Premium Extensive report must ADVANCE BEYOND all of that with deeper per-ground analysis (1200+ words each), expanded tables (12+ sentencing, 15+ precedents), and 5 ENTIRELY NEW sections: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning. Do NOT copy or paraphrase content from the lower-tier reports.
 
 SECTION ORDERING: Case-specific analysis first, then broader legal framework, then strategy, then practical steps, then client brief at the very end.
 
@@ -1520,7 +1520,7 @@ For EACH document/source in the case material:
 - Rating: Critical / Important / Supporting / Peripheral
 
 ## 4. GROUNDS OF MERIT — DEEP ANALYSIS
-For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIMUM 900-word analysis:
+For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIMUM 1200-word analysis:
 - Legal threshold with specific statutory reference (section + Act + year)
 - How the case facts satisfy or approach this threshold — quote evidence
 - Viability rating (Strong / Moderate / Weak) with detailed reasoning
@@ -1529,7 +1529,7 @@ For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIM
 - **Practical impact if this ground succeeds** — what order the court would make, what happens to the conviction/sentence
 - Key authority with AustLII link and explanation of how it applies
 - Fallback position if the primary argument on this ground is rejected
-- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 900 words per ground
+- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 1200 words per ground
 - Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers)
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
