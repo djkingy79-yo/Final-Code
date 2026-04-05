@@ -7,12 +7,14 @@ const AppFooter = () => {
       <div className="py-6 px-6 bg-slate-800">
         <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 items-start">
           <div className="flex flex-col items-center md:items-start">
-            <div className="flex items-center gap-2">
-              <Scale className="w-4 h-4 text-white" />
-              <span className="text-white text-xs font-bold">Appeal Case Manager</span>
-            </div>
-            <span className="text-white/70 text-xs mt-1">Founded by Debra King</span>
-            <span className="text-white/70 text-xs mt-0.5">Criminal Appeal Research Tool — Australian Law Only</span>
+            <img 
+              src="/logo-deb-king.jpg" 
+              alt="Criminal Law Appeal Case Management" 
+              className="w-12 h-12 rounded-lg object-contain mb-2"
+            />
+            <span className="text-white text-xs font-bold">Criminal Law Appeal Case Management</span>
+            <span className="text-white/90 text-xs mt-1 font-semibold">Created and Designed by Deb King</span>
+            <span className="text-white/70 text-xs mt-0.5">criminallawappealmanager.com.au</span>
           </div>
 
           <div>

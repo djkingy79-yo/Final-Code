@@ -1054,12 +1054,19 @@ const LandingPage = () => {
       {/* About Link Section */}
       <section className="py-12 px-6 bg-blue-600 border-t border-blue-700">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-white text-sm uppercase tracking-widest mb-4 font-extrabold">About</p>
-          <h3 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            Appeal Case Manager
+          <img 
+            src="/logo-deb-king.jpg" 
+            alt="Criminal Law Appeal Case Management Logo" 
+            className="w-32 h-32 mx-auto mb-4 rounded-xl object-contain"
+            data-testid="footer-logo"
+          />
+          <h3 className="text-xl font-extrabold text-white mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            Criminal Law Appeal
           </h3>
-          <p className="text-white text-base font-bold mb-4">Founded by Debra King</p>
-          <p className="text-white text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/80 text-sm font-semibold mb-1">Case Management</p>
+          <p className="text-white text-base font-bold mb-1">Created and Designed by Deb King</p>
+          <p className="text-white/80 text-sm font-semibold mb-4">criminallawappealmanager.com.au</p>
+          <p className="text-white/90 text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
