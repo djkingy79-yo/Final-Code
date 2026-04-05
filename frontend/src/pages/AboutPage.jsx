@@ -109,6 +109,9 @@ const AboutPage = () => {
         <div className="max-w-4xl mx-auto">
           {/* Deb's Personal Bio */}
           <div className="bg-white border border-slate-200 rounded-2xl p-8 mb-6 text-center" data-testid="about-deb-bio">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              About Deb
+            </h2>
             <p className="text-slate-700 text-base leading-relaxed max-w-2xl mx-auto">
               A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney 
               and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
