@@ -46,6 +46,12 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P1: Build Native Mobile App (Capacitor)
 - P2: Add counsel conference prep attachment to Barrister View
 
+## Recent Changes (April 2026 - Session 2)
+- Finalised Landing Page UI: About box → bright blue bg with white text, "Read My Full Story" button → white bg with blue text
+- Made "What's in Each Report?" heading bright blue (was slate-900)
+- Enlarged "Australian Appeal Statistics" and "Legal Resources & Research" headings (text-3xl/4xl → text-4xl/5xl)
+- Verified report tiers comparison table matches actual product (Quick Summary FREE, Full Detailed $150, Extensive Log $200, Barrister View unlocks after all 3)
+
 ## Recent Changes (April 2026)
 - Fixed "How To Use" page: removed ZIP reference, added Chat & Collaboration step, zoomed in all screenshots (edge-to-edge, wider container), fixed broken Barrister View image path
 - Fixed grounds multiplying ROOT CAUSE: re-enabled topic matching in dedup, added cleanup to ALL 4 sync paths, only skip re-classification when 8+ issues already exist

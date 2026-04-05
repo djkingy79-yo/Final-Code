@@ -687,7 +687,7 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Australian Appeal Statistics
             </h2>
             <p className="text-slate-600 text-sm">Key figures from Australian criminal appeal courts</p>
@@ -730,7 +730,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Resources, Contacts & Research In One Flow
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -936,7 +936,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-blue-700 text-sm uppercase tracking-widest mb-2 font-semibold">Compare report tiers</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600" style={{ fontFamily: 'Crimson Pro, serif' }}>
               What's in Each Report?
             </h2>
             <p className="text-slate-700 text-base mt-2 max-w-2xl mx-auto">
@@ -1053,19 +1053,19 @@ const LandingPage = () => {
       </section>
 
       {/* About Link Section */}
-      <section className="py-12 px-6 bg-blue-50 border-t border-blue-200">
+      <section className="py-12 px-6 bg-blue-600 border-t border-blue-700">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-blue-700 text-xs uppercase tracking-widest mb-4">About</p>
-          <h3 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-blue-200 text-xs uppercase tracking-widest mb-4">About</p>
+          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Case Manager
           </h3>
-          <p className="text-blue-700 text-sm font-semibold mb-4">Founded by Debra King</p>
-          <p className="text-slate-700 text-sm mb-6 max-w-2xl mx-auto">
+          <p className="text-white text-sm font-semibold mb-4">Founded by Debra King</p>
+          <p className="text-white/90 text-sm mb-6 max-w-2xl mx-auto">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about" data-testid="about-story-link">
-            <Button className="landing-cta-primary" data-testid="about-story-button">
+            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold" data-testid="about-story-button">
               Read My Full Story
             </Button>
           </Link>
