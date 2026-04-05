@@ -119,7 +119,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-0">
             <img 
-              src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=600" 
+              src="/images/stock/scales-justice.jpg" 
               alt=""
               className="w-full h-full object-cover"
             />

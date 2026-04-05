@@ -17,7 +17,7 @@ const glossaryCategories = [
     name: "Legal Fundamentals",
     icon: Scale,
     color: "blue",
-    image: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/scales-justice.jpg",
     terms: [
       {
         term: "Mens Rea",
@@ -77,7 +77,7 @@ const glossaryCategories = [
     name: "Appeal Grounds",
     icon: Gavel,
     color: "red",
-    image: "https://images.unsplash.com/photo-1662516201865-8633915e668a?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/library-books.jpg",
     terms: [
       {
         term: "Appellant",
@@ -224,7 +224,7 @@ const glossaryCategories = [
     name: "Defences",
     icon: Shield,
     color: "emerald",
-    image: "https://images.unsplash.com/photo-1589307904488-7d60ff29c975?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/gavel.jpg",
     terms: [
       {
         term: "Self-Defence",
@@ -293,7 +293,7 @@ const glossaryCategories = [
     name: "Criminal Offences",
     icon: AlertTriangle,
     color: "purple",
-    image: "https://images.unsplash.com/photo-1764113697577-b5899b9a339d?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/law-books.jpg",
     terms: [
       {
         term: "Murder",
@@ -380,7 +380,7 @@ const glossaryCategories = [
     name: "Evidence Rules",
     icon: FileText,
     color: "blue",
-    image: "https://images.unsplash.com/photo-1619771914272-e3c1e5e4e5e3?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/handshake.jpg",
     terms: [
       {
         term: "Hearsay Evidence",
@@ -449,7 +449,7 @@ const glossaryCategories = [
     name: "Court Process",
     icon: Clock,
     color: "slate",
-    image: "https://images.unsplash.com/photo-1769092992534-f2d0210162b9?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/documents-desk.jpg",
     terms: [
       {
         term: "Bail",
@@ -518,7 +518,7 @@ const glossaryCategories = [
     name: "Sentencing",
     icon: Users,
     color: "orange",
-    image: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=200&fit=crop",
+    image: "/images/stock/scales-justice.jpg",
     terms: [
       {
         term: "Non-Parole Period (NPP)",
@@ -666,7 +666,7 @@ const LegalGlossary = () => {
       <section className="relative py-16 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/scales-justice.jpg" 
             alt="Lady Justice"
             className="w-full h-full object-cover opacity-10"
           />

@@ -81,7 +81,7 @@ const AboutPage = () => {
       <section className="relative py-16 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/scales-justice.jpg" 
             alt=""
             className="w-full h-full object-cover opacity-5"
           />

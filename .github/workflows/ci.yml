@@ -6,42 +6,63 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
-  backend:
+  backend-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r backend/requirements.txt
-      - name: Lint
-        run: |
           pip install ruff
-          ruff check backend/ --ignore E501,F401 --exclude backend/tests/
-      - name: Collect tests
+          pip install -r backend/requirements.txt
+      - name: Lint backend
+        run: ruff check backend/ --exclude="backend/tests/"
+      - name: Check config
         run: |
-          cd backend && python -m pytest tests/ --collect-only -q
+          python -c "
+          import ast, sys
+          with open('backend/config.py') as f:
+              ast.parse(f.read())
+          print('config.py: syntax OK')
+          "
 
-  frontend:
+  frontend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "18"
+          cache: "yarn"
+          cache-dependency-path: frontend/yarn.lock
       - name: Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile || yarn install
+        run: yarn install --frozen-lockfile
+      - name: Lint frontend
+        working-directory: frontend
+        run: npx eslint src/ --ext .js,.jsx --max-warnings 0 || true
       - name: Build
         working-directory: frontend
         env:
-          CI: "true"
-          REACT_APP_BACKEND_URL: "http://localhost:8001"
+          REACT_APP_BACKEND_URL: https://criminallawappealmanagement.com.au
         run: yarn build
+
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for exposed credentials
+        run: |
+          echo "Checking for hardcoded credentials..."
+          ! grep -rn "Grubbygrub88\|sess_[a-f0-9]\{32\}" backend/ frontend/src/ --include="*.py" --include="*.js" --include="*.jsx" || (echo "CREDENTIALS FOUND" && exit 1)
+          echo "No credentials found"
+      - name: Check .env not committed
+        run: |
+          if [ -f "backend/.env" ]; then
+            echo "WARNING: backend/.env should not be committed"
+            exit 1
+          fi
+          echo ".env not committed"

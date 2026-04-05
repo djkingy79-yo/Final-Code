@@ -223,7 +223,7 @@ const CompareCasesPage = ({ user }) => {
       <section className="relative py-12 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/office-desk.jpg" 
             alt=""
             className="w-full h-full object-cover opacity-5"
           />

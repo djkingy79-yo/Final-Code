@@ -5,7 +5,7 @@ Extract → Classify → Verify → Project → Draft
 
 ADDITIVE: Does not remove any existing route, feature, or collection.
 """
-from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from datetime import datetime, timezone
 import uuid
@@ -14,7 +14,6 @@ import logging
 from config import db
 from auth_utils import get_current_user
 from services.llm_service import call_llm_for_json
-from services.legitimacy_engine import calculate_ground_rating
 from services.pipeline.verify import verify_issue as pipeline_verify_issue
 from services.pipeline.argue import build_issue_argument
 from services.pipeline.submit import build_submissions_draft
@@ -1328,7 +1327,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, HRFlowable
-    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
     from io import BytesIO
     from fastapi.responses import StreamingResponse
 

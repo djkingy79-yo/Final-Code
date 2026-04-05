@@ -16,7 +16,7 @@ const faqs = [
     category: "Getting Started",
     icon: HelpCircle,
     color: "blue",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/office-desk.jpg",
     questions: [
       {
         q: "What is the Appeal Case Manager?",
@@ -40,7 +40,7 @@ const faqs = [
     category: "Appeals Process",
     icon: Gavel,
     color: "red",
-    image: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/scales-justice.jpg",
     questions: [
       {
         q: "What are the time limits for lodging an appeal?",
@@ -72,7 +72,7 @@ const faqs = [
     category: "Using the Tool",
     icon: FileText,
     color: "blue",
-    image: "https://images.unsplash.com/photo-1568667256549-094345857637?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/library-shelves.jpg",
     questions: [
       {
         q: "What documents should I upload?",
@@ -104,7 +104,7 @@ const faqs = [
     category: "Reports & Analysis",
     icon: BookOpen,
     color: "purple",
-    image: "https://images.unsplash.com/photo-1619771914272-e3c1e5e4e5e3?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/handshake.jpg",
     questions: [
       {
         q: "What's included in a Quick Summary Report?",
@@ -128,7 +128,7 @@ const faqs = [
     category: "Payments & Pricing",
     icon: CreditCard,
     color: "emerald",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/calculator.jpg",
     questions: [
       {
         q: "What does the free version include?",
@@ -156,7 +156,7 @@ const faqs = [
     category: "Privacy & Security",
     icon: Shield,
     color: "slate",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/laptop-work.jpg",
     questions: [
       {
         q: "Is my case information confidential?",
@@ -180,7 +180,7 @@ const faqs = [
     category: "Getting Legal Help",
     icon: Users,
     color: "orange",
-    image: "https://images.unsplash.com/photo-1521791055366-0d553872125f?crop=entropy&cs=srgb&fm=jpg&q=85&w=400&h=150&fit=crop",
+    image: "/images/stock/legal-library.jpg",
     questions: [
       {
         q: "How do I find a criminal appeal lawyer?",
@@ -277,7 +277,7 @@ const FAQPage = () => {
       <section className="relative py-16 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/scales-justice.jpg" 
             alt="Lady Justice"
             className="w-full h-full object-cover opacity-10"
           />

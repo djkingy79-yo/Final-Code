@@ -1,10 +1,11 @@
 {
   "appId": "com.debking.criminalappealai",
-  "appName": "Criminal Appeal AI",
+  "appName": "Appeal Case Manager",
   "webDir": "build",
   "server": {
     "androidScheme": "https",
-    "iosScheme": "https"
+    "iosScheme": "https",
+    "hostname": "criminallawappealmanagement.com.au"
   },
   "plugins": {
     "SplashScreen": {
@@ -31,12 +32,18 @@
   "ios": {
     "contentInset": "automatic",
     "preferredContentMode": "mobile",
-    "backgroundColor": "#0f172a"
+    "backgroundColor": "#0f172a",
+    "scheme": "appealcasemanager",
+    "buildConfiguration": "Release"
   },
   "android": {
-    "allowMixedContent": true,
+    "allowMixedContent": false,
     "backgroundColor": "#0f172a",
     "captureInput": true,
-    "webContentsDebuggingEnabled": false
+    "webContentsDebuggingEnabled": false,
+    "buildOptions": {
+      "keystorePath": "release.keystore",
+      "keystoreAlias": "appealcasemanager"
+    }
   }
 }

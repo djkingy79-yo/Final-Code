@@ -7,7 +7,6 @@ from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone
 import uuid
 import json
-import re
 import os
 import logging
 
@@ -24,10 +23,7 @@ from models import (
     SimilarCase,
 )
 from services.llm_service import call_llm_with_fallback
-from services.offence_helpers import get_offence_context, get_offence_system_prompt
-from services.document_helpers import build_document_context
 from services.legitimacy_engine import calculate_ground_rating
-from offence_framework import OFFENCE_CATEGORIES
 from services.pipeline import (
     extract_document_artifacts,
     classify_case_issues,

@@ -129,7 +129,7 @@ const Statistics = () => {
       <section className="relative py-16 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/data-charts.jpg" 
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
@@ -356,7 +356,7 @@ const Statistics = () => {
             <CardContent className="p-8 relative">
               <div className="absolute inset-0 opacity-10">
                 <img 
-                  src="https://images.unsplash.com/photo-1589578527966-fdac0f44566c?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" 
+                  src="/images/stock/scales-justice.jpg" 
                   alt=""
                   className="w-full h-full object-cover"
                 />

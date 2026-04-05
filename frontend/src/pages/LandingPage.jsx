@@ -140,7 +140,7 @@ const LandingPage = () => {
         {/* Background Image with Blue Overlay — DO NOT UNDO */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1565094003921-5abbacc16740?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxhdXN0cmFsaWFuJTIwaGlnaCUyMGNvdXJ0JTIwYnVpbGRpbmclMjBqdXN0aWNlfGVufDB8fHx8MTc3MzQyMDYzOXww&ixlib=rb-4.1.0&q=85" 
+            src="/images/stock/court-building.jpg" 
             alt="Australian High Court building"
             className="w-full h-full object-cover ios-image-safe image-safe"
             loading="eager"
@@ -222,7 +222,7 @@ const LandingPage = () => {
                   className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
                   loading="eager"
                   decoding="async"
-                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80'; }}
+                  onError={(e) => { e.target.src = '/images/stock/courtroom.jpg'; }}
                 />
                 {/* Floating Card - hidden (avoids misleading counts) */}
                 <div className="hidden" data-testid="hero-grounds-floating-card">

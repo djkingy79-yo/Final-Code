@@ -30,7 +30,7 @@ from models import (
     ReportRequest, FEATURE_PRICES, feature_type_variants,
     ReportMetadata,
 )
-from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_for_report, call_llm_structured
+from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
 from services.offence_helpers import get_offence_context, get_offence_system_prompt
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
@@ -58,7 +58,6 @@ from routers.pipeline import router as pipeline_router
 from routers.pipeline_staged import router as pipeline_staged_router
 from routers.caselaw import router as caselaw_router
 from routers.pipeline_staged import (
-    RefreshPipelineRequest as _StagedRefreshRequest,
     _ensure_document_extracts as _staged_ensure_extracts,
     _refresh_case_extract as _staged_refresh_case,
     _classify_issues as _staged_classify,

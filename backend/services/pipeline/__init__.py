@@ -1,6 +1,6 @@
-from services.pipeline.extract import extract_document_artifacts
-from services.pipeline.classify import classify_case_issues
-from services.pipeline.verify import verify_issue
-from services.pipeline.draft import draft_report_from_verified_material
-from services.pipeline.argue import build_issue_argument
-from services.pipeline.submit import build_submissions_draft
+from services.pipeline.extract import extract_document_artifacts as extract_document_artifacts
+from services.pipeline.classify import classify_case_issues as classify_case_issues
+from services.pipeline.verify import verify_issue as verify_issue
+from services.pipeline.draft import draft_report_from_verified_material as draft_report_from_verified_material
+from services.pipeline.argue import build_issue_argument as build_issue_argument
+from services.pipeline.submit import build_submissions_draft as build_submissions_draft

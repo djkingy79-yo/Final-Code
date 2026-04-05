@@ -187,7 +187,6 @@ DOCUMENTS:
         # Trigger pipeline extraction for any new documents not yet extracted
         try:
             from services.pipeline.extract import extract_document_artifacts
-            from services.pipeline_models import CaseExtract
             # Check which documents don't have extracts yet
             new_extractions = 0
             for doc in docs_with_text:

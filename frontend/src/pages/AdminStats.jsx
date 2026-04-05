@@ -123,7 +123,7 @@ const AdminStats = () => {
       <section className="relative py-12 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=srgb&fm=jpg&q=85&w=1920" 
+            src="/images/stock/data-charts.jpg" 
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
