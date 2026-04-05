@@ -141,8 +141,6 @@ const TermsOfService = () => {
               <li><strong>"User Content"</strong> means any documents, files, text, notes, or other materials uploaded or entered into the Application by a User.</li>
               <li><strong>"Paid Services"</strong> means any feature, report, or service within the Application that requires payment, including but not limited to Full Detailed Reports, Extensive Log Reports, and Grounds Unlock.</li>
               <li><strong>"PayID"</strong> means the Australian real-time payment system operated through the New Payments Platform (NPP) administered by NPP Australia Limited.</li>
-            </ul>
-          </SectionCard>
 
           {/* 3. About the Creator */}
           <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden">
@@ -295,13 +293,8 @@ const TermsOfService = () => {
             <h3 className="font-semibold text-slate-900 mt-1 mb-2">11.1 Pricing</h3>
             <p>Certain features of the Application are available only upon payment. Current pricing is displayed within the Application at the time of purchase. All prices are quoted in Australian Dollars (AUD) and are inclusive of GST where applicable. The Owner reserves the right to change pricing at any time without prior notice. Any price changes will not affect transactions already completed.</p>
 
-            <h3 className="font-semibold text-slate-900 mt-4 mb-2">11.2 Payment Methods</h3>
-            <p>The Application accepts payment via the following methods:</p>
-            <ul className="list-disc list-inside space-y-1.5 ml-2">
-              <li><strong>PayID:</strong> Real-time bank transfer via the Australian New Payments Platform (NPP). PayID payments are processed through the Australian banking system and are subject to the terms and conditions of your financial institution. PayID transactions are typically instant but may be subject to processing delays imposed by your bank. The Owner is not responsible for any delays, errors, or failures in the PayID payment system operated by NPP Australia Limited or participating financial institutions.</li>
-              <li><strong>Stripe:</strong> Credit card and debit card payments processed through Stripe, Inc. All card payments are subject to Stripe's terms of service and privacy policy. Card details are processed and stored by Stripe and are never stored on the Application's servers.</li>
-              <li><strong>PayPal:</strong> Payments processed through PayPal Holdings, Inc. PayPal transactions are subject to PayPal's User Agreement and Privacy Policy.</li>
-            </ul>
+            <h3 className="font-semibold text-slate-900 mt-4 mb-2">11.2 Payment Method</h3>
+            <p>The Application accepts payment exclusively via <strong>PayID</strong>, a real-time bank transfer system operated through the Australian New Payments Platform (NPP). PayID payments are processed through the Australian banking system and are subject to the terms and conditions of your financial institution. PayID transactions are typically instant but may be subject to processing delays imposed by your bank. The Owner is not responsible for any delays, errors, or failures in the PayID payment system operated by NPP Australia Limited or participating financial institutions.</p>
 
             <h3 className="font-semibold text-slate-900 mt-4 mb-2">11.3 PayID Specific Terms</h3>
             <p>When making a payment via PayID, you acknowledge and agree that:</p>
@@ -315,7 +308,7 @@ const TermsOfService = () => {
             </ul>
 
             <h3 className="font-semibold text-slate-900 mt-4 mb-2">11.4 Payment Confirmation & Service Activation</h3>
-            <p>Paid services will be activated upon successful confirmation of payment. For Stripe and PayPal, this is typically immediate. For PayID bank transfers, activation may be delayed until the payment is confirmed and reconciled. The Owner will use reasonable efforts to activate services promptly upon receipt of payment.</p>
+            <p>Paid services will be activated upon successful confirmation of PayID payment. Activation may be delayed until the payment is confirmed and reconciled. The Owner will use reasonable efforts to activate services promptly upon receipt of payment.</p>
 
             <h3 className="font-semibold text-slate-900 mt-4 mb-2">11.5 Failed Payments</h3>
             <p>If a payment fails, is declined, or is reversed (including chargebacks), the Owner reserves the right to suspend or revoke access to the paid service immediately and without notice. Repeated chargebacks or payment disputes may result in permanent account suspension.</p>
@@ -410,7 +403,7 @@ const TermsOfService = () => {
               <li><strong>Case Information:</strong> Case titles, defendant names, court details, offence types, state/territory selections, case numbers, judge names, and case summaries entered by the User</li>
               <li><strong>Documents:</strong> All files uploaded to the Application, including PDFs, Word documents, images, and any text extracted from those documents</li>
               <li><strong>Notes:</strong> Any notes, annotations, or comments created by the User within the Application</li>
-              <li><strong>Payment Information:</strong> Transaction records, payment method identifiers, and payment confirmation details. Note: full credit card numbers are processed and stored exclusively by our payment processors (Stripe, PayPal) and are never stored on our servers</li>
+              <li><strong>Payment Information:</strong> Transaction records, PayID payment references, and payment confirmation details. No credit card or banking credentials are collected or stored by the Application.</li>
             </ul>
 
             <h3 className="font-semibold text-slate-900 mt-4 mb-2">18.2 Information Collected Automatically</h3>
@@ -424,7 +417,7 @@ const TermsOfService = () => {
             <h3 className="font-semibold text-slate-900 mt-4 mb-2">18.3 Information from Third Parties</h3>
             <ul className="list-disc list-inside space-y-1.5 ml-2">
               <li><strong>Google Authentication:</strong> If you sign in using Google, we receive your name, email address, and profile picture from Google in accordance with Google's privacy policy</li>
-              <li><strong>Payment Processors:</strong> Transaction confirmation details from Stripe, PayPal, or banking institutions processing PayID transfers</li>
+              <li><strong>Payment Processors:</strong> Transaction confirmation details from banking institutions processing PayID transfers</li>
             </ul>
           </SectionCard>
 
@@ -451,8 +444,6 @@ const TermsOfService = () => {
             <ul className="list-disc list-inside space-y-1.5 ml-2">
               <li><strong>OpenAI (GPT-4o):</strong> Your uploaded document text is transmitted to OpenAI's API for AI-powered analysis and report generation. OpenAI processes this data in accordance with their API data usage policies. As of the effective date of this policy, OpenAI states that API data is not used to train their models.</li>
               <li><strong>Google Authentication:</strong> Account authentication is handled by Google's OAuth 2.0 service, subject to Google's Privacy Policy</li>
-              <li><strong>Stripe:</strong> Credit/debit card payment processing, subject to Stripe's Privacy Policy and PCI-DSS compliance standards</li>
-              <li><strong>PayPal:</strong> Alternative payment processing, subject to PayPal's Privacy Policy</li>
               <li><strong>Resend:</strong> Transactional email delivery (password resets, notifications), subject to Resend's Privacy Policy</li>
               <li><strong>MongoDB Atlas:</strong> Cloud database hosting for application data storage, subject to MongoDB's Data Processing Agreement</li>
             </ul>
@@ -479,7 +470,7 @@ const TermsOfService = () => {
               <li>Secure authentication via Google OAuth 2.0 and encrypted session tokens</li>
               <li>Access controls limiting access to personal information to authorised personnel only</li>
               <li>Regular security updates and maintenance of the Application infrastructure</li>
-              <li>Payment card data processed exclusively by PCI-DSS compliant processors (Stripe, PayPal)</li>
+              <li>Secure payment processing via the Australian PayID/NPP banking system</li>
             </ul>
             <p>However, no method of electronic transmission or storage is completely secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security. You upload documents and provide personal information at your own risk.</p>
           </SectionCard>
