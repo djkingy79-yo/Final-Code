@@ -4,14 +4,40 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Heart, Users, Shield, Award, Menu, X, Quote, CheckCircle, AlertTriangle, Gavel } from "lucide-react";
+import { Scale, ArrowLeft, Heart, Users, Shield, Award, Menu, X, Quote, CheckCircle, AlertTriangle, Gavel, Send, Mail, User, MessageSquare } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { API } from "../App";
+import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 
 const AboutPage = () => {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactData, setContactData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    if (!contactData.name || !contactData.email || !contactData.subject || !contactData.message) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    setContactLoading(true);
+    try {
+      await axios.post(`${API}/contact`, contactData);
+      setContactSubmitted(true);
+      toast.success("Message sent successfully!");
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setContactLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
@@ -381,6 +407,81 @@ const AboutPage = () => {
           </blockquote>
           <p className="text-slate-900 font-semibold mt-4">— Debra King</p>
           <p className="text-slate-700 text-sm mt-1">Founder, Appeal Case Manager</p>
+        </div>
+      </section>
+
+      {/* Contact Deb Section */}
+      <section className="py-12 px-6 bg-slate-50" data-testid="about-contact-section">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <MessageSquare className="w-7 h-7 text-white" />
+              </div>
+            </div>
+            <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-2">Get in Touch</p>
+            <h2 className="text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Contact Deb
+            </h2>
+            <p className="text-slate-600">
+              Have a question or need help? Send a message and I'll get back to you as soon as possible.
+            </p>
+          </div>
+
+          {contactSubmitted ? (
+            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 text-center">
+              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-emerald-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Message Sent!</h3>
+              <p className="text-slate-600">Thanks for reaching out. Deb will get back to you as soon as possible.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleContactSubmit} className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
+                    <User className="w-4 h-4 text-red-600" />
+                    Your Name
+                  </label>
+                  <Input type="text" value={contactData.name} onChange={(e) => setContactData({...contactData, name: e.target.value})} placeholder="Enter your name" className="w-full rounded-xl" data-testid="about-contact-name" />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
+                    <Mail className="w-4 h-4 text-red-600" />
+                    Your Email
+                  </label>
+                  <Input type="email" value={contactData.email} onChange={(e) => setContactData({...contactData, email: e.target.value})} placeholder="Enter your email" className="w-full rounded-xl" data-testid="about-contact-email" />
+                </div>
+              </div>
+              <div>
+                <label className="flex items-center gap-2 text-sm font-medium text-slate-900 mb-2">
+                  <MessageSquare className="w-4 h-4 text-red-600" />
+                  Subject
+                </label>
+                <Input type="text" value={contactData.subject} onChange={(e) => setContactData({...contactData, subject: e.target.value})} placeholder="What's this about?" className="w-full rounded-xl" data-testid="about-contact-subject" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-900 mb-2">Message</label>
+                <Textarea value={contactData.message} onChange={(e) => setContactData({...contactData, message: e.target.value})} placeholder="Type your message here..." rows={6} className="w-full rounded-xl" data-testid="about-contact-message" />
+              </div>
+              <Button type="submit" disabled={contactLoading} className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-xl py-5 font-semibold" data-testid="about-contact-submit">
+                {contactLoading ? (
+                  <span className="flex items-center justify-center gap-2"><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>Sending...</span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2"><Send className="w-5 h-5" />Send Message</span>
+                )}
+              </Button>
+            </form>
+          )}
+
+          <div className="mt-6 bg-white rounded-2xl border border-slate-200 p-5 text-center">
+            <p className="text-slate-600 mb-1">You can also reach Deb directly at</p>
+            <a href="mailto:djkingy79@gmail.com" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-lg">
+              <Mail className="w-5 h-5" />
+              djkingy79@gmail.com
+            </a>
+          </div>
         </div>
       </section>
 

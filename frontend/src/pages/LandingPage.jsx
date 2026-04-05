@@ -72,7 +72,6 @@ const LandingPage = () => {
                 <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-glossary">Legal Glossary</Link>
                 <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-lawyers">Lawyer Directory</Link>
                 <Link to="/faq" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-faq">FAQ</Link>
-                <Link to="/contact" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-contact">Contact</Link>
                 <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-about">About</Link>
                 <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-to-use">How To Use</Link>
                 <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-professional-summary">For Legal Professionals</Link>
@@ -111,7 +110,6 @@ const LandingPage = () => {
             <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
             <Link to="/lawyers" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
             <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
-            <Link to="/contact" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-contact">Contact</Link>
             <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
             <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
             <Link to="/professional-summary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>

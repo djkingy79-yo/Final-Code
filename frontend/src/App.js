@@ -22,7 +22,6 @@ import ResourcesPage from "./pages/ResourcesPage";
 import ProfessionalSummary from "./pages/ProfessionalSummary";
 import TermsOfService from "./pages/TermsOfService";
 import AdminStats from "./pages/AdminStats";
-import ContactPage from "./pages/ContactPage";
 import LegalGlossary from "./pages/LegalGlossary";
 import SuccessStories from "./pages/SuccessStories";
 import Statistics from "./pages/Statistics";
@@ -301,10 +300,6 @@ function AppRouter() {
             {({ user }) => <AdminStats user={user} />}
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/contact"
-        element={<ContactPage />}
       />
       <Route
         path="/glossary"

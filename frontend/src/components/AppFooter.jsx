@@ -24,7 +24,6 @@ const AppFooter = () => {
               <Link to="/legal-resources" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-resources">Resources & Contacts</Link>
               <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
               <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/contact" className="text-white font-bold hover:text-blue-300" data-testid="footer-contact">Contact</Link>
               <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
             </div>
           </div>
@@ -36,7 +35,6 @@ const AppFooter = () => {
               <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
               <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
               <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
-              <Link to="/contact" className="text-white font-bold hover:text-blue-300" data-testid="footer-contact-legal">Contact</Link>
               <Link to="/about" className="text-white font-bold hover:text-blue-300" data-testid="footer-about">About</Link>
               <Link to="/terms" className="text-white font-bold hover:text-blue-300" data-testid="footer-terms">Terms & Privacy</Link>
             </div>
