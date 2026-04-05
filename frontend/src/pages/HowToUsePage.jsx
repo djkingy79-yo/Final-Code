@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb, MessageSquare } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
-import { useTheme } from "../contexts/ThemeContext";
 
 const HowToUsePage = () => {
 
@@ -16,37 +15,42 @@ const HowToUsePage = () => {
   const steps = [
     {
       num: 1,
-      title: "Create a New Case",
+      title: "Sign In and Create a New Case",
       icon: FileText,
       color: "blue",
       image: "/images/howto/live-step2-new-case.png",
-      description: "Sign in and create a new appeal case from your dashboard.",
+      description: "Sign in with your email or Google account and create your first appeal case from the dashboard.",
+      reminder: "When you create a case, selecting your State/Territory and Offence Type will auto-generate the relevant legislation, court procedures, and appeal framework for that jurisdiction. You can edit these details at any time if circumstances change.",
       instructions: [
         "Sign in with your email or Google account",
         "Click '+ New Case' on your dashboard",
         "Enter the case name (e.g., 'R v Smith [2024]')",
-        "Select your State/Territory jurisdiction",
-        "Choose the offence type (Murder, Assault, Drug Supply, etc.)",
-        "Click 'Create Case' to save"
+        "Select your State/Territory — this auto-generates jurisdiction-specific legislation and court procedures",
+        "Choose the offence type (Murder, Assault, Drug Supply, etc.) — this auto-generates relevant appeal grounds for that crime",
+        "Click 'Create Case' to save",
+        "You can edit the state, offence type, and case details at any time if needed",
+        "You can create multiple cases if you have more than one matter to manage"
       ],
-      tip: "Include the citation if you have it — this helps organise your cases."
+      tip: "Include the citation if you have it — this helps organise your cases. The state and offence type drive the entire analysis, so make sure they are correct."
     },
     {
       num: 2,
-      title: "Upload Documents & Extract Text",
+      title: "Upload Documents and Extract Text",
       icon: Upload,
       color: "emerald",
       image: "/images/howto/live-step3-documents.png",
-      description: "Upload all relevant case documents and extract the text for AI analysis.",
+      description: "Upload all relevant case documents — transcripts, evidence briefs, sentencing remarks, witness statements, expert reports — and extract the text so the AI can analyse them.",
       instructions: [
         "Open your case and go to the 'Documents' tab",
-        "Click 'Upload Document' or drag and drop files",
-        "Supported formats: PDF, DOCX, images (JPG, PNG)",
-        "After uploading, click the 'Extract Text' button on each document",
-        "The system extracts text using OCR so the AI can analyse it",
-        "Upload as many documents as you need — there is no limit"
+        "Click 'Upload Document' or drag and drop files into the upload area",
+        "Supported formats: PDF, DOCX, images (JPG, PNG) — scanned documents are supported via OCR",
+        "After uploading, click the 'Extract Text' button on each document to pull the text content",
+        "The system uses OCR (Optical Character Recognition) to extract text from scanned and photographed documents",
+        "Upload as many documents as you need — there is no limit",
+        "You can upload additional documents at any time as you receive them"
       ],
-      tip: "Upload everything you have. The more documents, the better the AI analysis will be. Always click Extract Text after uploading."
+      tip: "Upload everything you have — the more documents, the better the AI analysis. Always click 'Extract Text' after uploading each document.",
+      extraTip: "If you add new documents later, just press 'Extract Text' on the new files and the AI will automatically include them in future analyses. You do not need to re-run previous steps."
     },
     {
       num: 3,
@@ -54,32 +58,33 @@ const HowToUsePage = () => {
       icon: Clock,
       color: "purple",
       image: "/images/howto/live-step4-timeline.png",
-      description: "Use the AI to automatically build a chronological timeline of key events from your documents.",
+      description: "Use the AI to automatically build a chronological timeline of key events extracted from your uploaded documents. This helps identify gaps, inconsistencies, and critical dates.",
       instructions: [
         "Go to the 'Timeline' tab in your case",
         "Click the 'AI Analyse' button to start the AI timeline extraction",
-        "The AI reviews your documents and extracts dates and events",
-        "Events are displayed in chronological order",
-        "You can manually add, edit, or remove events as needed"
+        "The AI reviews all your extracted documents and pulls out dates, events, and milestones",
+        "Events are displayed in chronological order with source document references",
+        "You can manually add, edit, or remove events as needed to correct or supplement the AI output",
+        "Use the timeline to spot gaps in the narrative that may indicate missing evidence or procedural issues"
       ],
-      tip: "A clear timeline helps identify gaps in the narrative and potential inconsistencies."
+      tip: "A clear timeline helps identify gaps in the narrative and potential inconsistencies. Check the timeline against your own recollection of events — if something is missing, upload more documents."
     },
     {
       num: 4,
-      title: "Analyse Potential Grounds",
+      title: "Analyse Potential Grounds of Appeal",
       icon: BarChart3,
       color: "red",
       image: "/images/howto/live-step5-grounds.png",
-      description: "The AI identifies potential grounds of appeal. The free tier shows the number of grounds found. Pay $99 AUD to unlock full titles and detailed reports on each ground.",
+      description: "The AI identifies potential grounds of appeal based on your uploaded documents. The free tier shows the number of grounds found. Pay $99 AUD to unlock the full titles, strength ratings, and detailed analysis of each ground.",
       instructions: [
         "Go to the 'Grounds' tab in your case",
-        "Click 'Analyse Grounds' to start the AI review",
-        "The free result shows only the number of grounds identified",
-        "Pay $99 AUD to unlock the full title and report for each ground found",
-        "Each ground shows its assessed strength (Strong / Moderate / Potential)",
-        "Click 'Investigate' on any ground for a deep analysis of that specific ground"
+        "Click 'Analyse Grounds' to start the AI review of your documents",
+        "The free result shows only the number of grounds identified — not the details",
+        "Pay $99 AUD to unlock the full title and detailed report for each ground found",
+        "Each ground shows its assessed strength: Strong, Moderate, or Potential",
+        "Click 'Investigate' on any ground for a deep AI analysis of that specific issue, including case law and Crown response"
       ],
-      tip: "The Investigate button runs a deep AI analysis on each individual ground — use it to understand the strength and case law behind each issue."
+      tip: "The Investigate button runs a deep AI analysis on each individual ground — use it to understand the strength, legal test, relevant case law, and likely Crown response behind each issue."
     },
     {
       num: 5,
@@ -87,15 +92,16 @@ const HowToUsePage = () => {
       icon: Lightbulb,
       color: "blue",
       image: "/images/howto/live-step5-notes.png",
-      description: "Keep track of your research, strategy, and follow-up items with case notes.",
+      description: "Keep track of your research, strategy notes, questions for your lawyer, and follow-up items all in one place.",
       instructions: [
         "Go to the 'Notes' tab in your case",
         "Click 'Add Note' to create a new note",
         "Choose a category: Strategy, Research, Follow Up, or General",
-        "Pin important notes to keep them at the top",
-        "Use notes to record your own observations and research"
+        "Pin important notes to keep them at the top of the list",
+        "Use notes to record your own observations, questions, and research as you review each ground",
+        "Notes are saved automatically and can be edited at any time"
       ],
-      tip: "Good notes help when discussing the case with a lawyer. Record your thoughts as you review each ground."
+      tip: "Good notes are invaluable when discussing the case with a lawyer. Record your thoughts, questions, and observations as you work through each ground and document."
     },
     {
       num: 6,
@@ -103,16 +109,17 @@ const HowToUsePage = () => {
       icon: FileCheck,
       color: "indigo",
       image: "/images/howto/live-step8-reports.png",
-      description: "Create professional reports summarising your case and findings. Three tiers are available, each with increasing depth of analysis.",
+      description: "Create professional reports summarising your case, grounds, and findings. Three tiers are available, each with increasing depth of analysis. All reports can be exported as PDF or Word documents.",
       instructions: [
-        "Go to the 'Reports' tab",
+        "Go to the 'Reports' tab in your case",
         "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
-        "Each report includes a colour-coded cover page and table of contents",
-        "Reports are generated as PDF and Word (DOCX) documents",
-        "Download and share with your lawyer",
+        "Quick Summary: 8 sections, 2,000-3,000 words — a snapshot of your case and identified grounds",
+        "Full Detailed: 15 sections, 15,000-20,000 words — includes comparative sentencing, submissions blueprint, and 800+ words per ground",
+        "Extensive Log: 20 sections, 25,000-35,000 words — includes 5 exclusive sections (hearing prep, conference pack, risk assessment) and 1,200+ words per ground",
+        "Download reports as PDF or Word (DOCX) documents to share with your lawyer",
         "All three reports must be generated to unlock the Barrister View"
       ],
-      tip: "The Full Report is ideal to take to a lawyer for review. Generate all three to access the Barrister View.",
+      tip: "The Full Detailed Report is ideal to take to a lawyer for initial review. Generate all three to unlock the Barrister View — the capstone counsel-ready brief.",
       reportScreenshots: [
         { label: "Quick Summary (Free)", image: "/images/howto/live-report-quick-summary.png", color: "emerald" },
         { label: "Full Detailed Report ($150 AUD)", image: "/images/howto/live-report-full-detailed.png", color: "blue" },
@@ -125,15 +132,16 @@ const HowToUsePage = () => {
       icon: FileCheck,
       color: "teal",
       image: "/images/howto/live-barrister.png",
-      description: "Once all three reports are generated, the Barrister View unlocks. It synthesises every report into one hearing-ready brief.",
+      description: "Once all three reports are generated, the Barrister View unlocks. It synthesises every report into one hearing-ready brief with 12 sections plus the Barrister Issue Matrix attachment.",
       instructions: [
         "Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)",
         "Click 'Barrister View' from your case reports once unlocked",
-        "Opens a clean, professional presentation synthesising all three reports",
-        "Includes 'Attachment A — Barrister Issue Matrix' for counsel reference",
-        "Can be printed or exported to PDF or Word document"
+        "Opens a clean, professional presentation synthesising all three reports into one document",
+        "Includes 'Attachment A — Barrister Issue Matrix' for quick counsel reference",
+        "Can be printed or exported to PDF or Word document",
+        "Designed specifically for conference-ready presentation to counsel"
       ],
-      tip: "Use the Barrister View when discussing your case with legal professionals. It is designed as a counsel-grade brief."
+      tip: "Use the Barrister View when meeting with legal professionals. It is designed as a counsel-grade brief that consolidates everything into one authoritative document."
     },
     {
       num: 8,
@@ -141,15 +149,15 @@ const HowToUsePage = () => {
       icon: Search,
       color: "blue",
       image: "/images/howto/live-step6-legal.png",
-      description: "Explore the applicable legislation, appeal procedures, and court forms for your jurisdiction.",
+      description: "Explore the applicable legislation, appeal procedures, court forms, and legal aid contacts for your specific jurisdiction and offence type.",
       instructions: [
         "Go to the 'Legal' tab in your case",
-        "Review applicable legislation with links to AustLII",
-        "Follow the step-by-step 'How to Start Your Appeal' guide",
-        "Access appeal forms for your state court",
-        "Review common appeal grounds for your offence type"
+        "Review applicable legislation with direct links to AustLII",
+        "Follow the step-by-step 'How to Start Your Appeal' guide for your state",
+        "Access appeal forms for your state court registry",
+        "Review common appeal grounds for your offence type with success rate data"
       ],
-      tip: "The Legal Framework tab provides direct links to legislation, court forms, and Legal Aid resources."
+      tip: "The Legal Framework tab is auto-generated based on your state and offence type selection. It provides direct links to legislation, court forms, Legal Aid, and pro bono resources."
     },
     {
       num: 9,
@@ -157,43 +165,43 @@ const HowToUsePage = () => {
       icon: CheckCircle,
       color: "slate",
       image: "/images/howto/live-step7-progress.png",
-      description: "Use the Appeal Checklist to track what has been done and what is next.",
+      description: "Use the Appeal Checklist to track what has been completed and what needs to happen next. Set deadlines and use the AI progress assessment.",
       instructions: [
-        "Go to the 'Progress' tab",
-        "Click 'Appeal Checklist' to expand the full checklist",
-        "Check off completed items as you work through each phase",
-        "Track important deadlines with the Deadline Tracker",
-        "Use 'AI Analyse Progress' for an AI-powered assessment of where your appeal stands"
+        "Go to the 'Progress' tab in your case",
+        "Click 'Appeal Checklist' to expand the full checklist of steps",
+        "Check off completed items as you work through each phase of your appeal preparation",
+        "Track important deadlines with the Deadline Tracker — 28 days from sentencing is critical",
+        "Use 'AI Analyse Progress' for an AI-powered assessment of where your appeal currently stands"
       ],
-      tip: "Appeals have strict deadlines — usually 28 days to file Notice of Intention. Use the checklist to stay on track."
+      tip: "Appeals have strict deadlines — usually 28 days from sentencing to file Notice of Intention to Appeal. Use the checklist and deadline tracker to stay on track and avoid missing critical dates."
     },
     {
       num: 10,
-      title: "Chat & Collaboration",
+      title: "Chat and Collaboration",
       icon: MessageSquare,
       color: "emerald",
       image: "/images/howto/live-notes.png",
-      description: "Collaborate with others involved in the case using the built-in chat and collaboration features.",
+      description: "Collaborate with others involved in the case using the built-in collaboration tools. Keep all communication linked to the case for easy reference.",
       instructions: [
         "Use the collaboration tools to share case access with trusted parties",
         "Communicate securely within the app about case developments",
         "Keep all discussions linked to the relevant case for easy reference",
-        "Coordinate with lawyers, barristers, or support persons"
+        "Coordinate with lawyers, barristers, support persons, or family members"
       ],
-      tip: "Keeping all communication within the app ensures nothing gets lost across emails and messages."
+      tip: "Keeping all communication within the app ensures nothing gets lost across emails and text messages. Everything stays linked to the case."
     }
   ];
 
   const getColorClasses = (color) => {
     const map = {
-      blue: { bg: "bg-blue-100", text: "text-blue-700", tipBg: "bg-blue-50", tipText: "text-blue-800" },
-      emerald: { bg: "bg-emerald-100", text: "text-emerald-700", tipBg: "bg-emerald-50", tipText: "text-emerald-800" },
-      purple: { bg: "bg-purple-100", text: "text-purple-700", tipBg: "bg-purple-50", tipText: "text-purple-800" },
-      red: { bg: "bg-red-100", text: "text-red-700", tipBg: "bg-red-50", tipText: "text-red-800" },
-      orange: { bg: "bg-orange-100", text: "text-orange-700", tipBg: "bg-orange-50", tipText: "text-orange-800" },
-      teal: { bg: "bg-teal-100", text: "text-teal-700", tipBg: "bg-teal-50", tipText: "text-teal-800" },
-      indigo: { bg: "bg-indigo-100", text: "text-indigo-700", tipBg: "bg-indigo-50", tipText: "text-indigo-800" },
-      slate: { bg: "bg-slate-100", text: "text-slate-700", tipBg: "bg-slate-50", tipText: "text-slate-800" }
+      blue: { bg: "bg-blue-100", text: "text-blue-700", tipBg: "bg-blue-50", tipText: "text-blue-800", tipBorder: "border-blue-200" },
+      emerald: { bg: "bg-emerald-100", text: "text-emerald-700", tipBg: "bg-emerald-50", tipText: "text-emerald-800", tipBorder: "border-emerald-200" },
+      purple: { bg: "bg-purple-100", text: "text-purple-700", tipBg: "bg-purple-50", tipText: "text-purple-800", tipBorder: "border-purple-200" },
+      red: { bg: "bg-red-100", text: "text-red-700", tipBg: "bg-red-50", tipText: "text-red-800", tipBorder: "border-red-200" },
+      orange: { bg: "bg-orange-100", text: "text-orange-700", tipBg: "bg-orange-50", tipText: "text-orange-800", tipBorder: "border-orange-200" },
+      teal: { bg: "bg-teal-100", text: "text-teal-700", tipBg: "bg-teal-50", tipText: "text-teal-800", tipBorder: "border-teal-200" },
+      indigo: { bg: "bg-indigo-100", text: "text-indigo-700", tipBg: "bg-indigo-50", tipText: "text-indigo-800", tipBorder: "border-indigo-200" },
+      slate: { bg: "bg-slate-100", text: "text-slate-700", tipBg: "bg-slate-50", tipText: "text-slate-800", tipBorder: "border-slate-200" }
     };
     return map[color] || map.blue;
   };
@@ -216,7 +224,7 @@ const HowToUsePage = () => {
             <Link to="/legal-resources" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-resources">Resources</Link>
             <Link to="/legal-framework" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-legal-framework">Legal Framework</Link>
             <Link to="/faq" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="how-to-use-nav-faq">FAQ</Link>
-<Link to="/" data-testid="how-to-use-back-link">
+            <Link to="/" data-testid="how-to-use-back-link">
               <Button className="landing-cta-primary" data-testid="how-to-use-back-btn">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
@@ -238,8 +246,6 @@ const HowToUsePage = () => {
         )}
       </header>
 
-      <div className="howto-small-text">
-
       {/* Hero */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
@@ -251,25 +257,26 @@ const HowToUsePage = () => {
           <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             How to Use the App
           </h1>
-          <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-slate-700 max-w-2xl mx-auto">
             A step-by-step guide with screenshots to help you get the most out of Appeal Case Manager. 
             Follow these steps to organise your case and identify potential appeal grounds.
           </p>
         </div>
       </section>
 
-      {/* Quick Start */}
-      <section className="py-8 px-6 bg-blue-50 border-b border-blue-200">
+      {/* Before You Start — Bright Blue */}
+      <section className="py-8 px-6 bg-blue-600">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-start gap-4">
-            <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-1" />
+            <AlertTriangle className="w-8 h-8 text-white shrink-0 mt-1" />
             <div>
-              <h2 className="font-bold text-slate-900 mb-2 text-[12px]">Before You Start</h2>
-              <ul className="text-slate-700 space-y-1 text-[11px] leading-tight">
-                <li>- <strong>Gather your documents</strong> — transcripts, evidence, court records, witness statements</li>
-                <li>- <strong>Note key dates</strong> — incident date, arrest, trial, sentencing</li>
-                <li>- <strong>Know your deadline</strong> — you usually have 28 days from sentencing to file an appeal</li>
-                <li>- <strong>This is NOT legal advice</strong> — always consult a qualified lawyer</li>
+              <h2 className="font-extrabold text-white text-xl md:text-2xl mb-3">Before You Start</h2>
+              <ul className="text-white space-y-2 text-base font-bold leading-relaxed">
+                <li>- <span className="font-extrabold">Gather your documents</span> — transcripts, evidence, court records, witness statements, sentencing remarks, expert reports</li>
+                <li>- <span className="font-extrabold">Note key dates</span> — incident date, arrest, trial start, verdict, sentencing date</li>
+                <li>- <span className="font-extrabold">Know your deadline</span> — you usually have 28 days from sentencing to file an appeal</li>
+                <li>- <span className="font-extrabold">This is NOT legal advice</span> — always consult a qualified lawyer before taking any action</li>
+                <li>- <span className="font-extrabold">Upload everything</span> — the more documents you provide, the more thorough the AI analysis will be</li>
               </ul>
             </div>
           </div>
@@ -281,59 +288,78 @@ const HowToUsePage = () => {
         <div className="space-y-20">
           {steps.map((step, index) => {
             const colors = getColorClasses(step.color);
-            const isEven = index % 2 === 1;
             const Icon = step.icon;
             
             return (
               <div key={step.num} className="space-y-6" data-testid={`howto-step-${step.num}`}>
                 {/* Step Header */}
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}>
-                    <Icon className={`w-6 h-6 ${colors.text}`} />
+                  <div className={`w-14 h-14 rounded-xl ${colors.bg} flex items-center justify-center`}>
+                    <Icon className={`w-7 h-7 ${colors.text}`} />
                   </div>
-                  <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP {step.num}</span>
+                  <span className="text-sm font-bold text-white bg-blue-600 px-3 py-1.5 rounded-lg">STEP {step.num}</span>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-slate-900">
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {step.title}
                 </h3>
-                <p className="text-slate-700 leading-relaxed text-[11px]">{step.description}</p>
+                <p className="text-base md:text-lg text-slate-700 leading-relaxed">{step.description}</p>
 
-                {/* Screenshot */}
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+                {/* Reminder box for Step 1 */}
+                {step.reminder && (
+                  <div className="bg-blue-600 rounded-xl p-5 text-white">
+                    <p className="font-bold text-base leading-relaxed">
+                      <AlertTriangle className="w-5 h-5 inline mr-2" />
+                      {step.reminder}
+                    </p>
+                  </div>
+                )}
+
+                {/* Screenshot — Full Width, Zoomed In */}
+                <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl">
                   <img 
                     src={step.image} 
                     alt={`Step ${step.num}: ${step.title}`}
-                    className="w-full rounded-none"
+                    className="w-full"
                     loading="lazy"
+                    style={{ transform: 'scale(1.05)', transformOrigin: 'center center' }}
                   />
                 </div>
 
-                {/* Instructions */}
-                <div className={`grid ${isEven ? 'md:grid-cols-2' : 'md:grid-cols-2'} gap-6`}>
-                  <div>
-                    <h4 className="font-semibold text-slate-900 mb-3 text-[11px]">Instructions:</h4>
-                    <ul className="space-y-1 text-slate-700 text-[11px] leading-tight">
-                      {step.instructions.map((inst, i) => (
-                        <li key={i} className="flex items-start gap-1">
-                          <ChevronRight className="w-3 h-3 shrink-0 mt-0.5" />
-                          {inst}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className={`p-3 ${colors.tipBg} rounded-xl text-[11px] leading-tight ${colors.tipText}`}>
-                    <strong>Tip:</strong> {step.tip}
-                  </div>
+                {/* Instructions — Bigger Font */}
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-3 text-lg">Instructions:</h4>
+                  <ul className="space-y-2 text-slate-700 text-base leading-relaxed">
+                    {step.instructions.map((inst, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" />
+                        <span>{inst}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                {/* Report type screenshots for Step 8 */}
+                {/* Tip Box */}
+                <div className={`p-5 ${colors.tipBg} border ${colors.tipBorder} rounded-xl text-base leading-relaxed ${colors.tipText}`}>
+                  <Lightbulb className="w-5 h-5 inline mr-2" />
+                  <strong>Tip:</strong> {step.tip}
+                </div>
+
+                {/* Extra Tip (for Step 2 - new docs) */}
+                {step.extraTip && (
+                  <div className="p-5 bg-blue-600 rounded-xl text-white text-base leading-relaxed font-bold">
+                    <AlertTriangle className="w-5 h-5 inline mr-2" />
+                    <strong>Important:</strong> {step.extraTip}
+                  </div>
+                )}
+
+                {/* Report type screenshots for Step 6 */}
                 {step.reportScreenshots && (
                   <div className="mt-8" data-testid="report-type-screenshots">
-                    <h4 className="font-semibold text-slate-900 mb-4 text-[11px]">Each Report Type:</h4>
+                    <h4 className="font-bold text-slate-900 mb-4 text-lg">Each Report Type:</h4>
                     <div className="grid md:grid-cols-3 gap-4">
                       {step.reportScreenshots.map((rs, idx) => (
-                        <div key={idx} className="border border-slate-200 rounded-xl overflow-hidden">
-                          <div className={`px-3 py-2 text-xs font-bold text-center ${
+                        <div key={idx} className="border-2 border-slate-200 rounded-xl overflow-hidden shadow-lg">
+                          <div className={`px-4 py-3 text-sm font-bold text-center ${
                             rs.color === 'emerald' ? 'bg-emerald-600 text-white' :
                             rs.color === 'blue' ? 'bg-blue-600 text-white' :
                             'bg-purple-600 text-white'
@@ -356,54 +382,54 @@ const HowToUsePage = () => {
           })}
         </div>
 
-        {/* Additional Steps */}
+        {/* Step 11 - Export */}
         <div className="mt-20 space-y-12">
-          {/* Export */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8" data-testid="howto-export">
+          <div className="bg-white border-2 border-slate-200 rounded-2xl p-8 shadow-lg" data-testid="howto-export">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
-                <Download className="w-6 h-6 text-pink-700" />
+              <div className="w-14 h-14 rounded-xl bg-pink-100 flex items-center justify-center">
+                <Download className="w-7 h-7 text-pink-700" />
               </div>
-              <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2 py-1 rounded" style={{ fontSize: '0.7rem' }}>STEP 11</span>
+              <span className="text-sm font-bold text-white bg-blue-600 px-3 py-1.5 rounded-lg">STEP 11</span>
             </div>
-            <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3">
-              Export & Share
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Export and Share
             </h3>
-            <p className="text-slate-700 mb-4 text-[11px]">Export your case data for use outside the app.</p>
-            <ul className="space-y-1 text-slate-700 mb-4 text-[11px] leading-tight">
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Use 'Quick Export' to download everything</li>
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Downloads all documents and reports in one package</li>
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Timeline and summary as editable DOCX files</li>
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Use 'Bundle Documents' to merge PDFs into one file</li>
-              <li className="flex items-start gap-1"><ChevronRight className="w-3 h-3 shrink-0 mt-0.5" /> Share with lawyers, barristers, or Legal Aid</li>
+            <p className="text-base text-slate-700 mb-4">Export your case data for use outside the app — share with your lawyer, barrister, or Legal Aid.</p>
+            <ul className="space-y-2 text-slate-700 mb-4 text-base leading-relaxed">
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" /> Use 'Quick Export' to download everything in one package</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" /> Downloads all documents and reports together</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" /> Timeline and summary as editable DOCX files</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" /> Use 'Bundle Documents' to merge PDFs into one file</li>
+              <li className="flex items-start gap-2"><ChevronRight className="w-4 h-4 shrink-0 mt-1 text-blue-600" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
-            <div className="p-3 bg-pink-50 rounded-lg text-pink-800 text-[11px]">
-              <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court.
+            <div className="p-5 bg-pink-50 border border-pink-200 rounded-xl text-pink-800 text-base">
+              <Lightbulb className="w-5 h-5 inline mr-2" />
+              <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court or forwarding to counsel.
             </div>
           </div>
         </div>
 
         {/* What's Next */}
-        <div className="mt-16 bg-white rounded-2xl p-8 border border-emerald-200">
-          <h2 className="text-lg md:text-xl font-bold text-slate-900 mb-4">
+        <div className="mt-16 bg-white rounded-2xl p-8 border-2 border-emerald-200 shadow-lg">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Crimson Pro, serif' }}>
             What Happens Next?
           </h2>
-          <div className="grid md:grid-cols-2 gap-6 text-[11px] leading-tight">
+          <div className="grid md:grid-cols-2 gap-8 text-base leading-relaxed">
             <div>
-              <h3 className="font-semibold text-slate-900 mb-2">If Grounds Are Found</h3>
-              <ul className="text-slate-700 space-y-1">
+              <h3 className="font-bold text-slate-900 mb-3 text-lg">If Grounds Are Found</h3>
+              <ul className="text-slate-700 space-y-2">
                 <li>- Review the detailed analysis for each ground</li>
-                <li>- Generate a Full Report to share with a lawyer</li>
+                <li>- Generate a Full Detailed Report to share with a lawyer</li>
                 <li>- Seek legal advice on the strength of your appeal</li>
-                <li>- File Notice of Intention to Appeal within deadline</li>
+                <li>- File Notice of Intention to Appeal within the deadline (usually 28 days)</li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900 mb-2">Getting Legal Help</h3>
-              <ul className="text-slate-700 space-y-1">
-                <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline">Legal Aid</Link> in your state</li>
-                <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline">Pro Bono services</Link></li>
-                <li>- Find a lawyer via your <Link to="/legal-resources" className="text-blue-700 hover:underline">Law Society</Link></li>
+              <h3 className="font-bold text-slate-900 mb-3 text-lg">Getting Legal Help</h3>
+              <ul className="text-slate-700 space-y-2">
+                <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Legal Aid</Link> in your state</li>
+                <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Pro Bono services</Link></li>
+                <li>- Find a lawyer via your <Link to="/lawyers" className="text-blue-700 hover:underline font-semibold">Lawyer Directory</Link></li>
                 <li>- Use the Barrister View when meeting with counsel</li>
               </ul>
             </div>
@@ -413,14 +439,13 @@ const HowToUsePage = () => {
         {/* CTA */}
         <div className="mt-12 text-center">
           <Link to="/">
-            <Button className="landing-cta-primary" data-testid="how-to-use-start-cta">
+            <Button className="landing-cta-primary text-lg px-8 py-4" data-testid="how-to-use-start-cta">
               Get Started Now
               <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
         </div>
       </main>
-      </div>
     </div>
   );
 };
