@@ -35,7 +35,6 @@ const AppFooter = () => {
                 <span className="text-white text-[10px] sm:text-xs font-bold leading-tight">Appeal Case Manager</span>
               </div>
               <span className="text-white/90 text-[10px] sm:text-xs mt-1 font-semibold leading-tight">Created and Designed by Deb King</span>
-              <span className="text-white/70 text-[9px] sm:text-xs mt-0.5 leading-tight">criminallawappealmanager.com.au</span>
             </div>
 
             <div>
