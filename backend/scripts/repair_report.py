@@ -9,13 +9,13 @@ import re
 import sys
 import logging
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from dotenv import load_dotenv
+from motor.motor_asyncio import AsyncIOMotorClient
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
-from motor.motor_asyncio import AsyncIOMotorClient
-from services.llm_service import call_llm_with_fallback
+from services.llm_service import call_llm_with_fallback  # noqa: E402
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("repair_report")
