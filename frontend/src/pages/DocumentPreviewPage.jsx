@@ -20,8 +20,6 @@ export default function DocumentPreviewPage() {
         parsed.html = parsed.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
       }
       return parsed;
-      if (!raw) return null;
-      return JSON.parse(raw);
     } catch (error) {
       return null;
     }
