@@ -191,7 +191,7 @@ const LandingPage = () => {
               
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
-                <h3 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
+                <h3 className="text-2xl font-bold text-blue-600 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
                 <div className="flex flex-wrap gap-2" data-testid="hero-crimes-list">
                   {["Homicide", "Assault", "Sexual Offences", "Drug Offences", "Robbery", "Fraud & Dishonesty", "Firearms & Weapons", "Arson & Property", "Child Abuse Material", "Manslaughter", "Kidnapping", "All Indictable Offences"].map((crime) => (
                     <span key={crime} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
@@ -264,7 +264,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Your Complete Appeal Research Companion
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto">
@@ -381,7 +381,7 @@ const LandingPage = () => {
               </div>
             </div>
             <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               How The Process Works
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -471,7 +471,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <p className="text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Everything At Your Fingertips</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Complete Criminal Appeal Platform
             </h2>
             <p className="text-slate-700 text-lg max-w-3xl mx-auto">
@@ -687,7 +687,7 @@ const LandingPage = () => {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Australian Appeal Statistics
             </h2>
             <p className="text-slate-600 text-sm">Key figures from Australian criminal appeal courts</p>
@@ -730,7 +730,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Resources, Contacts & Research In One Flow
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -795,7 +795,7 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-2">Pricing</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Simple, Affordable Access
             </h2>
             <p className="text-slate-600 text-sm max-w-2xl mx-auto">
