@@ -57,7 +57,7 @@ const CaseChat = ({ caseId, user }) => {
     try {
       const wsUrl = API.replace("https://", "wss://").replace("http://", "ws://");
       const ws = new WebSocket(`${wsUrl}/cases/${caseId}/chat/ws?session_token=${token}`);
-      ws.onopen = () => console.log("Chat WS connected");
+      ws.onopen = () => {};
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === "new_message") {

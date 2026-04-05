@@ -157,7 +157,11 @@ const CaseDetail = ({ user }) => {
   const [paymentSummary, setPaymentSummary] = useState({ payments: [], unlocked_features: {}, latest_status_by_feature: {} });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
-  const [activeTab, setActiveTab] = useState(() => new URLSearchParams(window.location.search).get("tab") || "documents");
+  const VALID_TABS = ["documents", "timeline", "grounds", "notes", "reports", "progress", "chat"];
+  const [activeTab, setActiveTab] = useState(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab") || "documents";
+    return VALID_TABS.includes(tab) ? tab : "documents";
+  });
 
   // Dialog states
   const [showEventDialog, setShowEventDialog] = useState(false);

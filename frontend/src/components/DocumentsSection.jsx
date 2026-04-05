@@ -152,7 +152,7 @@ const DocumentsSection = ({
         const parts = [];
         if (detected_metadata.offence_type) parts.push(detected_metadata.offence_type);
         else if (detected_metadata.offence_category) parts.push(detected_metadata.offence_category.replace(/_/g, ' '));
-        if (detected_metadata.state) parts.push(detected_metadata.state.toUpperCase());
+        if (detected_metadata.state) parts.push((detected_metadata.state || "").toUpperCase());
         if (detected_metadata.sentence) parts.push(detected_metadata.sentence.substring(0, 60));
         if (parts.length > 0) {
           toast.success(`Auto-detected: ${parts.join(' | ')}`, { duration: 5000 });

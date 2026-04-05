@@ -32,11 +32,6 @@ import { API } from "../App";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
 import VerificationBadge from "../components/VerificationBadge";
 
-const DraftSourceBadge = ({ draftSource }) => {
-  // Removed — no need to expose pipeline internals to user
-  return null;
-};
-
 const titleFromSnake = (value) => {
   if (!value) return "Not specified";
   return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -676,7 +671,7 @@ const ReportView = () => {
         }
       } catch (shareErr) {
         if (shareErr.name === 'AbortError') return;
-        console.warn("Share API failed, falling back:", shareErr);
+        console.warn("Share API failed, using download fallback");
       }
     }
     if (isIOS) {

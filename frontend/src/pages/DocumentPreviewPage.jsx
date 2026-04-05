@@ -15,6 +15,11 @@ export default function DocumentPreviewPage() {
   const payload = useMemo(() => {
     try {
       const raw = localStorage.getItem("document-preview-payload");
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (parsed?.html) {
+        parsed.html = parsed.html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+      }
+      return parsed;
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (error) {
