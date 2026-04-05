@@ -1115,35 +1115,28 @@ const FormTemplates = () => {
           </div>
         )}
 
-        {/* Help Section with Image */}
-        <div className="mt-12 rounded-2xl overflow-hidden relative">
-          <img 
-            src="https://images.unsplash.com/photo-1521791055366-0d553872125f?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=200&fit=crop"
-            alt="Legal Help"
-            className="w-full h-64 object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
-            <div className="text-center px-6">
-              <Gavel className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-                Need Help With Your Forms?
-              </h3>
-              <p className="text-slate-300 text-lg mb-6 max-w-md mx-auto">
-                The FAQ section has guides on filling out these forms, and the Lawyer Directory 
-                can help find legal assistance.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/faq">
-                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-xl px-8 py-3 text-base font-semibold">
-                    View FAQ
-                  </Button>
-                </Link>
-                <Link to="/lawyers">
-                  <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl px-8 py-3 text-base font-semibold">
-                    Find a Lawyer
-                  </Button>
-                </Link>
-              </div>
+        {/* Help Section */}
+        <div className="mt-12 rounded-2xl overflow-hidden bg-slate-900 p-8 md:p-10">
+          <div className="text-center">
+            <Gavel className="w-14 h-14 md:w-16 md:h-16 text-blue-500 mx-auto mb-4" />
+            <h3 className="text-2xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              Need Help With Your Forms?
+            </h3>
+            <p className="text-slate-300 text-base md:text-lg mb-6 max-w-md mx-auto">
+              The FAQ section has guides on filling out these forms, and the Lawyer Directory 
+              can help find legal assistance.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/faq">
+                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-xl px-8 py-3 text-base font-semibold w-full sm:w-auto">
+                  View FAQ
+                </Button>
+              </Link>
+              <Link to="/lawyers">
+                <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl px-8 py-3 text-base font-semibold w-full sm:w-auto">
+                  Find a Lawyer
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
