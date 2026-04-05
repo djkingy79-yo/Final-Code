@@ -344,7 +344,7 @@ const HowItWorksPage = () => {
       color: "bg-emerald-600",
       badge: "bg-green-500",
       features: [
-        "7 sections: case snapshot, issues, grounds preview, legislation, sentencing overview, appeal outlook",
+        "8 sections: case snapshot, issues, grounds preview, legislation, sentencing overview, appeal outlook, client plain-English guide, detailed outlook",
         "2,000-3,000 words of case-specific legal analysis",
         "Shows what the paid reports add so you can decide if you need more",
       ],
@@ -374,10 +374,11 @@ const HowItWorksPage = () => {
       headerColor: "#7e22ce",
       features: [
         "20 sections — everything in Full Detailed plus 5 exclusives",
-        "1,200+ words per ground with fallback positions and key authority",
+        "900+ words per ground with fallback positions and key authority",
         "Hearing preparation notes with anticipated bench questions",
         "Barrister conference pack with authorities shortlist and orders sought",
         "Court pathway playbook with filing sequences for each court level",
+        "Similar case search options with tailored AustLII queries",
         "Risk assessment with contingency planning per ground",
         "Target: 25,000-35,000+ words",
       ],
