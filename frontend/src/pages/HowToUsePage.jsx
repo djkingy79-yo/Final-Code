@@ -58,7 +58,7 @@ const HowToUsePage = () => {
       icon: Clock,
       color: "purple",
       image: "/images/howto/live-step4-timeline.png",
-      description: "Use the AI to automatically build a chronological timeline of key events extracted from your uploaded documents. This helps identify gaps, inconsistencies, and critical dates.",
+      description: "The timeline is auto-generated once documents are uploaded and text is extracted. The AI automatically builds a chronological timeline of key events from your case materials. You can review, edit, and add to it at any time.",
       instructions: [
         "Go to the 'Timeline' tab in your case",
         "Click the 'AI Analyse' button to start the AI timeline extraction",
