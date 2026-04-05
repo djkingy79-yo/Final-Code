@@ -64,24 +64,20 @@ const LandingPage = () => {
                 More <ChevronRight className="w-3 h-3 rotate-90" />
               </button>
               <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                <Link to="/how-it-works" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-it-works">How It Works</Link>
-                <Link to="/appeal-statistics" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-appeal-statistics">Appeal Statistics</Link>
-                <Link to="/legal-resources" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-legal-resources">Resources & Contacts</Link>
-                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-legal-framework">Legal Framework</Link>
-                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-forms">Forms & Templates</Link>
-                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-glossary">Legal Glossary</Link>
-                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-lawyers">Lawyer Directory</Link>
-                <Link to="/faq" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-faq">FAQ</Link>
-                <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-about">About</Link>
-                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-to-use">How To Use</Link>
                 <Link to="/professional-summary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-professional-summary">For Legal Professionals</Link>
-                <Link to="/caselaw-search" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-caselaw-search">Case Law Search</Link>
-                <Link to="/compare" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-compare">Compare Cases</Link>
-                <Link to="/statistics" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-statistics">Statistics</Link>
-                <Link to="/legal-resources" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-resources">Resources Hub</Link>
-                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-help">Help</Link>
-                <Link to="/terms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-terms">Terms & Privacy</Link>
+                <Link to="/appeal-statistics" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-appeal-statistics">Appeal Statistics</Link>
+                <Link to="/how-it-works" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-it-works">How It Works</Link>
+                <Link to="/how-to-use" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-how-to-use">How To Use</Link>
+                <Link to="/legal-framework" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-legal-framework">Legal Framework</Link>
+                <Link to="/glossary" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-glossary">Legal Glossary</Link>
+                <Link to="/legal-resources" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-legal-resources">Resources & Contacts</Link>
+                <Link to="/lawyers" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-lawyers">Lawyer Directory</Link>
+                <Link to="/forms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-forms">Forms & Templates</Link>
+                <Link to="/caselaw-search" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-caselaw-search">Caselaw Search</Link>
+                <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-about">About</Link>
+                <Link to="/faq" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-faq">FAQ</Link>
                 <Link to="/success-stories" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-success-stories">Success Stories</Link>
+                <Link to="/terms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-terms">Terms & Privacy</Link>
               </div>
             </div>
             <Button 
@@ -102,26 +98,21 @@ const LandingPage = () => {
         {/* Mobile + iPad Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
-            <Link to="/how-it-works" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-it-works">How It Works</Link>
-            <Link to="/appeal-statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
-            <Link to="/forms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-forms">Forms & Templates</Link>
-            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
-            <Link to="/lawyers" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
-            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
-            <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
-            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
+            <Link to="/" className="block py-2 text-slate-700 hover:text-blue-700 font-semibold" data-testid="mobile-nav-home">Home</Link>
             <Link to="/professional-summary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>
-            <Link to="/caselaw-search" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-caselaw-search">Case Law Search</Link>
-            <Link to="/compare" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-compare">Compare Cases</Link>
-            <Link to="/statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-statistics">Statistics</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-resources">Resources Hub</Link>
-            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-help">Help</Link>
+            <Link to="/appeal-statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
+            <Link to="/how-it-works" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-it-works">How It Works</Link>
+            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
+            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
+            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
+            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
+            <Link to="/lawyers" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
+            <Link to="/forms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-forms">Forms & Templates</Link>
+            <Link to="/caselaw-search" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-caselaw-search">Caselaw Search</Link>
+            <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
+            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
             <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
-            <div className="border-t border-slate-700 pt-3 mt-3">
-              <Link to="/terms" className="block py-2 text-blue-400 hover:text-blue-300 font-medium" data-testid="mobile-nav-terms">Terms & Privacy</Link>
-            </div>
+            <Link to="/terms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-terms">Terms & Privacy</Link>
             <div className="flex items-center gap-3 pt-2">
               <Button onClick={() => setShowAuthModal(true)} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
                 Sign In

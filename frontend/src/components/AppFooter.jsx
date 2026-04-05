@@ -40,24 +40,25 @@ const AppFooter = () => {
             <div>
               <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Explore &bull;</p>
               <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
+                <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
+                <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
                 <Link to="/how-it-works" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-it-works">How It Works</Link>
                 <Link to="/how-to-use" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-to-use">How To Use</Link>
-                <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
+                <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
+                <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
                 <Link to="/legal-resources" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-resources">Resources & Contacts</Link>
-                <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
-                <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
-                <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
               </div>
             </div>
 
             <div>
               <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Legal &bull;</p>
               <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
-                <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
-                <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
-                <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
-                <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
+                <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
+                <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
+                <Link to="/caselaw-search" className="text-white font-bold hover:text-blue-300" data-testid="footer-caselaw-search">Caselaw Search</Link>
                 <Link to="/about" className="text-white font-bold hover:text-blue-300" data-testid="footer-about">About</Link>
+                <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
+                <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
                 <Link to="/terms" className="text-white font-bold hover:text-blue-300" data-testid="footer-terms">Terms & Privacy</Link>
               </div>
             </div>
