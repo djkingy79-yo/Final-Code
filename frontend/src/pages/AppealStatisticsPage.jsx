@@ -232,7 +232,7 @@ const AppealStatisticsPage = () => {
 
         {/* National Overview */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             National Overview (2024)
           </h2>
           <p className="text-base md:text-lg text-black font-semibold mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
@@ -468,7 +468,7 @@ const AppealStatisticsPage = () => {
 
         {/* Common Grounds of Appeal */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Most Common Grounds of Appeal
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
@@ -501,7 +501,7 @@ const AppealStatisticsPage = () => {
 
         {/* Complaints About Lawyers */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Top Complaints About Lawyers
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
@@ -532,7 +532,7 @@ const AppealStatisticsPage = () => {
 
         {/* Key Insights */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Key Insights
           </h2>
 
@@ -565,7 +565,7 @@ const AppealStatisticsPage = () => {
 
         {/* Historical Trends */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Historical Trends
           </h2>
           

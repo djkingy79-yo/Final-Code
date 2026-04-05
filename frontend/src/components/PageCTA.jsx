@@ -37,7 +37,7 @@ const PageCTA = ({
             </div>
             <div>
               <p className="text-white font-bold text-sm sm:text-base">
-                Ready to Start Your Appeal?
+                Ready to Start Your Case?
               </p>
               <p className="text-blue-100 text-xs hidden sm:block">
                 Upload your case documents and get AI-powered analysis
@@ -76,7 +76,7 @@ const PageCTA = ({
             <FileText className="w-7 h-7 text-white" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            Ready to Build Your Appeal?
+            Ready to Build Your Case?
           </h3>
           <p className="text-blue-100 mb-6">
             Upload your case documents, get AI analysis, and access all the tools you need to prepare a strong appeal.
