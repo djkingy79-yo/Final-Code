@@ -1845,8 +1845,11 @@ Summary: {case.get('summary', 'N/A')}
             # DO_NOT_UNDO — 8-pass generation is FINAL. Previous 5-pass produced only ~7,890 words.
             # Current 8-pass produces ~12,000+ words. NEVER reduce pass count.
             half_grounds = max(1, len(grounds) // 2)
-            first_grounds = grounds_enumerated.split('\n')[:half_grounds * 3]  # ~3 lines per ground
-            second_grounds = grounds_enumerated.split('\n')[half_grounds * 3:]
+            # DO_NOT_UNDO — grounds_enumerated is ONE line per ground (e.g. "1. Title").
+            # Split by actual ground count, not by arbitrary line multiplier.
+            all_ground_lines = grounds_enumerated.split('\n')
+            first_grounds = all_ground_lines[:half_grounds]
+            second_grounds = all_ground_lines[half_grounds:]
             first_grounds_text = '\n'.join(first_grounds) if first_grounds else grounds_enumerated
             second_grounds_text = '\n'.join(second_grounds) if second_grounds else ""
             

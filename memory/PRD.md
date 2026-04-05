@@ -48,6 +48,15 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 
 ## Recent Changes (April 2026)
 - Fixed "How To Use" page: removed ZIP reference, added Chat & Collaboration step, zoomed in all screenshots (edge-to-edge, wider container), fixed broken Barrister View image path
+- Fixed grounds multiplying ROOT CAUSE: re-enabled topic matching in dedup, added cleanup to ALL 4 sync paths, only skip re-classification when 8+ issues already exist
+- Fixed report content protection: new content must be >50% of backup length or backup is restored
+- Fixed Full Detailed report only covering ~5 grounds: line multiplier `* 3` was wrong (grounds_enumerated is 1 line per ground, not 3)
+- Fixed DOCX export: was reopening PDF preview instead of downloading Word file from backend API
+- Fixed raw data in supporting evidence: added extractEvidenceText() parser across all views
+- Fixed placeholder cases: "R v [Surname] [Year]" and variations filtered out
+- Fixed font sizes across ALL print/PDF/Word views: info box labels bigger, ground titles smaller, body text bigger, consistent across ReportView, BarristerView, GroundsOfMerit, CaseDetail tab export, Print All bundle, and shared exportHtml utility
+- Expanded Australian English: backend _AU_REPLACEMENTS 13→33 patterns, frontend auSpelling() expanded, classify+verify prompts now enforce Australian English explicitly
+- Increased LLM retry resilience: 6 model slots (was 4), backoff 8-25s (was 5-14s)
 
 ## Credentials
 - Email: djkingy79@gmail.com / Password: Grubbygrub88
