@@ -74,10 +74,10 @@ const LegalResourcesPage = () => {
       {/* Hero */}
       <section className="py-6 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-xl font-bold mb-2 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-hero-title">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-hero-title">
             Legal Resources & Contacts
           </h1>
-          <p className="text-xs text-slate-700 max-w-xl mx-auto" data-testid="legal-resources-hero-description">
+          <p className="text-base text-slate-700 max-w-xl mx-auto" data-testid="legal-resources-hero-description">
             Merged directory for legal resources and contacts across all Australian states and territories.
           </p>
         </div>
@@ -133,13 +133,13 @@ const LegalResourcesPage = () => {
 
         {/* ============ SECTION: You Have Options ============ */}
         <div id="options" className="space-y-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <div className="bg-blue-600 border border-blue-700 rounded-xl p-6">
+            <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Legal Help You May Not Know About
             </h2>
-            <p className="text-slate-700">
+            <p className="text-blue-50">
               For most people, Legal Aid is the only affordable option — but private firms are often out of reach. 
-              What many don't realise is that there are other avenues for help. <strong className="text-slate-900">When you think you have no options, 
+              What many don't realise is that there are other avenues for help. <strong className="text-white">When you think you have no options, 
               there definitely are options.</strong>
             </p>
           </div>
@@ -150,7 +150,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <Scale className="w-6 h-6 text-blue-700" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Legal Aid</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Legal Aid</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Government-funded legal assistance available in every state. While overburdened, they can provide 
                   representation for serious criminal matters and appeals if you meet the eligibility criteria.
@@ -168,7 +168,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-emerald-700" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Pro Bono Legal Services</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Pro Bono Legal Services</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
                   This is not widely advertised but is a genuine option.
@@ -186,7 +186,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
                   <MapPin className="w-6 h-6 text-purple-700" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Community Legal Centres</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Community Legal Centres</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Independent, non-profit organisations providing free legal advice and assistance. They often help with 
                   matters Legal Aid cannot cover and can refer you to specialist services.
@@ -204,7 +204,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <FileText className="w-6 h-6 text-red-600" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
                 <p className="text-slate-700 text-xs mb-3">
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
@@ -391,7 +391,7 @@ const LegalResourcesPage = () => {
 
             {/* Bar Associations */}
             <div className="mt-8">
-              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Bar Associations (Barristers)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -529,7 +529,7 @@ const LegalResourcesPage = () => {
 
             {/* Federal Courts */}
             <div>
-              <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 <Scale className="w-5 h-5 text-red-600" />
                 Federal Courts
               </h3>
@@ -555,7 +555,7 @@ const LegalResourcesPage = () => {
 
             {/* State/Territory Courts */}
             <div className="mt-8">
-              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 State & Territory Courts
               </h3>
               
@@ -696,7 +696,7 @@ const LegalResourcesPage = () => {
 
             {/* Specialist Services */}
             <div className="mt-8">
-              <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Specialist Legal Services
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -825,7 +825,7 @@ const LegalResourcesPage = () => {
 
           {/* Attorneys-General */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Attorneys-General Departments
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -882,7 +882,7 @@ const LegalResourcesPage = () => {
 
           {/* Ombudsmen */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Ombudsmen & Integrity Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -940,7 +940,7 @@ const LegalResourcesPage = () => {
 
           {/* Human Rights & Discrimination */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Human Rights Commissions
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -985,7 +985,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Councils & Societies */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Law Councils & Societies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -997,30 +997,6 @@ const LegalResourcesPage = () => {
                 description="Peak national body representing the Australian legal profession."
                 color="blue"
                 highlight={true}
-              />
-              <ResourceCard
-                title="Law Society of NSW"
-                state="NSW"
-                phone="(02) 9926 0333"
-                website="https://www.lawsociety.com.au"
-                description="Professional body for solicitors in NSW. Can help find a lawyer."
-                color="blue"
-              />
-              <ResourceCard
-                title="Law Institute of Victoria"
-                state="VIC"
-                phone="(03) 9607 9311"
-                website="https://www.liv.asn.au"
-                description="Peak body for solicitors in Victoria."
-                color="indigo"
-              />
-              <ResourceCard
-                title="Queensland Law Society"
-                state="QLD"
-                phone="(07) 3842 5888"
-                website="https://www.qls.com.au"
-                description="Professional body for solicitors in Queensland."
-                color="red"
               />
               <ResourceCard
                 title="Law Society of SA"
@@ -1043,7 +1019,7 @@ const LegalResourcesPage = () => {
 
           {/* Bar Associations */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Bar Associations (Barristers)
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1056,36 +1032,12 @@ const LegalResourcesPage = () => {
                 color="slate"
                 highlight={true}
               />
-              <ResourceCard
-                title="NSW Bar Association"
-                state="NSW"
-                phone="(02) 9232 4055"
-                website="https://www.nswbar.asn.au"
-                description="Find a barrister in NSW - search by practice area including criminal appeals."
-                color="blue"
-              />
-              <ResourceCard
-                title="Victorian Bar"
-                state="VIC"
-                phone="(03) 9225 7111"
-                website="https://www.vicbar.com.au"
-                description="Find a barrister in Victoria."
-                color="indigo"
-              />
-              <ResourceCard
-                title="Queensland Bar"
-                state="QLD"
-                phone="(07) 3238 5100"
-                website="https://www.qldbar.asn.au"
-                description="Find a barrister in Queensland."
-                color="red"
-              />
             </div>
           </div>
 
           {/* Legal Practice Boards & Conduct */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Legal Practice Boards & Professional Conduct
             </h3>
             <p className="text-slate-700 text-xs mb-3">
@@ -1125,14 +1077,6 @@ const LegalResourcesPage = () => {
                 color="blue"
               />
               <ResourceCard
-                title="Legal Profession Conduct Commissioner SA"
-                state="SA"
-                phone="(08) 8238 5700"
-                website="https://www.lpcc.sa.gov.au"
-                description="Receives and investigates complaints about SA lawyers."
-                color="purple"
-              />
-              <ResourceCard
                 title="Legal Services Commission QLD"
                 state="QLD"
                 phone="(07) 3564 7726"
@@ -1145,7 +1089,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Reform */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Law Reform & Research Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1212,23 +1156,6 @@ const LegalResourcesPage = () => {
               website="https://www.prisonersaid.org.au"
               description="Support services for NSW prisoners and their families."
               color="blue"
-            />
-            <ResourceCard
-              title="Aboriginal Legal Service NSW/ACT"
-              state="NSW/ACT"
-              phone="1800 765 767"
-              website="https://www.alsnswact.org.au"
-              description="Legal services for Aboriginal and Torres Strait Islander peoples."
-              color="blue"
-              highlight={true}
-            />
-            <ResourceCard
-              title="Victorian Aboriginal Legal Service"
-              state="VIC"
-              phone="1800 064 865"
-              website="https://www.vals.org.au"
-              description="Legal services for Aboriginal and Torres Strait Islander peoples in Victoria."
-              color="indigo"
             />
             <ResourceCard
               title="Aboriginal Legal Service WA"
