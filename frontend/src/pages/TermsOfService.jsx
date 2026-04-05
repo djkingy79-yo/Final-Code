@@ -141,6 +141,8 @@ const TermsOfService = () => {
               <li><strong>"User Content"</strong> means any documents, files, text, notes, or other materials uploaded or entered into the Application by a User.</li>
               <li><strong>"Paid Services"</strong> means any feature, report, or service within the Application that requires payment, including but not limited to Full Detailed Reports, Extensive Log Reports, and Grounds Unlock.</li>
               <li><strong>"PayID"</strong> means the Australian real-time payment system operated through the New Payments Platform (NPP) administered by NPP Australia Limited.</li>
+            </ul>
+          </SectionCard>
 
           {/* 3. About the Creator */}
           <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden">
