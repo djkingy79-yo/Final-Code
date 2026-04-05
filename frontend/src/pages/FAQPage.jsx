@@ -288,7 +288,7 @@ const FAQPage = () => {
           <div className="w-20 h-20 rounded-2xl bg-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30" data-testid="faq-hero-icon">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
             Frequently Asked Questions
           </h1>
           <p className="text-sm text-slate-700 max-w-2xl mx-auto mb-2" data-testid="faq-hero-subtitle">
@@ -438,10 +438,10 @@ const FAQPage = () => {
 
         {/* Still have questions */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-          <h3 className="text-sm font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Still have questions?
           </h3>
-          <p className="text-xs text-slate-700 mb-3">
+          <p className="text-base text-slate-700 mb-3">
             Can't find what you're looking for? The Legal Glossary may help.
           </p>
           <div className="flex flex-wrap gap-2 justify-center">

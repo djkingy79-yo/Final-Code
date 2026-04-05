@@ -237,7 +237,7 @@ const CompareCasesPage = ({ user }) => {
             </div>
             <div>
               <p className="text-red-600 font-semibold text-xs uppercase tracking-widest">Analysis</p>
-              <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h1 className="text-4xl sm:text-5xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Compare Cases
               </h1>
             </div>

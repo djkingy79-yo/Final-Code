@@ -248,7 +248,7 @@ const HowToUsePage = () => {
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 text-slate-900">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
             How to Use the App
           </h1>
           <p className="text-xs sm:text-sm text-slate-700 max-w-2xl mx-auto">
