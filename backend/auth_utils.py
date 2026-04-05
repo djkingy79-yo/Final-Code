@@ -11,7 +11,10 @@ from models import User
 
 
 async def get_current_user(request: Request) -> User:
-    """Get current user from session token (cookie or header)"""
+    """Get current user from session token (cookie or header).
+    NOTE: Query param fallback is intentionally kept — required by WebSocket
+    connections and PDF/DOCX export download URLs where headers cannot be set.
+    """
     session_token = request.cookies.get("session_token")
     if not session_token:
         session_token = request.query_params.get("session_token")

@@ -23,9 +23,7 @@ from typing import List
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-import motor.motor_asyncio
-
-from config import db, logger
+from config import db, logger, client, get_admin_emails
 from auth_utils import get_current_user
 from models import (
     ReportRequest, FEATURE_PRICES, feature_type_variants,
@@ -73,18 +71,11 @@ from services.pipeline import (
 )
 from services.pipeline_models import CaseExtract
 
-# ── MongoDB client reference (for shutdown) ──
-MONGO_URL = os.environ.get("MONGO_URL")
-DB_NAME = os.environ["DB_NAME"]
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URL)
-
 # ── Admin helpers ──
-ADMIN_EMAILS = [email.strip() for email in os.environ.get("ADMIN_EMAILS", "").split(",") if email.strip()]
-
-
 def is_admin_user(email: str) -> bool:
+    admin_emails = get_admin_emails()
     normalized = (email or "").strip().lower()
-    allowed = {(e or "").strip().lower() for e in ADMIN_EMAILS}
+    allowed = {(e or "").strip().lower() for e in admin_emails}
     return normalized in allowed
 
 
@@ -2315,7 +2306,7 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
     
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
-        raise HTTPException(status_code=500, detail=f"AI report generation failed after retries: {str(last_error)}")
+        raise HTTPException(status_code=503, detail=f"AI report generation failed after retries: {str(last_error)}")
 
     anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
     response = _dedupe_report_content(response, report_type, anchor_terms)
@@ -5045,12 +5036,14 @@ app.include_router(pipeline_staged_router)
 app.include_router(caselaw_router)
 
 # ── CORS Middleware ──
+_frontend_url = os.environ.get("FRONTEND_URL", "").replace("/api", "")
+_allowed_origins = [o.strip() for o in _frontend_url.split(",") if o.strip()] if _frontend_url else []
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origin_regex=r".*",
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_allowed_origins or ["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 
 

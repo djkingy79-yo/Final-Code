@@ -80,7 +80,7 @@ async def register_user(request: RegisterRequest, response: Response):
     await db.users.insert_one(user_doc)
     
     # Create session
-    session_token = f"sess_{uuid.uuid4().hex}"
+    session_token = uuid.uuid4().hex
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
     
     await db.user_sessions.insert_one({
@@ -96,7 +96,7 @@ async def register_user(request: RegisterRequest, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="none",
+        samesite="lax",
         path="/",
         max_age=7 * 24 * 60 * 60
     )
@@ -127,7 +127,7 @@ async def login_user(request: LoginRequest, response: Response):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
     # Create session
-    session_token = f"sess_{uuid.uuid4().hex}"
+    session_token = uuid.uuid4().hex
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
     
     await db.user_sessions.insert_one({
@@ -143,7 +143,7 @@ async def login_user(request: LoginRequest, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="none",
+        samesite="lax",
         path="/",
         max_age=7 * 24 * 60 * 60
     )
@@ -223,7 +223,7 @@ async def create_session(request: Request, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="none",
+        samesite="lax",
         path="/",
         max_age=7 * 24 * 60 * 60
     )
