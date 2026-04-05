@@ -775,8 +775,14 @@ const CaseDetail = ({ user }) => {
         if (evidence.length > 0) {
           body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Supporting Evidence</h4><ul>`;
           evidence.forEach(item => {
-            const text = typeof item === "string" ? item : (item?.quote || item?.text || item?.filename || "Evidence item");
-            body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
+            let text = '';
+            if (typeof item === "string") {
+              const m = item.match(/['"]quote['"]\s*:\s*['"](.+?)['"]\s*[,}]/);
+              text = m ? m[1] : (item.includes('document_id') && item.includes('optional') ? '' : item);
+            } else {
+              text = item?.quote || item?.text || '';
+            }
+            if (text) body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
           });
           body += `</ul>`;
         }
@@ -790,7 +796,7 @@ const CaseDetail = ({ user }) => {
           body += `</ul>`;
         }
         // Similar cases
-        const cases = Array.isArray(g.similar_cases) ? g.similar_cases : [];
+        const cases = Array.isArray(g.similar_cases) ? g.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional") : [];
         if (cases.length > 0) {
           body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Similar Cases (AI-Suggested)</h4><ul>`;
           cases.forEach(c => {

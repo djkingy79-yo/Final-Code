@@ -18,6 +18,7 @@ async def verify_issue(case: dict, issue: dict, supporting_context: dict) -> Iss
 Return supporting, undermining, and missing material.
 Do not overstate the issue.
 Do not state that the issue is made out unless clearly supported.
+Use AUSTRALIAN ENGLISH ONLY (analyse, organise, defence, offence, behaviour, favour, honour, centre, specialise, recognise, authorise, emphasise, summarise, counselling). Do NOT use American spellings.
 Return JSON only."""
 
     user_prompt = f"""Verify this candidate appellate issue.

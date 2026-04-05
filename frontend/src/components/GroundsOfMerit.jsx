@@ -46,7 +46,56 @@ const auSpelling = (text) => {
     .replace(/\borganized\b/gi, (m) => m[0] === 'O' ? 'Organised' : 'organised')
     .replace(/\bdefense\b/gi, (m) => m[0] === 'D' ? 'Defence' : 'defence')
     .replace(/\boffense\b/gi, (m) => m[0] === 'O' ? 'Offence' : 'offence')
-    .replace(/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised');
+    .replace(/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised')
+    .replace(/\banalyze\b/gi, (m) => m[0] === 'A' ? 'Analyse' : 'analyse')
+    .replace(/\banalyzed\b/gi, (m) => m[0] === 'A' ? 'Analysed' : 'analysed')
+    .replace(/\banalysis\b/gi, 'analysis')
+    .replace(/\borganize\b/gi, (m) => m[0] === 'O' ? 'Organise' : 'organise')
+    .replace(/\brecognize\b/gi, (m) => m[0] === 'R' ? 'Recognise' : 'recognise')
+    .replace(/\brecognizing\b/gi, (m) => m[0] === 'R' ? 'Recognising' : 'recognising')
+    .replace(/\bhonor\b/gi, (m) => m[0] === 'H' ? 'Honour' : 'honour')
+    .replace(/\bfavor\b/gi, (m) => m[0] === 'F' ? 'Favour' : 'favour')
+    .replace(/\bfavorable\b/gi, (m) => m[0] === 'F' ? 'Favourable' : 'favourable')
+    .replace(/\blabor\b/gi, (m) => m[0] === 'L' ? 'Labour' : 'labour')
+    .replace(/\bcenter\b/gi, (m) => m[0] === 'C' ? 'Centre' : 'centre')
+    .replace(/\bcolored\b/gi, (m) => m[0] === 'C' ? 'Coloured' : 'coloured')
+    .replace(/\bcounseling\b/gi, (m) => m[0] === 'C' ? 'Counselling' : 'counselling')
+    .replace(/\bcriminalize\b/gi, (m) => m[0] === 'C' ? 'Criminalise' : 'criminalise')
+    .replace(/\bspecialize\b/gi, (m) => m[0] === 'S' ? 'Specialise' : 'specialise')
+    .replace(/\bspecialized\b/gi, (m) => m[0] === 'S' ? 'Specialised' : 'specialised')
+    .replace(/\bauthorize\b/gi, (m) => m[0] === 'A' ? 'Authorise' : 'authorise')
+    .replace(/\bauthorized\b/gi, (m) => m[0] === 'A' ? 'Authorised' : 'authorised')
+    .replace(/\bemphasize\b/gi, (m) => m[0] === 'E' ? 'Emphasise' : 'emphasise')
+    .replace(/\bemphasized\b/gi, (m) => m[0] === 'E' ? 'Emphasised' : 'emphasised')
+    .replace(/\bsummarize\b/gi, (m) => m[0] === 'S' ? 'Summarise' : 'summarise')
+    .replace(/\bsummarized\b/gi, (m) => m[0] === 'S' ? 'Summarised' : 'summarised');
+};
+
+/* DO NOT UNDO — Universal evidence text extractor.
+   Handles ALL formats the AI may return evidence in:
+   - Plain string: "The judge failed to..."
+   - Python dict string: "{'document_id': 'optional', 'quote': 'actual text...'}"
+   - JS object: { quote: "actual text..." }
+   - Key-concatenated string: "document_idfilenamequote..."
+   Returns just the human-readable quote/text. */
+const extractEvidenceText = (item) => {
+  if (!item) return null;
+  if (typeof item === "string") {
+    // Check if it's a Python dict string like "{'quote': '...'}"
+    const quoteMatch = item.match(/['"]quote['"]\s*:\s*['"](.+?)['"]\s*[,}]/);
+    if (quoteMatch) return quoteMatch[1];
+    // Check if it's a concatenation of keys
+    if (item.includes("document_id") && item.includes("filename") && item.includes("quote")) {
+      return null; // Skip key-concatenated garbage
+    }
+    // Check if it looks like raw dict/JSON
+    if (item.startsWith("{") && item.includes("'optional'")) return null;
+    return item;
+  }
+  if (typeof item === "object") {
+    return item.quote || item.text || item.description || item.filename || null;
+  }
+  return String(item);
 };
 
 const GROUND_TYPE_LABELS = {
@@ -150,7 +199,7 @@ const GroundProvenancePanel = ({ ground }) => {
     : [];
 
   const similarCases = Array.isArray(ground.similar_cases)
-    ? ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && c.case_name !== "optional")
+    ? ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && c.case_name !== "optional")
     : [];
 
   const sourceMode = ground.source_mode || "legacy";
@@ -321,7 +370,8 @@ const GroundsOfMerit = ({
                 <h3>Supporting Evidence</h3>
                 <ul>
                   {ground.supporting_evidence.map((item, idx) => {
-                    const text = typeof item === "string" ? item : (item?.quote || item?.text || item?.filename || "Evidence item");
+                    const text = extractEvidenceText(item);
+                    if (!text) return null;
                     return <li key={idx}>{text}</li>;
                   })}
                 </ul>
@@ -339,11 +389,11 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]")?.length > 0 && (
+            {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional")?.length > 0 && (
               <div className="grounds-export-block">
                 <h3>Similar Cases (AI-Suggested)</h3>
                 <ul>
-                  {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").map((caseItem, idx) => (
+                  {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").map((caseItem, idx) => (
                     <li key={idx}>{caseItem.citation ? `${caseItem.case_name} — ${caseItem.citation}` : caseItem.case_name}</li>
                   ))}
                 </ul>
@@ -495,7 +545,14 @@ table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
 <p class="desc">${escHtml(ground.description)}</p>
-${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e=>'<li>'+escHtml(typeof e === 'string' ? e : (e?.quote || e?.text || e?.filename || 'Evidence item'))+'</li>').join('') + '</ul>' : ''}
+${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e => {
+  let t = '';
+  if (typeof e === 'string') {
+    const m = e.match(/['"]quote['"]\s*:\s*['"](.+?)['"]\s*[,}]/);
+    t = m ? m[1] : (e.includes('document_id') && e.includes('optional') ? '' : e);
+  } else { t = e?.quote || e?.text || ''; }
+  return t ? '<li>'+escHtml(t)+'</li>' : '';
+}).join('') + '</ul>' : ''}
 ${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').length ? '<h2>Similar Cases (AI-Suggested)</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
@@ -670,11 +727,11 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       )}
                       
                       {/* Similar Cases Preview */}
-                      {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 0 && (
+                      {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 0 && (
                         <div className="flex items-center gap-2 mt-1">
                           <Gavel className="w-4 h-4 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length} similar case{ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 1 ? 's' : ''} referenced
+                            {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length} similar case{ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 1 ? 's' : ''} referenced
                           </span>
                         </div>
                       )}
@@ -971,7 +1028,8 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                     </h4>
                     <ul className="list-disc pl-5 space-y-1 text-slate-700 text-sm">
                       {detailGround.supporting_evidence.map((ev, idx) => {
-                        const text = typeof ev === "string" ? ev : (ev?.quote || ev?.text || ev?.filename || "Evidence item");
+                        const text = extractEvidenceText(ev);
+                        if (!text) return null;
                         return <li key={idx}>{auSpelling(text)}</li>;
                       })}
                     </ul>
@@ -1001,7 +1059,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 )}
 
                 {/* Similar Cases */}
-                {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").length > 0 && (
+                {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 0 && (
                   <div>
                     <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <Gavel className="w-4 h-4" />
@@ -1009,7 +1067,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       <span className="text-xs font-normal text-blue-600">(AI-suggested — requires verification)</span>
                     </h4>
                     <div className="space-y-2">
-                      {detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]").map((caseItem, idx) => (
+                      {detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").map((caseItem, idx) => (
                         <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <div className="font-medium text-blue-900">
                             {caseItem.case_name}

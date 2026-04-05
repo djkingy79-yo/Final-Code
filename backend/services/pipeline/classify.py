@@ -102,6 +102,9 @@ STRICT RULES:
 - Use conditional language (possible issue, potential ground, may warrant).
 - Link each issue to specific extracted fact/event/finding IDs.
 - ground_type MUST be from the listed values.
+- AUSTRALIAN ENGLISH ONLY — use "analyse", "organise", "defence", "offence", "behaviour", "colour", "favour", "honour", "centre", "specialise", "recognise", "authorise", "emphasise", "summarise", "counselling". Do NOT use any American spellings. This is an Australian law tool.
+- supporting_evidence MUST be plain text strings, NOT objects or dictionaries. Each item should be a simple text quote.
+- similar_cases: Use real Australian case citations (e.g. "R v Smith [2015] NSWCCA 123"). Do NOT use placeholders like "R v [Surname] [Year]".
 - classification_confidence should reflect genuine assessment:
   * "strong" = clear factual/legal basis in the record, likely arguable
   * "moderate" = some supporting evidence, warrants further investigation  
