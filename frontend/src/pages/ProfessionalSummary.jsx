@@ -294,13 +294,13 @@ const ProfessionalSummary = () => {
 
         {/* Important Notice */}
         <section className="mb-8" data-testid="prof-important-notice">
-          <Card className="border-blue-300 bg-blue-50">
+          <Card className="border-red-400 bg-red-600">
             <CardContent className="p-6">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-6 h-6 text-white flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-blue-900 mb-2">Important Notice</h3>
-                  <p className="text-blue-800 text-sm leading-relaxed">
+                  <h3 className="font-extrabold text-white text-lg mb-2">Important Notice</h3>
+                  <p className="text-white font-bold text-sm leading-relaxed">
                     This tool provides AI-assisted document analysis and research support intended to help identify 
                     potential issues that may warrant further legal review. The information generated does not 
                     constitute legal advice and should not be relied upon as a substitute for advice from a 
