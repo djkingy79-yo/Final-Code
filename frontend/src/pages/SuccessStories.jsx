@@ -161,25 +161,25 @@ const StoryCard = ({ story }) => {
 
   return (
     <article
-      className="bg-white rounded-xl border border-slate-200 overflow-hidden"
+      className="bg-white rounded-lg border border-slate-200 overflow-hidden"
       data-testid={`success-story-card-${story.id}`}
     >
-      <div className="p-3 border-b border-slate-100">
+      <div className="px-3 py-2 border-b border-slate-100">
         <h3 className="text-xs font-bold text-slate-900" data-testid={`success-story-heading-${story.id}`}>
           {story.name} — {story.relationship} ({story.location})
         </h3>
       </div>
 
-      <div className="p-3">
-        <div className="flex items-start gap-2">
-          <Quote className="w-3 h-3 text-red-600 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-slate-800 leading-relaxed" data-testid={`success-story-comment-${story.id}`}>
+      <div className="px-3 py-2">
+        <div className="flex items-start gap-1.5">
+          <Quote className="w-3 h-3 text-blue-600 shrink-0 mt-0.5" />
+          <p className="text-[11px] text-slate-700 leading-snug" data-testid={`success-story-comment-${story.id}`}>
             "{expanded ? story.full : story.preview}"
           </p>
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-2 text-[10px] text-blue-700 font-semibold flex items-center gap-1 hover:text-blue-900"
+          className="mt-1.5 text-[10px] text-blue-700 font-semibold flex items-center gap-1 hover:text-blue-900"
           data-testid={`success-story-toggle-${story.id}`}
         >
           {expanded ? (
@@ -190,13 +190,13 @@ const StoryCard = ({ story }) => {
         </button>
       </div>
 
-      <div className="bg-emerald-50 border-t border-emerald-100 px-3 py-2">
+      <div className="bg-emerald-50 border-t border-emerald-100 px-3 py-1.5">
         <div className="flex items-center gap-1.5 text-emerald-700">
           <CheckCircle className="w-3 h-3" />
           <span className="font-semibold text-[10px]">{story.outcome}</span>
         </div>
         {story.timeframe && (
-          <span className="text-[9px] text-emerald-600 mt-1 inline-block">
+          <span className="text-[9px] text-emerald-600 inline-block">
             {story.timeframe}
           </span>
         )}
@@ -280,11 +280,11 @@ const SuccessStories = () => {
       {/* Hero */}
       <section className="py-8 px-6 bg-white border-b border-slate-100">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-red-600 font-semibold text-[10px] uppercase tracking-widest mb-2">From Families Who Used This Tool</p>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-blue-600 font-semibold text-xs uppercase tracking-widest mb-2">From Families Who Used This Tool</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Success Stories
           </h1>
-          <p className="text-slate-600 text-xs">
+          <p className="text-slate-600 text-base">
             Real people. Real cases. Not every appeal succeeds — but these families found something that was missed.
           </p>
         </div>
@@ -292,7 +292,7 @@ const SuccessStories = () => {
 
       {/* Stories */}
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="success-stories-grid">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3" data-testid="success-stories-grid">
           {successStories.map((story) => (
             <StoryCard key={story.id} story={story} />
           ))}
