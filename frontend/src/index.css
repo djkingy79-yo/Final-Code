@@ -1225,6 +1225,16 @@ select {
   color: #ffffff !important;
 }
 
+/* About section — white button with bright blue text override */
+.landing-page .about-story-btn,
+.force-light .about-story-btn,
+.force-light [class*="bg-blue-6"] .about-story-btn {
+  color: #2563eb !important;
+  background-color: #ffffff !important;
+  border-radius: 14px !important;
+}
+
+
 /* Landing pages — bright, bold, white background */
 .landing-page {
   background: #ffffff;

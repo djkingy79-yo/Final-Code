@@ -1065,7 +1065,7 @@ const LandingPage = () => {
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about" data-testid="about-story-link">
-            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-bold text-base px-6 py-3" data-testid="about-story-button">
+            <Button className="about-story-btn font-bold text-base px-6 py-3 border-0" data-testid="about-story-button">
               Read My Full Story
             </Button>
           </Link>
