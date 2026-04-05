@@ -143,8 +143,8 @@ const AboutPage = () => {
       <section className="py-12 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-              <Quote className="w-6 h-6 text-red-600" />
+            <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
+              <Quote className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
               My Journey
