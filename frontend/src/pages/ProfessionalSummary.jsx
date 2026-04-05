@@ -183,7 +183,7 @@ const ProfessionalSummary = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Sentencing Errors</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Sentencing Errors</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Manifestly excessive or inadequate sentence</li>
                     <li>• Failure to apply correct sentencing principles</li>
@@ -194,7 +194,7 @@ const ProfessionalSummary = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Procedural Irregularities</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Procedural Irregularities</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Trial procedure errors and unfairness</li>
                     <li>• Wrongful admission or exclusion of evidence</li>
@@ -205,7 +205,7 @@ const ProfessionalSummary = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Mens Rea and Fault Elements</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Mens Rea and Fault Elements</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Jury directions on intent and knowledge</li>
                     <li>• Reckless indifference to human life</li>
@@ -216,7 +216,7 @@ const ProfessionalSummary = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Fresh and New Evidence</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Fresh and New Evidence</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Evidence not available at trial</li>
                     <li>• New witness information or recantations</li>
@@ -227,7 +227,7 @@ const ProfessionalSummary = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Evidentiary Analysis</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Evidentiary Analysis</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Timeline and chronology inconsistencies</li>
                     <li>• Documentary evidence review and contradictions</li>
@@ -238,7 +238,7 @@ const ProfessionalSummary = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2 text-base">Miscarriage of Justice</h3>
+                  <h3 className="font-bold text-slate-900 mb-2 text-lg">Miscarriage of Justice</h3>
                   <ul className="space-y-1 text-sm text-slate-600">
                     <li>• Unsafe or unsatisfactory verdict</li>
                     <li>• Prosecution misconduct or overreach</li>
