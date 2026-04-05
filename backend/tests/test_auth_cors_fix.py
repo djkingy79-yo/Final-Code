@@ -11,8 +11,8 @@ import uuid
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials from /app/memory/test_credentials.md
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 # Unique test user for registration tests
 TEST_UNIQUE_EMAIL = f"test_user_{uuid.uuid4().hex[:8]}@example.com"

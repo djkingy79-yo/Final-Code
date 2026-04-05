@@ -16,7 +16,7 @@ if not BASE_URL:
     BASE_URL = "http://localhost:8001"
 
 # Test credentials from review_request
-ADMIN_EMAIL = "djkingy79@gmail.com"
+ADMIN_EMAIL = "test@example.com"
 ADMIN_USER_ID = "user_d2287f20104b"
 EXISTING_CASE = "case_cec9b5706fae"
 EXISTING_REPORT = "rpt_01e4334f84b9"
@@ -193,7 +193,7 @@ class TestReportGeneration:
             timeout=120
         )
         
-        # Admin (djkingy79@gmail.com) bypasses payment
+        # Admin (test@example.com) bypasses payment
         if response.status_code == 200:
             data = response.json()
             assert "report_id" in data, "Response should include report_id"

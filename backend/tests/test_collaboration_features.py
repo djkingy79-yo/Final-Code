@@ -9,8 +9,8 @@ import os
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 TEST_CASE_ID = "case_a97ea91f0692"  # Dummy Murder Appeal Demonstration
 TEST_SESSION_TOKEN = "sess_ab40fa0ed548457aa7d37cbd1a10cf8a"
 

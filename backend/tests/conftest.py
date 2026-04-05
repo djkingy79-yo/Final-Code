@@ -7,8 +7,8 @@ import pytest
 BASE_URL = "http://localhost:8001"
 API_URL = f"{BASE_URL}/api"
 
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 
 @pytest.fixture

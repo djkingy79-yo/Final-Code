@@ -22,6 +22,7 @@ from typing import List
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from config import db, logger, client, get_admin_emails
 from auth_utils import get_current_user
@@ -84,6 +85,42 @@ app = FastAPI(title="Criminal Appeal AI", version="2.0.0")
 api_router = APIRouter(prefix="/api")
 
 
+# ── Security Headers Middleware ──
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Adds security headers and rate-limits auth endpoints."""
+    _auth_attempts: dict = {}  # IP -> [(timestamp, ...)]
+
+    async def dispatch(self, request: Request, call_next):
+        # Rate limit auth endpoints: 10 requests per minute per IP
+        path = request.url.path
+        if request.method == "POST" and any(p in path for p in ["/auth/login", "/auth/register", "/auth/forgot-password"]):
+            ip = request.client.host if request.client else "unknown"
+            now = datetime.now(timezone.utc)
+            cutoff = now - timedelta(minutes=1)
+            attempts = self._auth_attempts.get(ip, [])
+            attempts = [t for t in attempts if t > cutoff]
+            if len(attempts) >= 10:
+                return Response(
+                    content='{"detail":"Too many attempts. Please wait 1 minute."}',
+                    status_code=429,
+                    media_type="application/json"
+                )
+            attempts.append(now)
+            self._auth_attempts[ip] = attempts
+
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if request.url.scheme == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
+
+app.add_middleware(SecurityHeadersMiddleware)
+
+
 @app.get("/health")
 @app.get("/api/health")
 async def health_check():
@@ -93,6 +130,41 @@ async def health_check():
     except Exception:
         db_status = "disconnected"
     return {"status": "healthy", "database": db_status, "timestamp": datetime.now(timezone.utc).isoformat()}
+
+
+@app.get("/api/ready")
+async def readiness_check():
+    """Readiness probe — returns 503 if MongoDB is not connected."""
+    try:
+        await db.command("ping")
+        return {"ready": True, "timestamp": datetime.now(timezone.utc).isoformat()}
+    except Exception:
+        return Response(
+            content='{"ready":false,"reason":"database_unavailable"}',
+            status_code=503,
+            media_type="application/json"
+        )
+
+
+@app.get("/api/health/deep")
+async def deep_health_check():
+    """Deep health check — verifies MongoDB, LLM key, and email service."""
+    from config import EMERGENT_LLM_KEY
+    checks = {}
+    # MongoDB
+    try:
+        await db.command("ping")
+        user_count = await db.users.count_documents({})
+        checks["mongodb"] = {"status": "ok", "users": user_count}
+    except Exception as e:
+        checks["mongodb"] = {"status": "error", "detail": str(e)}
+    # LLM Key
+    checks["llm_key"] = {"status": "ok" if EMERGENT_LLM_KEY else "missing"}
+    # Resend
+    resend_key = os.environ.get("RESEND_API_KEY", "")
+    checks["email"] = {"status": "ok" if resend_key else "not_configured"}
+    all_ok = all(c.get("status") == "ok" for c in checks.values())
+    return {"healthy": all_ok, "checks": checks, "timestamp": datetime.now(timezone.utc).isoformat()}
 
 
 # ============ AI ANALYSIS & REPORTS ============

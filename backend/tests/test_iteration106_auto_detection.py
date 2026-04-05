@@ -21,8 +21,8 @@ class TestAutoDetection:
         
         # Login
         login_response = s.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         assert login_response.status_code == 200, f"Login failed: {login_response.text}"
         data = login_response.json()
@@ -144,8 +144,8 @@ class TestBundleExport:
         s.headers.update({"Content-Type": "application/json"})
         
         login_response = s.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         assert login_response.status_code == 200
         data = login_response.json()
@@ -193,8 +193,8 @@ class TestCaseDetails:
         s.headers.update({"Content-Type": "application/json"})
         
         login_response = s.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         assert login_response.status_code == 200
         data = login_response.json()

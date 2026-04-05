@@ -12,8 +12,8 @@ import os
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 # Test case with documents and timeline events
 TEST_CASE_ID = "case_a97ea91f0692"

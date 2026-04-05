@@ -14,8 +14,8 @@ import os
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 TEST_CASE_ID = "case_e7a5b5faf51e"
 TEST_REPORT_ID = "rpt_66f34314b465"
 

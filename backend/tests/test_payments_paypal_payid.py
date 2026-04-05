@@ -87,7 +87,7 @@ class TestPaymentMethods:
         payid = data.get("payid", {})
         assert payid.get("enabled")
         assert payid.get("name") == "PayID / Bank Transfer"
-        assert payid.get("payid") == "djkingy79@gmail.com"
+        assert payid.get("payid") == "test@example.com"
         assert payid.get("payid_type") == "email"
         assert "account_name" in payid
 

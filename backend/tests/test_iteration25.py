@@ -19,7 +19,7 @@ TEST_PASSWORD = "testpass123"
 TEST_NAME = "Test User"
 
 # Admin email
-ADMIN_EMAIL = "djkingy79@gmail.com"
+ADMIN_EMAIL = "test@example.com"
 
 class TestAuthEndpoints:
     """Test auth endpoints from routers/auth.py"""

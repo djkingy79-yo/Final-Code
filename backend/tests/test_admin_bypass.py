@@ -1,7 +1,7 @@
 """
 Test Admin Bypass for Payments
 Tests: 
-- /api/auth/me returns is_admin:true for admin email djkingy79@gmail.com
+- /api/auth/me returns is_admin:true for admin email test@example.com
 - /api/cases/{case_id}/payments returns all features unlocked for admin users
 - /api/cases/{case_id}/grounds returns is_unlocked:true for admin users
 """
@@ -13,7 +13,7 @@ import uuid
 BASE_URL = 'http://localhost:8001'
 
 # Admin email to test with
-ADMIN_EMAIL = "djkingy79@gmail.com"
+ADMIN_EMAIL = "test@example.com"
 
 
 class TestAdminBypass:

@@ -13,8 +13,8 @@ import re
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 # Target case and reports
 TARGET_CASE_ID = "case_76056187ad4f"

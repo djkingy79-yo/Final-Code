@@ -18,8 +18,8 @@ import os
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 # Test case IDs
 KARLSSON_CASE_ID = "case_e7a5b5faf51e"  # R v Karlsson - 2 locked grounds, auto-detected sexual_offences
@@ -155,7 +155,7 @@ class TestGroundsPaywallAndAutoDetection:
     def test_05_verify_no_admin_bypass_in_grounds(self):
         """
         Verify that admin users also see locked grounds (admin bypass removed)
-        The test user djkingy79@gmail.com IS an admin, but should still see locked grounds
+        The test user test@example.com IS an admin, but should still see locked grounds
         """
         response = self.session.get(f"{BASE_URL}/api/cases/{KARLSSON_CASE_ID}/grounds")
         assert response.status_code == 200

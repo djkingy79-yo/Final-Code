@@ -22,8 +22,8 @@ class TestHealthAndAuth:
     def test_login_success(self):
         """Login with valid credentials"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         assert response.status_code == 200
         data = response.json()
@@ -40,8 +40,8 @@ class TestChatEndpoint:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         if response.status_code == 200:
             return response.json().get("session_token")
@@ -67,8 +67,8 @@ class TestExportFeatures:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         if response.status_code == 200:
             return response.json().get("session_token")
@@ -111,8 +111,8 @@ class TestReportView:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         if response.status_code == 200:
             return response.json().get("session_token")

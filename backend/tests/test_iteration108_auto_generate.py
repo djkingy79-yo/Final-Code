@@ -13,8 +13,8 @@ import time
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "TestPassword123!"
 
 # Test case ID (R v Karlsson - has documents, grounds, timeline)
 TEST_CASE_ID = "case_e7a5b5faf51e"

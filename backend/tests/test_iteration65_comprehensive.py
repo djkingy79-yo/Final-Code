@@ -10,7 +10,7 @@ import time
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials
-TEST_EMAIL = "djkingy79@gmail.com"
+TEST_EMAIL = "test@example.com"
 TEST_PASSWORD = "Appeal2026!"
 TEST_CASE_ID = "case_b2aa32564f2b"
 

@@ -28,14 +28,14 @@ class TestHealthAndAuth:
     def test_login_endpoint(self):
         """Login endpoint should work with valid credentials"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         assert response.status_code == 200
         data = response.json()
         assert "session_token" in data
         assert "email" in data  # User data is at root level
-        assert data["email"] == "djkingy79@gmail.com"
+        assert data["email"] == "test@example.com"
         print(f"PASS: Login endpoint working, got token: {data['session_token'][:20]}...")
         return data["session_token"]
     
@@ -43,8 +43,8 @@ class TestHealthAndAuth:
         """Auth/me endpoint should return user info with valid token"""
         # First login to get token
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         token = login_response.json()["session_token"]
         
@@ -55,15 +55,15 @@ class TestHealthAndAuth:
         assert response.status_code == 200
         data = response.json()
         assert "email" in data
-        assert data["email"] == "djkingy79@gmail.com"
+        assert data["email"] == "test@example.com"
         print("PASS: Auth/me endpoint working with Bearer token")
     
     def test_logout_endpoint(self):
         """Logout endpoint should work"""
         # First login to get token
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         token = login_response.json()["session_token"]
         
@@ -82,8 +82,8 @@ class TestCoreAPIEndpoints:
     def setup(self):
         """Get auth token for tests"""
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         self.token = login_response.json()["session_token"]
         self.headers = {"Authorization": f"Bearer {self.token}"}
@@ -136,8 +136,8 @@ class TestCaseDetailEndpoints:
     def setup(self):
         """Get auth token and first case ID"""
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "djkingy79@gmail.com",
-            "password": "Grubbygrub88"
+            "email": "test@example.com",
+            "password": "TestPassword123!"
         })
         self.token = login_response.json()["session_token"]
         self.headers = {"Authorization": f"Bearer {self.token}"}
