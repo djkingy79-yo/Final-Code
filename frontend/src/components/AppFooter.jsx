@@ -38,7 +38,7 @@ const AppFooter = () => {
             </div>
 
             <div>
-              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Explore &bull;</p>
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Guides &bull;</p>
               <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
                 <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
                 <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
@@ -51,7 +51,7 @@ const AppFooter = () => {
             </div>
 
             <div>
-              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Legal &bull;</p>
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Tools &bull;</p>
               <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
                 <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
                 <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
