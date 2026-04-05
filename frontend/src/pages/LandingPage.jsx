@@ -1055,17 +1055,17 @@ const LandingPage = () => {
       {/* About Link Section */}
       <section className="py-12 px-6 bg-blue-600 border-t border-blue-700">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-blue-200 text-xs uppercase tracking-widest mb-4">About</p>
-          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-white text-sm uppercase tracking-widest mb-4 font-extrabold">About</p>
+          <h3 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Appeal Case Manager
           </h3>
-          <p className="text-white text-sm font-semibold mb-4">Founded by Debra King</p>
-          <p className="text-white/90 text-sm mb-6 max-w-2xl mx-auto">
+          <p className="text-white text-base font-bold mb-4">Founded by Debra King</p>
+          <p className="text-white text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about" data-testid="about-story-link">
-            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold" data-testid="about-story-button">
+            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-bold text-base px-6 py-3" data-testid="about-story-button">
               Read My Full Story
             </Button>
           </Link>
