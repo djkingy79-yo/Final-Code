@@ -292,7 +292,7 @@ const SuccessStories = () => {
 
       {/* Stories */}
       <main className="max-w-5xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3" data-testid="success-stories-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2" data-testid="success-stories-grid">
           {successStories.map((story) => (
             <StoryCard key={story.id} story={story} />
           ))}
