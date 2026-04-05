@@ -27,38 +27,40 @@ const AppFooter = () => {
       </div>
 
       <div className="py-6 px-6 bg-slate-800">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 items-start">
-          <div className="flex flex-col items-start">
-            <div className="flex items-center gap-2">
-              <Scale className="w-4 h-4 text-white" />
-              <span className="text-white text-xs font-bold">Appeal Case Manager</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 items-start">
+            <div className="flex flex-col items-start">
+              <div className="flex items-center gap-1.5">
+                <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                <span className="text-white text-[10px] sm:text-xs font-bold leading-tight">Appeal Case Manager</span>
+              </div>
+              <span className="text-white/90 text-[10px] sm:text-xs mt-1 font-semibold leading-tight">Created and Designed by Deb King</span>
+              <span className="text-white/70 text-[9px] sm:text-xs mt-0.5 leading-tight">criminallawappealmanager.com.au</span>
             </div>
-            <span className="text-white/90 text-xs mt-1 font-semibold">Created and Designed by Deb King</span>
-            <span className="text-white/70 text-xs mt-0.5">criminallawappealmanager.com.au</span>
-          </div>
 
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/50 font-bold mb-2">&bull; Explore &bull;</p>
-            <div className="grid gap-y-0.5 text-xs">
-              <Link to="/how-it-works" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-it-works">How It Works</Link>
-              <Link to="/how-to-use" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-to-use">How To Use</Link>
-              <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
-              <Link to="/legal-resources" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-resources">Resources & Contacts</Link>
-              <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
-              <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
-              <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
+            <div>
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Explore &bull;</p>
+              <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
+                <Link to="/how-it-works" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-it-works">How It Works</Link>
+                <Link to="/how-to-use" className="text-white font-bold hover:text-blue-300" data-testid="footer-how-to-use">How To Use</Link>
+                <Link to="/professional-summary" className="text-white font-bold hover:text-blue-300" data-testid="footer-professional-summary">For Legal Professionals</Link>
+                <Link to="/legal-resources" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-resources">Resources & Contacts</Link>
+                <Link to="/forms" className="text-white font-bold hover:text-blue-300" data-testid="footer-forms">Forms & Templates</Link>
+                <Link to="/lawyers" className="text-white font-bold hover:text-blue-300" data-testid="footer-lawyers">Lawyer Directory</Link>
+                <Link to="/success-stories" className="text-white font-bold hover:text-blue-300" data-testid="footer-success-stories">Success Stories</Link>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/50 font-bold mb-2">&bull; Legal &bull;</p>
-            <div className="grid gap-y-0.5 text-xs">
-              <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
-              <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
-              <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
-              <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
-              <Link to="/about" className="text-white font-bold hover:text-blue-300" data-testid="footer-about">About</Link>
-              <Link to="/terms" className="text-white font-bold hover:text-blue-300" data-testid="footer-terms">Terms & Privacy</Link>
+            <div>
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-white/50 font-bold mb-1.5 sm:mb-2">&bull; Legal &bull;</p>
+              <div className="grid gap-y-0.5 text-[10px] sm:text-xs">
+                <Link to="/appeal-statistics" className="text-white font-bold hover:text-blue-300" data-testid="footer-appeal-statistics">Appeal Statistics</Link>
+                <Link to="/legal-framework" className="text-white font-bold hover:text-blue-300" data-testid="footer-legal-framework">Legal Framework</Link>
+                <Link to="/glossary" className="text-white font-bold hover:text-blue-300" data-testid="footer-glossary">Legal Glossary</Link>
+                <Link to="/faq" className="text-white font-bold hover:text-blue-300" data-testid="footer-faq">FAQ</Link>
+                <Link to="/about" className="text-white font-bold hover:text-blue-300" data-testid="footer-about">About</Link>
+                <Link to="/terms" className="text-white font-bold hover:text-blue-300" data-testid="footer-terms">Terms & Privacy</Link>
+              </div>
             </div>
           </div>
         </div>
