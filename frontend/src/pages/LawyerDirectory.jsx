@@ -32,8 +32,12 @@ const lawyerResources = [
       description: "Find a solicitor - use 'Criminal Law' filter"
     },
     specialists: [
-      { name: "Criminal Defence Lawyers Australia", url: "https://criminaldefencelawyers.com.au/" },
-      { name: "Sydney Criminal Lawyers", url: "https://www.sydneycriminallawyers.com.au/" }
+      { name: "Criminal Defence Lawyers Australia", url: "https://criminaldefencelawyers.com.au/", location: "Sydney CBD" },
+      { name: "Sydney Criminal Lawyers", url: "https://www.sydneycriminallawyers.com.au/", location: "Sydney CBD" },
+      { name: "LY Lawyers", url: "https://lylawyers.com.au/", location: "Parramatta" },
+      { name: "MacDougall & Hydes", url: "https://www.macdougallhydes.com.au/", location: "Penrith" },
+      { name: "Nyman Gibson Miralis", url: "https://www.nymangibsonmiralis.com.au/", location: "Sydney CBD" },
+      { name: "Hugo Law Group", url: "https://hugolawgroup.com.au/", location: "Sydney CBD" }
     ]
   },
   {
@@ -57,8 +61,12 @@ const lawyerResources = [
       description: "Find a solicitor in your area"
     },
     specialists: [
-      { name: "Stary Norton Halphen", url: "https://www.starynortonhalphen.com.au/" },
-      { name: "Doogue + George", url: "https://www.doogugeorge.com.au/" }
+      { name: "Stary Norton Halphen", url: "https://www.starynortonhalphen.com.au/", location: "Melbourne CBD" },
+      { name: "Doogue + George", url: "https://www.doogugeorge.com.au/", location: "Melbourne CBD" },
+      { name: "Dribbin & Brown", url: "https://www.criminalsolicitorsmelbourne.com.au/", location: "Melbourne CBD" },
+      { name: "Galbally Parker", url: "https://galballyparker.com.au/", location: "Melbourne" },
+      { name: "Leanne Warren & Associates", url: "https://leannewarren.com.au/", location: "Melbourne" },
+      { name: "Slades & Parsons", url: "https://www.sladesparsons.com.au/", location: "Melbourne CBD" }
     ]
   },
   {
@@ -82,8 +90,12 @@ const lawyerResources = [
       description: "Find a solicitor - use referral service"
     },
     specialists: [
-      { name: "Potts Lawyers", url: "https://www.pottslawyers.com.au/" },
-      { name: "Robertson O'Gorman", url: "https://www.robertsonogorman.com.au/" }
+      { name: "Potts Lawyers", url: "https://www.pottslawyers.com.au/", location: "Brisbane & Gold Coast" },
+      { name: "Robertson O'Gorman", url: "https://www.robertsonogorman.com.au/", location: "Brisbane CBD" },
+      { name: "Gilshenan & Luton", url: "https://www.gilshenanluton.com.au/", location: "Brisbane CBD" },
+      { name: "Fisher Dore Lawyers", url: "https://fisherdore.com.au/", location: "Brisbane" },
+      { name: "Jacobson Mahony", url: "https://www.jacobsonmahony.com.au/", location: "Gold Coast" },
+      { name: "Guest Lawyers", url: "https://guestlawyers.com.au/", location: "Brisbane" }
     ]
   },
   {
@@ -106,7 +118,12 @@ const lawyerResources = [
       url: "https://www.lawsocietysa.asn.au/",
       description: "Find a solicitor"
     },
-    specialists: []
+    specialists: [
+      { name: "Caldicott Lawyers", url: "https://www.caldicottlawyers.com.au/", location: "Adelaide CBD" },
+      { name: "Mangan Ey & Associates", url: "https://manganey.com.au/", location: "Adelaide" },
+      { name: "Johnston Withers", url: "https://johnstonwithers.com.au/", location: "Adelaide CBD" },
+      { name: "Stanley Hill Elkins", url: "https://shelegal.com.au/", location: "Adelaide" }
+    ]
   },
   {
     state: "Western Australia",
@@ -129,7 +146,11 @@ const lawyerResources = [
       description: "Find a solicitor"
     },
     specialists: [
-      { name: "Pattison Hardman", url: "https://www.pattisonhardman.com.au/" }
+      { name: "Pattison Hardman", url: "https://www.pattisonhardman.com.au/", location: "Perth CBD" },
+      { name: "James Jackson Criminal Defence", url: "https://www.jjacksoncriminaldefence.com.au/", location: "Perth" },
+      { name: "Kate King Legal", url: "https://katekinglegal.com.au/", location: "Perth" },
+      { name: "Curt Hofmann & Co", url: "https://perthcriminallawyer.com.au/", location: "Perth CBD" },
+      { name: "WA Criminal Lawyers", url: "https://wacriminallawyersperth.com.au/", location: "Perth" }
     ]
   },
   {
@@ -152,7 +173,12 @@ const lawyerResources = [
       url: "https://www.lst.org.au/",
       description: "Find a solicitor"
     },
-    specialists: []
+    specialists: [
+      { name: "Monk Lawyers", url: "https://www.monklawyers.com.au/", location: "Hobart" },
+      { name: "Tierney Law", url: "https://tierneylaw.com.au/", location: "Hobart" },
+      { name: "Brooke Winter Solicitors", url: "https://brookewintersolicitors.com.au/", location: "Hobart CBD" },
+      { name: "Murdoch Clarke Lawyers", url: "https://murdochclarke.com.au/", location: "Hobart" }
+    ]
   },
   {
     state: "Northern Territory",
@@ -174,7 +200,12 @@ const lawyerResources = [
       url: "https://lawsocietynt.asn.au/",
       description: "Find a solicitor"
     },
-    specialists: []
+    specialists: [
+      { name: "Territory Criminal Lawyers", url: "https://www.territorycriminallawyers.com/", location: "Darwin" },
+      { name: "Maleys Barristers & Solicitors", url: "https://www.maleyslegal.com/", location: "Darwin CBD" },
+      { name: "Ward Keller Lawyers", url: "https://www.wardkeller.com.au/", location: "Darwin" },
+      { name: "Grays Legal NT", url: "https://www.lawyerdarwin.au/", location: "Darwin" }
+    ]
   },
   {
     state: "Australian Capital Territory",
@@ -196,7 +227,12 @@ const lawyerResources = [
       url: "https://www.actlawsociety.asn.au/",
       description: "Find a solicitor"
     },
-    specialists: []
+    specialists: [
+      { name: "O'Brien Criminal & Civil Solicitors", url: "https://obriensolicitors.com.au/", location: "Canberra" },
+      { name: "Andrew Byrnes Law Group", url: "https://andrewyrbneslaw.com.au/", location: "Canberra City" },
+      { name: "Hugo Law Group", url: "https://hugolawgroup.com.au/", location: "Canberra" },
+      { name: "Lamont Law", url: "https://lamontlaw.com.au/", location: "Canberra" }
+    ]
   }
 ];
 
@@ -460,6 +496,9 @@ const LawyerDirectory = () => {
                           className="text-xs bg-white border border-slate-200 hover:border-blue-300 hover:bg-slate-50 text-slate-900 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                         >
                           {specialist.name}
+                          {specialist.location && (
+                            <span className="text-[10px] text-slate-500 ml-1">({specialist.location})</span>
+                          )}
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       ))}
