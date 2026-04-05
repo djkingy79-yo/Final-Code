@@ -255,6 +255,77 @@ async def delete_timeline_event(case_id: str, event_id: str, request: Request):
     return {"message": "Timeline event deleted"}
 
 
+
+@router.post("/cases/{case_id}/timeline/reorder", response_model=dict)
+async def reorder_timeline_events(case_id: str, request: Request):
+    """Reorder timeline events by swapping sort_order of two adjacent events."""
+    user = await get_current_user(request)
+    body = await request.json()
+    event_id = body.get("event_id")
+    direction = body.get("direction")  # "up" or "down"
+
+    if not event_id or direction not in ("up", "down"):
+        raise HTTPException(status_code=400, detail="event_id and direction (up/down) required")
+
+    # Get all events sorted by sort_order then event_date
+    events = await db.timeline_events.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort([("sort_order", 1), ("event_date", 1)]).to_list(500)
+
+    if not events:
+        raise HTTPException(status_code=404, detail="No events found")
+
+    # Ensure all events have sort_order
+    for i, ev in enumerate(events):
+        if "sort_order" not in ev:
+            await db.timeline_events.update_one(
+                {"event_id": ev["event_id"], "case_id": case_id},
+                {"$set": {"sort_order": i}}
+            )
+            ev["sort_order"] = i
+
+    # Find the target event index
+    target_idx = None
+    for i, ev in enumerate(events):
+        if ev["event_id"] == event_id:
+            target_idx = i
+            break
+
+    if target_idx is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # Determine swap partner
+    if direction == "up" and target_idx > 0:
+        swap_idx = target_idx - 1
+    elif direction == "down" and target_idx < len(events) - 1:
+        swap_idx = target_idx + 1
+    else:
+        return {"message": "Already at boundary", "events": events}
+
+    # Swap sort_order values
+    target_order = events[target_idx].get("sort_order", target_idx)
+    swap_order = events[swap_idx].get("sort_order", swap_idx)
+
+    await db.timeline_events.update_one(
+        {"event_id": events[target_idx]["event_id"], "case_id": case_id},
+        {"$set": {"sort_order": swap_order}}
+    )
+    await db.timeline_events.update_one(
+        {"event_id": events[swap_idx]["event_id"], "case_id": case_id},
+        {"$set": {"sort_order": target_order}}
+    )
+
+    # Return updated list
+    updated = await db.timeline_events.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort([("sort_order", 1), ("event_date", 1)]).to_list(500)
+
+    return {"message": "Reordered", "events": updated}
+
+
+
 # ============================================================================
 # AI TIMELINE GENERATION (HARDENED - JSON-SAFE)
 # ============================================================================

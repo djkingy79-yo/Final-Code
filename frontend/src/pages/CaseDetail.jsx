@@ -355,6 +355,22 @@ const CaseDetail = ({ user }) => {
     }
   };
 
+  const handleReorderEvent = async (eventId, direction) => {
+    try {
+      const response = await axios.post(`${API}/cases/${caseId}/timeline/reorder`, {
+        event_id: eventId,
+        direction: direction
+      });
+      if (response.data.events) {
+        setTimeline(response.data.events);
+      }
+      toast.success(`Event moved ${direction}`);
+    } catch (error) {
+      toast.error("Failed to reorder event");
+    }
+  };
+
+
   const handleGenerateTimeline = async () => {
     if (documents.filter(d => d.content_text).length === 0) {
       toast.error("No documents with extracted text. Please upload documents and extract text first.");
@@ -1171,6 +1187,7 @@ const CaseDetail = ({ user }) => {
                   caseId={caseId}
                   caseInfo={caseData}
                   onDeleteEvent={handleDeleteEvent}
+                  onReorderEvent={handleReorderEvent}
                   onExportPDF={handleExportTimelinePDF}
                   onAnalyze={handleAnalyzeTimeline}
                   analyzing={analyzingTimeline}

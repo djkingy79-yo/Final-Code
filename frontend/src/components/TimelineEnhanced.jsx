@@ -6,7 +6,7 @@
 import { useState, useMemo } from "react";
 import { 
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,
-  Filter, Search, Download, ChevronDown, ChevronUp, Printer
+  Filter, Search, Download, ChevronDown, ChevronUp, Printer, ArrowUp, ArrowDown
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -91,6 +91,7 @@ const Timeline = ({
   onEditEvent,
   onExportPDF,
   onAnalyze,
+  onReorderEvent,
   analyzing = false
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -577,6 +578,30 @@ const Timeline = ({
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
+                          {onReorderEvent && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => onReorderEvent(event.event_id, "up")}
+                                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                data-testid={`move-up-${event.event_id}`}
+                                title="Move up"
+                              >
+                                <ArrowUp className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => onReorderEvent(event.event_id, "down")}
+                                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                data-testid={`move-down-${event.event_id}`}
+                                title="Move down"
+                              >
+                                <ArrowDown className="w-4 h-4" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
