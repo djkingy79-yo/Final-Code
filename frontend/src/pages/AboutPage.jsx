@@ -113,7 +113,7 @@ const AboutPage = () => {
               About Deb
             </h2>
             <p className="text-slate-700 text-base leading-relaxed max-w-2xl mx-auto">
-              A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney 
+              A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney, Colyton 
               and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
               training and assessment, civil construction plant operations, and painting and decorating — 
               Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black 
