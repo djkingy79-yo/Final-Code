@@ -267,11 +267,7 @@ function AppRouter() {
       />
       <Route
         path="/resources"
-        element={
-          <ProtectedRoute>
-            {({ user }) => <ResourcesPage user={user} />}
-          </ProtectedRoute>
-        }
+        element={<Navigate to="/legal-resources" replace />}
       />
       <Route
         path="/professional-summary"
