@@ -193,7 +193,7 @@ const AppealStatisticsPage = () => {
         )}
       </header>
 
-      <div className="bg-blue-600">
+      <div className="bg-white">
       {/* Hero */}
       <section className="py-12 px-6 bg-blue-800 text-white">
         <div className="max-w-5xl mx-auto text-center">
@@ -215,16 +215,16 @@ const AppealStatisticsPage = () => {
         </div>
       </section>
 
-      <main className="max-w-5xl mx-auto px-6 py-8 text-white">
+      <main className="max-w-5xl mx-auto px-6 py-8">
 
         {/* Headline Snapshot */}
         <section className="mb-10 text-center" data-testid="appeal-rate-spotlight-section">
           <div className="rounded-2xl border-2 border-blue-400 bg-blue-700 p-6 md:p-8">
-            <p className="text-xs uppercase tracking-wider text-blue-200 font-semibold mb-2">Appeal Access Snapshot</p>
+            <p className="text-lg md:text-xl uppercase tracking-wider text-white font-extrabold mb-2">Appeal Access Snapshot</p>
             <p className="text-5xl md:text-6xl font-black text-white leading-none" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="appeal-rate-spotlight-value">
               1 in 80
             </p>
-            <p className="text-sm text-blue-100 mt-3 max-w-3xl" data-testid="appeal-rate-spotlight-description">
+            <p className="text-base md:text-lg text-white font-semibold mt-3 max-w-3xl mx-auto" data-testid="appeal-rate-spotlight-description">
               Only about 1.3% of convicted defendants ever lodge a criminal appeal. Of those who do proceed to hearing, roughly 40% achieve some change to their conviction or sentence.
             </p>
           </div>
@@ -232,11 +232,10 @@ const AppealStatisticsPage = () => {
 
         {/* National Overview */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 1</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             National Overview (2024)
           </h2>
-          <p className="text-sm text-blue-100 mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
+          <p className="text-base md:text-lg text-black font-semibold mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <StatCard 
@@ -269,21 +268,21 @@ const AppealStatisticsPage = () => {
             />
           </div>
 
-          <div className="bg-blue-800 border border-blue-400 rounded-xl p-4 text-sm text-blue-100">
-            <AlertTriangle className="w-5 h-5 text-yellow-400 inline mr-2" />
-            <strong className="text-white">Important:</strong> Only about 1.3% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-slate-700">
+            <AlertTriangle className="w-5 h-5 text-red-600 inline mr-2" />
+            <strong className="text-black">Important:</strong> Only about 1.3% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
             approximately 40% result in some change to the conviction or sentence. Success rates vary significantly by jurisdiction and type of appeal.
           </div>
 
           {/* ACCESS TO JUSTICE ANALYSIS */}
-          <div className="mt-8 bg-blue-700 border-2 border-blue-800 rounded-xl p-6" data-testid="appeal-access-crisis-details">
+          <div className="mt-8 bg-blue-600 border-2 border-blue-700 rounded-xl p-6" data-testid="appeal-access-crisis-details">
             <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
               <AlertTriangle className="w-7 h-7" />
               The Appeal Access Crisis: Why So Few People Exercise Their Rights
             </h3>
 
             <div className="space-y-4 text-sm text-white mt-4">
-              <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
+              <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Reality: Only 1 in 80 Convicted Australians Appeal</p>
                 <p className="text-sm">
                   Of the <strong>684,138 criminal cases</strong> finalised in Australian courts in 2021-22, 
@@ -292,7 +291,7 @@ const AppealStatisticsPage = () => {
                 </p>
               </div>
 
-              <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
+              <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Limitations</p>
                 <p className="text-sm">
                   <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some statistics cited are from <strong>2007-2008</strong> and earlier — 
@@ -302,7 +301,7 @@ const AppealStatisticsPage = () => {
                 </p>
               </div>
 
-              <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
+              <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Are Appeal Rates So Low?</p>
                 <p className="mb-3 text-sm">This extraordinarily low rate doesn't mean most convictions are fair and error-free. Instead, it reveals major systemic barriers:</p>
                 
@@ -359,7 +358,7 @@ const AppealStatisticsPage = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-800/70 rounded-lg p-4 border border-blue-400">
+              <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Hidden Tragedy</p>
                 <p className="text-sm">
                   Given that <strong>approximately 40% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
@@ -381,7 +380,7 @@ const AppealStatisticsPage = () => {
                 </p>
               </div>
 
-              <div className="bg-blue-800/70 rounded-lg p-4 border-2 border-blue-400">
+              <div className="bg-blue-700/70 rounded-lg p-4 border-2 border-blue-400">
                 <p className="font-bold text-2xl mb-2 text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>This Tool's Purpose</p>
                 <p className="text-sm text-white">
                   <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
@@ -396,11 +395,10 @@ const AppealStatisticsPage = () => {
 
         {/* State by State */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 2</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             State by State Statistics
           </h2>
-          <p className="text-base text-blue-100 mb-6 text-center">Compare filings, success rates, and timeframes by jurisdiction.</p>
+          <p className="text-base text-slate-600 mb-6 text-center">Compare filings, success rates, and timeframes by jurisdiction.</p>
 
           {/* State Tabs */}
           <div className="flex flex-wrap gap-2 mb-6">
@@ -436,10 +434,10 @@ const AppealStatisticsPage = () => {
 
           {/* Comparison Table */}
           <div className="mt-8 overflow-x-auto">
-            <h3 className="text-xl font-bold text-white mb-4">Quick Comparison</h3>
+            <h3 className="text-xl font-bold text-blue-600 mb-4">Quick Comparison</h3>
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-blue-800 text-white">
+                <tr className="bg-blue-600 text-white">
                   <th className="text-left p-3 font-semibold">State</th>
                   <th className="text-center p-3 font-semibold">Appeals Filed</th>
                   <th className="text-center p-3 font-semibold">Success Rate</th>
@@ -448,9 +446,9 @@ const AppealStatisticsPage = () => {
               </thead>
               <tbody>
                 {Object.entries(stateStats).map(([key, state]) => (
-                  <tr key={key} className="border-b border-blue-500 hover:bg-blue-700/50">
-                    <td className="p-3 font-medium text-white">{state.name}</td>
-                    <td className="p-3 text-center text-white">{state.filings2024}</td>
+                  <tr key={key} className="border-b border-blue-200 hover:bg-blue-50">
+                    <td className="p-3 font-bold text-blue-600">{state.name}</td>
+                    <td className="p-3 text-center text-blue-600 font-semibold">{state.filings2024}</td>
                     <td className="p-3 text-center">
                       <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${
                         state.successRate >= 25 ? 'bg-emerald-600' :
@@ -460,7 +458,7 @@ const AppealStatisticsPage = () => {
                         {state.successRate}%
                       </span>
                     </td>
-                    <td className="p-3 text-center text-white">{state.avgMonths} months</td>
+                    <td className="p-3 text-center text-blue-600 font-semibold">{state.avgMonths} months</td>
                   </tr>
                 ))}
               </tbody>
@@ -470,30 +468,29 @@ const AppealStatisticsPage = () => {
 
         {/* Common Grounds of Appeal */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 3</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Most Common Grounds of Appeal
           </h2>
-          <p className="text-blue-100 text-base mb-6 text-center">
+          <p className="text-slate-600 text-base mb-6 text-center">
             Based on analysis of appeals across Australian Courts of Criminal Appeal. 
             Sentence appeals (manifestly excessive) are most common, followed by conviction appeals based on legal errors.
           </p>
 
           <div className="space-y-4">
             {groundsData.map((ground, index) => (
-              <div key={index} className="bg-blue-700 border border-blue-400 rounded-xl p-4">
+              <div key={index} className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-bold bg-blue-800 text-white px-3 py-1 rounded-full">#{index + 1}</span>
-                    <span className="font-semibold text-sm text-white">{ground.ground}</span>
+                    <span className="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-full">#{index + 1}</span>
+                    <span className="font-semibold text-sm text-slate-900">{ground.ground}</span>
                   </div>
-                  <span className="text-lg font-bold" style={{ color: '#fca5a5' }}>{ground.percentage}%</span>
+                  <span className="text-lg font-bold text-red-600">{ground.percentage}%</span>
                 </div>
-                <p className="text-xs text-blue-100 ml-10">{ground.description}</p>
+                <p className="text-xs text-slate-600 ml-10">{ground.description}</p>
                 {/* Progress Bar */}
-                <div className="mt-3 ml-10 h-2 bg-blue-800 rounded-full overflow-hidden">
+                <div className="mt-3 ml-10 h-2 bg-blue-100 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-blue-400 rounded-full transition-all duration-500"
+                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
                     style={{ width: `${ground.percentage}%` }}
                   />
                 </div>
@@ -504,27 +501,26 @@ const AppealStatisticsPage = () => {
 
         {/* Complaints About Lawyers */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 4</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Top Complaints About Lawyers
           </h2>
-          <p className="text-blue-100 text-base mb-6 text-center">
+          <p className="text-slate-600 text-base mb-6 text-center">
             Based on complaints received by Legal Services Commissioners across Australia. 
             If you have concerns about your lawyer, you can lodge a complaint with the 
-            <Link to="/legal-resources" className="text-white hover:underline ml-1 font-semibold">OLCR or your state's Legal Services Commissioner</Link>.
+            <Link to="/legal-resources" className="text-blue-600 hover:underline ml-1 font-semibold">OLCR or your state's Legal Services Commissioner</Link>.
           </p>
 
           <div className="grid md:grid-cols-2 gap-4">
             {complaintsData.map((complaint, index) => (
-              <div key={index} className="bg-blue-700 border border-blue-400 rounded-xl p-4 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl bg-blue-800 flex items-center justify-center shrink-0">
+              <div key={index} className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
                   <span className="text-xl font-bold text-white">{complaint.percentage}%</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-white">{complaint.type}</p>
-                  <div className="mt-1 h-1.5 bg-blue-800 rounded-full w-32 overflow-hidden">
+                  <p className="font-semibold text-slate-900">{complaint.type}</p>
+                  <div className="mt-1 h-1.5 bg-blue-100 rounded-full w-32 overflow-hidden">
                     <div 
-                      className="h-full bg-blue-400 rounded-full"
+                      className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${complaint.percentage * 2.5}%` }}
                     />
                   </div>
@@ -536,16 +532,15 @@ const AppealStatisticsPage = () => {
 
         {/* Key Insights */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 5</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Key Insights
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-blue-700 border border-blue-400 rounded-xl p-6">
-              <CheckCircle className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="font-bold text-white text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>What Increases Success</h3>
-              <ul className="text-sm text-blue-100 space-y-2">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <CheckCircle className="w-8 h-8 text-emerald-500 mb-3" />
+              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>What Increases Success</h3>
+              <ul className="text-sm text-slate-700 space-y-2">
                 <li>Clear legal error (misdirection, procedural breach)</li>
                 <li>Strong evidence supporting the ground</li>
                 <li>Experienced appeal counsel</li>
@@ -554,10 +549,10 @@ const AppealStatisticsPage = () => {
               </ul>
             </div>
 
-            <div className="bg-blue-700 border border-blue-400 rounded-xl p-6">
-              <XCircle className="w-8 h-8 text-red-400 mb-3" />
-              <h3 className="font-bold text-white text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Appeals Fail</h3>
-              <ul className="text-sm text-blue-100 space-y-2">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <XCircle className="w-8 h-8 text-red-500 mb-3" />
+              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Appeals Fail</h3>
+              <ul className="text-sm text-slate-700 space-y-2">
                 <li>No identifiable legal error</li>
                 <li>Simply disagreeing with the verdict</li>
                 <li>Missing the 28-day deadline</li>
@@ -570,48 +565,47 @@ const AppealStatisticsPage = () => {
 
         {/* Historical Trends */}
         <section className="mb-12">
-          <p className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-2 text-center">Section 6</p>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl font-bold text-black mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Historical Trends
           </h2>
           
-          <div className="bg-blue-700 border border-blue-400 rounded-xl p-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
-                <TrendingDown className="w-8 h-8 text-red-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">35.5% to 24%</p>
-                <p className="text-sm text-blue-100">Conviction appeal success rate (2001 to 2007, NSW)</p>
+                <TrendingDown className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-slate-900">35.5% to 24%</p>
+                <p className="text-sm text-slate-600">Conviction appeal success rate (2001 to 2007, NSW)</p>
               </div>
               <div className="text-center">
-                <TrendingUp className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">98%</p>
-                <p className="text-sm text-blue-100">NSW cases finalised within 12 months (2024)</p>
+                <TrendingUp className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-slate-900">98%</p>
+                <p className="text-sm text-slate-600">NSW cases finalised within 12 months (2024)</p>
               </div>
               <div className="text-center">
-                <BarChart3 className="w-8 h-8 text-blue-300 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">43%</p>
-                <p className="text-sm text-blue-100">Success rate for sexual assault conviction appeals (historical)</p>
+                <BarChart3 className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                <p className="text-2xl font-bold text-slate-900">43%</p>
+                <p className="text-sm text-slate-600">Success rate for sexual assault conviction appeals (historical)</p>
               </div>
             </div>
-            <p className="text-xs text-blue-200 text-center mt-4">
+            <p className="text-xs text-slate-500 text-center mt-4">
               Source: Judicial Commission of NSW study (2001-2007 data)
             </p>
           </div>
         </section>
 
         {/* Data Sources */}
-        <section className="bg-blue-700 border border-blue-400 rounded-xl p-6">
-          <h3 className="font-bold text-white text-2xl mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Sources</h3>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-blue-100">
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">ABS Criminal Courts Australia 2023-24</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">NSW Supreme Court Annual Review 2024</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Supreme Court of Victoria Annual Report 2024-25</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">QLD Courts Annual Report 2024-25</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Judicial Commission of NSW</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">Victorian Sentencing Advisory Council</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" /><strong className="text-white">OLCR/Legal Services Commissioners</strong></span>
+        <section className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <h3 className="font-bold text-slate-900 text-2xl mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Sources</h3>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600">
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">ABS Criminal Courts Australia 2023-24</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">NSW Supreme Court Annual Review 2024</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Supreme Court of Victoria Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">QLD Courts Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Judicial Commission of NSW</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Victorian Sentencing Advisory Council</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">OLCR/Legal Services Commissioners</strong></span>
           </div>
-          <p className="text-xs text-blue-200 mt-3">
+          <p className="text-xs text-slate-500 mt-3">
             Note: Some figures are estimates based on available public data. Success rates may vary year to year. 
             Always consult official court statistics for the most current information.
           </p>
@@ -629,13 +623,13 @@ const AppealStatisticsPage = () => {
 // Stat Card Component
 const StatCard = ({ icon: Icon, label, value, subtext, color }) => {
   return (
-    <div className="bg-blue-700 border border-blue-500 rounded-xl p-4">
-      <div className="w-10 h-10 rounded-lg bg-blue-800 flex items-center justify-center mb-3">
+    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center mb-3">
         <Icon className="w-5 h-5 text-white" />
       </div>
-      <p className="text-2xl font-bold text-white">{value}</p>
-      <p className="text-sm font-medium text-white">{label}</p>
-      <p className="text-xs text-blue-200">{subtext}</p>
+      <p className="text-2xl font-bold text-slate-900">{value}</p>
+      <p className="text-sm font-medium text-slate-800">{label}</p>
+      <p className="text-xs text-slate-500">{subtext}</p>
     </div>
   );
 };
@@ -654,7 +648,7 @@ const StateDetailCard = ({ state }) => {
   };
 
   return (
-    <div className={`bg-blue-700 border-2 ${colorClasses[state.color]} rounded-2xl p-6`}>
+    <div className={`bg-blue-50 border-2 ${colorClasses[state.color]} rounded-2xl p-6`}>
       <div className="flex items-center gap-4 mb-6">
         <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl font-bold`}
           style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : '#4f46e5' }}
@@ -662,60 +656,60 @@ const StateDetailCard = ({ state }) => {
           {state.abbrev}
         </div>
         <div>
-          <h3 className="text-xl font-bold text-white">{state.name}</h3>
-          <p className="text-sm text-blue-200">Court of Criminal Appeal Statistics</p>
+          <h3 className="text-xl font-bold text-slate-900">{state.name}</h3>
+          <p className="text-sm text-slate-600">Court of Criminal Appeal Statistics</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-800 rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-white">{state.filings2024}</p>
-          <p className="text-xs text-blue-200">Appeals Filed (2024)</p>
+        <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+          <p className="text-2xl font-bold text-slate-900">{state.filings2024}</p>
+          <p className="text-xs text-slate-500">Appeals Filed (2024)</p>
         </div>
         {state.convictionAppeals && (
-          <div className="bg-blue-800 rounded-lg p-3 text-center">
-            <p className="text-2xl font-bold text-white">{state.convictionAppeals}</p>
-            <p className="text-xs text-blue-200">Conviction Appeals</p>
+          <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+            <p className="text-2xl font-bold text-slate-900">{state.convictionAppeals}</p>
+            <p className="text-xs text-slate-500">Conviction Appeals</p>
           </div>
         )}
         {state.disposals && (
-          <div className="bg-blue-800 rounded-lg p-3 text-center">
-            <p className="text-2xl font-bold text-white">{state.disposals}</p>
-            <p className="text-xs text-blue-200">Cases Disposed</p>
+          <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+            <p className="text-2xl font-bold text-slate-900">{state.disposals}</p>
+            <p className="text-xs text-slate-500">Cases Disposed</p>
           </div>
         )}
         {state.pending && (
-          <div className="bg-blue-800 rounded-lg p-3 text-center">
-            <p className="text-2xl font-bold text-white">{state.pending}</p>
-            <p className="text-xs text-blue-200">Pending Cases</p>
+          <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+            <p className="text-2xl font-bold text-slate-900">{state.pending}</p>
+            <p className="text-xs text-slate-500">Pending Cases</p>
           </div>
         )}
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-blue-800 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-emerald-400">{state.successRate}%</p>
-          <p className="text-sm text-blue-200">Success Rate</p>
+        <div className="bg-white border border-blue-200 rounded-lg p-4 text-center">
+          <p className="text-3xl font-bold text-emerald-600">{state.successRate}%</p>
+          <p className="text-sm text-slate-500">Success Rate</p>
         </div>
-        <div className="bg-blue-800 rounded-lg p-4 text-center">
-          <p className="text-3xl font-bold text-white">{state.avgMonths}</p>
-          <p className="text-sm text-blue-200">Avg Months to Finalise</p>
+        <div className="bg-white border border-blue-200 rounded-lg p-4 text-center">
+          <p className="text-3xl font-bold text-slate-900">{state.avgMonths}</p>
+          <p className="text-sm text-slate-500">Avg Months to Finalise</p>
         </div>
         {state.cleared12Months && (
-          <div className="bg-blue-800 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold" style={{ color: '#fca5a5' }}>{state.cleared12Months}%</p>
-            <p className="text-sm text-blue-200">Cleared in 12 Months</p>
+          <div className="bg-white border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-3xl font-bold text-red-600">{state.cleared12Months}%</p>
+            <p className="text-sm text-slate-500">Cleared in 12 Months</p>
           </div>
         )}
         {state.allowed !== undefined && (
-          <div className="bg-blue-800 rounded-lg p-4 text-center">
-            <p className="text-3xl font-bold" style={{ color: '#fca5a5' }}>{state.allowed}/{state.dismissed}</p>
-            <p className="text-sm text-blue-200">Allowed / Dismissed</p>
+          <div className="bg-white border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-3xl font-bold text-red-600">{state.allowed}/{state.dismissed}</p>
+            <p className="text-sm text-slate-500">Allowed / Dismissed</p>
           </div>
         )}
       </div>
 
-      <p className="text-xs text-blue-200 mt-4">Source: {state.source}</p>
+      <p className="text-xs text-slate-500 mt-4">Source: {state.source}</p>
     </div>
   );
 };
