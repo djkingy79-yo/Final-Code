@@ -484,12 +484,10 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-resources" />
-
       {/* ============================================ */}
       {/* APP OVERVIEW - What This Tool Does */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-gradient-to-b from-background to-muted/30">
+      <section className="py-8 px-6 bg-gradient-to-b from-background to-muted/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
