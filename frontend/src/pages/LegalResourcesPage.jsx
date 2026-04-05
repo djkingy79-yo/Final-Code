@@ -209,7 +209,7 @@ const LegalResourcesPage = () => {
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
                 </p>
-                <ul className="text-xs text-slate-700 space-y-1 mb-3">
+                <ul className="text-xs text-slate-600 space-y-1 mb-3">
                   <li>• <a href="https://www.lawfoundation.net.au" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Law Foundation Grants</a></li>
                   <li>• State-based legal assistance funding</li>
                   <li>• Innocence projects (for wrongful convictions)</li>
@@ -219,9 +219,9 @@ const LegalResourcesPage = () => {
             </div>
 
             {/* Key Message */}
-            <div className="bg-white border border-blue-200 rounded-2xl p-6 text-center" data-testid="legal-resources-dont-give-up">
-              <h3 className="text-slate-900 text-sm font-bold mb-2">Don't Give Up</h3>
-              <p className="text-slate-700 text-xs">
+            <div className="bg-blue-600 border border-blue-700 rounded-2xl p-6 text-center" data-testid="legal-resources-dont-give-up">
+              <h3 className="text-white text-2xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Don't Give Up</h3>
+              <p className="text-blue-50 text-base font-semibold">
                 The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services 
                 and community legal centres. Many people have found help when they thought there was none.
               </p>
