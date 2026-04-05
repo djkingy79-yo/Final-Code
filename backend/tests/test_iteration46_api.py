@@ -7,7 +7,6 @@ Tests for critical backend endpoints:
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

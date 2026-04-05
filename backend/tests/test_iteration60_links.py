@@ -5,8 +5,6 @@ with target='_blank' and visible CSS styling
 """
 import pytest
 import requests
-import os
-import re
 
 BASE_URL = 'http://localhost:8001'
 

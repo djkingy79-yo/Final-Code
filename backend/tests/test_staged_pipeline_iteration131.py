@@ -6,7 +6,6 @@ New endpoints at /api/pipeline prefix + regression tests for old /api/cases pref
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 

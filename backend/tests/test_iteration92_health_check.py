@@ -4,7 +4,6 @@ Tests for: Public routes, case flow, reports, barrister view, grounds, progress 
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

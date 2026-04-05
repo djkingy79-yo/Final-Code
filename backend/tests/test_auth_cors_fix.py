@@ -5,7 +5,6 @@ Focus: Verify CORS fix (withCredentials removed, Bearer token auth works)
 """
 import pytest
 import requests
-import os
 import uuid
 
 BASE_URL = 'http://localhost:8001'

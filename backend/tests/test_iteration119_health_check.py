@@ -5,7 +5,6 @@ Tests all CRUD operations, exports, and critical endpoints
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')
 CASE_ID = "case_a97ea91f0692"

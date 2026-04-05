@@ -12,7 +12,6 @@ Focus on testing the specific features reported by user:
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', '')

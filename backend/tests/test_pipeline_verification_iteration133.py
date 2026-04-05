@@ -5,7 +5,6 @@ Tests for verify-batch endpoint and reports regression
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -32,7 +31,7 @@ class TestAuth:
         data = response.json()
         assert "session_token" in data, f"No session_token in response: {data}"
         assert len(data["session_token"]) > 0
-        print(f"Login successful, got session_token")
+        print("Login successful, got session_token")
 
 
 class TestVerifyBatchEndpoint:

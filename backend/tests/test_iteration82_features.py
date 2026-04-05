@@ -16,7 +16,6 @@ Iteration 82 - Testing report features:
 
 import pytest
 import requests
-import os
 import re
 
 BASE_URL = 'http://localhost:8001'

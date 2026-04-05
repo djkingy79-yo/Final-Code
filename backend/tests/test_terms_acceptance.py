@@ -9,8 +9,6 @@ Tests for:
 
 import pytest
 import requests
-import os
-from datetime import datetime, timedelta
 import uuid
 
 BASE_URL = 'http://localhost:8001'

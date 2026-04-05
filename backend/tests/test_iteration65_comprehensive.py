@@ -4,7 +4,6 @@ Testing: Health, Auth, Cases, Report Generation (Background Pattern)
 """
 import pytest
 import requests
-import os
 import time
 
 BASE_URL = 'http://localhost:8001'

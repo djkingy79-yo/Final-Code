@@ -12,9 +12,7 @@ Test credentials: deletetest@test.com / TestPass123!
 """
 import pytest
 import requests
-import os
 import uuid
-import time
 
 BASE_URL = 'http://localhost:8001'
 

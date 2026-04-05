@@ -9,9 +9,7 @@ Tests:
 """
 import pytest
 import requests
-import os
 import re
-from collections import Counter
 
 BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = "test_token_placeholder"

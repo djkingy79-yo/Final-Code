@@ -8,7 +8,6 @@ Critical paths to test:
 """
 import pytest
 import requests
-import os
 import time
 
 BASE_URL = 'http://localhost:8001'

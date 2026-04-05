@@ -288,7 +288,7 @@ The Court finds that a custodial sentence is warranted given the serious nature 
         assert get_case_response.status_code == 200, f"Get case failed: {get_case_response.text}"
         updated_case = get_case_response.json()
         
-        print(f"  After auto-detection:")
+        print("  After auto-detection:")
         print(f"    state: {updated_case.get('state')}")
         print(f"    offence_category: {updated_case.get('offence_category')}")
         print(f"    offence_type: {updated_case.get('offence_type')}")
@@ -473,7 +473,7 @@ class TestCaseUpdateWithAutoDetect:
         assert updated_case.get("state") is None, f"state should still be None after update: {updated_case.get('state')}"
         assert updated_case.get("offence_category") is None, f"offence_category should still be None after update: {updated_case.get('offence_category')}"
         
-        print(f"PASS: Update preserves None values for state and offence_category")
+        print("PASS: Update preserves None values for state and offence_category")
         
         # Cleanup
         requests.delete(f"{BASE_URL}/api/cases/{case_id}", headers=auth_headers, timeout=10)

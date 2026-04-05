@@ -7,7 +7,6 @@ Testing:
 """
 import pytest
 import requests
-import os
 import uuid
 
 # Get BASE_URL from environment

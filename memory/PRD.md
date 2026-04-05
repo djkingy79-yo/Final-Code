@@ -67,6 +67,12 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Password reset and session invalidation
 - Test credentials scrubbed from all test files
 
+## Completed (5 Apr 2026 — CI Fix)
+- Fixed 95 Ruff lint errors across backend/tests/ (F401 unused imports, F541 f-strings, E741 ambiguous vars, E712 False comparison, F841 unused assignment)
+- Verified `ruff check backend/` passes with zero errors
+- Verified `yarn build` passes cleanly
+- Backend health check confirmed healthy
+
 ## Backlog
 - P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View

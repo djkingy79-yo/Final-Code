@@ -5,7 +5,6 @@ Tests for: 1) Delete case functionality 2) Report content validation 3) API endp
 
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

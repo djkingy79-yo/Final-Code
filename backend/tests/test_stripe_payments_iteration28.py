@@ -7,8 +7,6 @@ Testing:
 """
 import pytest
 import requests
-import os
-import time
 
 # Get base URL from environment - PUBLIC URL for testing what user sees
 BASE_URL = 'http://localhost:8001'

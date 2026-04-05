@@ -54,7 +54,7 @@ class TestAuthentication:
         token = data.get("session_token")
         if not token:
             pytest.skip("No session_token in response")
-        print(f"✓ Authentication successful, got token")
+        print("✓ Authentication successful, got token")
         return token
     
     def test_login_success(self, auth_token):
@@ -150,7 +150,7 @@ class TestPDFExport:
         )
         
         assert response.status_code == 200, f"PDF export with query param failed: {response.status_code}"
-        print(f"✓ PDF export with session_token query param successful")
+        print("✓ PDF export with session_token query param successful")
 
 
 class TestDOCXExport:
@@ -337,7 +337,7 @@ class TestCaseEndpoints:
         # Response should have grounds array
         assert "grounds" in grounds_data or isinstance(grounds_data, list)
         
-        print(f"✓ Grounds fetch successful")
+        print("✓ Grounds fetch successful")
 
 
 if __name__ == "__main__":

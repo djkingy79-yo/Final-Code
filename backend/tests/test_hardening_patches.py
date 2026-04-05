@@ -53,7 +53,7 @@ class TestAuthentication:
             assert data["user"]["email"] == TEST_EMAIL, f"Email mismatch: {data['user']['email']}"
         else:
             assert data.get("email") == TEST_EMAIL, f"Email mismatch: {data.get('email')}"
-        print(f"✓ Login successful, session_token received")
+        print("✓ Login successful, session_token received")
         return data["session_token"]
 
 
@@ -160,11 +160,11 @@ class TestGroundsEndpoint:
             for ground in grounds[:3]:  # Check first 3 grounds
                 if "legitimacy_scores" in ground:
                     scores = ground["legitimacy_scores"]
-                    assert "legal_score" in scores, f"Missing legal_score in legitimacy_scores"
-                    assert "evidence_score" in scores, f"Missing evidence_score in legitimacy_scores"
-                    assert "viability_score" in scores, f"Missing viability_score in legitimacy_scores"
-                    assert "total_score" in scores, f"Missing total_score in legitimacy_scores"
-                    assert "rating" in scores, f"Missing rating in legitimacy_scores"
+                    assert "legal_score" in scores, "Missing legal_score in legitimacy_scores"
+                    assert "evidence_score" in scores, "Missing evidence_score in legitimacy_scores"
+                    assert "viability_score" in scores, "Missing viability_score in legitimacy_scores"
+                    assert "total_score" in scores, "Missing total_score in legitimacy_scores"
+                    assert "rating" in scores, "Missing rating in legitimacy_scores"
                     print(f"  - Ground {ground.get('ground_id', 'unknown')}: legitimacy_scores present with rating={scores['rating']}")
 
 

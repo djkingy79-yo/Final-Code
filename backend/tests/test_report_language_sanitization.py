@@ -6,7 +6,6 @@ Test suite for report language sanitization features:
 """
 import pytest
 import requests
-import os
 import re
 
 BASE_URL = 'http://localhost:8001'

@@ -58,7 +58,7 @@ class TestGroundDedupLogic:
         assert len(LEGAL_TOPICS) == 12, f"Expected 12 topics, got {len(LEGAL_TOPICS)}"
         for topic in expected_topics:
             assert topic in LEGAL_TOPICS, f"Missing topic: {topic}"
-        print(f"LEGAL_TOPICS has all 12 expected categories")
+        print("LEGAL_TOPICS has all 12 expected categories")
     
     def test_media_coverage_keywords_expanded(self):
         """Verify media_coverage topic has expanded keywords including 'media influence'"""
@@ -105,7 +105,7 @@ class TestGroundDedupLogic:
         
         counsel_keywords = LEGAL_TOPICS.get("ineffective_counsel", set())
         assert "ineffective assistance" in counsel_keywords, "Missing 'ineffective assistance' keyword"
-        print(f"ineffective_counsel has 'ineffective assistance' keyword")
+        print("ineffective_counsel has 'ineffective assistance' keyword")
     
     def test_evidence_admissibility_keywords_expanded(self):
         """Verify evidence_admissibility has 'improper admission' keyword"""
@@ -115,7 +115,7 @@ class TestGroundDedupLogic:
         
         evidence_keywords = LEGAL_TOPICS.get("evidence_admissibility", set())
         assert "improper admission" in evidence_keywords, "Missing 'improper admission' keyword"
-        print(f"evidence_admissibility has 'improper admission' keyword")
+        print("evidence_admissibility has 'improper admission' keyword")
     
     def test_judicial_direction_keywords_expanded(self):
         """Verify judicial_direction has 'prejudicial comments' and 'unfair trial' keywords"""
@@ -126,7 +126,7 @@ class TestGroundDedupLogic:
         judicial_keywords = LEGAL_TOPICS.get("judicial_direction", set())
         assert "prejudicial comments" in judicial_keywords, "Missing 'prejudicial comments' keyword"
         assert "unfair trial" in judicial_keywords, "Missing 'unfair trial' keyword"
-        print(f"judicial_direction has 'prejudicial comments' and 'unfair trial' keywords")
+        print("judicial_direction has 'prejudicial comments' and 'unfair trial' keywords")
 
 
 class TestCleanupDuplicatesEndpoint:
@@ -137,7 +137,7 @@ class TestCleanupDuplicatesEndpoint:
         response = requests.post(f"{BASE_URL}/api/cases/test_case/grounds/cleanup-duplicates")
         # Should return 401 (unauthorized) not 404 (not found)
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"cleanup-duplicates endpoint requires auth (returns 401)")
+        print("cleanup-duplicates endpoint requires auth (returns 401)")
 
 
 class TestStartupDedupRuns:
@@ -149,8 +149,6 @@ class TestStartupDedupRuns:
         sys.path.insert(0, '/app/backend')
         # The function is defined in server.py and registered as @app.on_event("startup")
         # We verify it exists by checking the server module
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("server", "/app/backend/server.py")
         # Just verify the file contains the function definition
         with open("/app/backend/server.py", "r") as f:
             content = f.read()

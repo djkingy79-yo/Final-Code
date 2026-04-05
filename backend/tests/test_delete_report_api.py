@@ -4,7 +4,6 @@ This tests the report deletion functionality that users were complaining about.
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

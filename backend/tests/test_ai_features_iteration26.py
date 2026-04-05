@@ -8,9 +8,6 @@ Tests:
 """
 import pytest
 import requests
-import os
-import time
-import json
 
 BASE_URL = 'http://localhost:8001'
 ADMIN_SESSION_TOKEN = "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ"

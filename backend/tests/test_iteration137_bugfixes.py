@@ -140,7 +140,7 @@ class TestCaseAccess:
         assert response.status_code == 200, f"Grounds access failed: {response.text}"
         data = response.json()
         assert "grounds" in data or isinstance(data, list)
-        print(f"PASS: Grounds access works with Bearer token")
+        print("PASS: Grounds access works with Bearer token")
     
     def test_get_case_documents_with_bearer_token(self, auth_token):
         """Should be able to access case documents with Bearer token"""

@@ -9,7 +9,6 @@ Target sentence: "30 years' imprisonment with a non-parole period of 22 years an
 """
 import pytest
 import requests
-import os
 import re
 
 BASE_URL = 'http://localhost:8001'

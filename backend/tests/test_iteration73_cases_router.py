@@ -4,7 +4,6 @@ Tests the cases router that was extracted from server.py into /app/backend/route
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = "Z54IPKofu9l_AVv0fSY99-G8zJEeRuR4qnMkFqXCTeY"

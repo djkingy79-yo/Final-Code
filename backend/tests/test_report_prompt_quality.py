@@ -7,8 +7,6 @@ Test suite for verifying report prompt quality changes:
 
 import pytest
 import requests
-import os
-import time
 
 BASE_URL = 'http://localhost:8001'
 

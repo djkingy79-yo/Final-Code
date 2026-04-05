@@ -125,8 +125,8 @@ class TestCaseLawEndpoints:
             assert "scope" in link, "Link should have 'scope' (state or national)"
         
         # Check state and national links exist
-        state_links = [l for l in data["search_links"] if l["scope"] == "state"]
-        national_links = [l for l in data["search_links"] if l["scope"] == "national"]
+        state_links = [link for link in data["search_links"] if link["scope"] == "state"]
+        national_links = [link for link in data["search_links"] if link["scope"] == "national"]
         
         print(f"PASS: /api/cases/{TEST_CASE_ID}/caselaw/search returns {len(state_links)} state links and {len(national_links)} national links")
         print(f"  Query: {data['query']}")
@@ -158,15 +158,15 @@ class TestCaseLawEndpoints:
         assert data.get("state") == "nsw", "Homann v R should be NSW case"
         
         # Check NSW databases in state links
-        state_links = [l for l in data["search_links"] if l["scope"] == "state"]
-        state_link_ids = [l["id"] for l in state_links]
+        state_links = [link for link in data["search_links"] if link["scope"] == "state"]
+        state_link_ids = [link["id"] for link in state_links]
         
         assert "nsw_caselaw" in state_link_ids, "NSW case should have NSW CaseLaw link"
         assert "austlii_nsw" in state_link_ids, "NSW case should have AustLII NSW link"
         
         # Check national databases
-        national_links = [l for l in data["search_links"] if l["scope"] == "national"]
-        national_link_ids = [l["id"] for l in national_links]
+        national_links = [link for link in data["search_links"] if link["scope"] == "national"]
+        national_link_ids = [link["id"] for link in national_links]
         
         assert "austlii_all" in national_link_ids, "Should have AustLII All"
         assert "jade" in national_link_ids, "Should have JADE"
@@ -210,7 +210,7 @@ class TestCaseLawEndpoints:
                 for field in required_fields:
                     assert field in db, f"State {state} database {db.get('id', 'unknown')} missing field: {field}"
         
-        print(f"PASS: All databases have required fields")
+        print("PASS: All databases have required fields")
     
     def test_case_not_found_returns_404(self):
         """Test that non-existent case returns 404"""

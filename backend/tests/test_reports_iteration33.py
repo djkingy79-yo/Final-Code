@@ -4,7 +4,6 @@ Tests: Premium summary box, Table of Contents, full in-browser reading, prompt g
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

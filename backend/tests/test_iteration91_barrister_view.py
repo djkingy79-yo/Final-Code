@@ -4,7 +4,6 @@ Tests the new backend barrister-view endpoint and related functionality.
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

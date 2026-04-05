@@ -4,7 +4,6 @@ Tests: health, pricing, authentication, case access, reports
 """
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 TEST_EMAIL = "testuser999@test.com"

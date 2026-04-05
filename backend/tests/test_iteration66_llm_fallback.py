@@ -6,7 +6,6 @@ instead of hardcoded Claude-only calls.
 """
 import pytest
 import requests
-import os
 import time
 import uuid
 

@@ -36,7 +36,7 @@ class TestHealthAndAuth:
         assert "session_token" in data
         # User fields may be at root level or nested under "user"
         assert "email" in data or "user" in data
-        print(f"✓ Login successful, token received")
+        print("✓ Login successful, token received")
         return data["session_token"]
 
 
@@ -120,7 +120,7 @@ class TestCaseReadiness:
         
         # Check score_type is 'readiness'
         assert data.get("score_type") == "readiness", f"Expected score_type='readiness', got '{data.get('score_type')}'"
-        print(f"✓ score_type is 'readiness'")
+        print("✓ score_type is 'readiness'")
         
         # Check disclaimer exists
         assert "disclaimer" in data, "Missing disclaimer"
@@ -147,7 +147,7 @@ class TestCaseReadiness:
         assert "documentation" in breakdown
         assert "timeline" in breakdown
         assert "preparation" in breakdown
-        print(f"✓ Breakdown sections present")
+        print("✓ Breakdown sections present")
 
 
 class TestUserIdAccessControl:
@@ -277,13 +277,13 @@ class TestUnverifiedBadges:
                 found_similar_cases = True
                 # Check verified field exists and is False
                 assert "verified" in case, f"Missing 'verified' field in similar case: {case.get('case_name')}"
-                assert case["verified"] == False, f"Similar case should be verified=false: {case.get('case_name')}"
+                assert not case["verified"], f"Similar case should be verified=false: {case.get('case_name')}"
                 print(f"  ✓ Similar case '{case.get('case_name')}' has verified=false")
         
         if not found_similar_cases:
             print("⚠ No similar cases found in grounds to verify")
         else:
-            print(f"✓ All similar cases marked as unverified")
+            print("✓ All similar cases marked as unverified")
 
 
 class TestLegitimacyEngineLogic:

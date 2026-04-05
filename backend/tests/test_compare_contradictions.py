@@ -9,9 +9,7 @@ Tests for:
 """
 import pytest
 import requests
-import os
 import uuid
-from datetime import datetime
 
 BASE_URL = 'http://localhost:8001'
 

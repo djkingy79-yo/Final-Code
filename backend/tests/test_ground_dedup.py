@@ -7,12 +7,11 @@ Verifies that:
 """
 import asyncio
 import sys
-import os
 sys.path.insert(0, '/app/backend')
 
 from services.ground_dedup import (
     is_ground_duplicate, _extract_topics, normalise_au_spelling,
-    cleanup_duplicate_grounds, cleanup_duplicate_issues, LEGAL_TOPICS
+    cleanup_duplicate_grounds
 )
 
 
@@ -142,7 +141,7 @@ def test_duplicate_detection():
     for t1, t2 in must_match:
         result = is_ground_duplicate(t1, t2)
         if not result:
-            print(f"  FAIL: Should be duplicate but wasn't:")
+            print("  FAIL: Should be duplicate but wasn't:")
             print(f"    '{t1}'")
             print(f"    '{t2}'")
             t1_topics = _extract_topics(t1)
@@ -177,7 +176,7 @@ def test_non_duplicates():
     for t1, t2 in must_not_match:
         result = is_ground_duplicate(t1, t2)
         if result:
-            print(f"  FAIL: Should NOT be duplicate but was:")
+            print("  FAIL: Should NOT be duplicate but was:")
             print(f"    '{t1}'")
             print(f"    '{t2}'")
             t1_topics = _extract_topics(t1)
@@ -279,7 +278,7 @@ async def test_cleanup_function():
     # Verify the keeper for sentencing has the merged evidence from the investigated duplicate
     sentencing_ground = next((g for g in remaining if "Sentencing" in g.get("title", "")), None)
     if sentencing_ground and sentencing_ground.get("supporting_evidence"):
-        print(f"  PASS: Sentencing ground correctly merged evidence from investigated duplicate")
+        print("  PASS: Sentencing ground correctly merged evidence from investigated duplicate")
     elif sentencing_ground:
         print(f"  INFO: Sentencing ground kept (status={sentencing_ground.get('status')})")
     

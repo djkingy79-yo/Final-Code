@@ -8,7 +8,6 @@ Requirements: Test user needs a case with documents to test export features
 """
 import pytest
 import requests
-import os
 import io
 import zipfile
 

@@ -6,9 +6,6 @@ Tests all CRUD operations, authentication, and AI report generation
 
 import requests
 import sys
-import json
-import time
-from datetime import datetime
 from io import BytesIO
 
 class JustitiaAPITester:

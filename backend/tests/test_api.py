@@ -5,7 +5,6 @@ Tests: Cases, Documents, Grounds of Merit, Notes, Reports, PDF Export
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = 'http://localhost:8001'
 SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', '')

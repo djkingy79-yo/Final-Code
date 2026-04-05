@@ -277,7 +277,7 @@ class TestCaseLawDatabases:
         # Should return 200 or 404 if not implemented
         assert response.status_code in [200, 404]
         if response.status_code == 200:
-            print(f"PASS: Caselaw databases endpoint works")
+            print("PASS: Caselaw databases endpoint works")
         else:
             print("INFO: Caselaw databases endpoint not found (may not be implemented)")
 

@@ -5,7 +5,6 @@ Testing offence categories API and case creation with offence types
 
 import pytest
 import requests
-import os
 
 BASE_URL = 'http://localhost:8001'
 

@@ -4,7 +4,6 @@ Tests: POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
 """
 import pytest
 import requests
-import os
 import uuid
 
 BASE_URL = 'http://localhost:8001'
