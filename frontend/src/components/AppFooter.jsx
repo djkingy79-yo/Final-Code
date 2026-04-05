@@ -5,8 +5,8 @@ const AppFooter = () => {
   return (
     <footer data-testid="app-footer">
       <div className="py-6 px-6 bg-slate-800">
-        <div className="max-w-5xl mx-auto grid grid-cols-3 gap-4 items-start">
-          <div className="flex flex-col items-center md:items-start">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 items-start">
+          <div className="flex flex-col items-start">
             <div className="flex items-center gap-2">
               <Scale className="w-4 h-4 text-white" />
               <span className="text-white text-xs font-bold">Appeal Case Manager</span>
