@@ -294,11 +294,11 @@ const GroundsOfMerit = ({
           <h1>Detailed Grounds Analysis</h1>
           {/* DO_NOT_UNDO — Case identity must always display in export */}
           <div style={{margin:'16px 0', padding:'12px', border:'2px solid #1d4ed8', borderRadius:'10px', background:'#eff6ff'}}>
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'13px'}}>
-              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong>{caseData?.defendant_name || "—"}</strong></div>
-              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
-              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase'}}>{caseData?.state || "—"}</strong></div>
-              <div><span style={{fontSize:'9px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong>{caseData?.sentence || "—"}</strong></div>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'16px'}}>
+              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong>{caseData?.defendant_name || "—"}</strong></div>
+              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
+              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase'}}>{caseData?.state || "—"}</strong></div>
+              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong>{caseData?.sentence || "—"}</strong></div>
             </div>
           </div>
         </div>
@@ -397,23 +397,23 @@ const GroundsOfMerit = ({
   <title>Grounds of Merit Export</title>
   <style>
     @page { size: A4; margin: 12mm; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 11px; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 14px; }
     .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; }
-    .grounds-export-brand { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+    .grounds-export-brand { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10px; margin: 0 0 8px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 12px; margin: 0 0 8px; }
     .grounds-export-header h1 { margin: 0 0 8px; font-size: 22px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 11px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 14px; }
     .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
-    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 16px; }
+    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 15px; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 11px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 14px; }
     .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
-    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 10px; }
+    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 13px; }
     .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 10px; }
-    .legal-report p { line-height: 1.5; margin: 0 0 8px; font-size: 10px; }
+    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 12px; }
+    .legal-report p { line-height: 1.6; margin: 0 0 8px; font-size: 14px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
@@ -480,16 +480,16 @@ const GroundsOfMerit = ({
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
-@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;font-size:11px;color:#0f172a;padding:20px;line-height:1.6;max-width:800px;margin:0 auto}
+@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;font-size:14px;color:#0f172a;padding:20px;line-height:1.6;max-width:800px;margin:0 auto}
 h1{font-size:18px;margin:0 0 6px}h2{font-size:14px;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px}
-.meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700}
-.desc{margin:0 0 14px;font-size:11px}ul{padding-left:16px;margin:0 0 12px}li{margin-bottom:3px;font-size:10px;line-height:1.5}
-.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:11px}
-.analysis{margin-top:16px;white-space:pre-wrap;font-size:11px}
-table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:5px 8px;text-align:left;font-size:10px}th{background:#dbeafe;font-weight:700}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.desc{margin:0 0 14px;font-size:14px}ul{padding-left:16px;margin:0 0 12px}li{margin-bottom:3px;font-size:13px;line-height:1.5}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:13px}
+.analysis{margin-top:16px;white-space:pre-wrap;font-size:14px}
+table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:5px 8px;text-align:left;font-size:12px}th{background:#dbeafe;font-weight:700}
 .disclaimer{background:#fef2f2;border:3px solid #ef4444;padding:12px 16px;border-radius:8px;margin-top:28px;page-break-inside:avoid}
-.disclaimer strong{font-size:12px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
-.disclaimer p{font-size:10px;color:#1e293b;margin:0;line-height:1.5}
+.disclaimer strong{font-size:13px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
+.disclaimer p{font-size:12px;color:#1e293b;margin:0;line-height:1.5}
 @media print{body{padding:0}}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>

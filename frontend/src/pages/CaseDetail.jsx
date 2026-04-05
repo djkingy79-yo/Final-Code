@@ -452,17 +452,17 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; }
-    h1 { font-family: 'Crimson Pro', serif; font-size: 24px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 15px; margin-top: 14px; color: #1e40af; }
-    .meta { font-size: 12px; color: #475569; margin-bottom: 12px; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 14px; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 22px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 16px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
+    h3 { font-size: 14px; margin-top: 14px; color: #1e40af; }
+    .meta { font-size: 13px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
     table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 12px; }
+    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 13px; }
     th { background: #dbeafe; font-weight: 700; color: #0f172a; }
     ul, ol { padding-left: 18px; }
-    li { margin-bottom: 4px; }
+    li { margin-bottom: 4px; font-size: 13px; }
     .disclaimer-box { background: #fef2f2; border: 3px solid #ef4444; padding: 16px 20px; border-radius: 8px; margin-top: 32px; page-break-inside: avoid; break-inside: avoid; }
     .disclaimer-box strong { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: #dc2626; display: block; margin-bottom: 6px; }
     .disclaimer-box p { font-size: 12px; color: #1e293b; margin: 0; line-height: 1.6; }
@@ -735,10 +735,10 @@ const CaseDetail = ({ user }) => {
     // DO_NOT_UNDO — Case Identity Card (inline styles for print compatibility)
     body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:15px;color:#0f172a;">${defendant}</strong></div>
-        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:15px;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
-        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:15px;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
-        <div><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:13px;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
+        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:18px;color:#0f172a;">${defendant}</strong></div>
+        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:18px;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
+        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:18px;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
+        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:16px;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
       </div>
       ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11px;color:#1d4ed8;font-weight:600;">${caseData.court}${caseData?.case_number ? ' — ' + caseData.case_number : ''}</div>` : ''}
     </div>`;
@@ -802,7 +802,7 @@ const CaseDetail = ({ user }) => {
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
           body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Deep Investigation Analysis</h4>`;
-          body += `<div style="white-space:pre-wrap;font-size:13px;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+          body += `<div style="white-space:pre-wrap;font-size:14px;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
         }
         body += `</div>`;
       });
