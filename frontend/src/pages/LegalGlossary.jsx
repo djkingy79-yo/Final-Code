@@ -9,7 +9,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useTheme } from "../contexts/ThemeContext";
 
 // Categorised glossary with more comprehensive terms
 const glossaryCategories = [
@@ -692,16 +691,10 @@ const LegalGlossary = () => {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-16">
-        <section className="mb-6" data-testid="glossary-content-intro">
-          <p className="text-xs uppercase tracking-widest text-red-600 font-semibold mb-1">Glossary Navigator</p>
-          <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            Scan terms quickly or read in full detail
-          </h2>
-        </section>
 
         {/* Search Bar */}
-        <div className="relative mb-8 max-w-xl mx-auto">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+        <div className="relative mb-6 max-w-xl mx-auto">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <Input
             type="text"
             placeholder="Search for any legal term..."
@@ -712,12 +705,12 @@ const LegalGlossary = () => {
           />
         </div>
 
-        <div className="flex items-center justify-center gap-2 mb-8" data-testid="glossary-density-toggle">
+        <div className="flex items-center justify-center gap-2 mb-6" data-testid="glossary-density-toggle">
           <button
             onClick={() => setViewDensity("compact")}
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "compact"
-                ? "bg-red-600 text-white border-red-600"
+                ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-slate-600 border-slate-200 hover:border-blue-500"
             }`}
             data-testid="glossary-density-compact"
@@ -728,7 +721,7 @@ const LegalGlossary = () => {
             onClick={() => setViewDensity("expanded")}
             className={`px-4 py-2 rounded-lg text-xs font-semibold border transition-colors ${
               viewDensity === "expanded"
-                ? "bg-red-600 text-white border-red-600"
+                ? "bg-blue-600 text-white border-blue-600"
                 : "bg-white text-slate-600 border-slate-200 hover:border-blue-500"
             }`}
             data-testid="glossary-density-expanded"
@@ -738,37 +731,35 @@ const LegalGlossary = () => {
         </div>
 
         {/* Category Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-8">
           <button
             onClick={() => setActiveCategory("all")}
-            className={`p-4 rounded-xl border-2 transition-all ${
+            className={`p-3 rounded-xl border-2 transition-all text-center ${
               activeCategory === "all" 
                 ? "border-blue-500 bg-blue-50" 
-                : "border-slate-200 hover:border-blue-500/50"
+                : "border-slate-200 hover:border-blue-300"
             }`}
           >
-            <BookOpen className={`w-6 h-6 mx-auto mb-2 ${activeCategory === "all" ? "text-red-600" : "text-slate-600"}`} />
-            <p className={`font-semibold text-sm ${activeCategory === "all" ? "text-blue-700" : "text-slate-900"}`}>
-              All Terms
-            </p>
-            <p className="text-xs text-slate-600">{getAllTerms().length} terms</p>
+            <BookOpen className={`w-5 h-5 mx-auto mb-1 ${activeCategory === "all" ? "text-blue-600" : "text-slate-500"}`} />
+            <p className={`font-bold text-xs ${activeCategory === "all" ? "text-blue-700" : "text-slate-800"}`}>All</p>
+            <p className="text-[10px] text-slate-500">{getAllTerms().length}</p>
           </button>
           
           {glossaryCategories.map(cat => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`p-4 rounded-xl border-2 transition-all ${
+              className={`p-3 rounded-xl border-2 transition-all text-center ${
                 activeCategory === cat.id 
-                  ? `border-blue-500 bg-blue-50` 
-                  : "border-slate-200 hover:border-blue-500/50"
+                  ? "border-blue-500 bg-blue-50" 
+                  : "border-slate-200 hover:border-blue-300"
               }`}
             >
-              <cat.icon className={`w-6 h-6 mx-auto mb-2 ${activeCategory === cat.id ? "text-red-600" : "text-slate-600"}`} />
-              <p className={`font-semibold text-sm ${activeCategory === cat.id ? "text-blue-700" : "text-slate-900"}`}>
+              <cat.icon className={`w-5 h-5 mx-auto mb-1 ${activeCategory === cat.id ? "text-blue-600" : "text-slate-500"}`} />
+              <p className={`font-bold text-xs ${activeCategory === cat.id ? "text-blue-700" : "text-slate-800"}`}>
                 {cat.name}
               </p>
-              <p className="text-xs text-slate-600">{cat.terms.length} terms</p>
+              <p className="text-[10px] text-slate-500">{cat.terms.length}</p>
             </button>
           ))}
         </div>
@@ -805,21 +796,21 @@ const LegalGlossary = () => {
                 onClick={() => toggleExpand(item.term)}
                 className={`w-full text-left flex items-start justify-between gap-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className={`font-bold text-slate-900 ${viewDensity === "compact" ? "text-base" : "text-lg"}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 className={`font-bold text-slate-900 ${viewDensity === "compact" ? "text-sm" : "text-base"}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
                       {item.term}
                     </h3>
                     {item.latin && (
-                      <span className="text-xs italic text-slate-600">({item.latin})</span>
-                    )}
-                    {activeCategory === "all" && (
-                      <span className={`text-xs px-2 py-0.5 rounded-lg border ${colorClasses[item.color]}`}>
-                        {item.category}
-                      </span>
+                      <span className="text-xs italic text-slate-500">({item.latin})</span>
                     )}
                   </div>
-                  <p className={`text-slate-600 ${viewDensity === "compact" ? "text-sm" : "text-base"}`}>{item.simple}</p>
+                  <p className={`text-slate-600 ${viewDensity === "compact" ? "text-xs" : "text-sm"} line-clamp-2`}>{item.simple}</p>
+                  {activeCategory === "all" && (
+                    <span className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded border ${colorClasses[item.color]}`}>
+                      {item.category}
+                    </span>
+                  )}
                 </div>
                 <div className={`p-2 rounded-lg transition-colors ${expandedTerms[item.term] ? 'bg-blue-100' : 'bg-slate-100'}`}>
                   {expandedTerms[item.term] ? (
@@ -862,13 +853,13 @@ const LegalGlossary = () => {
         )}
 
         {/* Disclaimer */}
-        <div className="mt-12 p-6 bg-red-50 border border-red-200 rounded-xl">
+        <div className="mt-12 p-8 bg-red-600 rounded-xl">
           <div className="flex items-start gap-4">
-            <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-8 h-8 text-white flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-red-800">Important Disclaimer</h3>
-              <p className="text-red-700 text-sm mt-1">
-                This glossary is for <strong>educational purposes only</strong> and does not constitute legal advice. 
+              <h3 className="font-extrabold text-white text-xl mb-2">Important Disclaimer</h3>
+              <p className="text-white font-bold text-base leading-relaxed">
+                This glossary is for <span className="underline">educational purposes only</span> and does not constitute legal advice. 
                 Laws vary by jurisdiction and change over time. Always consult a qualified legal professional for advice about your specific situation.
               </p>
             </div>
