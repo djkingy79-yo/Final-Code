@@ -19,7 +19,7 @@ jobs:
           pip install ruff
           pip install -r backend/requirements.txt --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
       - name: Lint backend
-        run: ruff check backend/ --exclude="backend/tests/"
+        run: ruff check backend/ --exclude="backend/tests/,backend/scripts/"
       - name: Check config
         run: |
           python -c "

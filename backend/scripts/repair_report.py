@@ -4,19 +4,18 @@ Runs targeted LLM calls for ONLY the gaps, then stitches content in-place.
 Much faster than full regeneration (~2-3 min vs 20 min).
 """
 import asyncio
+import logging
 import os
 import re
 import sys
-import logging
-
-from dotenv import load_dotenv
-from motor.motor_asyncio import AsyncIOMotorClient
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-load_dotenv()
 
+from dotenv import load_dotenv  # noqa: E402
+from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 from services.llm_service import call_llm_with_fallback  # noqa: E402
 
+load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("repair_report")
 
