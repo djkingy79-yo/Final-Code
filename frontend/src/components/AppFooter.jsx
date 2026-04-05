@@ -63,6 +63,11 @@ const AppFooter = () => {
           </div>
         </div>
       </div>
+
+      {/* Copyright */}
+      <div className="bg-slate-900 py-3 px-6 text-center" data-testid="footer-copyright">
+        <p className="text-white/60 text-xs">&copy; 2025 Appeal Case Manager. Created and Designed by Deb King. All rights reserved.</p>
+      </div>
     </footer>
   );
 };
