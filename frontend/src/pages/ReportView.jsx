@@ -957,7 +957,7 @@ const ReportView = () => {
       const link = document.createElement("a");
       link.href = url;
       const safeTitle = (caseData?.title || "Report").replace(/[^a-zA-Z0-9 _-]/g, "").substring(0, 30).trim();
-      link.setAttribute("download", `${safeTitle}_${reportType || "report"}.docx`);
+      link.setAttribute("download", `${safeTitle}_${report?.report_type || "report"}.docx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
