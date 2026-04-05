@@ -107,6 +107,19 @@ const AboutPage = () => {
       {/* Business Info */}
       <section className="py-8 px-6">
         <div className="max-w-4xl mx-auto">
+          {/* Deb's Personal Bio */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 mb-6 text-center" data-testid="about-deb-bio">
+            <p className="text-slate-700 text-base leading-relaxed max-w-2xl mx-auto">
+              A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney 
+              and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
+              training and assessment, civil construction plant operations, and painting and decorating — 
+              Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black 
+              belt in Taekwondo, ten-year undefeated champion, and proud representative of Australia at 
+              multiple World Championships — that same determination now drives her mission to help others 
+              navigate the justice system.
+            </p>
+          </div>
+
           <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center" data-testid="about-business-info">
             <h2 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Criminal Law Appeal Case Management
@@ -114,9 +127,9 @@ const AboutPage = () => {
             <p className="text-blue-700 font-medium">Founded by Debra King</p>
             <p className="text-slate-700 text-sm mt-2">Glenmore Park, NSW, Australia</p>
             
-            <div className="mt-6 inline-block bg-blue-50 border border-blue-200 rounded-xl px-6 py-3">
-              <p className="text-blue-800 text-sm font-medium">
-                <span className="text-blue-900">AUSTRALIAN LAW ONLY</span> — Covers all States & Territories
+            <div className="mt-6 inline-block bg-blue-600 rounded-xl px-6 py-3">
+              <p className="text-white text-sm font-bold">
+                AUSTRALIAN LAW ONLY — Covers all States & Territories
               </p>
             </div>
           </div>
