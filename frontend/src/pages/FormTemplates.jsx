@@ -838,6 +838,11 @@ const FormTemplates = () => {
           </div>
         </div>
 
+        {/* TIMEFRAME & DEADLINES */}
+        <h2 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-4 text-center" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="forms-timeframe-heading">
+          Timeframe & Deadlines
+        </h2>
+
         {/* KEY PROCEDURAL REQUIREMENTS - CRITICAL INFORMATION */}
         <div className="mb-8 bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-400 rounded-xl p-6">
           <h2 className="text-2xl font-bold text-red-900 mb-4 flex items-center gap-2">
@@ -872,6 +877,11 @@ const FormTemplates = () => {
               </div>
             </div>
 
+            {/* IF YOU HAVE MISSED THIS DEADLINE */}
+            <h3 className="text-2xl md:text-3xl font-extrabold text-red-700 mb-2 mt-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              If You Have Missed This Deadline
+            </h3>
+
             {/* Extensions of Time */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-orange-500">
               <h3 className="text-lg font-bold text-orange-900 mb-3">
@@ -901,8 +911,8 @@ const FormTemplates = () => {
 
             {/* Transcripts and Exhibits */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-lg font-bold text-blue-900 mb-3">
-                📝 Transcripts and Exhibits - Essential Documents
+              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Transcripts and Exhibits — Essential Documents
               </h3>
               <div className="space-y-3 text-sm text-blue-900">
                 <p><strong>You will almost certainly need:</strong></p>
@@ -955,8 +965,8 @@ const FormTemplates = () => {
 
             {/* Process Overview */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-lg font-bold text-blue-900 mb-3">
-                🔄 Standard Appeal Process
+              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                Standard Appeal Process
               </h3>
               <div className="space-y-2 text-sm text-blue-900">
                 <ol className="ml-6 list-decimal space-y-2">
@@ -1110,26 +1120,26 @@ const FormTemplates = () => {
           <img 
             src="https://images.unsplash.com/photo-1521791055366-0d553872125f?crop=entropy&cs=srgb&fm=jpg&q=85&w=800&h=200&fit=crop"
             alt="Legal Help"
-            className="w-full h-48 object-cover"
+            className="w-full h-64 object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/80 flex items-center justify-center">
             <div className="text-center px-6">
-              <Gavel className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <Gavel className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Need Help With Your Forms?
               </h3>
-              <p className="text-slate-300 mb-6 max-w-md mx-auto">
+              <p className="text-slate-300 text-lg mb-6 max-w-md mx-auto">
                 The FAQ section has guides on filling out these forms, and the Lawyer Directory 
                 can help find legal assistance.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/faq">
-                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-xl px-6">
+                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 rounded-xl px-8 py-3 text-base font-semibold">
                     View FAQ
                   </Button>
                 </Link>
                 <Link to="/lawyers">
-                  <Button className="bg-red-600 text-white hover:bg-blue-700 rounded-xl px-6">
+                  <Button className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl px-8 py-3 text-base font-semibold">
                     Find a Lawyer
                   </Button>
                 </Link>

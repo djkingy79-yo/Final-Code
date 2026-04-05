@@ -72,13 +72,13 @@ const PageCTA = ({
     return (
       <div className={`bg-blue-700 border-2 border-blue-400 rounded-xl p-8 text-center ${className}`}>
         <div className="max-w-2xl mx-auto">
-          <div className="w-14 h-14 bg-blue-800 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <FileText className="w-7 h-7 text-white" />
+          <div className="w-16 h-16 bg-blue-800 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-9 h-9 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Build Your Case?
           </h3>
-          <p className="text-blue-100 mb-6">
+          <p className="text-blue-100 text-lg mb-6">
             Upload your case documents, get AI analysis, and access all the tools you need to prepare a strong appeal.
           </p>
           <Button
