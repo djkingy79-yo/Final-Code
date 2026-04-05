@@ -425,17 +425,17 @@ const CaselawSearchPage = () => {
             </div>
 
             {/* AustLII - Universal Search */}
-            <div className="bg-blue-50 border-2 border-blue-300 rounded-2xl p-6">
+            <div className="bg-blue-600 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">AustLII - Search All Australian Courts</h3>
-                  <p className="text-sm text-slate-700">Australasian Legal Information Institute - The most comprehensive free legal database</p>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white">AustLII - Search All Australian Courts</h3>
+                  <p className="text-sm text-white/90 font-bold">Australasian Legal Information Institute - The most comprehensive free legal database</p>
                 </div>
                 <a 
                   href="https://www.austlii.edu.au/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-red-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium flex items-center gap-2"
+                  className="bg-white hover:bg-slate-100 text-blue-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2"
                 >
                   Search AustLII
                   <ExternalLink className="w-4 h-4" />
@@ -443,16 +443,16 @@ const CaselawSearchPage = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <h4 className="font-semibold text-slate-900 mb-2">What is AustLII?</h4>
-                  <p className="text-slate-700">A free, non-profit service providing access to legal information from Australia, New Zealand, and the Pacific region.</p>
+                  <h4 className="font-bold text-white mb-2">What is AustLII?</h4>
+                  <p className="text-white/90 font-bold">A free, non-profit service providing access to legal information from Australia, New Zealand, and the Pacific region.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Coverage</h4>
-                  <p className="text-slate-700">All Australian courts, tribunals, legislation, treaties, law reform reports, and journal articles.</p>
+                  <h4 className="font-bold text-white mb-2">Coverage</h4>
+                  <p className="text-white/90 font-bold">All Australian courts, tribunals, legislation, treaties, law reform reports, and journal articles.</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 mb-2">Best For</h4>
-                  <p className="text-slate-700">Cross-jurisdictional research, finding historical cases, and comprehensive legal research across all states.</p>
+                  <h4 className="font-bold text-white mb-2">Best For</h4>
+                  <p className="text-white/90 font-bold">Cross-jurisdictional research, finding historical cases, and comprehensive legal research across all states.</p>
                 </div>
               </div>
             </div>
@@ -461,7 +461,7 @@ const CaselawSearchPage = () => {
 
         {/* Understanding Judgments */}
         <section className="mt-12 bg-white border border-slate-200 rounded-2xl p-6">
-          <h2 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Understanding Court Judgments
           </h2>
           <div className="grid md:grid-cols-2 gap-6 text-sm">
