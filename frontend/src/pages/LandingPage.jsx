@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp } from "lucide-react";
+import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp, CreditCard } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -198,6 +198,19 @@ const LandingPage = () => {
                 <span className="text-sm bg-orange-500 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">NT</span>
                 <span className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">ACT</span>
                 <span className="text-sm bg-red-700 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">Federal</span>
+              </div>
+              
+              {/* NEW USER SPECIAL OFFER BANNER */}
+              <div className="mb-6 bg-pink-600 rounded-xl p-4 shadow-lg border-2 border-pink-400" data-testid="hero-trial-offer">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0">
+                    <CreditCard className="w-5 h-5 text-pink-600" />
+                  </div>
+                  <div>
+                    <p className="text-white font-extrabold text-base uppercase tracking-wide">New User Special Offer</p>
+                    <p className="text-white font-bold text-sm">Try your first full case analysis for just <span className="text-2xl">$5.00</span> — one time only!</p>
+                  </div>
+                </div>
               </div>
               
               {/* Types of Crimes */}

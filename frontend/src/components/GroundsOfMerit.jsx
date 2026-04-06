@@ -171,7 +171,7 @@ const SourceModeBadge = ({ sourceMode }) => {
     ai_generated: "border-blue-700 text-blue-700",
     manual: "border-purple-700 text-purple-700",
     imported: "border-slate-700 text-slate-700",
-    legacy: "border-yellow-700 text-yellow-700",
+    legacy: "border-pink-600 text-pink-600",
   };
 
   const labels = {
@@ -247,7 +247,7 @@ const GroundPipelineStatus = ({ ground }) => {
           Pipeline-backed ground
         </span>
       ) : (
-        <span className="text-yellow-700 font-medium">
+        <span className="text-pink-600 font-bold">
           Legacy or manually created ground
         </span>
       )}
@@ -686,16 +686,16 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
           <CardContent className="p-6">
             {trialEligible && (
               <div className="mb-3 flex items-center gap-2">
-                <Badge className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider" data-testid="trial-badge">
+                <Badge className="bg-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider" data-testid="trial-badge">
                   One-Time Trial Offer
                 </Badge>
-                <span className="text-white/80 text-xs">First-time user exclusive</span>
+                <span className="text-white/80 text-xs font-bold">First-time user exclusive</span>
               </div>
             )}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${trialEligible ? 'bg-white/20' : 'bg-blue-100'}`}>
-                  <Lock className={`w-6 h-6 ${trialEligible ? 'text-yellow-300' : 'text-red-600'}`} />
+                  <Lock className={`w-6 h-6 ${trialEligible ? 'text-pink-300' : 'text-red-600'}`} />
                 </div>
                 <div>
                   <h3 className={`font-semibold text-sm sm:text-base ${trialEligible ? 'text-white' : 'text-slate-900'}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -729,7 +729,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 </Button>
                 <Button 
                   onClick={() => setShowPaymentModal(true)}
-                  className={trialEligible ? "bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold shadow-lg" : "bg-blue-600 hover:bg-blue-700 text-white"}
+                  className={trialEligible ? "bg-pink-600 hover:bg-pink-700 text-white font-bold shadow-lg" : "bg-blue-600 hover:bg-blue-700 text-white"}
                   data-testid="unlock-grounds-btn"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
@@ -879,7 +879,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       <GroundConfidenceNote ground={ground} />
 
                       {ground.source_mode === "derived" && ground.verification_status !== "verified" ? (
-                        <div className="mt-2 text-xs text-yellow-700 font-medium">
+                        <div className="mt-2 text-xs text-pink-600 font-bold">
                           This ground has been projected from staged pipeline analysis and should be reviewed before legal reliance.
                         </div>
                       ) : null}

@@ -197,7 +197,7 @@ export default function PaymentModal({
         <div className="space-y-4 py-2">
           <div className={`rounded-xl p-4 text-center border ${useTrial ? 'bg-gradient-to-r from-blue-600 to-blue-800 border-blue-500' : 'bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200'}`}>
             {useTrial && (
-              <p className="text-xs font-bold text-yellow-300 uppercase tracking-wider mb-1" data-testid="trial-label">
+              <p className="text-xs font-bold text-white uppercase tracking-wider mb-1" data-testid="trial-label">
                 One-Time Trial Offer
               </p>
             )}
@@ -207,7 +207,7 @@ export default function PaymentModal({
                 <span className="text-lg line-through text-white/50 mr-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   ${FEATURE_PRICES_DISPLAY[featureType]?.toFixed(2) || "99.00"}
                 </span>
-                <span className="text-3xl sm:text-4xl font-bold text-yellow-300" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="trial-price">
+                <span className="text-3xl sm:text-4xl font-bold text-pink-400" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="trial-price">
                   ${price?.toFixed(2)} <span className="text-base font-normal text-white/80">AUD</span>
                 </span>
               </div>
