@@ -294,7 +294,7 @@ const LegalResourcesPage = () => {
                 title="Northern Territory Legal Aid Commission"
                 state="NT"
                 phone="1800 019 343"
-                website="https://www.ntlac.nt.gov.au"
+                website="https://www.legalaid.nt.gov.au"
                 description="Legal aid services in the Northern Territory."
                 color="orange"
               />
@@ -367,7 +367,7 @@ const LegalResourcesPage = () => {
                 title="Law Society of Tasmania"
                 state="TAS"
                 phone="(03) 6234 4133"
-                website="https://www.taslawsociety.asn.au"
+                website="https://www.lst.org.au"
                 description="Find a lawyer service in Tasmania."
                 color="teal"
               />
@@ -776,11 +776,11 @@ const LegalResourcesPage = () => {
                 color="blue"
               />
               <ResourceCard
-                title="QPILCH"
+                title="LawRight (formerly QPILCH)"
                 state="QLD"
                 phone="(07) 3846 6317"
-                website="https://www.qpilch.org.au"
-                description="Queensland Public Interest Law Clearing House - pro bono referrals."
+                website="https://lawright.org.au"
+                description="LawRight - pro bono legal referrals and assistance in Queensland."
                 color="red"
               />
             </div>
@@ -861,11 +861,11 @@ const LegalResourcesPage = () => {
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
-              <a href="https://www.wa.gov.au/justice" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-3 bg-white rounded-lg hover:shadow-md transition-shadow">
+              <a href="https://www.justice.wa.gov.au" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-3 bg-white rounded-lg hover:shadow-md transition-shadow">
                 <span className="w-8 h-8 bg-red-600 rounded text-white text-xs font-bold flex items-center justify-center">WA</span>
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-slate-900 truncate">WA Dept of Justice</p>
-                  <p className="text-[11px] text-slate-700">wa.gov.au/justice</p>
+                  <p className="text-[11px] text-slate-700">justice.wa.gov.au</p>
                 </div>
                 <ExternalLink className="w-4 h-4 text-slate-700 ml-auto shrink-0" />
               </a>
@@ -896,11 +896,11 @@ const LegalResourcesPage = () => {
                 highlight={true}
               />
               <ResourceCard
-                title="ACLEI - Law Enforcement Integrity"
+                title="NACC - National Anti-Corruption Commission"
                 state="National"
                 phone="1800 060 077"
-                website="https://www.aclei.gov.au"
-                description="Australian Commission for Law Enforcement Integrity - investigates corruption in federal law enforcement."
+                website="https://www.nacc.gov.au"
+                description="National Anti-Corruption Commission - investigates serious or systemic corruption across the Commonwealth public sector."
                 color="emerald"
               />
               <ResourceCard
@@ -1152,8 +1152,8 @@ const LegalResourcesPage = () => {
             <ResourceCard
               title="Prisoners Aid NSW"
               state="NSW"
-              phone="(02) 9281 1965"
-              website="https://www.prisonersaid.org.au"
+              phone="(02) 9666 5927"
+              website="https://www.prisonersaidnsw.org"
               description="Support services for NSW prisoners and their families."
               color="blue"
             />

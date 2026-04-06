@@ -61,8 +61,8 @@ const lawyerResources = [
       description: "Find a solicitor in your area"
     },
     specialists: [
-      { name: "Stary Norton Halphen", url: "https://www.starynortonhalphen.com.au/", location: "Melbourne CBD" },
-      { name: "Doogue + George", url: "https://www.doogugeorge.com.au/", location: "Melbourne CBD" },
+      { name: "Stary Norton Halphen", url: "https://www.starylaw.com/", location: "Melbourne CBD" },
+      { name: "Doogue + George", url: "https://www.criminal-lawyers.com.au/", location: "Melbourne CBD" },
       { name: "Dribbin & Brown", url: "https://www.criminalsolicitorsmelbourne.com.au/", location: "Melbourne CBD" },
       { name: "Galbally Parker", url: "https://galballyparker.com.au/", location: "Melbourne" },
       { name: "Leanne Warren & Associates", url: "https://leannewarren.com.au/", location: "Melbourne" },
@@ -92,7 +92,7 @@ const lawyerResources = [
     specialists: [
       { name: "Potts Lawyers", url: "https://www.pottslawyers.com.au/", location: "Brisbane & Gold Coast" },
       { name: "Robertson O'Gorman", url: "https://www.robertsonogorman.com.au/", location: "Brisbane CBD" },
-      { name: "Gilshenan & Luton", url: "https://www.gilshenanluton.com.au/", location: "Brisbane CBD" },
+      { name: "Gilshenan & Luton", url: "https://www.gnl.com.au/", location: "Brisbane CBD" },
       { name: "Fisher Dore Lawyers", url: "https://fisherdore.com.au/", location: "Brisbane" },
       { name: "Jacobson Mahony", url: "https://www.jacobsonmahony.com.au/", location: "Gold Coast" },
       { name: "Guest Lawyers", url: "https://guestlawyers.com.au/", location: "Brisbane" }
@@ -137,7 +137,7 @@ const lawyerResources = [
     },
     barAssociation: {
       name: "WA Bar Association",
-      url: "https://www.wabar.asn.au/",
+      url: "https://wabar.asn.au/",
       description: "Find a barrister in WA"
     },
     lawSociety: {
@@ -175,7 +175,7 @@ const lawyerResources = [
     },
     specialists: [
       { name: "Monk Lawyers", url: "https://www.monklawyers.com.au/", location: "Hobart" },
-      { name: "Tierney Law", url: "https://tierneylaw.com.au/", location: "Hobart" },
+      { name: "Tierney Law", url: "https://tlaw.com.au/", location: "Hobart" },
       { name: "Brooke Winter Solicitors", url: "https://brookewintersolicitors.com.au/", location: "Hobart CBD" },
       { name: "Murdoch Clarke Lawyers", url: "https://murdochclarke.com.au/", location: "Hobart" }
     ]
@@ -186,7 +186,7 @@ const lawyerResources = [
     color: "bg-orange-600",
     legalAid: {
       name: "Northern Territory Legal Aid Commission",
-      url: "https://www.ntlac.nt.gov.au/",
+      url: "https://www.legalaid.nt.gov.au/",
       phone: "1800 019 343",
       description: "Free legal help in the NT"
     },
@@ -229,7 +229,7 @@ const lawyerResources = [
     },
     specialists: [
       { name: "O'Brien Criminal & Civil Solicitors", url: "https://obriensolicitors.com.au/", location: "Canberra" },
-      { name: "Andrew Byrnes Law Group", url: "https://andrewyrbneslaw.com.au/", location: "Canberra City" },
+      { name: "Andrew Byrnes Law Group", url: "https://www.andrewbyrneslawgroup.com.au/", location: "Canberra City" },
       { name: "Hugo Law Group", url: "https://hugolawgroup.com.au/", location: "Canberra" },
       { name: "Lamont Law", url: "https://lamontlaw.com.au/", location: "Canberra" }
     ]

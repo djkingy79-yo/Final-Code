@@ -73,6 +73,11 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Verified `yarn build` passes cleanly
 - Backend health check confirmed healthy
 
+## Completed (6 Apr 2026 — Broken Links Audit)
+- Fixed 7 broken URLs in LawyerDirectory.jsx (VIC: Stary Norton Halphen, Doogue+George; ACT: Andrew Byrnes typo; QLD: Gilshenan & Luton; WA: WA Bar; TAS: Tierney Law; NT: Legal Aid)
+- Fixed 7 broken/outdated URLs in ContactsPage.jsx + LegalResourcesPage.jsx (ACLEI→NACC, QPILCH→LawRight, TAS Law Society, Prisoners Aid NSW, WA Justice, NT Legal Aid)
+- All external links verified via HTTP requests and web search
+
 ## Backlog
 - P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View

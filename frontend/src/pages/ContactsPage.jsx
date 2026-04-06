@@ -140,7 +140,7 @@ const ContactsPage = () => {
                 title="Northern Territory Legal Aid Commission"
                 state="NT"
                 phone="1800 019 343"
-                website="https://www.ntlac.nt.gov.au"
+                website="https://www.legalaid.nt.gov.au"
                 description="Legal aid services in the Northern Territory."
                 color="orange"
               />
@@ -216,7 +216,7 @@ const ContactsPage = () => {
                   title="Law Society of Tasmania"
                   state="TAS"
                   phone="(03) 6234 4133"
-                  website="https://www.taslawsociety.asn.au"
+                  website="https://www.lst.org.au"
                   description="Find a lawyer service in Tasmania."
                   color="teal"
                 />
@@ -551,11 +551,11 @@ const ContactsPage = () => {
                 color="blue"
               />
               <ResourceCard
-                title="QPILCH"
+                title="LawRight (formerly QPILCH)"
                 state="QLD"
                 phone="(07) 3846 6317"
-                website="https://www.qpilch.org.au"
-                description="Queensland Public Interest Law Clearing House - pro bono referrals."
+                website="https://lawright.org.au"
+                description="LawRight - pro bono legal referrals and assistance in Queensland."
                 color="red"
               />
             </div>
