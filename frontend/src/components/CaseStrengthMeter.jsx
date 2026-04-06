@@ -105,9 +105,9 @@ const CaseStrengthMeter = ({ caseId }) => {
   return (
     <Card className="bg-white border-slate-200 shadow-sm" data-testid="case-strength-meter">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-red-600 flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-white" />
+        <CardTitle className="text-xl sm:text-2xl flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-red-600 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-white" />
           </div>
           Case Readiness Score
         </CardTitle>
@@ -120,7 +120,7 @@ const CaseStrengthMeter = ({ caseId }) => {
         {/* Appeal Preparation Readiness summary */}
         <div className="rounded border border-slate-200 p-4 bg-slate-50">
           <div className="text-sm font-semibold text-slate-700">Appeal Preparation Readiness</div>
-          <div className="text-2xl font-bold mt-1 text-slate-900">{readinessScore}/100</div>
+          <div className="text-3xl font-bold mt-1 text-slate-900">{readinessScore}/100</div>
           <div className="mt-1 text-sm text-slate-600">{readinessLevel}</div>
         </div>
         {/* Overall Score - Circular Display */}

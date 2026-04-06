@@ -475,11 +475,11 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 14px; }
-    h1 { font-family: 'Crimson Pro', serif; font-size: 22px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 16px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 14px; margin-top: 14px; color: #1e40af; }
-    .meta { font-size: 13px; color: #475569; margin-bottom: 12px; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 12px; }
+    h1 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Crimson Pro', serif; font-size: 14px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
+    h3 { font-size: 13px; margin-top: 14px; color: #1e40af; }
+    .meta { font-size: 11px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
     table { border-collapse: collapse; width: 100%; margin: 12px 0; }
     td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 13px; }
@@ -796,29 +796,40 @@ const CaseDetail = ({ user }) => {
       grounds.forEach((g, i) => {
         body += `<div class="section-block"><h3>Ground ${i + 1}: ${g.title || ""}</h3>`;
         body += `<p>${(g.description || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>`;
-        body += `<p><strong>Strength:</strong> ${g.strength || "N/A"} &nbsp; <strong>Type:</strong> ${g.ground_type || "N/A"}</p>`;
-        // Supporting evidence
+        body += `<p><strong>Strength:</strong> ${(g.strength || "N/A").charAt(0).toUpperCase() + (g.strength || "N/A").slice(1)} &nbsp; <strong>Type:</strong> ${(g.ground_type || "N/A").replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>`;
+        // Supporting evidence — filter garbage strings
         const evidence = Array.isArray(g.supporting_evidence) ? g.supporting_evidence : [];
         if (evidence.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Supporting Evidence</h4><ul>`;
-          evidence.forEach(item => {
-            let text = '';
+          const cleanEvidence = evidence.map(item => {
             if (typeof item === "string") {
+              if (item.includes('document_id') && item.includes('filename') && item.includes('quote')) return '';
+              if (/^[a-z_]+$/.test(item) && item.length < 80) return '';
+              if (item.startsWith("{") && item.includes("'optional'")) return '';
               const m = item.match(/['"]quote['"]\s*:\s*['"](.+?)['"]\s*[,}]/);
-              text = m ? m[1] : (item.includes('document_id') && item.includes('optional') ? '' : item);
+              return m ? m[1] : item;
             } else {
-              text = item?.quote || item?.text || '';
+              return item?.quote || item?.text || '';
             }
-            if (text) body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
-          });
-          body += `</ul>`;
+          }).filter(Boolean);
+          if (cleanEvidence.length > 0) {
+            body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Supporting Evidence</h4><ul>`;
+            cleanEvidence.forEach(text => {
+              body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
+            });
+            body += `</ul>`;
+          }
         }
-        // Law sections
+        // Law sections — handle both objects and raw strings/JSON
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Relevant Legislation</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Relevant Legislation</h4><ul>`;
           laws.forEach(s => {
-            body += `<li>s.${s.section || ""} ${s.act || ""} (${s.jurisdiction || "NSW"})</li>`;
+            if (typeof s === "string") {
+              try { const parsed = JSON.parse(s); body += `<li>s.${parsed.section || ""} ${parsed.act || parsed.title || ""} (${parsed.jurisdiction || "NSW"})</li>`; }
+              catch { body += `<li>${s.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`; }
+            } else if (typeof s === "object" && s) {
+              body += `<li>s.${s.section || ""} ${s.act || s.title || ""} (${s.jurisdiction || "NSW"})</li>`;
+            }
           });
           body += `</ul>`;
         }
@@ -834,8 +845,8 @@ const CaseDetail = ({ user }) => {
         // Deep analysis
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Deep Investigation Analysis</h4>`;
-          body += `<div style="white-space:pre-wrap;font-size:14px;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Deep Investigation Analysis</h4>`;
+          body += `<div style="white-space:pre-wrap;font-size:12px;line-height:1.6;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
         }
         body += `</div>`;
       });
@@ -852,7 +863,7 @@ const CaseDetail = ({ user }) => {
     body += `</div>`;
     // Progress
     if (progressAnalysis) {
-      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12px;line-height:1.6;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
     }
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };

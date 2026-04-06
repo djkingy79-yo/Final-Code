@@ -237,24 +237,29 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                       {actName}
                     </h4>
                     <div className="space-y-2">
-                      {sections.map((section, idx) => (
+                      {sections.map((section, idx) => {
+                        const sectionObj = typeof section === "string" ? (() => { try { return JSON.parse(section); } catch { return { section: section, title: "" }; } })() : section;
+                        const sRef = sectionObj?.section || "";
+                        const sTitle = sectionObj?.title || "";
+                        return (
                         <div 
                           key={idx} 
                           className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
                         >
                           <a
-                            href={`https://www.austlii.edu.au/cgi-bin/viewdoc/au/legis/nsw/consol_act/?query=${encodeURIComponent(section.section + ' ' + actName)}`}
+                            href={`https://www.austlii.edu.au/cgi-bin/viewdoc/au/legis/nsw/consol_act/?query=${encodeURIComponent(sRef + ' ' + actName)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="shrink-0"
                           >
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 font-mono hover:bg-blue-100 cursor-pointer">
-                              {section.section} <ExternalLink className="w-3 h-3 ml-1 inline" />
+                              {sRef} <ExternalLink className="w-3 h-3 ml-1 inline" />
                             </Badge>
                           </a>
-                          <span className="text-slate-700 text-sm">{section.title}</span>
+                          <span className="text-slate-700 text-sm">{sTitle}</span>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -311,17 +316,22 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                       {actName}
                     </h4>
                     <div className="space-y-2">
-                      {sections.map((section, idx) => (
+                      {sections.map((section, idx) => {
+                        const sectionObj = typeof section === "string" ? (() => { try { return JSON.parse(section); } catch { return { section: section, title: "" }; } })() : section;
+                        const sRef = sectionObj?.section || "";
+                        const sTitle = sectionObj?.title || "";
+                        return (
                         <div 
                           key={idx} 
                           className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
                         >
                           <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200 font-mono shrink-0">
-                            {section.section}
+                            {sRef}
                           </Badge>
-                          <span className="text-slate-700 text-sm">{section.title}</span>
+                          <span className="text-slate-700 text-sm">{sTitle}</span>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -455,7 +465,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                         <div key={key} className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-red-600" />
                           <span className="text-sm text-slate-700">
-                            <span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span> {value}
+                            <span className="font-medium" style={{textTransform:'capitalize'}}>{key.replace(/_/g, ' ')}:</span> {typeof value === "object" ? JSON.stringify(value) : String(value)}
                           </span>
                         </div>
                       ))}
@@ -466,14 +476,26 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                   <div>
                     <p className="text-sm text-slate-500 mb-2">Required Forms</p>
                     <div className="space-y-1">
-                      {appealFramework.forms.map((form, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-blue-600" />
-                          <span className="text-sm text-slate-700">
-                            <span className="font-mono font-medium">{form.form}</span> - {form.purpose}
-                          </span>
-                        </div>
-                      ))}
+                      {appealFramework.forms.map((form, idx) => {
+                        if (typeof form === "string") {
+                          return (
+                            <div key={idx} className="flex items-center gap-2">
+                              <FileText className="w-4 h-4 text-blue-600" />
+                              <span className="text-sm text-slate-700">{form}</span>
+                            </div>
+                          );
+                        }
+                        const formName = form?.form || form?.name || form?.title || (typeof form === "object" ? JSON.stringify(form) : String(form));
+                        const formPurpose = form?.purpose || form?.description || "";
+                        return (
+                          <div key={idx} className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm text-slate-700">
+                              <span className="font-mono font-medium">{formName}</span>{formPurpose ? ` - ${formPurpose}` : ""}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

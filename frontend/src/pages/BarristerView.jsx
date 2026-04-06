@@ -372,8 +372,9 @@ export default function BarristerView() {
   );
   const offenceLabel = useMemo(() => {
     const extracted = extractOffenceFromAnalysis(report?.content?.analysis || "");
-    if (/murder/i.test(extracted || caseData?.offence_type || "")) return "murder";
-    return caseData?.offence_type || extracted || formatTitle(caseData?.offence_category);
+    if (/murder/i.test(extracted || caseData?.offence_type || "")) return "Murder";
+    const raw = caseData?.offence_type || extracted || formatTitle(caseData?.offence_category);
+    return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : "Not specified";
   }, [caseData, report]);
 
   const buildAuthUrl = (baseUrl) => {
@@ -918,7 +919,6 @@ export default function BarristerView() {
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-wrap text-sm text-white/90 mb-5">
-                <span className="bg-teal-600 px-3 py-1 rounded-full text-sm font-bold text-white">BARRISTER BRIEF</span>
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Generated: {formatDate(report?.generated_at)}</span>
                 <span className="text-sm text-white/80" data-testid="barrister-source-badge">Built from all {sourceReportMeta.length || 3} reports</span>
               </div>
