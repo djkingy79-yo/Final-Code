@@ -35,9 +35,12 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - **Barrister View:** removed duplicate BARRISTER BRIEF badge, offence capitalized (Murder not murder)
 - **Case Readiness Score:** heading enlarged (text-xl/2xl)
 - **Export fonts:** body 12px, h1 20px, h2 14px across all exportHtml/buildTabPreviewHtml/buildPrintAllHtml
+- **Legal Framework Typography:** subheadings 18px bold (h4) / 16px bold (h5), body text 12px/11px — clear hierarchy
+- **iOS Mobile Menu:** converted from inline dropdown to full-screen fixed overlay with scroll support, X close button, WebkitOverflowScrolling
+- **Dashboard Sidebar:** added iOS scroll support (WebkitOverflowScrolling: touch, overscrollBehavior: contain)
 
 ## Backlog
-- P0: Deploy all fixes to production
+- P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat for Notes
 - P2: Case sharing between users
@@ -48,5 +51,7 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - Disclaimers: bright red (#dc2626) bg + white text + yellow hazard icon — DO NOT revert
 - Notes export: blue theme (#2563eb) — DO NOT change to yellow/amber
 - Export font sizes: body 12px, h1 18-20px — DO NOT increase
+- LegalFrameworkViewer typography: h4=18px bold, subheadings=16px bold, body=12px/11px — DO NOT revert
+- Mobile menu: full-screen fixed overlay (z-[100]) — DO NOT revert to inline dropdown
 - LegalFrameworkViewer: must handle both string and object forms/sections
 - EvidenceSummary: must filter garbage key-concatenated strings
