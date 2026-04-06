@@ -44,6 +44,8 @@ import AcceptShareLink from "./pages/AcceptShareLink";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 import AppFooter from "./components/AppFooter";
+import OfflineBanner from "./components/OfflineBanner";
+import { initNativeApp } from "./native/appLifecycle";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
@@ -395,10 +397,15 @@ function FooterWrapper() {
 }
 
 function App() {
+  useEffect(() => {
+    initNativeApp();
+  }, []);
+
   return (
     <ThemeProvider>
       <div className="App force-light">
         <BrowserRouter>
+          <OfflineBanner />
           <ScrollToTopOnNav />
           <AppRouter />
           <FooterWrapper />

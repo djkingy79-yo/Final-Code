@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Appeal Case Manager</string>
+    <string name="title_activity_main">Appeal Case Manager</string>
+    <string name="package_name">com.debking.criminalappeals</string>
+    <string name="custom_url_scheme">com.debking.criminalappeals</string>
+</resources>

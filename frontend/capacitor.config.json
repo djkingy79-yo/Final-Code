@@ -1,46 +1,56 @@
 {
-  "appId": "com.debking.criminalappealai",
+  "appId": "com.debking.criminalappeals",
   "appName": "Appeal Case Manager",
   "webDir": "build",
+  "bundledWebRuntime": false,
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
-    "hostname": "criminallawappealmanagement.com.au"
+    "allowNavigation": ["*.emergentagent.com"]
   },
   "plugins": {
     "SplashScreen": {
+      "launchAutoHide": false,
       "launchShowDuration": 2000,
-      "launchAutoHide": true,
       "backgroundColor": "#0f172a",
-      "showSpinner": false,
-      "androidSplashResourceName": "splash",
+      "showSpinner": true,
+      "spinnerColor": "#3b82f6",
+      "androidScaleType": "CENTER_CROP",
       "splashFullScreen": true,
       "splashImmersive": true
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#0f172a"
+      "backgroundColor": "#0f172a",
+      "overlaysWebView": false
     },
-    "Keyboard": {
-      "resize": "body",
-      "resizeOnFullScreen": true
+    "Camera": {
+      "presentationStyle": "fullscreen"
     },
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#1e3a8a"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "LIGHT",
+      "resizeOnFullScreen": true
     }
   },
   "ios": {
     "contentInset": "automatic",
-    "preferredContentMode": "mobile",
-    "backgroundColor": "#0f172a",
-    "scheme": "appealcasemanager",
-    "buildConfiguration": "Release"
+    "backgroundColor": "#ffffff",
+    "allowsLinkPreview": true,
+    "scrollEnabled": true,
+    "scheme": "AppealCaseManager"
   },
   "android": {
-    "allowMixedContent": false,
-    "backgroundColor": "#0f172a",
-    "captureInput": true,
-    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#ffffff",
+    "allowMixedContent": true,
+    "useLegacyBridge": false,
     "buildOptions": {
       "keystorePath": "release.keystore",
       "keystoreAlias": "appealcasemanager"

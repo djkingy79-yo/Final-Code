@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import DocumentScanner from "./DocumentScanner";
 import { Label } from "./ui/label";
 import { API } from "../App";
 
@@ -456,6 +457,12 @@ const DocumentsSection = ({
             <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }}>Upload Documents</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Native Camera Scanner */}
+            <DocumentScanner
+              onFileScanned={(file) => setUploadFiles(prev => [...prev, file])}
+              disabled={uploading}
+            />
+
             {/* Drag & Drop Zone */}
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
