@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# DO_NOT_UNDO — .gitignore for Appeal Case Manager
 
 # IDE and editors
 .idea/
@@ -17,16 +17,18 @@ node_modules/
 /build
 dist/
 
-# Environment files
+# Environment files — NEVER commit secrets
 .env
 .env.local
 .env.*.local
 *.env
+*.env.*
 !.env.example
 
 # Credentials & secrets
 *token.json*
 *credentials.json*
+/memory/test_credentials.md
 
 # Logs and debug files
 npm-debug.log*
@@ -52,63 +54,7 @@ venv/
 next-env.d.ts
 /.next/
 /out/
-frontend/node_modules/.cache/default-development/37.pack
-frontend/node_modules/.cache/default-development/74.pack
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
 frontend/node_modules/.cache/default-development/24.pack
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
-frontend/node_modules/.cache/default-development/2.pack
-frontend/node_modules/.cache/default-development/3.pack
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
 frontend/node_modules/.cache/default-development/7.pack
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
-frontend/node_modules/.cache/default-development/0.pack
+frontend/node_modules/.cache/default-development/74.pack
 frontend/node_modules/.cache/default-development/1.pack
--e 
-# Environment files
-*.env
-*.env.*
