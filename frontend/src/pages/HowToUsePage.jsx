@@ -30,7 +30,7 @@ const HowToUsePage = () => {
         "You can edit the case details at any time if needed",
         "You can create multiple cases if you have more than one matter to manage"
       ],
-      tip: "Include the citation if you have it — this helps organise your cases. The AI analysis automatically detects the state, crime type, and sentence from your uploaded documents."
+      tip: "Include the citation if you have it — this helps organise your cases. After uploading documents, the AI analysis will automatically extract the state, crime type, and sentence if court documents such as sentence reports are uploaded."
     },
     {
       num: 2,
@@ -269,8 +269,8 @@ const HowToUsePage = () => {
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-8 h-8 text-white shrink-0 mt-1" />
             <div>
-              <h2 className="font-extrabold text-white text-base md:text-lg mb-2">Before You Start</h2>
-              <ul className="text-white space-y-1.5 text-xs font-semibold leading-relaxed">
+              <h2 className="font-extrabold text-white mb-1.5" style={{fontSize:'13px'}}>Before You Start</h2>
+              <ul className="text-white space-y-0.5 font-semibold" style={{fontSize:'10px', lineHeight:'1.4'}}>
                 <li>- <span className="font-extrabold">Gather your documents</span> — transcripts, evidence, court records, witness statements, sentencing remarks, expert reports</li>
                 <li>- <span className="font-extrabold">Note key dates</span> — incident date, arrest, trial start, verdict, sentencing date</li>
                 <li>- <span className="font-extrabold">Know your deadline</span> — you usually have 28 days from sentencing to file an appeal</li>
@@ -301,7 +301,7 @@ const HowToUsePage = () => {
                 <h3 className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                   {step.title}
                 </h3>
-                <p className="text-sm text-slate-700 leading-relaxed">{step.description}</p>
+                <p className="text-slate-700" style={{fontSize:'11px', lineHeight:'1.4'}}>{step.description}</p>
 
                 {/* Reminder box for Step 1 */}
                 {step.reminder && (
@@ -326,11 +326,11 @@ const HowToUsePage = () => {
 
                 {/* Instructions */}
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-2 text-sm">Instructions:</h4>
-                  <ul className="space-y-1.5 text-slate-700 text-xs leading-relaxed">
+                  <h4 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'11px'}}>Instructions:</h4>
+                  <ul className="space-y-0.5 text-slate-700">
                     {step.instructions.map((inst, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" />
+                      <li key={i} className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}>
+                        <ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" />
                         <span>{inst}</span>
                       </li>
                     ))}
@@ -338,15 +338,15 @@ const HowToUsePage = () => {
                 </div>
 
                 {/* Tip Box */}
-                <div className={`p-4 ${colors.tipBg} border ${colors.tipBorder} rounded-xl text-xs leading-relaxed ${colors.tipText}`}>
-                  <Lightbulb className="w-4 h-4 inline mr-1.5" />
+                <div className={`p-2.5 ${colors.tipBg} border ${colors.tipBorder} rounded-xl ${colors.tipText}`} style={{fontSize:'10px', lineHeight:'1.4'}}>
+                  <Lightbulb className="w-3 h-3 inline mr-1" />
                   <strong>Tip:</strong> {step.tip}
                 </div>
 
                 {/* Extra Tip (for Step 2 - new docs) */}
                 {step.extraTip && (
-                  <div className="p-4 bg-blue-600 rounded-xl text-white text-xs leading-relaxed font-bold">
-                    <AlertTriangle className="w-4 h-4 inline mr-1.5" />
+                  <div className="p-2.5 bg-blue-600 rounded-xl text-white font-bold" style={{fontSize:'10px', lineHeight:'1.4'}}>
+                    <AlertTriangle className="w-3 h-3 inline mr-1" />
                     <strong>Important:</strong> {step.extraTip}
                   </div>
                 )}
@@ -354,7 +354,7 @@ const HowToUsePage = () => {
                 {/* Report type screenshots for Step 6 */}
                 {step.reportScreenshots && (
                   <div className="mt-8" data-testid="report-type-screenshots">
-                    <h4 className="font-bold text-slate-900 mb-3 text-sm">Each Report Type:</h4>
+                    <h4 className="font-bold text-slate-900 mb-3" style={{fontSize:'12px'}}>Each Report Type:</h4>
                     <div className="grid md:grid-cols-3 gap-4">
                       {step.reportScreenshots.map((rs, idx) => (
                         <div key={idx} className="border-2 border-slate-200 rounded-xl overflow-hidden shadow-lg">
@@ -393,16 +393,16 @@ const HowToUsePage = () => {
             <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
               Export and Share
             </h3>
-            <p className="text-sm text-slate-700 mb-3">Export your case data for use outside the app — share with your lawyer, barrister, or Legal Aid.</p>
-            <ul className="space-y-1.5 text-slate-700 mb-3 text-xs leading-relaxed">
-              <li className="flex items-start gap-2"><ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Quick Export' to download everything in one package</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" /> Downloads all documents and reports together</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" /> Timeline and summary as editable DOCX files</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Bundle Documents' to merge PDFs into one file</li>
-              <li className="flex items-start gap-2"><ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-600" /> Share with lawyers, barristers, or Legal Aid</li>
+            <p className="text-slate-700 mb-3" style={{fontSize:'11px', lineHeight:'1.4'}}>Export your case data for use outside the app — share with your lawyer, barrister, or Legal Aid.</p>
+            <ul className="space-y-0.5 text-slate-700 mb-3" style={{fontSize:'10px', lineHeight:'1.4'}}>
+              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Quick Export' to download everything in one package</li>
+              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Downloads all documents and reports together</li>
+              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Timeline and summary as editable DOCX files</li>
+              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Bundle Documents' to merge PDFs into one file</li>
+              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
-            <div className="p-4 bg-pink-50 border border-pink-200 rounded-xl text-pink-800 text-xs">
-              <Lightbulb className="w-4 h-4 inline mr-1.5" />
+            <div className="p-2.5 bg-pink-50 border border-pink-200 rounded-xl text-pink-800" style={{fontSize:'10px', lineHeight:'1.4'}}>
+              <Lightbulb className="w-3 h-3 inline mr-1" />
               <strong>Tip:</strong> Editable DOCX files can be customised before submitting to court or forwarding to counsel.
             </div>
           </div>
@@ -413,9 +413,9 @@ const HowToUsePage = () => {
           <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             What Happens Next?
           </h2>
-          <div className="grid md:grid-cols-2 gap-6 text-xs leading-relaxed">
+          <div className="grid md:grid-cols-2 gap-4" style={{fontSize:'10px', lineHeight:'1.4'}}>
             <div>
-              <h3 className="font-bold text-slate-900 mb-2 text-sm">If Grounds Are Found</h3>
+              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'12px'}}>If Grounds Are Found</h3>
               <ul className="text-slate-700 space-y-2">
                 <li>- Review the detailed analysis for each ground</li>
                 <li>- Generate a Full Detailed Report to share with a lawyer</li>
@@ -424,7 +424,7 @@ const HowToUsePage = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 mb-2 text-sm">Getting Legal Help</h3>
+              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'12px'}}>Getting Legal Help</h3>
               <ul className="text-slate-700 space-y-2">
                 <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Legal Aid</Link> in your state</li>
                 <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Pro Bono services</Link></li>
