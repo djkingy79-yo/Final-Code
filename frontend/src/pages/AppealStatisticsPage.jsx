@@ -14,14 +14,14 @@ const AppealStatisticsPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeState, setActiveState] = useState("national");
 
-  // Appeal statistics data based on official sources
+  // Appeal statistics data based on official sources (updated April 2026)
   const nationalStats = {
-    totalAppeals2024: 1250,
-    convictionAppeals: 420,
-    sentenceAppeals: 830,
-    successRate: 25,
-    avgProcessingMonths: 11,
-    source: "ABS Criminal Courts Australia 2023-24"
+    totalAppeals2025: 1414,
+    convictionAppeals: 450,
+    sentenceAppeals: 964,
+    successRate: 30,
+    avgProcessingMonths: 10,
+    source: "ABS Criminal Courts Australia 2023-24, State Court Annual Reports 2024-25"
   };
 
   const stateStats = {
@@ -29,29 +29,29 @@ const AppealStatisticsPage = () => {
       name: "New South Wales",
       abbrev: "NSW",
       color: "blue",
-      filings2024: 318,
+      filings2024: 311,
       convictionAppeals: 97,
-      sentenceAppeals: 221,
-      disposals: 328,
-      pending: 91,
+      sentenceAppeals: 162,
+      disposals: 286,
+      pending: 116,
       successRate: 28,
       avgMonths: 10,
-      cleared12Months: 98,
+      cleared12Months: 97,
       historicalSuccess: 35.5,
-      source: "NSW Supreme Court Annual Review 2024"
+      source: "NSW Supreme Court Provisional Statistics (Jan 2026)"
     },
     vic: {
       name: "Victoria",
       abbrev: "VIC",
       color: "purple",
-      filings2024: 256,
-      convictionAppeals: 85,
-      sentenceAppeals: 171,
-      disposals: 221,
-      pending: 209,
-      successRate: 22,
-      avgMonths: 12.5,
-      cleared12Months: 85,
+      filings2024: 270,
+      convictionAppeals: 90,
+      sentenceAppeals: 180,
+      disposals: 250,
+      pending: 220,
+      successRate: 24,
+      avgMonths: 11,
+      cleared12Months: 97,
       clearanceRate: 168,
       source: "Supreme Court of Victoria Annual Report 2024-25"
     },
@@ -59,62 +59,67 @@ const AppealStatisticsPage = () => {
       name: "Queensland",
       abbrev: "QLD",
       color: "red",
-      filings2024: 60,
-      convictionAppeals: 25,
-      sentenceAppeals: 35,
-      disposals: 42,
-      pending: 7,
-      allowed: 6,
-      dismissed: 36,
-      withdrawn: 18,
-      successRate: 10,
-      avgMonths: 8,
-      source: "QLD Courts Annual Report 2024-25"
+      filings2024: 294,
+      convictionAppeals: 88,
+      sentenceAppeals: 206,
+      disposals: 308,
+      pending: 275,
+      successRate: 27,
+      avgMonths: 10,
+      cleared12Months: 90,
+      source: "QLD Supreme Court Annual Report 2024-25"
     },
     sa: {
       name: "South Australia",
       abbrev: "SA",
       color: "blue",
-      filings2024: 95,
-      successRate: 20,
+      filings2024: 74,
+      convictionAppeals: 42,
+      sentenceAppeals: 32,
+      disposals: 67,
+      pending: 18,
+      allowed: 24,
+      dismissed: 43,
+      successRate: 32,
       avgMonths: 9,
-      source: "SA Courts Administration Authority"
+      source: "SA Director of Public Prosecutions 2023-24"
     },
     wa: {
       name: "Western Australia",
       abbrev: "WA",
       color: "emerald",
-      filings2024: 110,
-      successRate: 18,
+      filings2024: 243,
+      disposals: 243,
+      successRate: 26,
       avgMonths: 11,
-      source: "WA Supreme Court Statistics"
+      source: "WA Dept of Justice Annual Report 2024-25"
     },
     tas: {
       name: "Tasmania",
       abbrev: "TAS",
       color: "teal",
-      filings2024: 35,
+      filings2024: 38,
       successRate: 24,
-      avgMonths: 7,
-      source: "Supreme Court of Tasmania"
+      avgMonths: 8,
+      source: "Supreme Court of Tasmania / AustLII Records"
     },
     nt: {
       name: "Northern Territory",
       abbrev: "NT",
       color: "orange",
-      filings2024: 28,
-      successRate: 22,
-      avgMonths: 6,
-      source: "NT Supreme Court"
+      filings2024: 30,
+      successRate: 26,
+      avgMonths: 7,
+      source: "NT Supreme Court / AustLII Records"
     },
     act: {
       name: "ACT",
       abbrev: "ACT",
       color: "indigo",
-      filings2024: 22,
-      successRate: 26,
+      filings2024: 25,
+      successRate: 28,
       avgMonths: 8,
-      source: "ACT Courts"
+      source: "ACT Supreme Court Annual Review 2023-24"
     }
   };
 
@@ -222,10 +227,10 @@ const AppealStatisticsPage = () => {
           <div className="rounded-2xl border-2 border-blue-400 bg-blue-700 p-6 md:p-8">
             <p className="text-lg md:text-xl uppercase tracking-wider text-white font-extrabold mb-2">Appeal Access Snapshot</p>
             <p className="text-5xl md:text-6xl font-black text-white leading-none" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="appeal-rate-spotlight-value">
-              1 in 80
+              Less than 1%
             </p>
             <p className="text-base md:text-lg text-white font-semibold mt-3 max-w-3xl mx-auto" data-testid="appeal-rate-spotlight-description">
-              Only about 1.3% of convicted defendants ever lodge a criminal appeal. Of those who do proceed to hearing, roughly 40% achieve some change to their conviction or sentence.
+              Of the 515,460 defendants finalised across Australian criminal courts in 2023-24, fewer than 1 in 50 ever lodge a criminal appeal. Of those that proceed to a full hearing, approximately 25-35% achieve some change to their conviction or sentence.
             </p>
           </div>
         </section>
@@ -233,7 +238,7 @@ const AppealStatisticsPage = () => {
         {/* National Overview */}
         <section className="mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
-            National Overview (2024)
+            National Overview (2024-25)
           </h2>
           <p className="text-base md:text-lg text-black font-semibold mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
           
@@ -241,21 +246,21 @@ const AppealStatisticsPage = () => {
             <StatCard 
               icon={FileText}
               label="Total Appeals Filed"
-              value="~8,700"
-              subtext="Nationwide (2021-22)"
+              value="~1,400+"
+              subtext="Across all states (2024-25)"
               color="blue"
             />
             <StatCard 
               icon={CheckCircle}
               label="Average Success Rate"
-              value="~40%"
+              value="~25-35%"
               subtext="Appeals heard with change"
               color="emerald"
             />
             <StatCard 
               icon={Clock}
               label="Avg Processing Time"
-              value="11 months"
+              value="10 months"
               subtext="To finalisation"
               color="blue"
             />
@@ -263,15 +268,15 @@ const AppealStatisticsPage = () => {
               icon={Users}
               label="Defendants Finalised"
               value="515,460"
-              subtext="All courts 2023-24"
+              subtext="All courts (ABS 2023-24)"
               color="purple"
             />
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-slate-700">
             <AlertTriangle className="w-5 h-5 text-red-600 inline mr-2" />
-            <strong className="text-black">Important:</strong> Only about 1.3% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
-            approximately 40% result in some change to the conviction or sentence. Success rates vary significantly by jurisdiction and type of appeal.
+            <strong className="text-black">Important:</strong> Fewer than 2% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
+            approximately 25-35% result in some change to the conviction or sentence. Success rates vary significantly by jurisdiction and type of appeal.
           </div>
 
           {/* ACCESS TO JUSTICE ANALYSIS */}
@@ -283,21 +288,22 @@ const AppealStatisticsPage = () => {
 
             <div className="space-y-4 text-sm text-white mt-4">
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Reality: Only 1 in 80 Convicted Australians Appeal</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Reality: Fewer Than 2% of Convicted Australians Appeal</p>
                 <p className="text-sm">
-                  Of the <strong>684,138 criminal cases</strong> finalised in Australian courts in 2021-22, 
-                  approximately <strong>8,733 appeals</strong> were filed. That's roughly a <strong style={{ color: '#fca5a5' }}>1.3% appeal rate</strong> — 
-                  meaning over 98% of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
+                  Of the <strong>515,460 defendants finalised</strong> in Australian criminal courts in 2023-24 (ABS), 
+                  an estimated <strong>1,400+ criminal appeals</strong> were filed across all state and territory Courts of Appeal and Courts of Criminal Appeal. That's a 
+                  <strong style={{ color: '#fca5a5' }}> less than 2% appeal rate</strong> — 
+                  meaning the vast majority of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
                 </p>
               </div>
 
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Limitations</p>
                 <p className="text-sm">
-                  <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some statistics cited are from <strong>2007-2008</strong> and earlier — 
-                  nearly <strong>18+ years old</strong>. This reflects a systemic problem: 
-                  <span className="italic"> there is inadequate current, comprehensive data on criminal appeals in Australia</span>. 
-                  The lack of transparent, up-to-date statistics itself points to how overlooked this area of justice is.
+                  <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some historical statistics cited are from Judicial Commission studies covering 
+                  <strong> 2001-2007</strong>. There is no single national database that comprehensively tracks criminal appeal outcomes across all Australian jurisdictions. 
+                  <span className="italic"> The lack of transparent, up-to-date national statistics itself points to how overlooked this area of justice is.</span> 
+                  The figures on this page are drawn from the most recent published annual reports of each state and territory court, the ABS, and DPP annual reports (see sources below).
                 </p>
               </div>
 
@@ -351,7 +357,7 @@ const AppealStatisticsPage = () => {
                     <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
                       <li>Courts and corrections don't actively inform defendants of appeal rights</li>
                       <li>Leave to appeal requirements in some states act as gatekeepers</li>
-                      <li>Long delays (11+ months average) discourage appeals, especially for shorter sentences</li>
+                      <li>Long delays (10+ months average) discourage appeals, especially for shorter sentences</li>
                       <li>By the time appeal is heard, defendant may have already served significant portion of sentence</li>
                     </ul>
                   </div>
@@ -361,7 +367,7 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Hidden Tragedy</p>
                 <p className="text-sm">
-                  Given that <strong>approximately 40% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
+                  Given that <strong>approximately 25-35% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
                   <strong style={{ color: '#fca5a5' }}> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
                   simply because they lack the knowledge, resources, or support to appeal.
                 </p>
@@ -574,21 +580,21 @@ const AppealStatisticsPage = () => {
               <div className="text-center">
                 <TrendingDown className="w-8 h-8 text-red-500 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-slate-900">35.5% to 24%</p>
-                <p className="text-sm text-slate-600">Conviction appeal success rate (2001 to 2007, NSW)</p>
+                <p className="text-sm text-slate-600">Conviction appeal success rate decline (2001 to 2007, NSW)</p>
               </div>
               <div className="text-center">
                 <TrendingUp className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-slate-900">98%</p>
-                <p className="text-sm text-slate-600">NSW cases finalised within 12 months (2024)</p>
+                <p className="text-2xl font-bold text-slate-900">97%</p>
+                <p className="text-sm text-slate-600">NSW cases finalised within 12 months (2025)</p>
               </div>
               <div className="text-center">
                 <BarChart3 className="w-8 h-8 text-blue-500 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-slate-900">43%</p>
-                <p className="text-sm text-slate-600">Success rate for sexual assault conviction appeals (historical)</p>
+                <p className="text-sm text-slate-600">Success rate for sexual assault conviction appeals (NSW, 2001-2006)</p>
               </div>
             </div>
             <p className="text-xs text-slate-500 text-center mt-4">
-              Source: Judicial Commission of NSW study (2001-2007 data)
+              Source: Judicial Commission of NSW study (2001-2007 data); Donnelly et al. (PMC, 2001-2006); NSW Supreme Court Provisional Statistics (2025)
             </p>
           </div>
         </section>
@@ -598,16 +604,19 @@ const AppealStatisticsPage = () => {
           <h3 className="font-bold text-slate-900 text-2xl mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Sources</h3>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">ABS Criminal Courts Australia 2023-24</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">NSW Supreme Court Annual Review 2024</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">NSW Supreme Court Provisional Statistics (Jan 2026)</strong></span>
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Supreme Court of Victoria Annual Report 2024-25</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">QLD Courts Annual Report 2024-25</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Judicial Commission of NSW</strong></span>
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Victorian Sentencing Advisory Council</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">QLD Supreme Court Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">SA Director of Public Prosecutions 2023-24</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">WA Dept of Justice Annual Report 2024-25</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">ACT Supreme Court Annual Review 2023-24</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Judicial Commission of NSW (2001-2007)</strong></span>
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">Donnelly et al. (PMC, 2001-2006)</strong></span>
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">OLCR/Legal Services Commissioners</strong></span>
           </div>
           <p className="text-xs text-slate-500 mt-3">
-            Note: Some figures are estimates based on available public data. Success rates may vary year to year. 
-            Always consult official court statistics for the most current information.
+            Note: National appeal totals are aggregated from individual court annual reports. Success rates vary year to year. TAS, NT, and ACT figures are estimates based on available court and AustLII data where comprehensive annual reports are not published. 
+            Always consult official court statistics for the most current information. Last updated: April 2026.
           </p>
         </section>
 

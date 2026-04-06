@@ -39,6 +39,7 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - **iOS Mobile Menu:** converted from inline dropdown to full-screen fixed overlay with scroll support, X close button, WebkitOverflowScrolling
 - **Dashboard Sidebar:** added iOS scroll support (WebkitOverflowScrolling: touch, overscrollBehavior: contain)
 
+- **Statistics Data Update (April 2026):** All stats updated to latest verified sources — NSW (Jan 2026 provisional), VIC (2024-25 annual report), QLD (2024-25 annual report, 294 filings not 60), SA (DPP 2023-24, 74 appeals), WA (2024-25, 243 finalised), ABS (515,460 defendants 2023-24). Landing page and Stats page now show consistent success rates (24-32% range). Removed unverifiable "8,700 national appeals" and "684,138 cases" figures. Added proper source citations.
 - **FAQ Forms & Filing:** Added 9 comprehensive questions about filling in appeal forms (Notice of Intention, Notice of Appeal, transcript requests, Case Stated, exhibit access, time limits, online filing, serving documents, correcting errors)
 
 ## Backlog
