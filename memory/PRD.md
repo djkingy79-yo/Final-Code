@@ -23,60 +23,41 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 
 ### Core Features
 - Full report generation pipeline (4 tiers)
-- Document upload & management
+- Document upload & management with camera scanning (native)
 - Timeline analysis
-- Grounds of merit tracking
+- Grounds of merit tracking with payment unlock
 - PDF/DOCX export with cover pages, disclaimers, footers
 - Barrister View with Issue Matrix attachment
 - Google Auth + email/password auth
-- PayID payment flow
+- PayID payment flow with admin approval
 - DOMPurify XSS sanitisation (with style tag preservation)
 - Lawyer Directory with verified links
-- Appeal Statistics page
-- How It Works tutorial page
-- Sentence extraction normalisation across all reports
-- Security audit (18-point checklist)
-- Export Appeal Package (ZIP with all case materials and templates)
+- Appeal Statistics page, How It Works tutorial page
+- Export Appeal Package (ZIP)
 - Pipeline Portfolio Summary on Dashboard
 
-### Native Mobile App (Capacitor) — Feb 2026
-- **Camera Document Scanning:** Native camera integration for scanning legal documents, with preview and retake. Gallery picker. Converts to File for upload.
-- **Offline Access:** Enhanced service worker with API response caching, static asset caching, offline fallback. Capacitor Preferences for offline data storage (cases, reports, pending notes).
-- **Push & Local Notifications:** Schedule deadline reminders, receive push notifications. Falls back to web Notification API.
-- **Haptic Feedback:** Tactile feedback on actions (success, error, warning). Light/medium/heavy impact.
-- **Share:** Native share sheet for case summaries and exported documents. Falls back to navigator.share or clipboard on web.
-- **Biometric Auth:** Face ID (iOS) and fingerprint (Android) permission setup. Info.plist and AndroidManifest configured.
-- **App Lifecycle:** Status bar styling, splash screen, Android back button, deep links, app state change handling.
-- **Offline Banner:** Shows when device loses connectivity with retry button.
-- **iOS & Android Projects Generated:** Both native projects exist at `/app/frontend/ios` and `/app/frontend/android`. Permissions configured for camera, photo library, Face ID, biometrics, notifications, storage.
-- **Service Worker v2:** Cache-first for static assets, network-first with cache fallback for API requests, background sync for pending notes, push notification handling.
+### Native Mobile App (Capacitor)
+- Camera document scanning, offline access, push/local notifications
+- Haptic feedback, native share, biometric auth permissions
+- iOS & Android projects generated at /app/frontend/ios and /app/frontend/android
 
-### Bug Fixes — Feb 2026
-- Font size standardisation across all reports, prints, and exports
-- PayID email typo fix (gmsil.com → gmail.com)
-- Export Appeal Package crash fix (supporting_evidence dict handling)
-- Terms of Service font reduction
-- Dashboard overview cards enlarged
-- Case page heading enlarged
-
-## Building Native Apps
-
-### iOS
-1. Open `/app/frontend/ios/App/App.xcworkspace` in Xcode
-2. Select your development team in Signing & Capabilities
-3. Run on simulator or device
-
-### Android
-1. Open `/app/frontend/android` in Android Studio
-2. Let Gradle sync
-3. Run on emulator or device
-
-### Updating Web Content
-```bash
-cd /app/frontend
-yarn build
-npx cap sync
-```
+## Completed This Session (Feb 2026)
+- **Font Size Standardisation:** All reports, prints, and exports
+- **PayID Email Fix:** gmsil.com → gmail.com
+- **Export Package Fix:** TypeError on supporting_evidence dicts
+- **Terms of Service Font Reduction**
+- **Dashboard Overview Cards Enlarged**
+- **Case Page Heading Enlarged**
+- **Native Mobile App Build:** Full Capacitor 7 setup with 11 plugins
+- **Payment Unlock Bug Fix (P0):**
+  - Added `grounds_unlock` to FEATURE_TYPE_ALIASES (legacy data support)
+  - Made grounds endpoint use `canonical_feature_type` for unlock check
+  - Added admin bypass to grounds endpoint (admin can view any case)
+  - Fixed payment query to use case owner's user_id (not admin's)
+  - Added "Refresh Status" button on paywall banner
+  - Added "Check Status" button in PaymentModal after submission
+  - PaymentModal auto-refreshes case data on close
+  - Fixed legacy bad data in DB (normalised non-canonical feature names)
 
 ## Backlog
 - P1: Deploy fixes to production (user must click "Deploy" in Emergent chat)
@@ -90,4 +71,5 @@ npx cap sync
 - PDF export blob fallback for iOS must not be modified
 - Grounds of merit hard cap: max 2 new per sync
 - PayID email must remain djkingy79@gmail.com
-- All native calls must be wrapped in isNativePlatform() checks
+- All native calls wrapped in isNativePlatform() checks
+- FEATURE_TYPE_ALIASES must include grounds_unlock → grounds_of_merit
