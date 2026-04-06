@@ -452,22 +452,22 @@ const AppealStatisticsPage = () => {
               </thead>
               <tbody>
                 {Object.entries(stateStats).map(([key, state]) => {
-                  const stateColorMap = {
-                    blue: "bg-blue-600",
-                    purple: "bg-purple-600",
-                    red: "bg-red-600",
-                    emerald: "bg-emerald-600",
-                    teal: "bg-teal-500",
-                    orange: "bg-orange-500",
-                    indigo: "bg-indigo-600",
+                  const stateColorHex = {
+                    blue: "#2563eb",
+                    purple: "#9333ea",
+                    red: "#dc2626",
+                    emerald: "#059669",
+                    teal: "#14b8a6",
+                    orange: "#f97316",
+                    indigo: "#4f46e5",
                   };
-                  const stateBg = stateColorMap[state.color] || "bg-blue-600";
+                  const bgHex = stateColorHex[state.color] || "#2563eb";
                   return (
                   <tr key={key} className="border-b border-blue-200 hover:bg-blue-50">
                     <td className="p-3 font-bold text-blue-600">{state.name}</td>
                     <td className="p-3 text-center text-blue-600 font-semibold">{state.filings2024}</td>
                     <td className="p-3 text-center">
-                      <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${stateBg}`}>
+                      <span className="px-2 py-1 rounded text-xs font-semibold text-white" style={{ backgroundColor: bgHex }}>
                         {state.successRate}%
                       </span>
                     </td>
