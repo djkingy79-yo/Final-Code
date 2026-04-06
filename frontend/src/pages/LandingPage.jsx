@@ -704,24 +704,24 @@ const LandingPage = () => {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4" data-testid="landing-statistics-row">
             <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
-              <div className="text-3xl font-bold text-blue-600 mb-1">8,700+</div>
-              <div className="text-slate-700 text-sm">Criminal Appeals Filed Annually</div>
+              <div className="text-3xl font-bold text-blue-600 mb-1">1,400+</div>
+              <div className="text-slate-700 text-sm">Criminal Appeals Filed (2024-25)</div>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
-              <div className="text-3xl font-bold text-emerald-600 mb-1">~40%</div>
+              <div className="text-3xl font-bold text-emerald-600 mb-1">~25-35%</div>
               <div className="text-slate-700 text-sm">Appeals Heard Result in Change</div>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
-              <div className="text-3xl font-bold text-blue-600 mb-1">98%</div>
+              <div className="text-3xl font-bold text-blue-600 mb-1">97%</div>
               <div className="text-slate-700 text-sm">Resolved Within 12 Months</div>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-5 text-center shadow-sm">
-              <div className="text-3xl font-bold text-red-600 mb-1">1 in 80</div>
-              <div className="text-slate-700 text-sm">Convicted Australians Appeal</div>
+              <div className="text-3xl font-bold text-red-600 mb-1">515,460</div>
+              <div className="text-slate-700 text-sm">Defendants Finalised (ABS 2023-24)</div>
             </div>
           </div>
           <p className="text-xs text-slate-500 text-center" data-testid="landing-stats-source">
-            Sources: public annual reports and criminal appeal statistics from state courts (figures aggregated nationally).
+            Sources: ABS Criminal Courts Australia 2023-24, NSW Supreme Court Provisional Statistics (Jan 2026), state court annual reports 2024-25.
           </p>
         </div>
       </section>
@@ -1070,7 +1070,7 @@ const LandingPage = () => {
             Appeal Case Manager
           </h3>
           <p className="text-white text-base font-bold mb-1">Created and Designed by Deb King</p>
-          <p className="text-white/80 text-sm font-semibold mb-4">criminallawappealmanager.com.au</p>
+          <p className="text-white/80 text-sm font-semibold mb-4">criminallawappealmanagement.com.au</p>
           <p className="text-white text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.

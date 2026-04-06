@@ -313,8 +313,8 @@ const AppealStatisticsPage = () => {
                 
                 <div className="space-y-3 ml-4">
                   <div>
-                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
+                    <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-xs">
                       <li>Many defendants had <strong>legal aid lawyers</strong> who were overworked, under-resourced, or inexperienced</li>
                       <li>Trial counsel may have <strong>failed to preserve objections</strong> or identify appealable errors during trial</li>
                       <li>Poor legal advice post-conviction: defendants not informed they <em>have</em> grounds for appeal</li>
@@ -323,8 +323,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>2. Lack of Legal Knowledge & Rights Awareness</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
+                    <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>2. Lack of Legal Knowledge & Rights Awareness</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-xs">
                       <li>Most people in prison have <strong>no legal training</strong> and don't understand appeal rights</li>
                       <li>Complex legal system with strict <strong>28-day time limits</strong> in most states</li>
                       <li>Don't know what constitutes "grounds for appeal" (errors of law, unreasonable verdict, fresh evidence, etc.)</li>
@@ -333,8 +333,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>3. Financial Barriers & Resource Constraints</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
+                    <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>3. Financial Barriers & Resource Constraints</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-xs">
                       <li><strong>Cost of appeals:</strong> Private barristers charge $5,000-$50,000+ for a criminal appeal</li>
                       <li><strong>Legal aid limitations:</strong> Strict means tests, limited grants, often only covers summary advice</li>
                       <li>Defendants in custody have <strong>no income</strong> and families already financially devastated</li>
@@ -343,8 +343,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>4. Practical & Psychological Obstacles</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
+                    <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>4. Practical & Psychological Obstacles</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-xs">
                       <li><strong>In custody:</strong> Limited library access, no internet, hard to prepare appeals from prison</li>
                       <li><strong>Mental health & trauma:</strong> Depression, PTSD, hopelessness after conviction</li>
                       <li><strong>Family pressure:</strong> "Just accept it and serve your time" to avoid prolonging pain</li>
@@ -353,8 +353,8 @@ const AppealStatisticsPage = () => {
                   </div>
 
                   <div>
-                    <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>5. Systemic Discouragement</p>
-                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-sm">
+                    <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>5. Systemic Discouragement</p>
+                    <ul className="list-disc marker:text-white ml-6 mt-1 space-y-1 text-xs">
                       <li>Courts and corrections don't actively inform defendants of appeal rights</li>
                       <li>Leave to appeal requirements in some states act as gatekeepers</li>
                       <li>Long delays (10+ months average) discourage appeals, especially for shorter sentences</li>
