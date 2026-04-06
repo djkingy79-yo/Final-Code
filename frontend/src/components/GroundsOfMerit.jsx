@@ -30,6 +30,8 @@ import VerificationBadge from "./VerificationBadge";
 import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
 
+const API = process.env.REACT_APP_BACKEND_URL;
+
 /* DO NOT UNDO — Australian spelling normaliser for ground titles and descriptions.
    Converts American English to Australian English in user-visible text. */
 const auSpelling = (text) => {
@@ -271,6 +273,27 @@ const GroundsOfMerit = ({
   const [detailGround, setDetailGround] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
+  const [trialEligible, setTrialEligible] = useState(false);
+  const [trialPrice, setTrialPrice] = useState(null);
+
+  // Fetch trial eligibility
+  useEffect(() => {
+    if (isUnlocked) return;
+    const fetchTrial = async () => {
+      try {
+        const token = localStorage.getItem("session_token") || localStorage.getItem("token");
+        const res = await fetch(`${API}/api/payments/trial-status`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setTrialEligible(data.is_eligible);
+          setTrialPrice(data.trial_price);
+        }
+      } catch {}
+    };
+    fetchTrial();
+  }, [isUnlocked]);
   /* DO NOT UNDO — Search box state for each ground. Uses object to track per-ground search visibility */
   const [searchOpen, setSearchOpen] = useState({});
   const [searchTerms, setSearchTerms] = useState({});
@@ -646,23 +669,33 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
 
       {/* Paywall Banner when not unlocked */}
       {!isUnlocked && groundsCount > 0 && (
-        <Card className="bg-gradient-to-r from-blue-50 to-orange-50 border-blue-200">
+        <Card className={trialEligible ? "bg-gradient-to-r from-blue-600 to-blue-800 border-blue-500 shadow-xl" : "bg-gradient-to-r from-blue-50 to-orange-50 border-blue-200"}>
           <CardContent className="p-6">
+            {trialEligible && (
+              <div className="mb-3 flex items-center gap-2">
+                <Badge className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider" data-testid="trial-badge">
+                  One-Time Trial Offer
+                </Badge>
+                <span className="text-white/80 text-xs">First-time user exclusive</span>
+              </div>
+            )}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Lock className="w-6 h-6 text-red-600" />
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${trialEligible ? 'bg-white/20' : 'bg-blue-100'}`}>
+                  <Lock className={`w-6 h-6 ${trialEligible ? 'text-yellow-300' : 'text-red-600'}`} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className={`font-semibold text-sm sm:text-base ${trialEligible ? 'text-white' : 'text-slate-900'}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
                     {groundsCount} Grounds of Merit Found!
                   </h3>
-                  <p className="text-slate-600 text-xs sm:text-sm">
-                    Unlock to see full details, evidence, and deep analysis for each ground.
+                  <p className={`text-xs sm:text-sm ${trialEligible ? 'text-white/80' : 'text-slate-600'}`}>
+                    {trialEligible
+                      ? "Try the full deep investigative analysis — see for yourself if it's worth it."
+                      : "Unlock to see full details, evidence, and deep analysis for each ground."}
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2 w-full sm:w-auto">
+              <div className="flex gap-2 w-full sm:w-auto items-center">
                 <Button 
                   onClick={async () => {
                     setCheckingPayment(true);
@@ -675,7 +708,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   }}
                   variant="outline"
                   disabled={checkingPayment}
-                  className="text-blue-700 border-blue-300 hover:bg-blue-50"
+                  className={trialEligible ? "text-white border-white/30 hover:bg-white/10" : "text-blue-700 border-blue-300 hover:bg-blue-50"}
                   data-testid="check-payment-status-btn"
                 >
                   {checkingPayment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 mr-1" />}
@@ -683,11 +716,18 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                 </Button>
                 <Button 
                   onClick={() => setShowPaymentModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className={trialEligible ? "bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold shadow-lg" : "bg-blue-600 hover:bg-blue-700 text-white"}
                   data-testid="unlock-grounds-btn"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
-                  Unlock for ${unlockPrice?.toFixed(2)}
+                  {trialEligible ? (
+                    <span>
+                      <span className="line-through opacity-60 mr-1">${unlockPrice?.toFixed(2)}</span>
+                      ${trialPrice?.toFixed(2)} Trial
+                    </span>
+                  ) : (
+                    `Unlock for $${unlockPrice?.toFixed(2)}`
+                  )}
                 </Button>
               </div>
             </div>
@@ -1241,7 +1281,8 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
         onClose={() => setShowPaymentModal(false)}
         caseId={caseId}
         featureType="grounds_of_merit"
-        price={unlockPrice}
+        price={trialEligible ? trialPrice : unlockPrice}
+        useTrial={trialEligible}
         onPaymentSuccess={onPaymentSuccess}
       />
     </div>

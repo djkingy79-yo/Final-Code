@@ -60,12 +60,20 @@ const PAYID_INFO = {
   bank: "NAB"
 };
 
+// Regular prices for strikethrough display
+const FEATURE_PRICES_DISPLAY = {
+  grounds_of_merit: 99,
+  full_report: 150,
+  extensive_report: 200,
+};
+
 export default function PaymentModal({ 
   isOpen, 
   onClose, 
   caseId, 
   featureType, 
   price,
+  useTrial,
   onPaymentSuccess 
 }) {
   const [loading, setLoading] = useState(false);
@@ -107,7 +115,8 @@ export default function PaymentModal({
     try {
       const response = await axios.post(`${API}/payments/payid/create-reference`, {
         feature_type: featureType,
-        case_id: caseId
+        case_id: caseId,
+        use_trial: !!useTrial
       });
       setPayidReference(response.data.reference);
       setPayidDetails(response.data);
@@ -186,11 +195,27 @@ export default function PaymentModal({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-4 text-center border border-slate-200">
-            <p className="text-sm text-slate-600 mb-1">One-time payment</p>
-            <p className="text-3xl sm:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
-              ${price?.toFixed(2)} <span className="text-base font-normal text-slate-600">AUD</span>
-            </p>
+          <div className={`rounded-xl p-4 text-center border ${useTrial ? 'bg-gradient-to-r from-blue-600 to-blue-800 border-blue-500' : 'bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200'}`}>
+            {useTrial && (
+              <p className="text-xs font-bold text-yellow-300 uppercase tracking-wider mb-1" data-testid="trial-label">
+                One-Time Trial Offer
+              </p>
+            )}
+            <p className={`text-sm mb-1 ${useTrial ? 'text-white/80' : 'text-slate-600'}`}>One-time payment</p>
+            {useTrial ? (
+              <div>
+                <span className="text-lg line-through text-white/50 mr-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  ${FEATURE_PRICES_DISPLAY[featureType]?.toFixed(2) || "99.00"}
+                </span>
+                <span className="text-3xl sm:text-4xl font-bold text-yellow-300" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="trial-price">
+                  ${price?.toFixed(2)} <span className="text-base font-normal text-white/80">AUD</span>
+                </span>
+              </div>
+            ) : (
+              <p className="text-3xl sm:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                ${price?.toFixed(2)} <span className="text-base font-normal text-slate-600">AUD</span>
+              </p>
+            )}
           </div>
 
           <details className="group">

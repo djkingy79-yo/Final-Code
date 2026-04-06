@@ -28,6 +28,27 @@ def is_admin_user(email: str) -> bool:
 
 router = APIRouter(prefix="/api", tags=["payments"])
 
+TRIAL_PRICE = 5.00
+TRIAL_FEATURE = "grounds_of_merit"
+
+
+@router.get("/payments/trial-status")
+async def get_trial_status(request: Request):
+    """Check if user is eligible for the one-time $5 trial on Grounds of Merit."""
+    user = await get_current_user(request)
+    completed_count = await db.payments.count_documents({
+        "user_id": user.user_id,
+        "status": "completed"
+    })
+    is_eligible = completed_count == 0
+    return {
+        "is_eligible": is_eligible,
+        "trial_price": TRIAL_PRICE if is_eligible else None,
+        "trial_feature": TRIAL_FEATURE,
+        "regular_price": FEATURE_PRICES.get(TRIAL_FEATURE, {}).get("price", 99),
+        "message": "One-time trial: Unlock Grounds of Merit for just $5.00 AUD!" if is_eligible else None,
+    }
+
 
 @router.get("/payments/prices")
 async def get_feature_prices():
@@ -77,16 +98,30 @@ async def create_payid_reference(request: Request):
     body = await request.json()
     feature_type = body.get("feature_type")
     case_id = body.get("case_id")
+    use_trial = body.get("use_trial", False)
     canonical_type = canonical_feature_type(feature_type)
     if not feature_type or not case_id:
         raise HTTPException(status_code=400, detail="Missing feature_type or case_id")
+    
+    # Check trial eligibility
     price = FEATURE_PRICES.get(canonical_type, {}).get("price", 0)
+    is_trial = False
+    if use_trial and canonical_type == TRIAL_FEATURE:
+        completed_count = await db.payments.count_documents({
+            "user_id": user.user_id,
+            "status": "completed"
+        })
+        if completed_count == 0:
+            price = TRIAL_PRICE
+            is_trial = True
+    
     reference = f"ACM-{uuid.uuid4().hex[:8].upper()}"
     payment_record = {
         "payment_id": f"pay_{uuid.uuid4().hex[:12]}",
         "user_id": user.user_id, "case_id": case_id,
         "feature_type": canonical_type, "amount": price,
         "method": "payid", "reference": reference, "status": "pending",
+        "is_trial": is_trial,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.payments.insert_one(payment_record)
@@ -94,7 +129,8 @@ async def create_payid_reference(request: Request):
     return {
         "reference": reference, "amount": price,
         "payid": "djkingy79@gmail.com", "payid_name": "Appeal Case Manager",
-        "instructions": f"Transfer ${price:.2f} AUD to the PayID above. Use reference: {reference}"
+        "instructions": f"Transfer ${price:.2f} AUD to the PayID above. Use reference: {reference}",
+        "is_trial": is_trial,
     }
 
 
