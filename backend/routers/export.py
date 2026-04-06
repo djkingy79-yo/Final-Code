@@ -166,7 +166,7 @@ Analysis:
 {ground.get('analysis', 'No analysis available')}
 
 Supporting Evidence:
-{chr(10).join(['- ' + e for e in ground.get('supporting_evidence', [])] or ['None listed'])}
+{chr(10).join(['- ' + (e if isinstance(e, str) else e.get('text', str(e))) for e in ground.get('supporting_evidence', [])] or ['None listed'])}
 
 {'='*50}
 

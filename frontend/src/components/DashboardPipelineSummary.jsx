@@ -34,21 +34,21 @@ export default function DashboardPipelineSummary() {
   if (!summary && !loading) return null;
 
   return (
-    <div className="rounded border p-4 mb-4" data-testid="dashboard-pipeline-summary">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <div className="font-semibold text-sm">Pipeline Portfolio Summary</div>
+    <div className="rounded-xl border-2 border-slate-200 p-5 mb-4 bg-white shadow-sm" data-testid="dashboard-pipeline-summary">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="font-bold text-base text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Pipeline Portfolio Summary</div>
         <button
           type="button"
           onClick={loadSummary}
           disabled={loading}
-          className="px-2 py-1 rounded border text-xs font-medium"
+          className="px-3 py-1.5 rounded-lg border text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           data-testid="dashboard-pipeline-refresh-btn"
         >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
-      <div className="text-xs opacity-80 mb-3">
+      <div className="text-xs text-slate-600 mb-4">
         Portfolio-level view of staged processing across all cases.
       </div>
 
@@ -62,38 +62,38 @@ export default function DashboardPipelineSummary() {
 
       {summary ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
-            <div className="rounded border p-3" data-testid="dashboard-pipeline-total">
-              <div className="text-xs opacity-70">Total Cases</div>
-              <div className="text-lg font-semibold">{summary.total_cases ?? 0}</div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="rounded-xl border-2 border-blue-200 bg-blue-50 p-4" data-testid="dashboard-pipeline-total">
+              <div className="text-xs font-medium text-blue-600">Total Cases</div>
+              <div className="text-2xl font-bold text-slate-900">{summary.total_cases ?? 0}</div>
             </div>
 
-            <div className="rounded border p-3" data-testid="dashboard-pipeline-extracted">
-              <div className="text-xs opacity-70">With Case Extract</div>
-              <div className="text-lg font-semibold">{summary.cases_with_case_extract ?? 0}</div>
-              <div className="text-xs opacity-70">{pct(summary.cases_with_case_extract ?? 0)}</div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4" data-testid="dashboard-pipeline-extracted">
+              <div className="text-xs font-medium text-slate-600">With Case Extract</div>
+              <div className="text-2xl font-bold text-slate-900">{summary.cases_with_case_extract ?? 0}</div>
+              <div className="text-xs font-medium text-slate-500">{pct(summary.cases_with_case_extract ?? 0)}</div>
             </div>
 
-            <div className="rounded border p-3" data-testid="dashboard-pipeline-classified">
-              <div className="text-xs opacity-70">With Classified Issues</div>
-              <div className="text-lg font-semibold">{summary.cases_with_classified_issues ?? 0}</div>
-              <div className="text-xs opacity-70">{pct(summary.cases_with_classified_issues ?? 0)}</div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4" data-testid="dashboard-pipeline-classified">
+              <div className="text-xs font-medium text-slate-600">With Classified Issues</div>
+              <div className="text-2xl font-bold text-slate-900">{summary.cases_with_classified_issues ?? 0}</div>
+              <div className="text-xs font-medium text-slate-500">{pct(summary.cases_with_classified_issues ?? 0)}</div>
             </div>
 
-            <div className="rounded border p-3" data-testid="dashboard-pipeline-verified">
-              <div className="text-xs opacity-70">With Verified Issues</div>
-              <div className="text-lg font-semibold">{summary.cases_with_verified_issues ?? 0}</div>
-              <div className="text-xs opacity-70">{pct(summary.cases_with_verified_issues ?? 0)}</div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4" data-testid="dashboard-pipeline-verified">
+              <div className="text-xs font-medium text-slate-600">With Verified Issues</div>
+              <div className="text-2xl font-bold text-slate-900">{summary.cases_with_verified_issues ?? 0}</div>
+              <div className="text-xs font-medium text-slate-500">{pct(summary.cases_with_verified_issues ?? 0)}</div>
             </div>
 
-            <div className="rounded border p-3" data-testid="dashboard-pipeline-reports">
-              <div className="text-xs opacity-70">With Pipeline Reports</div>
-              <div className="text-lg font-semibold">{summary.cases_with_pipeline_reports ?? 0}</div>
-              <div className="text-xs opacity-70">{pct(summary.cases_with_pipeline_reports ?? 0)}</div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4" data-testid="dashboard-pipeline-reports">
+              <div className="text-xs font-medium text-slate-600">With Pipeline Reports</div>
+              <div className="text-2xl font-bold text-slate-900">{summary.cases_with_pipeline_reports ?? 0}</div>
+              <div className="text-xs font-medium text-slate-500">{pct(summary.cases_with_pipeline_reports ?? 0)}</div>
             </div>
           </div>
 
-          <div className="mt-4 text-xs opacity-80">
+          <div className="mt-4 text-xs text-slate-500">
             These figures reflect staged processing coverage across the user's portfolio and do not indicate legal merit or likely appeal outcome.
           </div>
         </>

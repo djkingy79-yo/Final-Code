@@ -979,7 +979,7 @@ const CaseDetail = ({ user }) => {
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4">
             <h1 
-              className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight"
+              className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight"
               style={{ fontFamily: 'Crimson Pro, serif' }}
               data-testid="case-title"
             >
@@ -996,23 +996,23 @@ const CaseDetail = ({ user }) => {
             </Button>
           </div>
           {/* DO_NOT_UNDO — Case Identity Card. Must always show defendant, offence, state, sentence prominently with colour. */}
-          <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-4" data-testid="case-identity-card">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-5" data-testid="case-identity-card">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Defendant</div>
-                <div className="text-base sm:text-lg font-bold text-slate-900">{caseData?.defendant_name || "—"}</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900">{caseData?.defendant_name || "—"}</div>
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Offence</div>
-                <div className="text-base sm:text-lg font-bold text-slate-900 capitalize">{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900 capitalize">{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</div>
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">State / Jurisdiction</div>
-                <div className="text-base sm:text-lg font-bold text-slate-900 uppercase">{caseData?.state || "—"}</div>
+                <div className="text-lg sm:text-xl font-bold text-slate-900 uppercase">{caseData?.state || "—"}</div>
               </div>
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Sentence</div>
-                <div className="text-sm font-bold text-slate-900 break-words">{caseData?.sentence || "—"}</div>
+                <div className="text-base font-bold text-slate-900 break-words">{caseData?.sentence || "—"}</div>
               </div>
             </div>
             {caseData?.court && (

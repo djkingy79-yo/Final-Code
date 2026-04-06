@@ -375,63 +375,63 @@ const Dashboard = ({ user }) => {
           {/* Overview Section - Stats + Info Combined */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-red-600" />
-              <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <TrendingUp className="w-6 h-6 text-red-600" />
+              <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
                 Overview
               </h2>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               {/* Stats Cards - 3 columns on large */}
-              <div className="card-elevated p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <FolderOpen className="w-5 h-5 text-blue-600" />
+              <div className="card-elevated p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <FolderOpen className="w-7 h-7 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-slate-900">{cases.length}</p>
-                    <p className="text-xs text-slate-700">Total Cases</p>
+                    <p className="text-3xl font-bold text-slate-900">{cases.length}</p>
+                    <p className="text-sm font-medium text-slate-700">Total Cases</p>
                   </div>
                 </div>
               </div>
               
-              <div className="card-elevated p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-red-600" />
+              <div className="card-elevated p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <FileText className="w-7 h-7 text-red-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-slate-900">
+                    <p className="text-3xl font-bold text-slate-900">
                       {cases.reduce((sum, c) => sum + (c.document_count || 0), 0)}
                     </p>
-                    <p className="text-xs text-slate-700">Documents</p>
+                    <p className="text-sm font-medium text-slate-700">Documents</p>
                   </div>
                 </div>
               </div>
               
-              <div className="card-elevated p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-emerald-600" />
+              <div className="card-elevated p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-emerald-100 flex items-center justify-center">
+                    <Clock className="w-7 h-7 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-slate-900">
+                    <p className="text-3xl font-bold text-slate-900">
                       {cases.reduce((sum, c) => sum + (c.event_count || 0), 0)}
                     </p>
-                    <p className="text-xs text-slate-700">Timeline Events</p>
+                    <p className="text-sm font-medium text-slate-700">Timeline Events</p>
                   </div>
                 </div>
               </div>
               
               {/* Info Card - Combined */}
-              <div className="card-elevated p-5 lg:row-span-1">
-                <div className="flex items-start gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-5 h-5 text-purple-600" />
+              <div className="card-elevated p-6 lg:row-span-1">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-7 h-7 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-900 mb-1">AI-Powered Analysis</p>
-                    <p className="text-xs text-slate-700 leading-relaxed">
+                    <p className="text-base font-semibold text-slate-900 mb-1">AI-Powered Analysis</p>
+                    <p className="text-sm text-slate-700 leading-relaxed">
                       Covers all criminal offences across Australian courts
                     </p>
                   </div>

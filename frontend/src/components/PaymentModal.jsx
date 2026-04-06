@@ -55,7 +55,7 @@ const FEATURE_INFO = {
 
 // DO_NOT_UNDO — PayID is the ONLY payment method. Stripe and PayPal permanently removed.
 const PAYID_INFO = {
-  payid: "djkingy79@gmsil.com",
+  payid: "djkingy79@gmail.com",
   account_name: "Deb King - Appeal Case Manager",
   bank: "NAB"
 };

@@ -93,7 +93,7 @@ async def create_payid_reference(request: Request):
     payment_record.pop("_id", None)
     return {
         "reference": reference, "amount": price,
-        "payid": "djkingy79@gmsil.com", "payid_name": "Appeal Case Manager",
+        "payid": "djkingy79@gmail.com", "payid_name": "Appeal Case Manager",
         "instructions": f"Transfer ${price:.2f} AUD to the PayID above. Use reference: {reference}"
     }
 
