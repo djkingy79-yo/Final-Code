@@ -394,12 +394,12 @@ const HowToUsePage = () => {
               Export and Share
             </h3>
             <p className="text-slate-700 mb-3" style={{fontSize:'11px', lineHeight:'1.4'}}>Export your case data for use outside the app — share with your lawyer, barrister, or Legal Aid.</p>
-            <ul className="space-y-0.5 text-slate-700 mb-3" style={{fontSize:'10px', lineHeight:'1.4'}}>
-              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Quick Export' to download everything in one package</li>
-              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Downloads all documents and reports together</li>
-              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Timeline and summary as editable DOCX files</li>
-              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Bundle Documents' to merge PDFs into one file</li>
-              <li className="flex items-start gap-1.5"><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Share with lawyers, barristers, or Legal Aid</li>
+            <ul className="space-y-0.5 text-slate-700 mb-3">
+              <li className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Quick Export' to download everything in one package</li>
+              <li className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Downloads all documents and reports together</li>
+              <li className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Timeline and summary as editable DOCX files</li>
+              <li className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Use 'Bundle Documents' to merge PDFs into one file</li>
+              <li className="flex items-start gap-1.5" style={{fontSize:'10px', lineHeight:'1.4'}}><ChevronRight className="w-2.5 h-2.5 shrink-0 mt-0.5 text-blue-600" /> Share with lawyers, barristers, or Legal Aid</li>
             </ul>
             <div className="p-2.5 bg-pink-50 border border-pink-200 rounded-xl text-pink-800" style={{fontSize:'10px', lineHeight:'1.4'}}>
               <Lightbulb className="w-3 h-3 inline mr-1" />
