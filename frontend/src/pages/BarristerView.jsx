@@ -438,7 +438,7 @@ export default function BarristerView() {
   <style>
     @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.65; font-size: 11pt; background: #fff; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.65; font-size: 9pt; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
@@ -470,18 +470,18 @@ export default function BarristerView() {
     .section-title { font-family: 'Crimson Pro', serif; font-size: 13px; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #0f766e; margin: 1.2rem 0 0.6rem; }
-    .section-body h2 { font-size: 12pt; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
-    .section-body h3 { font-size: 11pt; color: #1e40af; }
-    .section-body h4 { font-size: 10.5pt; color: #334155; }
-    .section-body p { margin-bottom: 0.7rem; }
+    .section-body h2 { font-size: 11pt; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
+    .section-body h3 { font-size: 10pt; color: #1e40af; }
+    .section-body h4 { font-size: 9.5pt; color: #334155; }
+    .section-body p { margin-bottom: 0.7rem; font-size: 9pt; }
     .section-body strong { color: #0f172a; font-weight: 700; }
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
-    .section-body li { margin-bottom: 0.4rem; }
+    .section-body li { margin-bottom: 0.4rem; font-size: 9pt; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt !important; table-layout: fixed; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 9pt !important; table-layout: fixed; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 9pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 9pt !important; }
     .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
     .disclaimer-bold { background: #dc2626; border: 3px solid #b91c1c; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .disclaimer-bold .disc-icon { color: #facc15; font-size: 28px; flex-shrink: 0; }
@@ -632,27 +632,8 @@ export default function BarristerView() {
   };
 
   const handleExportDOCX = async () => {
-    try {
-      const response = await axios.get(
-        `${API}/cases/${caseId}/reports/barrister-view/export-docx`,
-        { responseType: "blob" }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      }));
-      const link = document.createElement("a");
-      link.href = url;
-      const safeTitle = (caseData?.defendant_name || "Barrister_View").replace(/[^a-zA-Z0-9 _-]/g, "").substring(0, 30).trim();
-      link.setAttribute("download", `${safeTitle}_barrister_view.docx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      toast.success("Word document downloaded");
-    } catch (err) {
-      console.error("DOCX export error:", err);
-      toast.error("Failed to export Word document");
-    }
+    // Use document-preview route for iOS compatibility (blob URLs fail on Safari)
+    openBarristerPreview("word");
   };
 
   const handleDownloadAcceptancePack = async () => {

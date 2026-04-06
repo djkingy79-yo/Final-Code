@@ -459,13 +459,8 @@ const Timeline = ({
             size="sm"
             onClick={() => {
               const html = buildTimelinePrintHtml();
-              const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body>${html}</body></html>`], {type:'application/msword'});
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'Timeline_Export.doc';
-              a.click();
-              window.URL.revokeObjectURL(url);
+              localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Timeline — Word View", mode: "word", returnTo: window.location.pathname, createdAt: Date.now() }));
+              window.location.assign(`${window.location.origin}/document-preview?mode=word`);
             }}
             data-testid="export-timeline-word"
           >

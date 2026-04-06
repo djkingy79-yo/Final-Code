@@ -526,12 +526,34 @@ const CaseDetail = ({ user }) => {
       ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
     const html = buildTabPreviewHtml(contentHtml, tabLabel, noticeHtml);
+
+    // Always use document-preview route for iOS compatibility
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      localStorage.setItem("document-preview-payload", JSON.stringify({
+        html,
+        mode,
+        title: `${tabLabel} — ${mode === "print" ? "Print" : mode === "word" ? "Word" : "PDF"} View`,
+        source: "tab-export",
+        returnTo: `/cases/${caseId}`,
+        createdAt: Date.now(),
+      }));
+      window.location.assign(`${window.location.origin}/document-preview?mode=${mode}`);
+      return;
+    }
+
     const previewWindow = window.open("", "_blank", "width=1200,height=800");
     if (!previewWindow) {
-      const blob = new Blob([html], { type: "text/html" });
-      const url = window.URL.createObjectURL(blob);
-      window.location.href = url;
-      toast.success("Preview opened — use Print / Save as PDF to download.");
+      // Fallback: use document-preview route instead of blob
+      localStorage.setItem("document-preview-payload", JSON.stringify({
+        html,
+        mode,
+        title: `${tabLabel} — ${mode === "print" ? "Print" : mode === "word" ? "Word" : "PDF"} View`,
+        source: "tab-export",
+        returnTo: `/cases/${caseId}`,
+        createdAt: Date.now(),
+      }));
+      window.location.assign(`${window.location.origin}/document-preview?mode=${mode}`);
       return;
     }
     previewWindow.document.open();
@@ -962,24 +984,23 @@ const CaseDetail = ({ user }) => {
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildPrintAllHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
-                window.open("/document-preview?mode=print", "_blank");
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle", mode: "print", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                window.location.assign(`${window.location.origin}/document-preview?mode=print`);
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-print-btn">
                 <Printer className="w-4 h-4 mr-1" />Print All
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildPrintAllHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle" }));
-                window.open("/document-preview?mode=pdf", "_blank");
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle", mode: "pdf", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                window.location.assign(`${window.location.origin}/document-preview?mode=pdf`);
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-pdf-btn">
                 <Download className="w-4 h-4 mr-1" />PDF All
               </Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
                   const html = buildPrintAllHtml();
-                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View" }));
-                  window.open("/document-preview?mode=pdf", "_blank");
-                  toast.success("Word preview opened — use Print / Save as PDF");
+                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View", mode: "word", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
                 } catch { toast.error("Failed to open Word preview"); }
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
@@ -1367,24 +1388,20 @@ const CaseDetail = ({ user }) => {
             <div className="flex items-center gap-2 flex-wrap" data-testid="progress-export-bar">
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildProgressHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
-                window.open("/document-preview?mode=print", "_blank");
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export", mode: "print", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                window.location.assign(`${window.location.origin}/document-preview?mode=print`);
               }} className="text-slate-700" data-testid="progress-print-btn"><Printer className="w-4 h-4 mr-1" />Print</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 const html = buildProgressHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export" }));
-                window.open("/document-preview?mode=pdf", "_blank");
+                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Progress Export", mode: "pdf", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                window.location.assign(`${window.location.origin}/document-preview?mode=pdf`);
               }} className="text-slate-700" data-testid="progress-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
-                  toast.info("Generating Word document...");
+                  toast.info("Opening Word view...");
                   const html = buildProgressHtml();
-                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
-                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a"); a.href = url; a.download = "progress.doc"; document.body.appendChild(a); a.click(); a.remove();
-                  setTimeout(() => URL.revokeObjectURL(url), 5000);
-                  toast.success("Word document ready!");
+                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, mode: "word", title: "Progress — Word View", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>

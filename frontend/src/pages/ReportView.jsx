@@ -399,13 +399,14 @@ const parseAnalysisSections = (analysis = "") => {
 
   const pushSection = () => {
     const content = cleanAIContent(currentLines.join("\n").trim());
-    if (!content || content.length < 80) return;
+    if (!content || content.length < 20) return;
     sections.push({ id: `report-section-${sections.length + 1}`, title: currentTitle, content });
   };
 
   lines.forEach((line) => {
     const trimmed = line.trim();
-    const mainSectionHeader = trimmed.match(/^##\s+(\d+\.\s+.+)$/);
+    // Match both numbered (## 1. Title) and unnumbered (## Title) section headers
+    const mainSectionHeader = trimmed.match(/^##\s+(\d+\.\s+.+)$/) || trimmed.match(/^##\s+([A-Z][A-Z\s\-&+:]+)$/);
     if (mainSectionHeader) {
       pushSection();
       currentTitle = cleanSectionTitle(mainSectionHeader[1]);
@@ -732,7 +733,7 @@ const ReportView = () => {
   <style>
     @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.65; font-size: 11pt; background: #fff; }
+    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.65; font-size: 9pt; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
@@ -768,18 +769,18 @@ const ReportView = () => {
     .section-title { font-family: 'Crimson Pro', serif; font-size: 13px; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #1e3a8a; margin: 0.8rem 0 0.4rem; }
-    .section-body h2 { font-size: 12pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
-    .section-body h3 { font-size: 11pt; color: #1e40af; }
-    .section-body h4 { font-size: 10.5pt; color: #334155; }
-    .section-body p { margin-bottom: 0.5rem; }
+    .section-body h2 { font-size: 11pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
+    .section-body h3 { font-size: 10pt; color: #1e40af; }
+    .section-body h4 { font-size: 9.5pt; color: #334155; }
+    .section-body p { margin-bottom: 0.5rem; font-size: 9pt; }
     .section-body strong { color: #0f172a; font-weight: 700; }
     .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
-    .section-body li { margin-bottom: 0.4rem; }
+    .section-body li { margin-bottom: 0.4rem; font-size: 9pt; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt !important; table-layout: fixed; font-family: 'Manrope', 'Arial', sans-serif !important; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; font-family: 'Manrope', 'Arial', sans-serif !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; font-family: 'Manrope', 'Arial', sans-serif !important; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 9pt !important; table-layout: fixed; font-family: 'Manrope', 'Arial', sans-serif !important; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 9pt !important; font-family: 'Manrope', 'Arial', sans-serif !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 9pt !important; font-family: 'Manrope', 'Arial', sans-serif !important; }
     .section-body blockquote { border-left: 4px solid #1e3a8a; padding: 10px 14px; margin: 0.8rem 0; background: #eff6ff; color: #1e3a8a; }
     .disclaimer { padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; gap: 10px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
@@ -947,27 +948,8 @@ const ReportView = () => {
   };
 
   const handleExportDOCX = async () => {
-    try {
-      const response = await axios.get(
-        `${API}/cases/${caseId}/reports/${reportId}/export-docx`,
-        { responseType: "blob" }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      }));
-      const link = document.createElement("a");
-      link.href = url;
-      const safeTitle = (caseData?.title || "Report").replace(/[^a-zA-Z0-9 _-]/g, "").substring(0, 30).trim();
-      link.setAttribute("download", `${safeTitle}_${report?.report_type || "report"}.docx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      toast.success("Word document downloaded");
-    } catch (err) {
-      console.error("DOCX export error:", err);
-      toast.error("Failed to export Word document");
-    }
+    // Use document-preview route for iOS compatibility (blob URLs fail on Safari)
+    openReportPreview("word");
   };
 
   const formatDate = (dateStr) => {

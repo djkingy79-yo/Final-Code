@@ -475,24 +475,27 @@ const GroundsOfMerit = ({
   <title>Grounds of Merit Export</title>
   <style>
     @page { size: A4; margin: 12mm; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 11px; }
     .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; }
-    .grounds-export-brand { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+    .grounds-export-brand { text-align: center; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 11px; margin: 0 0 8px; }
-    .grounds-export-header h1 { margin: 0 0 8px; font-size: 18px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 12px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10px; margin: 0 0 8px; }
+    .grounds-export-header h1 { margin: 0 0 8px; font-size: 16px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 10px; }
     .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
-    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 15px; }
+    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 14px; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 14px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
-    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 13px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 9px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 11px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 12px; font-weight: 700; }
+    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 11px; }
     .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 18px; background: #dc2626; border: 3px solid #b91c1c; padding: 14px 18px; font-weight: 700; line-height: 1.45; font-size: 12px; color: #ffffff; border-radius: 8px; display: flex; gap: 12px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.6; margin: 0 0 8px; font-size: 14px; }
+    .grounds-export-disclaimer { margin-top: 18px; background: #dc2626; border: 3px solid #b91c1c; padding: 14px 18px; font-weight: 700; line-height: 1.45; font-size: 10px; color: #ffffff; border-radius: 8px; display: flex; gap: 12px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.6; margin: 0 0 8px; font-size: 11px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
+    .legal-report h2 { font-size: 13px; }
+    .legal-report h3 { font-size: 12px; }
+    .legal-report h4 { font-size: 11px; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
     .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 5px 6px; vertical-align: top; }
@@ -541,15 +544,20 @@ const GroundsOfMerit = ({
 
   const exportGroundsWord = () => {
     const html = buildGroundsPreviewHtml();
-    const blob = new Blob([html], { type: "application/msword" });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `grounds_of_merit_${caseId}.doc`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+    // Use document-preview route for iOS compatibility (blob URLs fail on Safari)
+    localStorage.setItem(
+      "document-preview-payload",
+      JSON.stringify({
+        html,
+        mode: "word",
+        title: "Grounds of Merit — Word View",
+        source: "grounds",
+        returnTo: `/cases/${caseId}`,
+        createdAt: Date.now(),
+      })
+    );
+    const previewUrl = `${window.location.origin}/document-preview?mode=word`;
+    window.location.assign(previewUrl);
   };
 
   const buildSingleGroundHtml = (ground) => {

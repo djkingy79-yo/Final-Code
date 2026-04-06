@@ -26,7 +26,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Manrope', sans-serif; font-size: 12px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; }
+  body { font-family: 'Manrope', sans-serif; font-size: 10px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; }
   @page { size: A4; margin: 14mm 14mm 22mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
@@ -37,19 +37,19 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-size: 11px; }
   .export-meta-value { font-weight: 600; color: #0f172a; }
   .export-body { padding: 24px 32px; }
-  .export-body h2 { font-family: 'Crimson Pro', serif; font-size: 14px; font-weight: 700; color: #0f172a; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid ${accentColor}; }
-  .export-body h3 { font-family: 'Crimson Pro', serif; font-size: 13px; font-weight: 600; color: #1e293b; margin: 18px 0 8px; }
+  .export-body h2 { font-family: 'Crimson Pro', serif; font-size: 12px; font-weight: 700; color: #0f172a; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid ${accentColor}; }
+  .export-body h3 { font-family: 'Crimson Pro', serif; font-size: 11px; font-weight: 600; color: #1e293b; margin: 18px 0 8px; }
   .export-body p { margin-bottom: 10px; }
   .export-body ul, .export-body ol { margin: 8px 0 12px 20px; }
   .export-body li { margin-bottom: 4px; }
-  .export-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .export-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10px; }
   .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; }
   .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
   .export-body .note-card { background: #2563eb; border: 1px solid #1d4ed8; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .export-body .note-title { font-weight: 700; font-size: 14px; color: #ffffff; margin-bottom: 4px; }
-  .export-body .note-date { font-size: 10px; color: #bfdbfe; margin-bottom: 8px; }
-  .export-body .note-content { font-size: 14px; color: #ffffff; white-space: pre-wrap; font-weight: 700; }
+  .export-body .note-title { font-weight: 700; font-size: 12px; color: #ffffff; margin-bottom: 4px; }
+  .export-body .note-date { font-size: 9px; color: #bfdbfe; margin-bottom: 8px; }
+  .export-body .note-content { font-size: 11px; color: #ffffff; white-space: pre-wrap; font-weight: 700; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
@@ -80,14 +80,14 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     .export-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   }
   @media (max-width: 768px) {
-    body { font-size: 13px; }
+    body { font-size: 10px; }
     .export-header { padding: 18px 16px; }
     .export-header h1 { font-size: 22px; }
     .export-meta { padding: 12px 16px; gap: 10px; }
     .export-body { padding: 16px; }
-    .export-body h2 { font-size: 17px; }
-    .export-body h3 { font-size: 15px; }
-    .export-body table { font-size: 10px; }
+    .export-body h2 { font-size: 14px; }
+    .export-body h3 { font-size: 12px; }
+    .export-body table { font-size: 9px; }
     .export-body th, .export-body td { padding: 5px 6px; }
     .disclaimer { margin: 12px 16px; padding: 12px 14px; }
     .branding { margin: 12px 16px; }
