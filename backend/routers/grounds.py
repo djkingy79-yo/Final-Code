@@ -18,6 +18,7 @@ from models import (
     GroundOfMeritUpdate,
     FEATURE_PRICES,
     feature_type_variants,
+    canonical_feature_type,
     EvidenceItem,
     LawSection,
     SimilarCase,
@@ -380,7 +381,12 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
 async def get_grounds_of_merit(case_id: str, request: Request):
     """Get all grounds of merit for a case - requires payment to see details"""
     user = await get_current_user(request)
-    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
+    
+    # Admin can view any case's grounds
+    if is_admin_user(user.email):
+        case = await db.cases.find_one({"case_id": case_id})
+    else:
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
@@ -394,14 +400,21 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     # Sort: strong first, then moderate, then weak
     grounds.sort(key=lambda g: (STRENGTH_ORDER.get(g.get("strength", "unknown"), 3), g.get("title", "")))
 
+    # For payment lookup, use the case owner's user_id (not admin's)
+    case_owner_id = case.get("user_id", user.user_id)
+    
     payment = await db.payments.find_one({
         "case_id": case_id,
-        "user_id": user.user_id,
+        "user_id": case_owner_id,
         "feature_type": {"$in": feature_type_variants("grounds_of_merit")},
         "status": "completed"
     })
 
-    is_unlocked = payment is not None or "grounds_of_merit" in (case.get("unlocked_features") or []) or is_admin_user(user.email)
+    is_unlocked = (
+        payment is not None 
+        or any(canonical_feature_type(f) == "grounds_of_merit" for f in (case.get("unlocked_features") or []))
+        or is_admin_user(user.email)
+    )
 
     if is_unlocked:
         # Retroactively score any grounds missing legitimacy_scores

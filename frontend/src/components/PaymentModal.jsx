@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { 
   Lock, Check, Loader2, Building2, Copy, CheckCircle,
-  AlertCircle, X, Smartphone
+  AlertCircle, X, Smartphone, Search
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -73,6 +73,7 @@ export default function PaymentModal({
   const [payidDetails, setPayidDetails] = useState(null);
   const [verifying, setVerifying] = useState(false);
   const [copied, setCopied] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const featureInfo = FEATURE_INFO[featureType] || { 
     title: "Premium Feature", 
@@ -86,6 +87,7 @@ export default function PaymentModal({
       setPayidDetails(null);
       setVerifying(false);
       setCopied("");
+      setSubmitted(false);
     }
   }, [isOpen]);
 
@@ -130,6 +132,7 @@ export default function PaymentModal({
         onPaymentSuccess?.();
         onClose();
       } else if (response.data.status === "submitted_for_review" || response.data.status === "pending_verification") {
+        setSubmitted(true);
         toast.success(response.data.message || "Payment submitted! The admin has been notified and will confirm shortly.");
       } else {
         toast.info(response.data.message);
@@ -141,8 +144,36 @@ export default function PaymentModal({
     }
   };
 
+  const handleCheckStatus = async () => {
+    setVerifying(true);
+    try {
+      const response = await axios.post(`${API}/payments/payid/verify`, {
+        reference: payidReference,
+        case_id: caseId,
+        feature_type: featureType
+      });
+      if (response.data.status === "already_verified") {
+        toast.success("Payment confirmed! Feature unlocked.");
+        onPaymentSuccess?.();
+        onClose();
+      } else {
+        toast.info("Payment is still awaiting admin confirmation. You will receive an email once confirmed.");
+      }
+    } catch (error) {
+      toast.error("Unable to check status. Please try again.");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleClose = () => {
+    // Always re-fetch case data when closing the modal to pick up any status changes
+    onPaymentSuccess?.();
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6" data-testid="payment-modal">
         <DialogHeader className="space-y-2">
           <DialogTitle className="flex items-center gap-2 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -296,26 +327,59 @@ export default function PaymentModal({
               </div>
 
               <div className="space-y-3 pt-1">
-                <Button
-                  onClick={handlePayIDVerify}
-                  disabled={verifying}
-                  className="w-full bg-blue-700 hover:bg-blue-600 text-white py-6 rounded-xl min-h-[56px] text-base"
-                  data-testid="payid-verify-btn"
-                >
-                  {verifying ? (
-                    <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
-                  ) : (
-                    <><CheckCircle className="w-5 h-5 mr-2" />Payment Received Refresh</>
-                  )}
-                </Button>
+                {submitted ? (
+                  <>
+                    <div className="bg-emerald-50 border-2 border-emerald-300 rounded-xl p-4 text-center">
+                      <CheckCircle className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                      <p className="font-semibold text-emerald-800 text-sm mb-1">Payment Submitted for Review</p>
+                      <p className="text-xs text-emerald-700">
+                        The admin has been notified. Once confirmed, click the button below or refresh this page to unlock your content.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={handleCheckStatus}
+                      disabled={verifying}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl min-h-[56px] text-base"
+                      data-testid="payid-check-status-btn"
+                    >
+                      {verifying ? (
+                        <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
+                      ) : (
+                        <><Search className="w-5 h-5 mr-2" />Check if Payment Confirmed</>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={handleClose}
+                      variant="outline"
+                      className="w-full text-sm min-h-[48px]"
+                    >
+                      Close &amp; Refresh Page
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={handlePayIDVerify}
+                      disabled={verifying}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 rounded-xl min-h-[56px] text-base"
+                      data-testid="payid-verify-btn"
+                    >
+                      {verifying ? (
+                        <><Loader2 className="w-5 h-5 mr-2 animate-spin" />Checking...</>
+                      ) : (
+                        <><CheckCircle className="w-5 h-5 mr-2" />I've Sent the Payment</>
+                      )}
+                    </Button>
 
-                <Button
-                  onClick={() => { setPayidDetails(null); setPayidReference(null); }}
-                  className="w-full bg-blue-700 hover:bg-blue-600 text-white text-sm min-h-[48px]"
-                  data-testid="payid-start-over-btn"
-                >
-                  <X className="w-4 h-4 mr-1" /> Start Over
-                </Button>
+                    <Button
+                      onClick={() => { setPayidDetails(null); setPayidReference(null); }}
+                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm min-h-[48px]"
+                      data-testid="payid-start-over-btn"
+                    >
+                      <X className="w-4 h-4 mr-1" /> Start Over
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           )}

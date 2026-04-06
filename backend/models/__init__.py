@@ -604,6 +604,7 @@ FEATURE_PRICES = {
 
 FEATURE_TYPE_ALIASES = {
     "grounds_of_merit": "grounds_of_merit",
+    "grounds_unlock": "grounds_of_merit",
     "full_report": "full_report",
     "full_detailed": "full_report",
     "extensive_report": "extensive_report",

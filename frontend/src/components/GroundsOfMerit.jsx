@@ -270,6 +270,7 @@ const GroundsOfMerit = ({
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [detailGround, setDetailGround] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [checkingPayment, setCheckingPayment] = useState(false);
   /* DO NOT UNDO — Search box state for each ground. Uses object to track per-ground search visibility */
   const [searchOpen, setSearchOpen] = useState({});
   const [searchTerms, setSearchTerms] = useState({});
@@ -597,7 +598,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
       {!isUnlocked && groundsCount > 0 && (
         <Card className="bg-gradient-to-r from-blue-50 to-orange-50 border-blue-200">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                   <Lock className="w-6 h-6 text-red-600" />
@@ -606,19 +607,39 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   <h3 className="font-semibold text-slate-900 text-sm sm:text-base" style={{ fontFamily: 'Crimson Pro, serif' }}>
                     {groundsCount} Grounds of Merit Found!
                   </h3>
-                  <p className="text-slate-600">
+                  <p className="text-slate-600 text-xs sm:text-sm">
                     Unlock to see full details, evidence, and deep analysis for each ground.
                   </p>
                 </div>
               </div>
-              <Button 
-                onClick={() => setShowPaymentModal(true)}
-                className="bg-red-600 hover:bg-blue-700 text-white"
-                data-testid="unlock-grounds-btn"
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                Unlock for ${unlockPrice?.toFixed(2)}
-              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button 
+                  onClick={async () => {
+                    setCheckingPayment(true);
+                    try {
+                      onPaymentSuccess?.();
+                      toast.info("Refreshing payment status...");
+                    } finally {
+                      setTimeout(() => setCheckingPayment(false), 1500);
+                    }
+                  }}
+                  variant="outline"
+                  disabled={checkingPayment}
+                  className="text-blue-700 border-blue-300 hover:bg-blue-50"
+                  data-testid="check-payment-status-btn"
+                >
+                  {checkingPayment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 mr-1" />}
+                  {checkingPayment ? "Checking..." : "Refresh Status"}
+                </Button>
+                <Button 
+                  onClick={() => setShowPaymentModal(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  data-testid="unlock-grounds-btn"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Unlock for ${unlockPrice?.toFixed(2)}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
