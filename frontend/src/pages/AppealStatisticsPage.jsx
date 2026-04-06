@@ -451,22 +451,30 @@ const AppealStatisticsPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(stateStats).map(([key, state]) => (
+                {Object.entries(stateStats).map(([key, state]) => {
+                  const stateColorMap = {
+                    blue: "bg-blue-600",
+                    purple: "bg-purple-600",
+                    red: "bg-red-600",
+                    emerald: "bg-emerald-600",
+                    teal: "bg-teal-500",
+                    orange: "bg-orange-500",
+                    indigo: "bg-indigo-600",
+                  };
+                  const stateBg = stateColorMap[state.color] || "bg-blue-600";
+                  return (
                   <tr key={key} className="border-b border-blue-200 hover:bg-blue-50">
                     <td className="p-3 font-bold text-blue-600">{state.name}</td>
                     <td className="p-3 text-center text-blue-600 font-semibold">{state.filings2024}</td>
                     <td className="p-3 text-center">
-                      <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${
-                        state.successRate >= 25 ? 'bg-emerald-600' :
-                        state.successRate >= 20 ? 'bg-blue-600' :
-                        'bg-red-600'
-                      }`}>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${stateBg}`}>
                         {state.successRate}%
                       </span>
                     </td>
                     <td className="p-3 text-center text-blue-600 font-semibold">{state.avgMonths} months</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
