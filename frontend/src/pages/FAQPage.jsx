@@ -199,6 +199,50 @@ const faqs = [
         a: "No. This tool helps you organise information and identify potential issues, but it cannot replace qualified legal advice. Criminal appeals are complex and the consequences of errors are serious. Always consult a lawyer before taking any legal action."
       }
     ]
+  },
+  {
+    category: "Forms & Filing",
+    icon: FileText,
+    color: "blue",
+    image: "/images/stock/office-desk.jpg",
+    questions: [
+      {
+        q: "How do I fill in a Notice of Intention to Appeal?",
+        a: "A Notice of Intention to Appeal is the first document lodged to start the appeal process. It typically requires: the appellant's full name and custody details, the court where the conviction or sentence was handed down, the date of conviction and/or sentence, the offence(s) and the sentence imposed, and a brief indication of the ground(s) of appeal. Most states provide a standard form — check the Forms & Templates page for the correct form for your jurisdiction. File the completed form at the relevant court registry within the required time limit (usually 28 days)."
+      },
+      {
+        q: "What details do I need to complete a Notice of Appeal?",
+        a: "A Notice of Appeal (the formal appeal document, as distinct from the Notice of Intention) requires more detail. It must include: the appellant's full legal name and address, the indictment number or case reference, the date and place of trial, the name of the trial judge, the offence(s) of which the appellant was convicted, the sentence imposed, and — most importantly — the specific grounds of appeal set out in numbered paragraphs. Each ground should clearly state the alleged error (e.g., 'The learned trial judge erred in directing the jury that…'). The grounds should be concise but precise. Attach any supporting affidavits or additional evidence if required."
+      },
+      {
+        q: "How do I request trial transcripts?",
+        a: "To request trial transcripts, complete a Transcript Request Form (available on the Forms & Templates page or from the court registry). The form requires: the case name and number, the court and date of hearing, the specific portions of transcript required (e.g., judge's summing up, specific witness evidence, sentencing remarks), and the reason for the request (appeal purposes). Lodge the completed form with the court registry. Transcript fees apply — check current rates with the court. If the appellant cannot afford the fees, an application for fee waiver may be made on the grounds of financial hardship."
+      },
+      {
+        q: "What is a Case Stated and how do I fill one in?",
+        a: "A Case Stated is used when a specific question of law needs to be referred to a higher court for determination. The form requires: a clear and concise statement of the facts of the case, the specific question of law to be determined, the submissions of both parties on the question, and any relevant legislation or case law. Cases Stated are relatively rare and usually prepared by legal practitioners. It is strongly recommended to seek legal advice before attempting to file one."
+      },
+      {
+        q: "How do I request access to exhibits from my trial?",
+        a: "To access court exhibits, complete an Exhibit Access Request form (available on the Forms & Templates page). The form requires: the case name and number, the date of trial and the presiding judge, a list of the specific exhibits being sought (by exhibit number if known), and the reason for access (appeal preparation). Note that exhibits are court property and may only be viewed under supervision at the court registry. Some exhibits may have been destroyed after retention periods have expired. Photographs or copies may be permitted at the court's discretion."
+      },
+      {
+        q: "What are the time limits for filing appeal forms?",
+        a: "Time limits vary by jurisdiction but are strictly enforced. In most Australian states and territories, a Notice of Intention to Appeal must be filed within 28 days of the date of conviction or sentence. In some jurisdictions the period may differ — for example, the ACT allows 28 days, while Federal matters may have different timeframes. If the deadline has passed, an application for extension of time must be filed explaining the reasons for the delay. Courts will consider factors such as the length of the delay, the reasons for it, and the merits of the proposed appeal. Filing late without an extension application will result in the appeal being dismissed."
+      },
+      {
+        q: "Can I file appeal forms online or do I need to go to the court?",
+        a: "This depends on the jurisdiction. Some courts now accept electronic filing — for example, NSW and Victoria have online filing systems for certain documents. Others require physical filing at the court registry. Check the relevant court's website or contact the registry directly. When filing in person, bring the original and at least two copies (one for the court, one for the prosecution, and one for your own records). Some courts also require filing fees — enquire about current fees and any available fee waivers."
+      },
+      {
+        q: "Do I need to serve documents on the prosecution?",
+        a: "Yes. After filing appeal documents with the court, copies must be served on the Director of Public Prosecutions (DPP) or the relevant prosecuting authority. This is a mandatory step — failure to serve can result in the appeal being struck out. The method of service (personal, post, or electronic) varies by jurisdiction. Proof of service (usually an affidavit of service) must then be filed with the court registry. The Forms & Templates page includes a template Affidavit of Service."
+      },
+      {
+        q: "What if I make a mistake on a form?",
+        a: "Minor errors (such as a typo in an address) can usually be corrected by filing an amended form with the court registry. More significant errors in the grounds of appeal can be corrected by filing amended grounds, but this generally requires the court's leave (permission). It is better to take time to get the form right before filing. If unsure about any section, seek legal advice or contact the court registry — registry staff can advise on procedural requirements (though they cannot give legal advice about the content of your grounds)."
+      }
+    ]
   }
 ];
 
