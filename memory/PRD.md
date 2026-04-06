@@ -6,7 +6,7 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 ## Core Requirements
 - **Report Tiers:** Free (Base) -> $150 (2x depth) -> $200 (3x depth). Barrister View locked until all 3 generated/paid.
 - **Report Language:** STRICT third-person educational tool. No "we/us/our/you/your".
-- **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons.
+- **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons. Red Scale navbar icon (DO NOT change).
 - **Australian English:** analyse, organise, barrister, defence, offence throughout.
 - **Payment:** PayID only (djkingy79@gmail.com, NAB). Stripe/PayPal permanently removed.
 - **Trial Pricing:** First-time users get Grounds of Merit for $5.00 AUD (regular $99). One-time per user lifetime. Free Case Summary included.
@@ -26,6 +26,7 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - Admin manual-unlock endpoint
 - Custom branded app icons and splash screens for iOS, Android, and Web/PWA (scales of justice + shield design, navy/blue theme)
 - Manifest.json updated with correct "Appeal Case Manager" branding
+- Navbar brand icon: User prefers red Scale icon — DO NOT replace with generated image
 
 ## Backlog
 - P0: Deploy all fixes to production (user's live domain is out of sync)
@@ -40,3 +41,4 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - PayID email: djkingy79@gmail.com
 - TRIAL_PRICE = 5.00, TRIAL_FEATURE = "grounds_of_merit"
 - `unlocked_features` check ALWAYS takes priority over `latestPaymentStatus` in ReportsSection.jsx
+- Navbar brand icon is RED bg-red-600 with white Scale lucide icon — user explicitly rejected the generated icon replacement
