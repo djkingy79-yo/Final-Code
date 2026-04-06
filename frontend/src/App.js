@@ -65,6 +65,9 @@ axios.interceptors.request.use((config) => {
 
 // Auth Callback Component
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+// DO_NOT_UNDO — This component handles the Google OAuth redirect.
+// It extracts session_id from the URL hash/query, exchanges it for a session_token,
+// stores it in localStorage, and navigates to /dashboard with user data.
 const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
@@ -79,42 +82,39 @@ const AuthCallback = () => {
       const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
       if (sessionId) {
-        // DO_NOT_UNDO — Retry auth session exchange up to 3 times.
-        // Previous code had zero retries — a single 502/timeout during the Google
-        // redirect callback would silently fail and dump the user to the landing page.
         for (let attempt = 1; attempt <= 3; attempt++) {
           try {
             const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
             if (response.data?.session_token) {
               localStorage.setItem("session_token", response.data.session_token);
             }
-            window.history.replaceState(null, "", "/dashboard");
+            // Navigate to dashboard with user data — React Router handles URL cleanup
             navigate("/dashboard", { replace: true, state: { user: response.data } });
             return;
           } catch (error) {
-            console.error(`Auth callback attempt ${attempt}/3 failed:`, error);
             if (attempt < 3) {
               await new Promise(r => setTimeout(r, 2000 * attempt));
             }
           }
         }
+        // All 3 session exchange attempts failed — still try localStorage token
       }
 
-      // Fallback: check existing localStorage token
+      // Fallback: check existing localStorage token (handles page refresh, stale redirects)
       const existingToken = localStorage.getItem("session_token");
       if (existingToken) {
         try {
           const me = await axios.get(`${API}/auth/me`);
           if (me.data) {
-            window.history.replaceState(null, "", "/dashboard");
             navigate("/dashboard", { replace: true, state: { user: me.data } });
             return;
           }
-        } catch (error) {
+        } catch {
           localStorage.removeItem("session_token");
         }
       }
 
+      // Only reach here if session exchange failed AND no valid token exists
       navigate("/", { replace: true });
     };
 
@@ -132,30 +132,23 @@ const AuthCallback = () => {
 };
 
 // Protected Route Component
+// DO_NOT_UNDO — Handles auth verification for all protected pages.
+// Initialises state from location.state?.user to avoid unnecessary /auth/me calls
+// after AuthCallback passes user data via navigate state.
 const ProtectedRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const [termsAccepted, setTermsAccepted] = useState(null);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-
-  const checkUserStatus = async (userData) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    setTermsAccepted(userData.terms_accepted === true);
-  };
+  const initialUser = location.state?.user || null;
+  const [isAuthenticated, setIsAuthenticated] = useState(initialUser ? true : null);
+  const [termsAccepted, setTermsAccepted] = useState(initialUser ? initialUser.terms_accepted === true : null);
+  const [user, setUser] = useState(initialUser);
 
   useEffect(() => {
-    // If user data was passed from AuthCallback, use it directly
-    if (location.state?.user) {
-      checkUserStatus(location.state.user);
-      return;
-    }
+    // If user data was passed from AuthCallback via navigate state, already handled in initial state
+    if (initialUser) return;
 
-    // DO_NOT_UNDO — Auth check with retry. Previous code redirected to landing page
-    // on the FIRST /auth/me failure, which caused "Google login goes back to landing page"
-    // because iOS Safari loses location.state on redirect and a single transient network
-    // error during the token check would boot the user back to the landing page.
+    // DO_NOT_UNDO — Auth check with retry. Retries prevent transient network errors
+    // from booting the user back to the landing page.
     const checkAuth = async (attempt = 1) => {
       const token = localStorage.getItem("session_token");
       if (!token) {
@@ -166,10 +159,11 @@ const ProtectedRoute = ({ children }) => {
 
       try {
         const response = await axios.get(`${API}/auth/me`);
-        checkUserStatus(response.data);
+        setUser(response.data);
+        setIsAuthenticated(true);
+        setTermsAccepted(response.data.terms_accepted === true);
       } catch (error) {
         if (attempt < 3) {
-          // Retry after a short delay — transient network errors should not boot the user
           await new Promise(r => setTimeout(r, 1500 * attempt));
           return checkAuth(attempt + 1);
         }
@@ -181,7 +175,7 @@ const ProtectedRoute = ({ children }) => {
     };
 
     checkAuth();
-  }, [navigate, location.state]);
+  }, [navigate, initialUser]);
 
   const handleTermsAccepted = () => {
     setTermsAccepted(true);
@@ -223,7 +217,6 @@ function AppRouter() {
 
   return (
     <Routes>
-      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/" element={<LandingPage />} />
       <Route
         path="/dashboard"

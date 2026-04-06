@@ -207,7 +207,7 @@ async def create_session(request: Request, response: Response):
         })
     
     # Create session
-    session_token = user_data.get("session_token", f"sess_{uuid.uuid4().hex}")
+    session_token = uuid.uuid4().hex
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
     
     await db.user_sessions.insert_one({
@@ -287,5 +287,5 @@ async def logout(request: Request, response: Response):
     if session_token:
         await db.user_sessions.delete_one({"session_token": session_token})
     
-    response.delete_cookie(key="session_token", path="/", samesite="none", secure=True)
+    response.delete_cookie(key="session_token", path="/", samesite="lax", secure=True)
     return {"message": "Logged out"}
