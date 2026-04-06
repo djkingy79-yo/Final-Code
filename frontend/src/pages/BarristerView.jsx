@@ -483,7 +483,7 @@ export default function BarristerView() {
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
     .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
     .disclaimer-bold { background: #dc2626; border: 3px solid #b91c1c; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-bold .disc-icon { color: #ffffff; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-bold .disc-icon { color: #facc15; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
@@ -952,7 +952,7 @@ export default function BarristerView() {
 
             <div className="bg-red-700 px-6 sm:px-8 py-4" data-testid="barrister-disclaimer-banner">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-white shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-extrabold text-white uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
                   <p className="text-xs text-white leading-relaxed">
@@ -1078,7 +1078,7 @@ export default function BarristerView() {
 
             <div className="bg-red-700 px-6 sm:px-10 py-6" data-testid="barrister-footer">
               <div className="flex items-start gap-4" data-testid="barrister-footer-disclaimer">
-                <AlertTriangle className="w-8 h-8 text-white flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-8 h-8 text-yellow-300 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-base font-extrabold text-white uppercase tracking-wide mb-2">NOT LEGAL ADVICE</p>
                   <p className="text-sm text-white leading-relaxed">

@@ -445,7 +445,11 @@ const GroundsOfMerit = ({
         ))}
 
         <div className="grounds-export-disclaimer">
-          NOT LEGAL ADVICE — This material is an educational tool only. All analysis and recommendations must be independently verified by a qualified Australian legal professional.
+          <span style={{fontSize:'24px', color:'#facc15', flexShrink:0}}>&#9888;</span>
+          <div>
+            <strong style={{display:'block', marginBottom:'4px', textTransform:'uppercase', letterSpacing:'0.06em'}}>NOT LEGAL ADVICE</strong>
+            This material is an educational tool only and does NOT constitute legal advice. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.
+          </div>
         </div>
         <div style={{textAlign:'center', margin:'24px 0', padding:'16px 0'}}>
           <p style={{fontSize:'12px', fontWeight:700, color:'#334155', margin:'0 0 10px'}}>Created and Designed by Deb King</p>
@@ -471,13 +475,13 @@ const GroundsOfMerit = ({
   <title>Grounds of Merit Export</title>
   <style>
     @page { size: A4; margin: 12mm; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 14px; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 13px; }
     .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; }
-    .grounds-export-brand { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 14px; }
+    .grounds-export-brand { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 12px; margin: 0 0 8px; }
-    .grounds-export-header h1 { margin: 0 0 8px; font-size: 22px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 14px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 11px; margin: 0 0 8px; }
+    .grounds-export-header h1 { margin: 0 0 8px; font-size: 18px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 12px; }
     .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
     .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 15px; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
@@ -486,7 +490,7 @@ const GroundsOfMerit = ({
     .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; }
     .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; font-size: 13px; }
     .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 18px; border: 2px solid #dc2626; padding: 14px; font-weight: 700; line-height: 1.45; font-size: 12px; }
+    .grounds-export-disclaimer { margin-top: 18px; background: #dc2626; border: 3px solid #b91c1c; padding: 14px 18px; font-weight: 700; line-height: 1.45; font-size: 12px; color: #ffffff; border-radius: 8px; display: flex; gap: 12px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .legal-report p { line-height: 1.6; margin: 0 0 8px; font-size: 14px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -561,9 +565,10 @@ h1{font-size:18px;margin:0 0 6px}h2{font-size:14px;margin:16px 0 8px;border-bott
 .case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:13px}
 .analysis{margin-top:16px;white-space:pre-wrap;font-size:14px}
 table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:5px 8px;text-align:left;font-size:12px}th{background:#dbeafe;font-weight:700}
-.disclaimer{background:#fef2f2;border:3px solid #ef4444;padding:12px 16px;border-radius:8px;margin-top:28px;page-break-inside:avoid}
-.disclaimer strong{font-size:13px;text-transform:uppercase;color:#dc2626;display:block;margin-bottom:4px}
-.disclaimer p{font-size:12px;color:#1e293b;margin:0;line-height:1.5}
+.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:12px 16px;border-radius:8px;margin-top:28px;page-break-inside:avoid;display:flex;gap:12px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.disclaimer .disc-hazard{font-size:24px;color:#facc15;flex-shrink:0}
+.disclaimer strong{font-size:13px;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:4px}
+.disclaimer p{font-size:12px;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
 @media print{body{padding:0}}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
@@ -580,7 +585,7 @@ ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' +
 ${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').length ? '<h2>Similar Cases (AI-Suggested)</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
-<div class="disclaimer"><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div>
+<div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div></div>
 <div style="text-align:center;margin:24px 0;padding:16px 0;">
   <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
   <div style="display:inline-flex;align-items:center;gap:10px;">
