@@ -8,31 +8,33 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - **Report Language:** STRICT third-person educational tool. No "we/us/our/you/your".
 - **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons. Red Scale navbar icon (DO NOT change).
 - **Australian English:** analyse, organise, barrister, defence, offence throughout.
-- **Payment:** PayID only (djkingy79@gmail.com, NAB).
 - **Disclaimers:** ALL print/export disclaimers MUST have bright red bg (#dc2626), white bold text, yellow hazard icon (#facc15). DO NOT revert.
-- **Notes export:** Bright blue theme (#2563eb), NOT yellow/amber. Note cards: blue bg, white bold text.
+- **Notes export:** Bright blue theme (#2563eb), NOT yellow/amber.
+- **Export fonts:** Body 12px, H1 18-20px, H2 14px, H3 13px. DO NOT increase.
 
 ## Tech Stack
 React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LLM | Capacitor 7 (iOS + Android) | Resend (Email) | reportlab + python-docx (Exports)
 
 ## Completed (Feb-Apr 2026)
-- Font size standardisation (reports, prints, exports)
+- Font size standardisation (reports, prints, exports) — all reduced to 12px body
 - PayID email typo fix, Export Package crash fix
 - Native Mobile App build (Capacitor 7, camera scanning, offline, notifications)
 - Payment unlock bug fix (feature type aliases, admin bypass, auto-refresh)
-- Sticky investigation timer banner
-- Trial Pricing System ($5 Grounds trial)
-- Barrister View visible in main reports list
-- Admin manual-unlock endpoint
 - Custom branded app icons/splash screens (iOS, Android, Web/PWA)
-- Print view font size reduction (Timeline h1: 18px, h2: 15px. Grounds h1: 18px, body: 13px)
 - Disclaimer styling overhaul (ALL: bright red bg, white bold text, yellow hazard icon)
 - EvidenceSummary garbage filter (filters key-concatenated strings)
 - iOS PDF export auth fix (session_token as query param)
-- Notes export: yellow→bright blue theme, note cards blue bg white text
+- Notes export: yellow→bright blue, note cards blue bg white text
 - AustLII button: white→dark blue with white border
 - About Deb bio: single block→3 columns
 - Admin "How to verify" box: pale blue→bright blue bg, white bold text
+- **Legal Framework:** Fixed [object Object] in forms, raw JSON in legislation sections, underscore keys in time_limits
+- **Grounds/Print All:** ground_type now capitalized with spaces (Sentencing Error not sentencing_error)
+- **Print All:** law_sections handles both JSON strings and objects
+- **Print All:** evidence properly filters garbage strings
+- **Barrister View:** removed duplicate BARRISTER BRIEF badge, offence capitalized (Murder not murder)
+- **Case Readiness Score:** heading enlarged (text-xl/2xl)
+- **Export fonts:** body 12px, h1 20px, h2 14px across all exportHtml/buildTabPreviewHtml/buildPrintAllHtml
 
 ## Backlog
 - P0: Deploy all fixes to production
@@ -43,6 +45,8 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 ## Critical Guards
 - DO_NOT_UNDO comments protect key functions
 - Navbar brand icon is RED bg-red-600 — DO NOT change
-- `unlocked_features` check ALWAYS takes priority over `latestPaymentStatus`
 - Disclaimers: bright red (#dc2626) bg + white text + yellow hazard icon — DO NOT revert
 - Notes export: blue theme (#2563eb) — DO NOT change to yellow/amber
+- Export font sizes: body 12px, h1 18-20px — DO NOT increase
+- LegalFrameworkViewer: must handle both string and object forms/sections
+- EvidenceSummary: must filter garbage key-concatenated strings
