@@ -73,6 +73,10 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Verified `yarn build` passes cleanly
 - Backend health check confirmed healthy
 
+## Completed (6 Apr 2026 — Google Auth Fix)
+- Fixed Google login redirect to landing page: removed window.history.replaceState before navigate (was desyncing React Router), initialised ProtectedRoute from location.state, fixed cookie samesite mismatch in logout, removed sess_ prefix fallback, removed dead /auth/callback route
+- All auth flows verified: 100% pass rate (13/13 backend, all frontend flows)
+
 ## Completed (6 Apr 2026 — Broken Links Audit)
 - Fixed 7 broken URLs in LawyerDirectory.jsx (VIC: Stary Norton Halphen, Doogue+George; ACT: Andrew Byrnes typo; QLD: Gilshenan & Luton; WA: WA Bar; TAS: Tierney Law; NT: Legal Aid)
 - Fixed 7 broken/outdated URLs in ContactsPage.jsx + LegalResourcesPage.jsx (ACLEI→NACC, QPILCH→LawRight, TAS Law Society, Prisoners Aid NSW, WA Justice, NT Legal Aid)
