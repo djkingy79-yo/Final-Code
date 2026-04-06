@@ -17,9 +17,11 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - Auth: Emergent Google Auth + JWT
 - Email: Resend
 - Exports: reportlab (PDF), python-docx (DOCX)
-- Mobile: Capacitor (configured)
+- Mobile: Capacitor 7 (iOS + Android)
 
 ## What's Been Implemented
+
+### Core Features
 - Full report generation pipeline (4 tiers)
 - Document upload & management
 - Timeline analysis
@@ -37,17 +39,47 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - Export Appeal Package (ZIP with all case materials and templates)
 - Pipeline Portfolio Summary on Dashboard
 
-## Completed This Session (Feb 2026)
-- **Font Size Standardisation (P0):** Reduced all report body text from ~17-18px to 15.2px (0.95rem). Reduced headings from 1.6rem to 1.2rem. DOCX/PDF backend exports also reduced.
-- **PayID Email Fix (P0):** Corrected typo `gmsil.com` → `gmail.com` in both frontend PaymentModal and backend payments router.
-- **Export Package Fix (P0):** Fixed TypeError crash when supporting_evidence contains dicts (not strings). Export now generates valid ZIP files.
-- **Terms of Service Font Reduction (P0):** All section content reduced from text-sm to text-xs across TermsOfService.jsx and TermsAcceptance.jsx.
-- **Dashboard Overview Cards Enlarged (P1):** Stats cards increased to text-3xl numbers, w-14 h-14 icons, p-6 padding. Pipeline Portfolio Summary styled with border-2, text-2xl numbers.
-- **Case Page Heading Enlarged (P1):** Title increased to text-2xl sm:text-3xl md:text-4xl font-extrabold. Identity card fields increased to text-lg sm:text-xl.
+### Native Mobile App (Capacitor) — Feb 2026
+- **Camera Document Scanning:** Native camera integration for scanning legal documents, with preview and retake. Gallery picker. Converts to File for upload.
+- **Offline Access:** Enhanced service worker with API response caching, static asset caching, offline fallback. Capacitor Preferences for offline data storage (cases, reports, pending notes).
+- **Push & Local Notifications:** Schedule deadline reminders, receive push notifications. Falls back to web Notification API.
+- **Haptic Feedback:** Tactile feedback on actions (success, error, warning). Light/medium/heavy impact.
+- **Share:** Native share sheet for case summaries and exported documents. Falls back to navigator.share or clipboard on web.
+- **Biometric Auth:** Face ID (iOS) and fingerprint (Android) permission setup. Info.plist and AndroidManifest configured.
+- **App Lifecycle:** Status bar styling, splash screen, Android back button, deep links, app state change handling.
+- **Offline Banner:** Shows when device loses connectivity with retry button.
+- **iOS & Android Projects Generated:** Both native projects exist at `/app/frontend/ios` and `/app/frontend/android`. Permissions configured for camera, photo library, Face ID, biometrics, notifications, storage.
+- **Service Worker v2:** Cache-first for static assets, network-first with cache fallback for API requests, background sync for pending notes, push notification handling.
+
+### Bug Fixes — Feb 2026
+- Font size standardisation across all reports, prints, and exports
+- PayID email typo fix (gmsil.com → gmail.com)
+- Export Appeal Package crash fix (supporting_evidence dict handling)
+- Terms of Service font reduction
+- Dashboard overview cards enlarged
+- Case page heading enlarged
+
+## Building Native Apps
+
+### iOS
+1. Open `/app/frontend/ios/App/App.xcworkspace` in Xcode
+2. Select your development team in Signing & Capabilities
+3. Run on simulator or device
+
+### Android
+1. Open `/app/frontend/android` in Android Studio
+2. Let Gradle sync
+3. Run on emulator or device
+
+### Updating Web Content
+```bash
+cd /app/frontend
+yarn build
+npx cap sync
+```
 
 ## Backlog
 - P1: Deploy fixes to production (user must click "Deploy" in Emergent chat)
-- P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat for Notes section
 - P2: Case sharing between registered users
@@ -58,3 +90,4 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - PDF export blob fallback for iOS must not be modified
 - Grounds of merit hard cap: max 2 new per sync
 - PayID email must remain djkingy79@gmail.com
+- All native calls must be wrapped in isNativePlatform() checks
