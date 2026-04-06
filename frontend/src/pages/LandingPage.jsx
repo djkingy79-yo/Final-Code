@@ -207,8 +207,8 @@ const LandingPage = () => {
                     <CreditCard className="w-5 h-5 text-pink-600" />
                   </div>
                   <div>
-                    <p className="text-white font-extrabold text-base uppercase tracking-wide">New User Special Offer</p>
-                    <p className="text-white font-bold text-sm">Try your first full case analysis for just <span className="text-2xl">$5.00</span> — one time only!</p>
+                    <p className="text-white font-black text-base uppercase tracking-wide">New User Special Offer</p>
+                    <p className="text-white font-extrabold text-sm">Unlock Grounds of Merit for just <span className="text-2xl">$5.00</span> — one time only!</p>
                   </div>
                 </div>
               </div>
