@@ -1,114 +1,53 @@
 # Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
+Criminal appeals management tool for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, locked Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) -> $150 (2x depth) -> $200 (3x depth). Barrister View locked until all 3 reports generated/paid.
-- **Report Language:** STRICT third-person educational tool. No first/second person pronouns.
-- **Branding:** Forced light mode. High contrast. No amber/brown. Action buttons bright blue (bg-blue-600) with white text.
+- **Report Tiers:** Free (Base) → $150 (2x depth) → $200 (3x depth). Barrister View locked until all 3 standard reports generated/paid.
+- **Report Language:** STRICT third-person educational tool. No "we/us/our/you/your".
+- **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons.
 - **Australian English:** analyse, organise, barrister, defence, offence throughout.
-- **Payments:** PayID only (no Stripe/PayPal).
-- **Production Domain:** criminallawappealmanagement.com.au
+- **Payment:** PayID only (djkingy79@gmail.com, NAB). Stripe/PayPal permanently removed.
 
 ## Tech Stack
-- Frontend: React + Tailwind CSS + Shadcn/UI
-- Backend: FastAPI + Python
-- Database: MongoDB
-- AI: OpenAI GPT-4o via Emergent LLM Key
-- Auth: Emergent-managed Google Auth + email/password
+- Frontend: React + Tailwind + Shadcn/UI
+- Backend: FastAPI + MongoDB
+- AI: OpenAI GPT-4o via Emergent LLM Key (LiteLLM)
+- Auth: Emergent Google Auth + JWT
 - Email: Resend
-- Payments: PayID only
-
-## Architecture
-```
-/app/
-├── backend/
-│   ├── server.py (core logic, LLM engine, security middleware)
-│   ├── config.py (env validation, DB setup)
-│   ├── auth_utils.py (session management)
-│   └── routers/ (auth, cases, payments, timeline, etc.)
-├── frontend/
-│   └── src/
-│       ├── pages/ (all page components)
-│       ├── components/ (shared components)
-│       └── App.js (routing, global nav)
-├── Dockerfile
-├── Procfile
-├── DEPLOYMENT.md
-├── SECURITY.md
-├── BACKUP.md
-└── PRODUCTION_CHECKLIST.md
-```
+- Exports: reportlab (PDF), python-docx (DOCX)
+- Mobile: Capacitor (configured)
 
 ## What's Been Implemented
-- Full authentication (Google + email/password)
-- Case CRUD with document management
-- 4-tier AI report generation (Free, Detailed, Extensive, Barrister)
-- PDF/DOCX export with branding/disclaimers
-- PayID payment integration
-- Timeline with reorder feature
-- All resource pages (Glossary, Forms, Stats, Resources, Lawyers, FAQ, etc.)
-- Comprehensive Terms & Conditions + Privacy Policy
-- Global floating navigation
-- Production security hardening (see below)
+- Full report generation pipeline (4 tiers)
+- Document upload & management
+- Timeline analysis
+- Grounds of merit tracking
+- PDF/DOCX export with cover pages, disclaimers, footers
+- Barrister View with Issue Matrix attachment
+- Google Auth + email/password auth
+- PayID payment flow
+- DOMPurify XSS sanitisation (with style tag preservation)
+- Lawyer Directory with verified links
+- Appeal Statistics page
+- How It Works tutorial page
+- Sentence extraction normalisation across all reports
+- Security audit (18-point checklist)
+- Font size standardisation across all reports and exports (Feb 2026)
 
-## Completed (5 Apr 2026)
-- Restyled CaselawSearchPage: AustLII box bright blue, enlarged headings
-- Replaced Barrister View screenshot on How To Use page
-- Fixed footer mobile layout (3 columns, copyright bar)
-- Reorganised all navigation (footer + mobile menu) to user's 15-page order
-- Removed criminallawappealmanagement.com.au from footer brand section
-- Rewrote Terms & Conditions (29 sections, 3 parts, PayID-only payment terms)
-- Full backend security scan: CORS, env validation, session tokens, HTTP status codes
-- Full frontend code scan: null checks, dead code, XSS defence, debug logs removed
-- Production hardening: Dockerfile, Procfile, .env.example, security headers, rate limiting, readiness/liveness probes, deep health check
-- Created DEPLOYMENT.md, SECURITY.md, BACKUP.md, PRODUCTION_CHECKLIST.md
-- Password reset and session invalidation
-- Test credentials scrubbed from all test files
-
-## Completed (5 Apr 2026 — CI Fix)
-- Fixed 95 Ruff lint errors across backend/tests/ (F401 unused imports, F541 f-strings, E741 ambiguous vars, E712 False comparison, F841 unused assignment)
-- Verified `ruff check backend/` passes with zero errors
-- Verified `yarn build` passes cleanly
-- Backend health check confirmed healthy
-
-## Completed (6 Apr 2026 — PayID Update & Stripe/PayPal Purge)
-- Updated PayID email to djkingy79@gmsil.com and bank to NAB (both backend + frontend PaymentModal)
-- Permanently removed Stripe/PayPal: deleted env vars (PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_MODE, STRIPE_API_KEY), verified zero Stripe/PayPal code in active backend/frontend files
-- Updated .env.example to remove Stripe/PayPal vars
-- Payment method: PayID ONLY (DO_NOT_UNDO)
-
-## Completed (6 Apr 2026 — Security & Health Fixes)
-- CORS: Removed wildcard `["*"]` fallback, restricted to FRONTEND_URL only
-- XSS: Installed DOMPurify, sanitised dangerouslySetInnerHTML in DocumentPreviewPage
-- .env.example: Created with all required backend/frontend vars
-- CI: Added backend-tests job with pytest execution
-- toggleTheme: Clarified as forced light mode (intentional no-op, DO_NOT_UNDO)
-- Dead code: Deleted payments_new.py (unmounted duplicate of payments.py)
-- Verified existing: security headers, rate limiting (429 after 10 req/min), DB ping, EMERGENT_LLM_KEY validation, console.log removal, PyPI index
-
-## Completed (6 Apr 2026 — Print Formatting + Grounds Cap Fix)
-- CRITICAL: Fixed DOMPurify stripping <style> tags from DocumentPreviewPage.jsx — was destroying ALL print/PDF formatting (header card, disclaimer, footer). Added WHOLE_DOCUMENT + ADD_TAGS ['style']
-- Enforced hard cap on grounds_of_merit creation: max existing_count + 2 new grounds per sync cycle (prevents multiplication bug)
-- Bold red disclaimer (#dc2626) with white text across all views (print, PDF, DOCX, cover page, BarristerView)
-- Footer: appellant name with em-dashes across all views
-
-## Completed (6 Apr 2026 — Print/Export Formatting Fix)
-- Disclaimer: Changed to bold red background (#dc2626) with white text across ALL views (print, PDF, DOCX, cover page) with "IMPORTANT DISCLAIMER" prefix
-- Footer: Updated to show appellant name with em-dashes (Criminal Appeal Case Management — Report — Appellant — Date) across all views
-- Page numbers: Verified in PDF (draw_page_footer) and print view (CSS counter)
-- Applied same fixes to BarristerView.jsx print/export
-
-## Completed (6 Apr 2026 — Google Auth CORS Fix)
-- Fixed Google login redirect to landing page: removed window.history.replaceState before navigate (was desyncing React Router), initialised ProtectedRoute from location.state, fixed cookie samesite mismatch in logout, removed sess_ prefix fallback, removed dead /auth/callback route
-- All auth flows verified: 100% pass rate (13/13 backend, all frontend flows)
-
-## Completed (6 Apr 2026 — Broken Links Audit)
-- Fixed 7 broken URLs in LawyerDirectory.jsx (VIC: Stary Norton Halphen, Doogue+George; ACT: Andrew Byrnes typo; QLD: Gilshenan & Luton; WA: WA Bar; TAS: Tierney Law; NT: Legal Aid)
-- Fixed 7 broken/outdated URLs in ContactsPage.jsx + LegalResourcesPage.jsx (ACLEI→NACC, QPILCH→LawRight, TAS Law Society, Prisoners Aid NSW, WA Justice, NT Legal Aid)
-- All external links verified via HTTP requests and web search
+## Completed This Session (Feb 2026)
+- **Font Size Standardisation (P0):** Reduced all report body text from ~17-18px to 15.2px (0.95rem). Reduced headings from 1.6rem to 1.2rem. Reduced DOCX title from Pt(24) to Pt(18), H1 from Pt(16) to Pt(14), H2 from Pt(14) to Pt(12). PDF title from 26 to 20, section headers from 16 to 14. Applied consistently across ReportView, BarristerView, print previews, and backend generators.
 
 ## Backlog
+- P1: Deploy fixes to production (user must click "Deploy" in Emergent chat)
 - P1: Build Native Mobile App (Capacitor configured)
 - P2: Counsel conference prep attachment for Barrister View
+- P2: Real-time collaboration/chat for Notes section
+- P2: Case sharing between registered users
+
+## Critical Guards
+- DO_NOT_UNDO comments protect key functions
+- DOMPurify must use `{ WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }`
+- PDF export blob fallback for iOS must not be modified
+- Grounds of merit hard cap: max 2 new per sync
