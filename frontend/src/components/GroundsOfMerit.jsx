@@ -594,6 +594,56 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
 
   return (
     <div className="space-y-4" data-testid="grounds-container">
+      {/* DO_NOT_UNDO — Sticky Investigation Progress Banner.
+           Stays fixed at the top of the viewport whenever an investigation is running,
+           so users always see the timer regardless of scroll position. */}
+      {investigating && (
+        <div className="fixed top-0 left-0 right-0 z-[9998] shadow-2xl" data-testid="investigate-sticky-banner">
+          <div className="bg-blue-800 text-white px-4 py-3">
+            <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                </div>
+                <div>
+                  <p className="text-sm sm:text-base font-bold text-white">
+                    {investElapsed < 10
+                      ? "Scanning Documents..."
+                      : investElapsed < 30
+                      ? "Analysing Case Law..."
+                      : investElapsed < 60
+                      ? "Building Deep Analysis..."
+                      : "Finalising Investigation..."}
+                  </p>
+                  <p className="text-xs text-white/70">
+                    {investElapsed < 10
+                      ? "Reading case documents and extracting relevant passages"
+                      : investElapsed < 30
+                      ? "AI is cross-referencing legislation and precedents"
+                      : investElapsed < 60
+                      ? "Constructing a thorough deep investigation analysis"
+                      : "Completing final sections — deep analysis can take 1-3 minutes"}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-white" data-testid="investigate-sticky-timer">
+                  {investElapsed < 60 ? `${investElapsed}s` : `${Math.floor(investElapsed / 60)}m ${String(investElapsed % 60).padStart(2, '0')}s`}
+                </span>
+                <p className="text-[10px] text-white/50 uppercase tracking-wider">elapsed</p>
+              </div>
+            </div>
+          </div>
+          <div className="h-1.5 bg-blue-900">
+            <div
+              className="h-full bg-blue-400 transition-all duration-1000 ease-linear"
+              style={{ width: `${Math.min(98, (investElapsed / 180) * 100)}%` }}
+              data-testid="investigate-sticky-progress"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Paywall Banner when not unlocked */}
       {!isUnlocked && groundsCount > 0 && (
         <Card className="bg-gradient-to-r from-blue-50 to-orange-50 border-blue-200">
