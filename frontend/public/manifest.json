@@ -1,7 +1,7 @@
 {
-  "name": "Criminal Appeal AI",
-  "short_name": "Appeal AI",
-  "description": "AI-powered criminal appeal case management for NSW and Australian federal law",
+  "name": "Appeal Case Manager",
+  "short_name": "ACM",
+  "description": "AI-powered criminal appeal case management across Australian jurisdictions",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
