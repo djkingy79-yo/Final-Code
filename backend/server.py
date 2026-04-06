@@ -702,6 +702,13 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
         {"_id": 0, "ground_id": 1, "title": 1},
     ).to_list(200)
 
+    # DO_NOT_UNDO — HARD CAP enforcement. If grounds already exist,
+    # NEVER create more than existing_count + 2. This prevents the
+    # recurring multiplication bug permanently.
+    initial_ground_count = len(all_existing_grounds)
+    max_new_grounds = 2 if initial_ground_count > 0 else 50
+    new_grounds_created = 0
+
     synced = 0
     for issue in issues:
         verification = await db.issue_verifications.find_one(
@@ -748,10 +755,15 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
                 {"$set": ground_doc},
             )
         else:
+            # DO_NOT_UNDO — Hard cap check: skip if at limit
+            if new_grounds_created >= max_new_grounds:
+                logger.info(f"Sync: HARD CAP reached ({initial_ground_count}+{max_new_grounds}). Skipping '{issue_title[:50]}'")
+                continue
             ground_doc["ground_id"] = f"gnd_{uuid.uuid4().hex[:12]}"
             ground_doc["created_at"] = datetime.now(timezone.utc).isoformat()
             await db.grounds_of_merit.insert_one(ground_doc)
             all_existing_grounds.append({"ground_id": ground_doc["ground_id"], "title": issue_title})
+            new_grounds_created += 1
 
         synced += 1
     return synced

@@ -106,11 +106,13 @@ export default function DocumentPreviewPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8" data-testid="document-preview-frame-wrap">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
           {isIOS ? (
-            /* DO_NOT_UNDO — XSS sanitisation via DOMPurify on iOS HTML render */
+            /* DO_NOT_UNDO — iOS HTML render. DOMPurify MUST keep <style> tags
+               (WHOLE_DOCUMENT + ADD_TAGS) or ALL print formatting is stripped.
+               This has broken 10+ times — DO NOT remove ADD_TAGS or WHOLE_DOCUMENT. */
             <div
               className="w-full bg-white"
               style={{ minHeight: "90vh" }}
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(payload.html) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(payload.html, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }) }}
               data-testid="document-preview-ios-render"
             />
           ) : (

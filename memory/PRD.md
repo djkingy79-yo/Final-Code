@@ -88,6 +88,12 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Dead code: Deleted payments_new.py (unmounted duplicate of payments.py)
 - Verified existing: security headers, rate limiting (429 after 10 req/min), DB ping, EMERGENT_LLM_KEY validation, console.log removal, PyPI index
 
+## Completed (6 Apr 2026 — Print Formatting + Grounds Cap Fix)
+- CRITICAL: Fixed DOMPurify stripping <style> tags from DocumentPreviewPage.jsx — was destroying ALL print/PDF formatting (header card, disclaimer, footer). Added WHOLE_DOCUMENT + ADD_TAGS ['style']
+- Enforced hard cap on grounds_of_merit creation: max existing_count + 2 new grounds per sync cycle (prevents multiplication bug)
+- Bold red disclaimer (#dc2626) with white text across all views (print, PDF, DOCX, cover page, BarristerView)
+- Footer: appellant name with em-dashes across all views
+
 ## Completed (6 Apr 2026 — Print/Export Formatting Fix)
 - Disclaimer: Changed to bold red background (#dc2626) with white text across ALL views (print, PDF, DOCX, cover page) with "IMPORTANT DISCLAIMER" prefix
 - Footer: Updated to show appellant name with em-dashes (Criminal Appeal Case Management — Report — Appellant — Date) across all views
