@@ -73,6 +73,15 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Verified `yarn build` passes cleanly
 - Backend health check confirmed healthy
 
+## Completed (6 Apr 2026 — Security & Health Fixes)
+- CORS: Removed wildcard `["*"]` fallback, restricted to FRONTEND_URL only
+- XSS: Installed DOMPurify, sanitised dangerouslySetInnerHTML in DocumentPreviewPage
+- .env.example: Created with all required backend/frontend vars
+- CI: Added backend-tests job with pytest execution
+- toggleTheme: Clarified as forced light mode (intentional no-op, DO_NOT_UNDO)
+- Dead code: Deleted payments_new.py (unmounted duplicate of payments.py)
+- Verified existing: security headers, rate limiting (429 after 10 req/min), DB ping, EMERGENT_LLM_KEY validation, console.log removal, PyPI index
+
 ## Completed (6 Apr 2026 — Google Auth Fix)
 - Fixed Google login redirect to landing page: removed window.history.replaceState before navigate (was desyncing React Router), initialised ProtectedRoute from location.state, fixed cookie samesite mismatch in logout, removed sess_ prefix fallback, removed dead /auth/callback route
 - All auth flows verified: 100% pass rate (13/13 backend, all frontend flows)
