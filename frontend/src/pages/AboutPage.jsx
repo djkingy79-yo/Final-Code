@@ -108,19 +108,28 @@ const AboutPage = () => {
       <section className="py-8 px-6">
         <div className="max-w-4xl mx-auto">
           {/* Deb's Personal Bio */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8 mb-6 text-center" data-testid="about-deb-bio">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 mb-6" data-testid="about-deb-bio">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
               About Deb
             </h2>
-            <p className="text-slate-700 text-base leading-relaxed max-w-2xl mx-auto">
-              A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney, Colyton 
-              and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
-              training and assessment, civil construction plant operations, and painting and decorating — 
-              Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black 
-              belt in Taekwondo, ten-year undefeated champion, and proud representative of Australia at 
-              multiple World Championships — that same determination now drives her mission to help others 
-              navigate the justice system.
-            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+              <p className="text-slate-700 text-sm leading-relaxed">
+                A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney, Colyton 
+                and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
+                training and assessment — Deb has always been driven by purpose.
+              </p>
+              <p className="text-slate-700 text-sm leading-relaxed">
+                Civil construction plant operations, painting and decorating — 
+                Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black 
+                belt in Taekwondo, ten-year undefeated champion, and proud representative of Australia at 
+                multiple World Championships.
+              </p>
+              <p className="text-slate-700 text-sm leading-relaxed">
+                That same determination now drives her mission to help others 
+                navigate the justice system. Deb understands what it means to fight — and she brings that 
+                same tenacity to every case managed through this platform.
+              </p>
+            </div>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center" data-testid="about-business-info">

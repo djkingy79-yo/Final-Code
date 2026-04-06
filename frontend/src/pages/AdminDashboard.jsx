@@ -457,7 +457,7 @@ const AdminDashboard = () => {
                 ))}
               </div>
             )}
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-800">
+            <div className="mt-4 p-4 bg-blue-600 rounded-lg text-sm text-white font-bold" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
               <strong>How to verify:</strong> Check your bank statement for incoming transfers with the reference code shown. 
               Once you confirm receipt, click "Confirm Payment" to unlock the feature for the user.
             </div>

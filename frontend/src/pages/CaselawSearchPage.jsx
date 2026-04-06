@@ -435,7 +435,7 @@ const CaselawSearchPage = () => {
                   href="https://www.austlii.edu.au/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white hover:bg-slate-100 text-blue-600 px-6 py-3 rounded-xl font-bold flex items-center gap-2"
+                  className="bg-blue-800 hover:bg-blue-900 text-white border-2 border-white px-6 py-3 rounded-xl font-bold flex items-center gap-2"
                 >
                   Search AustLII
                   <ExternalLink className="w-4 h-4" />

@@ -366,8 +366,8 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
       title: "Case Notes",
       sectionTitle: "Notes",
       defendantName: "",
-      accentColor: "#ca8a04",
-      bodyHtml: `<div class="export-header" style="background:#ca8a04;"><h1>Case Notes</h1><p>${sortedNotes.length} note${sortedNotes.length !== 1 ? "s" : ""}</p></div><div class="export-body">${notesHtml || "<p>No notes recorded.</p>"}</div>`,
+      accentColor: "#2563eb",
+      bodyHtml: `<div class="export-header" style="background:#2563eb;"><h1>Case Notes</h1><p>${sortedNotes.length} note${sortedNotes.length !== 1 ? "s" : ""}</p></div><div class="export-body">${notesHtml || "<p>No notes recorded.</p>"}</div>`,
     });
   };
   const handleNotesPrint = () => openExportPreview(buildNotesHtml(), "print");

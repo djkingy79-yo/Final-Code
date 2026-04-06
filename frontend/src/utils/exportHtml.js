@@ -46,10 +46,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; }
   .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
-  .export-body .note-card { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
-  .export-body .note-title { font-weight: 700; font-size: 14px; color: #92400e; margin-bottom: 4px; }
-  .export-body .note-date { font-size: 10px; color: #a16207; margin-bottom: 8px; }
-  .export-body .note-content { font-size: 14px; color: #1e293b; white-space: pre-wrap; }
+  .export-body .note-card { background: #2563eb; border: 1px solid #1d4ed8; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .export-body .note-title { font-weight: 700; font-size: 14px; color: #ffffff; margin-bottom: 4px; }
+  .export-body .note-date { font-size: 10px; color: #bfdbfe; margin-bottom: 8px; }
+  .export-body .note-content { font-size: 14px; color: #ffffff; white-space: pre-wrap; font-weight: 700; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
