@@ -34,10 +34,16 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - How It Works tutorial page
 - Sentence extraction normalisation across all reports
 - Security audit (18-point checklist)
-- Font size standardisation across all reports and exports (Feb 2026)
+- Export Appeal Package (ZIP with all case materials and templates)
+- Pipeline Portfolio Summary on Dashboard
 
 ## Completed This Session (Feb 2026)
-- **Font Size Standardisation (P0):** Reduced all report body text from ~17-18px to 15.2px (0.95rem). Reduced headings from 1.6rem to 1.2rem. Reduced DOCX title from Pt(24) to Pt(18), H1 from Pt(16) to Pt(14), H2 from Pt(14) to Pt(12). PDF title from 26 to 20, section headers from 16 to 14. Applied consistently across ReportView, BarristerView, print previews, and backend generators.
+- **Font Size Standardisation (P0):** Reduced all report body text from ~17-18px to 15.2px (0.95rem). Reduced headings from 1.6rem to 1.2rem. DOCX/PDF backend exports also reduced.
+- **PayID Email Fix (P0):** Corrected typo `gmsil.com` → `gmail.com` in both frontend PaymentModal and backend payments router.
+- **Export Package Fix (P0):** Fixed TypeError crash when supporting_evidence contains dicts (not strings). Export now generates valid ZIP files.
+- **Terms of Service Font Reduction (P0):** All section content reduced from text-sm to text-xs across TermsOfService.jsx and TermsAcceptance.jsx.
+- **Dashboard Overview Cards Enlarged (P1):** Stats cards increased to text-3xl numbers, w-14 h-14 icons, p-6 padding. Pipeline Portfolio Summary styled with border-2, text-2xl numbers.
+- **Case Page Heading Enlarged (P1):** Title increased to text-2xl sm:text-3xl md:text-4xl font-extrabold. Identity card fields increased to text-lg sm:text-xl.
 
 ## Backlog
 - P1: Deploy fixes to production (user must click "Deploy" in Emergent chat)
@@ -51,3 +57,4 @@ Criminal appeals management tool for Australian jurisdictions. Features secure d
 - DOMPurify must use `{ WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }`
 - PDF export blob fallback for iOS must not be modified
 - Grounds of merit hard cap: max 2 new per sync
+- PayID email must remain djkingy79@gmail.com
