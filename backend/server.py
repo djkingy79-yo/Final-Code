@@ -3860,7 +3860,6 @@ async def get_reports(case_id: str, request: Request):
             "case_id": case_id,
             "user_id": user.user_id,
             "content.aggressive_mode": {"$ne": True},
-            "report_type": {"$ne": "barrister_view"},
         },
         {"_id": 0}
     ).sort("generated_at", -1).to_list(100)
