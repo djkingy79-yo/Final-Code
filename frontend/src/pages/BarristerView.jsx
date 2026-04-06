@@ -420,7 +420,7 @@ export default function BarristerView() {
       ? '<div class="preview-notice">PDF preview — use Print / Save as PDF to download.</div>'
       : "";
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
-    const previewFooterLabel = `Criminal Appeal Case Management - Barrister Brief on ${caseData?.defendant_name || "Appellant"} - ${previewDate}`;
+    const previewFooterLabel = `Criminal Appeal Case Management — Barrister Brief — ${caseData?.defendant_name || caseData?.title || "Appellant"} — ${previewDate}`;
     const defendantName = caseData?.defendant_name || "Appellant";
     const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
     const documentsCount = documents.length;
@@ -448,7 +448,7 @@ export default function BarristerView() {
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
     .cover-page-card-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
     .cover-page-card-value { font-size: 18px; font-weight: 700; color: #0f172a; }
-    .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
+    .cover-page-note { margin-top: 12px; border: 2px solid #b91c1c; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
     .report-header { background: #14b8a6; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
@@ -482,10 +482,10 @@ export default function BarristerView() {
     .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
     .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; }
     .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
-    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
-    .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
-    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
+    .disclaimer-bold { background: #dc2626; border: 3px solid #b91c1c; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .disclaimer-bold .disc-icon { color: #ffffff; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
+    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

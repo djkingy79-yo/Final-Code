@@ -88,7 +88,13 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Dead code: Deleted payments_new.py (unmounted duplicate of payments.py)
 - Verified existing: security headers, rate limiting (429 after 10 req/min), DB ping, EMERGENT_LLM_KEY validation, console.log removal, PyPI index
 
-## Completed (6 Apr 2026 — Google Auth Fix)
+## Completed (6 Apr 2026 — Print/Export Formatting Fix)
+- Disclaimer: Changed to bold red background (#dc2626) with white text across ALL views (print, PDF, DOCX, cover page) with "IMPORTANT DISCLAIMER" prefix
+- Footer: Updated to show appellant name with em-dashes (Criminal Appeal Case Management — Report — Appellant — Date) across all views
+- Page numbers: Verified in PDF (draw_page_footer) and print view (CSS counter)
+- Applied same fixes to BarristerView.jsx print/export
+
+## Completed (6 Apr 2026 — Google Auth CORS Fix)
 - Fixed Google login redirect to landing page: removed window.history.replaceState before navigate (was desyncing React Router), initialised ProtectedRoute from location.state, fixed cookie samesite mismatch in logout, removed sess_ prefix fallback, removed dead /auth/callback route
 - All auth flows verified: 100% pass rate (13/13 backend, all frontend flows)
 

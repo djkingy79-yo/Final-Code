@@ -719,7 +719,8 @@ const ReportView = () => {
       ? '<div class="notice">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
-    const previewFooterLabel = `Criminal Appeal Case Management - ${title} on ${defendantName} - ${previewDate}`;
+    const appellantForFooter = defendantName || caseData?.defendant_name || caseData?.title || "Appellant";
+    const previewFooterLabel = `Criminal Appeal Case Management — ${title} — ${appellantForFooter} — ${previewDate}`;
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -742,7 +743,7 @@ const ReportView = () => {
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
     .cover-page-card-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
     .cover-page-card-value { font-size: 18px; font-weight: 700; color: #0f172a; }
-    .cover-page-note { margin-top: 12px; border: 2px solid #dc2626; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #1e293b; background: #fef2f2; }
+    .cover-page-note { margin-top: 12px; border: 2px solid #b91c1c; border-radius: 14px; padding: 14px 16px; font-size: 12px; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .page-break { page-break-after: always; break-after: page; }
     .report-header { background: ${theme.previewColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
     .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; color: #fff; }
@@ -784,10 +785,10 @@ const ReportView = () => {
     .disclaimer-icon { color: #ef4444; font-size: 18px; flex-shrink: 0; }
     .disclaimer-text { font-size: 11px; color: #334155; }
     .disclaimer-text strong { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 2px; }
-    .disclaimer-bold { background: #fef2f2; border: 3px solid #ef4444; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-bold .disc-icon { color: #ef4444; font-size: 28px; flex-shrink: 0; }
-    .disclaimer-bold .disc-text { font-size: 14px; color: #1e293b; font-weight: 700; }
-    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; display: block; margin-bottom: 6px; }
+    .disclaimer-bold { background: #dc2626; border: 3px solid #b91c1c; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .disclaimer-bold .disc-icon { color: #ffffff; font-size: 28px; flex-shrink: 0; }
+    .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
+    .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
@@ -917,7 +918,7 @@ const ReportView = () => {
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">${previewFooterLabel}</span>
-      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
+      <span class="print-footer-page">Page <span class="print-footer-page-print"></span></span>
     </div>
   </div>
 </body>
