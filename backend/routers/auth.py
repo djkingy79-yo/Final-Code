@@ -13,6 +13,9 @@ import secrets
 
 from config import db, get_admin_emails
 from auth_utils import get_current_user
+import logging
+
+logger = logging.getLogger(__name__)
 
 ADMIN_EMAILS = get_admin_emails()
 
@@ -158,26 +161,31 @@ async def login_user(request: LoginRequest, response: Response):
 
 @router.post("/session")
 async def create_session(request: Request, response: Response):
-    """Exchange session_id for session_token (Google OAuth via Emergent)"""
+    """DO_NOT_UNDO — Exchange session_id for session_token (Google OAuth via Emergent)"""
     body = await request.json()
     session_id = body.get("session_id")
     
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
     
-    # Call Emergent Auth to get user data
+    # DO_NOT_UNDO — Call Emergent Auth to get user data
+    logger.info(f"Google auth: exchanging session_id (len={len(session_id)})")
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             auth_response = await client.get(
                 "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
                 headers={"X-Session-ID": session_id}
             )
+            logger.info(f"Google auth: Emergent response status={auth_response.status_code}")
         except httpx.ConnectTimeout:
+            logger.error("Google auth: Emergent auth server timed out")
             raise HTTPException(status_code=504, detail="Authentication server timed out. Please try again.")
         except httpx.RequestError as e:
+            logger.error(f"Google auth: Emergent auth server unreachable: {str(e)}")
             raise HTTPException(status_code=502, detail=f"Authentication server unreachable: {str(e)}")
     
     if auth_response.status_code != 200:
+        logger.warning(f"Google auth: session_id exchange failed with status {auth_response.status_code}: {auth_response.text[:200]}")
         raise HTTPException(status_code=401, detail="Invalid session_id")
     
     user_data = auth_response.json()
