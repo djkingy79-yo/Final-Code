@@ -678,7 +678,14 @@ const CaseDetail = ({ user }) => {
       if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
         toast.error("Ground analysis timed out. Please retry — long files are now processed in a faster, prioritised mode.");
       } else {
-        toast.error("Failed to auto-identify grounds. Please try again.");
+        const detail = error?.response?.data?.detail || "";
+        if (detail.includes("Pipeline identification failed")) {
+          toast.error("AI analysis encountered an error processing your documents. This may be a temporary issue — please wait a moment and try again.");
+        } else if (error?.response?.status === 400) {
+          toast.error(detail || "No documents or case summary available for analysis. Please upload documents first.");
+        } else {
+          toast.error("Failed to auto-identify grounds. This may be a temporary server issue — please try again in a moment.");
+        }
       }
     } finally {
       setAutoIdentifying(false);
@@ -931,7 +938,7 @@ const CaseDetail = ({ user }) => {
               <span className="text-slate-500 hidden sm:inline">/</span>
               <span className="font-medium text-slate-900 truncate text-sm sm:text-base">{caseData?.title}</span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
+            <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
               <Button 
                 size="sm" 
                 onClick={() => navigate("/help")}
