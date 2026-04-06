@@ -4,72 +4,34 @@
 Criminal appeals management tool for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, locked Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) → $150 (2x depth) → $200 (3x depth). Barrister View locked until all 3 standard reports generated/paid.
+- **Report Tiers:** Free (Base) → $150 (2x depth) → $200 (3x depth). Barrister View locked until all 3 generated/paid.
 - **Report Language:** STRICT third-person educational tool. No "we/us/our/you/your".
 - **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons.
 - **Australian English:** analyse, organise, barrister, defence, offence throughout.
 - **Payment:** PayID only (djkingy79@gmail.com, NAB). Stripe/PayPal permanently removed.
+- **Trial Pricing:** First-time users get Grounds of Merit for $5.00 AUD (regular $99). One-time per user lifetime. Free Case Summary included.
 
 ## Tech Stack
-- Frontend: React + Tailwind + Shadcn/UI
-- Backend: FastAPI + MongoDB
-- AI: OpenAI GPT-4o via Emergent LLM Key (LiteLLM)
-- Auth: Emergent Google Auth + JWT
-- Email: Resend
-- Exports: reportlab (PDF), python-docx (DOCX)
-- Mobile: Capacitor 7 (iOS + Android)
-
-## What's Been Implemented
-
-### Core Features
-- Full report generation pipeline (4 tiers)
-- Document upload & management with camera scanning (native)
-- Timeline analysis
-- Grounds of merit tracking with payment unlock
-- PDF/DOCX export with cover pages, disclaimers, footers
-- Barrister View with Issue Matrix attachment
-- Google Auth + email/password auth
-- PayID payment flow with admin approval
-- DOMPurify XSS sanitisation (with style tag preservation)
-- Lawyer Directory with verified links
-- Appeal Statistics page, How It Works tutorial page
-- Export Appeal Package (ZIP)
-- Pipeline Portfolio Summary on Dashboard
-
-### Native Mobile App (Capacitor)
-- Camera document scanning, offline access, push/local notifications
-- Haptic feedback, native share, biometric auth permissions
-- iOS & Android projects generated at /app/frontend/ios and /app/frontend/android
+React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LLM | Capacitor 7 (iOS + Android) | Resend (Email) | reportlab + python-docx (Exports)
 
 ## Completed This Session (Feb 2026)
-- **Font Size Standardisation:** All reports, prints, and exports
-- **PayID Email Fix:** gmsil.com → gmail.com
-- **Export Package Fix:** TypeError on supporting_evidence dicts
-- **Terms of Service Font Reduction**
-- **Dashboard Overview Cards Enlarged**
-- **Case Page Heading Enlarged**
-- **Native Mobile App Build:** Full Capacitor 7 setup with 11 plugins
-- **Payment Unlock Bug Fix (P0):**
-  - Added `grounds_unlock` to FEATURE_TYPE_ALIASES (legacy data support)
-  - Made grounds endpoint use `canonical_feature_type` for unlock check
-  - Added admin bypass to grounds endpoint (admin can view any case)
-  - Fixed payment query to use case owner's user_id (not admin's)
-  - Added "Refresh Status" button on paywall banner
-  - Added "Check Status" button in PaymentModal after submission
-  - PaymentModal auto-refreshes case data on close
-  - Fixed legacy bad data in DB (normalised non-canonical feature names)
+- Font size standardisation (reports, prints, exports)
+- PayID email typo fix, Export Package crash fix
+- Terms of Service font reduction, Dashboard cards enlarged, Case heading enlarged
+- Native Mobile App build (Capacitor 7, camera scanning, offline, notifications, haptics, share)
+- Payment unlock bug fix (feature type aliases, admin bypass, auto-refresh)
+- Sticky investigation timer banner (always visible during AI analysis)
+- **Trial Pricing System:** $5 Grounds of Merit trial for first-time users. Backend validates eligibility (0 completed payments). Frontend shows blue gradient banner with yellow badge, strikethrough on regular price. PaymentModal passes use_trial flag.
 
 ## Backlog
-- P1: Deploy fixes to production (user must click "Deploy" in Emergent chat)
+- P1: Deploy fixes to production
 - P2: Counsel conference prep attachment for Barrister View
-- P2: Real-time collaboration/chat for Notes section
-- P2: Case sharing between registered users
+- P2: Real-time collaboration/chat for Notes
+- P2: Case sharing between users
 
 ## Critical Guards
 - DO_NOT_UNDO comments protect key functions
-- DOMPurify must use `{ WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }`
-- PDF export blob fallback for iOS must not be modified
-- Grounds of merit hard cap: max 2 new per sync
-- PayID email must remain djkingy79@gmail.com
-- All native calls wrapped in isNativePlatform() checks
+- DOMPurify: `{ WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }`
 - FEATURE_TYPE_ALIASES must include grounds_unlock → grounds_of_merit
+- PayID email: djkingy79@gmail.com
+- TRIAL_PRICE = 5.00, TRIAL_FEATURE = "grounds_of_merit"
