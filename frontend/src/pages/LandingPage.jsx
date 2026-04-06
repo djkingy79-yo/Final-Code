@@ -208,7 +208,7 @@ const LandingPage = () => {
                   </div>
                   <div>
                     <p className="text-white font-black text-base uppercase tracking-wide">New User Special Offer</p>
-                    <p className="text-white font-extrabold text-sm">Unlock Grounds of Merit for just <span className="text-2xl">$5.00</span> — one time only!</p>
+                    <p className="text-white font-extrabold text-sm">First time users only — Unlock Grounds of Merit for just <span className="text-2xl">$5.00</span></p>
                   </div>
                 </div>
               </div>
