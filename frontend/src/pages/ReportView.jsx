@@ -420,7 +420,7 @@ const parseAnalysisSections = (analysis = "") => {
 };
 
 const MarkdownBlock = ({ text, testId }) => (
-  <div className="legal-report text-[1.12rem] sm:text-[1.18rem] text-slate-900" data-testid={testId}>
+  <div className="legal-report text-slate-900" data-testid={testId}>
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
@@ -517,7 +517,7 @@ const LazySection = ({ section, idx, theme, isFirst, forceRender }) => {
             {idx + 1}
           </span>
           <h3
-            className={`text-xl sm:text-2xl font-bold ${theme.accentText} tracking-tight`}
+            className={`text-lg sm:text-xl font-bold ${theme.accentText} tracking-tight`}
             style={{ fontFamily: "Crimson Pro, serif" }}
             data-testid={`report-section-heading-${idx + 1}`}
           >
@@ -1157,8 +1157,8 @@ const ReportView = () => {
 
       <style>{`
         .legal-report {
-          font-size: 1.15rem;
-          line-height: 1.85;
+          font-size: 0.95rem;
+          line-height: 1.75;
           color: #0f172a;
         }
         .legal-report h1,
@@ -1168,14 +1168,14 @@ const ReportView = () => {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #1e3a8a;
-          margin: 1.6rem 0 0.8rem;
+          margin: 1.2rem 0 0.5rem;
         }
-        .legal-report h2 { font-size: 1.6rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 6px; }
-        .legal-report h3 { font-size: 1.35rem; color: #1e40af; }
-        .legal-report h4 { font-size: 1.15rem; color: #334155; font-family: 'Manrope', sans-serif; }
+        .legal-report h2 { font-size: 1.2rem; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; }
+        .legal-report h3 { font-size: 1.05rem; color: #1e40af; }
+        .legal-report h4 { font-size: 0.95rem; color: #334155; font-family: 'Manrope', sans-serif; }
         .legal-report strong { color: #0f172a; font-weight: 700; }
-        .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.8rem 0; }
-        .legal-report li { margin-bottom: 0.55rem; font-size: 1.15rem; }
+        .legal-report ul, .legal-report ol { padding-left: 1.3rem; margin: 0.6rem 0; }
+        .legal-report li { margin-bottom: 0.4rem; font-size: 0.95rem; }
         .legal-report table {
           width: max-content;
           min-width: 100%;
@@ -1196,8 +1196,8 @@ const ReportView = () => {
         }
         .legal-report th, .legal-report td {
           border: 1px solid #cbd5e1;
-          padding: 10px 12px;
-          font-size: 0.9rem;
+          padding: 8px 10px;
+          font-size: 0.85rem;
           vertical-align: top;
           white-space: normal;
           word-break: break-word;
@@ -1211,11 +1211,11 @@ const ReportView = () => {
         }
         @media (max-width: 768px) {
           .legal-report {
-            font-size: 1rem;
-            line-height: 1.7;
+            font-size: 0.88rem;
+            line-height: 1.65;
           }
           .legal-report li {
-            font-size: 1rem;
+            font-size: 0.88rem;
           }
           .legal-report table {
             min-width: 560px;
@@ -1238,7 +1238,7 @@ const ReportView = () => {
             -webkit-print-color-adjust: exact;
           }
           .no-print { display: none !important; }
-          .legal-report { font-size: 12px; color: #0f172a; }
+          .legal-report { font-size: 10pt; color: #0f172a; }
           .legal-report h1,
           .legal-report h2,
           .legal-report h3,

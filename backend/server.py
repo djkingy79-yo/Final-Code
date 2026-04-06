@@ -4241,40 +4241,40 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name='ReportTitle',
-        fontSize=26,
-        spaceAfter=14,
+        fontSize=20,
+        spaceAfter=12,
         alignment=TA_CENTER,
         fontName='Helvetica-Bold'
     ))
     styles.add(ParagraphStyle(
         name='ReportSubtitle',
-        fontSize=12,
-        spaceAfter=10,
+        fontSize=11,
+        spaceAfter=8,
         alignment=TA_CENTER,
         textColor=colors.HexColor('#475569')
     ))
     styles.add(ParagraphStyle(
         name='SectionHeader',
-        fontSize=16,
-        spaceBefore=18,
-        spaceAfter=8,
+        fontSize=14,
+        spaceBefore=14,
+        spaceAfter=6,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#0f172a')
     ))
     styles.add(ParagraphStyle(
         name='SubHeader',
-        fontSize=13,
-        spaceBefore=10,
-        spaceAfter=6,
+        fontSize=12,
+        spaceBefore=8,
+        spaceAfter=5,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#1e293b')
     ))
     styles.add(ParagraphStyle(
         name='ReportBodyText',
-        fontSize=11,
-        spaceAfter=6,
+        fontSize=10,
+        spaceAfter=5,
         alignment=TA_JUSTIFY,
-        leading=16
+        leading=14
     ))
     styles.add(ParagraphStyle(
         name='BulletText',
@@ -4291,33 +4291,33 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ))
     styles.add(ParagraphStyle(
         name='GroundTitle',
-        fontSize=13,
-        spaceBefore=10,
+        fontSize=12,
+        spaceBefore=8,
         spaceAfter=4,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#1e3a8a')
     ))
     styles.add(ParagraphStyle(
         name='NumberedSectionHeader',
-        fontSize=15,
-        spaceBefore=16,
-        spaceAfter=8,
+        fontSize=13,
+        spaceBefore=12,
+        spaceAfter=6,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#0f172a')
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaLabel',
-        fontSize=10,
+        fontSize=9,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#64748b'),
         spaceAfter=2,
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaValue',
-        fontSize=13,
+        fontSize=11,
         fontName='Helvetica-Bold',
         textColor=colors.HexColor('#0f172a'),
-        spaceAfter=6,
+        spaceAfter=5,
     ))
     # DO_NOT_UNDO — Bold red disclaimer with white text in PDF
     styles.add(ParagraphStyle(
@@ -4359,8 +4359,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         try:
             col_width = doc.width / col_count
             para_rows = []
-            cell_style = ParagraphStyle(name='CellText', fontSize=11, leading=13, fontName='Helvetica', wordWrap='CJK')
-            header_style = ParagraphStyle(name='HeaderCellText', fontSize=11, leading=13, fontName='Helvetica-Bold', textColor=colors.white)
+            cell_style = ParagraphStyle(name='CellText', fontSize=10, leading=12, fontName='Helvetica', wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=10, leading=12, fontName='Helvetica-Bold', textColor=colors.white)
             for ri, row in enumerate(rows):
                 style = header_style if ri == 0 else cell_style
                 para_rows.append([Paragraph(c[:260], style) for c in row])
@@ -4653,7 +4653,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story.append(Spacer(1, 5*mm))
     story.append(Paragraph(
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE",
-        ParagraphStyle(name='DisclaimerTitle', fontSize=14, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), spaceAfter=4)
+        ParagraphStyle(name='DisclaimerTitle', fontSize=12, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), spaceAfter=4)
     ))
     story.append(Paragraph(
         "This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. "
@@ -4722,19 +4722,19 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     
     # Title style
     title_style = styles['Title']
-    title_style.font.size = Pt(24)
+    title_style.font.size = Pt(18)
     title_style.font.bold = True
     title_style.font.color.rgb = RGBColor(30, 41, 59)
     
     # Heading 1 style
     h1_style = styles['Heading 1']
-    h1_style.font.size = Pt(16)
+    h1_style.font.size = Pt(14)
     h1_style.font.bold = True
     h1_style.font.color.rgb = RGBColor(30, 41, 59)
     
     # Heading 2 style
     h2_style = styles['Heading 2']
-    h2_style.font.size = Pt(14)
+    h2_style.font.size = Pt(12)
     h2_style.font.bold = True
     h2_style.font.color.rgb = RGBColor(30, 58, 138)
     
@@ -4742,14 +4742,14 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     header_para = doc.add_paragraph()
     header_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
     header_run = header_para.add_run("APPEAL CASE MANAGER")
-    header_run.font.size = Pt(14)
+    header_run.font.size = Pt(12)
     header_run.font.bold = True
     header_run.font.color.rgb = RGBColor(15, 23, 42)
 
     sub_header = doc.add_paragraph()
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub_run = sub_header.add_run("Criminal Law Appeal Case Management")
-    sub_run.font.size = Pt(11)
+    sub_run.font.size = Pt(10)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
 
     case_line = doc.add_paragraph()
@@ -4806,21 +4806,21 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_title = doc.add_paragraph()
     cover_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_title_run = cover_title.add_run(report_title)
-    cover_title_run.font.size = Pt(24)
+    cover_title_run.font.size = Pt(18)
     cover_title_run.font.bold = True
     cover_title_run.font.color.rgb = RGBColor(15, 23, 42)
 
     cover_subtitle = doc.add_paragraph()
     cover_subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_subtitle_run = cover_subtitle.add_run("Appeal Case Manager")
-    cover_subtitle_run.font.size = Pt(11)
+    cover_subtitle_run.font.size = Pt(10)
     cover_subtitle_run.font.bold = True
     cover_subtitle_run.font.color.rgb = RGBColor(29, 78, 216)
 
     cover_case = doc.add_paragraph()
     cover_case.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_case_run = cover_case.add_run(case.get('title', 'Unknown case'))
-    cover_case_run.font.size = Pt(12)
+    cover_case_run.font.size = Pt(11)
     cover_case_run.font.color.rgb = RGBColor(71, 85, 105)
 
     doc.add_paragraph()
@@ -4994,11 +4994,11 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 if r_idx == 0:
                     for run in cell.paragraphs[0].runs:
                         run.bold = True
-                        run.font.size = Pt(11)
+                        run.font.size = Pt(10)
                         run.font.name = 'Arial'
                 else:
                     for run in cell.paragraphs[0].runs:
-                        run.font.size = Pt(11)
+                        run.font.size = Pt(10)
                         run.font.name = 'Arial'
         doc.add_paragraph()
 
@@ -5053,7 +5053,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_title = doc.add_paragraph()
     disc_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disc_run = disc_title.add_run("NOT LEGAL ADVICE")
-    disc_run.font.size = Pt(14)
+    disc_run.font.size = Pt(12)
     disc_run.font.bold = True
     disc_run.font.color.rgb = RGBColor(220, 38, 38)
     

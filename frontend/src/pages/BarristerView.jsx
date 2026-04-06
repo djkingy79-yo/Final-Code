@@ -470,7 +470,7 @@ export default function BarristerView() {
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #0f766e; margin: 1.2rem 0 0.6rem; }
     .section-body h2 { font-size: 12pt; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
-    .section-body h3 { font-size: 1.2rem; color: #1e40af; }
+    .section-body h3 { font-size: 11pt; color: #1e40af; }
     .section-body h4 { font-size: 10.5pt; color: #334155; }
     .section-body p { margin-bottom: 0.7rem; }
     .section-body strong { color: #0f172a; font-weight: 700; }
@@ -808,7 +808,7 @@ export default function BarristerView() {
             <div className="flex items-start gap-4">
               <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
               <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Barrister View unavailable</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Barrister View unavailable</h1>
                 <p className="mt-3 text-slate-700 max-w-3xl">{errorMessage || "This case does not yet have the three completed standard reports required to unlock the Barrister View."}</p>
               </div>
             </div>
@@ -886,7 +886,7 @@ export default function BarristerView() {
             <div className="flex items-start gap-4">
               <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Barrister Brief generation failed</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Barrister Brief generation failed</h1>
                 <p className="mt-3 text-slate-700 max-w-3xl">{errorMessage || "The brief could not be generated on the last attempt."}</p>
                 <Button
                   className="mt-5 bg-blue-700 text-white hover:bg-blue-600"
@@ -907,13 +907,13 @@ export default function BarristerView() {
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
                   <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Barrister Brief</p>
-                  <h1 className="text-3xl sm:text-4xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="barrister-title">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="barrister-title">
                     {caseData?.title || "Barrister Brief"}
                   </h1>
                   <p className="text-sm text-white/90 mt-1 font-medium">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-3xl font-bold text-white" data-testid="barrister-grounds-count">{grounds.length} Ground{grounds.length !== 1 ? "s" : ""}</p>
+                  <p className="text-2xl font-bold text-white" data-testid="barrister-grounds-count">{grounds.length} Ground{grounds.length !== 1 ? "s" : ""}</p>
                   <p className="text-xs text-white/80 font-semibold">Identified</p>
                 </div>
               </div>
@@ -994,7 +994,7 @@ export default function BarristerView() {
                         {index + 1}
                       </span>
                       <h3
-                        className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
+                        className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
                         style={{ fontFamily: "Crimson Pro, serif" }}
                         data-testid={`barrister-section-heading-${index + 1}`}
                       >
@@ -1013,7 +1013,7 @@ export default function BarristerView() {
                 <div data-testid="barrister-grounds-detail-section">
                   <div className="border-l-4 border-teal-500 pl-4 mb-4">
                     <h3
-                      className="text-xl sm:text-2xl font-bold text-teal-700 tracking-tight"
+                      className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
                       style={{ fontFamily: "Crimson Pro, serif" }}
                     >
                       Grounds of Merit — Detailed Assessment
@@ -1107,8 +1107,8 @@ export default function BarristerView() {
 
       <style>{`
         .legal-report {
-          font-size: 1.05rem;
-          line-height: 1.85;
+          font-size: 0.95rem;
+          line-height: 1.75;
           color: #0f172a;
         }
         .legal-report h1,
@@ -1118,19 +1118,19 @@ export default function BarristerView() {
           font-family: 'Crimson Pro', serif;
           font-weight: 700;
           color: #1e3a8a;
-          margin: 1.4rem 0 0.75rem;
+          margin: 1.2rem 0 0.5rem;
         }
         .legal-report h2 {
-          font-size: 1.6rem;
+          font-size: 1.2rem;
           border-bottom: 2px solid #1e3a8a;
           padding-bottom: 0.35rem;
         }
-        .legal-report h3 { font-size: 1.3rem; }
-        .legal-report h4 { font-size: 1.1rem; color: #334155; }
-        .legal-report p { margin-bottom: 0.9rem; }
+        .legal-report h3 { font-size: 1.05rem; }
+        .legal-report h4 { font-size: 0.95rem; color: #334155; }
+        .legal-report p { margin-bottom: 0.7rem; }
         .legal-report strong { color: #0f172a; }
-        .legal-report ul, .legal-report ol { margin: 0.8rem 0 1rem; padding-left: 1.5rem; }
-        .legal-report li { margin-bottom: 0.45rem; }
+        .legal-report ul, .legal-report ol { margin: 0.6rem 0 0.8rem; padding-left: 1.3rem; }
+        .legal-report li { margin-bottom: 0.35rem; }
         .legal-report table {
           width: 100%;
           min-width: 640px;
@@ -1141,10 +1141,10 @@ export default function BarristerView() {
         .legal-report th,
         .legal-report td {
           border: 1px solid #cbd5e1;
-          padding: 0.75rem 0.85rem;
+          padding: 0.5rem 0.6rem;
           vertical-align: top;
           overflow-wrap: anywhere;
-          font-size: 0.92rem;
+          font-size: 0.85rem;
         }
         .legal-report th {
           background: #1d4ed8;
@@ -1165,7 +1165,7 @@ export default function BarristerView() {
         @media print {
           body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
           .no-print { display: none !important; }
-          .legal-report { font-size: 11.5pt; }
+          .legal-report { font-size: 10pt; }
           .legal-report-table-wrap { overflow: visible; }
         }
       `}</style>
