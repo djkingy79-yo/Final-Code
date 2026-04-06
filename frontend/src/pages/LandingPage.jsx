@@ -95,28 +95,48 @@ const LandingPage = () => {
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
-        {/* Mobile + iPad Menu */}
+        {/* Mobile + iPad Menu — Fixed overlay for iOS scroll support */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-slate-200 px-6 py-4 space-y-3">
-            <Link to="/" className="block py-2 text-slate-700 hover:text-blue-700 font-semibold" data-testid="mobile-nav-home">Home</Link>
-            <Link to="/professional-summary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>
-            <Link to="/appeal-statistics" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
-            <Link to="/how-it-works" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-it-works">How It Works</Link>
-            <Link to="/how-to-use" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
-            <Link to="/legal-framework" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
-            <Link to="/glossary" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
-            <Link to="/legal-resources" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
-            <Link to="/lawyers" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
-            <Link to="/forms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-forms">Forms & Templates</Link>
-            <Link to="/caselaw-search" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-caselaw-search">Caselaw Search</Link>
-            <Link to="/about" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
-            <Link to="/faq" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
-            <Link to="/success-stories" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
-            <Link to="/terms" className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-terms">Terms & Privacy</Link>
-            <div className="flex items-center gap-3 pt-2">
-              <Button onClick={() => setShowAuthModal(true)} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
-                Sign In
-              </Button>
+          <div className="lg:hidden fixed inset-0 z-[100] bg-white" style={{ WebkitOverflowScrolling: 'touch' }} data-testid="mobile-menu-container">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
+                  <Scale className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  Appeal Case Manager
+                </span>
+              </div>
+              <button 
+                className="p-2 text-slate-900"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="overflow-y-auto px-6 py-4" style={{ maxHeight: 'calc(100vh - 80px)', WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
+              <div className="space-y-3">
+                <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700 font-semibold" data-testid="mobile-nav-home">Home</Link>
+                <Link to="/professional-summary" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-professional-summary">For Legal Professionals</Link>
+                <Link to="/appeal-statistics" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-appeal-statistics">Appeal Statistics</Link>
+                <Link to="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-it-works">How It Works</Link>
+                <Link to="/how-to-use" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-how-to-use">How To Use</Link>
+                <Link to="/legal-framework" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-framework">Legal Framework</Link>
+                <Link to="/glossary" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-glossary">Legal Glossary</Link>
+                <Link to="/legal-resources" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-legal-resources">Resources & Contacts</Link>
+                <Link to="/lawyers" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-lawyers">Lawyer Directory</Link>
+                <Link to="/forms" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-forms">Forms & Templates</Link>
+                <Link to="/caselaw-search" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-caselaw-search">Caselaw Search</Link>
+                <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-about">About</Link>
+                <Link to="/faq" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-faq">FAQ</Link>
+                <Link to="/success-stories" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-success-stories">Success Stories</Link>
+                <Link to="/terms" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-700 hover:text-blue-700" data-testid="mobile-nav-terms">Terms & Privacy</Link>
+                <div className="flex items-center gap-3 pt-2 pb-8">
+                  <Button onClick={() => { setMobileMenuOpen(false); setShowAuthModal(true); }} className="landing-cta-primary flex-1" data-testid="mobile-login-btn">
+                    Sign In
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         )}

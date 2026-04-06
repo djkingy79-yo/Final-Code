@@ -232,7 +232,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               <div className="mt-2 space-y-3 pl-2">
                 {Object.entries(category.state_legislation).map(([actName, sections]) => (
                   <div key={actName} className="bg-white border border-slate-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]">
                       <FileText className="w-4 h-4 text-slate-600" />
                       {actName}
                     </h4>
@@ -256,7 +256,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                               {sRef} <ExternalLink className="w-3 h-3 ml-1 inline" />
                             </Badge>
                           </a>
-                          <span className="text-slate-700 text-sm">{sTitle}</span>
+                          <span className="text-slate-700 text-[12px]">{sTitle}</span>
                         </div>
                         );
                       })}
@@ -311,7 +311,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               <div className="mt-2 space-y-3 pl-2">
                 {Object.entries(category.cth_legislation).map(([actName, sections]) => (
                   <div key={actName} className="bg-white border border-slate-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]">
                       <FileText className="w-4 h-4 text-slate-600" />
                       {actName}
                     </h4>
@@ -328,7 +328,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                           <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200 font-mono shrink-0">
                             {sRef}
                           </Badge>
-                          <span className="text-slate-700 text-sm">{sTitle}</span>
+                          <span className="text-slate-700 text-[12px]">{sTitle}</span>
                         </div>
                         );
                       })}
@@ -365,16 +365,16 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="mt-2 bg-white border border-slate-200 rounded-lg p-4">
-                <p className="text-sm text-slate-600 mb-3">
+                <p className="text-[12px] text-slate-600 mb-3">
                   The prosecution must prove each of these elements beyond reasonable doubt:
                 </p>
                 <ul className="space-y-2">
                   {category.key_elements.map((element, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-medium shrink-0">
+                      <span className="w-6 h-6 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-[12px] font-medium shrink-0">
                         {idx + 1}
                       </span>
-                      <span className="text-slate-700">{element}</span>
+                      <span className="text-slate-700 text-[12px]">{element}</span>
                     </li>
                   ))}
                 </ul>
@@ -408,7 +408,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             </CollapsibleTrigger>
             <CollapsibleContent>
               <div className="mt-2 bg-white border border-slate-200 rounded-lg p-4">
-                <p className="text-sm text-slate-600 mb-3">
+                <p className="text-[12px] text-slate-600 mb-3">
                   Potential defences that may apply to {category.name?.toLowerCase()} offences:
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -450,21 +450,21 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             <CollapsibleContent>
               <div className="mt-2 bg-white border border-slate-200 rounded-lg p-4 space-y-4">
                 <div>
-                  <p className="text-sm text-slate-500">Governing Legislation</p>
-                  <p className="font-medium text-slate-900">{appealFramework.legislation}</p>
+                  <p className="text-[16px] font-bold text-slate-800">Governing Legislation</p>
+                  <p className="font-medium text-slate-900 text-[12px]">{appealFramework.legislation}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-slate-500">Appeal Court</p>
-                  <p className="font-medium text-slate-900">{appealFramework.court}</p>
+                  <p className="text-[16px] font-bold text-slate-800">Appeal Court</p>
+                  <p className="font-medium text-slate-900 text-[12px]">{appealFramework.court}</p>
                 </div>
                 {appealFramework.time_limits && (
                   <div>
-                    <p className="text-sm text-slate-500 mb-2">Time Limits</p>
+                    <p className="text-[16px] font-bold text-slate-800 mb-2">Time Limits</p>
                     <div className="space-y-2">
                       {Object.entries(appealFramework.time_limits).map(([key, value]) => (
                         <div key={key} className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-red-600" />
-                          <span className="text-sm text-slate-700">
+                          <span className="text-[12px] text-slate-700">
                             <span className="font-medium" style={{textTransform:'capitalize'}}>{key.replace(/_/g, ' ')}:</span> {typeof value === "object" ? JSON.stringify(value) : String(value)}
                           </span>
                         </div>
@@ -474,14 +474,14 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 )}
                 {appealFramework.forms && appealFramework.forms.length > 0 && (
                   <div>
-                    <p className="text-sm text-slate-500 mb-2">Required Forms</p>
+                    <p className="text-[16px] font-bold text-slate-800 mb-2">Required Forms</p>
                     <div className="space-y-1">
                       {appealFramework.forms.map((form, idx) => {
                         if (typeof form === "string") {
                           return (
                             <div key={idx} className="flex items-center gap-2">
                               <FileText className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm text-slate-700">{form}</span>
+                              <span className="text-[12px] text-slate-700">{form}</span>
                             </div>
                           );
                         }
@@ -490,7 +490,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                         return (
                           <div key={idx} className="flex items-center gap-2">
                             <FileText className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm text-slate-700">
+                            <span className="text-[12px] text-slate-700">
                               <span className="font-mono font-medium">{formName}</span>{formPurpose ? ` - ${formPurpose}` : ""}
                             </span>
                           </div>
@@ -507,7 +507,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
         {/* Common Appeal Grounds */}
         {commonGrounds.length > 0 && (
           <div className="pt-4 border-t border-slate-200">
-            <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+            <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]">
               <Scale className="w-4 h-4 text-slate-600" />
               Common Appeal Grounds
             </h4>
@@ -517,8 +517,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                   key={idx} 
                   className="bg-slate-50 border border-slate-200 rounded-lg p-3"
                 >
-                  <h5 className="font-medium text-slate-900 text-sm">{ground.ground}</h5>
-                  <p className="text-xs text-slate-600 mt-1">{ground.description}</p>
+                  <h5 className="font-bold text-slate-900 text-[16px]">{ground.ground}</h5>
+                  <p className="text-[11px] text-slate-600 mt-1">{ground.description}</p>
                 </div>
               ))}
             </div>
@@ -527,7 +527,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
         {/* DO NOT UNDO — How to Start Your Appeal Section */}
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: 'Crimson Pro, serif' }}>
             <FileText className="w-5 h-5 text-indigo-600" />
             How to Start Your Appeal — Step by Step
           </h4>
@@ -542,10 +542,10 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 { step: 6, title: "Attend the Appeal Hearing", detail: "Present your arguments before the Court of Criminal Appeal (or equivalent). Consider engaging a barrister for the hearing.", link: null },
               ].map(item => (
                 <div key={item.step} className="flex gap-3">
-                  <span className="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">{item.step}</span>
+                  <span className="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[12px] font-bold shrink-0">{item.step}</span>
                   <div>
-                    <p className="font-semibold text-slate-900 text-sm">{item.title}</p>
-                    <p className="text-xs text-slate-600 mt-0.5">{item.detail}</p>
+                    <p className="font-bold text-slate-900 text-[16px]">{item.title}</p>
+                    <p className="text-[11px] text-slate-600 mt-0.5">{item.detail}</p>
                     {item.link && (
                       <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 hover:text-indigo-800 flex items-center gap-1 mt-1">
                         <ExternalLink className="w-3 h-3" /> View legislation on AustLII
@@ -560,7 +560,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
         {/* DO NOT UNDO — Appeal Forms & Court Links */}
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: 'Crimson Pro, serif' }}>
             <FileText className="w-5 h-5 text-emerald-600" />
             Appeal Forms & Court Registries
           </h4>
@@ -569,8 +569,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">NSW</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">NSW Court of Criminal Appeal</p>
-                <p className="text-xs text-slate-500">Forms, guides & filing information</p>
+                <p className="text-[14px] font-bold text-slate-900">NSW Court of Criminal Appeal</p>
+                <p className="text-[11px] text-slate-500">Forms, guides & filing information</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -578,8 +578,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">VIC</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">Victorian Court of Appeal</p>
-                <p className="text-xs text-slate-500">Appeal forms & practice notes</p>
+                <p className="text-[14px] font-bold text-slate-900">Victorian Court of Appeal</p>
+                <p className="text-[11px] text-slate-500">Appeal forms & practice notes</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -587,8 +587,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">QLD</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">QLD Court of Appeal</p>
-                <p className="text-xs text-slate-500">Court forms & filing guides</p>
+                <p className="text-[14px] font-bold text-slate-900">QLD Court of Appeal</p>
+                <p className="text-[11px] text-slate-500">Court forms & filing guides</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -596,8 +596,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">SA</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">SA Supreme Court</p>
-                <p className="text-xs text-slate-500">Forms & fees schedule</p>
+                <p className="text-[14px] font-bold text-slate-900">SA Supreme Court</p>
+                <p className="text-[11px] text-slate-500">Forms & fees schedule</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -605,8 +605,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold">WA</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">WA Supreme Court</p>
-                <p className="text-xs text-slate-500">Criminal appeal forms</p>
+                <p className="text-[14px] font-bold text-slate-900">WA Supreme Court</p>
+                <p className="text-[11px] text-slate-500">Criminal appeal forms</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -614,8 +614,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
               className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-8 h-8 bg-slate-700 rounded flex items-center justify-center text-white text-xs font-bold">AID</div>
               <div>
-                <p className="text-sm font-medium text-slate-900">Legal Aid — Appeals Guide</p>
-                <p className="text-xs text-slate-500">Free guidance on the appeal process</p>
+                <p className="text-[14px] font-bold text-slate-900">Legal Aid — Appeals Guide</p>
+                <p className="text-[11px] text-slate-500">Free guidance on the appeal process</p>
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
@@ -624,11 +624,11 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
         {/* Case Law Research Section */}
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]">
             <Search className="w-4 h-4 text-slate-600" />
             Research Case Law
           </h4>
-          <p className="text-xs text-slate-600 mb-4">
+          <p className="text-[11px] text-slate-600 mb-4">
             Search real court decisions to find cases similar to yours. These databases contain judgments 
             that may support your appeal grounds.
           </p>
@@ -646,8 +646,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 NSW
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">NSW Caselaw</p>
-                <p className="text-xs text-slate-600">Supreme, District & Local Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">NSW Caselaw</p>
+                <p className="text-[11px] text-slate-600">Supreme, District & Local Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-blue-600 ml-auto" />
             </a>
@@ -663,8 +663,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 VIC
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">Victorian Cases</p>
-                <p className="text-xs text-slate-600">Supreme & County Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">Victorian Cases</p>
+                <p className="text-[11px] text-slate-600">Supreme & County Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-purple-600 ml-auto" />
             </a>
@@ -680,8 +680,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 QLD
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">QLD Caselaw</p>
-                <p className="text-xs text-slate-600">Supreme & District Court Library</p>
+                <p className="text-[14px] font-bold text-slate-900">QLD Caselaw</p>
+                <p className="text-[11px] text-slate-600">Supreme & District Court Library</p>
               </div>
               <ExternalLink className="w-4 h-4 text-red-600 ml-auto" />
             </a>
@@ -697,8 +697,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 SA
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">SA Judgments</p>
-                <p className="text-xs text-slate-600">Courts Administration Authority</p>
+                <p className="text-[14px] font-bold text-slate-900">SA Judgments</p>
+                <p className="text-[11px] text-slate-600">Courts Administration Authority</p>
               </div>
               <ExternalLink className="w-4 h-4 text-red-600 ml-auto" />
             </a>
@@ -714,8 +714,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 WA
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">WA eCourts</p>
-                <p className="text-xs text-slate-600">Supreme & District Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">WA eCourts</p>
+                <p className="text-[11px] text-slate-600">Supreme & District Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-emerald-600 ml-auto" />
             </a>
@@ -731,8 +731,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 TAS
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">Tasmanian Cases</p>
-                <p className="text-xs text-slate-600">Supreme Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">Tasmanian Cases</p>
+                <p className="text-[11px] text-slate-600">Supreme Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-teal-600 ml-auto" />
             </a>
@@ -748,8 +748,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 NT
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">NT Cases</p>
-                <p className="text-xs text-slate-600">Supreme Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">NT Cases</p>
+                <p className="text-[11px] text-slate-600">Supreme Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-orange-600 ml-auto" />
             </a>
@@ -765,8 +765,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 ACT
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">ACT Judgments</p>
-                <p className="text-xs text-slate-600">Supreme Court decisions</p>
+                <p className="text-[14px] font-bold text-slate-900">ACT Judgments</p>
+                <p className="text-[11px] text-slate-600">Supreme Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-indigo-600 ml-auto" />
             </a>
@@ -774,7 +774,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
 
           {/* Federal Courts */}
           <div className="bg-slate-100 border border-slate-200 rounded-lg p-4 mb-4">
-            <h5 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+            <h5 className="font-bold text-slate-900 mb-2 flex items-center gap-2 text-[16px]">
               <Gavel className="w-4 h-4 text-slate-600" />
               Federal Courts
             </h5>
@@ -783,7 +783,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 href="https://www.hcourt.gov.au/cases/cases-heard"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="text-[12px] text-blue-600 hover:text-blue-800 flex items-center gap-1"
               >
                 <ExternalLink className="w-3 h-3" />
                 High Court of Australia
@@ -792,7 +792,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
                 href="https://www.fedcourt.gov.au/judgments"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="text-[12px] text-blue-600 hover:text-blue-800 flex items-center gap-1"
               >
                 <ExternalLink className="w-3 h-3" />
                 Federal Court of Australia
@@ -808,10 +808,10 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
             className="flex items-center justify-center gap-2 p-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
           >
             <BookOpen className="w-5 h-5" />
-            <span className="font-medium">Search All Australian Law on AustLII</span>
+            <span className="font-medium text-[14px]">Search All Australian Law on AustLII</span>
             <ExternalLink className="w-4 h-4" />
           </a>
-          <p className="text-xs text-slate-500 text-center mt-2">
+          <p className="text-[11px] text-slate-500 text-center mt-2">
             AustLII provides free access to all Australian legislation and case law
           </p>
         </div>

@@ -246,7 +246,7 @@ const Dashboard = ({ user }) => {
       <DisclaimerReminder />
       
       {/* Sidebar */}
-      <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
+      <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`} style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Logo */}
         <div className="flex items-center gap-3 p-6 pb-4">
           <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center">
@@ -258,7 +258,7 @@ const Dashboard = ({ user }) => {
         </div>
 
         {/* Navigation - Grouped */}
-        <nav className="flex-1 overflow-y-auto px-4 pb-4">
+        <nav className="flex-1 overflow-y-auto px-4 pb-4" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
           {navGroups.map((group, gi) => (
             <div key={gi} className={gi > 0 ? "mt-6" : ""}>
               <p className="px-3 mb-2 text-xs font-semibold text-slate-700 uppercase tracking-wider">
