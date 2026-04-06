@@ -73,6 +73,12 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Verified `yarn build` passes cleanly
 - Backend health check confirmed healthy
 
+## Completed (6 Apr 2026 — PayID Update & Stripe/PayPal Purge)
+- Updated PayID email to djkingy79@gmsil.com and bank to NAB (both backend + frontend PaymentModal)
+- Permanently removed Stripe/PayPal: deleted env vars (PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_MODE, STRIPE_API_KEY), verified zero Stripe/PayPal code in active backend/frontend files
+- Updated .env.example to remove Stripe/PayPal vars
+- Payment method: PayID ONLY (DO_NOT_UNDO)
+
 ## Completed (6 Apr 2026 — Security & Health Fixes)
 - CORS: Removed wildcard `["*"]` fallback, restricted to FRONTEND_URL only
 - XSS: Installed DOMPurify, sanitised dangerouslySetInnerHTML in DocumentPreviewPage
