@@ -7,7 +7,6 @@ import pytest
 import requests
 import os
 import uuid
-from datetime import datetime, timezone, timedelta
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -20,7 +19,7 @@ class TestAuthEndpoints:
         assert response.status_code == 200, f"Health check failed: {response.status_code}"
         data = response.json()
         assert data.get("status") == "healthy", f"Unexpected health status: {data}"
-        print(f"PASS: Health endpoint returns healthy")
+        print("PASS: Health endpoint returns healthy")
     
     def test_session_endpoint_requires_session_id(self):
         """POST /api/auth/session requires session_id"""
@@ -28,7 +27,7 @@ class TestAuthEndpoints:
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         data = response.json()
         assert "session_id" in data.get("detail", "").lower(), f"Expected session_id error: {data}"
-        print(f"PASS: /api/auth/session returns 400 when session_id missing")
+        print("PASS: /api/auth/session returns 400 when session_id missing")
     
     def test_session_endpoint_invalid_session_id(self):
         """POST /api/auth/session with invalid session_id returns 401"""
@@ -45,14 +44,14 @@ class TestAuthEndpoints:
         """GET /api/auth/me requires authentication"""
         response = requests.get(f"{BASE_URL}/api/auth/me", timeout=10)
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"PASS: /api/auth/me returns 401 without auth")
+        print("PASS: /api/auth/me returns 401 without auth")
     
     def test_me_endpoint_invalid_token(self):
         """GET /api/auth/me with invalid Bearer token returns 401"""
         headers = {"Authorization": "Bearer invalid_token_12345"}
         response = requests.get(f"{BASE_URL}/api/auth/me", headers=headers, timeout=10)
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"PASS: /api/auth/me returns 401 with invalid token")
+        print("PASS: /api/auth/me returns 401 with invalid token")
     
     def test_logout_endpoint_without_token(self):
         """POST /api/auth/logout works even without token (graceful)"""
@@ -61,7 +60,7 @@ class TestAuthEndpoints:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         assert "logged out" in data.get("message", "").lower(), f"Unexpected response: {data}"
-        print(f"PASS: /api/auth/logout returns 200 without token")
+        print("PASS: /api/auth/logout returns 200 without token")
 
 
 class TestEmailPasswordAuth:
@@ -71,7 +70,7 @@ class TestEmailPasswordAuth:
         """POST /api/auth/login requires email and password"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={}, timeout=10)
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
-        print(f"PASS: /api/auth/login returns 422 for missing fields")
+        print("PASS: /api/auth/login returns 422 for missing fields")
     
     def test_login_invalid_credentials(self):
         """POST /api/auth/login with wrong credentials returns 401"""
@@ -81,7 +80,7 @@ class TestEmailPasswordAuth:
             timeout=10
         )
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"PASS: /api/auth/login returns 401 for invalid credentials")
+        print("PASS: /api/auth/login returns 401 for invalid credentials")
     
     def test_register_weak_password(self):
         """POST /api/auth/register rejects weak passwords"""
@@ -93,7 +92,7 @@ class TestEmailPasswordAuth:
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         data = response.json()
         assert "6 characters" in data.get("detail", ""), f"Expected password length error: {data}"
-        print(f"PASS: /api/auth/register rejects weak passwords")
+        print("PASS: /api/auth/register rejects weak passwords")
     
     def test_register_invalid_email(self):
         """POST /api/auth/register rejects invalid email"""
@@ -103,7 +102,7 @@ class TestEmailPasswordAuth:
             timeout=10
         )
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
-        print(f"PASS: /api/auth/register rejects invalid email")
+        print("PASS: /api/auth/register rejects invalid email")
 
 
 class TestAuthenticatedFlow:
@@ -168,7 +167,7 @@ class TestAuthenticatedFlow:
         assert "user_id" in data, f"Missing user_id in response: {data}"
         assert "email" in data, f"Missing email in response: {data}"
         assert data["email"] == test_session["email"], f"Email mismatch: {data['email']} != {test_session['email']}"
-        print(f"PASS: /api/auth/me returns user data with valid token")
+        print("PASS: /api/auth/me returns user data with valid token")
     
     def test_logout_invalidates_session(self, test_session):
         """POST /api/auth/logout invalidates the session token"""
@@ -186,7 +185,7 @@ class TestAuthenticatedFlow:
         # Verify token is now invalid
         me_after_logout = requests.get(f"{BASE_URL}/api/auth/me", headers=headers, timeout=10)
         assert me_after_logout.status_code == 401, f"Expected 401 after logout, got {me_after_logout.status_code}"
-        print(f"PASS: /api/auth/logout invalidates session, /api/auth/me returns 401 after logout")
+        print("PASS: /api/auth/logout invalidates session, /api/auth/me returns 401 after logout")
 
 
 class TestLoginFlow:
@@ -230,8 +229,8 @@ class TestLoginFlow:
         assert me_response.status_code == 200, f"/me failed: {me_response.status_code}"
         
         me_data = me_response.json()
-        assert me_data["email"] == test_email, f"Email mismatch in /me response"
-        print(f"PASS: /api/auth/me returns correct user data after login")
+        assert me_data["email"] == test_email, "Email mismatch in /me response"
+        print("PASS: /api/auth/me returns correct user data after login")
 
 
 if __name__ == "__main__":

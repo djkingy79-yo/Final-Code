@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { isIOSDevice } from "../utils/isIOS";
 import { ArrowLeft, Printer } from "lucide-react";
 import { Button } from "../components/ui/button";
+import DOMPurify from "dompurify";
 
 export default function DocumentPreviewPage() {
   const navigate = useNavigate();
@@ -105,11 +106,11 @@ export default function DocumentPreviewPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8" data-testid="document-preview-frame-wrap">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
           {isIOS ? (
-            /* iOS: render HTML directly in a div to avoid iframe srcDoc issues */
+            /* DO_NOT_UNDO — XSS sanitisation via DOMPurify on iOS HTML render */
             <div
               className="w-full bg-white"
               style={{ minHeight: "90vh" }}
-              dangerouslySetInnerHTML={{ __html: payload.html }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(payload.html) }}
               data-testid="document-preview-ios-render"
             />
           ) : (

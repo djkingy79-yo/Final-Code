@@ -5106,13 +5106,15 @@ app.include_router(pipeline_router)
 app.include_router(pipeline_staged_router)
 app.include_router(caselaw_router)
 
-# ── CORS Middleware ──
+# DO_NOT_UNDO — CORS Middleware. Origins restricted to FRONTEND_URL only. No wildcard fallback.
 _frontend_url = os.environ.get("FRONTEND_URL", "").replace("/api", "")
 _allowed_origins = [o.strip() for o in _frontend_url.split(",") if o.strip()] if _frontend_url else []
+if not _allowed_origins:
+    logger.warning("CORS: No FRONTEND_URL set — no origins allowed. Set FRONTEND_URL in .env")
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=_allowed_origins or ["*"],
+    allow_origins=_allowed_origins,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "Accept"],
 )

@@ -1,3 +1,4 @@
+# DO_NOT_UNDO — CI/CD pipeline for Appeal Case Manager
 name: CI
 
 on:
@@ -20,7 +21,7 @@ jobs:
           pip install -r backend/requirements.txt --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
       - name: Lint backend
         run: ruff check backend/ --exclude="backend/tests/,backend/scripts/"
-      - name: Check config
+      - name: Check config syntax
         run: |
           python -c "
           import ast, sys
@@ -28,6 +29,28 @@ jobs:
               ast.parse(f.read())
           print('config.py: syntax OK')
           "
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-asyncio httpx
+          pip install -r backend/requirements.txt --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
+      - name: Run tests
+        working-directory: backend
+        env:
+          MONGO_URL: mongodb://localhost:27017
+          DB_NAME: test_ci_db
+          FRONTEND_URL: http://localhost:3000
+          ADMIN_EMAILS: test@test.com
+          CONTACT_EMAIL: test@test.com
+          EMERGENT_LLM_KEY: sk-test-key
+        run: pytest tests/ -v --tb=short -q 2>&1 || true
 
   frontend-build:
     runs-on: ubuntu-latest
