@@ -42,6 +42,10 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - **Statistics Data Update (April 2026):** All stats updated to latest verified sources — NSW (Jan 2026 provisional), VIC (2024-25 annual report), QLD (2024-25 annual report, 294 filings not 60), SA (DPP 2023-24, 74 appeals), WA (2024-25, 243 finalised), ABS (515,460 defendants 2023-24). Landing page and Stats page now show consistent success rates (24-32% range). Removed unverifiable "8,700 national appeals" and "684,138 cases" figures. Added proper source citations.
 - **FAQ Forms & Filing:** Added 9 comprehensive questions about filling in appeal forms (Notice of Intention, Notice of Appeal, transcript requests, Case Stated, exhibit access, time limits, online filing, serving documents, correcting errors)
 
+- **iOS Export Fix (April 2026):** Replaced ALL blob URL downloads (createObjectURL) across every export button with document-preview route navigation (window.location.assign). Fixes WebKitBlobResource error on iOS Safari. Fixed Word All button mode from 'pdf' to 'word'. Affected files: ReportView, BarristerView, CaseDetail, GroundsOfMerit, TimelineEnhanced.
+- **Print/Export Font Sizes (April 2026):** Reduced body text across all print/export views — ReportView body 9pt, BarristerView body 9pt, Grounds body 11px, exportHtml body 10px. All heading sizes reduced proportionally.
+- **Report Section Parser (April 2026):** Now handles both numbered (## 1. Title) and unnumbered (## TITLE) markdown section headers. Minimum content threshold reduced from 80 to 20 chars to prevent dropping short sections like Plain English Guide.
+
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
 - P2: Counsel conference prep attachment for Barrister View
