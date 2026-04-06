@@ -20,7 +20,7 @@ const HowToUsePage = () => {
       color: "blue",
       image: "/images/howto/live-step2-new-case.png",
       description: "Sign in with your email or Google account and create your first appeal case from the dashboard.",
-      reminder: null,
+      reminder: "After uploading documents, the AI analysis will automatically identify the state, crime type, and sentence if court documents such as sentence reports are uploaded.",
       instructions: [
         "Sign in with your email or Google account",
         "Click '+ New Case' on your dashboard",
@@ -305,9 +305,9 @@ const HowToUsePage = () => {
 
                 {/* Reminder box for Step 1 */}
                 {step.reminder && (
-                  <div className="bg-blue-600 rounded-xl p-4 text-white">
-                    <p className="font-bold text-sm leading-relaxed">
-                      <AlertTriangle className="w-4 h-4 inline mr-2" />
+                  <div className="bg-blue-600 rounded-xl p-3 text-white">
+                    <p className="font-bold leading-relaxed" style={{fontSize:'10px'}}>
+                      <AlertTriangle className="w-3 h-3 inline mr-1" />
                       {step.reminder}
                     </p>
                   </div>
