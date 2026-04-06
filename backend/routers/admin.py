@@ -283,3 +283,65 @@ async def normalise_database(request: Request):
         "results": results,
         "summary": f"{total_updated} documents updated, {total_removed} stale entries removed",
     }
+
+
+
+# DO_NOT_UNDO — Admin manual unlock endpoint
+@router.post("/admin/unlock-feature")
+async def admin_unlock_feature(request: Request):
+    """Admin-only: manually unlock a feature for any user's case.
+    Body: { email: str, case_id: str, feature_type: str }
+    """
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    body = await request.json()
+    target_email = body.get("email")
+    case_id = body.get("case_id")
+    feature_type = body.get("feature_type", "grounds_of_merit")
+
+    if not target_email or not case_id:
+        raise HTTPException(status_code=400, detail="email and case_id are required")
+
+    # Find the target user
+    target_user = await db.users.find_one({"email": target_email}, {"_id": 0, "user_id": 1})
+    if not target_user:
+        raise HTTPException(status_code=404, detail=f"User {target_email} not found")
+
+    target_uid = target_user["user_id"]
+
+    # Find the case
+    case = await db.cases.find_one({"case_id": case_id, "user_id": target_uid}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail=f"Case {case_id} not found for {target_email}")
+
+    # Add to unlocked_features
+    await db.cases.update_one(
+        {"case_id": case_id, "user_id": target_uid},
+        {"$addToSet": {"unlocked_features": feature_type}},
+    )
+
+    # Create a payment record
+    payment = {
+        "payment_id": f"pay_{uuid.uuid4().hex[:12]}",
+        "user_id": target_uid,
+        "case_id": case_id,
+        "feature_type": feature_type,
+        "amount": 0,
+        "method": "admin_manual",
+        "reference": f"ACM-ADMIN-{uuid.uuid4().hex[:6].upper()}",
+        "status": "completed",
+        "confirmed_by": user.email,
+        "confirmed_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "notes": f"Manually unlocked by admin {user.email}",
+    }
+    await db.payments.insert_one(payment)
+    payment.pop("_id", None)
+
+    return {
+        "success": True,
+        "message": f"Unlocked {feature_type} for {target_email} on case {case_id}",
+        "reference": payment["reference"],
+    }
