@@ -1094,10 +1094,13 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     ).to_list(100)
     
     # ── Auto-detect case metadata if still defaults (HARDENED via call_llm_for_json) ──
+    # DO NOT UNDO — Also re-detect if sentence contains crime narrative (e.g. "for murdering")
+    _current_sentence = (case.get('sentence') or "").strip()
+    _sentence_has_narrative = bool(re.search(r'\bfor\s+(?:murder|kill|assault|robb|stab|rap|kidnap|abus|supplying|dealing)', _current_sentence, re.I)) if _current_sentence else False
     needs_detection = (
         (not case.get('offence_category') or case.get('offence_category') == 'homicide')
         and not case.get('offence_type')
-        and not case.get('sentence')
+        and (not _current_sentence or _sentence_has_narrative)
     )
     if needs_detection and documents:
         try:
@@ -1112,13 +1115,14 @@ Return ONLY valid JSON (no markdown, no explanation):
 {{
   "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
   "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH, Armed Robbery>",
-  "sentence": "<exact sentence imposed if stated, else null>",
+  "sentence": "<the HEAD SENTENCE and non-parole period ONLY. Format: '[X] years imprisonment with a non-parole period of [Y] years [and Z months]'. Do NOT include the crime description, victim details, or case narrative. If life sentence, state 'Life imprisonment with a non-parole period of [X] years'. If sentence not stated, null.>",
   "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act — if determinable>",
   "court": "<court name if found>"
 }}
 Rules:
 - offence_category MUST be from the listed values only. Read the ACTUAL documents — do NOT default to homicide.
 - If the document is about assault, category is "assault". If robbery, "robbery_theft", etc.
+- sentence must be ONLY the numerical sentence and non-parole period. Never include what the crime was or who the victim was.
 - If a field cannot be determined, set to null. state must be lowercase.
 
 DOCUMENTS:
@@ -1145,7 +1149,12 @@ DOCUMENTS:
                 if meta.get("offence_type"):
                     update_fields["offence_type"] = meta["offence_type"]
                 if meta.get("sentence"):
-                    update_fields["sentence"] = meta["sentence"]
+                    # DO NOT UNDO — Clean sentence to strip crime descriptions, victim info
+                    cleaned_sentence = _clean_sentence_candidate(meta["sentence"])
+                    if _is_valid_sentence_candidate(cleaned_sentence):
+                        update_fields["sentence"] = cleaned_sentence
+                    elif meta["sentence"].strip():
+                        update_fields["sentence"] = meta["sentence"].strip()
                 if meta.get("state") and str(meta["state"]).lower() in valid_sts:
                     update_fields["state"] = str(meta["state"]).lower()
                 if meta.get("court"):
@@ -4129,6 +4138,8 @@ def _clean_sentence_candidate(value: str) -> str:
     cleaned = re.sub(r"\s*[|•].*$", "", cleaned)
     cleaned = re.sub(r"[,;:]?\s*(?:appeal|conviction|leave|outcome)\b.*$", "", cleaned, flags=re.I)
     cleaned = re.sub(r"[,;:]?\s*(?:dismissed|upheld|refused|granted)\b.*$", "", cleaned, flags=re.I)
+    # DO NOT UNDO — Strip crime narrative like "for murdering pregnant girlfriend"
+    cleaned = re.sub(r"\s+for\s+(?:the\s+)?(?:murder|killing|manslaughter|assault|robbery|rape|kidnapping|abuse|stabbing|supplying|dealing|trafficking)[a-z\s,'-]*(?=\s+with\b|,|$)", "", cleaned, flags=re.I)
     cleaned = re.sub(r"\s+for\s+[a-z\s'-]+(?=,|\s+with\b|$)", "", cleaned, flags=re.I)
     cleaned = re.sub(r"\bminimum\s+non[- ]?parole\s+period\b", "non-parole period", cleaned, flags=re.I)
     cleaned = re.sub(r"\bwith\s+a\s+minimum\s+non[- ]?parole\s+period\b", "with a non-parole period", cleaned, flags=re.I)
