@@ -45,9 +45,12 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - **iOS Export Fix (April 2026):** Replaced ALL blob URL downloads (createObjectURL) across every export button with document-preview route navigation (window.location.assign). Fixes WebKitBlobResource error on iOS Safari. Fixed Word All button mode from 'pdf' to 'word'. Affected files: ReportView, BarristerView, CaseDetail, GroundsOfMerit, TimelineEnhanced.
 - **Print/Export Font Sizes (April 2026):** Reduced body text across all print/export views — ReportView body 9pt, BarristerView body 9pt, Grounds body 11px, exportHtml body 10px. All heading sizes reduced proportionally.
 - **Report Section Parser (April 2026):** Now handles both numbered (## 1. Title) and unnumbered (## TITLE) markdown section headers. Minimum content threshold reduced from 80 to 20 chars to prevent dropping short sections like Plain English Guide.
+- **Landing Page Trial Banner (April 2026):** Moved $5 trial offer from inside hero section to a slim full-width strip at the top (after disclaimer). Uses Sparkles icon in white circle. Compact, clickable (opens auth modal).
+- **Auto-Identify Background Task (April 2026):** Converted synchronous auto-identify endpoint to background task pattern. POST returns immediately with task_id. Frontend polls GET /status every 5s. Document extraction now runs concurrently (3 at a time). Fixes production timeout on cases with 16+ documents.
 
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
+- P1: Build Native Mobile App (Capacitor configured, needs build + test)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat for Notes
 - P2: Case sharing between users
@@ -62,3 +65,5 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - Mobile menu: full-screen fixed overlay (z-[100]) — DO NOT revert to inline dropdown
 - LegalFrameworkViewer: must handle both string and object forms/sections
 - EvidenceSummary: must filter garbage key-concatenated strings
+- Auto-identify: background task pattern with polling — DO NOT revert to synchronous
+- Landing page trial banner: thin strip at top, NOT inside hero section
