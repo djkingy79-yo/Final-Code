@@ -1085,7 +1085,6 @@ const LandingPage = () => {
             Appeal Case Manager
           </h3>
           <p className="text-white text-base font-bold mb-1">Created and Designed by Deb King</p>
-          <p className="text-white/80 text-sm font-semibold mb-4">criminallawappealmanagement.com.au</p>
           <p className="text-white text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
             Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.

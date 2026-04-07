@@ -95,7 +95,7 @@ const TermsOfService = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-12 sm:py-16 px-6 bg-white">
+      <section className="py-6 sm:py-8 px-6 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">

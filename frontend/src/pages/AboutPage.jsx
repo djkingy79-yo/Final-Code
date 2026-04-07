@@ -78,7 +78,7 @@ const AboutPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-16 px-6 overflow-hidden">
+      <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/stock/scales-justice.jpg" 
@@ -422,7 +422,7 @@ const AboutPage = () => {
       </section>
 
       {/* Quote */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-8 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center">
           <Quote className="w-12 h-12 text-blue-500/30 mx-auto mb-4" />
           <blockquote className="text-xl text-slate-700 italic leading-relaxed">

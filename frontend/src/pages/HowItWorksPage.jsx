@@ -436,7 +436,7 @@ const HowItWorksPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-white">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
             <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="how-it-works-hero-icon">

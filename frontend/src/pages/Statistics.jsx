@@ -126,7 +126,7 @@ const Statistics = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-16 px-6 overflow-hidden">
+      <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/stock/data-charts.jpg" 

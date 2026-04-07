@@ -663,7 +663,7 @@ const LegalGlossary = () => {
       </header>
 
       {/* Hero Section with Image */}
-      <section className="relative py-16 px-6 overflow-hidden">
+      <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/stock/scales-justice.jpg" 
@@ -845,7 +845,7 @@ const LegalGlossary = () => {
         </div>
 
         {filteredTerms.length === 0 && (
-          <div className="text-center py-16">
+          <div className="text-center py-8">
             <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
             <p className="text-slate-900 font-semibold">No terms found matching "{searchTerm}"</p>
             <p className="text-slate-600 text-sm mt-2">Try a different search term or browse categories above</p>
