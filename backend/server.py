@@ -5161,6 +5161,8 @@ async def cleanup_orphaned_reports():
     await db.issue_classifications.create_index([("issue_id", 1)], unique=True)
     await db.issue_verifications.create_index([("issue_id", 1), ("case_id", 1)])
     await db.issue_verifications.create_index([("verification_id", 1)], unique=True)
+    await db.pipeline_tasks.create_index([("case_id", 1), ("user_id", 1), ("task_type", 1)])
+    await db.pipeline_tasks.create_index([("task_id", 1)], unique=True)
 
     # Minimum character targets — reports below these are incomplete
     min_recovery_targets = {
