@@ -665,51 +665,110 @@ const CaseDetail = ({ user }) => {
 
   const handleAutoIdentifyGrounds = async () => {
     setAutoIdentifying(true);
-    toast.info("Analysing grounds with an optimised evidence window for faster response.");
+    toast.info("Starting AI analysis — this runs in the background for large cases.");
     try {
-      const response = await axios.post(`${API}/cases/${caseId}/grounds/auto-identify`, {}, {
-        timeout: 180000 // 3 minute timeout for AI analysis
+      // Step 1: Start the background task
+      const startRes = await axios.post(`${API}/cases/${caseId}/grounds/auto-identify`, {}, {
+        timeout: 30000
       });
-      
-      const { identified_count, skipped_duplicates, existing_grounds, unlock_price } = response.data;
-      
-      // ALWAYS refresh grounds list after auto-identify — DO NOT skip this
-      const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`);
-      setGrounds(groundsRes.data.grounds || []);
-      setGroundsCount(groundsRes.data.count || 0);
-      setGroundsUnlocked(groundsRes.data.is_unlocked || false);
-      setGroundsUnlockPrice(groundsRes.data.unlock_price || 99.00);
 
-      if (identified_count > 0) {
-        // Show appropriate message
-        if (skipped_duplicates > 0) {
-          toast.success(`Found ${identified_count} new ground(s)! ${skipped_duplicates} duplicate(s) skipped. Pay $${unlock_price?.toFixed(2)} to see full details.`);
-        } else {
-          toast.success(`Identified ${identified_count} potential ground(s)! Pay $${unlock_price?.toFixed(2)} to unlock full details.`);
-        }
-      } else {
-        // No new grounds found
-        if (existing_grounds > 0) {
-          toast.info("All significant grounds have already been identified for this case.");
-        } else {
-          toast.info("No grounds identified. Try adding more case documents with detailed content.");
-        }
+      const { task_id, status: startStatus } = startRes.data;
+
+      if (startStatus === "already_running") {
+        toast.info("Analysis is already in progress. Waiting for results...");
       }
+
+      if (!task_id) {
+        // Legacy fallback — endpoint returned results directly
+        const { identified_count, skipped_duplicates, existing_grounds, unlock_price } = startRes.data;
+        const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`);
+        setGrounds(groundsRes.data.grounds || []);
+        setGroundsCount(groundsRes.data.count || 0);
+        setGroundsUnlocked(groundsRes.data.is_unlocked || false);
+        setGroundsUnlockPrice(groundsRes.data.unlock_price || 99.00);
+        if (identified_count > 0) {
+          toast.success(`Identified ${identified_count} potential ground(s)! Pay $${unlock_price?.toFixed(2)} to unlock full details.`);
+        } else {
+          toast.info(existing_grounds > 0 ? "All significant grounds have already been identified." : "No grounds identified. Try adding more documents.");
+        }
+        setAutoIdentifying(false);
+        return;
+      }
+
+      // Step 2: Poll for completion
+      let attempts = 0;
+      const maxAttempts = 120; // 10 minutes max (5s intervals)
+      const pollInterval = 5000;
+
+      const poll = async () => {
+        attempts++;
+        try {
+          const statusRes = await axios.get(`${API}/cases/${caseId}/grounds/auto-identify/status`);
+          const { status, result, error, progress } = statusRes.data;
+
+          if (status === "completed" && result) {
+            const { identified_count, skipped_duplicates, existing_grounds, unlock_price } = result;
+            // ALWAYS refresh grounds list after auto-identify — DO NOT skip this
+            const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`);
+            setGrounds(groundsRes.data.grounds || []);
+            setGroundsCount(groundsRes.data.count || 0);
+            setGroundsUnlocked(groundsRes.data.is_unlocked || false);
+            setGroundsUnlockPrice(groundsRes.data.unlock_price || 99.00);
+
+            if (identified_count > 0) {
+              if (skipped_duplicates > 0) {
+                toast.success(`Found ${identified_count} new ground(s)! ${skipped_duplicates} duplicate(s) skipped. Pay $${unlock_price?.toFixed(2)} to see full details.`);
+              } else {
+                toast.success(`Identified ${identified_count} potential ground(s)! Pay $${unlock_price?.toFixed(2)} to unlock full details.`);
+              }
+            } else {
+              toast.info(existing_grounds > 0 ? "All significant grounds have already been identified for this case." : "No grounds identified. Try adding more case documents with detailed content.");
+            }
+            setAutoIdentifying(false);
+            return;
+          }
+
+          if (status === "failed") {
+            toast.error(error ? `Analysis failed: ${error}` : "AI analysis encountered an error. Please try again in a moment.");
+            setAutoIdentifying(false);
+            return;
+          }
+
+          // Still running
+          if (attempts >= maxAttempts) {
+            toast.error("Analysis is taking longer than expected. Please check back shortly — results will appear when ready.");
+            setAutoIdentifying(false);
+            return;
+          }
+
+          // Continue polling
+          setTimeout(poll, pollInterval);
+        } catch (pollErr) {
+          console.error("Poll error:", pollErr);
+          if (attempts >= maxAttempts) {
+            toast.error("Lost connection to the analysis. Please refresh the page to check for results.");
+            setAutoIdentifying(false);
+          } else {
+            setTimeout(poll, pollInterval);
+          }
+        }
+      };
+
+      // Start polling after a short initial delay
+      setTimeout(poll, 3000);
+
     } catch (error) {
       console.error("Auto-identify error:", error);
       if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-        toast.error("Ground analysis timed out. Please retry — long files are now processed in a faster, prioritised mode.");
+        toast.error("Ground analysis timed out. Please retry — the analysis runs in the background for large cases.");
       } else {
         const detail = error?.response?.data?.detail || "";
-        if (detail.includes("Pipeline identification failed")) {
-          toast.error("AI analysis encountered an error processing your documents. This may be a temporary issue — please wait a moment and try again.");
-        } else if (error?.response?.status === 400) {
+        if (error?.response?.status === 400) {
           toast.error(detail || "No documents or case summary available for analysis. Please upload documents first.");
         } else {
-          toast.error("Failed to auto-identify grounds. This may be a temporary server issue — please try again in a moment.");
+          toast.error("Failed to start ground analysis. This may be a temporary server issue — please try again in a moment.");
         }
       }
-    } finally {
       setAutoIdentifying(false);
     }
   };

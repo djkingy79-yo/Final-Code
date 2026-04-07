@@ -5,6 +5,7 @@ ADDITIVE HARDENING PATCH
 """
 from fastapi import APIRouter, HTTPException, Request
 from datetime import datetime, timezone
+import asyncio
 import uuid
 import json
 import os
@@ -139,25 +140,49 @@ def _similar_cases_dump(items):
 # ============================================================================
 
 async def _ensure_document_extracts(case: dict, documents: list):
-    """Ensure every uploaded document has a staged extraction record. Additive only."""
-    created_or_updated = 0
+    """Ensure every uploaded document has a staged extraction record. Additive only.
+    Uses concurrent processing (max 3 at a time) to reduce wall-clock time for large cases.
+    """
+    # Filter to only documents needing extraction
+    docs_to_process = []
     for document in documents:
         existing = await db.document_extracts.find_one(
             {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
             {"_id": 0}
         )
-        if existing:
-            continue
-        extract = await extract_document_artifacts(case, document)
-        extract_dict = extract.model_dump()
-        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
-        await db.document_extracts.update_one(
-            {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
-            {"$set": extract_dict},
-            upsert=True,
-        )
-        created_or_updated += 1
-    return created_or_updated
+        if not existing:
+            docs_to_process.append(document)
+
+    if not docs_to_process:
+        return 0
+
+    semaphore = asyncio.Semaphore(3)
+    created_count = 0
+    errors = []
+
+    async def process_one(document):
+        nonlocal created_count
+        async with semaphore:
+            try:
+                extract = await extract_document_artifacts(case, document)
+                extract_dict = extract.model_dump()
+                extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+                await db.document_extracts.update_one(
+                    {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
+                    {"$set": extract_dict},
+                    upsert=True,
+                )
+                created_count += 1
+            except Exception as e:
+                logger.error(f"Document extract failed for {document.get('document_id')}: {e}")
+                errors.append(str(e))
+
+    await asyncio.gather(*[process_one(doc) for doc in docs_to_process])
+
+    if errors and created_count == 0:
+        raise Exception(f"All document extractions failed: {errors[0]}")
+
+    return created_count
 
 
 async def _refresh_case_extract_from_pipeline(case: dict) -> dict:
@@ -722,17 +747,95 @@ Use Australian English spelling (analyse, defence, offence). Do NOT use first or
 
 
 # ============================================================================
-# AUTO IDENTIFY GROUNDS
+# AUTO IDENTIFY GROUNDS — Background Task Pattern
 # ============================================================================
+
+async def _run_auto_identify_background(task_id: str, case_id: str, user_id: str, case: dict, documents: list, existing_grounds: list):
+    """Background worker for auto-identify. Updates task status in DB as it progresses."""
+    try:
+        await db.pipeline_tasks.update_one(
+            {"task_id": task_id},
+            {"$set": {"status": "extracting", "progress": "Extracting document artifacts...", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        pipeline_result = await _ensure_pipeline_identification(case, documents)
+
+        await db.pipeline_tasks.update_one(
+            {"task_id": task_id},
+            {"$set": {"status": "finalising", "progress": "Deduplicating and finalising grounds...", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+        updated_grounds = await db.grounds_of_merit.find(
+            {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+        ).to_list(200)
+
+        existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
+
+        from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
+
+        def is_duplicate(new_ground):
+            if (new_ground.get("title"), new_ground.get("ground_type")) in existing_titles:
+                return True
+            new_title = normalise_au_spelling((new_ground.get("title") or "").strip())
+            if not new_title:
+                return False
+            for eg in existing_grounds:
+                eg_title = (eg.get("title") or "").strip()
+                if is_ground_duplicate(new_title, eg_title):
+                    return True
+            return False
+
+        new_grounds = [g for g in updated_grounds if not is_duplicate(g)]
+        skipped_duplicates = max(0, pipeline_result["classified_count"] - len(new_grounds))
+
+        await db.cases.update_one(
+            {"case_id": case_id, "user_id": user_id},
+            {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+        result = {
+            "identified_count": len(new_grounds),
+            "skipped_duplicates": skipped_duplicates,
+            "existing_grounds": len(existing_grounds),
+            "message": (
+                f"Found {len(new_grounds)} new grounds. "
+                f"Pipeline extracted {pipeline_result['extracted_count']} new document extract(s), "
+                f"classified {pipeline_result['classified_count']} issue(s), "
+                f"and synced {pipeline_result['synced_count']} projected ground(s)."
+            ),
+            "unlock_required": True,
+            "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]
+        }
+
+        await db.pipeline_tasks.update_one(
+            {"task_id": task_id},
+            {"$set": {"status": "completed", "result": result, "progress": "Complete", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+    except Exception as e:
+        logger.error(f"Background auto-identify failed for task {task_id}: {e}")
+        await db.pipeline_tasks.update_one(
+            {"task_id": task_id},
+            {"$set": {"status": "failed", "error": str(e), "progress": "Failed", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
 
 @router.post("/cases/{case_id}/grounds/auto-identify", response_model=dict)
 async def auto_identify_grounds(case_id: str, request: Request):
-    """AI automatically identifies potential grounds of merit from case materials using staged pipeline"""
+    """AI automatically identifies potential grounds of merit from case materials.
+    Returns immediately with a task_id. Frontend polls /auto-identify/status for progress.
+    """
     user = await get_current_user(request)
 
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
+
+    # Check if there's already a running task for this case
+    active_task = await db.pipeline_tasks.find_one(
+        {"case_id": case_id, "user_id": user.user_id, "task_type": "auto_identify", "status": {"$in": ["pending", "extracting", "finalising"]}},
+        {"_id": 0}
+    )
+    if active_task:
+        return {"task_id": active_task["task_id"], "status": "already_running", "message": "Analysis is already in progress."}
 
     existing_grounds = await db.grounds_of_merit.find(
         {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
@@ -745,58 +848,56 @@ async def auto_identify_grounds(case_id: str, request: Request):
     if not documents and not case.get("summary"):
         raise HTTPException(status_code=400, detail="No documents or case summary available for analysis")
 
-    try:
-        pipeline_result = await _ensure_pipeline_identification(case, documents)
-    except Exception as e:
-        logger.error(f"Pipeline auto-identify failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Pipeline identification failed: {str(e)}")
+    task_id = f"task_{uuid.uuid4().hex[:16]}"
+    await db.pipeline_tasks.insert_one({
+        "task_id": task_id,
+        "case_id": case_id,
+        "user_id": user.user_id,
+        "task_type": "auto_identify",
+        "status": "pending",
+        "progress": "Starting analysis...",
+        "document_count": len(documents),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    })
 
-    updated_grounds = await db.grounds_of_merit.find(
-        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
-    ).to_list(200)
-
-    existing_titles = {(g.get("title"), g.get("ground_type")) for g in existing_grounds}
-
-    # DO_NOT_UNDO — Fuzzy ground deduplication with topic classification + fuzzywuzzy + overlap.
-    from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
-
-    def is_duplicate(new_ground):
-        """Check if a ground is duplicate by exact match, topic classification, fuzzywuzzy, or word overlap"""
-        if (new_ground.get("title"), new_ground.get("ground_type")) in existing_titles:
-            return True
-        new_title = normalise_au_spelling((new_ground.get("title") or "").strip())
-        if not new_title:
-            return False
-        for eg in existing_grounds:
-            eg_title = (eg.get("title") or "").strip()
-            if is_ground_duplicate(new_title, eg_title):
-                return True
-        return False
-
-    new_grounds = [
-        g for g in updated_grounds
-        if not is_duplicate(g)
-    ]
-    skipped_duplicates = max(0, pipeline_result["classified_count"] - len(new_grounds))
-
-    await db.cases.update_one(
-        {"case_id": case_id, "user_id": user.user_id},
-        {"$set": {"updated_at": datetime.now(timezone.utc).isoformat()}}
-    )
+    # Fire and forget — runs in background
+    asyncio.create_task(_run_auto_identify_background(task_id, case_id, user.user_id, case, documents, existing_grounds))
 
     return {
-        "identified_count": len(new_grounds),
-        "skipped_duplicates": skipped_duplicates,
-        "existing_grounds": len(existing_grounds),
-        "message": (
-            f"Found {len(new_grounds)} new grounds. "
-            f"Pipeline extracted {pipeline_result['extracted_count']} new document extract(s), "
-            f"classified {pipeline_result['classified_count']} issue(s), "
-            f"and synced {pipeline_result['synced_count']} projected ground(s)."
-        ),
-        "unlock_required": True,
-        "unlock_price": FEATURE_PRICES["grounds_of_merit"]["price"]
+        "task_id": task_id,
+        "status": "started",
+        "message": f"Analysing {len(documents)} document(s) in the background. This may take a few minutes for large cases."
     }
+
+
+@router.get("/cases/{case_id}/grounds/auto-identify/status", response_model=dict)
+async def auto_identify_status(case_id: str, request: Request):
+    """Poll the status of a running auto-identify background task."""
+    user = await get_current_user(request)
+
+    task = await db.pipeline_tasks.find_one(
+        {"case_id": case_id, "user_id": user.user_id, "task_type": "auto_identify"},
+        {"_id": 0},
+        sort=[("created_at", -1)]
+    )
+
+    if not task:
+        return {"status": "none", "message": "No analysis task found for this case."}
+
+    response = {
+        "task_id": task["task_id"],
+        "status": task["status"],
+        "progress": task.get("progress", ""),
+        "document_count": task.get("document_count", 0),
+    }
+
+    if task["status"] == "completed":
+        response["result"] = task.get("result", {})
+    elif task["status"] == "failed":
+        response["error"] = task.get("error", "Unknown error")
+
+    return response
 
 
 
