@@ -160,4 +160,64 @@ STRICT RULES:
             materiality=raw.get("materiality", ""),
         ))
 
+    # DO NOT UNDO — Post-classification: merge overlapping grounds into sub-issues
+    issues = _merge_overlapping_grounds(issues)
+
     return issues
+
+
+def _merge_overlapping_grounds(issues: list) -> list:
+    """Merge grounds that address the same underlying theme into a single ground with sub-issues.
+    E.g. 'psychiatric conflict', 'behavioural evidence + intent', 'mental illness not reducing culpability'
+    are all sub-issues of 'Failure to Properly Evaluate Psychiatric Evidence'.
+    """
+    if len(issues) <= 3:
+        return issues
+
+    # Theme clusters — grounds that should be merged
+    THEME_KEYWORDS = {
+        "psychiatric_evidence": ["psychiatric", "psychosis", "mental health", "mental illness", "mental state", "mental impairment", "psychological"],
+        "intent_mens_rea": ["intent", "mens rea", "state of mind", "cognitive capacity", "volition"],
+        "sentencing": ["sentencing", "manifest excess", "manifestly excessive", "sentence"],
+        "procedural": ["procedural", "judge-alone", "judge alone", "jury selection"],
+    }
+
+    from collections import defaultdict
+    clusters = defaultdict(list)
+    unclustered = []
+
+    for issue in issues:
+        title_lower = (issue.title or "").lower()
+        desc_lower = (issue.description or "").lower()
+        combined = f"{title_lower} {desc_lower}"
+
+        matched_theme = None
+        for theme, keywords in THEME_KEYWORDS.items():
+            if any(kw in combined for kw in keywords):
+                if matched_theme is None:
+                    matched_theme = theme
+                # Don't double-assign
+
+        if matched_theme and len([i for i in issues if any(kw in f"{(i.title or '').lower()} {(i.description or '').lower()}" for kw in THEME_KEYWORDS[matched_theme])]) > 1:
+            clusters[matched_theme].append(issue)
+        else:
+            unclustered.append(issue)
+
+    merged = list(unclustered)
+    for theme, cluster_issues in clusters.items():
+        if len(cluster_issues) <= 1:
+            merged.extend(cluster_issues)
+            continue
+
+        # Pick the broadest issue as the parent
+        parent = max(cluster_issues, key=lambda i: len(i.description or ""))
+        sub_issues = [f"({chr(97 + idx)}) {ci.title}" for idx, ci in enumerate(cluster_issues)]
+        sub_desc = "; ".join(sub_issues)
+
+        parent.description = f"{parent.description}\n\nSub-issues: {sub_desc}"
+        if not parent.appellate_pathway and cluster_issues[0].appellate_pathway:
+            parent.appellate_pathway = cluster_issues[0].appellate_pathway
+
+        merged.append(parent)
+
+    return merged

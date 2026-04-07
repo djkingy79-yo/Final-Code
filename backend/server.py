@@ -1269,8 +1269,13 @@ Summary: {case.get('summary', 'N/A')}
         grounds_slice = grounds[:limits["grounds_limit"]]
         case_context += f"\n=== IDENTIFIED GROUNDS OF MERIT ({len(grounds_slice)} included / {len(grounds)} total grounds) ===\n"
         for g in grounds_slice:
-            case_context += f"- [{g.get('ground_type')}] {g.get('title')} (Strength: {g.get('strength')})\n"
+            viability = g.get('legitimacy_scores', {}).get('viability_label', g.get('strength', 'moderate'))
+            case_context += f"- [{g.get('ground_type')}] {g.get('title')} (Viability: {viability})\n"
             case_context += f"  {g.get('description', '')[:limits['ground_desc_chars']]}\n"
+            if g.get('appellate_pathway'):
+                case_context += f"  Appellate Pathway: {g.get('appellate_pathway')}\n"
+            if g.get('error_identified'):
+                case_context += f"  Error: {g.get('error_identified')}\n"
             if report_type != "quick_summary" and g.get('analysis'):
                 case_context += f"  Analysis: {g.get('analysis', '')[:limits['ground_analysis_chars']]}\n"
             if limits["ground_deep_chars"] > 0 and g.get('deep_analysis'):
@@ -1371,59 +1376,59 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs — do NOT compress sections into bullet-point lists or single sentences."""
-        user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT.
+You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs. Use assertive appellate language: "It is contended that...", "The trial judge erred in..." — NOT "may have" or "could potentially"."""
+        user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT (Issue Identification).
 
 {case_context}
 
-Write MINIMUM 2000 words (target range 2000-3000 words). This is an OVERVIEW but each section must still be substantive with multiple paragraphs. Do NOT abbreviate or summarise sections into single sentences. Structure EXACTLY as follows:
+Write MINIMUM 2000 words. This is an ISSUE IDENTIFICATION report — identify all potential grounds clearly but do not provide the deep appellate pathway analysis (that is for paid reports). Structure EXACTLY as follows:
 
 ## 1. CASE SNAPSHOT
 3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
 
-MANDATORY: Start this section with a summary line: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use the EXACT counts from the supplied case data.
+MANDATORY: Start this section with: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use EXACT counts from supplied data.
 
 ## 2. PRIMARY ISSUES IDENTIFIED
-6-10 bullet points. Each bullet must include:
-- Issue label
+6-10 numbered items. Each must include:
+- Issue title framed as an appellate ground (e.g. "Failure to Properly Evaluate Psychiatric Evidence")
 - Which document/evidence it comes from
-- Why it matters legally for an appeal
+- Why it matters for the appeal
 
 ## 3. ALL GROUNDS IDENTIFIED (PREVIEW)
-You MUST list EVERY ground identified in the case materials (use the grounds list provided below). For each ground:
-- Ground title + type (e.g., Procedural Irregularity, Manifestly Excessive Sentence)
-- Strength rating: Strong / Moderate / Weak
+You MUST list EVERY ground identified. For each ground:
+- Ground title + type (e.g., Procedural Error, Sentencing Error, Miscarriage of Justice)
+- Appellate viability: Arguable — Strong / Arguable — Moderate / Requires Development
 - 2-3 sentence legal rationale referencing the specific case facts
-- One immediate action step in plain English
+- One immediate action step
 
-## 4. KEY LEGISLATION & SIMILAR CASES (PREVIEW)
-First, list the most relevant statutory provisions from {state_info.get('name', 'NSW')} / Commonwealth law with section numbers, years, and one-line relevance notes.
-Then list 2-3 comparable Australian appeal decisions with citation, outcome (allowed/dismissed/resentenced), and why each is relevant to this case.
+Do NOT use percentage success rates. Use appellate viability language only.
+
+## 4. KEY LEGISLATION (PREVIEW)
+List the most relevant statutory provisions from {state_info.get('name', 'NSW')} / Commonwealth law with ACTUAL section numbers, years, and one-line relevance notes. If the exact section number is not known, do NOT include that entry.
 
 ## 5. SENTENCING OVERVIEW
-2-3 paragraphs comparing the sentence imposed against typical appellate principles and proportionality for this offence category. Then provide a mini comparison table:
+2-3 paragraphs comparing the sentence imposed against typical appellate principles for this offence category. Include a mini comparison table:
 | Comparator Case | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Key Insight |
-Include at least 3 rows with real comparable cases.
+Include at least 3 rows. Do NOT include cases with "[Surname]" or placeholder citations.
 
 ## 6. APPEAL OUTLOOK
-Overall assessment: Strong / Moderate / Needs Further Development.
-2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors.
+Overall appellate viability assessment: Arguable — Strong / Arguable — Moderate / Requires Development.
+2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors. Do NOT use percentages.
 
-## 7. CLIENT PLAIN-ENGLISH GUIDE
-Explain the case and appeal in clear, plain English for a non-lawyer: what the sentence means, what grounds exist, what the next steps are, and what outcomes are realistic. This section must appear BEFORE the paid-report comparison so clients understand their current position. CRITICAL: This is an educational tool — use ONLY third-person language ("the applicant", "the legal professional"). ABSOLUTE BAN on "we", "us", "our", "you", "your". WRONG: "your conviction" RIGHT: "the conviction". WRONG: "you should" RIGHT: "the applicant should".
-
-## 8. APPEAL OUTLOOK
-Brief assessment of realistic prospects for each ground. State the overall strength rating (Strong / Moderate / Needs Further Development) and explain for each ground.
+## 7. PLAIN ENGLISH GUIDE
+Explain the case and appeal in clear, plain English for a non-lawyer. CRITICAL: Use ONLY third-person language ("the applicant", "the legal professional"). ABSOLUTE BAN on "we", "us", "our", "you", "your".
 
 IMPORTANT:
 - No cost estimates or funding discussion.
-- No witness contradiction or witness credibility section.
-- Be specific to the supplied material throughout — do not write generic legal advice.
+- No witness contradiction section.
+- Be specific to the supplied material — do not write generic legal advice.
+- Do NOT use percentage success rates anywhere. Use appellate viability language.
+- Do NOT include "Similar Cases (AI-Suggested)" with unverified citations. If citing cases, use REAL citations only.
 
-GROUNDS TO COVER (MUST INCLUDE ALL — list every single one below):
+GROUNDS TO COVER (MUST INCLUDE ALL):
 {grounds_enumerated}
 
-MATERIAL COUNTS (use these exact numbers in the report):
+MATERIAL COUNTS:
 - Total documents analysed: {len(documents)}
 - Total timeline events: {len(timeline)}
 - Total grounds identified: {len(grounds)}"""
@@ -1483,9 +1488,29 @@ Full chronological reconstruction with 12+ dated entries. Each entry must be a F
 ## 3. DOCUMENT EVIDENCE DIGEST
 For EACH document uploaded: title, key extracts (quote directly), reliability context, probative value, and specific appellate relevance. One detailed paragraph per document minimum.
 
-## 4. GROUNDS OF MERIT PORTFOLIO
+## 4. GROUNDS OF MERIT — APPELLATE PATHWAY ANALYSIS
 For EACH ground listed in GROUNDS TO COVER (ALL of them — no omissions):
-Write as "Ground X: [Exact Title]" then 800+ words of flowing paragraphs covering: legal threshold and test, supporting material from case files, viability rating (Strong/Moderate/Weak) with detailed reasoning, predicted Crown response, aggressive defence rebuttal strategy, and practical appeal impact if established.
+Write as "Ground X: [Exact Title]" then 800+ words using the MANDATORY appellate structure:
+
+**Appellate Pathway:** State the specific statutory provision engaged (e.g. "Miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)")
+
+**Ground:** Assert the error: "The trial judge erred in failing to..." or "It is contended that..."
+
+**Error Identified:** What specifically went wrong at trial. Reference case facts, dates, evidence. Assertive language only.
+
+**Materiality:** Why this error matters. How it affected the verdict or sentence.
+
+**Consequence:** Legal consequence (verdict unsafe, miscarriage of justice, sentence set aside).
+
+**Appellate Viability:**
+- Outcome impact: Determinative / Influential / Minor
+- Legal alignment: Direct authority / Analogous / Weak
+- Evidence support: Strong / Partial / Limited
+
+**Crown Response:** What the prosecution will argue.
+**Defence Rebuttal:** Counter with specific authority.
+
+Write as flowing prose. Minimum 800 words per ground.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
 CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...".
@@ -1602,18 +1627,31 @@ For EACH document/source in the case material:
 - Which grounds this evidence supports
 - Rating: Critical / Important / Supporting / Peripheral
 
-## 4. GROUNDS OF MERIT — DEEP ANALYSIS
-For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIMUM 1200-word analysis:
-- Legal threshold with specific statutory reference (section + Act + year)
-- How the case facts satisfy or approach this threshold — quote evidence
-- Viability rating (Strong / Moderate / Weak) with detailed reasoning
-- Likely Crown prosecution response (specific, not generic)
-- Aggressive defence rebuttal strategy with authority citations
-- **Practical impact if this ground succeeds** — what order the court would make, what happens to the conviction/sentence
-- Key authority with AustLII link and explanation of how it applies
-- Fallback position if the primary argument on this ground is rejected
-- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 1200 words per ground
-- Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers)
+## 4. GROUNDS OF MERIT — DEEP APPELLATE ANALYSIS
+For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIMUM 1200-word analysis using the MANDATORY structure:
+
+**Appellate Pathway:** The specific statutory provision engaged and the basis of the appeal.
+
+**Trial Finding:** What the trial judge found or accepted on this issue.
+
+**Error Identified:** Assert the error: "The trial judge erred in..." Use assertive language throughout.
+
+**Materiality:** Why this error matters to the outcome. How it affected the verdict or sentence.
+
+**Consequence:** The legal consequence — verdict unsafe, miscarriage of justice, sentence must be set aside.
+
+**Appellate Viability:**
+- Outcome impact: Determinative / Influential / Minor
+- Legal alignment: Direct authority / Analogous / Weak
+- Evidence support: Strong / Partial / Limited
+
+**Crown Response and Rebuttal:** Likely Crown prosecution response with detailed defence counter-strategy.
+
+**Fallback Position:** Alternative argument if primary submission is rejected.
+
+**Draft Submission Paragraph:** A paragraph ready to be adapted for written submissions.
+
+Write each ground as a numbered entry starting with "Ground X: [Exact Title]" and then flowing paragraphs (no bullet-only answers). Minimum 1200 words per ground.
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
 CRITICAL: This section MUST contain an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...". If exact data cannot be found, use the best available comparable cases from Australian jurisprudence.
@@ -1735,7 +1773,36 @@ Tailored AustLII search guidance:
 28-day actions (strategic — submission drafting, hearing preparation):
 - Specific action, preparation steps, milestones
 
-## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
+## 19. OPERATIONS ENGINE — CRITICAL MISSING EVIDENCE
+Auto-generated checklist of evidence gaps identified from the case analysis:
+For each gap:
+- What is missing (e.g. "Psychiatric report addressing intoxication impact")
+- Why it matters to the appeal
+- How to obtain it
+- Priority: Critical / Important / Desirable
+
+## 20. EVIDENCE REQUEST LIST
+Specific documents and materials that must be obtained:
+| Item | Source | Purpose | Priority | Deadline |
+Include: transcripts, expert reports, affidavits, medical records, CCTV, forensic reports.
+
+## 21. SUGGESTED EXPERT REPORTS
+For each identified evidentiary gap:
+- Type of expert required (psychiatrist, forensic pathologist, etc.)
+- What opinion is needed
+- How the opinion would strengthen the appeal
+- Suggested brief outline for instructing the expert
+
+## 22. FILING PATHWAY
+Step-by-step filing requirements for {state_info.get('name', 'NSW')}:
+- Notice of Intention to Appeal (if not filed) — deadline and form
+- Detailed grounds of appeal — content requirements
+- Written submissions — structure and page limits
+- Application for leave (if required) — criteria
+- Supporting affidavit requirements
+- Service requirements on DPP/Crown
+
+## 23. RISK ASSESSMENT + CONTINGENCY PLANNING
 For each ground:
 - Appellate viability assessment (arguable/moderate/strong or requires development)
 - Main risk factor
@@ -1943,13 +2010,17 @@ Summary: {case.get('summary', 'N/A')}
 NOW GENERATE ONLY SECTIONS 1-2. Write 3000+ WORDS for this pass. Every paragraph must reference specific case facts.
 
 ## 1. EXECUTIVE BRIEF (1200+ words)
-Write 6 FULL paragraphs — each paragraph must be 150+ words. NOT a case snapshot rehash.
-- Paragraph 1: "This analysis is based on {len(documents)} documents and {len(timeline)} timeline events. {len(grounds)} grounds of appeal have been identified." Then strategic overview of appeal strength.
-- Paragraph 2: The 2 strongest grounds — name specific legal tests, cite specific evidence, explain why these grounds have the best chance.
-- Paragraph 3: Most likely outcome pathway and what the applicant should realistically prepare for.
-- Paragraph 4: Key risks — what the prosecution will exploit, what weaknesses exist.
+Write 6 FULL paragraphs — each paragraph must be 150+ words. This is a COUNSEL BRIEFING, not a case summary rehash.
+Think: "what does counsel need to know in 5 minutes?"
+
+- Paragraph 1: "This analysis is based on {len(documents)} documents and {len(timeline)} timeline events. {len(grounds)} grounds of appeal have been identified." Then strategic overview of the appeal's overall appellate position. Do NOT use percentage success rates — use viability language (arguable, moderate, strong).
+- Paragraph 2: Key appellate themes (e.g. psychiatric evidence conflict, intoxication + intent interaction, procedural fairness concerns). NOT a list of grounds — identify the 2-3 overarching legal themes.
+- Paragraph 3: Priority grounds (strongest first) with specific evidence anchors and why they have the best appellate viability.
+- Paragraph 4: Strategic risks — what the prosecution will exploit, evidence gaps, weak factual anchors.
 - Paragraph 5: Recommended immediate actions with specific deadlines and who to contact.
-- Paragraph 6: Primary issues identified — list 6-8 specific legal issues with document references and brief explanations.
+- Paragraph 6: Overall appellate position summary — "There are arguable grounds capable of attracting appellate consideration, subject to refinement and evidentiary development" or equivalent honest assessment.
+
+CRITICAL: Do NOT repeat content from the 3 underlying reports. This must be SYNTHESIS only. Use assertive language: "It is contended that...", "The trial judge erred in..." — NOT "may have" or "could potentially".
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 15+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
@@ -1977,44 +2048,41 @@ STOP after section 3."""),
                 ("PASS 3/8", f"""
 NOW GENERATE ONLY SECTION 4 (FIRST HALF OF GROUNDS). Write 4000+ WORDS for this pass.
 
-## 4. GROUNDS OF MERIT PORTFOLIO (Part 1)
-Write detailed analyses for the FIRST {half_grounds} grounds listed below. Each ground must be 800+ words of flowing paragraphs.
+## 4. GROUNDS OF MERIT — APPELLATE PATHWAY ANALYSIS (Part 1)
+Write detailed appellate analyses for the FIRST {half_grounds} grounds. Each ground MUST follow this structure:
 
 GROUNDS TO COVER IN THIS PASS:
 {first_grounds_text}
 
-For EACH ground, write as "Ground X: [Exact Title]" then 800+ words covering:
-1. Legal test/threshold — cite the specific statutory provision (section + Act + year) and leading case
-2. How THIS case's specific facts satisfy the test — reference documents, dates, witnesses by name
-3. Viability rating: Strong / Moderate / Weak — with 4-5 sentences of detailed reasoning
-4. PREDICTED CROWN RESPONSE: What will the prosecution argue? Name specific authorities they'll rely on (4-5 sentences)
-5. DEFENCE REBUTTAL: How to counter the Crown? Name specific authorities that override theirs (4-5 sentences)
-6. APPEAL IMPACT: If this ground succeeds — conviction quashed? Sentence reduced? Retrial? What specific order to seek?
+For EACH ground, write as "Ground X: [Exact Title]" then 800+ words using the MANDATORY structure:
+1. **Appellate Pathway:** The specific statutory provision engaged (e.g. "Miscarriage of justice under the Criminal Appeal Act")
+2. **Ground:** Assert the error — "The trial judge erred in failing to..." or "It is contended that..."
+3. **Error Identified:** What specifically went wrong. Reference documents, dates, witnesses by name.
+4. **Materiality:** Why this error matters. How it affected the verdict or sentence.
+5. **Consequence:** Legal consequence (verdict unsafe, miscarriage of justice, sentence set aside).
+6. **Appellate Viability:** Outcome impact (Determinative/Influential/Minor), Legal alignment (Direct/Analogous/Weak), Evidence support (Strong/Partial/Limited).
+7. **Crown Response:** What the prosecution will argue (4-5 sentences with authority).
+8. **Defence Rebuttal:** How to counter with specific authority (4-5 sentences).
 
-Write 800+ words per ground. Do NOT compress into bullet points.
+Write 800+ words per ground. Do NOT compress into bullet points. Use assertive appellate language throughout.
 
 STOP after covering the first {half_grounds} grounds."""),
 
                 ("PASS 4/8", f"""
 NOW GENERATE ONLY SECTION 4 (SECOND HALF OF GROUNDS) AND SECTION 5. Write 4000+ WORDS for this pass.
 
-## 4. GROUNDS OF MERIT PORTFOLIO (Part 2)
-Continue with the REMAINING grounds. Each must be 800+ words of flowing paragraphs.
+## 4. GROUNDS OF MERIT — APPELLATE PATHWAY ANALYSIS (Part 2)
+Continue with the REMAINING grounds. Each must follow the same mandatory structure as Part 1.
 
 GROUNDS TO COVER IN THIS PASS:
 {second_grounds_text if second_grounds_text.strip() else grounds_enumerated}
 
-For EACH ground, write as "Ground X: [Exact Title]" then 800+ words covering:
-1. Legal test/threshold with statutory reference
-2. How case facts satisfy the test — specific evidence, dates, witnesses
-3. Viability rating with detailed reasoning (4-5 sentences)
-4. PREDICTED CROWN RESPONSE (4-5 sentences)
-5. DEFENCE REBUTTAL with authority (4-5 sentences)
-6. APPEAL IMPACT — specific orders to seek
+For EACH ground, use the same structure: Appellate Pathway → Ground → Error Identified → Materiality → Consequence → Appellate Viability → Crown Response → Defence Rebuttal.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
 PRODUCE AN ACTUAL POPULATED MARKDOWN TABLE with real case data. Then write a Detailed Outcome Analysis paragraph for EACH case in the table.
-| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
+| Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction | Key Reason |
+Do NOT use placeholder citations. Only include cases with real citations.
 
 STOP after section 5."""),
 
@@ -2028,41 +2096,54 @@ Then for each common ground, explain how it applies or does not apply to THIS sp
 
 ## 7. OUTCOME OPTIONS AVAILABLE
 Summary table first, then write 400+ WORDS for EACH of these 5 pathways:
-- **Conviction quashed** — which grounds support this, legal threshold, likelihood (300+ words)
+- **Conviction quashed** — which grounds support this, legal threshold, appellate viability assessment (300+ words)
 - **Retrial ordered** — triggers, what changes, timeframes (200+ words)
 - **Conviction substituted/downgraded** — legal basis, sentence impact (200+ words)
-- **Sentence reduced as manifestly excessive** — show exact before/after numbers (300+ words)
+- **Sentence reduced as manifestly excessive** — show exact before/after numbers with reasoning. State the appellate threshold: "Intervention required where the sentence is manifestly excessive, OR relevant mitigating factors were not properly weighed." (300+ words)
 - **Appeal dismissed** — consequences, High Court special leave options (200+ words)
+Do NOT use percentage success rates. Use appellate viability language.
 
 STOP after section 7."""),
 
                 ("PASS 6/8", """
 NOW GENERATE ONLY SECTIONS 8-10. Write 3000+ WORDS for this pass.
 
-## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (800+ words)
-List 8+ specific gaps with urgency ratings. For each: what's missing, why it matters, exact steps to obtain it, priority, impact on which grounds.
+## 8. OPERATIONS ENGINE — EVIDENTIARY GAPS + REMEDIATION (800+ words)
+List 8+ specific gaps with urgency ratings. For each:
+- What's missing (e.g. "Psychiatric report addressing intoxication impact")
+- Why it matters and which ground it affects
+- How to obtain it (specific steps, who to contact)
+- Priority: Critical / Important / Desirable
+- Impact on appeal if not obtained
+
+Include: evidence request list, missing affidavit prompts, suggested expert reports.
 
 ## 9. PRECEDENT OUTCOME MATRIX (10-12 CASES)
 For each case write a FULL PARAGRAPH: citation, factual similarity, outcome, extracted principle, how it applies to THIS case.
+Do NOT include cases with "[Surname]" or unverified citations.
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP (1000+ words)
 For EACH relevant provision write a paragraph APPLYING it to THIS case — section + Act + year + jurisdiction + specific relevance. Not generic descriptions.
+Law sections MUST have ACTUAL section numbers. If the section number is not known, do NOT include that entry.
 
 STOP after section 10."""),
 
                 ("PASS 7/8", f"""
 NOW GENERATE ONLY SECTIONS 11-12. Write 3000+ WORDS for this pass.
 
-## 11. HOW TO ARGUE EACH TOP GROUND
+## 11. COUNSEL BRIEFING NOTE — HOW TO ARGUE EACH GROUND
+Think: "what does counsel need in a 5-minute briefing on each ground?"
 You MUST cover EVERY ground — ALL {len(grounds)} of them. For EACH ground write 400+ words:
 GROUNDS TO COVER:
 {grounds_enumerated}
 
-For each ground:
-- **Lead Proposition**: Core argument in 2 powerful sentences
-- **Supporting Authority Cluster**: Statute + 3 precedent cases with full citations and explanations
+For each ground — NO repetition of content from underlying reports. SYNTHESIS ONLY:
+- **Lead Proposition**: Core argument in 2 powerful assertive sentences
+- **Appellate Pathway**: Which statutory provision is engaged
+- **Supporting Authority Cluster**: Statute + 3 precedent cases (REAL citations only)
 - **Expected Prosecution Answer**: 4-5 sentences with specific authorities
 - **Rebuttal Strategy**: 4-5 sentences with counter-authorities
+- **Strategic Risk**: Main weakness or gap
 - **If Established**: Specific court order to seek
 
 ## 12. SUBMISSIONS BLUEPRINT (1200+ words)
@@ -2075,24 +2156,32 @@ STOP after section 12."""),
                 ("PASS 8/8", f"""
 NOW GENERATE ONLY SECTIONS 13-15. Write 4000+ WORDS for this pass. Section 15 is critical.
 
-## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS (800+ words)
-Step-by-step guide with forms table. Each step: plain English explanation, required form, deadline, link.
+## 13. FILING PATHWAY + REQUIRED FORMS (800+ words)
+Step-by-step filing requirements:
+- Notice of Intention to Appeal — deadline and form
+- Detailed grounds of appeal — content requirements
+- Written submissions — structure and page limits
+- Application for leave (if required) — criteria
+- Supporting affidavit requirements
+- Service requirements on DPP/Crown
+Each step: plain English explanation, required form, deadline.
 
 ## 14. PRIORITISED ACTION PLAN (800+ words)
 72-hour actions (at least 5): exact action, who to contact, deadline, objective.
 7-day actions (at least 5): exact action, resources needed, dependencies.
 28-day actions (at least 5): exact action, preparation steps, milestones.
 
-## 15. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
+## 15. PLAIN-ENGLISH BRIEF (2000+ words)
 For EACH of the {len(grounds)} grounds individually:
 - What this ground means in simple terms (3-4 sentences)
 - Why it matters (2-3 sentences)
-- Chances of success (honest assessment)
+- Appellate viability (honest assessment — arguable/moderate/strong, NOT percentages)
 - What happens if it succeeds (specific outcome)
 
 Then cover:
 - The overall appeal: what, why, timeline
-- Each possible outcome and what it means personally
+- Overall position: "There are arguable grounds capable of attracting appellate consideration, subject to refinement and evidentiary development." (or equivalent honest assessment)
+- Each possible outcome and what it means
 - What the applicant should do right now, this week, this month
 - ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional".
 

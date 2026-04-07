@@ -1,64 +1,80 @@
 """
-Criminal Appeal AI - Legitimacy Engine
-3-layer forensic validation for grounds of merit scoring.
+Criminal Appeal AI - Legitimacy Engine (Phase 4 — Three-Axis Viability Scoring)
+DO NOT UNDO — Barrister-approved scoring model.
 
-Layers:
-  1. Legal Basis     — Does this ground map to a recognised appellate pathway?
-  2. Evidence Score   — Is there direct evidentiary support from case documents?
-  3. Appellate Viability — Would the Court of Criminal Appeal realistically intervene?
+Three-Axis Model:
+  1. Outcome Impact    — Determinative / Influential / Minor
+  2. Legal Alignment   — Direct authority / Analogous / Weak
+  3. Evidence Support   — Strong / Partial / Limited
+
+Combined → Appellate Viability: Arguable — Strong / Arguable — Moderate / Requires Development
 
 Hard safety rules:
-  - No ground can be rated STRONG without evidence score >= 2
+  - No ground rated "Arguable — Strong" without evidence_support >= "partial"
   - Rating is calculated, never AI-guessed
+  - Constitutional grounds (s 80) deprioritised unless direct authority exists
 """
 from typing import List, Dict
 
 
-# Layer 1 — Recognised appellate pathway scores
-LEGAL_BASIS_SCORES = {
-    "miscarriage_of_justice": 3,
-    "procedural_error": 3,
+# === Layer 1: Outcome Impact ===
+# How much impact would this ground have on the appeal outcome?
+OUTCOME_IMPACT_SCORES = {
+    "miscarriage_of_justice": 3,  # Determinative
     "judicial_error": 3,
     "fresh_evidence": 3,
     "prosecution_misconduct": 3,
-    "constitutional_violation": 3,
-    "sentencing_error": 2,
+    "procedural_error": 2,        # Influential
     "jury_irregularity": 2,
     "ineffective_counsel": 2,
+    "sentencing_error": 2,
+    "constitutional_violation": 1, # Minor (deprioritised — rarely operative in state appeals)
     "other": 1,
 }
 
-# Ground types with high appellate intervention likelihood
-HIGH_VALUE_GROUNDS = [
+# === Layer 2: Legal Alignment ===
+# Ground types with direct appellate authority
+DIRECT_AUTHORITY_GROUNDS = [
     "miscarriage_of_justice", "fresh_evidence", "judicial_error",
-    "prosecution_misconduct", "constitutional_violation",
+    "prosecution_misconduct", "sentencing_error",
 ]
-MEDIUM_VALUE_GROUNDS = [
-    "procedural_error", "ineffective_counsel", "sentencing_error",
+ANALOGOUS_GROUNDS = [
+    "procedural_error", "ineffective_counsel", "jury_irregularity",
 ]
 
 
-def score_legal_basis(ground_type: str) -> int:
-    """Map ground type to recognised appellate pathway. Returns 1-3."""
-    return LEGAL_BASIS_SCORES.get(ground_type, 1)
+def score_outcome_impact(ground_type: str) -> dict:
+    """Score outcome impact. Returns label and numeric score (1-3)."""
+    score = OUTCOME_IMPACT_SCORES.get(ground_type, 1)
+    labels = {3: "Determinative", 2: "Influential", 1: "Minor"}
+    return {"score": score, "label": labels.get(score, "Minor")}
 
 
-def score_evidence(evidence_list: List, undermining_list: List = None) -> int:
+def score_legal_alignment(ground_type: str) -> dict:
+    """Score legal alignment based on whether direct authority supports this ground type."""
+    if ground_type in DIRECT_AUTHORITY_GROUNDS:
+        return {"score": 3, "label": "Direct authority"}
+    elif ground_type in ANALOGOUS_GROUNDS:
+        return {"score": 2, "label": "Analogous"}
+    else:
+        return {"score": 1, "label": "Weak"}
+
+
+def score_evidence_support(evidence_list: List, undermining_list: List = None) -> dict:
     """
     Evidence scoring based on specificity and quantity:
-      3 = multiple strong evidence items (3+ items, at least one direct quote >50 chars)
-      2 = some evidence (2+ items or 1 strong direct quote >80 chars)
-      1 = minimal evidence (1 item or short references)
-      0 = no evidence provided
-    
+      Strong  (3) = 3+ items with at least 2 substantive quotes (>80 chars)
+      Partial (2) = 2+ items or 1 strong direct quote (>80 chars)
+      Limited (1) = 1 item or short references only
+      None    (0) = no evidence
+
     Undermining evidence reduces the score:
       - If undermining >= supporting, cap at 1
       - If undermining > 0, reduce by 1
     """
     if not evidence_list:
-        return 0
+        return {"score": 0, "label": "None"}
 
-    # Count substantive items
     strong_items = 0
     any_items = 0
     for item in evidence_list:
@@ -77,7 +93,6 @@ def score_evidence(evidence_list: List, undermining_list: List = None) -> int:
             if len(text) > 80:
                 strong_items += 1
 
-    # Base score from quantity and quality
     if strong_items >= 2 and any_items >= 3:
         base_score = 3
     elif strong_items >= 1 and any_items >= 2:
@@ -87,7 +102,6 @@ def score_evidence(evidence_list: List, undermining_list: List = None) -> int:
     else:
         base_score = 0
 
-    # Apply undermining penalty
     undermining_count = len(undermining_list) if undermining_list else 0
     if undermining_count > 0:
         if undermining_count >= any_items:
@@ -95,86 +109,84 @@ def score_evidence(evidence_list: List, undermining_list: List = None) -> int:
         else:
             base_score = max(0, base_score - 1)
 
-    return base_score
-
-
-def score_appellate_viability(ground_type: str, evidence_score: int) -> int:
-    """
-    Conservative viability model aligned with NSWCCA / general appellate reality.
-    Returns 0-3.
-    """
-    if evidence_score == 0:
-        return 0
-
-    if ground_type in HIGH_VALUE_GROUNDS and evidence_score >= 2:
-        return 3
-    elif ground_type in MEDIUM_VALUE_GROUNDS and evidence_score >= 2:
-        return 2
-    elif ground_type in HIGH_VALUE_GROUNDS:
-        return 2
-    elif ground_type in MEDIUM_VALUE_GROUNDS:
-        return 1
-    else:
-        return 1
+    labels = {3: "Strong", 2: "Partial", 1: "Limited", 0: "None"}
+    return {"score": base_score, "label": labels.get(base_score, "None")}
 
 
 def _generate_confidence_note(ground_type: str, evidence_score: int) -> str:
     """Generate a calibrated confidence note for this ground."""
     if evidence_score == 0:
-        return "No direct evidentiary support identified — requires documentary verification before any reliance"
+        return "No direct evidentiary support identified — requires documentary verification before any reliance."
     if evidence_score == 1:
-        return "Limited evidentiary basis — requires further documentary substantiation"
+        return "Limited evidentiary basis — requires further documentary substantiation."
     if ground_type == "fresh_evidence":
-        return "Viability depends on whether evidence satisfies the fresh evidence test (could not have been obtained with reasonable diligence; would likely have produced a different verdict)"
+        return "Viability depends on whether evidence satisfies the fresh evidence test (could not have been obtained with reasonable diligence; would likely have produced a different verdict)."
     if ground_type == "jury_irregularity":
-        return "Requires proof of actual irregularity affecting the verdict, not speculation"
+        return "Requires proof of actual irregularity affecting the verdict, not speculation."
     if ground_type == "ineffective_counsel":
-        return "Requires demonstration that representation fell below objective standard of competence and affected the outcome"
+        return "Requires demonstration that representation fell below objective standard of competence and affected the outcome."
     if ground_type == "sentencing_error":
-        return "Appellate courts afford considerable deference to sentencing judges — manifest excess or specific error required"
-    return "Assessment subject to full transcript, evidentiary, and legal review by qualified counsel"
+        return "Appellate courts afford considerable deference to sentencing judges — manifest excess or specific error required."
+    if ground_type == "constitutional_violation":
+        return "Constitutional grounds are rarely the operative pathway in state criminal appeals. Consider reframing under miscarriage of justice or procedural unfairness."
+    return "Assessment subject to full transcript, evidentiary, and legal review by qualified counsel."
 
 
 def calculate_ground_rating(ground: Dict) -> Dict:
     """
-    Calculate a defensible legitimacy rating for a ground of merit.
+    Calculate a defensible three-axis legitimacy rating for a ground of merit.
 
     Returns dict with:
-      - legal_score (0-3)
-      - evidence_score (0-3)
-      - viability_score (0-3)
+      - outcome_impact: {score, label}
+      - legal_alignment: {score, label}
+      - evidence_support: {score, label}
       - total_score (0-9)
       - rating: strong | moderate | weak
+      - viability_label: "Arguable — Strong" / "Arguable — Moderate" / "Requires Development"
       - confidence_note: calibrated note
     """
     ground_type = ground.get("ground_type", "other")
     evidence_list = ground.get("supporting_evidence") or ground.get("key_evidence") or []
     undermining_list = ground.get("undermining_items") or ground.get("undermining_evidence") or []
 
-    legal_score = score_legal_basis(ground_type)
-    evidence_score = score_evidence(evidence_list, undermining_list)
-    viability_score = score_appellate_viability(ground_type, evidence_score)
+    outcome = score_outcome_impact(ground_type)
+    legal = score_legal_alignment(ground_type)
+    evidence = score_evidence_support(evidence_list, undermining_list)
 
-    total = legal_score + evidence_score + viability_score
+    total = outcome["score"] + legal["score"] + evidence["score"]
 
-    if total >= 8:
+    if total >= 7:
         rating = "strong"
+        viability_label = "Arguable \u2014 Strong"
     elif total >= 4:
         rating = "moderate"
+        viability_label = "Arguable \u2014 Moderate"
     else:
         rating = "weak"
+        viability_label = "Requires Development"
 
-    # HARD SAFETY RULE: No STRONG without evidence score >= 2
-    if evidence_score < 2 and rating == "strong":
+    # HARD SAFETY RULE: No "strong" without evidence score >= 2
+    if evidence["score"] < 2 and rating == "strong":
         rating = "moderate"
+        viability_label = "Arguable \u2014 Moderate"
+
+    # HARD SAFETY RULE: Constitutional grounds deprioritised
+    if ground_type == "constitutional_violation" and rating == "strong":
+        rating = "moderate"
+        viability_label = "Arguable \u2014 Moderate"
 
     return {
-        "legal_score": legal_score,
-        "evidence_score": evidence_score,
-        "viability_score": viability_score,
+        "outcome_impact": outcome,
+        "legal_alignment": legal,
+        "evidence_support": evidence,
         "total_score": total,
         "rating": rating,
-        "confidence_note": _generate_confidence_note(ground_type, evidence_score),
+        "viability_label": viability_label,
+        "confidence_note": _generate_confidence_note(ground_type, evidence["score"]),
+        # Keep legacy fields for backward compatibility
+        "legal_score": legal["score"],
+        "evidence_score": evidence["score"],
+        "viability_score": outcome["score"],
     }
 
 
@@ -183,6 +195,6 @@ def validate_ground_type(ground_type) -> str:
     if isinstance(ground_type, list):
         ground_type = ground_type[0] if ground_type else "other"
     normalised = str(ground_type or "").strip().lower().replace(" ", "_")
-    if normalised in LEGAL_BASIS_SCORES:
+    if normalised in OUTCOME_IMPACT_SCORES:
         return normalised
     return "other"
