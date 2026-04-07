@@ -286,7 +286,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* COMPLETE APP CAPABILITIES - At A Glance */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-white relative overflow-hidden">
+      <section className="py-8 px-6 bg-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -625,9 +625,9 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* HOW THE PROCESS WORKS — Steps 1-4 */}
       {/* ============================================ */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-10 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="see-it-in-action-icon">
                 <Scale className="w-8 h-8 text-white" />
@@ -709,7 +709,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* AUSTRALIAN APPEAL STATISTICS — Moved here above State Stats */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
@@ -751,7 +751,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 3: LEGAL RESOURCES & RESEARCH */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-slate-50 border-t border-slate-200">
+      <section className="py-8 px-6 bg-slate-50 border-t border-slate-200">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
@@ -816,7 +816,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 5: PRICING */}
       {/* ============================================ */}
-      <section className="py-16 px-6 bg-white border-t border-slate-200">
+      <section className="py-8 px-6 bg-white border-t border-slate-200">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-2">Pricing</p>
@@ -957,7 +957,7 @@ const LandingPage = () => {
       </section>
 
       {/* Report Tier Comparison */}
-      <section className="py-16 px-6 bg-white" data-testid="tier-comparison-section">
+      <section className="py-8 px-6 bg-white" data-testid="tier-comparison-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-blue-700 text-sm uppercase tracking-widest mb-2 font-semibold">Compare report tiers</p>
@@ -1099,7 +1099,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-8 px-6 bg-white">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
             Ready to Start?
