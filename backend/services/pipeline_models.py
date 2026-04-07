@@ -88,6 +88,9 @@ class IssueClassification(BaseModel):
     title: str
     ground_type: str
     description: str
+    appellate_pathway: str = ""
+    error_identified: str = ""
+    materiality: str = ""
     linked_fact_ids: List[str] = Field(default_factory=list)
     linked_event_ids: List[str] = Field(default_factory=list)
     linked_finding_ids: List[str] = Field(default_factory=list)

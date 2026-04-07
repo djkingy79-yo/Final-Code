@@ -320,6 +320,9 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "title": existing_ground["title"] if existing_ground else issue_title,
             "ground_type": issue.get("ground_type", "other"),
             "description": issue.get("description", ""),
+            "appellate_pathway": issue.get("appellate_pathway", ""),
+            "error_identified": issue.get("error_identified", ""),
+            "materiality": issue.get("materiality", ""),
             "strength": (verification or {}).get("legitimacy_scores", {}).get("rating", "moderate"),
             "status": "investigated" if verification else "identified",
             "supporting_evidence": (verification or {}).get("supporting_items", []),
@@ -668,11 +671,13 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
         # Generate deep analysis text for this ground
         deep_analysis_text = ""
         try:
-            analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({case.get('state', 'NSW')}).
+            # DO NOT UNDO — Appellate-structured deep analysis prompt
+            analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({case.get('state', 'NSW').upper()}).
 
 Ground: {ground.get('title', '')}
 Type: {ground.get('ground_type', '')}
 Description: {ground.get('description', '')}
+Appellate Pathway: {ground.get('appellate_pathway', 'Miscarriage of justice')}
 
 Supporting evidence found:
 {json.dumps(verification_dict.get('supporting_items', []), indent=2, default=str)[:2000]}
@@ -688,17 +693,36 @@ Similar cases:
 
 Legitimacy assessment: {json.dumps(verification_dict.get('legitimacy_scores', {}), default=str)}
 
-Write a detailed investigative analysis of this ground (500-800 words). Use third person only. Write in paragraphs, NOT bullet points. Cover:
-1. The factual basis and evidentiary foundation
-2. The applicable legal framework and statutory provisions
-3. How supporting and undermining evidence interacts
-4. Comparable case law and precedent
-5. Overall viability assessment and what further material could strengthen or weaken this ground
+Write a detailed appellate analysis of this ground (600-900 words) using the following MANDATORY structure:
 
-Use Australian English spelling (analyse, defence, offence). Do NOT use first or second person."""
+## Trial Finding
+What did the trial judge find or accept on this issue?
+
+## Error Identified
+What specific error occurred? Use assertive language: "The trial judge erred in...", "It is contended that...". Do NOT use "may have" or "could potentially".
+
+## Materiality
+Why does this error matter to the outcome of the case? How did it affect the verdict or sentence?
+
+## Consequence
+What is the legal consequence? (e.g. verdict is unsafe, miscarriage of justice, sentence must be set aside)
+
+## Appellate Viability
+Assess the strength of this ground using:
+- Outcome impact: Determinative / Influential / Minor
+- Legal alignment: Direct authority / Analogous / Weak
+- Evidence support: Strong / Partial / Limited
+State what further material could strengthen or weaken this ground.
+
+RULES:
+- Write in third person only. Use paragraphs, NOT bullet points in body text.
+- Use assertive appellate language throughout. Do NOT hedge with "may", "could potentially", "it is possible".
+- Every paragraph must tie back to the specific trial error, not generic legal textbook explanations.
+- Australian English spelling only (analyse, defence, offence, behaviour, favour).
+- Do NOT use first or second person."""
 
             deep_analysis_text = await call_llm_with_fallback(
-                system_prompt="You are a senior Australian criminal appellate researcher conducting deep issue analysis. Write in formal third person. Use paragraphs, not bullet points. Australian English only.",
+                system_prompt="You are a senior Australian criminal appellate researcher conducting forensic issue analysis for counsel preparation. Write in formal third person. Use the mandatory structure provided. Australian English only. Be assertive, not hedging.",
                 user_prompt=analysis_prompt,
                 session_id=f"deep_analysis_{ground_id}",
                 task_type="ground_deep_analysis",

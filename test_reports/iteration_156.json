@@ -1,0 +1,79 @@
+{
+  "summary": "Tested Phase 1 credibility fixes for barrister feedback. All features verified working: strength badge labels changed to 'Arguable — Strong/Moderate' and 'Requires Development', law sections with 'not provided' filtered out, similar cases with placeholders filtered out, 'Comparable Authority' heading in print view, per-ground disclaimer in print view. Fixed single ground export to use consistent filtering and heading.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/cases/{case_id}/grounds",
+        "issue": "Backend returns raw data including placeholder similar cases (e.g. 'R v [Surname] [Year]'). This is by design - filtering happens on frontend. Existing grounds created with old prompts retain old data until re-identified.",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration156_credibility_fixes.py",
+    "/app/test_reports/pytest/iteration_156_credibility_fixes.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Fixed: Single ground export (buildSingleGroundHtml) now uses 'Comparable Authority' heading instead of 'Similar Cases (AI-Suggested)'",
+    "Fixed: Single ground export now filters law sections with 'not provided' or 'unknown'",
+    "Fixed: Single ground export now filters similar cases with placeholder names"
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/GroundsOfMerit.jsx",
+    "/app/backend/tests/test_iteration156_credibility_fixes.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Email: djkingy79@gmail.com, Password: Cr1m1nalApp3al$2025",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Phase 1 credibility fixes verified. STRENGTH_CONFIG labels changed from Strong/Moderate/Weak to 'Arguable — Strong'/'Arguable — Moderate'/'Requires Development'. Frontend filters out law sections with 'not provided'/'unknown' and similar cases with '[Surname]'/'[Year]' placeholders. Print view uses 'Comparable Authority' heading and includes per-ground disclaimer. Existing grounds in database may have old data - new fields (appellate_pathway, error_identified, materiality) only populate on re-identification.",
+  "features_verified": {
+    "strength_badge_labels": {
+      "status": "PASS",
+      "details": {
+        "strong": "Arguable — Strong (green badge with checkmark)",
+        "moderate": "Arguable — Moderate (blue badge)",
+        "weak": "Requires Development (red badge)"
+      }
+    },
+    "law_sections_filtering": {
+      "status": "PASS",
+      "details": "Frontend filters out law sections where section contains 'not provided', 'unknown', or is empty. Verified in grounds list, detail dialog, and print view."
+    },
+    "similar_cases_filtering": {
+      "status": "PASS",
+      "details": "Frontend filters out similar cases with '[Surname]', '[Year]' placeholders, 'Case name', 'None', 'optional', or citations containing 'verification needed'."
+    },
+    "comparable_authority_heading": {
+      "status": "PASS",
+      "details": "Print/PDF view uses 'Comparable Authority' heading instead of 'Similar Cases (AI-Suggested)'. Single ground export also updated."
+    },
+    "per_ground_disclaimer": {
+      "status": "PASS",
+      "details": "Print/PDF view shows disclaimer after each ground: 'This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.'"
+    },
+    "appellate_pathway_field": {
+      "status": "PARTIAL",
+      "details": "Field exists in IssueClassification model and is populated by classify.py. Existing grounds don't have this field - only appears after re-identification. Frontend displays blue box when field is present."
+    },
+    "backend_api_grounds": {
+      "status": "PASS",
+      "details": "GET /api/cases/{case_id}/grounds returns 200 with grounds array, count, is_unlocked, unlock_price"
+    },
+    "backend_api_auto_identify": {
+      "status": "PASS",
+      "details": "POST /api/cases/{case_id}/grounds/auto-identify returns task_id and status (started/already_running). GET /status returns task progress."
+    }
+  }
+}

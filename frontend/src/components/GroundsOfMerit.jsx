@@ -127,9 +127,9 @@ const GROUND_TYPE_COLORS = {
 };
 
 const STRENGTH_CONFIG = {
-  strong: { icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-100", label: "Strong" },
-  moderate: { icon: AlertTriangle, color: "text-red-600", bg: "bg-blue-100", label: "Moderate" },
-  weak: { icon: XCircle, color: "text-red-600", bg: "bg-red-100", label: "Weak" }
+  strong: { icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-100", label: "Arguable — Strong" },
+  moderate: { icon: AlertTriangle, color: "text-blue-600", bg: "bg-blue-100", label: "Arguable — Moderate" },
+  weak: { icon: XCircle, color: "text-red-600", bg: "bg-red-100", label: "Requires Development" }
 };
 
 const STATUS_CONFIG = {
@@ -389,6 +389,14 @@ const GroundsOfMerit = ({
 
             <p className="grounds-export-description">{auSpelling(ground.description)}</p>
 
+            {/* Appellate Pathway — DO NOT UNDO */}
+            {ground.appellate_pathway && (
+              <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'6px', padding:'8px 12px', marginBottom:'12px'}}>
+                <h3 style={{color:'#1d4ed8', marginBottom:'4px'}}>Appellate Pathway</h3>
+                <p style={{fontSize:'11px', lineHeight:'1.5', margin:0}}>{ground.appellate_pathway}</p>
+              </div>
+            )}
+
             {ground.supporting_evidence?.length > 0 && (
               <div className="grounds-export-block">
                 <h3>Supporting Evidence</h3>
@@ -402,23 +410,25 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {ground.law_sections?.length > 0 && (
+            {/* DO NOT UNDO — Filter out law sections without real section numbers */}
+            {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '')?.length > 0 && (
               <div className="grounds-export-block">
                 <h3>Relevant Law Sections</h3>
                 <ul>
-                  {ground.law_sections.map((section, idx) => (
-                    <li key={idx}>{`s.${section.section} ${section.act} (${section.jurisdiction || "NSW"})`}</li>
+                  {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map((section, idx) => (
+                    <li key={idx}>{`s ${section.section} ${section.act} (${(section.jurisdiction || "NSW").toUpperCase()})`}</li>
                   ))}
                 </ul>
               </div>
             )}
 
-            {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional")?.length > 0 && (
+            {/* DO NOT UNDO — Filter out unverified/placeholder similar cases */}
+            {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed'))?.length > 0 && (
               <div className="grounds-export-block">
-                <h3>Similar Cases (AI-Suggested)</h3>
+                <h3>Comparable Authority</h3>
                 <ul>
-                  {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").map((caseItem, idx) => (
-                    <li key={idx}>{caseItem.citation ? `${caseItem.case_name} — ${caseItem.citation}` : caseItem.case_name}</li>
+                  {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).map((caseItem, idx) => (
+                    <li key={idx}>{caseItem.citation ? `${caseItem.case_name} ${caseItem.citation}` : caseItem.case_name}{caseItem.relevance_note ? ` — ${caseItem.relevance_note}` : ''}</li>
                   ))}
                 </ul>
               </div>
@@ -441,6 +451,11 @@ const GroundsOfMerit = ({
                 </div>
               </div>
             )}
+
+            {/* DO NOT UNDO — Per-ground appellate disclaimer */}
+            <div style={{marginTop:'12px', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #cbd5e1', borderRadius:'6px', fontSize:'10px', lineHeight:'1.5', color:'#475569', fontStyle:'italic'}}>
+              This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.
+            </div>
           </section>
         ))}
 
@@ -592,8 +607,8 @@ ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' +
   } else { t = e?.quote || e?.text || ''; }
   return t ? '<li>'+escHtml(t)+'</li>' : '';
 }).join('') + '</ul>' : ''}
-${(ground.law_sections||[]).length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
-${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').length ? '<h2>Similar Cases (AI-Suggested)</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && c.case_name !== 'R v [Surname] [Year]').map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
+${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map(s=>'<li>s.'+escHtml(s.section)+' '+escHtml(s.act)+' ('+(s.jurisdiction||'NSW')+')</li>').join('') + '</ul>' : ''}
+${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).length ? '<h2>Comparable Authority</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div></div>
 <div style="text-align:center;margin:24px 0;padding:16px 0;">
@@ -832,9 +847,19 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                           </div>
                         </div>
                       ) : (
-                        <p className="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-snug">
-                          {auSpelling(ground.description)}
-                        </p>
+                        <>
+                          <p className="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-snug">
+                            {auSpelling(ground.description)}
+                          </p>
+                          
+                          {/* Appellate Pathway — DO NOT UNDO */}
+                          {ground.appellate_pathway && (
+                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                              <p className="text-xs font-bold text-blue-800">Appellate Pathway</p>
+                              <p className="text-xs text-blue-700 mt-0.5">{ground.appellate_pathway}</p>
+                            </div>
+                          )}
+                        </>
                       )}
                       
                       {/* Supporting Evidence Tags */}
@@ -842,22 +867,22 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         <EvidenceSummary items={ground.supporting_evidence} />
                       )}
                       
-                      {/* Law Sections Preview */}
-                      {ground.law_sections && ground.law_sections.length > 0 && (
+                      {/* Law Sections Preview — DO NOT UNDO: filtered for real section numbers only */}
+                      {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 0 && (
                         <div className="flex items-center gap-2 mt-2">
                           <BookOpen className="w-4 h-4 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {ground.law_sections.length} law section{ground.law_sections.length > 1 ? 's' : ''} identified
+                            {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length} law section{ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 1 ? 's' : ''} identified
                           </span>
                         </div>
                       )}
                       
-                      {/* Similar Cases Preview */}
-                      {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 0 && (
+                      {/* Comparable Authority Preview — DO NOT UNDO: filtered for verified citations only */}
+                      {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length > 0 && (
                         <div className="flex items-center gap-2 mt-1">
                           <Gavel className="w-4 h-4 text-slate-400" />
                           <span className="text-xs text-slate-500">
-                            {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length} similar case{ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 1 ? 's' : ''} referenced
+                            {ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length} comparable case{ground.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length > 1 ? 's' : ''} referenced
                           </span>
                         </div>
                       )}

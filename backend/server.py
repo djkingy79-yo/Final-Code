@@ -1534,7 +1534,7 @@ Step-by-step guide specific to {state_info.get('name', 'NSW')} with forms table.
 72-hour / 7-day / 28-day actions. Each action: what to do, who to contact, objective.
 
 ## 15. CLIENT PLAIN-ENGLISH BRIEF
-1000+ words explaining in plain English: what the appeal is about, what EACH ground means, chances of success for each, what happens next, realistic outcomes, and what the applicant should do now. Cover EVERY ground individually. CRITICAL: Use ONLY third-person language. ABSOLUTE BAN on "you", "your", "we", "us", "our". Use "the applicant", "the legal professional".
+1000+ words explaining in plain English: what the appeal is about, what EACH ground means, the viability of each ground (arguable/moderate/strong or requires development), what happens next, realistic outcomes, and what the applicant should do now. Cover EVERY ground individually. CRITICAL: Use ONLY third-person language. ABSOLUTE BAN on "you", "your", "we", "us", "our". Use "the applicant", "the legal professional". Do NOT use percentage success rates — use appellate viability language instead (arguable, moderate, strong, requires development).
 
 IMPORTANT:
 - No cost discussion. No witness contradiction section.
@@ -1638,7 +1638,7 @@ Then provide DETAILED analysis (minimum 150 words each) for EVERY pathway (keep 
 - **Conviction quashed** — what standard must be met, what evidence supports this, what the defendant's position would be, which grounds support this outcome
 - **Retrial ordered** — when this happens instead of quashing, what the retrial process involves, timeframes
 - **Conviction substituted/downgraded** (e.g., murder to manslaughter) — legal basis, resulting sentence range, how this has worked in comparable cases
-- **Sentence reduced as manifestly excessive** — show explicit before/after: Original sentence/NPP → Revised sentence/NPP with percentage reduction
+- **Sentence reduced as manifestly excessive** — show explicit before/after: Original sentence/NPP → Revised sentence/NPP with reasoning for reduction
 - **Appeal dismissed** — consequences, options for special leave to the High Court, time limits
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST
@@ -1737,21 +1737,23 @@ Tailored AustLII search guidance:
 
 ## 19. RISK ASSESSMENT + CONTINGENCY PLANNING
 For each ground:
-- Probability of success (percentage range)
+- Appellate viability assessment (arguable/moderate/strong or requires development)
 - Main risk factor
 - Contingency if this ground fails
 - Impact on overall appeal if this ground is excluded
 
 Overall appeal risk assessment:
-- Best case scenario and likelihood
+- Best case scenario
 - Most likely outcome
 - Worst case scenario and mitigation
+
+Do NOT use percentage success rates. Use appellate viability language only.
 
 ## 20. CLIENT PLAIN-ENGLISH BRIEF
 THIS MUST BE THE FINAL SECTION. Write this as if explaining the case to the defendant in everyday language, BUT STRICTLY IN THIRD PERSON:
 - What the appeal is about and why it matters
 - What are the strongest arguments in the applicant's favour (reference specific facts)
-- What are the realistic chances of success
+- What are the realistic prospects for the appeal (use viability language: arguable, moderate, strong — NOT percentages)
 - What the different possible outcomes mean for the applicant personally
 - What the applicant needs to do right now, this week, and this month
 - What to expect at the hearing
@@ -2142,7 +2144,7 @@ NOW GENERATE ONLY SECTIONS 1-3. Write 5000+ WORDS for this pass. This is a $200 
 
 ## 1. EXECUTIVE BRIEF (1200+ words)
 Write 6-8 FULL paragraphs (NOT bullet points):
-- Paragraph 1: Document/timeline/grounds counts from supplied data, then strategic overview of the appeal's overall strength with percentage assessment
+- Paragraph 1: Document/timeline/grounds counts from supplied data, then strategic overview of the appeal's overall appellate position (do NOT use percentage success rates — use viability language: arguable, moderate, strong)
 - Paragraph 2: The 2-3 STRONGEST grounds with specific evidence anchors and legal tests that support them
 - Paragraph 3: The weakest ground and why it's still worth pursuing (or should be abandoned)
 - Paragraph 4: Jurisdiction-specific posture — what the {state_info.get('appeal_court', 'NSWCCA')} typically does with this type of appeal
@@ -2150,6 +2152,8 @@ Write 6-8 FULL paragraphs (NOT bullet points):
 - Paragraph 6: Key risks the prosecution will exploit and how to counter them
 - Paragraph 7: Immediate actions required with specific deadlines
 - Paragraph 8: Summary of 8+ primary issues identified with document references
+
+CRITICAL: Do NOT use percentage probabilities or success rates anywhere in this report. Use appellate viability language only (arguable, moderate, strong, requires development). Use assertive appellate language throughout: "It is contended that...", "The trial judge erred in...", NOT "may have" or "could potentially".
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 18+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
@@ -2201,10 +2205,10 @@ Markdown table with 10+ rows, then for EACH common ground write 100+ words expla
 
 ## 7. OUTCOME OPTIONS — DETAILED PATHWAY ANALYSIS
 First provide summary table, then write 400+ WORDS for EACH of these 5 pathways (ALL within this one section):
-- **Conviction quashed entirely**: Which of the {len(grounds)} grounds support this? What's the legal standard (e.g., miscarriage of justice)? What evidence is strongest? Historical success rate for this type of case?
+- **Conviction quashed entirely**: Which of the {len(grounds)} grounds support this? What's the legal standard (e.g., miscarriage of justice)? What evidence is strongest? What is the appellate viability of this pathway?
 - **Retrial ordered**: What triggers a retrial? What changes? Timeframes? Risks? What happens if the same evidence is presented?
 - **Conviction substituted/downgraded**: Could the charge be reduced? Under what legal basis? What would the new sentence range be? Which grounds support this?
-- **Sentence reduced as manifestly excessive**: Show EXACT before/after — Original sentence/NPP → realistic revised sentence/NPP with percentage. Which sentencing comparisons from Section 5 support this?
+- **Sentence reduced as manifestly excessive**: Show EXACT before/after — Original sentence/NPP → realistic revised sentence/NPP with reasoning. Which sentencing comparisons from Section 5 support this?
 - **Appeal dismissed**: What happens? Consequences for the applicant? Special leave to High Court — threshold, timeframe, realistic prospects?
 
 ## 8. EVIDENTIARY GAPS + REMEDIATION CHECKLIST (800+ words)
@@ -2324,7 +2328,7 @@ For each: exact action, preparation steps, milestones, how this contributes to t
 
 ## 19. RISK ASSESSMENT + CONTINGENCY PLANNING (1200+ words — NEW SECTION NOT IN $150 REPORT)
 For EACH of the {len(grounds)} grounds, write 150+ words covering:
-- Probability of success (percentage range with reasoning)
+- Appellate viability assessment (arguable/moderate/strong — NOT percentages)
 - Main risk factor (what could go wrong?)
 - Contingency if this ground fails (what's the backup?)
 - Impact on overall appeal if this ground is excluded
