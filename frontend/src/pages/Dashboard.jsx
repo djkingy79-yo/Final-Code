@@ -372,6 +372,19 @@ const Dashboard = ({ user }) => {
         {/* Content */}
         <div className="p-6 lg:p-8 space-y-6">
           
+          {/* NEW USER $5 TRIAL OFFER BANNER */}
+          <div className="bg-pink-600 rounded-xl p-4 shadow-lg border-2 border-pink-400" data-testid="dashboard-trial-offer">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-pink-600" />
+              </div>
+              <div>
+                <p className="text-white font-black text-base uppercase tracking-wide">New User Special Offer</p>
+                <p className="text-white font-extrabold text-sm">First time users only — Unlock Grounds of Merit for just <span className="text-2xl">$5.00</span></p>
+              </div>
+            </div>
+          </div>
+
           {/* Overview Section - Stats + Info Combined */}
           <section>
             <div className="flex items-center gap-2 mb-4">
