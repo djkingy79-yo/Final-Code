@@ -37,7 +37,7 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
   }
 
   return (
-    <div data-testid="evidence-summary" className="mt-3 text-xs">
+    <div data-testid="evidence-summary" className="mt-3 text-sm">
       <div className="font-medium mb-2 text-slate-700">Supporting Evidence ({cleaned.length})</div>
       <div className="space-y-2">
         {cleaned.slice(0, displayCount).map((ev) => (

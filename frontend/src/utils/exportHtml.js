@@ -26,7 +26,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Manrope', sans-serif; font-size: 10px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; }
+  body { font-family: 'Manrope', sans-serif; font-size: 10px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   @page { size: A4; margin: 14mm 14mm 22mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
