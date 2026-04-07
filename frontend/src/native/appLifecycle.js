@@ -46,10 +46,13 @@ export const initNativeApp = async () => {
 
   // Handle deep links
   App.addListener("appUrlOpen", ({ url }) => {
-    const path = new URL(url).pathname;
-    if (path) {
-      window.location.hash = path;
-    }
+    try {
+      const parsedUrl = new URL(url);
+      const path = parsedUrl.pathname;
+      if (path && path !== "/") {
+        window.location.pathname = path;
+      }
+    } catch {}
   });
 };
 
