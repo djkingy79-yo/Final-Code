@@ -154,15 +154,15 @@ const LandingPage = () => {
       </div>
 
       {/* NEW USER SPECIAL OFFER — Card banner matching Dashboard — DO NOT UNDO */}
-      <div className="max-w-6xl mx-auto px-6 py-3">
-        <div className="bg-pink-600 rounded-xl p-4 shadow-lg border-2 border-pink-400 cursor-pointer" onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-pink-600" />
+      <div className="max-w-6xl mx-auto px-6 py-2">
+        <div className="bg-pink-600 rounded-xl p-3 shadow-lg border-2 border-pink-400 cursor-pointer" onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-pink-600" />
             </div>
             <div>
-              <p className="text-white font-black text-base uppercase tracking-wide">New User Special Offer</p>
-              <p className="text-white font-extrabold text-sm">First time users only — Unlock Grounds of Merit for just <span className="text-2xl">$5.00</span></p>
+              <p className="font-black text-sm uppercase tracking-wide" style={{ color: '#ffffff' }}>New User Special Offer</p>
+              <p className="font-extrabold text-xs" style={{ color: '#ffffff' }}>First time users only — Unlock Grounds of Merit for just <span className="text-lg font-black" style={{ color: '#ffffff' }}>$5.00</span></p>
             </div>
           </div>
         </div>
