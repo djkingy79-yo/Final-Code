@@ -230,6 +230,14 @@ class CaseCreate(BaseModel):
     sentence: Optional[str] = None                           # DO NOT UNDO — must be None for auto-detect
     summary: Optional[str] = None
 
+    # DO NOT UNDO — Converts empty strings to None so enum validation doesn't reject them
+    @field_validator("state", "offence_category", "offence_type", "sentence", "summary", "case_number", "court", "judge", mode="before")
+    @classmethod
+    def empty_str_to_none(cls, v):
+        if isinstance(v, str) and v.strip() == "":
+            return None
+        return v
+
 
 # ============================================================================
 # DOCUMENT MODELS
