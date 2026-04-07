@@ -154,7 +154,7 @@ const LandingPage = () => {
       </div>
 
       {/* NEW USER SPECIAL OFFER — Card banner matching Dashboard — DO NOT UNDO */}
-      <div className="max-w-6xl mx-auto px-6 py-2">
+      <div className="max-w-6xl mx-auto px-6 pt-2 pb-0">
         <div className="bg-pink-600 rounded-xl p-3 shadow-lg border-2 border-pink-400 cursor-pointer" onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
@@ -171,7 +171,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 1: HERO */}
       {/* ============================================ */}
-      <section className="relative py-20 md:py-28 px-6 overflow-hidden">
+      <section className="relative pt-8 pb-20 md:pt-12 md:pb-28 px-6 overflow-hidden">
         {/* Background Image with Blue Overlay — DO NOT UNDO */}
         <div className="absolute inset-0 z-0">
           <img 
