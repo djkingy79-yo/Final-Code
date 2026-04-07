@@ -1209,16 +1209,16 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   </div>
                 )}
 
-                {/* Similar Cases */}
-                {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").length > 0 && (
+                {/* Comparable Authority — DO NOT UNDO */}
+                {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length > 0 && (
                   <div>
                     <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <Gavel className="w-4 h-4" />
-                      Similar Cases
-                      <span className="text-xs font-normal text-blue-600">(AI-suggested — requires verification)</span>
+                      Comparable Authority
+                      <span className="text-xs font-normal text-blue-600">(requires verification)</span>
                     </h4>
                     <div className="space-y-2">
-                      {detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && c.case_name !== "R v [Surname] [Year]" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional").map((caseItem, idx) => (
+                      {detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).map((caseItem, idx) => (
                         <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                           <div className="font-medium text-blue-900">
                             {caseItem.case_name}
@@ -1228,6 +1228,9 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                             <div className="font-mono text-xs text-blue-700 mt-1">
                               {caseItem.citation}
                             </div>
+                          )}
+                          {caseItem.relevance_note && (
+                            <div className="text-xs text-slate-600 mt-1">{caseItem.relevance_note}</div>
                           )}
                         </div>
                       ))}

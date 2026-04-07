@@ -61,9 +61,7 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
-- P1: Phase 2 Structural — appellate pathway enforcement, ground overlap merging, new ground structure
-- P1: Phase 3 Report Differentiation — Quick (issue ID only), Full (appellate pathway analysis), Extensive (operations engine with checklists/evidence gaps/filing), Barrister View (pure synthesis, no repetition)
-- P1: Phase 4 Advanced — full pipeline integration, three-axis viability scoring, operations engine
+- P0: Test report generation with new prompts on actual case (verify appellate structure, operations engine sections, no percentages)
 - P2: Build Native Mobile App (Capacitor configured, needs build + test)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat for Notes
