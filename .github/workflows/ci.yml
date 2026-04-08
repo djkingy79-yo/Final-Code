@@ -65,13 +65,10 @@ jobs:
         working-directory: frontend
         run: |
           yarn install
-          echo "Dependencies installed successfully"
-      - name: Verify lockfile sync
-        working-directory: frontend
-        run: |
-          if ! yarn install --frozen-lockfile 2>/dev/null; then
-            echo "::warning::yarn.lock was out of date and has been auto-synced for this build"
+          if ! git diff --quiet -- yarn.lock; then
+            echo "::warning::yarn.lock was out of date and was modified during install"
           fi
+          echo "Dependencies installed successfully"
       - name: Lint frontend
         working-directory: frontend
         run: npx eslint src/ --ext .js,.jsx --max-warnings 0 || true
