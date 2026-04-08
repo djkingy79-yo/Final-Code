@@ -68,6 +68,12 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
   - Sub-particulars UI: GroundsOfMerit.jsx description rendering updated with whitespace-pre-line to properly display sub-particulars.
   - Testing: 17/17 backend tests passed (iteration_158). All features verified.
 
+- **Glossary, Australian English & Ground Reorder (April 2026):**
+  - Viability Glossary: Added collapsible glossary at the bottom of the Appellate Viability Assessment panel. Explains Outcome Impact (Determinative/Influential/Minor), Legal Alignment (Direct authority/Analogous/Weak), Evidence Support (Strong/Partial/Limited), Viability Rating (Arguable — Strong/Moderate/Requires Development), and Contingent Ground.
+  - Australian English Shared Utility: Extracted auSpelling normaliser to `/app/frontend/src/utils/auSpelling.js` with 80+ American-to-Australian replacements. Now imported by GroundsOfMerit, LegitimacyPanel, ReportView, and BarristerView. Covers all -ize/-ise, -or/-our, -er/-re, -ense/-ence variations.
+  - Ground Priority Reorder: Added drag-and-drop and arrow-button reordering for grounds. New PUT `/api/cases/{case_id}/grounds/reorder` endpoint saves priority_order. GET grounds now sorts by priority_order first. UI shows "Reorder Priority" button when case is unlocked with 2+ grounds.
+  - Testing: 8/8 backend tests passed (iteration_159). All features verified.
+
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
 - P0: Test report generation with new prompts on actual case (verify forensic language, counsel synthesis section, ground merging)
@@ -96,3 +102,6 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - Ground merging: "one ground, multiple particulars" — DO NOT revert to individual overlapping grounds
 - Ineffective counsel: CONTINGENT flag and capped at moderate unless evidence_score >= 3 — DO NOT remove
 - Counsel Synthesis: MUST appear at top of Barrister View with Primary/Secondary/Tertiary issues and priority order — DO NOT remove
+- auSpelling: shared utility at /app/frontend/src/utils/auSpelling.js — ALL components displaying AI text MUST import and use it
+- Viability Glossary: collapsible glossary on LegitimacyPanel — DO NOT remove
+- Ground Reorder: PUT endpoint MUST be defined BEFORE {ground_id} routes to avoid path parameter conflict
