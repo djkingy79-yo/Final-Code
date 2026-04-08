@@ -28,7 +28,7 @@ const LandingPage = () => {
     if (token) {
       axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`)
         .then(() => { navigate("/dashboard", { replace: true }); })
-        .catch(() => { localStorage.removeItem("session_token"); });
+        .catch(() => { /* No-op — preserve token for ProtectedRoute/AuthCallback retry logic */ });
     }
   }, [navigate]);
 
