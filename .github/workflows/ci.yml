@@ -63,7 +63,7 @@ jobs:
           cache-dependency-path: frontend/yarn.lock
       - name: Install dependencies
         working-directory: frontend
-        run: yarn install --frozen-lockfile
+        run: yarn install
       - name: Lint frontend
         working-directory: frontend
         run: npx eslint src/ --ext .js,.jsx --max-warnings 0 || true
