@@ -74,6 +74,13 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
   - Ground Priority Reorder: Added drag-and-drop and arrow-button reordering for grounds. New PUT `/api/cases/{case_id}/grounds/reorder` endpoint saves priority_order. GET grounds now sorts by priority_order first. UI shows "Reorder Priority" button when case is unlocked with 2+ grounds.
   - Testing: 8/8 backend tests passed (iteration_159). All features verified.
 
+- **Barrister Quick Brief & Deployment Readiness (April 2026):**
+  - Barrister Quick Brief: New GET `/api/cases/{case_id}/reports/barrister-quick-brief` endpoint generates a concise 2-page PDF with Counsel Synthesis + Priority Order + Top 3 Grounds + viability ratings + disclaimer. Designed for a barrister to review in under 5 minutes. Emerald "Quick Brief" button added to BarristerView.
+  - Database Initialisation: Comprehensive index creation for ALL 30+ collections at startup (users, cases, reports, grounds_of_merit, documents, pipeline_tasks, user_sessions, payments, notes, timeline_events, deadlines, checklist_items, etc.). Includes TTL indexes for session/password reset expiry.
+  - Dependency Audit: requirements.txt refreshed via pip freeze (163 packages). libmagic1 added to Dockerfile. All imports verified — no missing packages, no version conflicts, pip check passes clean.
+  - Deployment: Health check passed via deployment agent. No hardcoded env vars, proper .env usage, CORS configured.
+  - Testing: 17/17 backend tests passed (iteration_160). All features verified.
+
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
 - P0: Test report generation with new prompts on actual case (verify forensic language, counsel synthesis section, ground merging)
