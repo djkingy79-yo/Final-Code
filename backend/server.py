@@ -519,6 +519,67 @@ def _strip_report_placeholders(text: str) -> str:
     return cleaned
 
 
+def _sanitise_suspect_authorities(text: str) -> str:
+    """Post-processing gate that flags or strips suspect LLM-fabricated case citations.
+    
+    DO NOT UNDO — Prevents fabricated authorities from landing in saved/exported reports.
+    Catches:
+    - Placeholder citations: [Surname] [Year], [Year] NSWCCA [Number]
+    - Obviously templated citations: "R v [Name]", "citation verification needed"
+    - Suspiciously round paragraph numbers: at [100], at [200]
+    - "section not provided" placeholders
+    
+    Does NOT strip citations that look real (e.g. "R v Smith [2015] NSWCCA 123 at [45]").
+    Instead of removing suspect citations entirely, wraps them in a caveat so the user
+    knows to verify, preserving the analytical context.
+    """
+    if not text:
+        return text
+    
+    # Strip obvious placeholder citations
+    text = re.sub(
+        r'\[Surname\]|\[Name\]|\[Year\]|\[Number\]|\[Citation\]|\[Court\]',
+        '[citation verification required]',
+        text,
+        flags=re.I
+    )
+    # Strip "citation verification needed" or "citation pending" as standalone lines
+    text = re.sub(
+        r'\n[^\n]*(?:citation verification needed|citation pending|citation to be confirmed|citation unavailable)[^\n]*\n',
+        '\n',
+        text,
+        flags=re.I
+    )
+    # Strip "section not provided" placeholders
+    text = re.sub(
+        r'(?:section|s\.?)\s+not\s+provided',
+        '[section number to be confirmed]',
+        text,
+        flags=re.I
+    )
+    # Flag obviously templated case references: "R v [anything in brackets]"
+    text = re.sub(
+        r'R\s+v\s+\[([A-Z][a-z]+)\]\s*\[(\d{4})\]',
+        r'R v \1 [\2] [citation unverified]',
+        text
+    )
+    # Flag suspiciously perfect paragraph references like "at [100]", "at [200]", "at [300]"
+    text = re.sub(
+        r'at\s+\[([1-9]00)\]',
+        r'at [\1] [paragraph number unverified]',
+        text
+    )
+    # Strip AustLII links that are clearly templated (contain placeholder segments)
+    text = re.sub(
+        r'https?://www\.austlii\.edu\.au/[^\s\)]*\[(?:Year|Number|Citation)\][^\s\)]*',
+        '[AustLII link to be verified]',
+        text,
+        flags=re.I
+    )
+    
+    return text
+
+
 # ============================================================================
 # PIPELINE HELPERS FOR REPORT GENERATION
 # ============================================================================
@@ -1393,7 +1454,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs. Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" or hedging like "may have" or "could potentially"."""
+You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Narrative sections (Case Snapshot, Sentencing Overview, Value Statement) must have 3-5 substantive paragraphs. Structured sections (Issues, Grounds, Legislation) use the specified format (numbered items, lists, or tables). Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" or hedging like "may have" or "could potentially"."""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT (Issue Identification).
 
 {case_context}
@@ -1464,7 +1525,7 @@ CRITICAL RULES FOR THIS REPORT:
 6. Write in FLOWING PARAGRAPHS, not bullet points. Bullet points are ONLY acceptable inside tables or checklists.
 7. Each section heading must be followed by AT LEAST 4-6 detailed paragraphs of substantive analysis.
 
-Include forensic appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+Include forensic appellate strategy, professional courtroom framing, and plain-English action notes. Include hyperlinks to AustLII legislation, case databases, and court forms where the URL is known and verifiable. Do NOT fabricate URLs — if the exact AustLII path is not known, reference the legislation by name and section number only.
 CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
         user_prompt = f"""Create a FULL DETAILED LEGAL ANALYSIS REPORT for this {category_name.lower()} appeal case.
 
@@ -1600,7 +1661,7 @@ THIS PREMIUM REPORT MUST BUILD ON — NOT REPEAT — THE FULL DETAILED REPORT. D
 - THIS report adds 5 ENTIRELY NEW sections not in the Full Detailed: Hearing Preparation Notes, Conference Preparation Pack, Court Pathway Operations Playbook, Similar Case Search Options, and Risk Assessment + Contingency Planning.
 - Every shared section must go SIGNIFICANTLY deeper with fresh analysis, additional authorities, and more detailed strategy.
 
-Every section must directly reference the supplied case material. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+Every section must directly reference the supplied case material. Include hyperlinks to AustLII legislation, case databases, and court forms where the URL is known and verifiable. Do NOT fabricate URLs — if the exact AustLII path is not known, reference the legislation by name and section number only.
 CRITICAL: NEVER use placeholder text. Every section MUST have REAL, SUBSTANTIVE, CASE-SPECIFIC CONTENT. Each ground analysis must be at least 1200 words. Reference specific documents, dates, and facts from the case throughout."""
         user_prompt = f"""Create a PREMIUM EXTENSIVE legal analysis report for this {category_name.lower()} appeal case. This must be the MOST COMPREHENSIVE report — significantly more detailed and case-specific than the Full Detailed tier.
 
@@ -2078,8 +2139,8 @@ For EACH ground, write as "Ground X: [Exact Title]" then 800+ words using the MA
 4. **Materiality:** Why this error matters. How it affected the verdict or sentence.
 5. **Consequence:** Legal consequence (verdict unsafe, miscarriage of justice, sentence set aside).
 6. **Appellate Viability:** Outcome impact (Determinative/Influential/Minor), Legal alignment (Direct/Analogous/Weak), Evidence support (Strong/Partial/Limited).
-7. **Crown Response:** What the prosecution will argue (4-5 sentences with authority).
-8. **Defence Rebuttal:** How to counter with specific authority (4-5 sentences).
+7. **Crown Response:** What the prosecution will argue (4-5 sentences). Reference authority ONLY if a real, verifiable citation is known — otherwise argue on principle without citing a specific case.
+8. **Defence Rebuttal:** How to counter the Crown's likely position (4-5 sentences). Reference authority ONLY if a real, verifiable citation is known — otherwise frame the rebuttal on legal principle.
 
 Write 800+ words per ground. Do NOT compress into bullet points. Use forensic appellate language throughout — frame as arguable, not declarations.
 
@@ -2097,9 +2158,9 @@ GROUNDS TO COVER IN THIS PASS:
 For EACH ground, use the same structure: Appellate Pathway → Ground → Error Identified → Materiality → Consequence → Appellate Viability → Crown Response → Defence Rebuttal.
 
 ## 5. COMPARATIVE SENTENCING TABLE (8+ CASES)
-PRODUCE AN ACTUAL POPULATED MARKDOWN TABLE with real case data. Then write a Detailed Outcome Analysis paragraph for EACH case in the table.
+PRODUCE AN ACTUAL POPULATED MARKDOWN TABLE with case data. Then write a Detailed Outcome Analysis paragraph for EACH case in the table.
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction | Key Reason |
-Do NOT use placeholder citations. Only include cases with real citations.
+CRITICAL: Only include cases with REAL, VERIFIABLE citations (e.g. "R v Smith [2015] NSWCCA 123"). If fewer than 8 verified cases are known for this offence type, include only those that ARE known — do NOT fabricate citations to reach the target count. It is better to have 4 verified cases than 8 fabricated ones.
 
 STOP after section 5."""),
 
@@ -2741,6 +2802,7 @@ REPORT TO EXPAND:
                     break
 
     response = _strip_report_placeholders(response)
+    response = _sanitise_suspect_authorities(response)
     response = response.strip()
 
     # Preserve the actual grounds linked to the case so reports reflect the real ground count.

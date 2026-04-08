@@ -214,21 +214,31 @@ def _merge_overlapping_grounds(issues: list) -> list:
     clusters = defaultdict(list)
     unclustered = []
 
+    # Pre-compute cluster membership counts per theme to avoid nested comprehensions
+    theme_member_counts = {}
+    for theme, config in THEME_KEYWORDS.items():
+        count = sum(
+            1 for i in issues
+            if any(kw in f"{(i.title or '').lower()} {(i.description or '').lower()}" for kw in config["keywords"])
+        )
+        theme_member_counts[theme] = count
+
     for issue in issues:
-        title_lower = (issue.title or "").lower()
-        desc_lower = (issue.description or "").lower()
-        combined = f"{title_lower} {desc_lower}"
+        combined = f"{(issue.title or '').lower()} {(issue.description or '').lower()}"
 
         matched_theme = None
         for theme, config in THEME_KEYWORDS.items():
             if any(kw in combined for kw in config["keywords"]):
-                if matched_theme is None:
-                    matched_theme = theme
+                matched_theme = theme
+                break
 
-        if matched_theme and len([i for i in issues if any(kw in f"{(i.title or '').lower()} {(i.description or '').lower()}" for kw in THEME_KEYWORDS[matched_theme]["keywords"])]) > 1:
+        if matched_theme and theme_member_counts[matched_theme] > 1:
             clusters[matched_theme].append(issue)
         else:
             unclustered.append(issue)
+
+    # Confidence rank for parent selection: prefer strongest classification_confidence
+    CONFIDENCE_RANK = {"strong": 3, "moderate": 2, "weak": 1}
 
     merged = list(unclustered)
     for theme, cluster_issues in clusters.items():
@@ -237,17 +247,15 @@ def _merge_overlapping_grounds(issues: list) -> list:
             continue
 
         config = THEME_KEYWORDS[theme]
-        # Pick the broadest issue as the parent
-        parent = max(cluster_issues, key=lambda i: len(i.description or ""))
+
+        # Select parent by classification_confidence first, then description length as tiebreaker
+        parent_source = max(
+            cluster_issues,
+            key=lambda i: (CONFIDENCE_RANK.get(i.classification_confidence, 0), len(i.description or ""))
+        )
+
         sub_issues = [f"({chr(97 + idx)}) {ci.title}" for idx, ci in enumerate(cluster_issues)]
         sub_desc = "\n".join(sub_issues)
-
-        # Upgrade the parent title and type to reflect the merged legal matrix
-        parent.title = config["parent_title"]
-        parent.ground_type = config["parent_type"]
-        parent.description = f"{parent.description}\n\nSub-particulars:\n{sub_desc}"
-        if not parent.appellate_pathway and cluster_issues[0].appellate_pathway:
-            parent.appellate_pathway = cluster_issues[0].appellate_pathway
 
         # Merge linked IDs from all sub-issues
         all_fact_ids = set()
@@ -257,9 +265,17 @@ def _merge_overlapping_grounds(issues: list) -> list:
             all_fact_ids.update(ci.linked_fact_ids or [])
             all_event_ids.update(ci.linked_event_ids or [])
             all_finding_ids.update(ci.linked_finding_ids or [])
-        parent.linked_fact_ids = list(all_fact_ids)
-        parent.linked_event_ids = list(all_event_ids)
-        parent.linked_finding_ids = list(all_finding_ids)
+
+        # Create merged parent via model_copy — avoids mutating the original Pydantic instance
+        parent = parent_source.model_copy(update={
+            "title": config["parent_title"],
+            "ground_type": config["parent_type"],
+            "description": f"{parent_source.description}\n\nSub-particulars:\n{sub_desc}",
+            "appellate_pathway": parent_source.appellate_pathway or (cluster_issues[0].appellate_pathway if cluster_issues else ""),
+            "linked_fact_ids": list(all_fact_ids),
+            "linked_event_ids": list(all_event_ids),
+            "linked_finding_ids": list(all_finding_ids),
+        })
 
         merged.append(parent)
 

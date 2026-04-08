@@ -195,10 +195,14 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         "viability_label": viability_label,
         "confidence_note": _generate_confidence_note(ground_type, evidence["score"]),
         "is_contingent": is_contingent,
-        # Keep legacy fields for backward compatibility
+        # Legacy compatibility fields — documented mapping:
+        # - legal_score → legal_alignment.score (unchanged)
+        # - evidence_score → evidence_support.score (unchanged)
+        # - outcome_impact_score → outcome_impact.score (was viability_score in earlier versions)
         "legal_score": legal["score"],
         "evidence_score": evidence["score"],
-        "viability_score": outcome["score"],
+        "outcome_impact_score": outcome["score"],
+        "viability_score": outcome["score"],  # Deprecated alias — use outcome_impact_score
     }
 
 
