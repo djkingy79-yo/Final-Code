@@ -45,7 +45,11 @@ import { API } from "../App";
 import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
 import { Printer, Download, FileText as FileTextIcon } from "lucide-react";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+const BACKEND_URL = (() => {
+  const envUrl = process.env.REACT_APP_BACKEND_URL || "";
+  if (envUrl && window.location.origin !== envUrl) return window.location.origin;
+  return envUrl || window.location.origin;
+})();
 
 const NOTE_CATEGORIES = [
   { value: "general", label: "General Note" },

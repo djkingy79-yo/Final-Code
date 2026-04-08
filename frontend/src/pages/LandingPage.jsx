@@ -36,7 +36,7 @@ const LandingPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("session_token");
     if (token) {
-      axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`)
+      axios.get(`${window.location.origin}/api/auth/me`)
         .then(() => { navigate("/dashboard", { replace: true }); })
         .catch(() => { /* No-op — preserve token for ProtectedRoute/AuthCallback retry logic */ });
     }
