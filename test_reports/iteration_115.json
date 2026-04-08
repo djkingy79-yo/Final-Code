@@ -30,7 +30,7 @@
     "frontend_ui_tests": {
       "landing_page_loads": "PASS - Landing page loads correctly",
       "sign_in_modal_opens": "PASS - Auth modal opens on Sign In click",
-      "email_password_login": "PASS - Login with djkingy79@gmail.com redirects to /dashboard",
+      "email_password_login": "PASS - Login with REDACTED_EMAIL redirects to /dashboard",
       "dashboard_loads": "PASS - Dashboard shows user's cases (3 cases found)",
       "logout_flow": "PASS - Sign Out redirects to landing page",
       "google_signin_button": "PASS - Google Sign In button visible with correct text",
@@ -58,8 +58,8 @@
     "frontend": "100% (8/8 UI tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Admin account - verified working"
   },
   "seed_data_creation": "None",

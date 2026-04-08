@@ -46,14 +46,14 @@
     "frontend": "100% - Legal Framework page verified, Reports structure verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
+    "admin_email": "REDACTED_EMAIL",
     "session_token": "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ",
     "test_case_id": "case_cec9b5706fae"
   },
   "seed_data_creation": "Used existing admin user with 4 documents and 4 grounds",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "AI features all working now. Admin user djkingy79@gmail.com bypasses payment checks for full_detailed and extensive_log reports. Case case_cec9b5706fae has 4 documents and 4 grounds for testing. Contradictions scan requires at least 2 documents. LlmChat returns response that needs str() conversion. Session token stored above is valid until 2026-03-12.",
+  "context_for_next_testing_agent": "AI features all working now. Admin user REDACTED_EMAIL bypasses payment checks for full_detailed and extensive_log reports. Case case_cec9b5706fae has 4 documents and 4 grounds for testing. Contradictions scan requires at least 2 documents. LlmChat returns response that needs str() conversion. Session token stored above is valid until 2026-03-12.",
   "features_verified": {
     "report_generation": {
       "quick_summary": "Working - Free for all users",

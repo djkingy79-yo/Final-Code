@@ -18,6 +18,9 @@ TEST_EMAIL = "djkingy79@gmail.com"
 TEST_PASSWORD = "Cr1m1nalApp3al$2025"
 TEST_CASE_ID = "case_f8bf63e9dcbe"
 
+# Skip entire module if BASE_URL is not configured
+pytestmark = pytest.mark.skipif(not BASE_URL, reason="REACT_APP_BACKEND_URL not set")
+
 
 class TestHealthAndAuth:
     """Basic health and authentication tests"""

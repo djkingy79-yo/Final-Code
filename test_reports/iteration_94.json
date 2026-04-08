@@ -28,7 +28,7 @@
     },
     "email_password_login": {
       "status": "PASS",
-      "details": "Login with djkingy79@gmail.com / Grubbygrub88 successful. Redirects to /dashboard after terms acceptance"
+      "details": "Login with REDACTED_EMAIL / REDACTED_PASSWORD successful. Redirects to /dashboard after terms acceptance"
     },
     "dashboard": {
       "status": "PASS",
@@ -103,8 +103,8 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "target_case": "case_76056187ad4f",
     "barrister_report": "rpt_dcb21f0efc62"
   },

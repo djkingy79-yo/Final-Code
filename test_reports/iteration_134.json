@@ -29,8 +29,8 @@
     "frontend": "N/A - App uses Emergent Google Auth which requires OAuth flow that cannot be automated in Playwright"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Email/password login works via API but frontend uses Emergent Google Auth"
   },
   "seed_data_creation": "Test cases created and cleaned up during testing",

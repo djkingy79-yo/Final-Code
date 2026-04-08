@@ -34,8 +34,8 @@
     "frontend": "100% (all 10 bugs verified)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_f8bf63e9dcbe (Homann v R)"
   },
   "seed_data_creation": "Fixed 'Case name' placeholder in MongoDB grounds_of_merit collection for 'Refusal of Judge-Alone Trial' ground",

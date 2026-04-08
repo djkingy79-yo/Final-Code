@@ -19,7 +19,7 @@
   "critical_code_review_comments": [
     "Backend report guardrails correctly implemented - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis",
     "Backend report guardrails correctly implemented - DO NOT include witness contradiction sections or witness credibility scoring sections",
-    "isAdmin normalization in Dashboard.jsx correctly checks both user.is_admin and email match for djkingy79@gmail.com"
+    "isAdmin normalization in Dashboard.jsx correctly checks both user.is_admin and email match for REDACTED_EMAIL"
   ],
   "updated_files": [
     "/app/backend/tests/test_reports_iteration32.py"

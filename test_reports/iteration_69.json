@@ -121,5 +121,5 @@
     "case_detail_tabs": "PASS - All 7 tabs visible (Documents, Timeline, Grounds, Notes, Reports, Legal, Progress)",
     "print_buttons": "PASS - Print buttons visible on Documents, Reports, Legal tabs"
   },
-  "admin_testing_limitation": "Cannot test admin PayID endpoint as we don't know the admin password (djkingy79@gmail.com). Code verification confirms the implementation is correct."
+  "admin_testing_limitation": "Cannot test admin PayID endpoint as we don't know the admin password (REDACTED_EMAIL). Code verification confirms the implementation is correct."
 }

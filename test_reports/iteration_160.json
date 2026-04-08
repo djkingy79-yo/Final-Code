@@ -33,7 +33,7 @@
     "backend": "100% (17/17 tests passed)",
     "frontend": "100% (Quick Brief button verified)"
   },
-  "test_credentials": "Email: djkingy79@gmail.com, Password: Cr1m1nalApp3al$2025",
+  "test_credentials": "Email: REDACTED_EMAIL, Password: REDACTED_PASSWORD",
   "seed_data_creation": "None - used existing case case_f8bf63e9dcbe with completed barrister report",
   "retest_needed": false,
   "should_main_agent_self_test": false,

@@ -22,7 +22,7 @@
     "backend": "100% (7/7 tests passed)",
     "frontend": "100%"
   },
-  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "test_credentials": "Email: REDACTED_EMAIL, Password: REDACTED_PASSWORD",
   "seed_data_creation": "N/A - used existing test case case_a97ea91f0692",
   "retest_needed": false,
   "main_agent_can_self_test": true,

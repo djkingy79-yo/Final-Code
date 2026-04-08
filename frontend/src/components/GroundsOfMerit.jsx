@@ -297,7 +297,10 @@ const GroundsOfMerit = ({
     setOrderedGrounds(items);
   }, [orderedGrounds]);
 
-  const displayGrounds = reorderMode ? orderedGrounds : grounds;
+  // Always render from orderedGrounds (synced from props via useEffect).
+  // This prevents UI jump after saving reorder — orderedGrounds retains the
+  // locally saved order until the parent refetches and updates the grounds prop.
+  const displayGrounds = orderedGrounds;
 
   // Fetch trial eligibility
   useEffect(() => {

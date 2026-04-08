@@ -47,8 +47,8 @@
     "frontend": "100% (17/17 tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Admin account"
   },
   "seed_data_creation": "None",

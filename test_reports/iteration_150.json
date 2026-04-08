@@ -23,13 +23,13 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Cr1m1nalApp3al$2025"
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD"
   },
   "seed_data_creation": "None",
   "retest_needed": false,
   "main_agent_can_self_test": true,
-  "context_for_next_testing_agent": "Barrister View reports now appear in the reports list. The backend query at line ~3858 in server.py no longer has the report_type: {$ne: 'barrister_view'} filter. Case case_f8bf63e9dcbe has 6 reports total: 3 barrister_view, 1 extensive_log, 1 full_detailed, 1 quick_summary. Frontend ReportsSection.jsx renders barrister_view with teal header (bg-teal-500), CAPSTONE badge, and 'View Barrister Brief' button. Trial pricing system verified: admin user (djkingy79@gmail.com) has completed payments so is_eligible=false, confirming trial reverts to normal after first purchase.",
+  "context_for_next_testing_agent": "Barrister View reports now appear in the reports list. The backend query at line ~3858 in server.py no longer has the report_type: {$ne: 'barrister_view'} filter. Case case_f8bf63e9dcbe has 6 reports total: 3 barrister_view, 1 extensive_log, 1 full_detailed, 1 quick_summary. Frontend ReportsSection.jsx renders barrister_view with teal header (bg-teal-500), CAPSTONE badge, and 'View Barrister Brief' button. Trial pricing system verified: admin user (REDACTED_EMAIL) has completed payments so is_eligible=false, confirming trial reverts to normal after first purchase.",
   "tests_performed": {
     "backend_api_tests": [
       "test_api_health - PASS: API health check successful",

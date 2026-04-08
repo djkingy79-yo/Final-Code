@@ -84,8 +84,8 @@
     "frontend": "100% (all UI tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "target_case": "case_76056187ad4f"
   },
   "seed_data_creation": "None",

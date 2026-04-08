@@ -32,8 +32,8 @@
     "frontend": "100% (all UI elements present and functional)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_a97ea91f0692 (Dummy Murder Appeal)"
   },
   "seed_data_creation": "None - used existing case data",

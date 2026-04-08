@@ -12,7 +12,7 @@
   "test_results": {
     "backend_tests": {
       "health_check": "PASS - /api/health returns status: healthy",
-      "login": "PASS - Login with djkingy79@gmail.com works",
+      "login": "PASS - Login with REDACTED_EMAIL works",
       "invalid_login": "PASS - Invalid credentials rejected with 401",
       "get_cases": "PASS - GET /api/cases returns list",
       "get_documents": "PASS - GET /api/cases/{caseId}/documents returns list",
@@ -48,8 +48,8 @@
     "frontend": "100% (5/5 tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Admin account which bypasses paywalls"
   },
   "seed_data_creation": "None",

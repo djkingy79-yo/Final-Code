@@ -41,8 +41,8 @@
     "frontend": "100% (both pages load correctly)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_f8bf63e9dcbe (Homann v R)"
   },
   "seed_data_creation": "Deleted duplicate ground 'Media Influence on Jury' (gnd_447332d7db52) created during testing",

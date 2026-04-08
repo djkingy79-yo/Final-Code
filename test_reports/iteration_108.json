@@ -1,5 +1,5 @@
 {
-  "summary": "Iteration 108 testing completed. All requested features verified: 1) Background auto-generation of timeline events and case summary from documents - case_e7a5b5faf51e has 8 timeline events with source='ai_generated' and summary field populated. 2) Investigate endpoint for grounds of merit works - returns deep_analysis with full_analysis, investigated_at, law_sections_identified, similar_cases_found. 3) Print and PDF View buttons appear in ground detail dialog (data-testid='ground-print-btn' and 'ground-pdf-btn'). 4) Dashboard new case form defaults offence_category to 'Auto-detect from documents'. 5) Admin user (djkingy79@gmail.com) sees all grounds - paywall bypassed for admin.",
+  "summary": "Iteration 108 testing completed. All requested features verified: 1) Background auto-generation of timeline events and case summary from documents - case_e7a5b5faf51e has 8 timeline events with source='ai_generated' and summary field populated. 2) Investigate endpoint for grounds of merit works - returns deep_analysis with full_analysis, investigated_at, law_sections_identified, similar_cases_found. 3) Print and PDF View buttons appear in ground detail dialog (data-testid='ground-print-btn' and 'ground-pdf-btn'). 4) Dashboard new case form defaults offence_category to 'Auto-detect from documents'. 5) Admin user (REDACTED_EMAIL) sees all grounds - paywall bypassed for admin.",
   "backend_issues": {
     "critical": [],
     "minor": []
@@ -22,7 +22,7 @@
     "backend": "100% (11/11 tests passed)",
     "frontend": "100%"
   },
-  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "test_credentials": "Email: REDACTED_EMAIL, Password: REDACTED_PASSWORD",
   "seed_data_creation": "N/A - used existing test case case_e7a5b5faf51e (R v Karlsson)",
   "retest_needed": false,
   "main_agent_can_self_test": true,

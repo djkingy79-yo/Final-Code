@@ -11,7 +11,7 @@
   },
   "cors_test_results": {
     "CORS_TEST_1_landing_page": "PASS - Landing page loads without CORS errors",
-    "CORS_TEST_2_email_password_login": "PASS - Login with djkingy79@gmail.com redirects to /dashboard, no CORS errors",
+    "CORS_TEST_2_email_password_login": "PASS - Login with REDACTED_EMAIL redirects to /dashboard, no CORS errors",
     "CORS_TEST_3_dashboard_loads_cases": "PASS - Dashboard shows 3 cases (Dummy Murder Appeal, R v Karlsson, R v HOMANN), API calls work through proxy",
     "CORS_TEST_4_case_detail_all_tabs": "PASS - All tabs load without CORS errors: Documents(8), Timeline(8), Grounds(4), Notes(4), Reports(3), Legal, Progress, Collaboration",
     "CORS_TEST_5_logout_flow": "PASS - Sign Out redirects to landing page, no CORS errors",
@@ -47,8 +47,8 @@
     "frontend": "100% - All 12 CORS test scenarios passed"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
-    "admin_password": "Grubbygrub88",
+    "admin_email": "REDACTED_EMAIL",
+    "admin_password": "REDACTED_PASSWORD",
     "test_user_created": "test_cors_9bnc01e0@example.com",
     "note": "Admin account verified working, bypasses paywalls"
   },

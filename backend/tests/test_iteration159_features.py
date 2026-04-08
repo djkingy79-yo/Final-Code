@@ -15,6 +15,9 @@ TEST_EMAIL = "djkingy79@gmail.com"
 TEST_PASSWORD = "Cr1m1nalApp3al$2025"
 TEST_CASE_ID = "case_f8bf63e9dcbe"
 
+# Skip entire module if BASE_URL is not configured
+pytestmark = pytest.mark.skipif(not BASE_URL, reason="REACT_APP_BACKEND_URL not set")
+
 
 class TestHealthAndAuth:
     """Health check and authentication tests"""
@@ -120,9 +123,9 @@ class TestGroundsReorder:
         if len(grounds) < 2:
             pytest.skip("Need at least 2 grounds to test reorder persistence")
         
-        # Get ground IDs and reverse them
-        ground_ids = [g["ground_id"] for g in grounds]
-        reversed_ids = list(reversed(ground_ids))
+        # Record original order for cleanup
+        original_ids = [g["ground_id"] for g in grounds]
+        reversed_ids = list(reversed(original_ids))
         
         # Reorder
         response = requests.put(
@@ -145,6 +148,13 @@ class TestGroundsReorder:
         # The first ground should now be what was last
         assert new_ids[0] == reversed_ids[0], f"Reorder did not persist: expected {reversed_ids[0]} first, got {new_ids[0]}"
         print("PASS: Reorder persists priority_order correctly")
+
+        # Restore original order to avoid test state pollution
+        requests.put(
+            f"{BASE_URL}/api/cases/{TEST_CASE_ID}/grounds/reorder",
+            headers=headers,
+            json={"ground_ids": original_ids}
+        )
 
     def test_reorder_with_empty_list_fails(self, auth_token):
         """Test that reorder with empty ground_ids list returns 400"""

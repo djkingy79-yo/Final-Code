@@ -1,5 +1,5 @@
 {
-  "summary": "Iteration 149 - Trial Pricing System Testing Complete. All backend API tests pass (9/9). Frontend components render correctly. Admin user (djkingy79@gmail.com) correctly shows as NOT trial eligible because they have completed payments. Trial pricing system implementation verified: $5.00 AUD trial for Grounds of Merit (regular $99), one-time per user lifetime based on completed payment count = 0.",
+  "summary": "Iteration 149 - Trial Pricing System Testing Complete. All backend API tests pass (9/9). Frontend components render correctly. Admin user (REDACTED_EMAIL) correctly shows as NOT trial eligible because they have completed payments. Trial pricing system implementation verified: $5.00 AUD trial for Grounds of Merit (regular $99), one-time per user lifetime based on completed payment count = 0.",
   "backend_issues": {
     "critical": [],
     "minor": []
@@ -26,8 +26,8 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Cr1m1nalApp3al$2025"
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD"
   },
   "seed_data_creation": "None",
   "retest_needed": false,

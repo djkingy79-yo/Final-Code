@@ -552,13 +552,26 @@ async def reorder_grounds(case_id: str, request: Request):
     if not ground_ids:
         raise HTTPException(status_code=400, detail="ground_ids list required")
 
+    # Validate uniqueness
+    if len(ground_ids) != len(set(ground_ids)):
+        raise HTTPException(status_code=400, detail="Duplicate ground_ids in payload")
+
+    # Validate ALL ground_ids exist before applying any updates (atomic check)
+    existing = await db.grounds_of_merit.find(
+        {"case_id": case_id, "ground_id": {"$in": ground_ids}},
+        {"_id": 0, "ground_id": 1}
+    ).to_list(len(ground_ids))
+    existing_ids = {g["ground_id"] for g in existing}
+    missing = [gid for gid in ground_ids if gid not in existing_ids]
+    if missing:
+        raise HTTPException(status_code=404, detail=f"Ground not found: {missing[0]}")
+
+    # All validated — apply updates
     for idx, ground_id in enumerate(ground_ids):
-        result = await db.grounds_of_merit.update_one(
+        await db.grounds_of_merit.update_one(
             {"ground_id": ground_id, "case_id": case_id},
             {"$set": {"priority_order": idx}}
         )
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail=f"Ground not found: {ground_id}")
 
     return {"message": f"Reordered {len(ground_ids)} grounds successfully."}
 

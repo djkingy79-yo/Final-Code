@@ -38,7 +38,7 @@
     "backend": "100% (14/14 tests passed)",
     "frontend": "100%"
   },
-  "test_credentials": "Email: djkingy79@gmail.com, Password: Cr1m1nalApp3al$2025",
+  "test_credentials": "Email: REDACTED_EMAIL, Password: REDACTED_PASSWORD",
   "seed_data_creation": "None",
   "retest_needed": false,
   "should_main_agent_self_test": false,

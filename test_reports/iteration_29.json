@@ -45,7 +45,7 @@
     "frontend": "100% - All UI components verified via Playwright"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com"
+    "admin_email": "REDACTED_EMAIL"
   },
   "seed_data_creation": "None - used existing data",
   "retest_needed": false,

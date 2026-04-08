@@ -12,7 +12,7 @@
   "test_results": {
     "backend_tests": {
       "health_check": "PASS - /api/health returns status: healthy",
-      "login": "PASS - Login with djkingy79@gmail.com works",
+      "login": "PASS - Login with REDACTED_EMAIL works",
       "get_messages": "PASS - GET /api/cases/{caseId}/messages returns 200 with messages array",
       "word_export": "PASS - GET /api/cases/{caseId}/reports/{reportId}/export-docx returns 200, file size: 43073 bytes",
       "pdf_export": "PASS - GET /api/cases/{caseId}/reports/{reportId}/export-pdf returns 200, file size: 18225 bytes",
@@ -48,8 +48,8 @@
     "frontend": "100% (8/8 tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Admin account which bypasses paywalls"
   },
   "seed_data_creation": "None",

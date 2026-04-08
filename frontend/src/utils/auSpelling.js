@@ -4,7 +4,19 @@
 
 const auSpelling = (text) => {
   if (!text) return text;
-  return text
+
+  // Split text into "protected" (URLs, markdown links, code blocks) and "plain" segments.
+  // Only apply spelling corrections to plain-text segments.
+  const PROTECTED = /(\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`)/g;
+  const parts = text.split(PROTECTED);
+
+  const corrected = parts.map((part) => {
+    // If the part matches a protected pattern, return it untouched
+    if (PROTECTED.test(part)) return part;
+    // Reset lastIndex since we reuse the regex
+    PROTECTED.lastIndex = 0;
+
+    return part
     .replace(/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation')
     .replace(/\bMischaracterization\b/g, 'Mischaracterisation')
     .replace(/\bmischaracterization\b/g, 'mischaracterisation')
@@ -80,6 +92,9 @@ const auSpelling = (text) => {
     .replace(/\bharmonize\b/gi, (m) => m[0] === 'H' ? 'Harmonise' : 'harmonise')
     .replace(/\bjudgment\b/gi, (m) => m[0] === 'J' ? 'Judgement' : 'judgement')
     .replace(/\bpracticing\b/gi, (m) => m[0] === 'P' ? 'Practising' : 'practising');
+  }).join('');
+
+  return corrected;
 };
 
 export default auSpelling;

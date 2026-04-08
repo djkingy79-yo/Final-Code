@@ -28,15 +28,15 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88"
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD"
   },
   "seed_data_creation": "None - used existing test data",
   "retest_needed": false,
   "should_main_agent_self_test": false,
   "context_for_next_testing_agent": "ReportsSection.jsx fix verified. The component correctly shows report content for completed reports. For generating/failed reports WITH existing content, a status banner appears ABOVE the preserved content (not hiding it). Case case_f8bf63e9dcbe (Homann v R) has a full_detailed report with status 'completed' and 80,013 chars of content that renders properly with markdown formatting.",
   "verified_features": {
-    "login_flow": "PASS - email/password login works with djkingy79@gmail.com",
+    "login_flow": "PASS - email/password login works with REDACTED_EMAIL",
     "case_detail_page": "PASS - Homann v R case loads correctly",
     "reports_tab_navigation": "PASS - data-testid='tab-reports' works",
     "pipeline_verification_block": "PASS - visible with Verify Top 3/6 Issues buttons",

@@ -43,7 +43,7 @@
     "frontend": "100% - All features verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com"
+    "admin_email": "REDACTED_EMAIL"
   },
   "seed_data_creation": "Created test users with TEST_ prefix for backend tests",
   "retest_needed": false,

@@ -266,12 +266,20 @@ def _merge_overlapping_grounds(issues: list) -> list:
             all_event_ids.update(ci.linked_event_ids or [])
             all_finding_ids.update(ci.linked_finding_ids or [])
 
+        # Concatenate error_identified and materiality from ALL children
+        all_errors = [ci.error_identified for ci in cluster_issues if ci.error_identified]
+        all_materiality = [ci.materiality for ci in cluster_issues if ci.materiality]
+        merged_error = "\n\n".join(dict.fromkeys(all_errors))  # deduplicate, preserve order
+        merged_materiality = "\n\n".join(dict.fromkeys(all_materiality))
+
         # Create merged parent via model_copy — avoids mutating the original Pydantic instance
         parent = parent_source.model_copy(update={
             "title": config["parent_title"],
             "ground_type": config["parent_type"],
             "description": f"{parent_source.description}\n\nSub-particulars:\n{sub_desc}",
             "appellate_pathway": parent_source.appellate_pathway or (cluster_issues[0].appellate_pathway if cluster_issues else ""),
+            "error_identified": merged_error or parent_source.error_identified,
+            "materiality": merged_materiality or parent_source.materiality,
             "linked_fact_ids": list(all_fact_ids),
             "linked_event_ids": list(all_event_ids),
             "linked_finding_ids": list(all_finding_ids),

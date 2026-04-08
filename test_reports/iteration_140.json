@@ -33,8 +33,8 @@
     "frontend": "100% (landing page, login modal, dashboard all load correctly)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "session_token": "sess_8173b0df87194b31b9cddad675e02ba9"
   },
   "seed_data_creation": "None - used existing test data",

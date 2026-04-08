@@ -43,8 +43,8 @@
     "frontend": "92% (11/12 features verified, 1 component not integrated)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_87ef925be713"
   },
   "seed_data_creation": "None",

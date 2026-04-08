@@ -23,13 +23,13 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Cr1m1nalApp3al$2025"
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD"
   },
   "seed_data_creation": "None",
   "retest_needed": false,
   "main_agent_can_self_test": true,
-  "context_for_next_testing_agent": "All 5 bug fixes verified: PayID email is djkingy79@gmail.com (not gmsil.com), Export package endpoint returns valid ZIP, Terms of Service body text is text-xs (12px), Dashboard overview cards have text-3xl numbers and w-14 h-14 icons, Case page heading is text-2xl sm:text-3xl md:text-4xl font-extrabold (computed 36px at md breakpoint).",
+  "context_for_next_testing_agent": "All 5 bug fixes verified: PayID email is REDACTED_EMAIL (not gmsil.com), Export package endpoint returns valid ZIP, Terms of Service body text is text-xs (12px), Dashboard overview cards have text-3xl numbers and w-14 h-14 icons, Case page heading is text-2xl sm:text-3xl md:text-4xl font-extrabold (computed 36px at md breakpoint).",
   "tests_performed": {
     "backend_tests": [
       "Health endpoint - PASS",
@@ -56,7 +56,7 @@
       "issue": "PayID email showing 'gmsil.com' instead of 'gmail.com'",
       "fix_location": "PaymentModal.jsx line 58, payments.py line 96",
       "verified": true,
-      "current_value": "djkingy79@gmail.com"
+      "current_value": "REDACTED_EMAIL"
     },
     "export_package_crash": {
       "issue": "Export Appeal Package failing with TypeError on supporting_evidence dicts",

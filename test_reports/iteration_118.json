@@ -24,7 +24,7 @@
     "backend": "100% (22/22 tests passed)",
     "frontend": "100% (login, dashboard, case detail all working)"
   },
-  "test_credentials": "djkingy79@gmail.com / Grubbygrub88",
+  "test_credentials": "REDACTED_EMAIL / REDACTED_PASSWORD",
   "seed_data_creation": "None",
   "retest_needed": false,
   "main_agent_can_self_test": true,

@@ -38,8 +38,8 @@
     "frontend": "N/A - backend only testing requested"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_87ef925be713",
     "test_doc": "doc_8452bbcc833c"
   },

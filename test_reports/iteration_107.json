@@ -22,7 +22,7 @@
     "backend": "100% (6/6 tests passed)",
     "frontend": "100%"
   },
-  "test_credentials": "Email: djkingy79@gmail.com, Password: Grubbygrub88",
+  "test_credentials": "Email: REDACTED_EMAIL, Password: REDACTED_PASSWORD",
   "seed_data_creation": "N/A - used existing test cases case_e7a5b5faf51e (R v Karlsson) and case_a97ea91f0692 (Dummy Murder)",
   "retest_needed": false,
   "main_agent_can_self_test": true,

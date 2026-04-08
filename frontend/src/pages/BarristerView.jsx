@@ -660,6 +660,16 @@ export default function BarristerView() {
   const handleQuickBrief = async () => {
     try {
       toast.info("Generating Quick Brief PDF...");
+      const isIOS = isIOSDevice();
+
+      // On iOS, open the authenticated URL directly — blob downloads break in Safari
+      if (isIOS) {
+        const directUrl = buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
+        window.location.assign(directUrl);
+        toast.success("Quick Brief opened.");
+        return;
+      }
+
       const response = await axios.get(`${API}/cases/${caseId}/reports/barrister-quick-brief`, {
         responseType: "blob",
         timeout: 60000,

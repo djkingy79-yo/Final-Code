@@ -31,8 +31,8 @@
     "frontend": "100% (all UI elements verified)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_f8bf63e9dcbe (Homann v R, NSW, murder)"
   },
   "seed_data_creation": "None - used existing test case",

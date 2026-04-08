@@ -27,8 +27,8 @@
     "frontend": "100% (all Playwright tests passed)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_b24f94577da6 (R v Perry)",
     "test_reports": {
       "quick_summary": "rpt_c05b213451ef",

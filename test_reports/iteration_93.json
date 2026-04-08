@@ -23,7 +23,7 @@
   "verification_results": {
     "email_password_login": {
       "status": "PASS",
-      "details": "Login with djkingy79@gmail.com / Grubbygrub88 successful after password hash setup. Returns session_token and redirects to /dashboard"
+      "details": "Login with REDACTED_EMAIL / REDACTED_PASSWORD successful after password hash setup. Returns session_token and redirects to /dashboard"
     },
     "dashboard_access": {
       "status": "PASS",
@@ -78,12 +78,12 @@
     "frontend": "100%"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Password hash was manually set for this Google OAuth user to enable email/password login testing"
   },
-  "seed_data_creation": "Password hash set for existing user djkingy79@gmail.com to enable email/password login",
+  "seed_data_creation": "Password hash set for existing user REDACTED_EMAIL to enable email/password login",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "Iteration 93 completed authenticated UI verification. All features tested: login, dashboard, case detail (case_76056187ad4f - R v Homann), Reports tab with 4 completed reports, Extensive Log full-page view with 20 sections, Barrister View with 8+ sections, Grounds tab with 4 grounds and export buttons, Progress tab with AI analysis. Test credentials: djkingy79@gmail.com / Grubbygrub88. Note: User was originally created via Google OAuth - password hash was manually set for email/password login testing."
+  "context_for_next_testing_agent": "Iteration 93 completed authenticated UI verification. All features tested: login, dashboard, case detail (case_76056187ad4f - R v Homann), Reports tab with 4 completed reports, Extensive Log full-page view with 20 sections, Barrister View with 8+ sections, Grounds tab with 4 grounds and export buttons, Progress tab with AI analysis. Test credentials: REDACTED_EMAIL / REDACTED_PASSWORD. Note: User was originally created via Google OAuth - password hash was manually set for email/password login testing."
 }

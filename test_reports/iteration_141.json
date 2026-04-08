@@ -29,8 +29,8 @@
     "frontend": "100% (landing page loads, login works, dashboard shows 3 cases, case detail shows dedup badge)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88"
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD"
   },
   "seed_data_creation": "None - used existing test data",
   "retest_needed": false,

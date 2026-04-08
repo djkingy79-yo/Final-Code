@@ -31,8 +31,8 @@
     "frontend": "100% (landing page loads, dashboard loads with auth)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Cr1m1nalApp3al$2025",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Credentials work - login returns session_token"
   },
   "seed_data_creation": "None",

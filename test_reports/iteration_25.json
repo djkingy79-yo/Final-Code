@@ -51,7 +51,7 @@
     "frontend": "100% - All requested features verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
+    "admin_email": "REDACTED_EMAIL",
     "test_user_email": "Created dynamically with TEST_ prefix"
   },
   "seed_data_creation": "Created test user with TEST_ prefix via /api/auth/register",

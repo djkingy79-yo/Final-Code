@@ -53,7 +53,7 @@
     "frontend": "100% - All UI components verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
+    "admin_email": "REDACTED_EMAIL",
     "session_token": "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ",
     "test_case_id": "case_cec9b5706fae",
     "test_report_id": "rpt_01e4334f84b9"
@@ -71,7 +71,7 @@
     },
     "report_generation": {
       "types": ["quick_summary (FREE)", "full_detailed ($29)", "extensive_log ($39)"],
-      "admin_bypass": "djkingy79@gmail.com bypasses payment checks",
+      "admin_bypass": "REDACTED_EMAIL bypasses payment checks",
       "dialog": "Shows 3 options with FREE/price badges"
     },
     "barrister_view": {

@@ -32,8 +32,8 @@
     "frontend": "100% (homepage, login, dashboard all working)"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "test_case": "case_87ef925be713"
   },
   "seed_data_creation": "None",

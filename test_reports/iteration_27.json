@@ -46,7 +46,7 @@
     "frontend": "100% - All code implementations verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
+    "admin_email": "REDACTED_EMAIL",
     "session_token": "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ",
     "test_case_id": "case_cec9b5706fae",
     "test_report_id": "rpt_01e4334f84b9"

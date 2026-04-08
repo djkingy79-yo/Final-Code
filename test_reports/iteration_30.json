@@ -16,7 +16,7 @@
     "Backend: grounds_of_merit price = $50.00",
     "Backend: /api/payments/methods returns PayPal and PayID",
     "Backend: PayPal is enabled with correct description",
-    "Backend: PayID is enabled with djkingy79@gmail.com PayID",
+    "Backend: PayID is enabled with REDACTED_EMAIL PayID",
     "Backend: /api/health returns healthy",
     "Backend: PayPal create-order requires authentication (401)",
     "Backend: PayID create-reference requires authentication (401)",
@@ -55,13 +55,13 @@
     "frontend": "100% - All UI components verified"
   },
   "test_credentials": {
-    "admin_email": "djkingy79@gmail.com",
-    "payid": "djkingy79@gmail.com"
+    "admin_email": "REDACTED_EMAIL",
+    "payid": "REDACTED_EMAIL"
   },
   "seed_data_creation": "None - used API testing",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "PayPal and PayID payment integration is complete. PayPal is configured in live mode. PayID uses djkingy79@gmail.com. Stripe has been removed. Prices are: Full Report $29, Extensive Report $39, Grounds of Merit $50. PaymentModal has tabs for both payment methods. Admin dashboard has pending PayID payments verification section.",
+  "context_for_next_testing_agent": "PayPal and PayID payment integration is complete. PayPal is configured in live mode. PayID uses REDACTED_EMAIL. Stripe has been removed. Prices are: Full Report $29, Extensive Report $39, Grounds of Merit $50. PaymentModal has tabs for both payment methods. Admin dashboard has pending PayID payments verification section.",
   "features_verified": {
     "payment_prices_endpoint": {
       "endpoint": "/api/payments/prices",
@@ -81,7 +81,7 @@
       },
       "payid": {
         "enabled": true,
-        "payid": "djkingy79@gmail.com"
+        "payid": "REDACTED_EMAIL"
       }
     },
     "payment_modal": {

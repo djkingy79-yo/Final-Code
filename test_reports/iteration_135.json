@@ -31,8 +31,8 @@
     "frontend": "100% - All styling fixes verified"
   },
   "test_credentials": {
-    "email": "djkingy79@gmail.com",
-    "password": "Grubbygrub88",
+    "email": "REDACTED_EMAIL",
+    "password": "REDACTED_PASSWORD",
     "note": "Test case case_87ef925be713 no longer exists. User has 1 own case (Test Auto Detect) with 0 grounds."
   },
   "seed_data_creation": "None",
