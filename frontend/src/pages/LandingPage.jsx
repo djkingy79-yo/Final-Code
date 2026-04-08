@@ -17,7 +17,7 @@ import StateAppealStats from "../components/StateAppealStats";
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const [setShowLegalFramework] = useState(false);
+  const [, setShowLegalFramework] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

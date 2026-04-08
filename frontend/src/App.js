@@ -91,6 +91,8 @@ const AuthCallback = () => {
           navigate("/dashboard", { replace: true, state: { user: response.data } });
           return;
         } catch (error) {
+          // 401 = permanent auth failure — no point retrying
+          if (error.response?.status === 401) break;
           if (attempt < 5) {
             await new Promise(r => setTimeout(r, 1500 * attempt));
           }
@@ -107,8 +109,8 @@ const AuthCallback = () => {
           navigate("/dashboard", { replace: true, state: { user: me.data } });
           return;
         }
-      } catch {
-        // Token invalid — don't remove it yet, show retry
+      } catch (error) {
+        // 401 = definitive invalid token, but still preserve for user-initiated retry
       }
     }
 
