@@ -1,114 +1,48 @@
 # Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Criminal appeals management tool for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting system (Free, $150 Full Detailed, $200 Extensive Log, locked Barrister View).
+Deb King is building "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. The app features secure document management, AI-powered case analysis, and a tiered reporting system (Free Quick Summary, $150 Full Detailed, $200 Extensive Log, and a locked Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Free (Base) -> $150 (2x depth) -> $200 (3x depth). Barrister View locked until all 3 generated/paid.
-- **Report Language:** STRICT third-person educational tool. No "we/us/our/you/your".
-- **Branding:** Forced light mode. High contrast. No amber/brown. Blue action buttons. Red Scale navbar icon (DO NOT change).
-- **Australian English:** analyse, organise, barrister, defence, offence throughout.
-- **Disclaimers:** ALL print/export disclaimers MUST have bright red bg (#dc2626), white bold text, yellow hazard icon (#facc15). DO NOT revert.
-- **Notes export:** Bright blue theme (#2563eb), NOT yellow/amber.
-- **Export fonts:** Body 12px, H1 18-20px, H2 14px, H3 13px. DO NOT increase.
+- **Report Tiers:** Strictly scale in depth. Quick Summary → Full Detailed → Extensive Log → Barrister View (counsel synthesis).
+- **Report Language:** STRICT third-person educational tool. Forensic appellate language ("It is arguable", "There is a tenable argument"). Never definitive conclusions.
+- **Appellate Credibility:** Grounds linked to Appellate Pathways. 3-axis viability scoring (legitimacy_engine.py). Psychiatric evidence framed as Mens Rea attack.
+- **Branding:** Forced light mode. High contrast. No amber/brown. Blue/slate/navy palette. Action buttons: bright blue + white text.
+- **Language:** Australian English throughout (analyse, organise, defence, offence, behaviour).
 
 ## Tech Stack
-React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LLM | Capacitor 7 (iOS + Android) | Resend (Email) | reportlab + python-docx (Exports)
+- Frontend: React + Shadcn/UI + Tailwind
+- Backend: FastAPI + MongoDB
+- AI: OpenAI GPT-4o via Emergent LLM Key
+- Auth: Emergent Google Auth + JWT
+- Payments: Stripe + PayPal + PayID
+- Email: Resend
+- Native: Capacitor v7 (configured, not yet built)
 
-## Completed (Feb-Apr 2026)
-- Font size standardisation (reports, prints, exports) — all reduced to 12px body
-- PayID email typo fix, Export Package crash fix
-- Native Mobile App build (Capacitor 7, camera scanning, offline, notifications)
-- Payment unlock bug fix (feature type aliases, admin bypass, auto-refresh)
-- Custom branded app icons/splash screens (iOS, Android, Web/PWA)
-- Disclaimer styling overhaul (ALL: bright red bg, white bold text, yellow hazard icon)
-- EvidenceSummary garbage filter (filters key-concatenated strings)
-- iOS PDF export auth fix (session_token as query param)
-- Notes export: yellow→bright blue, note cards blue bg white text
-- AustLII button: white→dark blue with white border
-- About Deb bio: single block→3 columns
-- Admin "How to verify" box: pale blue→bright blue bg, white bold text
-- **Legal Framework:** Fixed [object Object] in forms, raw JSON in legislation sections, underscore keys in time_limits
-- **Grounds/Print All:** ground_type now capitalized with spaces (Sentencing Error not sentencing_error)
-- **Print All:** law_sections handles both JSON strings and objects
-- **Print All:** evidence properly filters garbage strings
-- **Barrister View:** removed duplicate BARRISTER BRIEF badge, offence capitalized (Murder not murder)
-- **Case Readiness Score:** heading enlarged (text-xl/2xl)
-- **Export fonts:** body 12px, h1 20px, h2 14px across all exportHtml/buildTabPreviewHtml/buildPrintAllHtml
-- **Legal Framework Typography:** subheadings 18px bold (h4) / 16px bold (h5), body text 12px/11px — clear hierarchy
-- **iOS Mobile Menu:** converted from inline dropdown to full-screen fixed overlay with scroll support, X close button, WebkitOverflowScrolling
-- **Dashboard Sidebar:** added iOS scroll support (WebkitOverflowScrolling: touch, overscrollBehavior: contain)
+## Key Features Implemented
+- Multi-pass AI report generation (Quick Summary, Full Detailed, Extensive Log, Barrister View)
+- Staged pipeline: Document extraction → Classification → Verification → Ground projection
+- Barrister Quick Brief (2-page PDF via ReportLab)
+- Ground of Merit: CRUD, auto-identification, deep investigation, drag-and-drop priority reorder
+- Legitimacy Engine (3-axis scoring)
+- PDF/DOCX/Word export with iOS-safe fallbacks
+- Australian English normaliser (auSpelling.js) — protects markdown links
+- Ground deduplication (fuzzy matching)
+- Acceptance Pack PDF
+- Statistics page
+- How It Works tutorial page
 
-- **Statistics Data Update (April 2026):** All stats updated to latest verified sources — NSW (Jan 2026 provisional), VIC (2024-25 annual report), QLD (2024-25 annual report, 294 filings not 60), SA (DPP 2023-24, 74 appeals), WA (2024-25, 243 finalised), ABS (515,460 defendants 2023-24). Landing page and Stats page now show consistent success rates (24-32% range). Removed unverifiable "8,700 national appeals" and "684,138 cases" figures. Added proper source citations.
-- **FAQ Forms & Filing:** Added 9 comprehensive questions about filling in appeal forms (Notice of Intention, Notice of Appeal, transcript requests, Case Stated, exhibit access, time limits, online filing, serving documents, correcting errors)
-
-- **iOS Export Fix (April 2026):** Replaced ALL blob URL downloads (createObjectURL) across every export button with document-preview route navigation (window.location.assign). Fixes WebKitBlobResource error on iOS Safari. Fixed Word All button mode from 'pdf' to 'word'. Affected files: ReportView, BarristerView, CaseDetail, GroundsOfMerit, TimelineEnhanced.
-- **Print/Export Font Sizes (April 2026):** Reduced body text across all print/export views — ReportView body 9pt, BarristerView body 9pt, Grounds body 11px, exportHtml body 10px. All heading sizes reduced proportionally.
-- **Report Section Parser (April 2026):** Now handles both numbered (## 1. Title) and unnumbered (## TITLE) markdown section headers. Minimum content threshold reduced from 80 to 20 chars to prevent dropping short sections like Plain English Guide.
-- **Landing Page Trial Banner (April 2026):** Card-style banner at top of page (after disclaimer), matching Dashboard styling. Sparkles icon in white circle. Compact, clickable (opens auth modal). Inline `style={{ color: '#ffffff' }}` forces white text.
-- **Auto-Identify Background Task (April 2026):** Converted synchronous auto-identify endpoint to background task pattern. POST returns immediately with task_id. Frontend polls GET /status every 5s. Document extraction now runs concurrently (3 at a time). Fixes production timeout on cases with 16+ documents.
-- **Case Creation Fix (April 2026):** Added field_validator to CaseCreate model that converts empty strings to None before enum validation. Fixes 422 error when form sends empty string for state/offence_category.
-- **Sentence Auto-Detection Fix (April 2026):** Improved LLM prompt to extract HEAD SENTENCE + NPP only (no crime narrative). Added `_clean_sentence_candidate` to the LLM-detected path. Re-detection triggered when stored sentence contains crime narrative words.
-- **Phase 1 Barrister Credibility Fixes (April 2026):**
-  - Law sections: Frontend now filters out entries with "section not provided" or "unknown". Backend verify.py strips them post-LLM.
-  - Similar cases: Renamed to "Comparable Authority". Filters placeholder citations ("[Surname]", "verification needed"). Backend strips them post-LLM.
-  - Per-ground disclaimer: Added to every ground in print/PDF: "This analysis identifies potential appellate issues... All grounds require refinement and verification by a qualified legal practitioner."
-  - Appellate pathway: New field per ground (classify.py generates, displayed in blue box). Maps to state-specific Criminal Appeal Act provisions.
-  - Viability language: "Strong/Moderate/Weak" replaced with "Arguable — Strong / Arguable — Moderate / Requires Development".
-  - Assertive language: AI prompts updated — "It is contended that..." not "may have". No percentage success rates anywhere.
-  - Constitutional overreach: AI constrained to prioritise miscarriage of justice, unsafe verdict, misdirection, procedural unfairness over s 80 constitutional framing.
-  - Deep analysis structure: Mandatory Trial Finding → Error Identified → Materiality → Consequence → Appellate Viability.
-
-- **Phase 5 Barrister Feedback Implementation (April 2026):**
-  - Forensic Language: ALL report prompts, classification, verification, and deep analysis prompts updated from "assertive" ("The trial judge erred") to "forensic" ("It is arguable that the trial judge erred"). Added BANNED PHRASES list and REQUIRED FORENSIC FRAMING list to report_guardrails.
-  - Ground Merging ("one ground, multiple particulars"): Updated _merge_overlapping_grounds() with expanded theme clusters — psychiatric_mens_rea, jury_integrity, sentencing. Related grounds now clustered under single parent with sub-particulars labelled (a), (b), (c).
-  - Intelligent Ground Framing: Psychiatric evidence → "Miscarriage of Justice: Failure to Properly Determine Mental State (Mens Rea)" (conviction safety attack, not evidentiary criticism). Jury issues → "Procedural Unfairness (Jury Integrity)". Sentencing → tied to proportionality and moral culpability.
-  - Ineffective Counsel Downgrade: Added CONTINGENT flag (is_contingent: true) to legitimacy_scores. Capped at "moderate" unless evidence_score >= 3. Confidence note warns about high evidentiary threshold. LegitimacyPanel.jsx renders amber contingent warning badge.
-  - Counsel Synthesis Header: New section group added to Barrister View generation — "## Counsel Synthesis" at the very top with Primary/Secondary/Tertiary issues, priority ordering, and overall appellate position. Tells a barrister "where do I attack?" in 30 seconds.
-  - Sub-particulars UI: GroundsOfMerit.jsx description rendering updated with whitespace-pre-line to properly display sub-particulars.
-  - Testing: 17/17 backend tests passed (iteration_158). All features verified.
-
-- **Glossary, Australian English & Ground Reorder (April 2026):**
-  - Viability Glossary: Added collapsible glossary at the bottom of the Appellate Viability Assessment panel. Explains Outcome Impact (Determinative/Influential/Minor), Legal Alignment (Direct authority/Analogous/Weak), Evidence Support (Strong/Partial/Limited), Viability Rating (Arguable — Strong/Moderate/Requires Development), and Contingent Ground.
-  - Australian English Shared Utility: Extracted auSpelling normaliser to `/app/frontend/src/utils/auSpelling.js` with 80+ American-to-Australian replacements. Now imported by GroundsOfMerit, LegitimacyPanel, ReportView, and BarristerView. Covers all -ize/-ise, -or/-our, -er/-re, -ense/-ence variations.
-  - Ground Priority Reorder: Added drag-and-drop and arrow-button reordering for grounds. New PUT `/api/cases/{case_id}/grounds/reorder` endpoint saves priority_order. GET grounds now sorts by priority_order first. UI shows "Reorder Priority" button when case is unlocked with 2+ grounds.
-  - Testing: 8/8 backend tests passed (iteration_159). All features verified.
-
-- **Barrister Quick Brief & Deployment Readiness (April 2026):**
-  - Barrister Quick Brief: New GET `/api/cases/{case_id}/reports/barrister-quick-brief` endpoint generates a concise 2-page PDF with Counsel Synthesis + Priority Order + Top 3 Grounds + viability ratings + disclaimer. Designed for a barrister to review in under 5 minutes. Emerald "Quick Brief" button added to BarristerView.
-  - Database Initialisation: Comprehensive index creation for ALL 30+ collections at startup (users, cases, reports, grounds_of_merit, documents, pipeline_tasks, user_sessions, payments, notes, timeline_events, deadlines, checklist_items, etc.). Includes TTL indexes for session/password reset expiry.
-  - Dependency Audit: requirements.txt refreshed via pip freeze (163 packages). libmagic1 added to Dockerfile. All imports verified — no missing packages, no version conflicts, pip check passes clean.
-  - Deployment: Health check passed via deployment agent. No hardcoded env vars, proper .env usage, CORS configured.
-  - Testing: 17/17 backend tests passed (iteration_160). All features verified.
+## What's Complete (as of Feb 2026)
+- All 4 report types functional with correct forensic language
+- Barrister View with Counsel Synthesis + Attachment A Issue Matrix
+- Ground merging with sub-particulars (psychiatric_mens_rea, jury_integrity, sentencing clusters)
+- iOS PDF export working (document-preview route)
+- Deployment health checks passing
+- 8-point code review fixes (iteration 161): credential redaction, auSpelling markdown safety, iOS Quick Brief fix, reorder atomic validation, merged grounds field preservation, UI jump fix, Pytest guards
 
 ## Backlog
-- P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
-- P0: Test report generation with new prompts on actual case (verify forensic language, counsel synthesis section, ground merging)
-- P2: Build Native Mobile App (Capacitor configured, needs build + test)
+- P1: Native Mobile App build (Capacitor v7)
+- P2: Camera/Share native device features
 - P2: Counsel conference prep attachment for Barrister View
-- P2: Real-time collaboration/chat for Notes
+- P2: Real-time collaboration/chat
 - P2: Case sharing between users
-
-## Critical Guards
-- DO_NOT_UNDO comments protect key functions
-- Navbar brand icon is RED bg-red-600 — DO NOT change
-- Disclaimers: bright red (#dc2626) bg + white text + yellow hazard icon — DO NOT revert
-- Notes export: blue theme (#2563eb) — DO NOT change to yellow/amber
-- Export font sizes: body 12px, h1 18-20px — DO NOT increase
-- LegalFrameworkViewer typography: h4=18px bold, subheadings=16px bold, body=12px/11px — DO NOT revert
-- Mobile menu: full-screen fixed overlay (z-[100]) — DO NOT revert to inline dropdown
-- LegalFrameworkViewer: must handle both string and object forms/sections
-- EvidenceSummary: must filter garbage key-concatenated strings
-- Auto-identify: background task pattern with polling — DO NOT revert to synchronous
-- Landing page trial banner: card-style at top, NOT inside hero section
-- Law sections: MUST filter "section not provided" / "unknown" — DO NOT display placeholders
-- Similar cases: heading is "Comparable Authority" NOT "Similar Cases (AI-Suggested)" — DO NOT revert
-- Strength labels: "Arguable — Strong / Arguable — Moderate / Requires Development" — DO NOT revert to "Strong/Moderate/Weak"
-- AI prompts: FORENSIC language ("It is arguable that...", "It is contended that...") — DO NOT use bare declarations ("The judge erred") and DO NOT revert to hedging ("may have")
-- Reports: NO percentage success rates — use appellate viability language only
-- Ground merging: "one ground, multiple particulars" — DO NOT revert to individual overlapping grounds
-- Ineffective counsel: CONTINGENT flag and capped at moderate unless evidence_score >= 3 — DO NOT remove
-- Counsel Synthesis: MUST appear at top of Barrister View with Primary/Secondary/Tertiary issues and priority order — DO NOT remove
-- auSpelling: shared utility at /app/frontend/src/utils/auSpelling.js — ALL components displaying AI text MUST import and use it
-- Viability Glossary: collapsible glossary on LegitimacyPanel — DO NOT remove
-- Ground Reorder: PUT endpoint MUST be defined BEFORE {ground_id} routes to avoid path parameter conflict
