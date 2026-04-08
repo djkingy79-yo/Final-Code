@@ -21,6 +21,16 @@ const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Auto-open login modal if redirected from failed Google auth
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("login") === "true") {
+      setShowAuthModal(true);
+      // Clean up the URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   // DO_NOT_UNDO — If user has a valid session token, redirect to dashboard immediately.
   // Prevents authenticated users from being stuck on the landing page.
   useEffect(() => {
