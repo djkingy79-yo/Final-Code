@@ -5793,6 +5793,7 @@ async def cleanup_orphaned_reports():
         "full_detailed": 70000,
         "extensive_log": 120000,
     }
+    flagged_count = 0
     for rtype, min_chars in min_completed_targets.items():
         async for report in db.reports.find({"status": "completed", "report_type": rtype}):
             analysis = (report.get("content", {}).get("analysis") or "")
@@ -5801,7 +5802,9 @@ async def cleanup_orphaned_reports():
                     {"report_id": report["report_id"]},
                     {"$set": {"content.below_target": True, "content.actual_chars": len(analysis), "content.target_chars": min_chars}}
                 )
-                logger.info(f"Flagged undersized report {report['report_id']}: {len(analysis)} < {min_chars} chars")
+                flagged_count += 1
+    if flagged_count:
+        logger.info(f"Flagged {flagged_count} undersized reports on startup")
 
     # Also restore any reports that were accidentally set to "failed" by a previous migration
     # DO_NOT_UNDO — Only restore if the report actually meets the minimum target.
