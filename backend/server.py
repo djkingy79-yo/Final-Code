@@ -3274,6 +3274,7 @@ SOURCE REPORTS
 
     # DO NOT UNDO — Section-by-section expansion for thin sections
     thin_section_targets = {
+        "## Counsel Synthesis": 2000,
         "## Executive Overview for Counsel": 5000,
         "## Source Report Synthesis": 6000,
         "## Case Background and Procedural History": 5000,
@@ -3654,6 +3655,7 @@ CURRENT BARRISTER BRIEF
 
     # DO NOT UNDO — Final quality validation pass: expand any remaining thin sections
     final_min_chars = {
+        "## Counsel Synthesis": 1500,
         "## Executive Overview for Counsel": 5000,
         "## Source Report Synthesis": 5000,
         "## Case Background and Procedural History": 4000,
@@ -3711,6 +3713,7 @@ SOURCE REPORTS
 
     # DO NOT UNDO — Strip rogue H2 sections not in the expected structure
     expected_h2s = {
+        "## Counsel Synthesis",
         "## Executive Overview for Counsel",
         "## Source Report Synthesis",
         "## Case Background and Procedural History",

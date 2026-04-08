@@ -912,11 +912,12 @@ const CaseDetail = ({ user }) => {
         if (laws.length > 0) {
           body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Relevant Legislation</h4><ul>`;
           laws.forEach(s => {
+            const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             if (typeof s === "string") {
-              try { const parsed = JSON.parse(s); body += `<li>s.${parsed.section || ""} ${parsed.act || parsed.title || ""} (${parsed.jurisdiction || "NSW"})</li>`; }
+              try { const parsed = JSON.parse(s); body += `<li>s ${esc(parsed.section)} ${esc(parsed.act || parsed.title)} (${esc((parsed.jurisdiction || "NSW").toUpperCase())})</li>`; }
               catch { body += `<li>${s.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`; }
             } else if (typeof s === "object" && s) {
-              body += `<li>s.${s.section || ""} ${s.act || s.title || ""} (${s.jurisdiction || "NSW"})</li>`;
+              body += `<li>s ${esc(s.section)} ${esc(s.act || s.title)} (${esc((s.jurisdiction || "NSW").toUpperCase())})</li>`;
             }
           });
           body += `</ul>`;
