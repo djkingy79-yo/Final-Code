@@ -4315,16 +4315,22 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     for idx, ground in enumerate(top_grounds, 1):
         title = ground.get("title", "Untitled Ground")
         strength = ground.get("strength", "moderate")
-        viability = VIABILITY_LABELS.get(strength, strength)
+        # Prefer the verified legitimacy_scores.viability_label over raw classifier strength
+        viability = (ground.get("legitimacy_scores") or {}).get("viability_label")
+        badge_text = viability or f"Unverified strength: {VIABILITY_LABELS.get(strength, strength)}"
         ground_type = ground.get("ground_type", "")
         appellate_pathway = ground.get("appellate_pathway", "")
         description = ground.get("description", "")
 
         story.append(Paragraph(f"Ground {idx}: {safe_text(title)}", styles['QBGroundTitle']))
         
-        # Viability badge
-        viability_colour = {"strong": "#059669", "moderate": "#2563eb", "weak": "#dc2626"}.get(strength, "#64748b")
-        story.append(Paragraph(f'<font color="{viability_colour}"><b>{viability}</b></font> | Type: {safe_text(ground_type.replace("_", " ").title())}', styles['QBBody']))
+        # Viability badge — colour keyed to verified label, not raw strength
+        viability_colour = {
+            "Arguable \u2014 Strong": "#059669",
+            "Arguable \u2014 Moderate": "#2563eb",
+            "Requires Development": "#dc2626",
+        }.get(viability or "", "#64748b")
+        story.append(Paragraph(f'<font color="{viability_colour}"><b>{safe_text(badge_text)}</b></font> | Type: {safe_text(ground_type.replace("_", " ").title())}', styles['QBBody']))
         
         if appellate_pathway:
             story.append(Paragraph(f"<b>Appellate Pathway:</b> {safe_text(appellate_pathway)}", styles['QBBody']))
@@ -4335,8 +4341,9 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
             desc_clean = desc_clean[:400] + "..."
         story.append(Paragraph(safe_text(desc_clean), styles['QBBody']))
 
-        # Contingent warning for ineffective counsel
-        if ground_type == "ineffective_counsel":
+        # Contingent warning — prefer legitimacy_scores flag over ground_type alone
+        is_contingent = (ground.get("legitimacy_scores") or {}).get("is_contingent", False) or ground_type == "ineffective_counsel"
+        if is_contingent:
             story.append(Paragraph('<font color="#d97706"><b>CONTINGENT</b> \u2014 Requires evidentiary support before advancement</font>', styles['QBBody']))
 
         story.append(Spacer(1, 2*mm))
