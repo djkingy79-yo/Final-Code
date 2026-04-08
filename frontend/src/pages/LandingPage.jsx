@@ -6,7 +6,8 @@
 import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, PlayCircle, ArrowUp, Sparkles } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 import AuthModal from "../components/AuthModal";
 import { useTheme } from "../contexts/ThemeContext";
@@ -19,6 +20,17 @@ const LandingPage = () => {
   const [setShowLegalFramework] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // DO_NOT_UNDO — If user has a valid session token, redirect to dashboard immediately.
+  // Prevents authenticated users from being stuck on the landing page.
+  useEffect(() => {
+    const token = localStorage.getItem("session_token");
+    if (token) {
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`)
+        .then(() => { navigate("/dashboard", { replace: true }); })
+        .catch(() => { localStorage.removeItem("session_token"); });
+    }
+  }, [navigate]);
 
   const handleAuthSuccess = (userData) => {
     window.location.replace("/dashboard");

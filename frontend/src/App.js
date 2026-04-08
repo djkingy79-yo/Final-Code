@@ -73,55 +73,84 @@ axios.interceptors.request.use((config) => {
 const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
+  const [authError, setAuthError] = useState(null);
+
+  const attemptAuth = async () => {
+    setAuthError(null);
+    const hash = window.location.hash;
+    const query = window.location.search;
+    const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
+
+    if (sessionId) {
+      for (let attempt = 1; attempt <= 5; attempt++) {
+        try {
+          const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
+          if (response.data?.session_token) {
+            localStorage.setItem("session_token", response.data.session_token);
+          }
+          navigate("/dashboard", { replace: true, state: { user: response.data } });
+          return;
+        } catch (error) {
+          if (attempt < 5) {
+            await new Promise(r => setTimeout(r, 1500 * attempt));
+          }
+        }
+      }
+    }
+
+    // Fallback: check existing localStorage token
+    const existingToken = localStorage.getItem("session_token");
+    if (existingToken) {
+      try {
+        const me = await axios.get(`${API}/auth/me`);
+        if (me.data) {
+          navigate("/dashboard", { replace: true, state: { user: me.data } });
+          return;
+        }
+      } catch {
+        // Token invalid — don't remove it yet, show retry
+      }
+    }
+
+    // DO NOT navigate to "/" — show retry UI instead
+    setAuthError("Authentication failed. Please try again.");
+  };
 
   useEffect(() => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
-
-    const processAuth = async () => {
-      const hash = window.location.hash;
-      const query = window.location.search;
-      const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
-
-      if (sessionId) {
-        for (let attempt = 1; attempt <= 3; attempt++) {
-          try {
-            const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
-            if (response.data?.session_token) {
-              localStorage.setItem("session_token", response.data.session_token);
-            }
-            // Navigate to dashboard with user data — React Router handles URL cleanup
-            navigate("/dashboard", { replace: true, state: { user: response.data } });
-            return;
-          } catch (error) {
-            if (attempt < 3) {
-              await new Promise(r => setTimeout(r, 2000 * attempt));
-            }
-          }
-        }
-        // All 3 session exchange attempts failed — still try localStorage token
-      }
-
-      // Fallback: check existing localStorage token (handles page refresh, stale redirects)
-      const existingToken = localStorage.getItem("session_token");
-      if (existingToken) {
-        try {
-          const me = await axios.get(`${API}/auth/me`);
-          if (me.data) {
-            navigate("/dashboard", { replace: true, state: { user: me.data } });
-            return;
-          }
-        } catch {
-          localStorage.removeItem("session_token");
-        }
-      }
-
-      // Only reach here if session exchange failed AND no valid token exists
-      navigate("/", { replace: true });
-    };
-
-    processAuth();
+    attemptAuth();
   }, [navigate]);
+
+  if (authError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center max-w-md p-8">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5Z" /></svg>
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Authentication Failed</h2>
+          <p className="text-slate-600 mb-6" data-testid="auth-error-message">{authError}</p>
+          <div className="flex flex-col gap-3">
+            <button
+              data-testid="auth-retry-btn"
+              onClick={() => { hasProcessed.current = false; attemptAuth(); }}
+              className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Try Again
+            </button>
+            <button
+              data-testid="auth-back-to-login-btn"
+              onClick={() => { localStorage.removeItem("session_token"); navigate("/", { replace: true }); }}
+              className="w-full px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -144,18 +173,17 @@ const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(initialUser ? true : null);
   const [termsAccepted, setTermsAccepted] = useState(initialUser ? initialUser.terms_accepted === true : null);
   const [user, setUser] = useState(initialUser);
+  const [authFailed, setAuthFailed] = useState(false);
 
   useEffect(() => {
     // If user data was passed from AuthCallback via navigate state, already handled in initial state
     if (initialUser) return;
 
-    // DO_NOT_UNDO — Auth check with retry. Retries prevent transient network errors
-    // from booting the user back to the landing page.
+    // DO_NOT_UNDO — Auth check with aggressive retry. NEVER silently redirect to landing.
     const checkAuth = async (attempt = 1) => {
       const token = localStorage.getItem("session_token");
       if (!token) {
         setIsAuthenticated(false);
-        navigate("/", { replace: true });
         return;
       }
 
@@ -164,15 +192,15 @@ const ProtectedRoute = ({ children }) => {
         setUser(response.data);
         setIsAuthenticated(true);
         setTermsAccepted(response.data.terms_accepted === true);
+        setAuthFailed(false);
       } catch (error) {
-        if (attempt < 3) {
+        if (attempt < 5) {
           await new Promise(r => setTimeout(r, 1500 * attempt));
           return checkAuth(attempt + 1);
         }
-        // Only give up after 3 attempts
-        localStorage.removeItem("session_token");
+        // After 5 failures: show session expired UI, do NOT navigate away
+        setAuthFailed(true);
         setIsAuthenticated(false);
-        navigate("/", { replace: true });
       }
     };
 
@@ -190,6 +218,37 @@ const ProtectedRoute = ({ children }) => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-slate-700 font-medium">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Session expired or auth failed — show retry UI, NOT a silent redirect
+  if (!isAuthenticated && authFailed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center max-w-md p-8">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Session Expired</h2>
+          <p className="text-slate-600 mb-6">Your session has expired or could not be verified. Please log in again.</p>
+          <div className="flex flex-col gap-3">
+            <button
+              data-testid="session-retry-btn"
+              onClick={() => { setAuthFailed(false); setIsAuthenticated(null); }}
+              className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+            <button
+              data-testid="session-relogin-btn"
+              onClick={() => { localStorage.removeItem("session_token"); navigate("/", { replace: true }); }}
+              className="w-full px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+            >
+              Log In Again
+            </button>
+          </div>
         </div>
       </div>
     );
