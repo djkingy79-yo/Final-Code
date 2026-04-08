@@ -671,7 +671,7 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
         # Generate deep analysis text for this ground
         deep_analysis_text = ""
         try:
-            # DO NOT UNDO — Appellate-structured deep analysis prompt
+            # DO NOT UNDO — Appellate-structured deep analysis prompt with FORENSIC language
             analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({case.get('state', 'NSW').upper()}).
 
 Ground: {ground.get('title', '')}
@@ -699,13 +699,13 @@ Write a detailed appellate analysis of this ground (600-900 words) using the fol
 What did the trial judge find or accept on this issue?
 
 ## Error Identified
-What specific error occurred? Use assertive language: "The trial judge erred in...", "It is contended that...". Do NOT use "may have" or "could potentially".
+What specific error is arguable? Use FORENSIC appellate language: "It is arguable that the trial judge erred in...", "It is contended that...", "There is a tenable argument that...". Do NOT use bare declarations like "The trial judge erred" (too definitive at appellate preparation stage). Do NOT use hedging like "may have" or "could potentially" (too weak).
 
 ## Materiality
 Why does this error matter to the outcome of the case? How did it affect the verdict or sentence?
 
 ## Consequence
-What is the legal consequence? (e.g. verdict is unsafe, miscarriage of justice, sentence must be set aside)
+What is the legal consequence? (e.g. it is arguable that the verdict is unsafe, that a miscarriage of justice occurred, that the sentence must be set aside)
 
 ## Appellate Viability
 Assess the strength of this ground using:
@@ -714,15 +714,20 @@ Assess the strength of this ground using:
 - Evidence support: Strong / Partial / Limited
 State what further material could strengthen or weaken this ground.
 
+GROUND FRAMING RULES:
+- If this ground involves psychiatric/mental state evidence → frame as a CONVICTION SAFETY attack on mens rea determination, not merely evidentiary criticism. Ask: was the requisite mental state (intent to kill, intent to cause GBH, reckless indifference) properly determined given the competing psychiatric evidence?
+- If this ground involves ineffective counsel → note clearly that this ground is "Contingent — requires evidentiary support (affidavit from accused, transcript confirmation)" and that the threshold is extremely high.
+- If this ground involves sentencing → tie to proportionality and moral culpability. The question is whether "the sentence reflects true culpability" not merely "the judge got it wrong."
+
 RULES:
 - Write in third person only. Use paragraphs, NOT bullet points in body text.
-- Use assertive appellate language throughout. Do NOT hedge with "may", "could potentially", "it is possible".
+- Use forensic appellate language throughout. Frame all conclusions as arguable, not declarative.
 - Every paragraph must tie back to the specific trial error, not generic legal textbook explanations.
 - Australian English spelling only (analyse, defence, offence, behaviour, favour).
 - Do NOT use first or second person."""
 
             deep_analysis_text = await call_llm_with_fallback(
-                system_prompt="You are a senior Australian criminal appellate researcher conducting forensic issue analysis for counsel preparation. Write in formal third person. Use the mandatory structure provided. Australian English only. Be assertive, not hedging.",
+                system_prompt="You are a senior Australian criminal appellate researcher conducting forensic issue analysis for counsel preparation. Write in formal third person. Use the mandatory structure provided. Australian English only. Use forensic appellate language throughout — frame conclusions as arguable and contended, not as declarations of fact. The Court makes findings; the brief identifies where findings are open.",
                 user_prompt=analysis_prompt,
                 session_id=f"deep_analysis_{ground_id}",
                 task_type="ground_deep_analysis",

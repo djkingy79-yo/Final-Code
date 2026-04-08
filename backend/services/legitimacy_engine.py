@@ -114,7 +114,7 @@ def score_evidence_support(evidence_list: List, undermining_list: List = None) -
 
 
 def _generate_confidence_note(ground_type: str, evidence_score: int) -> str:
-    """Generate a calibrated confidence note for this ground."""
+    """Generate a calibrated confidence note for this ground with forensic framing."""
     if evidence_score == 0:
         return "No direct evidentiary support identified — requires documentary verification before any reliance."
     if evidence_score == 1:
@@ -122,11 +122,13 @@ def _generate_confidence_note(ground_type: str, evidence_score: int) -> str:
     if ground_type == "fresh_evidence":
         return "Viability depends on whether evidence satisfies the fresh evidence test (could not have been obtained with reasonable diligence; would likely have produced a different verdict)."
     if ground_type == "jury_irregularity":
-        return "Requires proof of actual irregularity affecting the verdict, not speculation."
+        return "Requires proof of actual irregularity affecting the verdict, not speculation. Related jury issues (judge-alone refusal, jury reduction, juror conduct) should be presented as sub-particulars under a single procedural unfairness ground."
     if ground_type == "ineffective_counsel":
-        return "Requires demonstration that representation fell below objective standard of competence and affected the outcome."
+        return "CONTINGENT — requires evidentiary support before advancement. The threshold is extremely high: an affidavit from the accused, evidence of advice given, and transcript confirmation are typically required. Without this evidentiary foundation, advancing this ground risks weakening overall appellate credibility."
+    if ground_type == "miscarriage_of_justice":
+        return "Where psychiatric or mental state evidence is involved, this ground should be framed as a conviction safety attack on mens rea determination — whether the requisite mental state (intent to kill, intent to cause GBH, or reckless indifference) was properly established given competing evidence."
     if ground_type == "sentencing_error":
-        return "Appellate courts afford considerable deference to sentencing judges — manifest excess or specific error required."
+        return "This ground should be framed around proportionality and moral culpability — whether the sentence reflects true culpability given all relevant circumstances, including any mental impairment. Appellate courts afford considerable deference to sentencing judges — manifest excess or specific error required."
     if ground_type == "constitutional_violation":
         return "Constitutional grounds are rarely the operative pathway in state criminal appeals. Consider reframing under miscarriage of justice or procedural unfairness."
     return "Assessment subject to full transcript, evidentiary, and legal review by qualified counsel."
@@ -175,6 +177,15 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         rating = "moderate"
         viability_label = "Arguable \u2014 Moderate"
 
+    # HARD SAFETY RULE: Ineffective counsel capped unless strong evidence
+    # This ground has an extremely high threshold — requires affidavit, transcript, etc.
+    if ground_type == "ineffective_counsel" and rating == "strong" and evidence["score"] < 3:
+        rating = "moderate"
+        viability_label = "Arguable \u2014 Moderate"
+
+    # Flag for contingent grounds
+    is_contingent = ground_type == "ineffective_counsel"
+
     return {
         "outcome_impact": outcome,
         "legal_alignment": legal,
@@ -183,6 +194,7 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         "rating": rating,
         "viability_label": viability_label,
         "confidence_note": _generate_confidence_note(ground_type, evidence["score"]),
+        "is_contingent": is_contingent,
         # Keep legacy fields for backward compatibility
         "legal_score": legal["score"],
         "evidence_score": evidence["score"],

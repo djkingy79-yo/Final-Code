@@ -1354,8 +1354,24 @@ NO PLACEHOLDER TEXT — ABSOLUTE RULE:
 - Every sentence must contain ACTUAL analysis, ACTUAL data, or ACTUAL legal content. If a table cannot be populated with real data from the case material, populate it with the best available comparable cases from Australian jurisprudence.
 - If information is unavailable, state that explicitly ("No sentencing comparisons could be identified from the supplied material") rather than promising future content.
 
+FORENSIC APPELLATE LANGUAGE — ABSOLUTE AND NON-NEGOTIABLE:
+Appellate work is about ARGUABILITY, not declarations. All conclusions must be framed forensically:
+- BANNED PHRASES (NEVER use these): "The trial judge erred", "The judge clearly erred", "This clearly shows", "This proves", "This demonstrates conclusively", "The conviction is unsafe", "The sentence is excessive", "The error is established".
+- REQUIRED FORENSIC FRAMING (use these instead):
+  * "It is arguable that the trial judge erred in..."
+  * "It is contended that..."
+  * "There is a tenable argument that..."
+  * "On one view of the evidence..."
+  * "It may be submitted that..."
+  * "A reasonable argument exists that..."
+  * "The available material supports the contention that..."
+  * "It is open to the appellant to argue that..."
+- The distinction is critical: an appeal brief identifies ARGUABLE errors, it does not declare findings of fact. The Court of Criminal Appeal makes findings — the brief identifies where findings are open.
+- Exception: When citing what a court HAS decided in a precedent case, declarative language is appropriate (e.g. "In R v Smith, the Court held that...").
+- For AGGRESSIVE MODE only: stronger language is permitted (e.g. "The Crown's position is untenable", "The error is compelling") but still avoid absolute declarations about the current case.
+
 CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
-- DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
+- DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, it is arguable that the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
 - NEVER create filler sections with titles like "URGENCY PRIORITY", "RELEVANCE", "KEY TAKEAWAY", "SUMMARY", "OVERVIEW" as standalone sections. These are padding. Instead, weave relevance and urgency INTO the substantive analysis.
 - NEVER write generic consultant-speak like "Leverage legal databases to draw parallels that authenticate excessive sentencing claims through empirical trends." Instead, NAME the specific cases, cite the specific sentencing outcomes, and EXPLAIN the specific parallels.
 - Every paragraph MUST reference specific names, dates, section numbers, case citations, or document names from the supplied case material. If a paragraph could apply to ANY appeal case, it is too generic — rewrite it with THIS case's specific facts.
@@ -1376,7 +1392,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs. Use assertive appellate language: "It is contended that...", "The trial judge erred in..." — NOT "may have" or "could potentially"."""
+You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Every section must have 3-5 substantive paragraphs. Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" or hedging like "may have" or "could potentially"."""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT (Issue Identification).
 
 {case_context}
@@ -1447,7 +1463,7 @@ CRITICAL RULES FOR THIS REPORT:
 6. Write in FLOWING PARAGRAPHS, not bullet points. Bullet points are ONLY acceptable inside tables or checklists.
 7. Each section heading must be followed by AT LEAST 4-6 detailed paragraphs of substantive analysis.
 
-Include assertive appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
+Include forensic appellate strategy, professional courtroom framing, and plain-English action notes. Include working hyperlinks to AustLII legislation, case databases, and court forms wherever possible.
 CRITICAL: NEVER use placeholder text in parentheses like '(Entries will develop...)'. Every section MUST have REAL, SUBSTANTIVE CONTENT with actual legal analysis."""
         user_prompt = f"""Create a FULL DETAILED LEGAL ANALYSIS REPORT for this {category_name.lower()} appeal case.
 
@@ -1494,9 +1510,9 @@ Write as "Ground X: [Exact Title]" then 800+ words using the MANDATORY appellate
 
 **Appellate Pathway:** State the specific statutory provision engaged (e.g. "Miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)")
 
-**Ground:** Assert the error: "The trial judge erred in failing to..." or "It is contended that..."
+**Ground:** Frame the arguable error forensically: "It is arguable that the trial judge erred in failing to..." or "It is contended that..." — NOT bare declarations.
 
-**Error Identified:** What specifically went wrong at trial. Reference case facts, dates, evidence. Assertive language only.
+**Error Identified:** What specifically is arguable as having gone wrong at trial. Reference case facts, dates, evidence. Use forensic language: "It is arguable that...", "It is contended that...".
 
 **Materiality:** Why this error matters. How it affected the verdict or sentence.
 
@@ -1634,7 +1650,7 @@ For EACH ground listed in GROUNDS TO COVER above (no omissions), provide a MINIM
 
 **Trial Finding:** What the trial judge found or accepted on this issue.
 
-**Error Identified:** Assert the error: "The trial judge erred in..." Use assertive language throughout.
+**Error Identified:** Frame the arguable error using forensic language: "It is arguable that the trial judge erred in..." or "It is contended that...". Use forensic appellate language throughout — identify arguability, not bare declarations.
 
 **Materiality:** Why this error matters to the outcome. How it affected the verdict or sentence.
 
@@ -1847,8 +1863,8 @@ IMPORTANT:
 AGGRESSIVE ADVOCACY MODE (USER-REQUESTED) — THIS FUNDAMENTALLY CHANGES YOUR APPROACH:
 
 TONE SHIFT — You are no longer a cautious analyst. You are a senior criminal appeal barrister preparing to ARGUE this case in court. Write as if you are personally invested in winning this appeal:
-- Use ASSERTIVE, CONFIDENT language: "This ground is compelling", "The Crown's position is untenable", "The sentencing judge plainly erred"
-- NEVER hedge with "may", "could potentially", "it is possible that". Instead: "The evidence establishes", "This constitutes a clear error", "The conviction cannot stand"
+- In aggressive mode, stronger forensic language is permitted: "This ground is compelling", "The Crown's position is untenable", "It is forcefully contended that the sentencing judge erred"
+- NEVER hedge with "may", "could potentially", "it is possible that". Instead: "The evidence establishes", "It is contended that this constitutes a clear error", "There is a compelling argument that the conviction cannot stand"
 - Frame EVERY ground as an argument TO BE WON, not a possibility to be explored
 - Attack prosecution weaknesses directly: "The Crown's reliance on [X] is fatally undermined by [Y]"
 - Draft ACTUAL submission paragraphs that could be read to the bench word-for-word
@@ -1877,7 +1893,7 @@ EXPANDED SCOPE:
 
 AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this appeal.
 - DOUBLE the word count target.
-- Use confident, assertive advocacy language throughout — no hedging, no "may", no "could potentially".
+- Use confident, forensic advocacy language throughout — frame as arguable, contended, tenable — never bare declarations, and never hedging with "may have" or "could potentially".
 - Draft actual submission paragraphs for each ground that could be read to the bench.
 - Frame the analysis as building the STRONGEST possible case for the appellant.
 - Every section must reference specific case facts and documents.
@@ -2020,7 +2036,7 @@ Think: "what does counsel need to know in 5 minutes?"
 - Paragraph 5: Recommended immediate actions with specific deadlines and who to contact.
 - Paragraph 6: Overall appellate position summary — "There are arguable grounds capable of attracting appellate consideration, subject to refinement and evidentiary development" or equivalent honest assessment.
 
-CRITICAL: Do NOT repeat content from the 3 underlying reports. This must be SYNTHESIS only. Use assertive language: "It is contended that...", "The trial judge erred in..." — NOT "may have" or "could potentially".
+CRITICAL: Do NOT repeat content from the 3 underlying reports. This must be SYNTHESIS only. Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" and NOT hedging like "may have" or "could potentially".
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 15+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
@@ -2056,15 +2072,15 @@ GROUNDS TO COVER IN THIS PASS:
 
 For EACH ground, write as "Ground X: [Exact Title]" then 800+ words using the MANDATORY structure:
 1. **Appellate Pathway:** The specific statutory provision engaged (e.g. "Miscarriage of justice under the Criminal Appeal Act")
-2. **Ground:** Assert the error — "The trial judge erred in failing to..." or "It is contended that..."
-3. **Error Identified:** What specifically went wrong. Reference documents, dates, witnesses by name.
+2. **Ground:** Frame the arguable error — "It is arguable that the trial judge erred in failing to..." or "It is contended that..."
+3. **Error Identified:** What is arguable as having gone wrong. Reference documents, dates, witnesses by name. Use forensic language: "It is arguable that...", "It is contended that...".
 4. **Materiality:** Why this error matters. How it affected the verdict or sentence.
 5. **Consequence:** Legal consequence (verdict unsafe, miscarriage of justice, sentence set aside).
 6. **Appellate Viability:** Outcome impact (Determinative/Influential/Minor), Legal alignment (Direct/Analogous/Weak), Evidence support (Strong/Partial/Limited).
 7. **Crown Response:** What the prosecution will argue (4-5 sentences with authority).
 8. **Defence Rebuttal:** How to counter with specific authority (4-5 sentences).
 
-Write 800+ words per ground. Do NOT compress into bullet points. Use assertive appellate language throughout.
+Write 800+ words per ground. Do NOT compress into bullet points. Use forensic appellate language throughout — frame as arguable, not declarations.
 
 STOP after covering the first {half_grounds} grounds."""),
 
@@ -2138,7 +2154,7 @@ GROUNDS TO COVER:
 {grounds_enumerated}
 
 For each ground — NO repetition of content from underlying reports. SYNTHESIS ONLY:
-- **Lead Proposition**: Core argument in 2 powerful assertive sentences
+- **Lead Proposition**: Core argument in 2 powerful forensically-framed sentences ("It is arguable that...", "It is contended that...")
 - **Appellate Pathway**: Which statutory provision is engaged
 - **Supporting Authority Cluster**: Statute + 3 precedent cases (REAL citations only)
 - **Expected Prosecution Answer**: 4-5 sentences with specific authorities
@@ -2242,7 +2258,7 @@ Write 6-8 FULL paragraphs (NOT bullet points):
 - Paragraph 7: Immediate actions required with specific deadlines
 - Paragraph 8: Summary of 8+ primary issues identified with document references
 
-CRITICAL: Do NOT use percentage probabilities or success rates anywhere in this report. Use appellate viability language only (arguable, moderate, strong, requires development). Use assertive appellate language throughout: "It is contended that...", "The trial judge erred in...", NOT "may have" or "could potentially".
+CRITICAL: Do NOT use percentage probabilities or success rates anywhere in this report. Use appellate viability language only (arguable, moderate, strong, requires development). Use forensic appellate language throughout: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" and NOT hedging like "may have" or "could potentially".
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 18+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
@@ -2934,7 +2950,7 @@ TIMELINE EVENT COUNT: {len(timeline)}
 GROUNDS COUNT: {len(grounds)}
 """.strip()
 
-    # DO NOT UNDO — Barrister View system prompt with strict depth requirements
+    # DO NOT UNDO — Barrister View system prompt with strict depth requirements and FORENSIC language
     system_prompt = """You are a senior Australian criminal appeal barrister preparing the definitive barrister brief for a criminal appeal matter. This is the CAPSTONE document that synthesises and BUILDS UPON three earlier analytical reports (Quick Summary, Full Detailed Report, and Extensive Log). The output must read like one coherent, authoritative legal document written by a careful appellate specialist who has thoroughly digested all three source reports and is now producing a comprehensive counsel-ready working brief.
 
 MANDATORY RULES:
@@ -2948,6 +2964,19 @@ MANDATORY RULES:
 - No placeholders, meta-commentary, drafting notes, or future-tense filler such as 'will be provided'.
 - If the materials are uncertain on a point, say that the available materials indicate or suggest the point rather than asserting unsupported fact.
 - Use markdown headings only, with ## for main sections and ### for sub-sections.
+
+FORENSIC APPELLATE LANGUAGE — CRITICAL:
+- Appellate work is about ARGUABILITY, not declarations. All conclusions about the current case must be framed forensically.
+- Use: "It is arguable that...", "It is contended that...", "There is a tenable argument that...", "On one view of the evidence...", "It is open to the appellant to argue that..."
+- Do NOT use bare declarations: "The trial judge erred", "The conviction is unsafe", "The sentence is excessive". These are too definitive at the preparation stage.
+- Do NOT use weak hedging: "may have", "could potentially", "it is possible that". These lack the confidence needed for counsel preparation.
+- Exception: when citing what a court HAS decided in a precedent case, declarative language is appropriate.
+
+GROUND FRAMING RULES:
+- Where psychiatric/mental state evidence is involved, frame the ground as a CONVICTION SAFETY attack on mens rea — whether the requisite mental state (intent to kill, intent to cause GBH, reckless indifference) was properly determined. This is more powerful than mere evidentiary criticism.
+- Where multiple jury/trial procedure issues exist (judge-alone refusal, jury reduction, juror conduct), present as sub-particulars under a single procedural unfairness ground. The CCA prefers "one ground, multiple particulars."
+- Where sentencing is challenged, frame around proportionality and moral culpability — whether the sentence reflects true culpability — not merely "the judge got it wrong."
+- Where ineffective counsel is advanced, mark clearly as CONTINGENT — requiring evidentiary support (affidavit, transcript confirmation). Note that without this foundation, the ground risks weakening overall appellate credibility.
 
 DEPTH AND QUALITY MANDATE:
 - This brief MUST be substantially MORE detailed than any individual source report. It is NOT a summary — it is an EXPANSION and SYNTHESIS.
@@ -2978,6 +3007,50 @@ DOCUMENT INVENTORY
 
     # DO NOT UNDO — Section groups with calibrated source limits (larger limits cause 502 proxy errors)
     section_groups = [
+        {
+            "slug": "counsel-synthesis",
+            "target_chars": 6000,
+            "source_limits": {"quick_summary": 10000, "full_detailed": 20000, "extensive_log": 28000},
+            "required_headings": [
+                "## Counsel Synthesis",
+            ],
+            "instructions": f"""Write ONLY the ## Counsel Synthesis section. This section appears at the VERY TOP of the barrister brief and tells a barrister in 30 seconds: "Where do I attack?"
+
+The section MUST follow this EXACT structure:
+
+## Counsel Synthesis
+
+### Primary Issue
+One paragraph (3-4 sentences) identifying the single most important attack vector for the appeal. This should be the ground with the highest appellate viability. Frame it forensically: "It is arguable that..." or "The primary contention is that..."
+
+### Secondary Issue
+One paragraph (3-4 sentences) identifying the second strongest line of attack.
+
+### Tertiary Issue
+One paragraph (3-4 sentences) identifying the third line of attack.
+
+### Priority Order
+A numbered list of ALL grounds in order of priority, with a one-line forensic assessment of each:
+1. [Strongest ground] — [one-line assessment]
+2. [Second strongest] — [one-line assessment]
+3. [Third] — [one-line assessment]
+...and so on for all grounds.
+
+Mark any contingent grounds (e.g. ineffective counsel) with: "(Contingent — requires evidentiary support)"
+
+### Overall Appellate Position
+One paragraph providing an honest, calibrated assessment of the appeal's overall position. Use viability language (arguable, moderate, strong) — NOT percentages. Frame forensically.
+
+CRITICAL FRAMING RULES:
+- Where psychiatric/mental state evidence undermines intent (mens rea), this should typically be the PRIMARY ISSUE — frame as a conviction safety attack on mens rea determination.
+- Where jury/procedural issues exist, cluster them as a single ground with sub-particulars.
+- Where sentencing is challenged, frame around proportionality and moral culpability.
+- Where ineffective counsel appears, flag as contingent and place lower in priority unless strong evidentiary support exists.
+- Use ONLY forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..."
+- This section must reference the specific grounds from the MANDATORY GROUND LIST below.
+
+There are {len(grounds)} grounds identified for this case.""",
+        },
         {
             "slug": "source-synthesis",
             "target_chars": 24000,

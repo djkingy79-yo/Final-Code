@@ -61,9 +61,14 @@ CRITICAL RULES FOR APPELLATE GROUNDING:
 - Every ground MUST be tied to a specific appellate pathway (e.g. miscarriage of justice, unsafe verdict, misdirection, procedural unfairness, fresh evidence, sentencing error).
 - Do NOT overuse constitutional framing (e.g. s 80 Constitution). In state criminal appeals, the primary pathways are: miscarriage of justice, unsafe verdict, misdirection, procedural unfairness, fresh evidence, and sentencing error under the relevant Criminal Appeal Act.
 - Constitutional grounds should only appear when genuinely and specifically engaged.
-- Use assertive language: "The trial judge erred in...", "It is contended that...", "The primary judge failed to...". Do NOT use "may have", "could potentially", "it is possible that".
+- Use forensic appellate language: "It is arguable that the trial judge erred in...", "It is contended that...", "There is a tenable argument that...". Do NOT use bare declarations like "The trial judge erred" (too definitive at appellate preparation stage). Do NOT use "may have", "could potentially", "it is possible that" (too weak).
 - For law sections: provide ACTUAL section numbers. If the exact section number is not known, do NOT include the law section at all. Never write "section not provided" or leave placeholders.
-- For similar cases: only cite cases if a real citation is known. Do NOT use "[Surname]" or "[Year]" placeholders. If no verified citation exists, omit the field entirely."""
+- For similar cases: only cite cases if a real citation is known. Do NOT use "[Surname]" or "[Year]" placeholders. If no verified citation exists, omit the field entirely.
+- GROUND FRAMING BY TYPE:
+  * If psychiatric/mental health evidence undermines intent → frame as "Miscarriage of Justice: Failure to Properly Determine Mental State (Mens Rea)" — this is a CONVICTION SAFETY attack, not merely evidentiary criticism.
+  * If jury/trial procedure issues → cluster related issues (judge-alone refusal, jury reduction, juror conduct) under a single "Procedural Unfairness" ground with sub-particulars.
+  * If sentencing error → tie to proportionality and moral culpability ("the sentence does not reflect true culpability"), not just "the judge got it wrong".
+  * If ineffective counsel → mark clearly as "Contingent — requires evidentiary support (affidavit, transcript confirmation)" since this ground has an extremely high threshold."""
 
     facts_text = "\n".join([
         f"[{f.get('fact_id', '')}] ({f.get('type', 'general')}) {f.get('text', '')}"
@@ -119,9 +124,13 @@ Return ONLY valid JSON:
 
 STRICT RULES:
 - Identify as many distinct grounds as the evidence supports. Aim for 8-15 grounds if the case material warrants it.
-- Do NOT merge different legal arguments into one ground. Each distinct issue gets its own entry.
+- However, CLUSTER related factual issues under a single ground with sub-particulars where they share the same underlying legal matrix (e.g. jury-related issues under "Procedural Unfairness (Jury Integrity)"). The Court of Criminal Appeal prefers "one ground, multiple particulars" — this makes the appeal cleaner, stronger, and more persuasive.
 - Each ground MUST include an appellate_pathway field identifying the specific statutory provision engaged.
-- Use assertive appellate language: "The trial judge erred in failing to...", "It is contended that...", not "may have" or "could potentially".
+- Use forensic appellate language: "It is arguable that the trial judge erred in failing to...", "It is contended that...", NOT bare declarations like "The trial judge erred" and NOT hedging like "may have" or "could potentially".
+- Where psychiatric/mental health evidence undermines intent (mens rea), frame as a CONVICTION SAFETY ground attacking the determination of mental state, not merely an evidentiary criticism.
+- Where multiple jury-related issues exist (judge-alone refusal, jury reduction, juror bias/conduct), cluster under a single procedural unfairness ground with sub-particulars labelled (a), (b), (c).
+- Where ineffective counsel is identified, include a note: "Contingent — requires evidentiary support before advancement (affidavit from accused, evidence of advice, transcript confirmation)."
+- Where sentencing error is identified, frame around proportionality and moral culpability: "the sentence does not reflect true culpability" rather than merely "the judge got it wrong."
 - Link each issue to specific extracted fact/event/finding IDs.
 - ground_type MUST be from the listed values.
 - AUSTRALIAN ENGLISH ONLY — use "analyse", "organise", "defence", "offence", "behaviour", "colour", "favour", "honour", "centre", "specialise", "recognise", "authorise", "emphasise", "summarise", "counselling". Do NOT use any American spellings.
@@ -167,19 +176,38 @@ STRICT RULES:
 
 
 def _merge_overlapping_grounds(issues: list) -> list:
-    """Merge grounds that address the same underlying theme into a single ground with sub-issues.
-    E.g. 'psychiatric conflict', 'behavioural evidence + intent', 'mental illness not reducing culpability'
-    are all sub-issues of 'Failure to Properly Evaluate Psychiatric Evidence'.
+    """Merge grounds that address the same underlying legal matrix into a single ground with sub-particulars.
+    
+    DO NOT UNDO — Barrister-approved: The Court of Criminal Appeal prefers
+    "one ground, multiple particulars". This makes the appeal cleaner, stronger,
+    and more persuasive. E.g. judge-alone refusal + jury reduction + juror conduct
+    all become sub-particulars under "Procedural Unfairness (Jury Integrity)".
     """
     if len(issues) <= 3:
         return issues
 
-    # Theme clusters — grounds that should be merged
+    # Theme clusters — grounds that should be merged under a single legal matrix
     THEME_KEYWORDS = {
-        "psychiatric_evidence": ["psychiatric", "psychosis", "mental health", "mental illness", "mental state", "mental impairment", "psychological"],
-        "intent_mens_rea": ["intent", "mens rea", "state of mind", "cognitive capacity", "volition"],
-        "sentencing": ["sentencing", "manifest excess", "manifestly excessive", "sentence"],
-        "procedural": ["procedural", "judge-alone", "judge alone", "jury selection"],
+        "psychiatric_mens_rea": {
+            "keywords": ["psychiatric", "psychosis", "mental health", "mental illness", "mental state",
+                         "mental impairment", "psychological", "mens rea", "intent", "state of mind",
+                         "cognitive capacity", "volition", "intoxication", "drug-induced", "chronic"],
+            "parent_title": "Miscarriage of Justice: Failure to Properly Determine Mental State (Mens Rea)",
+            "parent_type": "miscarriage_of_justice",
+        },
+        "jury_integrity": {
+            "keywords": ["jury", "juror", "judge-alone", "judge alone", "jury selection",
+                         "jury reduction", "juror bias", "juror conduct", "jury irregularity",
+                         "jury direction", "misdirection"],
+            "parent_title": "Procedural Unfairness (Jury Integrity)",
+            "parent_type": "jury_irregularity",
+        },
+        "sentencing": {
+            "keywords": ["sentencing", "manifest excess", "manifestly excessive", "sentence",
+                         "non-parole", "proportionality", "moral culpability", "parity"],
+            "parent_title": "Sentencing Error: Disproportionate to True Culpability",
+            "parent_type": "sentencing_error",
+        },
     }
 
     from collections import defaultdict
@@ -192,13 +220,12 @@ def _merge_overlapping_grounds(issues: list) -> list:
         combined = f"{title_lower} {desc_lower}"
 
         matched_theme = None
-        for theme, keywords in THEME_KEYWORDS.items():
-            if any(kw in combined for kw in keywords):
+        for theme, config in THEME_KEYWORDS.items():
+            if any(kw in combined for kw in config["keywords"]):
                 if matched_theme is None:
                     matched_theme = theme
-                # Don't double-assign
 
-        if matched_theme and len([i for i in issues if any(kw in f"{(i.title or '').lower()} {(i.description or '').lower()}" for kw in THEME_KEYWORDS[matched_theme])]) > 1:
+        if matched_theme and len([i for i in issues if any(kw in f"{(i.title or '').lower()} {(i.description or '').lower()}" for kw in THEME_KEYWORDS[matched_theme]["keywords"])]) > 1:
             clusters[matched_theme].append(issue)
         else:
             unclustered.append(issue)
@@ -209,14 +236,30 @@ def _merge_overlapping_grounds(issues: list) -> list:
             merged.extend(cluster_issues)
             continue
 
+        config = THEME_KEYWORDS[theme]
         # Pick the broadest issue as the parent
         parent = max(cluster_issues, key=lambda i: len(i.description or ""))
         sub_issues = [f"({chr(97 + idx)}) {ci.title}" for idx, ci in enumerate(cluster_issues)]
-        sub_desc = "; ".join(sub_issues)
+        sub_desc = "\n".join(sub_issues)
 
-        parent.description = f"{parent.description}\n\nSub-issues: {sub_desc}"
+        # Upgrade the parent title and type to reflect the merged legal matrix
+        parent.title = config["parent_title"]
+        parent.ground_type = config["parent_type"]
+        parent.description = f"{parent.description}\n\nSub-particulars:\n{sub_desc}"
         if not parent.appellate_pathway and cluster_issues[0].appellate_pathway:
             parent.appellate_pathway = cluster_issues[0].appellate_pathway
+
+        # Merge linked IDs from all sub-issues
+        all_fact_ids = set()
+        all_event_ids = set()
+        all_finding_ids = set()
+        for ci in cluster_issues:
+            all_fact_ids.update(ci.linked_fact_ids or [])
+            all_event_ids.update(ci.linked_event_ids or [])
+            all_finding_ids.update(ci.linked_finding_ids or [])
+        parent.linked_fact_ids = list(all_fact_ids)
+        parent.linked_event_ids = list(all_event_ids)
+        parent.linked_finding_ids = list(all_finding_ids)
 
         merged.append(parent)
 

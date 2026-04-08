@@ -21,10 +21,14 @@ Do not overstate the issue.
 Do not state that the issue is made out unless clearly supported.
 
 CRITICAL RULES:
-- Use assertive appellate language: "The trial judge erred...", "It is contended that...", NOT "may have", "could potentially".
+- Use forensic appellate language: "It is arguable that the trial judge erred...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The trial judge erred" (too definitive at this stage). NOT hedging like "may have", "could potentially" (too weak).
 - For law_sections: provide ACTUAL section numbers (e.g. "s 6(1)", "s 132", "s 18"). If the exact section number is NOT known with confidence, do NOT include that law section entry AT ALL. Never write "section not provided" or "section numbers not provided". An empty law_sections array is better than placeholder entries.
 - For similar_cases: ONLY include cases with REAL, complete citations (e.g. "R v Falconer [1990] HCA 49"). Do NOT use "[Surname]", "[Year]", or "citation verification needed". If no verified case citation is known, return an empty similar_cases array. Unverified cases damage professional credibility.
 - Use AUSTRALIAN ENGLISH ONLY (analyse, organise, defence, offence, behaviour, favour, honour, centre, specialise, recognise, authorise, emphasise, summarise, counselling). Do NOT use American spellings.
+- GROUND FRAMING RULES:
+  * If this issue involves psychiatric/mental state evidence undermining intent → frame the verification around whether mens rea was properly determined (this is a CONVICTION SAFETY argument, not merely evidentiary criticism).
+  * If this issue involves ineffective counsel → include a note that this ground is "Contingent — requires evidentiary support (affidavit from accused, evidence of advice given, transcript confirmation)" since the threshold is extremely high.
+  * If this issue involves sentencing → frame around proportionality and moral culpability — whether the sentence reflects true culpability, not just "the judge got it wrong."
 Return JSON only."""
 
     state = case.get('state', 'nsw')

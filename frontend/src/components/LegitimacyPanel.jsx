@@ -30,6 +30,11 @@ const LegitimacyPanel = ({ scores }) => {
         {scores.viability_label || (scores.rating === "strong" ? "Arguable \u2014 Strong" : scores.rating === "moderate" ? "Arguable \u2014 Moderate" : "Requires Development")}
         <span className="text-xs font-normal ml-2 opacity-70">({scores.total_score || 0}/9)</span>
       </div>
+      {scores.is_contingent ? (
+        <div data-testid="contingent-warning" className="mt-2 px-2 py-1.5 rounded border border-amber-300 bg-amber-50 text-xs text-amber-800 font-medium leading-tight">
+          CONTINGENT — Requires evidentiary support before advancement (affidavit, transcript confirmation)
+        </div>
+      ) : null}
       {scores.confidence_note ? (
         <div className="mt-2 text-xs text-slate-500 italic leading-tight">{scores.confidence_note}</div>
       ) : null}

@@ -848,7 +848,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         </div>
                       ) : (
                         <>
-                          <p className="text-xs sm:text-sm text-slate-600 mt-1 line-clamp-2 leading-snug">
+                          <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-snug whitespace-pre-line">
                             {auSpelling(ground.description)}
                           </p>
                           
@@ -1167,7 +1167,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   >
                     {auSpelling(detailGround.title)}
                   </h3>
-                  <p className="text-sm text-slate-600 mt-2">{auSpelling(detailGround.description)}</p>
+                  <p className="text-sm text-slate-600 mt-2 whitespace-pre-line">{auSpelling(detailGround.description)}</p>
                 </div>
 
                 {/* Supporting Evidence */}
