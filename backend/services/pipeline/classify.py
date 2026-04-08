@@ -83,9 +83,10 @@ CRITICAL RULES FOR APPELLATE GROUNDING:
         for f in case_extract.get("merged_findings", [])
     ])
 
-    state = case.get("state", "nsw")
+    state = str(case.get("state", "nsw")).strip()
     offence_cat = case.get("offence_category", "unknown")
-    appellate_act = APPELLATE_PATHWAYS.get(state, APPELLATE_PATHWAYS["nsw"])
+    state_key = state.lower()
+    appellate_act = APPELLATE_PATHWAYS.get(state_key, APPELLATE_PATHWAYS["nsw"])
 
     user_prompt = f"""Based on the extracted record below, identify ALL potential grounds of appeal.
 Be thorough — examine every aspect of the case for possible appealable issues.
@@ -163,7 +164,7 @@ STRICT RULES:
             linked_event_ids=raw.get("linked_event_ids", []),
             linked_finding_ids=raw.get("linked_finding_ids", []),
             classification_confidence=raw.get("classification_confidence", "moderate"),
-            jurisdiction=state,
+            jurisdiction=state.upper(),
             appellate_pathway=raw.get("appellate_pathway", ""),
             error_identified=raw.get("error_identified", ""),
             materiality=raw.get("materiality", ""),

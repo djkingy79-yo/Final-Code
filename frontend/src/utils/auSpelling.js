@@ -36,7 +36,6 @@ const auSpelling = (text) => {
     .replace(/\butilizing\b/gi, (m) => m[0] === 'U' ? 'Utilising' : 'utilising')
     .replace(/\banalyze\b/gi, (m) => m[0] === 'A' ? 'Analyse' : 'analyse')
     .replace(/\banalyzed\b/gi, (m) => m[0] === 'A' ? 'Analysed' : 'analysed')
-    .replace(/\banalysis\b/gi, 'analysis')
     .replace(/\borganize\b/gi, (m) => m[0] === 'O' ? 'Organise' : 'organise')
     .replace(/\brecognize\b/gi, (m) => m[0] === 'R' ? 'Recognise' : 'recognise')
     .replace(/\brecognizing\b/gi, (m) => m[0] === 'R' ? 'Recognising' : 'recognising')

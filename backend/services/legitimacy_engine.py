@@ -95,7 +95,7 @@ def score_evidence_support(evidence_list: List, undermining_list: List = None) -
 
     if strong_items >= 2 and any_items >= 3:
         base_score = 3
-    elif strong_items >= 1 and any_items >= 2:
+    elif any_items >= 2 or strong_items >= 1:
         base_score = 2
     elif any_items >= 1:
         base_score = 1
@@ -198,11 +198,11 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         # Legacy compatibility fields — documented mapping:
         # - legal_score → legal_alignment.score (unchanged)
         # - evidence_score → evidence_support.score (unchanged)
-        # - outcome_impact_score → outcome_impact.score (was viability_score in earlier versions)
+        # - viability_score → overall 1-3 band derived from rating (strong=3, moderate=2, weak=1)
         "legal_score": legal["score"],
         "evidence_score": evidence["score"],
         "outcome_impact_score": outcome["score"],
-        "viability_score": outcome["score"],  # Deprecated alias — use outcome_impact_score
+        "viability_score": {"strong": 3, "moderate": 2, "weak": 1}.get(rating, 1),
     }
 
 

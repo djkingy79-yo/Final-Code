@@ -4275,7 +4275,10 @@ async def _get_latest_completed_barrister_report(case_id: str, user_id: str):
 @api_router.get("/cases/{case_id}/reports/barrister-view/export-pdf")
 async def export_latest_barrister_view_pdf(case_id: str, request: Request):
     user = await get_current_user(request)
-    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    # Resolve case owner for admin cross-user access
+    case = await db.cases.find_one({"case_id": case_id}, {"_id": 0, "user_id": 1})
+    owner_user_id = (case or {}).get("user_id", user.user_id)
+    report = await _get_latest_completed_barrister_report(case_id, owner_user_id)
     if not report:
         raise HTTPException(status_code=404, detail="Completed barrister report not found")
     return await export_report_pdf(case_id, report["report_id"], request)
@@ -4284,7 +4287,10 @@ async def export_latest_barrister_view_pdf(case_id: str, request: Request):
 @api_router.get("/cases/{case_id}/reports/barrister-view/export-docx")
 async def export_latest_barrister_view_docx(case_id: str, request: Request):
     user = await get_current_user(request)
-    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    # Resolve case owner for admin cross-user access
+    case = await db.cases.find_one({"case_id": case_id}, {"_id": 0, "user_id": 1})
+    owner_user_id = (case or {}).get("user_id", user.user_id)
+    report = await _get_latest_completed_barrister_report(case_id, owner_user_id)
     if not report:
         raise HTTPException(status_code=404, detail="Completed barrister report not found")
     return await export_report_docx(case_id, report["report_id"], request)
@@ -4314,8 +4320,9 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         if not case:
             raise HTTPException(status_code=404, detail="Case not found")
 
-    # Get barrister report
-    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    # Get barrister report — use case owner's user_id for admin cross-user access
+    report_owner_id = case.get("user_id", user.user_id)
+    report = await _get_latest_completed_barrister_report(case_id, report_owner_id)
     if not report:
         raise HTTPException(status_code=404, detail="Completed barrister report not found. Generate the Barrister View first.")
 
@@ -4381,8 +4388,14 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     # Counsel Synthesis
     story.append(Paragraph("COUNSEL SYNTHESIS", styles['QBSection']))
     if counsel_synthesis:
+        # Enforce 2-page contract: truncate synthesis to ~1200 chars max
+        MAX_SYNTHESIS_CHARS = 1200
+        truncated_synthesis = counsel_synthesis
+        if len(counsel_synthesis) > MAX_SYNTHESIS_CHARS:
+            truncated_synthesis = counsel_synthesis[:MAX_SYNTHESIS_CHARS].rsplit(".", 1)[0] + ". [See full Barrister View for complete synthesis.]"
+
         # Parse the synthesis into sub-sections
-        sections = re_mod.split(r"###\s+", counsel_synthesis)
+        sections = re_mod.split(r"###\s+", truncated_synthesis)
         for section in sections:
             section = section.strip()
             if not section:
@@ -4447,10 +4460,10 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         if appellate_pathway:
             story.append(Paragraph(f"<b>Appellate Pathway:</b> {safe_text(appellate_pathway)}", styles['QBBody']))
 
-        # Show description (truncated for brevity)
+        # Show description (truncated to enforce 2-page contract)
         desc_clean = description.replace("\n\n", " ").replace("\n", " ")
-        if len(desc_clean) > 400:
-            desc_clean = desc_clean[:400] + "..."
+        if len(desc_clean) > 250:
+            desc_clean = desc_clean[:250] + "..."
         story.append(Paragraph(safe_text(desc_clean), styles['QBBody']))
 
         # Contingent warning — prefer legitimacy_scores flag over ground_type alone

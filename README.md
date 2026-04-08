@@ -212,7 +212,7 @@ The backend is built on **FastAPI** (v0.135), a high-performance async Python we
 ```
 
 **Service Layer:**
-```
+```text
 /services/
 ├── legitimacy_engine.py   # Three-axis appellate viability scoring engine
 ├── llm_service.py         # OpenAI GPT-4o integration with Emergent LLM Key

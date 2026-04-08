@@ -11,9 +11,15 @@ import pytest
 import requests
 import os
 import sys
+from pathlib import Path
+
+# Portable path resolution — works in Docker, local dev, and CI
+ROOT = Path(__file__).resolve().parents[2]
+BACKEND_DIR = ROOT / "backend"
+FRONTEND_COMPONENTS_DIR = ROOT / "frontend" / "src" / "components"
 
 # Add backend to path for direct imports
-sys.path.insert(0, '/app/backend')
+sys.path.insert(0, str(BACKEND_DIR))
 
 from services.legitimacy_engine import (
     calculate_ground_rating,
@@ -30,7 +36,8 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 class TestHealthEndpoint:
     """Basic health check to ensure backend is running"""
-    
+
+    @pytest.mark.skipif(not BASE_URL, reason="REACT_APP_BACKEND_URL not set")
     def test_health_returns_200(self):
         """GET /api/health returns 200"""
         response = requests.get(f"{BASE_URL}/api/health", timeout=10)
@@ -136,12 +143,13 @@ class TestIneffectiveCounselCap:
         result = calculate_ground_rating(ground)
         # With outcome=2, legal=2, evidence=3, total=7 which is strong
         # And evidence_score=3, so cap doesn't apply
-        if result["evidence_support"]["score"] >= 3:
-            # Can be strong if total >= 7
-            print(f"PASS: ineffective_counsel with evidence_score=3 can be '{result['rating']}' (total={result['total_score']})")
-        else:
-            print(f"INFO: Evidence score was {result['evidence_support']['score']}, rating is '{result['rating']}'")
-
+        assert result["evidence_support"]["score"] >= 3, \
+            f"Expected evidence_score >= 3, got {result['evidence_support']['score']}"
+        assert result["total_score"] >= 7, \
+            f"Expected total_score >= 7, got {result['total_score']}"
+        assert result["rating"] == "strong", \
+            f"Expected rating 'strong' with evidence_score=3, got '{result['rating']}'"
+        print(f"PASS: ineffective_counsel with evidence_score=3 is '{result['rating']}' (total={result['total_score']})")
 
 class TestGroundMergingFunction:
     """Test _merge_overlapping_grounds clustering logic"""
@@ -182,6 +190,7 @@ class TestGroundMergingFunction:
         # Check for parent title
         parent_titles = [i.title for i in merged]
         has_procedural_unfairness = any("Procedural Unfairness" in t for t in parent_titles)
+        assert has_procedural_unfairness, f"Expected Procedural Unfairness parent, got {parent_titles}"
         print(f"Merged titles: {parent_titles}")
         print(f"PASS: Jury issues clustering - has_procedural_unfairness={has_procedural_unfairness}, total grounds={len(merged)}")
     
@@ -199,6 +208,7 @@ class TestGroundMergingFunction:
         # Check for mens rea parent title
         parent_titles = [i.title for i in merged]
         has_mens_rea = any("Mens Rea" in t or "Mental State" in t for t in parent_titles)
+        assert has_mens_rea, f"Expected mens rea parent, got {parent_titles}"
         print(f"Merged titles: {parent_titles}")
         print(f"PASS: Psychiatric issues clustering - has_mens_rea={has_mens_rea}, total grounds={len(merged)}")
     
@@ -216,6 +226,7 @@ class TestGroundMergingFunction:
         # Check for sentencing parent title
         parent_titles = [i.title for i in merged]
         sentencing_grounds = [t for t in parent_titles if "sentencing" in t.lower() or "culpability" in t.lower()]
+        assert sentencing_grounds, f"Expected sentencing parent, got {parent_titles}"
         print(f"Merged titles: {parent_titles}")
         print(f"PASS: Sentencing issues clustering - sentencing_grounds={len(sentencing_grounds)}, total grounds={len(merged)}")
     
@@ -253,7 +264,7 @@ class TestLegitimacyPanelContingentWarning:
     
     def test_legitimacy_panel_has_contingent_warning_code(self):
         """Check that LegitimacyPanel.jsx has contingent warning rendering"""
-        with open('/app/frontend/src/components/LegitimacyPanel.jsx', 'r') as f:
+        with open(FRONTEND_COMPONENTS_DIR / 'LegitimacyPanel.jsx', encoding='utf-8') as f:
             content = f.read()
         
         assert 'is_contingent' in content, "LegitimacyPanel should check is_contingent"
@@ -267,7 +278,7 @@ class TestGroundsOfMeritWhitespacePre:
     
     def test_grounds_description_has_whitespace_pre_line(self):
         """Check that description rendering uses whitespace-pre-line"""
-        with open('/app/frontend/src/components/GroundsOfMerit.jsx', 'r') as f:
+        with open(FRONTEND_COMPONENTS_DIR / 'GroundsOfMerit.jsx', encoding='utf-8') as f:
             content = f.read()
         
         assert 'whitespace-pre-line' in content, "GroundsOfMerit should use whitespace-pre-line for descriptions"
@@ -276,7 +287,8 @@ class TestGroundsOfMeritWhitespacePre:
 
 class TestAuthenticationFlow:
     """Test login with provided credentials"""
-    
+
+    @pytest.mark.skipif(not BASE_URL, reason="REACT_APP_BACKEND_URL not set")
     def test_login_with_test_credentials(self):
         """Login with djkingy79@gmail.com should succeed"""
         response = requests.post(

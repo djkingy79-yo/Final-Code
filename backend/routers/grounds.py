@@ -723,7 +723,7 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
 Ground: {ground.get('title', '')}
 Type: {ground.get('ground_type', '')}
 Description: {ground.get('description', '')}
-Appellate Pathway: {ground.get('appellate_pathway', 'Miscarriage of justice')}
+Appellate Pathway: {ground.get('appellate_pathway') or 'Miscarriage of justice'}
 
 Supporting evidence found:
 {json.dumps(verification_dict.get('supporting_items', []), indent=2, default=str)[:2000]}
