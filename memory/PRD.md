@@ -59,9 +59,18 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
   - Constitutional overreach: AI constrained to prioritise miscarriage of justice, unsafe verdict, misdirection, procedural unfairness over s 80 constitutional framing.
   - Deep analysis structure: Mandatory Trial Finding → Error Identified → Materiality → Consequence → Appellate Viability.
 
+- **Phase 5 Barrister Feedback Implementation (April 2026):**
+  - Forensic Language: ALL report prompts, classification, verification, and deep analysis prompts updated from "assertive" ("The trial judge erred") to "forensic" ("It is arguable that the trial judge erred"). Added BANNED PHRASES list and REQUIRED FORENSIC FRAMING list to report_guardrails.
+  - Ground Merging ("one ground, multiple particulars"): Updated _merge_overlapping_grounds() with expanded theme clusters — psychiatric_mens_rea, jury_integrity, sentencing. Related grounds now clustered under single parent with sub-particulars labelled (a), (b), (c).
+  - Intelligent Ground Framing: Psychiatric evidence → "Miscarriage of Justice: Failure to Properly Determine Mental State (Mens Rea)" (conviction safety attack, not evidentiary criticism). Jury issues → "Procedural Unfairness (Jury Integrity)". Sentencing → tied to proportionality and moral culpability.
+  - Ineffective Counsel Downgrade: Added CONTINGENT flag (is_contingent: true) to legitimacy_scores. Capped at "moderate" unless evidence_score >= 3. Confidence note warns about high evidentiary threshold. LegitimacyPanel.jsx renders amber contingent warning badge.
+  - Counsel Synthesis Header: New section group added to Barrister View generation — "## Counsel Synthesis" at the very top with Primary/Secondary/Tertiary issues, priority ordering, and overall appellate position. Tells a barrister "where do I attack?" in 30 seconds.
+  - Sub-particulars UI: GroundsOfMerit.jsx description rendering updated with whitespace-pre-line to properly display sub-particulars.
+  - Testing: 17/17 backend tests passed (iteration_158). All features verified.
+
 ## Backlog
 - P0: Deploy all fixes to production (user must click Deploy in Emergent chat)
-- P0: Test report generation with new prompts on actual case (verify appellate structure, operations engine sections, no percentages)
+- P0: Test report generation with new prompts on actual case (verify forensic language, counsel synthesis section, ground merging)
 - P2: Build Native Mobile App (Capacitor configured, needs build + test)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat for Notes
@@ -82,5 +91,8 @@ React + Tailwind + Shadcn/UI | FastAPI + MongoDB | OpenAI GPT-4o via Emergent LL
 - Law sections: MUST filter "section not provided" / "unknown" — DO NOT display placeholders
 - Similar cases: heading is "Comparable Authority" NOT "Similar Cases (AI-Suggested)" — DO NOT revert
 - Strength labels: "Arguable — Strong / Arguable — Moderate / Requires Development" — DO NOT revert to "Strong/Moderate/Weak"
-- AI prompts: assertive language ("It is contended that...") — DO NOT revert to "may have"
+- AI prompts: FORENSIC language ("It is arguable that...", "It is contended that...") — DO NOT use bare declarations ("The judge erred") and DO NOT revert to hedging ("may have")
 - Reports: NO percentage success rates — use appellate viability language only
+- Ground merging: "one ground, multiple particulars" — DO NOT revert to individual overlapping grounds
+- Ineffective counsel: CONTINGENT flag and capped at moderate unless evidence_score >= 3 — DO NOT remove
+- Counsel Synthesis: MUST appear at top of Barrister View with Primary/Secondary/Tertiary issues and priority order — DO NOT remove
