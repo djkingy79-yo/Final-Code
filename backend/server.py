@@ -1833,7 +1833,7 @@ Overall appeal risk assessment:
 
 Do NOT use percentage success rates. Use appellate viability language only.
 
-## 20. CLIENT PLAIN-ENGLISH BRIEF
+## 24. CLIENT PLAIN-ENGLISH BRIEF
 THIS MUST BE THE FINAL SECTION. Write this as if explaining the case to the defendant in everyday language, BUT STRICTLY IN THIRD PERSON:
 - What the appeal is about and why it matters
 - What are the strongest arguments in the applicant's favour (reference specific facts)
@@ -2242,9 +2242,9 @@ Do NOT truncate. Write ALL content."""),
             logger.info(f"Full detailed combined: {len(response)} chars")
 
         elif report_type == "extensive_log":
-            # Seven-pass generation for extensive_log (3 sections per pass)
+            # Ten-pass generation for extensive_log (24 sections)
             passes = [
-                ("PASS 1/7", f"""
+                ("PASS 1/10", f"""
 
 NOW GENERATE ONLY SECTIONS 1-3. Write 5000+ WORDS for this pass. This is a $200 PREMIUM report — every paragraph must be packed with case-specific facts, not generic legal education.
 
@@ -2277,7 +2277,7 @@ For EACH of the {len(documents)} uploaded documents, write 2-3 FULL PARAGRAPHS a
 If there are 10 documents, write 20-30 paragraphs.
 
 STOP after section 3. Write ALL content — do NOT truncate."""),
-                ("PASS 2/7", f"""
+                ("PASS 2/10", f"""
 
 NOW GENERATE ONLY SECTIONS 4-5. Write 6000+ WORDS for this pass. Section 4 is the HEART of the $200 report — each ground must be a mini-essay.
 
@@ -2302,7 +2302,7 @@ CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEV
 Markdown table with 12+ rows. After the table, write a DETAILED PARAGRAPH for EACH of the 12+ cases (200+ words each) explaining: original sentencing reasoning, appeal court's reasoning, how the reduction was achieved, which grounds succeeded, and how this specifically compares to the current case.
 
 STOP after section 5."""),
-                ("PASS 3/7", f"""
+                ("PASS 3/10", f"""
 
 NOW GENERATE ONLY SECTIONS 6-8. Write 4000+ WORDS for this pass.
 
@@ -2321,7 +2321,7 @@ First provide summary table, then write 400+ WORDS for EACH of these 5 pathways 
 List 10+ specific gaps. For each: what's missing, why it matters, exact steps to obtain it (who to contact, what to request, expected timeframe), priority (Critical/Important/Helpful), impact on which grounds if not remediated.
 
 STOP after section 8."""),
-                ("PASS 4/8", """
+                ("PASS 4/10", """
 
 NOW GENERATE ONLY SECTIONS 9-10. Write 3200+ WORDS for this pass.
 
@@ -2341,7 +2341,7 @@ For each of 12+ cases, write a FULL PARAGRAPH (not just a table row):
 - Any recent amendments or judicial interpretation that affects the appeal
 
 STOP after section 10."""),
-                ("PASS 5/8", f"""
+                ("PASS 5/10", f"""
 
 NOW GENERATE ONLY SECTION 11. Write 2800+ WORDS for this pass. This pass exists so EVERY ground can be fully argued without truncation.
 
@@ -2359,7 +2359,7 @@ For each ground:
 - **If Established**: What specific court order should be sought?
 
 STOP after section 11."""),
-                ("PASS 6/8", f"""
+                ("PASS 6/10", f"""
 
 NOW GENERATE ONLY SECTIONS 12-14. Write 5000+ WORDS for this pass. These are the sections that make this $200 report UNIQUE. Sections 13 and 14 DO NOT exist in the $150 report.
 
@@ -2382,7 +2382,7 @@ For briefing a barrister — write as an actual document:
 - Client instructions summary
 
 STOP after section 14."""),
-                ("PASS 7/8", f"""
+                ("PASS 7/10", f"""
 
 NOW GENERATE ONLY SECTIONS 15-17. Write 4000+ WORDS for this pass. These sections are UNIQUE to the $200 report.
 
@@ -2418,9 +2418,9 @@ For each query:
 Court-level filtering suggestions and keyword alternatives for each ground.
 
 STOP after section 17."""),
-                ("PASS 8/8", f"""
+                ("PASS 8/10", """
 
-NOW GENERATE ONLY SECTIONS 18-20. Write 5000+ WORDS for this pass. Section 20 is the CLIENT BRIEF — it must be thorough and cover EVERY ground.
+NOW GENERATE ONLY SECTIONS 18-19. Write 3000+ WORDS for this pass.
 
 ## 18. PRIORITISED ACTION PLAN (1000+ words)
 72-hour actions (urgent — at least 6 specific actions):
@@ -2432,7 +2432,52 @@ For each: exact action, resources needed, dependencies, expected outcome.
 28-day actions (strategic — at least 6 specific actions):
 For each: exact action, preparation steps, milestones, how this contributes to the appeal.
 
-## 19. RISK ASSESSMENT + CONTINGENCY PLANNING (1200+ words — NEW SECTION NOT IN $150 REPORT)
+## 19. OPERATIONS ENGINE — CRITICAL MISSING EVIDENCE (1200+ words — NEW SECTION NOT IN $150 REPORT)
+Auto-generated checklist of evidence gaps identified from the case analysis. For EACH gap, write 100+ words covering:
+- What is missing (name the specific document, report, or testimony)
+- Why it matters to the appeal — which specific ground(s) does it affect?
+- Exact steps to obtain it (who to contact, what to request, expected timeframe)
+- Priority: Critical / Important / Desirable
+- Impact on appeal viability if NOT obtained
+
+Identify at least 8 evidence gaps. This section is what differentiates the $200 report from the $150 report — it must be operationally specific, not generic.
+
+STOP after section 19."""),
+                ("PASS 9/10", f"""
+
+NOW GENERATE ONLY SECTIONS 20-22. Write 3500+ WORDS for this pass. These sections are the OPERATIONS ENGINE that makes the $200 report unique.
+
+## 20. EVIDENCE REQUEST LIST (800+ words — NEW SECTION NOT IN $150 REPORT)
+Specific documents and materials that must be obtained. Produce an ACTUAL populated markdown table:
+| Item | Source | Purpose | Priority | Deadline |
+Include at least 10 rows. After the table, write a paragraph for each Critical-priority item explaining why it is essential.
+Include: transcripts, expert reports, affidavits, medical records, CCTV, forensic reports, psychiatric assessments, sentencing submissions.
+
+## 21. SUGGESTED EXPERT REPORTS (800+ words — NEW SECTION NOT IN $150 REPORT)
+For each identified evidentiary gap that requires expert opinion, write 150+ words covering:
+- Type of expert required (psychiatrist, forensic pathologist, toxicologist, etc.)
+- What specific opinion is needed and what question should be put to the expert
+- How the opinion would strengthen the appeal — which ground(s) does it support?
+- Suggested brief outline for instructing the expert (3-4 key points to include in the brief)
+Identify at least 4 expert reports needed.
+
+## 22. FILING PATHWAY (800+ words — NEW SECTION NOT IN $150 REPORT)
+Step-by-step filing requirements specific to {state_info.get('name', 'NSW')}:
+- Notice of Intention to Appeal (if not filed) — deadline, form name, where to lodge
+- Detailed grounds of appeal — content requirements, format, page limits
+- Written submissions — structure, length, authorities format
+- Application for leave (if required) — criteria, threshold, what must be demonstrated
+- Supporting affidavit requirements — who swears, what content
+- Service requirements on DPP/Crown — method, timing, proof of service
+- Extension of time (if applicable) — what must be shown, typical outcomes
+Produce a timeline table: | Step | Document | Deadline | Filed With | Served On |
+
+STOP after section 22."""),
+                ("PASS 10/10", f"""
+
+NOW GENERATE ONLY SECTIONS 23-24. Write 5000+ WORDS for this pass. Section 24 is the CLIENT BRIEF — it must be thorough and cover EVERY ground.
+
+## 23. RISK ASSESSMENT + CONTINGENCY PLANNING (1200+ words — NEW SECTION NOT IN $150 REPORT)
 For EACH of the {len(grounds)} grounds, write 150+ words covering:
 - Appellate viability assessment (arguable/moderate/strong — NOT percentages)
 - Main risk factor (what could go wrong?)
@@ -2446,7 +2491,7 @@ Overall appeal risk assessment (500+ words):
 - How grounds interact — if Ground 1 fails, does Ground 3 become stronger?
 - Whether grounds should be argued independently or as a package
 
-## 20. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
+## 24. CLIENT PLAIN-ENGLISH BRIEF (2000+ words)
 THIS IS THE FINAL SECTION. Write in plain, everyday English that explains the case in THIRD PERSON.
 
 For EACH of the {len(grounds)} grounds individually:
@@ -2463,7 +2508,7 @@ Then cover:
 - Honest assessment of risks alongside the opportunities
 - ABSOLUTE BAN: NEVER use "we", "us", "our", "you", "your". Use "the applicant", "the legal professional", "this analysis". WRONG: "The appeal is your opportunity." RIGHT: "The appeal represents an opportunity for the applicant."
 
-Do NOT truncate. Write ALL content for all 3 sections."""),
+Do NOT truncate. Write ALL content for both sections."""),
             ]
             
             parts = []
@@ -2536,7 +2581,12 @@ Do NOT truncate. Write ALL content for all 3 sections."""),
                 "## 9.": "PRECEDENT OUTCOME MATRIX",
                 "## 11.": "HOW TO ARGUE EACH TOP GROUND",
                 "## 18.": "PRIORITISED ACTION PLAN",
-                "## 20.": "CLIENT PLAIN-ENGLISH BRIEF",
+                "## 19.": "OPERATIONS ENGINE — CRITICAL MISSING EVIDENCE",
+                "## 20.": "EVIDENCE REQUEST LIST",
+                "## 21.": "SUGGESTED EXPERT REPORTS",
+                "## 22.": "FILING PATHWAY",
+                "## 23.": "RISK ASSESSMENT + CONTINGENCY PLANNING",
+                "## 24.": "CLIENT PLAIN-ENGLISH BRIEF",
             },
         }
         expected = expected_sections_map.get(report_type, {})
