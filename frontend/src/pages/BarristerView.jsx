@@ -21,6 +21,7 @@ import {
   Printer,
   RefreshCcw,
   Scale,
+  Zap,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { API } from "../App";
@@ -656,6 +657,25 @@ export default function BarristerView() {
     }
   };
 
+  const handleQuickBrief = async () => {
+    try {
+      toast.info("Generating Quick Brief PDF...");
+      const response = await axios.get(`${API}/cases/${caseId}/reports/barrister-quick-brief`, {
+        responseType: "blob",
+        timeout: 60000,
+      });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      await iosShareOrDownload(
+        blob,
+        `Quick_Brief_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.pdf`,
+        "application/pdf"
+      );
+      toast.success("Quick Brief downloaded.");
+    } catch (error) {
+      toast.error("Failed to generate the Quick Brief PDF.");
+    }
+  };
+
   const handleBackToCase = () => {
     window.location.assign(`/cases/${caseId}`);
   };
@@ -780,6 +800,15 @@ export default function BarristerView() {
               data-testid="barrister-acceptance-pack-button"
             >
               <Briefcase className="w-4 h-4 mr-2" /> Acceptance Pack
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleQuickBrief}
+              disabled={!isCompleted}
+              className="bg-emerald-700 text-white hover:bg-emerald-600"
+              data-testid="barrister-quick-brief-button"
+            >
+              <Zap className="w-4 h-4 mr-2" /> Quick Brief
             </Button>
           </div>
         </div>

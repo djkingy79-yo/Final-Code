@@ -23,6 +23,7 @@ from typing import List
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import StreamingResponse
 
 from config import db, logger, client, get_admin_emails
 from auth_utils import get_current_user
@@ -4177,6 +4178,198 @@ async def export_latest_barrister_view_docx(case_id: str, request: Request):
     return await export_report_docx(case_id, report["report_id"], request)
 
 
+# DO NOT UNDO — Barrister Quick Brief: 2-page PDF with Counsel Synthesis + Priority Order + top 3 grounds
+@api_router.get("/cases/{case_id}/reports/barrister-quick-brief")
+async def export_barrister_quick_brief(case_id: str, request: Request):
+    """Generate a concise 2-page Barrister Quick Brief PDF.
+    Contains Counsel Synthesis, Priority Order, and top 3 grounds only.
+    Designed for a barrister to review in under 5 minutes before a conference."""
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
+    from io import BytesIO
+
+    user = await get_current_user(request)
+
+    # Get case
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        if is_admin_user(user.email):
+            case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
+        if not case:
+            raise HTTPException(status_code=404, detail="Case not found")
+
+    # Get barrister report
+    report = await _get_latest_completed_barrister_report(case_id, user.user_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Completed barrister report not found. Generate the Barrister View first.")
+
+    # Get grounds sorted by priority
+    grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id}, {"_id": 0}
+    ).sort([("priority_order", 1), ("strength", 1)]).to_list(100)
+
+    # Extract Counsel Synthesis from report content
+    analysis = report.get("content", {}).get("analysis", "")
+    counsel_synthesis = ""
+    # Find the Counsel Synthesis section in the markdown
+    import re as re_mod
+    synth_match = re_mod.search(r"##\s*Counsel Synthesis(.*?)(?=\n##\s[^#]|\Z)", analysis, re_mod.DOTALL)
+    if synth_match:
+        counsel_synthesis = synth_match.group(1).strip()
+
+    # Build PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        rightMargin=18*mm, leftMargin=18*mm,
+        topMargin=18*mm, bottomMargin=22*mm
+    )
+
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='QBTitle', fontSize=18, spaceAfter=6, alignment=TA_CENTER, fontName='Helvetica-Bold', textColor=colors.HexColor('#0f172a')))
+    styles.add(ParagraphStyle(name='QBSubtitle', fontSize=10, spaceAfter=10, alignment=TA_CENTER, textColor=colors.HexColor('#475569')))
+    styles.add(ParagraphStyle(name='QBSection', fontSize=13, spaceBefore=10, spaceAfter=4, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e3a8a')))
+    styles.add(ParagraphStyle(name='QBSubSection', fontSize=11, spaceBefore=6, spaceAfter=3, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e293b')))
+    styles.add(ParagraphStyle(name='QBBody', fontSize=10, spaceAfter=4, alignment=TA_JUSTIFY, leading=13))
+    styles.add(ParagraphStyle(name='QBPriority', fontSize=10, spaceAfter=3, leftIndent=8, leading=13))
+    styles.add(ParagraphStyle(name='QBDisclaimer', fontSize=8, fontName='Helvetica-Oblique', textColor=colors.HexColor('#94a3b8'), alignment=TA_CENTER, leading=10))
+    styles.add(ParagraphStyle(name='QBGroundTitle', fontSize=11, spaceBefore=6, spaceAfter=3, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e3a8a')))
+
+    def safe_text(text):
+        return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    story = []
+
+    # Header
+    defendant = case.get("defendant_name", "Unknown")
+    state = (case.get("state") or "NSW").upper()
+    sentence = case.get("sentence", "")
+
+    story.append(Paragraph("BARRISTER QUICK BRIEF", styles['QBTitle']))
+    story.append(Paragraph(f"Appellant: {safe_text(defendant)} | Jurisdiction: {state}", styles['QBSubtitle']))
+    if sentence:
+        story.append(Paragraph(f"Sentence: {safe_text(sentence)}", styles['QBSubtitle']))
+    story.append(Spacer(1, 3*mm))
+
+    # Thin blue line separator
+    line_table = Table([[""]],
+        colWidths=[doc.width],
+        rowHeights=[1]
+    )
+    line_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#2563eb')),
+    ]))
+    story.append(line_table)
+    story.append(Spacer(1, 4*mm))
+
+    # Counsel Synthesis
+    story.append(Paragraph("COUNSEL SYNTHESIS", styles['QBSection']))
+    if counsel_synthesis:
+        # Parse the synthesis into sub-sections
+        sections = re_mod.split(r"###\s+", counsel_synthesis)
+        for section in sections:
+            section = section.strip()
+            if not section:
+                continue
+            lines = section.split("\n", 1)
+            heading = lines[0].strip()
+            body = lines[1].strip() if len(lines) > 1 else ""
+
+            if heading:
+                story.append(Paragraph(safe_text(heading), styles['QBSubSection']))
+            if body:
+                # Handle numbered lists and paragraphs
+                for para in body.split("\n"):
+                    para = para.strip()
+                    if not para:
+                        continue
+                    # Numbered items
+                    if re_mod.match(r"^\d+\.", para):
+                        story.append(Paragraph(safe_text(para), styles['QBPriority']))
+                    else:
+                        # Convert markdown bold
+                        clean = safe_text(para)
+                        clean = re_mod.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", clean)
+                        story.append(Paragraph(clean, styles['QBBody']))
+    else:
+        story.append(Paragraph("Counsel Synthesis not available. Generate a new Barrister View report with the latest prompt to include this section.", styles['QBBody']))
+
+    story.append(Spacer(1, 4*mm))
+    story.append(line_table)
+    story.append(Spacer(1, 4*mm))
+
+    # Top 3 Grounds
+    top_grounds = grounds[:3]
+    story.append(Paragraph("TOP 3 GROUNDS OF APPEAL", styles['QBSection']))
+    
+    VIABILITY_LABELS = {
+        "strong": "Arguable \u2014 Strong",
+        "moderate": "Arguable \u2014 Moderate",
+        "weak": "Requires Development",
+    }
+
+    for idx, ground in enumerate(top_grounds, 1):
+        title = ground.get("title", "Untitled Ground")
+        strength = ground.get("strength", "moderate")
+        viability = VIABILITY_LABELS.get(strength, strength)
+        ground_type = ground.get("ground_type", "")
+        appellate_pathway = ground.get("appellate_pathway", "")
+        description = ground.get("description", "")
+
+        story.append(Paragraph(f"Ground {idx}: {safe_text(title)}", styles['QBGroundTitle']))
+        
+        # Viability badge
+        viability_colour = {"strong": "#059669", "moderate": "#2563eb", "weak": "#dc2626"}.get(strength, "#64748b")
+        story.append(Paragraph(f'<font color="{viability_colour}"><b>{viability}</b></font> | Type: {safe_text(ground_type.replace("_", " ").title())}', styles['QBBody']))
+        
+        if appellate_pathway:
+            story.append(Paragraph(f"<b>Appellate Pathway:</b> {safe_text(appellate_pathway)}", styles['QBBody']))
+
+        # Show description (truncated for brevity)
+        desc_clean = description.replace("\n\n", " ").replace("\n", " ")
+        if len(desc_clean) > 400:
+            desc_clean = desc_clean[:400] + "..."
+        story.append(Paragraph(safe_text(desc_clean), styles['QBBody']))
+
+        # Contingent warning for ineffective counsel
+        if ground_type == "ineffective_counsel":
+            story.append(Paragraph('<font color="#d97706"><b>CONTINGENT</b> \u2014 Requires evidentiary support before advancement</font>', styles['QBBody']))
+
+        story.append(Spacer(1, 2*mm))
+
+    if len(grounds) > 3:
+        story.append(Paragraph(f"<i>{len(grounds) - 3} additional ground(s) detailed in the full Barrister View report.</i>", styles['QBBody']))
+
+    # Footer disclaimer
+    story.append(Spacer(1, 6*mm))
+    story.append(line_table)
+    story.append(Spacer(1, 3*mm))
+    story.append(Paragraph(
+        "This document is an AI-generated educational analysis tool only. "
+        "It does not constitute legal advice. Independent legal counsel must be obtained "
+        "before taking any action. Created and designed by Deb King.",
+        styles['QBDisclaimer']
+    ))
+    story.append(Paragraph(
+        f"Generated: {datetime.now(timezone.utc).strftime('%d %B %Y at %H:%M UTC')}",
+        styles['QBDisclaimer']
+    ))
+
+    doc.build(story)
+    buffer.seek(0)
+
+    filename = f"Quick_Brief_{defendant.replace(' ', '_')}_{case_id}.pdf"
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
 @api_router.get("/reports/embedded-legacy", response_model=dict)
 async def get_embedded_legacy_reports(request: Request, limit: int = 3):
     """Return strongest historical reports for embedding/reference in UI."""
@@ -5328,7 +5521,29 @@ async def cleanup_orphaned_reports():
     DO_NOT_UNDO — Recovery uses minimum character targets to decide whether a partial
     report is complete enough to mark as finished, or needs re-generation.
     """
-    # Create indexes for pipeline collections
+    # ─── Database Initialisation ────────────────────────────────────────
+    # Create indexes for ALL collections used by the app.
+    # MongoDB creates collections automatically on first write, but indexes
+    # must be ensured at startup to guarantee query performance in deployment.
+    
+    # Core collections
+    await db.users.create_index([("user_id", 1)], unique=True)
+    await db.users.create_index([("email", 1)], unique=True)
+    await db.cases.create_index([("case_id", 1)], unique=True)
+    await db.cases.create_index([("user_id", 1)])
+    await db.reports.create_index([("report_id", 1)], unique=True)
+    await db.reports.create_index([("case_id", 1), ("user_id", 1)])
+    await db.reports.create_index([("case_id", 1), ("report_type", 1)])
+    await db.documents.create_index([("document_id", 1)], unique=True)
+    await db.documents.create_index([("case_id", 1), ("user_id", 1)])
+    
+    # Grounds and analysis
+    await db.grounds_of_merit.create_index([("ground_id", 1)], unique=True)
+    await db.grounds_of_merit.create_index([("case_id", 1), ("user_id", 1)])
+    await db.grounds_of_merit.create_index([("case_id", 1), ("priority_order", 1)])
+    await db.issue_arguments.create_index([("case_id", 1)])
+    
+    # Pipeline collections
     await db.document_extracts.create_index([("case_id", 1), ("user_id", 1)])
     await db.document_extracts.create_index([("extract_id", 1)], unique=True)
     await db.document_extracts.create_index([("document_id", 1), ("case_id", 1)])
@@ -5340,6 +5555,43 @@ async def cleanup_orphaned_reports():
     await db.issue_verifications.create_index([("verification_id", 1)], unique=True)
     await db.pipeline_tasks.create_index([("case_id", 1), ("user_id", 1), ("task_type", 1)])
     await db.pipeline_tasks.create_index([("task_id", 1)], unique=True)
+    
+    # Auth and sessions
+    await db.user_sessions.create_index([("session_token", 1)], unique=True)
+    await db.user_sessions.create_index([("user_id", 1)])
+    await db.user_sessions.create_index([("expires_at", 1)], expireAfterSeconds=0)
+    await db.password_reset_tokens.create_index([("token", 1)], unique=True)
+    await db.password_reset_tokens.create_index([("expires_at", 1)], expireAfterSeconds=0)
+    
+    # Case features
+    await db.notes.create_index([("case_id", 1), ("user_id", 1)])
+    await db.timeline_events.create_index([("case_id", 1)])
+    await db.deadlines.create_index([("case_id", 1), ("user_id", 1)])
+    await db.checklist_items.create_index([("case_id", 1), ("user_id", 1)])
+    await db.submissions_drafts.create_index([("case_id", 1), ("user_id", 1)])
+    await db.activities.create_index([("case_id", 1)])
+    await db.contradiction_scans.create_index([("case_id", 1)])
+    
+    # Payments
+    await db.payments.create_index([("user_id", 1)])
+    await db.payments.create_index([("case_id", 1)])
+    await db.payments.create_index([("payment_id", 1)], unique=True)
+    
+    # Sharing
+    await db.case_shares.create_index([("case_id", 1)])
+    await db.share_links.create_index([("link_id", 1)], unique=True)
+    
+    # Analytics
+    await db.visits.create_index([("timestamp", 1)])
+    await db.visit_stats.create_index([("date", 1)])
+    await db.contact_messages.create_index([("created_at", 1)])
+    
+    # Notifications
+    await db.notifications.create_index([("user_id", 1), ("read", 1)])
+    await db.case_messages.create_index([("case_id", 1)])
+    
+    # Counters
+    await db.counters.create_index([("name", 1)], unique=True)
 
     # Minimum character targets — reports below these are incomplete
     min_recovery_targets = {
