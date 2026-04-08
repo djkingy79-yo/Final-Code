@@ -174,6 +174,7 @@ const ProtectedRoute = ({ children }) => {
   const [termsAccepted, setTermsAccepted] = useState(initialUser ? initialUser.terms_accepted === true : null);
   const [user, setUser] = useState(initialUser);
   const [authFailed, setAuthFailed] = useState(false);
+  const [retryTrigger, setRetryTrigger] = useState(0);
 
   useEffect(() => {
     // If user data was passed from AuthCallback via navigate state, already handled in initial state
@@ -205,7 +206,7 @@ const ProtectedRoute = ({ children }) => {
     };
 
     checkAuth();
-  }, [navigate, initialUser]);
+  }, [navigate, initialUser, retryTrigger]);
 
   const handleTermsAccepted = () => {
     setTermsAccepted(true);
@@ -236,7 +237,7 @@ const ProtectedRoute = ({ children }) => {
           <div className="flex flex-col gap-3">
             <button
               data-testid="session-retry-btn"
-              onClick={() => { setAuthFailed(false); setIsAuthenticated(null); }}
+              onClick={() => { setAuthFailed(false); setIsAuthenticated(null); setRetryTrigger(t => t + 1); }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
               Retry
