@@ -31,6 +31,7 @@ import { Button } from "../components/ui/button";
 import { API } from "../App";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
 import VerificationBadge from "../components/VerificationBadge";
+import auSpelling from "../utils/auSpelling";
 
 const titleFromSnake = (value) => {
   if (!value) return "Not specified";
@@ -346,40 +347,8 @@ const cleanAIContent = (text) => {
   }
 
   // DO_NOT_UNDO — Convert American spellings to Australian English in all report content.
-  // This normaliser runs on every report render to ensure consistent Australian spelling.
-  const ausReplacements = [
-    [/\bfinalized\b/gi, (m) => m[0] === 'F' ? 'Finalised' : 'finalised'],
-    [/\brecognized\b/gi, (m) => m[0] === 'R' ? 'Recognised' : 'recognised'],
-    [/\borganized\b/gi, (m) => m[0] === 'O' ? 'Organised' : 'organised'],
-    [/\bsummarized\b/gi, (m) => m[0] === 'S' ? 'Summarised' : 'summarised'],
-    [/\bprioritized\b/gi, (m) => m[0] === 'P' ? 'Prioritised' : 'prioritised'],
-    [/\banalyzing\b/gi, (m) => m[0] === 'A' ? 'Analysing' : 'analysing'],
-    [/\banalyzed\b/gi, (m) => m[0] === 'A' ? 'Analysed' : 'analysed'],
-    [/\banalyze\b/gi, (m) => m[0] === 'A' ? 'Analyse' : 'analyse'],
-    [/\bbehavior\b/gi, (m) => m[0] === 'B' ? 'Behaviour' : 'behaviour'],
-    [/\bfavored\b/gi, (m) => m[0] === 'F' ? 'Favoured' : 'favoured'],
-    [/\bfavoring\b/gi, (m) => m[0] === 'F' ? 'Favouring' : 'favouring'],
-    [/\bfavor\b/gi, (m) => m[0] === 'F' ? 'Favour' : 'favour'],
-    [/\bhonor\b/gi, (m) => m[0] === 'H' ? 'Honour' : 'honour'],
-    [/\bdefense\b/gi, (m) => m[0] === 'D' ? 'Defence' : 'defence'],
-    [/\boffense\b/gi, (m) => m[0] === 'O' ? 'Offence' : 'offence'],
-    [/\blabor\b/gi, (m) => m[0] === 'L' ? 'Labour' : 'labour'],
-    [/\bcenter\b/gi, (m) => m[0] === 'C' ? 'Centre' : 'centre'],
-    [/\bspecialized\b/gi, (m) => m[0] === 'S' ? 'Specialised' : 'specialised'],
-    [/\bcharacterized\b/gi, (m) => m[0] === 'C' ? 'Characterised' : 'characterised'],
-    [/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation'],
-    [/\bmischaracterization\b/gi, (m) => m[0] === 'M' ? 'Mischaracterisation' : 'mischaracterisation'],
-    [/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised'],
-    [/\bemphasized\b/gi, (m) => m[0] === 'E' ? 'Emphasised' : 'emphasised'],
-    [/\bemphasize\b/gi, (m) => m[0] === 'E' ? 'Emphasise' : 'emphasise'],
-    [/\bminimize\b/gi, (m) => m[0] === 'M' ? 'Minimise' : 'minimise'],
-    [/\bmaximize\b/gi, (m) => m[0] === 'M' ? 'Maximise' : 'maximise'],
-    [/\bcriticized\b/gi, (m) => m[0] === 'C' ? 'Criticised' : 'criticised'],
-    [/\bcriticize\b/gi, (m) => m[0] === 'C' ? 'Criticise' : 'criticise'],
-  ];
-  for (const [pattern, replacer] of ausReplacements) {
-    cleaned = cleaned.replace(pattern, replacer);
-  }
+  // Uses shared auSpelling utility for comprehensive coverage.
+  cleaned = auSpelling(cleaned);
   
   return cleaned.trim();
 };

@@ -3,11 +3,12 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { 
   Scale, Trash2, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
-  BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download
+  BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download,
+  GripVertical, ArrowUpDown, Check
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -29,49 +30,12 @@ import StrengthBadge from "./StrengthBadge";
 import VerificationBadge from "./VerificationBadge";
 import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
+import auSpelling from "../utils/auSpelling";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
-/* DO NOT UNDO — Australian spelling normaliser for ground titles and descriptions.
-   Converts American English to Australian English in user-visible text. */
-const auSpelling = (text) => {
-  if (!text) return text;
-  return text
-    .replace(/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation')
-    .replace(/\bMischaracterization\b/g, 'Mischaracterisation')
-    .replace(/\bmischaracterization\b/g, 'mischaracterisation')
-    .replace(/\bBehavior\b/g, 'Behaviour')
-    .replace(/\bbehavior\b/g, 'behaviour')
-    .replace(/\bfavoring\b/gi, (m) => m[0] === 'F' ? 'Favouring' : 'favouring')
-    .replace(/\banalyzing\b/gi, (m) => m[0] === 'A' ? 'Analysing' : 'analysing')
-    .replace(/\brecognized\b/gi, (m) => m[0] === 'R' ? 'Recognised' : 'recognised')
-    .replace(/\borganized\b/gi, (m) => m[0] === 'O' ? 'Organised' : 'organised')
-    .replace(/\bdefense\b/gi, (m) => m[0] === 'D' ? 'Defence' : 'defence')
-    .replace(/\boffense\b/gi, (m) => m[0] === 'O' ? 'Offence' : 'offence')
-    .replace(/\butilized\b/gi, (m) => m[0] === 'U' ? 'Utilised' : 'utilised')
-    .replace(/\banalyze\b/gi, (m) => m[0] === 'A' ? 'Analyse' : 'analyse')
-    .replace(/\banalyzed\b/gi, (m) => m[0] === 'A' ? 'Analysed' : 'analysed')
-    .replace(/\banalysis\b/gi, 'analysis')
-    .replace(/\borganize\b/gi, (m) => m[0] === 'O' ? 'Organise' : 'organise')
-    .replace(/\brecognize\b/gi, (m) => m[0] === 'R' ? 'Recognise' : 'recognise')
-    .replace(/\brecognizing\b/gi, (m) => m[0] === 'R' ? 'Recognising' : 'recognising')
-    .replace(/\bhonor\b/gi, (m) => m[0] === 'H' ? 'Honour' : 'honour')
-    .replace(/\bfavor\b/gi, (m) => m[0] === 'F' ? 'Favour' : 'favour')
-    .replace(/\bfavorable\b/gi, (m) => m[0] === 'F' ? 'Favourable' : 'favourable')
-    .replace(/\blabor\b/gi, (m) => m[0] === 'L' ? 'Labour' : 'labour')
-    .replace(/\bcenter\b/gi, (m) => m[0] === 'C' ? 'Centre' : 'centre')
-    .replace(/\bcolored\b/gi, (m) => m[0] === 'C' ? 'Coloured' : 'coloured')
-    .replace(/\bcounseling\b/gi, (m) => m[0] === 'C' ? 'Counselling' : 'counselling')
-    .replace(/\bcriminalize\b/gi, (m) => m[0] === 'C' ? 'Criminalise' : 'criminalise')
-    .replace(/\bspecialize\b/gi, (m) => m[0] === 'S' ? 'Specialise' : 'specialise')
-    .replace(/\bspecialized\b/gi, (m) => m[0] === 'S' ? 'Specialised' : 'specialised')
-    .replace(/\bauthorize\b/gi, (m) => m[0] === 'A' ? 'Authorise' : 'authorise')
-    .replace(/\bauthorized\b/gi, (m) => m[0] === 'A' ? 'Authorised' : 'authorised')
-    .replace(/\bemphasize\b/gi, (m) => m[0] === 'E' ? 'Emphasise' : 'emphasise')
-    .replace(/\bemphasized\b/gi, (m) => m[0] === 'E' ? 'Emphasised' : 'emphasised')
-    .replace(/\bsummarize\b/gi, (m) => m[0] === 'S' ? 'Summarise' : 'summarise')
-    .replace(/\bsummarized\b/gi, (m) => m[0] === 'S' ? 'Summarised' : 'summarised');
-};
+/* DO NOT UNDO — Australian spelling normaliser imported from utils/auSpelling.js
+   The shared utility is now used across all components. */
 
 /* DO NOT UNDO — Universal evidence text extractor.
    Handles ALL formats the AI may return evidence in:
@@ -275,6 +239,65 @@ const GroundsOfMerit = ({
   const [checkingPayment, setCheckingPayment] = useState(false);
   const [trialEligible, setTrialEligible] = useState(false);
   const [trialPrice, setTrialPrice] = useState(null);
+  const [reorderMode, setReorderMode] = useState(false);
+  const [orderedGrounds, setOrderedGrounds] = useState([]);
+  const [savingOrder, setSavingOrder] = useState(false);
+  const dragItem = useRef(null);
+  const dragOverItem = useRef(null);
+
+  useEffect(() => {
+    setOrderedGrounds(grounds || []);
+  }, [grounds]);
+
+  const handleDragStart = useCallback((idx) => {
+    dragItem.current = idx;
+  }, []);
+
+  const handleDragEnter = useCallback((idx) => {
+    dragOverItem.current = idx;
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragItem.current === null || dragOverItem.current === null) return;
+    const items = [...orderedGrounds];
+    const draggedItem = items[dragItem.current];
+    items.splice(dragItem.current, 1);
+    items.splice(dragOverItem.current, 0, draggedItem);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setOrderedGrounds(items);
+  }, [orderedGrounds]);
+
+  const saveReorder = async () => {
+    setSavingOrder(true);
+    try {
+      const token = localStorage.getItem("session_token") || localStorage.getItem("token");
+      const res = await fetch(`${API}/api/cases/${caseId}/grounds/reorder`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ground_ids: orderedGrounds.map(g => g.ground_id) }),
+      });
+      if (res.ok) {
+        toast.success("Ground priority order saved");
+        setReorderMode(false);
+      } else {
+        toast.error("Failed to save order");
+      }
+    } catch {
+      toast.error("Failed to save order");
+    }
+    setSavingOrder(false);
+  };
+
+  const moveGround = useCallback((fromIdx, direction) => {
+    const toIdx = fromIdx + direction;
+    if (toIdx < 0 || toIdx >= orderedGrounds.length) return;
+    const items = [...orderedGrounds];
+    [items[fromIdx], items[toIdx]] = [items[toIdx], items[fromIdx]];
+    setOrderedGrounds(items);
+  }, [orderedGrounds]);
+
+  const displayGrounds = reorderMode ? orderedGrounds : grounds;
 
   // Fetch trial eligibility
   useEffect(() => {
@@ -802,7 +825,47 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
               </span>
             </div>
           )}
-          {grounds.map((ground) => {
+          {/* DO NOT UNDO — Ground Priority Reorder button */}
+          {isUnlocked && grounds.length > 1 && (
+            <div className="flex items-center gap-2">
+              {reorderMode ? (
+                <>
+                  <Button
+                    data-testid="save-reorder-btn"
+                    size="sm"
+                    onClick={saveReorder}
+                    disabled={savingOrder}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                  >
+                    {savingOrder ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Check className="w-3 h-3 mr-1" />}
+                    Save Order
+                  </Button>
+                  <Button
+                    data-testid="cancel-reorder-btn"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => { setReorderMode(false); setOrderedGrounds(grounds); }}
+                    className="text-xs"
+                  >
+                    Cancel
+                  </Button>
+                  <span className="text-xs text-slate-500 ml-1">Drag or use arrows to reorder grounds by priority</span>
+                </>
+              ) : (
+                <Button
+                  data-testid="reorder-grounds-btn"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => { setReorderMode(true); setOrderedGrounds([...grounds]); }}
+                  className="text-xs gap-1"
+                >
+                  <ArrowUpDown className="w-3 h-3" />
+                  Reorder Priority
+                </Button>
+              )}
+            </div>
+          )}
+          {displayGrounds.map((ground, groundIdx) => {
             const strengthConfig = STRENGTH_CONFIG[ground.strength] || STRENGTH_CONFIG.moderate;
             const StrengthIcon = strengthConfig.icon;
             const statusConfig = STATUS_CONFIG[ground.status] || STATUS_CONFIG.identified;
@@ -810,11 +873,39 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
             return (
               <Card 
                 key={ground.ground_id} 
-                className={`card-hover group ${selectedGround?.ground_id === ground.ground_id ? 'ring-2 ring-blue-500' : ''}`}
+                className={`card-hover group ${selectedGround?.ground_id === ground.ground_id ? 'ring-2 ring-blue-500' : ''} ${reorderMode ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 data-testid={`ground-${ground.ground_id}`}
+                draggable={reorderMode}
+                onDragStart={reorderMode ? () => handleDragStart(groundIdx) : undefined}
+                onDragEnter={reorderMode ? () => handleDragEnter(groundIdx) : undefined}
+                onDragEnd={reorderMode ? handleDragEnd : undefined}
+                onDragOver={reorderMode ? (e) => e.preventDefault() : undefined}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
+                    {/* Reorder handle */}
+                    {reorderMode && (
+                      <div className="flex flex-col items-center gap-1 mr-3 pt-1" data-testid={`reorder-handle-${groundIdx}`}>
+                        <div className="text-xs font-bold text-blue-600 w-5 h-5 flex items-center justify-center rounded-full bg-blue-100">{groundIdx + 1}</div>
+                        <GripVertical className="w-4 h-4 text-slate-400" />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveGround(groundIdx, -1); }}
+                          disabled={groundIdx === 0}
+                          className="p-0.5 hover:bg-slate-200 rounded disabled:opacity-30"
+                          data-testid={`move-up-${groundIdx}`}
+                        >
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 15l-6-6-6 6"/></svg>
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveGround(groundIdx, 1); }}
+                          disabled={groundIdx === displayGrounds.length - 1}
+                          className="p-0.5 hover:bg-slate-200 rounded disabled:opacity-30"
+                          data-testid={`move-down-${groundIdx}`}
+                        >
+                          <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                      </div>
+                    )}
                     <div className="flex-1 cursor-pointer" onClick={() => openGroundDetail(ground)}>
                       <div className="flex items-center gap-2 flex-wrap mb-2">
                         <Badge variant="outline" className={GROUND_TYPE_COLORS[ground.ground_type] || GROUND_TYPE_COLORS.other}>

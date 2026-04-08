@@ -29,6 +29,7 @@ import VerificationBadge from "../components/VerificationBadge";
 import LegitimacyPanel from "../components/LegitimacyPanel";
 import EvidenceSummary from "../components/EvidenceSummary";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
+import auSpelling from "../utils/auSpelling";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "N/A";
@@ -178,7 +179,7 @@ const MarkdownBlock = ({ text, testId }) => (
         ),
       }}
     >
-      {text}
+      {auSpelling(text)}
     </ReactMarkdown>
   </div>
 );

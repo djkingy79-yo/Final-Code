@@ -425,8 +425,12 @@ async def get_grounds_of_merit(case_id: str, request: Request):
         {"_id": 0}
     ).sort([("created_at", -1)]).to_list(200)
 
-    # Sort: strong first, then moderate, then weak
-    grounds.sort(key=lambda g: (STRENGTH_ORDER.get(g.get("strength", "unknown"), 3), g.get("title", "")))
+    # Sort: priority_order first (if set by user reorder), then strength, then title
+    grounds.sort(key=lambda g: (
+        g.get("priority_order", 999),
+        STRENGTH_ORDER.get(g.get("strength", "unknown"), 3),
+        g.get("title", "")
+    ))
 
     # For payment lookup, use the case owner's user_id (not admin's)
     case_owner_id = case.get("user_id", user.user_id)
@@ -528,6 +532,35 @@ async def create_ground_of_merit(case_id: str, ground_data: GroundOfMeritCreate,
 
     created_ground = await db.grounds_of_merit.find_one({"ground_id": ground.ground_id}, {"_id": 0})
     return created_ground
+
+
+
+# DO NOT UNDO — Ground priority reorder endpoint. MUST be defined BEFORE {ground_id} routes.
+@router.put("/cases/{case_id}/grounds/reorder")
+async def reorder_grounds(case_id: str, request: Request):
+    """Reorder grounds by priority. Accepts a list of ground_ids in the desired order."""
+    user = await get_current_user(request)
+    if is_admin_user(user.email):
+        case = await db.cases.find_one({"case_id": case_id})
+    else:
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    body = await request.json()
+    ground_ids = body.get("ground_ids", [])
+    if not ground_ids:
+        raise HTTPException(status_code=400, detail="ground_ids list required")
+
+    for idx, ground_id in enumerate(ground_ids):
+        result = await db.grounds_of_merit.update_one(
+            {"ground_id": ground_id, "case_id": case_id},
+            {"$set": {"priority_order": idx}}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail=f"Ground not found: {ground_id}")
+
+    return {"message": f"Reordered {len(ground_ids)} grounds successfully."}
 
 
 @router.get("/cases/{case_id}/grounds/{ground_id}", response_model=dict)
@@ -954,3 +987,5 @@ async def cleanup_ground_duplicates(case_id: str, request: Request):
         "issues": issues_result,
         "message": f"Cleaned up {grounds_result['removed']} duplicate grounds and {issues_result['removed']} duplicate issues.",
     }
+
+
