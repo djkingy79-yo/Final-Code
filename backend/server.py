@@ -5866,3 +5866,12 @@ async def startup_dedup_grounds():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+
+# ── Serve frontend static files (Docker single-container deploy) ──
+# Must be AFTER all API routers so /api/* routes take priority
+import pathlib as _pathlib
+_static_dir = _pathlib.Path(__file__).parent / "static"
+if _static_dir.is_dir():
+    from starlette.staticfiles import StaticFiles as _StaticFiles
+    app.mount("/", _StaticFiles(directory=str(_static_dir), html=True), name="static")

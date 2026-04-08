@@ -7,6 +7,8 @@ import asyncio
 import logging
 import resend
 
+from config import get_resend_from_email
+
 logger = logging.getLogger(__name__)
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
@@ -48,7 +50,7 @@ async def send_payid_status_email(user_email: str, user_name: str, feature_name:
         """
 
         params = {
-            "from": "Appeal Case Manager <onboarding@resend.dev>",
+            "from": get_resend_from_email(),
             "to": [user_email],
             "subject": subject,
             "html": html,
@@ -111,7 +113,7 @@ async def send_admin_payid_alert(admin_emails: list, user_email: str, user_name:
         """
 
         params = {
-            "from": "Appeal Case Manager <onboarding@resend.dev>",
+            "from": get_resend_from_email(),
             "to": admin_emails,
             "subject": f"NEW PAYMENT - {user_name or user_email} paid ${amount:.2f} for {feature_name} (Ref: {reference})",
             "html": html,

@@ -12,7 +12,7 @@ import io
 import zipfile
 import json
 
-from config import db
+from config import db, get_contact_email
 from auth_utils import get_current_user, verify_case_ownership
 
 router = APIRouter(prefix="/api/cases/{case_id}/export", tags=["export"])
@@ -527,7 +527,7 @@ by a qualified legal professional before submission to any court.
 The creator of this tool, Debra King, is not a lawyer.
 Always seek independent legal advice.
 
-For questions: djkingy79@gmail.com
+For questions: {get_contact_email()}
 """
         zip_file.writestr("README.txt", readme)
     

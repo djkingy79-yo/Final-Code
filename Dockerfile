@@ -2,7 +2,7 @@
 FROM node:20-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 COPY frontend/ ./
 ARG REACT_APP_BACKEND_URL
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
@@ -16,6 +16,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     libmagic1 \
+    tesseract-ocr \
+    wkhtmltopdf \
     && rm -rf /var/lib/apt/lists/*
 
 # Python dependencies

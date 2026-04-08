@@ -58,3 +58,18 @@ def get_admin_emails() -> list[str]:
 
 def get_contact_email() -> str:
     return os.environ['CONTACT_EMAIL']
+
+
+def get_resend_from_email() -> str:
+    return os.environ.get('RESEND_FROM_EMAIL', f"Appeal Case Manager <{os.environ['CONTACT_EMAIL']}>")
+
+
+def get_payid_email() -> str:
+    return os.environ.get('PAYID_EMAIL', os.environ['CONTACT_EMAIL'])
+
+
+# ── Startup Warnings ──
+_WARN_ENV = ['RESEND_API_KEY']
+_warn_missing = [k for k in _WARN_ENV if not os.environ.get(k)]
+if _warn_missing:
+    logger.warning(f"Optional env vars missing (email features will not work): {', '.join(_warn_missing)}")

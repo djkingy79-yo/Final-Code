@@ -10,7 +10,7 @@ import os
 import logging
 import secrets
 
-from config import db, get_frontend_url
+from config import db, get_frontend_url, get_payid_email
 from auth_utils import get_current_user
 from models import FEATURE_PRICES, canonical_feature_type
 from services.email_service import send_payid_status_email, send_admin_payid_alert
@@ -128,7 +128,7 @@ async def create_payid_reference(request: Request):
     payment_record.pop("_id", None)
     return {
         "reference": reference, "amount": price,
-        "payid": "djkingy79@gmail.com", "payid_name": "Appeal Case Manager",
+        "payid": get_payid_email(), "payid_name": "Appeal Case Manager",
         "instructions": f"Transfer ${price:.2f} AUD to the PayID above. Use reference: {reference}",
         "is_trial": is_trial,
     }

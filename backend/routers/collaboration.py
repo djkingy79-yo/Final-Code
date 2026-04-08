@@ -10,7 +10,7 @@ import asyncio
 import json
 import resend
 
-from config import db, logger, get_frontend_url
+from config import db, logger, get_frontend_url, get_resend_from_email
 from auth_utils import get_current_user
 
 router = APIRouter(tags=["collaboration"])
@@ -75,7 +75,7 @@ async def send_email_notification(to_email: str, subject: str, html_body: str):
         return
     try:
         params = {
-            "from": "Appeal Case Manager <onboarding@resend.dev>",
+            "from": get_resend_from_email(),
             "to": [to_email],
             "subject": subject,
             "html": html_body

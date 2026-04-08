@@ -12,7 +12,7 @@ import uuid
 import asyncio
 import resend
 
-from config import db, logger, get_admin_emails, get_contact_email
+from config import db, logger, get_admin_emails, get_contact_email, get_resend_from_email
 from auth_utils import get_current_user
 
 router = APIRouter(prefix="/api", tags=["admin"])
@@ -163,7 +163,7 @@ async def submit_contact_form(contact: ContactMessage):
                 """
                 
                 params = {
-                    "from": "Appeal Case Manager <onboarding@resend.dev>",
+                    "from": get_resend_from_email(),
                     "to": [CONTACT_EMAIL],
                     "subject": f"Contact Form: {contact.subject}",
                     "html": html_content,

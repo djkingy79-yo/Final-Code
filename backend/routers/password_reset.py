@@ -12,7 +12,7 @@ import os
 import asyncio
 import resend
 
-from config import db, logger, get_frontend_url as get_config_frontend_url
+from config import db, logger, get_frontend_url as get_config_frontend_url, get_contact_email, get_resend_from_email
 
 router = APIRouter(prefix="/api/auth", tags=["password-reset"])
 
@@ -124,14 +124,14 @@ async def forgot_password(request: ForgotPasswordRequest):
                         </div>
                         
                         <p style="color: #94a3b8; font-size: 12px; margin-top: 30px; border-top: 1px solid #cbd5e1; padding-top: 20px;">
-                            This email was sent from Appeal Case Manager. If you have questions, contact us at djkingy79@gmail.com
+                            This email was sent from Appeal Case Manager. If you have questions, contact us at {get_contact_email()}
                         </p>
                     </div>
                 </div>
                 """
                 
                 params = {
-                    "from": "Appeal Case Manager <onboarding@resend.dev>",
+                    "from": get_resend_from_email(),
                     "to": [user["email"]],
                     "subject": "Reset Your Password - Appeal Case Manager",
                     "html": html_content
