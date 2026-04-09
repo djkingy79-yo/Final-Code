@@ -1529,6 +1529,10 @@ SA_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Law (Forensic Procedures) Act 2007 (SA)",
             "description": "Rules for obtaining forensic samples from suspects and convicted offenders in South Australia.",
         },
+        {
+            "act": "Criminal Law Consolidation Act 1935 (SA) — Part 11 (Appellate Proceedings)",
+            "description": "Governs criminal appeals in South Australia. Part 11 establishes rights of appeal (s 352), determination of appeals (s 353), second/subsequent appeals (s 353A), Full Court jurisdiction (s 356), and supplemental powers (s 359). Part 10A handles appeals against sentence (s 340). Appeals heard by the Full Court of the Supreme Court (three judges), with the Court of Appeal division established by Supreme Court (Court of Appeal) Amendment Act 2019 now handling most criminal appeals.",
+        },
     ],
 }
 
@@ -1699,8 +1703,8 @@ TAS_CRIMINAL_FRAMEWORK = {
             "description": "Governs juvenile criminal proceedings in Tasmania.",
         },
         {
-            "act": "Criminal Code Appeal Procedures (Tas)",
-            "description": "Appeals from criminal trials to the Court of Criminal Appeal under the Criminal Code Act 1924 (Part XII).",
+            "act": "Criminal Code Act 1924 (Tas) — Part XII (Appeals)",
+            "description": "Governs criminal appeals in Tasmania via the Court of Criminal Appeal. Appeals against conviction (unsafe/unsatisfactory verdict, wrong decision on question of law, miscarriage of justice) and against sentence. Further appeals to High Court require special leave.",
         },
     ],
 }
@@ -1791,6 +1795,10 @@ NT_CRIMINAL_FRAMEWORK = {
             "act": "Youth Justice Act 2005 (NT)",
             "description": "Governs juvenile criminal proceedings in the Northern Territory.",
         },
+        {
+            "act": "Criminal Code Act 1983 (NT) — Part X (Appeals)",
+            "description": "Governs criminal appeals in the Northern Territory. Appeals from Local Court heard by a single Supreme Court judge (error of law only — no de novo appeals). Appeals from Supreme Court heard by the Court of Criminal Appeal (three judges). Must be commenced within 28 days. Further appeals to High Court require special leave.",
+        },
     ],
 }
 
@@ -1878,6 +1886,10 @@ ACT_CRIMINAL_FRAMEWORK = {
         {
             "act": "Court Procedures Act 2004 (ACT)",
             "description": "General procedural legislation for ACT courts including criminal proceedings.",
+        },
+        {
+            "act": "Supreme Court Act 1933 (ACT) — Criminal Appeals",
+            "description": "Governs criminal appeals in the ACT. The Court of Appeal may allow an appeal against conviction if the verdict is unreasonable/unsupported by evidence, there was a wrong decision on a question of law, or a miscarriage of justice occurred. Court may confirm, reverse, or amend orders. Also covers reference appeals (s 37S), cases stated, applications relating to acquittals (Part 8AA), and appeals for fresh and compelling evidence (Part 8AB).",
         },
     ],
 }
@@ -1970,6 +1982,10 @@ FEDERAL_CRIMINAL_FRAMEWORK = {
         {
             "act": "Extradition Act 1988 (Cth)",
             "description": "Governs extradition of persons to and from Australia for criminal offences.",
+        },
+        {
+            "act": "Federal Court of Australia Act 1976 (Cth) / Judiciary Act 1903 (Cth) — Federal Criminal Appeals",
+            "description": "Federal criminal offences are tried in state/territory courts under Judiciary Act 1903 Part X. Appeals follow the appellate pathway of the state/territory where the trial occurred (e.g., NSW Court of Criminal Appeal, VIC Court of Appeal). Further appeals to the High Court of Australia require special leave under Judiciary Act 1903 s 35A. The Crimes Act 1914 (Cth) Part 1B governs sentencing for federal offences regardless of which state court imposed the sentence.",
         },
     ],
 }
