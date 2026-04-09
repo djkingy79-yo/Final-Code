@@ -1254,7 +1254,6 @@ async def generate_case_export_pack(case_id: str, request: Request):
         canvas_obj.saveState()
         ft_top = 14 * mm
         ft_mid = 10 * mm
-        ft_bot = 6 * mm
         canvas_obj.setStrokeColor(colors.HexColor("#cbd5e1"))
         canvas_obj.setLineWidth(0.6)
         canvas_obj.line(pdf_doc.leftMargin, ft_top, A4[0] - pdf_doc.rightMargin, ft_top)
@@ -1505,9 +1504,6 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
                     break
         except Exception:
             pass  # Fall back to Helvetica — ReportLab will substitute glyphs
-
-    # For Arabic/Farsi/Urdu — RTL languages
-    is_rtl = lang in {"ar", "fa", "ur"}
 
     # ── Build PDF ──
     pdf_buffer = io.BytesIO()
