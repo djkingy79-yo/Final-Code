@@ -84,8 +84,8 @@ def get_offence_context(case: dict) -> str:
             "materially between jurisdictions."
         )
 
-    state_key = state if state else 'nsw'
-    abbreviation = state_info.get('abbreviation', 'NSW') if state_info else 'NSW'
+    state_key = state if state else ''
+    abbreviation = state_info.get('abbreviation', state.upper() if state else 'UNSPECIFIED') if state_info else (state.upper() if state else 'UNSPECIFIED')
 
     context = f"""
 OFFENCE INFORMATION:
@@ -102,8 +102,8 @@ AVAILABLE DEFENCES:
 
 RELEVANT {abbreviation} LEGISLATION:
 """
-    state_leg_key = f"{state_key}_legislation"
-    state_legislation = category_data.get(state_leg_key, category_data.get('nsw_legislation', {}))
+    state_leg_key = f"{state_key}_legislation" if state_key else ''
+    state_legislation = category_data.get(state_leg_key, {}) if state_leg_key else {}
 
     for act_name, sections in state_legislation.items():
         context += f"\n{act_name}:\n"
@@ -203,14 +203,14 @@ def get_offence_system_prompt(offence_category: str, state: str = "") -> str:
       - No outcome predictions
       - Jurisdiction awareness
     """
-    category_data = OFFENCE_CATEGORIES.get(offence_category, OFFENCE_CATEGORIES.get('homicide'))
-    category_name = category_data.get('name', 'criminal')
+    category_data = OFFENCE_CATEGORIES.get(offence_category) or {}
+    category_name = category_data.get('name', offence_category.replace('_', ' ').title() if offence_category else 'criminal')
 
-    # Build legislation references from the correct jurisdiction
+    # Build legislation references from the correct jurisdiction — NO NSW DEFAULT
     legislation_refs = []
-    state_key = state if state else 'nsw'
-    state_leg_key = f"{state_key}_legislation"
-    state_legislation = category_data.get(state_leg_key, category_data.get('nsw_legislation', {}))
+    state_key = state if state else ''
+    state_leg_key = f"{state_key}_legislation" if state_key else ''
+    state_legislation = category_data.get(state_leg_key, {}) if state_leg_key else {}
 
     for act_name, sections in state_legislation.items():
         for section in sections[:5]:
@@ -228,10 +228,10 @@ def get_offence_system_prompt(offence_category: str, state: str = "") -> str:
     else:
         jurisdiction_line = "Jurisdiction has not been confirmed. Flag this explicitly and note where analysis depends on jurisdiction-specific law."
 
-    # Build recent legislation awareness line
+    # Build recent legislation awareness line — NO NSW DEFAULT
     recent_leg_line = ""
-    state_key_for_recent = state if state else 'nsw'
-    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key_for_recent.lower(), [])
+    state_key_for_recent = state if state else ''
+    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key_for_recent.lower(), []) if state_key_for_recent else []
     federal_updates = RECENT_LEGISLATION_UPDATES.get('federal', [])
     recent_act_names = []
     for update in state_updates + federal_updates:

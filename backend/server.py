@@ -1161,9 +1161,10 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
     _current_sentence = (case.get('sentence') or "").strip()
     _sentence_has_narrative = bool(re.search(r'\bfor\s+(?:murder|kill|assault|robb|stab|rap|kidnap|abus|supplying|dealing)', _current_sentence, re.I)) if _current_sentence else False
     needs_detection = (
-        (not case.get('offence_category') or case.get('offence_category') == 'homicide')
-        and not case.get('offence_type')
-        and (not _current_sentence or _sentence_has_narrative)
+        not case.get('offence_category')
+        or not case.get('offence_type')
+        or not case.get('state')
+        or (not _current_sentence or _sentence_has_narrative)
     )
     if needs_detection and documents:
         try:
@@ -1233,13 +1234,13 @@ DOCUMENTS:
         except Exception as e:
             logger.warning(f"Report gen auto-detect failed for {case_id}: {e}")
     
-    # Get offence-specific context
-    offence_category = case.get('offence_category', 'homicide')
+    # Get offence-specific context — NO SILENT DEFAULTS
+    offence_category = case.get('offence_category') or 'general'
     offence_context = get_offence_context(case)
-    category_data = OFFENCE_CATEGORIES.get(offence_category, OFFENCE_CATEGORIES.get('homicide'))
-    category_name = category_data.get('name', 'criminal')
-    state = case.get('state', 'nsw')
-    state_info = AUSTRALIAN_STATES.get(state, AUSTRALIAN_STATES.get('nsw'))
+    category_data = OFFENCE_CATEGORIES.get(offence_category) or {}
+    category_name = category_data.get('name', offence_category.replace('_', ' ').title())
+    state = case.get('state') or ''
+    state_info = AUSTRALIAN_STATES.get(state, {})
     
     # Context limits — FULL DETAIL for quality reports
     context_limits = {
@@ -1449,6 +1450,27 @@ LEGISLATION ACCURACY — CRITICAL ANTI-HALLUCINATION RULE:
 - If a provision has been recently amended (e.g. new coercive control offence under s 54D Crimes Act 1900 (NSW) commenced 1 July 2024, or Jury Amendment Act 2024 commenced 10 March 2025), cite the CURRENT version and note the commencement date.
 - Do NOT fabricate section numbers. If the exact section is not known, reference the Act by name only and note that the specific section should be verified.
 - Where the case involves a recently commenced offence (post-2022), check whether transitional provisions apply — the offence must have been committed AFTER the commencement date for the new provisions to apply.
+
+JURISDICTION FIDELITY — ABSOLUTE AND NON-NEGOTIABLE:
+- The case jurisdiction is specified in the CASE PROFILE above. You MUST use ONLY the legislation, sentencing acts, evidence acts, criminal codes, and appellate procedures from THAT jurisdiction.
+- Do NOT default to NSW legislation when analysing a case from another jurisdiction. For example:
+  * A VICTORIA case uses Crimes Act 1958 (Vic), Sentencing Act 1991 (Vic), Evidence Act 2008 (Vic), Criminal Procedure Act 2009 (Vic) — NOT the NSW equivalents.
+  * A QUEENSLAND case uses Criminal Code Act 1899 (Qld), Penalties and Sentences Act 1992 (Qld), Evidence Act 1977 (Qld) — NOT the NSW equivalents.
+  * A SOUTH AUSTRALIA case uses Criminal Law Consolidation Act 1935 (SA), Sentencing Act 2017 (SA), Evidence Act 1929 (SA) — NOT the NSW equivalents.
+  * A WESTERN AUSTRALIA case uses Criminal Code Act Compilation Act 1913 (WA), Sentencing Act 1995 (WA), Evidence Act 1906 (WA) — NOT the NSW equivalents.
+  * A TASMANIA case uses Criminal Code Act 1924 (Tas), Sentencing Act 1997 (Tas), Evidence Act 2001 (Tas) — NOT the NSW equivalents.
+  * A NORTHERN TERRITORY case uses Criminal Code Act 1983 (NT), Sentencing Act 1995 (NT), Evidence (National Uniform Legislation) Act 2011 (NT) — NOT the NSW equivalents.
+  * An ACT case uses Criminal Code 2002 (ACT) and Crimes Act 1900 (ACT), Crimes (Sentencing) Act 2005 (ACT), Evidence Act 2011 (ACT) — NOT the NSW equivalents.
+- Commonwealth/Federal legislation (Criminal Code Act 1995 (Cth), Crimes Act 1914 (Cth), Judiciary Act 1903 (Cth)) applies across ALL jurisdictions and may be cited where relevant.
+- If the jurisdiction is UNSPECIFIED, you MUST flag this explicitly and state: "The jurisdiction has not been confirmed. The following analysis references [State] legislation, which must be verified as correct for the actual jurisdiction of this case."
+
+STRICT NO-HALLUCINATION CONTROLS:
+- Do NOT invent, fabricate, or guess ANY of the following: case names, case citations, section numbers, Act names, judge names, dates, sentences, or penalty amounts.
+- If you do not know the exact citation for a case, do NOT make one up. Instead write: "See [description of relevant authority — e.g. 'the leading NSW authority on provocation'] — citation should be verified by the legal practitioner."
+- Do NOT cite cases that do not exist. If you reference a case by name, you MUST be confident it is a real decided case. If uncertain, flag it: "[Citation to be verified]".
+- Do NOT invent section numbers. If a provision exists but the exact section number is uncertain, reference the Act and Part/Division only: "See Part 3 of the Crimes Act 1900 (NSW)" rather than fabricating a specific section.
+- Do NOT assume facts not in the supplied case material. If the case material does not mention a particular fact (e.g. the defendant's age, prior criminal history, mental health), do NOT assume or infer it. State: "The supplied material does not address [X]."
+- Do NOT hallucinate sentencing statistics or comparative data. If you provide sentencing ranges or median sentences, these must be from real, verifiable sources. If uncertain, state: "Sentencing statistics should be verified against Judicial Commission of [State] data."
 
 FORMATTING RULES — STRICTLY ENFORCED:
 - DO NOT begin your response with any preamble, greeting, or introduction.
@@ -3063,7 +3085,7 @@ CASE TITLE: {case.get('title', 'Unknown case')}
 DEFENDANT: {case.get('defendant_name', 'Not recorded')}
 CASE NUMBER: {case.get('case_number', 'Not recorded')}
 COURT: {case.get('court', 'Not recorded')}
-JURISDICTION: {(case.get('state') or 'nsw').upper()}
+JURISDICTION: {(case.get('state') or 'UNSPECIFIED').upper()}
 OFFENCE: {case.get('offence_type') or case.get('offence_category') or 'Not recorded'}
 SENTENCE: {case.get('sentence', 'Not recorded')}
 DOCUMENT COUNT: {len(documents)}
@@ -3072,8 +3094,8 @@ GROUNDS COUNT: {len(grounds)}
 """.strip()
 
     # Inject recent legislation context for the barrister view
-    barrister_state = (case.get('state') or 'nsw').lower()
-    barrister_offence_cat = case.get('offence_category', 'homicide')
+    barrister_state = (case.get('state') or '').lower()
+    barrister_offence_cat = case.get('offence_category') or 'general'
     recent_legislation_block = _build_recent_legislation_context(barrister_state, barrister_offence_cat)
     state_framework_block = _build_state_framework_context(barrister_state)
     federal_framework_block = _build_federal_framework_context()
