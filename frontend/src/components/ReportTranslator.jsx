@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { Languages, Loader2, X, ChevronDown } from "lucide-react";
+import { Languages, Loader2, FileDown } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -18,8 +18,10 @@ const ReportTranslator = ({ caseId, reportId }) => {
   const [translating, setTranslating] = useState(false);
   const [translatedContent, setTranslatedContent] = useState(null);
   const [translatedLangName, setTranslatedLangName] = useState("");
+  const [translatedLangCode, setTranslatedLangCode] = useState("");
   const [showTranslation, setShowTranslation] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   useEffect(() => {
     if (showDialog && languages.length === 0) {
@@ -48,6 +50,7 @@ const ReportTranslator = ({ caseId, reportId }) => {
       );
       setTranslatedContent(response.data.translated_content);
       setTranslatedLangName(response.data.language_name);
+      setTranslatedLangCode(selectedLang);
       setShowDialog(false);
       setShowTranslation(true);
       toast.success(`Report translated to ${response.data.language_name}${response.data.cached ? " (cached)" : ""}`);
@@ -56,6 +59,41 @@ const ReportTranslator = ({ caseId, reportId }) => {
       toast.error(msg);
     } finally {
       setTranslating(false);
+    }
+  };
+
+  const handleDownloadTranslatedPDF = async () => {
+    setDownloadingPDF(true);
+    try {
+      const response = await axios.get(
+        `${API}/cases/${caseId}/translate/${reportId}/pdf?lang=${translatedLangCode}`,
+        { responseType: 'blob', timeout: 120000 }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        window.open(url, '_blank');
+        toast.success("PDF opened — use Share to save.");
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = `Report_${translatedLangName}_Translation.pdf`;
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename="(.+)"/);
+          if (match) filename = match[1];
+        }
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+        toast.success(`${translatedLangName} PDF downloaded!`);
+      }
+    } catch (error) {
+      toast.error("Failed to generate translated PDF. Please try again.");
+    } finally {
+      setDownloadingPDF(false);
     }
   };
 
@@ -171,11 +209,29 @@ const ReportTranslator = ({ caseId, reportId }) => {
             </div>
             <div className="flex gap-3 justify-end pt-4">
               <Button
+                onClick={handleDownloadTranslatedPDF}
+                disabled={downloadingPDF}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+                data-testid="download-translated-pdf-btn"
+              >
+                {downloadingPDF ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generating PDF...
+                  </>
+                ) : (
+                  <>
+                    <FileDown className="w-4 h-4 mr-2" />
+                    Download PDF
+                  </>
+                )}
+              </Button>
+              <Button
                 onClick={() => {
                   navigator.clipboard.writeText(translatedContent);
                   toast.success("Translation copied to clipboard");
                 }}
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="bg-slate-700 text-white hover:bg-slate-600"
                 data-testid="copy-translation-btn"
               >
                 Copy to Clipboard
