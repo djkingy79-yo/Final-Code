@@ -46,6 +46,7 @@ from routers.statistics import router as statistics_router
 from routers.compare import router as compare_router
 from routers.contradictions import router as contradictions_router
 from routers.export import router as export_router
+from routers.export import translate_router
 from routers.collaboration import router as collaboration_router
 from routers.documents import router as documents_router
 from routers.timeline import router as timeline_router
@@ -5612,6 +5613,7 @@ app.include_router(statistics_router)
 app.include_router(compare_router)
 app.include_router(contradictions_router)
 app.include_router(export_router)
+app.include_router(translate_router)
 app.include_router(collaboration_router)
 app.include_router(documents_router)
 app.include_router(timeline_router)

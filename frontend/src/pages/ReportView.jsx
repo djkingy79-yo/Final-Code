@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
+import ReportTranslator from "../components/ReportTranslator";
 import {
   Scale,
   ArrowLeft,
@@ -973,6 +974,7 @@ const ReportView = () => {
               <Button size="sm" onClick={handleExportPDF} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="export-pdf-btn">
                 <Download className="w-4 h-4 mr-2" /> Export PDF
               </Button>
+              <ReportTranslator caseId={caseId} reportId={reportId} />
             </div>
           </div>
         </div>

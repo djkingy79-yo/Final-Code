@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
+import ReportTranslator from "../components/ReportTranslator";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -820,6 +821,9 @@ export default function BarristerView() {
             >
               <Zap className="w-4 h-4 mr-2" /> Quick Brief
             </Button>
+            {isCompleted && report?.report_id && (
+              <ReportTranslator caseId={caseId} reportId={report.report_id} />
+            )}
           </div>
         </div>
       </header>
