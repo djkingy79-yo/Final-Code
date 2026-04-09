@@ -84,7 +84,6 @@ const AuthCallback = () => {
   const hasProcessed = useRef(false);
 
   const attemptAuth = async () => {
-    setAuthError(null);
     const hash = window.location.hash;
     const query = window.location.search;
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
