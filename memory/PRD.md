@@ -42,6 +42,7 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - 8-point code review fixes (iteration 161): credential redaction, auSpelling markdown safety, iOS Quick Brief fix, reorder atomic validation, merged grounds field preservation, UI jump fix, Pytest guards
 - 12-point code review fixes (iteration 162): evidence scoring single-quote Partial fix, viability_score legacy semantics restored, state key normalisation for APPELLATE_PATHWAYS, Quick Brief 2-page enforcement, clustering test assertions enforced, Pytest portable paths + BASE_URL guards, auSpelling analysis capitalisation fix, blank appellate_pathway fallback, admin export owner_user_id propagation, README fenced block annotation
 - Critical fixes (iteration 163): Counsel Synthesis added to H2 whitelist/thin_section_targets/final_min_chars (was being stripped), XSS fix for jurisdiction in law_sections export HTML (GroundsOfMerit.jsx + CaseDetail.jsx)
+- P0 Google Auth Fix (Apr 2026): Removed orphaned `setAuthError(null)` call in AuthCallback (App.js) that caused a ReferenceError crashing the entire Google OAuth callback flow. All auth flows verified passing.
 
 ## Backlog
 - P1: Native Mobile App build (Capacitor v7)
