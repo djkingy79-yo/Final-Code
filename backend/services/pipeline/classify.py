@@ -1,6 +1,7 @@
 # DO NOT UNDO — staged classification pipeline. Additive module.
 from services.llm_service import call_llm_for_json
 from services.pipeline_models import IssueClassification
+from services.offence_helpers import _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context
 
 GROUND_TYPES = {
     "procedural_error",
@@ -57,13 +58,26 @@ Do NOT merge different issues together. Each distinct legal argument deserves it
 For example, a sentencing error based on double-counting is DIFFERENT from a sentencing error based
 on manifest excess. A failure to call witnesses is DIFFERENT from a failure to object to evidence.
 
+You MUST use Australian English spelling throughout (e.g. analyse, defence, offence, behaviour, honour).
+
 CRITICAL RULES FOR APPELLATE GROUNDING:
 - Every ground MUST be tied to a specific appellate pathway (e.g. miscarriage of justice, unsafe verdict, misdirection, procedural unfairness, fresh evidence, sentencing error).
 - Do NOT overuse constitutional framing (e.g. s 80 Constitution). In state criminal appeals, the primary pathways are: miscarriage of justice, unsafe verdict, misdirection, procedural unfairness, fresh evidence, and sentencing error under the relevant Criminal Appeal Act.
 - Constitutional grounds should only appear when genuinely and specifically engaged.
 - Use forensic appellate language: "It is arguable that the trial judge erred in...", "It is contended that...", "There is a tenable argument that...". Do NOT use bare declarations like "The trial judge erred" (too definitive at appellate preparation stage). Do NOT use "may have", "could potentially", "it is possible that" (too weak).
-- For law sections: provide ACTUAL section numbers. If the exact section number is not known, do NOT include the law section at all. Never write "section not provided" or leave placeholders.
+- For law sections: provide ACTUAL section numbers from the CORRECT jurisdiction's legislation. If the exact section number is not known, do NOT include the law section at all. Never write "section not provided" or leave placeholders.
 - For similar cases: only cite cases if a real citation is known. Do NOT use "[Surname]" or "[Year]" placeholders. If no verified citation exists, omit the field entirely.
+
+JURISDICTION FIDELITY — ABSOLUTE:
+- Use ONLY legislation from the case's jurisdiction. Do NOT default to NSW legislation for non-NSW cases.
+- Reference the correct Criminal Code/Act, Sentencing Act, Evidence Act, and Appeal Act for the jurisdiction.
+- Commonwealth legislation (Criminal Code Act 1995 (Cth), Crimes Act 1914 (Cth)) may be cited where relevant to any jurisdiction.
+
+STRICT NO-HALLUCINATION:
+- Do NOT invent case names, citations, section numbers, Act names, or penalty amounts.
+- Do NOT fabricate facts not in the supplied material.
+- If uncertain about a section number, reference the Act by name only.
+
 - GROUND FRAMING BY TYPE:
   * If psychiatric/mental health evidence undermines intent → frame as "Miscarriage of Justice: Failure to Properly Determine Mental State (Mens Rea)" — this is a CONVICTION SAFETY attack, not merely evidentiary criticism.
   * If jury/trial procedure issues → cluster related issues (judge-alone refusal, jury reduction, juror conduct) under a single "Procedural Unfairness" ground with sub-particulars.
@@ -83,19 +97,28 @@ CRITICAL RULES FOR APPELLATE GROUNDING:
         for f in case_extract.get("merged_findings", [])
     ])
 
-    state = str(case.get("state", "nsw")).strip()
-    offence_cat = case.get("offence_category", "unknown")
-    state_key = state.lower()
-    appellate_act = APPELLATE_PATHWAYS.get(state_key, APPELLATE_PATHWAYS["nsw"])
+    state = str(case.get("state") or "").strip()
+    offence_cat = case.get("offence_category") or "unknown"
+    state_key = state.lower() if state else ''
+    appellate_act = APPELLATE_PATHWAYS.get(state_key, "the relevant Criminal Appeal Act for the jurisdiction")
+    jurisdiction_note = f"Jurisdiction: {state.upper()}" if state else "Jurisdiction: NOT CONFIRMED — flag this in every ground"
+
+    # Build legislative framework context for grounds classification
+    legislation_context = ""
+    if state_key:
+        recent_leg = _build_recent_legislation_context(state_key, offence_cat)
+        state_fw = _build_state_framework_context(state_key)
+        federal_fw = _build_federal_framework_context()
+        legislation_context = f"{recent_leg}\n{state_fw}\n{federal_fw}"
 
     user_prompt = f"""Based on the extracted record below, identify ALL potential grounds of appeal.
 Be thorough — examine every aspect of the case for possible appealable issues.
 
-Jurisdiction: {state.upper()}
+{jurisdiction_note}
 Offence category: {offence_cat}
-Offence type: {case.get('offence_type', 'Not specified')}
+Offence type: {case.get('offence_type') or 'Not specified'}
 Primary appellate legislation: {appellate_act}
-
+{legislation_context}
 EXTRACTED FACTS:
 {facts_text[:15000]}
 

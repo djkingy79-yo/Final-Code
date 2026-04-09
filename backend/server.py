@@ -1512,7 +1512,13 @@ You MUST list EVERY ground identified. For each ground:
 Do NOT use percentage success rates. Use appellate viability language only.
 
 ## 4. KEY LEGISLATION (PREVIEW)
-List the most relevant statutory provisions from {state_info.get('name', 'NSW')} / Commonwealth law with ACTUAL section numbers, years, and one-line relevance notes. If the exact section number is not known, do NOT include that entry.
+List the most relevant statutory provisions from {state_info.get('name', 'the relevant jurisdiction')} and Commonwealth law. You MUST cite the CORRECT legislation for the case's jurisdiction — NOT NSW legislation for non-NSW cases. Include ACTUAL section numbers, years, and one-line relevance notes. Cite at minimum:
+- The jurisdiction's primary Criminal Code/Act (with specific sections relevant to the offence)
+- The jurisdiction's Sentencing Act (with relevant sentencing provisions — aggravating/mitigating factors, non-parole periods)
+- The jurisdiction's Evidence Act (if evidentiary issues arise)
+- The jurisdiction's Criminal Appeal Act (appeal grounds and powers)
+- Any Commonwealth legislation that applies
+If the exact section number is not known, do NOT include that entry.
 
 ## 5. SENTENCING OVERVIEW
 2-3 paragraphs comparing the sentence imposed against typical appellate principles for this offence category. Include a mini comparison table:
@@ -1661,7 +1667,7 @@ Written submission strategy: full argument sequence paragraphs, authority placem
 Oral submission strategy: likely bench questions with response lines, time allocation per ground.
 
 ## 13. HOW TO START YOUR APPEAL + REQUIRED FORMS
-Step-by-step guide specific to {state_info.get('name', 'NSW')} with forms table.
+Step-by-step guide specific to {state_info.get('name', 'the relevant jurisdiction')} with forms table.
 
 ## 14. PRIORITISED ACTION PLAN
 72-hour / 7-day / 28-day actions. Each action: what to do, who to contact, objective.
@@ -1766,7 +1772,7 @@ CRITICAL: This section MUST contain an ACTUAL populated markdown table with real
 
 Markdown table with at least 12 comparable sentencing outcomes:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
-Include AustLII search link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
+Include AustLII search link: [Search {state_info.get('appeal_court', 'the Court of Criminal Appeal')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/')})
 After the table, provide a DETAILED paragraph for EACH case explaining:
 - What was the original sentence and sentencing judge's reasoning
 - What the appeal court decided and why
@@ -1802,7 +1808,7 @@ For each of at least 15 cases:
 - Hearing outcome
 - Extracted legal principle
 - How this principle applies to the current case
-Include AustLII link: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')})
+Include AustLII link: [Search {state_info.get('appeal_court', 'the Court of Criminal Appeal')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/')})
 
 ## 10. STATUTORY + DOCTRINAL FRAMEWORK MAP
 15+ statutory provisions with:
@@ -1843,7 +1849,7 @@ For briefing a barrister:
 - Key dates and deadlines
 
 ## 15. COURT PATHWAY OPERATIONS PLAYBOOK
-For EACH relevant court level ({state_info.get('name', 'NSW')} specific):
+For EACH relevant court level ({state_info.get('name', 'the relevant jurisdiction')} specific):
 - Filing sequence and required documents
 - Court registry details and contact information
 - Deadlines for each filing step
@@ -1851,7 +1857,7 @@ For EACH relevant court level ({state_info.get('name', 'NSW')} specific):
 - What happens at each stage of the process
 
 ## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS
-Step-by-step guide specific to {state_info.get('name', 'NSW')}:
+Step-by-step guide specific to {state_info.get('name', 'the relevant jurisdiction')}:
 1. Obtain trial transcripts and exhibits
 2. Identify and finalise grounds of appeal
 3. Lodge Notice of Intention to Appeal
@@ -1861,12 +1867,12 @@ Step-by-step guide specific to {state_info.get('name', 'NSW')}:
 For each step: plain English explanation, required form, deadline, and link.
 Forms table:
 | Form/Document | Purpose | Where to Obtain | Filing Deadline |
-Links: [Legal Aid {state_info.get('name', 'NSW')}]({state_info.get('legal_aid_url', 'https://www.legalaid.nsw.gov.au/')}) | [AustLII](https://www.austlii.edu.au/) | [Court Forms]({state_info.get('court_forms_url', '#')})
+Links: [Legal Aid {state_info.get('name', 'the relevant jurisdiction')}]({state_info.get('legal_aid_url', 'https://www.legalaid.nsw.gov.au/')}) | [AustLII](https://www.austlii.edu.au/) | [Court Forms]({state_info.get('court_forms_url', '#')})
 
 ## 17. SIMILAR CASE SEARCH OPTIONS
 Tailored AustLII search guidance:
 - 5+ query strings specifically designed for this case's offence and grounds profile
-- Links: [Search {state_info.get('appeal_court', 'NSWCCA')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/nsw/NSWCCA/')}) | [Search all states](https://www.austlii.edu.au/)
+- Links: [Search {state_info.get('appeal_court', 'the Court of Criminal Appeal')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/')}) | [Search all states](https://www.austlii.edu.au/)
 - Court-level filtering suggestions
 - Keyword alternatives for each ground
 - How to narrow results to the most relevant period and jurisdiction
@@ -1902,7 +1908,7 @@ For each identified evidentiary gap:
 - Suggested brief outline for instructing the expert
 
 ## 22. FILING PATHWAY
-Step-by-step filing requirements for {state_info.get('name', 'NSW')}:
+Step-by-step filing requirements for {state_info.get('name', 'the relevant jurisdiction')}:
 - Notice of Intention to Appeal (if not filed) — deadline and form
 - Detailed grounds of appeal — content requirements
 - Written submissions — structure and page limits
@@ -2344,7 +2350,7 @@ Write 6-8 FULL paragraphs (NOT bullet points):
 - Paragraph 1: Document/timeline/grounds counts from supplied data, then strategic overview of the appeal's overall appellate position (do NOT use percentage success rates — use viability language: arguable, moderate, strong)
 - Paragraph 2: The 2-3 STRONGEST grounds with specific evidence anchors and legal tests that support them
 - Paragraph 3: The weakest ground and why it's still worth pursuing (or should be abandoned)
-- Paragraph 4: Jurisdiction-specific posture — what the {state_info.get('appeal_court', 'NSWCCA')} typically does with this type of appeal
+- Paragraph 4: Jurisdiction-specific posture — what the {state_info.get('appeal_court', 'the Court of Criminal Appeal')} typically does with this type of appeal
 - Paragraph 5: Most likely outcome pathway and realistic assessment of relief
 - Paragraph 6: Key risks the prosecution will exploit and how to counter them
 - Paragraph 7: Immediate actions required with specific deadlines
@@ -2478,7 +2484,7 @@ STOP after section 14."""),
 NOW GENERATE ONLY SECTIONS 15-17. Write 4000+ WORDS for this pass. These sections are UNIQUE to the $200 report.
 
 ## 15. COURT PATHWAY OPERATIONS PLAYBOOK (1200+ words — NEW SECTION NOT IN $150 REPORT)
-For EACH relevant court level in {state_info.get('name', 'NSW')}:
+For EACH relevant court level in {state_info.get('name', 'the relevant jurisdiction')}:
 - Court name and jurisdiction
 - Filing sequence with specific documents required at each stage
 - Court registry details (address, phone, email where available)
@@ -2489,7 +2495,7 @@ For EACH relevant court level in {state_info.get('name', 'NSW')}:
 - Costs considerations
 
 ## 16. HOW TO START YOUR APPEAL + REQUIRED FORMS (800+ words)
-Step-by-step guide specific to {state_info.get('name', 'NSW')} with FULL DETAIL per step:
+Step-by-step guide specific to {state_info.get('name', 'the relevant jurisdiction')} with FULL DETAIL per step:
 1. Obtain trial transcripts and exhibits — from which court registry, expected cost and timeframe
 2. Identify and finalise grounds of appeal — how to narrow from identified grounds to filed grounds
 3. Lodge Notice of Intention to Appeal — form name, deadline, where to lodge
@@ -2553,7 +2559,7 @@ For each identified evidentiary gap that requires expert opinion, write 150+ wor
 Identify at least 4 expert reports needed.
 
 ## 22. FILING PATHWAY (800+ words — NEW SECTION NOT IN $150 REPORT)
-Step-by-step filing requirements specific to {state_info.get('name', 'NSW')}:
+Step-by-step filing requirements specific to {state_info.get('name', 'the relevant jurisdiction')}:
 - Notice of Intention to Appeal (if not filed) — deadline, form name, where to lodge
 - Detailed grounds of appeal — content requirements, format, page limits
 - Written submissions — structure, length, authorities format
@@ -2691,7 +2697,7 @@ Do NOT truncate. Write ALL content for both sections."""),
                     doc_list = "\n".join([f"- {d.get('original_filename', d.get('filename', 'Unknown'))}" for d in documents[:20]])
                     repair_prompt = f"""Generate the MISSING section for a legal appeal report.
 
-CASE: {case.get('title', 'Unknown')} ({case.get('state', 'NSW')})
+CASE: {case.get('title', 'Unknown')} ({case.get('state') or 'Unspecified'})
 SENTENCE: {case.get('sentence', 'Not specified')}
 DOCUMENTS ({len(documents)}):
 {doc_list}
@@ -5027,7 +5033,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     cover_meta = [
         ['Case Title', case.get('title', 'N/A')],
         ['Defendant', case.get('defendant_name', 'N/A')],
-        ['Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"],
+        ['Court / State', f"{case.get('court', 'Court')} — {(case.get('state') or 'Unspecified').upper()}"],
         ['Report', title],
         ['Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()],
         ['Sentence', resolved_sentence],
@@ -5161,7 +5167,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             if ground.get('law_sections'):
                 story.append(Paragraph("<b>Relevant Law Sections:</b>", styles['ReportBodyText']))
                 for section in ground.get('law_sections', []):
-                    section_text = f"• s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', 'NSW')})"
+                    section_text = f"• s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', '')})"
                     story.append(Paragraph(section_text.replace('•', '-'), styles['LawSection']))
             
             # Similar Cases
@@ -5379,7 +5385,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_info = [
         ('Case Title', case.get('title', 'N/A')),
         ('Defendant', case.get('defendant_name', 'N/A')),
-        ('Court / State', f"{case.get('court', 'Court')} — {(case.get('state', 'NSW') or 'NSW').upper()}"),
+        ('Court / State', f"{case.get('court', 'Court')} — {(case.get('state') or 'Unspecified').upper()}"),
         ('Report', report_title),
         ('Offence', case.get('offence_type') or (case.get('offence_category') or 'Not recorded').replace('_', ' ').title()),
         ('Sentence', resolved_sentence),
@@ -5475,7 +5481,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 law_run.font.color.rgb = RGBColor(30, 64, 175)
                 
                 for section in ground.get('law_sections', []):
-                    section_text = f"s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', 'NSW')})"
+                    section_text = f"s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', '')})"
                     bullet = doc.add_paragraph(section_text, style='List Bullet')
                     for run in bullet.runs:
                         run.font.color.rgb = RGBColor(30, 64, 175)
