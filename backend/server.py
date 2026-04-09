@@ -4161,7 +4161,7 @@ async def get_reports(case_id: str, request: Request):
 
 @api_router.get("/cases/{case_id}/reports/barrister-view", response_model=dict)
 async def get_or_generate_barrister_view(case_id: str, request: Request, regenerate: bool = False):
-    """Return the current barrister brief or start a fresh synthesis when required."""
+    """Return the current barrister brief or start a fresh synthesis when explicitly requested."""
     user = await get_current_user(request)
     source_reports = await _get_latest_standard_reports(case_id, user.user_id)
     source_signature = _build_barrister_source_signature(source_reports)
@@ -4171,12 +4171,19 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
             "case_id": case_id,
             "user_id": user.user_id,
             "report_type": "barrister_view",
-            "content.source_signature": source_signature,
         },
         {"_id": 0},
     ).sort("generated_at", -1).to_list(10)
 
-    current_report = existing_reports[0] if existing_reports else None
+    # Find current report — prefer one matching current source signature
+    current_report = None
+    for r in existing_reports:
+        if (r.get("content") or {}).get("source_signature") == source_signature:
+            current_report = r
+            break
+    if not current_report and existing_reports:
+        current_report = existing_reports[0]
+
     if current_report and not regenerate:
         current_status = current_report.get("status")
         report_id_cur = current_report.get("report_id")
@@ -4199,16 +4206,7 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
                 return current_report
             return current_report
         if current_status == "failed":
-            temporary_error = str(current_report.get("technical_error") or current_report.get("error") or "")
-            if re.search(r"502|BadGateway|OpenAIException|temporary AI service error|timed out", temporary_error, re.I):
-                await db.reports.update_one(
-                    {"report_id": report_id_cur},
-                    {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
-                )
-                current_report["status"] = "generating"
-                current_report["error"] = None
-                asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
-                return current_report
+            # Don't auto-retry — return as-is so user can decide to regenerate
             return current_report
         if current_status == "generating":
             generated_at = _coerce_utc_datetime(current_report.get("generated_at"))
@@ -4221,14 +4219,25 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
                 {"report_id": report_id_cur},
                 {"$set": {"status": "failed", "error": timeout_message, "technical_error": timeout_message}},
             )
-            await db.reports.update_one(
-                {"report_id": report_id_cur},
-                {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
-            )
-            current_report["status"] = "generating"
-            current_report["error"] = None
-            asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
+            current_report["status"] = "failed"
+            current_report["error"] = timeout_message
             return current_report
+
+    # If no existing report and not regenerate — return 404 so frontend knows to show "Generate" button
+    if not regenerate:
+        raise HTTPException(status_code=404, detail="Barrister brief has not been generated yet. Select 'Generate' to create one.")
+
+    # Regenerate requested — create or reuse
+    if current_report and current_report.get("status") in ("completed", "failed"):
+        report_id_cur = current_report["report_id"]
+        await db.reports.update_one(
+            {"report_id": report_id_cur},
+            {"$set": {"status": "generating", "error": None, "generated_at": datetime.now(timezone.utc).isoformat()}},
+        )
+        current_report["status"] = "generating"
+        current_report["error"] = None
+        asyncio.create_task(_run_barrister_report_generation(report_id_cur, case_id, user.user_id))
+        return current_report
 
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
     placeholder = {

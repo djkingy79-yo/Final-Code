@@ -10,7 +10,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
 import {
-  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Presentation, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
+  FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -290,6 +290,50 @@ const ReportsSection = ({
 
   const pollingRef = useRef(null);
   const elapsedRef = useRef(null);
+
+  const handleGenerateBarristerReport = async () => {
+    if (documents.length === 0) {
+      toast.error("Please upload documents before generating a report");
+      return;
+    }
+    setGeneratingReport(true);
+    setGenElapsed(0);
+    setShowReportDialog(false);
+    toast.info("Generating Barrister Brief — this may take 10-20 minutes...");
+
+    const startTime = Date.now();
+    elapsedRef.current = setInterval(() => {
+      setGenElapsed(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+
+    try {
+      const response = await axios.get(
+        `${API}/cases/${caseId}/reports/barrister-view`,
+        { params: { regenerate: true }, timeout: 120000 }
+      );
+      const reportId = response.data?.report_id;
+      const status = response.data?.status;
+
+      if (status === "generating" && reportId) {
+        pollForCompletion(reportId);
+      } else if (status === "completed") {
+        toast.success("Barrister Brief generated successfully!");
+        if (onReportsChange) onReportsChange();
+        setGeneratingReport(false);
+        if (elapsedRef.current) clearInterval(elapsedRef.current);
+      }
+    } catch (error) {
+      const isTimeout = error?.code === "ECONNABORTED";
+      if (isTimeout) {
+        toast.info("Barrister Brief generation started — it will appear in your reports list when complete.");
+        if (onReportsChange) onReportsChange();
+      } else {
+        toast.error(error?.response?.data?.detail || "Failed to start Barrister Brief generation");
+      }
+      setGeneratingReport(false);
+      if (elapsedRef.current) clearInterval(elapsedRef.current);
+    }
+  };
 
   // Clean up polling on unmount
   useEffect(() => {
@@ -838,31 +882,6 @@ const ReportsSection = ({
                           <Eye className="w-4 h-4 mr-1.5" />
                           {report.report_type === 'barrister_view' ? 'View Barrister Brief' : 'Full Report Page'}
                         </Button>
-                        {report.report_type === 'extensive_log' && (
-                          hasAllReports ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)}
-                              className="bg-blue-700 text-white hover:bg-blue-600"
-                              data-testid={`barrister-view-btn-${report.report_id}`}
-                            >
-                              <Presentation className="w-4 h-4 mr-1.5" />
-                              Barrister View
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              disabled
-                              className="text-slate-400 border-slate-200 bg-slate-50 opacity-80 cursor-not-allowed"
-                              data-testid={`barrister-view-locked-${report.report_id}`}
-                            >
-                              <Lock className="w-4 h-4 mr-1.5" />
-                              Barrister View (locked — generate all 3 reports)
-                            </Button>
-                          )
-                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -1053,7 +1072,7 @@ const ReportsSection = ({
                   </div>
                   <p className={`text-sm mb-2 ${hasAllReports ? 'text-slate-600' : 'text-slate-400'}`}>
                     {hasAllReports
-                      ? "Capstone synthesis combining all three reports into a single barrister-ready brief."
+                      ? "Capstone synthesis combining all three reports into a single barrister-ready brief. Click Generate to create."
                       : "Generate and pay for all three reports to unlock this view."}
                   </p>
                   {!hasAllReports && (
@@ -1106,14 +1125,7 @@ const ReportsSection = ({
             <Button 
               onClick={() => {
                 if (selectedReportType === 'barrister_view') {
-                  // Navigate to barrister view of the extensive_log report
-                  const extReport = reports.find(r => r.report_type === 'extensive_log' && r.status === 'completed');
-                  if (extReport) {
-                    navigate(`/cases/${caseId}/reports/${extReport.report_id}/barrister`);
-                    setShowReportDialog(false);
-                  } else {
-                    toast.error("Extensive Log report not found");
-                  }
+                  handleGenerateBarristerReport();
                   return;
                 }
                 handleGenerateReport(selectedReportType);
@@ -1125,7 +1137,7 @@ const ReportsSection = ({
               {generatingReport ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : null}
-              {selectedReportType === 'barrister_view' ? 'Open Barrister View' : 'Generate Report'}
+              Generate Report
             </Button>
           </DialogFooter>
         </DialogContent>

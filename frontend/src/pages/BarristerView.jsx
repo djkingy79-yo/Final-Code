@@ -299,21 +299,10 @@ export default function BarristerView() {
         : false;
 
       if (barristerRes.status === "rejected") {
-        if (completedStandardReports && !regenerate) {
-          const retryRes = await axios.get(`${API}/cases/${caseId}/reports/barrister-view`, {
-            params: { regenerate: true },
-          });
-          if (requestId !== requestRef.current) return;
-          const retryReport = retryRes.data;
-          setReport(retryReport);
-          setStatus(retryReport?.status || "generating");
-          setErrorMessage(retryReport?.error || "");
-          return;
-        }
         const detail = barristerRes.reason?.response?.data?.detail;
         setReport(null);
-        setStatus("locked");
-        setErrorMessage(typeof detail === "string" ? detail : "Barrister View is not available for this case yet.");
+        setStatus("not_generated");
+        setErrorMessage(typeof detail === "string" ? detail : "Barrister Brief has not been generated yet. Generate it from the Reports section.");
         return;
       }
 
@@ -829,13 +818,22 @@ export default function BarristerView() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        {(status === "locked" || status === "error") && (
+        {(status === "locked" || status === "error" || status === "not_generated") && (
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8" data-testid="barrister-locked-state">
             <div className="flex items-start gap-4">
-              <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
+              <AlertTriangle className="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Barrister View unavailable</h1>
-                <p className="mt-3 text-slate-700 max-w-3xl">{errorMessage || "This case does not yet have the three completed standard reports required to unlock the Barrister View."}</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                  {status === "not_generated" ? "Barrister Brief Not Yet Generated" : "Barrister View Unavailable"}
+                </h1>
+                <p className="mt-3 text-slate-700 max-w-3xl">
+                  {errorMessage || "This case does not yet have the three completed standard reports required to unlock the Barrister View."}
+                </p>
+                {status === "not_generated" && (
+                  <p className="mt-2 text-sm text-slate-500">
+                    Go to the Reports tab and select "Barrister View" then click "Generate Report" to create the brief.
+                  </p>
+                )}
               </div>
             </div>
           </div>
