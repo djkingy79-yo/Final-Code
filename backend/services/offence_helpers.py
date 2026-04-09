@@ -8,7 +8,40 @@ IMPORTANT DESIGN RULES:
   - Always include anti-hallucination controls in system prompts
   - Separate factual extraction from legal inference
 """
-from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
+from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES
+
+
+def _build_recent_legislation_context(state: str, offence_category: str) -> str:
+    """Build a context block listing all recent legislation updates relevant to the case's state and offence category."""
+    entries = []
+
+    # State-specific updates
+    state_key = state.lower() if state else 'nsw'
+    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key, [])
+    for update in state_updates:
+        cats = update.get('relevant_categories', [])
+        if 'all' in cats or offence_category in cats:
+            entries.append(update)
+
+    # Federal/Commonwealth updates (always relevant)
+    federal_updates = RECENT_LEGISLATION_UPDATES.get('federal', [])
+    for update in federal_updates:
+        cats = update.get('relevant_categories', [])
+        if 'all' in cats or offence_category in cats:
+            entries.append(update)
+
+    if not entries:
+        return ""
+
+    context = "\nRECENT LEGISLATION UPDATES (2022-2025) — MUST BE CITED WHERE RELEVANT:\n"
+    context += "The following Acts have recently commenced or been amended. Where these provisions are relevant to the case, they MUST be cited with the correct Act name, section number, and commencement date. Do NOT cite repealed or pre-amendment versions.\n\n"
+    for entry in entries:
+        context += f"  {entry['act']}\n"
+        context += f"    Commenced: {entry['commenced']}\n"
+        context += f"    Summary: {entry['summary']}\n"
+        context += f"    Appeal Relevance: {entry['appeal_relevance']}\n\n"
+
+    return context
 
 
 def get_offence_context(case: dict) -> str:
@@ -67,6 +100,11 @@ RELEVANT {abbreviation} LEGISLATION:
             for section in sections:
                 context += f"  - {section.get('section')}: {section.get('title')}\n"
 
+    # Inject recent legislation updates relevant to this state and offence category
+    recent_leg = _build_recent_legislation_context(state_key, offence_category)
+    if recent_leg:
+        context += recent_leg
+
     return context
 
 
@@ -106,9 +144,22 @@ def get_offence_system_prompt(offence_category: str, state: str = "") -> str:
     else:
         jurisdiction_line = "Jurisdiction has not been confirmed. Flag this explicitly and note where analysis depends on jurisdiction-specific law."
 
+    # Build recent legislation awareness line
+    recent_leg_line = ""
+    state_key_for_recent = state if state else 'nsw'
+    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key_for_recent.lower(), [])
+    federal_updates = RECENT_LEGISLATION_UPDATES.get('federal', [])
+    recent_act_names = []
+    for update in state_updates + federal_updates:
+        cats = update.get('relevant_categories', [])
+        if 'all' in cats or offence_category in cats:
+            recent_act_names.append(update['act'].split(' — ')[0].split(' (')[0] if ' — ' in update['act'] else update['act'].split(' (')[0])
+    if recent_act_names:
+        recent_leg_line = f"\n\nRECENT LEGISLATION AWARENESS: The following recently commenced Acts may be relevant to this case and MUST be cited where applicable: {'; '.join(recent_act_names[:6])}. Use the exact Act name with year. Do NOT cite repealed or superseded provisions when the current amended version exists."
+
     return f"""You are assisting with structured appellate issue identification under Australian criminal law, specifically in the area of {category_name.lower()} offences. {jurisdiction_line}
 
-Relevant legislation includes: {legislation_str}.
+Relevant legislation includes: {legislation_str}.{recent_leg_line}
 
 CONTEXT: This is a professional criminal appeal case management application used by legal practitioners and self-represented litigants in Australia. The analysis supports access to justice and the right to appeal.
 
@@ -126,6 +177,7 @@ MANDATORY ANALYTICAL CONTROLS:
 5. Use conditional language: "It is arguable that..." / "The material suggests..." / "This may constitute..." — NOT "The court failed..." / "This clearly shows..."
 6. Mark confidence levels conservatively. If documentary support is thin, say so.
 7. Every assertion about the case must be traceable to supplied documents or clearly flagged as inference.
+8. LEGISLATION ACCURACY: Always cite legislation with the FULL Act name and year (e.g. "Crimes Act 1900 (NSW)", NOT "Crimes Act (NSW)"). Where an Act has been recently amended, cite the CURRENT version. Do NOT cite provisions that have been repealed, renamed, or superseded. If uncertain whether a provision is current, flag this explicitly rather than guessing.
 
 KEY ELEMENTS for {category_name}: {', '.join(category_data.get('key_elements', ['actus reus', 'mens rea'])[:4])}
 Available defences: {', '.join(category_data.get('defences', ['self-defence'])[:5])}"""

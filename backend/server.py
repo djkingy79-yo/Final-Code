@@ -32,7 +32,7 @@ from models import (
     ReportMetadata,
 )
 from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
-from services.offence_helpers import get_offence_context, get_offence_system_prompt
+from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
@@ -1442,6 +1442,13 @@ CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
 - Do NOT reuse boilerplate phrases. Every paragraph must read as drafted specifically for this case and this report tier.
 - For legislation sections: Do NOT just name the Act and describe what it covers in general terms. APPLY each provision to THIS case's specific facts. WRONG: "s.44 discusses parole periods, directly affecting Homann's sentencing outcomes." RIGHT: "Under s.44 of the Crimes (Sentencing Procedure) Act 1999 (NSW), the non-parole period must reflect the objective seriousness of the offence. In Homann's case, the 22-year non-parole period imposed by Justice McCallum is arguable as disproportionate when compared with R v Loveridge [2014] NSWCCA 120 where a 7-year non-parole period was imposed for a one-punch manslaughter..."
 - For precedent/sentencing tables: Include the full case citation, the specific factual similarity to THIS case, the actual sentence imposed, and the specific relevance to the current appeal. NEVER use a one-line vague description.
+
+LEGISLATION ACCURACY — CRITICAL ANTI-HALLUCINATION RULE:
+- ALWAYS cite the FULL Act name with the year (e.g. "Crimes Act 1900 (NSW)", NOT "Crimes Act (NSW)" or "the Crimes Act").
+- Where RECENT LEGISLATION UPDATES are provided in the case context, you MUST reference these current amendments where they are relevant to the case. Do NOT cite repealed or superseded provisions when a current amended version exists.
+- If a provision has been recently amended (e.g. new coercive control offence under s 54D Crimes Act 1900 (NSW) commenced 1 July 2024, or Jury Amendment Act 2024 commenced 10 March 2025), cite the CURRENT version and note the commencement date.
+- Do NOT fabricate section numbers. If the exact section is not known, reference the Act by name only and note that the specific section should be verified.
+- Where the case involves a recently commenced offence (post-2022), check whether transitional provisions apply — the offence must have been committed AFTER the commencement date for the new provisions to apply.
 
 FORMATTING RULES — STRICTLY ENFORCED:
 - DO NOT begin your response with any preamble, greeting, or introduction.
@@ -3064,6 +3071,11 @@ TIMELINE EVENT COUNT: {len(timeline)}
 GROUNDS COUNT: {len(grounds)}
 """.strip()
 
+    # Inject recent legislation context for the barrister view
+    barrister_state = (case.get('state') or 'nsw').lower()
+    barrister_offence_cat = case.get('offence_category', 'homicide')
+    recent_legislation_block = _build_recent_legislation_context(barrister_state, barrister_offence_cat)
+
     # DO NOT UNDO — Barrister View system prompt with strict depth requirements and FORENSIC language
     system_prompt = """You are a senior Australian criminal appeal barrister preparing the definitive barrister brief for a criminal appeal matter. This is the CAPSTONE document that synthesises and BUILDS UPON three earlier analytical reports (Quick Summary, Full Detailed Report, and Extensive Log). The output must read like one coherent, authoritative legal document written by a careful appellate specialist who has thoroughly digested all three source reports and is now producing a comprehensive counsel-ready working brief.
 
@@ -3117,7 +3129,7 @@ TIMELINE SNAPSHOT
 
 DOCUMENT INVENTORY
 {documents_text}
-"""
+{recent_legislation_block}"""
 
     # DO NOT UNDO — Section groups with calibrated source limits (larger limits cause 502 proxy errors)
     section_groups = [
