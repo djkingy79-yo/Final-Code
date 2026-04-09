@@ -323,7 +323,7 @@ const Dashboard = ({ user }) => {
       {/* Main Content */}
       <main className="lg:ml-72 min-h-screen">
         {/* Top Bar */}
-        <header className="sticky top-8 z-20 glass-header px-6 py-4">
+        <header className="sticky top-8 z-20 glass-header px-4 sm:px-6 py-4 overflow-hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button 
@@ -344,26 +344,27 @@ const Dashboard = ({ user }) => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <NotificationBell user={user} />
               {isAdmin && (
                 <Link to="/admin/dashboard">
                   <Button
-                    className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
+                    className="rounded-xl bg-blue-700 text-white hover:bg-blue-600 text-xs sm:text-sm px-2 sm:px-4"
                     data-testid="admin-dashboard-shortcut-btn"
                   >
-                    <Shield className="w-4 h-4 mr-2" />
-                    Admin
+                    <Shield className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Admin</span>
                   </Button>
                 </Link>
               )}
               <Button
                 onClick={() => setShowNewCaseDialog(true)}
-                className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl shadow-lg shadow-blue-700/25 px-6 py-4 text-lg font-semibold"
+                className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl shadow-lg shadow-blue-700/25 px-3 py-2 sm:px-6 sm:py-4 text-sm sm:text-lg font-semibold"
                 data-testid="new-case-btn"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                New Case
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">New Case</span>
+                <span className="sm:hidden">New</span>
               </Button>
             </div>
           </div>
