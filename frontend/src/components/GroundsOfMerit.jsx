@@ -519,51 +519,54 @@ const GroundsOfMerit = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grounds of Merit Export</title>
   <style>
-    @page { size: A4; margin: 12mm; }
+    @page { size: A4; margin: 15mm 15mm 28mm 15mm; }
     * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 12px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; }
-    .grounds-export-brand { text-align: center; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
-    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 24px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10px; margin: 0 0 8px; }
-    .grounds-export-header h1 { margin: 0 0 8px; font-size: 18px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 10px; }
-    .grounds-export-section { padding: 18px 0; border-bottom: 1px solid #e2e8f0; }
-    .grounds-export-title-wrap h2 { margin: 0 0 8px; font-size: 18px; font-weight: 800; }
-    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 3px 8px; border-radius: 999px; font-size: 9px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 12px; line-height: 1.55; font-size: 12px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 8px; font-size: 13px; font-weight: 800; }
-    .grounds-export-block ul { margin: 0 0 12px; padding-left: 16px; line-height: 1.45; }
-    .grounds-export-block ul li { font-size: 11px !important; -webkit-text-size-adjust: 100%; line-height: 1.5; margin-bottom: 4px; }
-    .grounds-export-analysis { margin-top: 14px; }
-    .grounds-export-disclaimer { margin-top: 18px; background: #dc2626; border: 3px solid #b91c1c; padding: 14px 18px; font-weight: 700; line-height: 1.45; font-size: 10px; color: #ffffff; border-radius: 8px; display: flex; gap: 12px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.6; margin: 0 0 8px; font-size: 12px; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 11px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; padding-bottom: 60px; }
+    .grounds-export-brand { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 14px; margin-bottom: 20px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 9px; margin: 0 0 6px; }
+    .grounds-export-header h1 { margin: 0 0 6px; font-size: 16px; }
+    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 9px; }
+    .grounds-export-section { padding: 14px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
+    .grounds-export-title-wrap h2 { margin: 0 0 6px; font-size: 14px; font-weight: 800; }
+    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 2px 7px; border-radius: 999px; font-size: 8px; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 10px; line-height: 1.55; font-size: 11px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 6px; font-size: 12px; font-weight: 800; }
+    .grounds-export-block ul { margin: 0 0 10px; padding-left: 14px; line-height: 1.45; }
+    .grounds-export-block ul li { font-size: 10px !important; -webkit-text-size-adjust: 100%; line-height: 1.5; margin-bottom: 3px; }
+    .grounds-export-analysis { margin-top: 12px; }
+    .grounds-export-disclaimer { margin-top: 16px; background: #dc2626; border: 3px solid #b91c1c; padding: 12px 16px; font-weight: 700; line-height: 1.45; font-size: 9px; color: #ffffff; border-radius: 8px; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.6; margin: 0 0 6px; font-size: 11px; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
-    .legal-report h2 { font-size: 14px; }
-    .legal-report h3 { font-size: 13px; }
-    .legal-report h4 { font-size: 12px; }
+    .legal-report h2 { font-size: 13px; }
+    .legal-report h3 { font-size: 12px; }
+    .legal-report h4 { font-size: 11px; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 5px 6px; vertical-align: top; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 4px 5px; vertical-align: top; }
     .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
-    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
-    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1.5px solid #1d4ed8; padding: 6px 15mm 8px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 9px; color: #334155; }
+    .print-footer-label { font-weight: 700; }
+    .print-footer-date { color: #64748b; }
     .print-footer-page-print::after { content: ''; }
     @media print {
       body { background: #ffffff; }
-      .grounds-export-shell { max-width: none; padding: 0; }
+      .grounds-export-shell { max-width: none; padding: 0; padding-bottom: 50px; }
       .legal-report-table-wrap { overflow: visible; }
-      .print-footer-page-print::after { content: "Page " counter(page); }
+      .print-footer { position: fixed; bottom: 0; }
+      .print-footer-page-print::after { content: "Page " counter(page) " of " counter(pages); }
     }
   </style>
 </head>
 <body>${contentMarkup}
   <div class="print-footer">
     <div class="print-footer-row">
-      <span class="print-footer-label">Criminal Appeal Case Management - Grounds of Merit - ${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
+      <span class="print-footer-label">Grounds of Merit Report — ${caseData?.defendant_name || 'Appellant'}</span>
+      <span class="print-footer-date">${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
       <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
   </div>
@@ -613,18 +616,21 @@ const GroundsOfMerit = ({
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
-@page{size:A4;margin:12mm}*{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:Arial,sans-serif;font-size:12px;color:#0f172a;padding:20px;line-height:1.6;max-width:800px;margin:0 auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-h1{font-size:18px;margin:0 0 6px;font-weight:800}h2{font-size:14px;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px;font-weight:800}
-.meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px}.meta span{background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700}
-.desc{margin:0 0 14px;font-size:12px}ul{padding-left:16px;margin:0 0 12px}li{margin-bottom:3px;font-size:11px !important;line-height:1.5;-webkit-text-size-adjust:100%}
-.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:11px}
-.analysis{margin-top:16px;white-space:pre-wrap;font-size:12px}
-table{border-collapse:collapse;width:100%;margin:12px 0}th,td{border:1px solid #cbd5e1;padding:5px 8px;text-align:left;font-size:12px}th{background:#dbeafe;font-weight:700}
-.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:12px 16px;border-radius:8px;margin-top:28px;page-break-inside:avoid;display:flex;gap:12px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.disclaimer .disc-hazard{font-size:24px;color:#facc15;flex-shrink:0}
-.disclaimer strong{font-size:13px;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:4px}
-.disclaimer p{font-size:12px;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
-@media print{body{padding:0}}
+@page{size:A4;margin:15mm 15mm 28mm 15mm}*{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:Arial,sans-serif;font-size:11px;color:#0f172a;padding:20px;padding-bottom:60px;line-height:1.6;max-width:800px;margin:0 auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+h1{font-size:16px;margin:0 0 6px;font-weight:800}h2{font-size:13px;margin:14px 0 6px;border-bottom:2px solid #1d4ed8;padding-bottom:3px;font-weight:800}
+.meta{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700}
+.desc{margin:0 0 12px;font-size:11px}ul{padding-left:14px;margin:0 0 10px}li{margin-bottom:3px;font-size:10px !important;line-height:1.5;-webkit-text-size-adjust:100%}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:5px 9px;border-radius:6px;margin-bottom:5px;font-size:10px}
+.analysis{margin-top:14px;white-space:pre-wrap;font-size:11px}
+table{border-collapse:collapse;width:100%;margin:10px 0}th,td{border:1px solid #cbd5e1;padding:4px 6px;text-align:left;font-size:10px}th{background:#dbeafe;font-weight:700}
+.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:24px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.disclaimer .disc-hazard{font-size:22px;color:#facc15;flex-shrink:0}
+.disclaimer strong{font-size:12px;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
+.disclaimer p{font-size:10px;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
+.ground-footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1.5px solid #1d4ed8;padding:5px 15mm 7px;font-size:9px;color:#334155;display:flex;justify-content:space-between;align-items:center}
+.ground-footer .gf-label{font-weight:700}
+.ground-footer .gf-page::after{content:''}
+@media print{body{padding:0;padding-bottom:50px}.ground-footer .gf-page::after{content:"Page " counter(page) " of " counter(pages)}}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
@@ -642,18 +648,19 @@ ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.</p></div></div>
 <div style="text-align:center;margin:24px 0;padding:16px 0;">
-  <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
+  <p style="font-size:11px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
   <div style="display:inline-flex;align-items:center;gap:10px;">
     <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
     </div>
     <div style="text-align:left;">
-      <p style="margin:0;font-weight:700;font-size:13px;color:#0f172a;">Appeal Case Manager</p>
-      <p style="margin:0;font-size:11px;color:#64748b;">Founded by Debra King</p>
-      <p style="margin:0;font-size:11px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+      <p style="margin:0;font-weight:700;font-size:12px;color:#0f172a;">Appeal Case Manager</p>
+      <p style="margin:0;font-size:10px;color:#64748b;">Founded by Debra King</p>
+      <p style="margin:0;font-size:10px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
     </div>
   </div>
 </div>
+<div class="ground-footer"><span class="gf-label">Ground of Merit Report &mdash; ${escHtml(caseData?.defendant_name || 'Appellant')} &mdash; ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}</span><span class="gf-page"></span></div>
 </body></html>`;
   };
 
@@ -930,7 +937,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       </div>
                       
                       <h4 
-                        className="font-bold text-slate-900 text-base sm:text-lg group-hover:text-blue-700 transition-colors"
+                        className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors"
                         style={{ fontFamily: 'Crimson Pro, serif' }}
                       >
                         {auSpelling(ground.title)}

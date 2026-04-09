@@ -55,7 +55,14 @@ const ReportTranslator = ({ caseId, reportId }) => {
       setShowTranslation(true);
       toast.success(`Report translated to ${response.data.language_name}${response.data.cached ? " (cached)" : ""}`);
     } catch (error) {
-      const msg = error.response?.data?.detail || "Translation failed. Please try again.";
+      let msg;
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        msg = "Translation timed out. Large reports take longer — please try again.";
+      } else if (error.response?.status === 500) {
+        msg = error.response?.data?.detail || "Translation service error. Please try again in a moment.";
+      } else {
+        msg = error.response?.data?.detail || "Translation failed. Check your connection and try again.";
+      }
       toast.error(msg);
     } finally {
       setTranslating(false);
