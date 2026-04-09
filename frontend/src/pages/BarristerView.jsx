@@ -867,7 +867,7 @@ export default function BarristerView() {
                         : genElapsed < 300
                         ? "Deep analysis of each ground with case law references..."
                         : genElapsed < 600
-                        ? "Generating Attachment A — Barrister Issue Matrix..."
+                        ? "Generating Attachment A — Issue Matrix & Attachment B — Conference Prep..."
                         : "Completing final sections. Complex briefs can take 10-20 minutes."}
                     </p>
                   </div>

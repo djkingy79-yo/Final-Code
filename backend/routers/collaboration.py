@@ -434,6 +434,12 @@ async def broadcast_chat_event(case_id: str, event_type: str, payload: dict):
 @router.websocket("/api/cases/{case_id}/chat/ws")
 async def chat_websocket(websocket: WebSocket, case_id: str):
     """Real-time chat WebSocket for a case."""
+    try:
+        await websocket.accept()
+    except Exception as e:
+        logger.warning(f"WebSocket accept failed for case {case_id}: {e}")
+        return
+
     session_token = websocket.query_params.get("session_token") or websocket.cookies.get("session_token")
 
     try:
@@ -460,8 +466,6 @@ async def chat_websocket(websocket: WebSocket, case_id: str):
         except HTTPException:
             await websocket.close(code=4403)
             return
-
-        await websocket.accept()
 
         case_connections = chat_ws_connections.setdefault(case_id, {})
         case_connections[user.user_id] = websocket

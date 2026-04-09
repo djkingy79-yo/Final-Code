@@ -3564,10 +3564,10 @@ CURRENT BARRISTER BRIEF
             rewritten_strategy = _strip_report_placeholders(rewritten_strategy)
             rewritten_strategy = re.sub(r"\n{3,}", "\n\n", rewritten_strategy).strip()
             if rewritten_strategy.startswith("## Proposed Submissions and Hearing Strategy"):
-                # DO NOT UNDO — Regex stops at Attachment A/Report-to-Report/Document and Evidence.
+                # DO NOT UNDO — Regex stops at Attachment A/B, Report-to-Report, or Document and Evidence.
                 # Old regex ([\s\S]*$) ate cross-analysis sections that were appended after strategy.
                 response = re.sub(
-                    r"## Proposed Submissions and Hearing Strategy\n[\s\S]*?(?=\n## (?:Attachment A|Report-to-Report|Document and Evidence)|$)",
+                    r"## Proposed Submissions and Hearing Strategy\n[\s\S]*?(?=\n## (?:Attachment [AB]|Report-to-Report|Document and Evidence)|$)",
                     rewritten_strategy + "\n\n",
                     response,
                     count=1,
@@ -3698,6 +3698,73 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Barrister issue matrix skipped for {case_id}: {exc}")
 
+    # ── Attachment B — Counsel Conference Preparation ──
+    if grounds:
+        try:
+            conference_prep_prompt = f"""Produce only the following attachment, with no introduction or conclusion before it:
+
+## Attachment B — Counsel Conference Preparation
+
+This attachment is designed for the instructing solicitor to use in preparation for the first barrister conference. It must be practical, specific to THIS case, and counsel-facing.
+
+### B.1 — Key Questions for Conference
+
+Produce a numbered list of 10-15 specific questions that counsel should address during the conference. These must be case-specific (not generic). Group them under sub-headings:
+- **Factual Clarification** — questions about facts that are ambiguous, contested, or missing from the materials
+- **Strategic Decisions** — questions requiring counsel's judgment on which grounds to advance, abandon, or reframe
+- **Evidentiary Gaps** — questions about what additional evidence, affidavits, or expert reports are needed
+- **Procedural Matters** — questions about filing deadlines, extension applications, bail, and hearing logistics
+
+### B.2 — Identified Weak Points
+
+Produce a markdown table with these columns: Weak Point | Ground Affected | Risk to Appeal | Suggested Mitigation. List every identified vulnerability in the appellant's case. Be honest and forensic — counsel needs to know where the case is vulnerable BEFORE the prosecution identifies it.
+
+### B.3 — Likely Prosecution Responses
+
+For each ground of appeal, write a paragraph (150+ words) describing the most likely Crown response. Reference specific evidence the Crown will rely on, authorities the Crown will cite, and the strongest version of the respondent's argument. This is essential for counsel to prepare replies.
+
+### B.4 — Document References and Outstanding Materials
+
+Produce a checklist table with columns: Document | Status | Priority | Action Required. List every document referenced in the case materials, note whether it has been obtained and reviewed, and identify any outstanding materials that must be sourced before the hearing (e.g., sentencing remarks, psychiatric reports, police briefs, CCTV, forensic evidence).
+
+### B.5 — Conference Agenda (Suggested)
+
+Draft a structured conference agenda with time estimates, covering: ground-by-ground review, strategic decisions, evidence preparation, witness considerations, filing timeline, and costs discussion.
+
+MANDATORY GROUND LIST
+{grounds_heading_text}
+
+STRUCTURED GROUNDS
+{grounds_text}
+
+SOURCE REPORTS
+{expansion_source_text}
+
+CASE PROFILE
+{case_profile}
+
+DOCUMENT INVENTORY
+{documents_text}
+
+CURRENT BARRISTER BRIEF
+{response[:8000]}
+"""
+            conference_prep = await call_llm_with_fallback(
+                system_prompt,
+                conference_prep_prompt,
+                session_id=f"barrister-{case_id}-conference-prep",
+                max_tokens=16384,
+                timeout_seconds=300,
+                task_type="report_generation",
+            )
+            conference_prep = _strip_report_placeholders(conference_prep)
+            conference_prep = re.sub(r"\n{3,}", "\n\n", conference_prep).strip()
+            if "Attachment B" in conference_prep and "Conference" in conference_prep:
+                response = response.rstrip() + "\n\n" + conference_prep
+                logger.info(f"Attachment B — Counsel Conference Prep appended for {case_id}")
+        except Exception as exc:
+            logger.warning(f"Counsel conference prep skipped for {case_id}: {exc}")
+
     # DO NOT UNDO — Final quality validation pass: expand any remaining thin sections
     final_min_chars = {
         "## Counsel Synthesis": 1500,
@@ -3776,6 +3843,8 @@ SOURCE REPORTS
         "## Final Barrister Briefing Note",
         "## Attachment A — Barrister Issue Matrix",
         "## Attachment A - Barrister Issue Matrix",
+        "## Attachment B — Counsel Conference Preparation",
+        "## Attachment B - Counsel Conference Preparation",
     }
     cleaned_lines = []
     skip_section = False
