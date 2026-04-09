@@ -1244,8 +1244,40 @@ NSW_CRIMINAL_FRAMEWORK = {
             "description": "Primary appellate legislation for criminal appeals in NSW. Governs appeals to the Court of Criminal Appeal (CCA) against conviction (s 5) and sentence (s 6). Defines grounds for allowing appeals: unsafe/unsatisfactory verdict, wrong decision on a question of law, miscarriage of justice.",
         },
         {
+            "act": "Crimes (Appeal and Review) Act 2001 (NSW)",
+            "description": "Governs appeals from Local Court (annulment applications s 4, District Court appeals s 11), reviews of summary convictions and sentences, and applications for inquiry into convictions (s 78 — post-conviction review for fresh evidence or changed law). Separate from the Criminal Appeal Act 1912 which covers indictable matters.",
+        },
+        {
             "act": "Jury Act 1977 (NSW)",
             "description": "Governs jury selection, empanelment, conduct, and verdicts. Amended by Jury Amendment Act 2024 (commenced 10 March 2025) — up to 3 additional jurors, jury separation during deliberations, expanded misconduct investigation powers.",
+        },
+        {
+            "act": "Drug Court Act 1998 (NSW)",
+            "description": "Establishes the Drug Court as a specialist court for eligible drug-dependent offenders. Focuses on treatment, rehabilitation, and reintegration rather than incarceration.",
+        },
+        {
+            "act": "Criminal Assets Recovery Act 1990 (NSW)",
+            "description": "Enables the NSW Crime Commission to recover proceeds and instruments of serious crime-related activity through restraining orders, assets forfeiture orders, proceeds assessment orders, and unexplained wealth orders.",
+        },
+        {
+            "act": "Confiscation of Proceeds of Crime Act 1989 (NSW)",
+            "description": "Provides for the confiscation of proceeds of crime and forfeiture of property used in or derived from criminal activity.",
+        },
+        {
+            "act": "Children (Criminal Proceedings) Act 1987 (NSW)",
+            "description": "Governs criminal proceedings involving children (under 18). Establishes Children's Court jurisdiction. Principles include rehabilitation, non-publication of identifying information, and diversion where appropriate.",
+        },
+        {
+            "act": "Surveillance Devices Act 2007 (NSW)",
+            "description": "Regulates use of listening devices, optical surveillance devices, tracking devices, and data surveillance devices. Governs warrant applications for law enforcement surveillance. Prohibits private surveillance without consent.",
+        },
+        {
+            "act": "Criminal Records Act 1991 (NSW)",
+            "description": "Governs spent convictions scheme. Convictions become 'spent' after a crime-free period (10 years adults, 3 years juveniles) and need not be disclosed. Exceptions for certain occupations and vulnerable persons checks.",
+        },
+        {
+            "act": "Crimes (Administration of Sentences) Act 1999 (NSW)",
+            "description": "Governs the administration of imprisonment, community service orders, good behaviour bonds, and parole in NSW. Establishes the State Parole Authority (SPA). Covers parole eligibility, conditions, revocation, and periodic detention.",
         },
     ],
 }
@@ -1345,6 +1377,38 @@ VIC_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Appeal Act 1914 (Vic)",
             "description": "Governs appeals from criminal trials to the Court of Appeal. Grounds include unsafe/unsatisfactory verdict, wrong decision on question of law, and miscarriage of justice.",
         },
+        {
+            "act": "Confiscation Act 1997 (Vic)",
+            "description": "Governs forfeiture and confiscation of property used in, derived from, or connected with criminal offences. Includes automatic forfeiture for serious drug offences, civil forfeiture, pecuniary penalty orders, and unexplained wealth provisions. Amended 2025 (Confiscation Amendment (Unexplained Wealth) Act).",
+        },
+        {
+            "act": "Surveillance Devices Act 1999 (Vic)",
+            "description": "Regulates law enforcement use of optical, listening, tracking, and data surveillance devices. Governs warrant applications and prohibits unauthorised use. Subject to oversight by Integrity Oversight Victoria. Amended 2025 (body-worn cameras regulations).",
+        },
+        {
+            "act": "Serious Offenders Act 2018 (Vic)",
+            "description": "Manages post-sentence supervision and detention of serious offenders (sexual and violent). Enables supervision orders and detention orders for offenders who pose an unacceptable risk to the community after completing their sentence.",
+        },
+        {
+            "act": "Major Crime (Investigative Powers) Act 2004 (Vic)",
+            "description": "Establishes coercive questioning powers for investigations into organised crime, including power to compel witnesses to answer questions (abrogation of privilege against self-incrimination in limited circumstances).",
+        },
+        {
+            "act": "Corrections Act 1986 (Vic)",
+            "description": "Governs the administration of prisons, community corrections, and parole in Victoria. Includes provisions on prisoner management, remission, and parole eligibility/conditions.",
+        },
+        {
+            "act": "Juries Act 2000 (Vic)",
+            "description": "Governs jury selection, empanelment, challenges, and jury conduct in criminal trials. Includes provisions for judge-alone trials in certain circumstances.",
+        },
+        {
+            "act": "Victims of Crime Assistance Act 1996 (Vic)",
+            "description": "Provides financial assistance to victims of crime. Governs victim impact statements and victims' rights in criminal proceedings.",
+        },
+        {
+            "act": "Victoria Police Act 2013 (Vic)",
+            "description": "Establishes Victoria Police. Governs police powers including arrest, search and seizure, and use of force. Includes provisions on police conduct and oversight by IBAC (Independent Broad-based Anti-corruption Commission).",
+        },
     ],
 }
 
@@ -1436,6 +1500,42 @@ QLD_CRIMINAL_FRAMEWORK = {
         {
             "act": "Criminal Appeal Act 1912 (Qld)",
             "description": "Governs appeals against conviction and sentence to the Queensland Court of Appeal.",
+        },
+        {
+            "act": "Crime and Corruption Act 2001 (Qld)",
+            "description": "Establishes the Crime and Corruption Commission (CCC). Defines corrupt conduct, governs CCC investigative functions, public reporting powers, and oversight by the Parliamentary Crime and Corruption Committee. Amended 2025 (restoring and expanding reporting powers).",
+        },
+        {
+            "act": "Corrective Services Act 2006 (Qld)",
+            "description": "Governs prisoner management, entitlements, duties, prison operations, community-based orders, and parole. Administered by Queensland Corrective Services.",
+        },
+        {
+            "act": "Dangerous Prisoners (Sexual Offenders) Act 2003 (Qld)",
+            "description": "Enables Supreme Court orders for continuing detention or supervised release (max 5 years) of serious sex offenders at sentence expiry if they pose an 'unacceptable risk' of reoffending. Attorney-General initiates applications.",
+        },
+        {
+            "act": "Police Powers and Responsibilities Act 2000 (Qld)",
+            "description": "Governs police powers including stop/search/detain, arrest, entry to premises, crime scenes, forensic procedures, controlled operations, surveillance device warrants, and move-on directions.",
+        },
+        {
+            "act": "Victims of Crime Assistance Act 2009 (Qld)",
+            "description": "Provides financial assistance to victims of violent crime. Governs victim impact statements in criminal proceedings.",
+        },
+        {
+            "act": "Criminal Proceeds Confiscation Act 2002 (Qld)",
+            "description": "Provides for restraining orders, forfeiture of criminal proceeds, unexplained wealth orders, and proceeds assessment orders.",
+        },
+        {
+            "act": "Jury Act 1995 (Qld)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in Queensland criminal trials. Includes provisions for majority verdicts in certain circumstances.",
+        },
+        {
+            "act": "Telecommunications Interception Act 2009 (Qld)",
+            "description": "Queensland's complementary legislation enabling QLD Police and CCC to apply for telecommunications interception warrants under the Commonwealth Telecommunications (Interception and Access) Act 1979.",
+        },
+        {
+            "act": "Police Powers and Responsibilities Act 2000 (Qld) — Part 4 (Surveillance Device Warrants)",
+            "description": "Queensland does not have a standalone Surveillance Devices Act. Surveillance device warrants are authorised under Part 4 of the Police Powers and Responsibilities Act 2000. Covers listening devices, optical surveillance, tracking devices.",
         },
     ],
 }
@@ -1533,6 +1633,34 @@ SA_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Law Consolidation Act 1935 (SA) — Part 11 (Appellate Proceedings)",
             "description": "Governs criminal appeals in South Australia. Part 11 establishes rights of appeal (s 352), determination of appeals (s 353), second/subsequent appeals (s 353A), Full Court jurisdiction (s 356), and supplemental powers (s 359). Part 10A handles appeals against sentence (s 340). Appeals heard by the Full Court of the Supreme Court (three judges), with the Court of Appeal division established by Supreme Court (Court of Appeal) Amendment Act 2019 now handling most criminal appeals.",
         },
+        {
+            "act": "Criminal Assets Confiscation Act 2005 (SA)",
+            "description": "Enables forfeiture of assets tied to crimes, especially serious drug offences by 'prescribed drug offenders'. Proceeds fund the Justice Rehabilitation Fund (s 209A). Amended 2025 (Criminal Assets Confiscation (Review Recommendations) Amendment Act 2025 — Chief Recovery Officer powers enhanced).",
+        },
+        {
+            "act": "Surveillance Devices Act 2016 (SA)",
+            "description": "Regulates listening, optical, tracking, and data surveillance devices. Prohibits unauthorised use/communication (max penalty $15,000 or 3 years imprisonment). Governs warrant applications for law enforcement.",
+        },
+        {
+            "act": "Spent Convictions Act 2009 (SA)",
+            "description": "Governs the spent convictions scheme in South Australia. Eligible convictions become spent after a qualifying period and need not be disclosed.",
+        },
+        {
+            "act": "Juries Act 1927 (SA)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in South Australian criminal trials.",
+        },
+        {
+            "act": "Correctional Services Act 1982 (SA)",
+            "description": "Governs the administration of prisons, community service, and parole in South Australia. Includes provisions on prisoner rights, remission, and parole eligibility.",
+        },
+        {
+            "act": "South Australia Police Act 1998 (SA)",
+            "description": "Establishes South Australia Police (SAPOL). Governs police powers, duties, and organisational structure. Police also derive powers from the Summary Offences Act 1953.",
+        },
+        {
+            "act": "Young Offenders Act 1993 (SA)",
+            "description": "Governs juvenile criminal proceedings in South Australia. Establishes the Youth Court. Focuses on diversion (family conferences) and rehabilitation. Children under 10 cannot be charged with an offence.",
+        },
     ],
 }
 
@@ -1623,6 +1751,30 @@ WA_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Appeals Act 2004 (WA)",
             "description": "Governs appeals against conviction and sentence in Western Australian courts.",
         },
+        {
+            "act": "High Risk Serious Offenders Act 2020 (WA)",
+            "description": "Replaced the Dangerous Sexual Offenders Act 2006. Expanded scope from sexual offences to serious offences broadly. Permits State to apply to Supreme Court for preventative and indefinite detention of high-risk individuals. Eligible offences include sexual offences, arson, dangerous driving causing death/GBH, and robbery.",
+        },
+        {
+            "act": "Prohibited Behaviour Orders Act 2010 (WA)",
+            "description": "Enables courts to make orders constraining offenders with a history of anti-social behaviour. Police may apply to courts to ban serial offenders from specific activities, places, or associations linked to their offences.",
+        },
+        {
+            "act": "Surveillance Devices Act 1998 (WA)",
+            "description": "Regulates use of listening, optical, and tracking devices. Governs warrant applications for law enforcement surveillance and prohibits unauthorised use.",
+        },
+        {
+            "act": "Criminal Property Confiscation Act 2000 (WA)",
+            "description": "Provides for confiscation of crime-used and crime-derived property, unexplained wealth declarations, and drug trafficker declarations.",
+        },
+        {
+            "act": "Juries Act 1957 (WA)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in Western Australian criminal trials.",
+        },
+        {
+            "act": "Prisons Act 1981 (WA)",
+            "description": "Governs the administration of prisons in Western Australia including prisoner management, discipline, and remission.",
+        },
     ],
 }
 
@@ -1705,6 +1857,22 @@ TAS_CRIMINAL_FRAMEWORK = {
         {
             "act": "Criminal Code Act 1924 (Tas) — Part XII (Appeals)",
             "description": "Governs criminal appeals in Tasmania via the Court of Criminal Appeal. Appeals against conviction (unsafe/unsatisfactory verdict, wrong decision on question of law, miscarriage of justice) and against sentence. Further appeals to High Court require special leave.",
+        },
+        {
+            "act": "Listening Devices Act 1991 (Tas)",
+            "description": "Regulates the use of listening devices. Prohibits covert recording of private conversations without consent. Governs warrant applications for law enforcement surveillance.",
+        },
+        {
+            "act": "Crime (Confiscation of Profits) Act 1993 (Tas)",
+            "description": "Provides for confiscation of proceeds and profits of crime in Tasmania. Includes restraining orders, pecuniary penalty orders, and forfeiture orders.",
+        },
+        {
+            "act": "Corrections Act 1997 (Tas)",
+            "description": "Governs the administration of prisons and community corrections in Tasmania. Includes provisions on prisoner management, remission, and parole.",
+        },
+        {
+            "act": "Jury Act 2003 (Tas)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in Tasmanian criminal trials.",
         },
     ],
 }
@@ -1799,6 +1967,22 @@ NT_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Code Act 1983 (NT) — Part X (Appeals)",
             "description": "Governs criminal appeals in the Northern Territory. Appeals from Local Court heard by a single Supreme Court judge (error of law only — no de novo appeals). Appeals from Supreme Court heard by the Court of Criminal Appeal (three judges). Must be commenced within 28 days. Further appeals to High Court require special leave.",
         },
+        {
+            "act": "Surveillance Devices Act 2007 (NT)",
+            "description": "Regulates use of surveillance devices (listening, optical, tracking, data) by law enforcement and private persons. Governs warrant applications and prohibits unauthorised surveillance.",
+        },
+        {
+            "act": "Criminal Property Forfeiture Act 2002 (NT)",
+            "description": "Provides for forfeiture of property used in or derived from criminal activity. Includes unexplained wealth provisions and restrained property orders.",
+        },
+        {
+            "act": "Correctional Services Act 2014 (NT)",
+            "description": "Governs the administration of correctional facilities, community corrections, and parole in the Northern Territory.",
+        },
+        {
+            "act": "Juries Act 1962 (NT)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in Northern Territory criminal trials.",
+        },
     ],
 }
 
@@ -1890,6 +2074,30 @@ ACT_CRIMINAL_FRAMEWORK = {
         {
             "act": "Supreme Court Act 1933 (ACT) — Criminal Appeals",
             "description": "Governs criminal appeals in the ACT. The Court of Appeal may allow an appeal against conviction if the verdict is unreasonable/unsupported by evidence, there was a wrong decision on a question of law, or a miscarriage of justice occurred. Court may confirm, reverse, or amend orders. Also covers reference appeals (s 37S), cases stated, applications relating to acquittals (Part 8AA), and appeals for fresh and compelling evidence (Part 8AB).",
+        },
+        {
+            "act": "Listening Devices Act 1992 (ACT)",
+            "description": "Regulates use of listening devices in the ACT. Prohibits covert recording of private conversations without consent. Governs warrant applications for law enforcement.",
+        },
+        {
+            "act": "Confiscation of Criminal Assets Act 2003 (ACT)",
+            "description": "Provides for restraining orders, forfeiture of criminal assets, civil forfeiture orders, and unexplained wealth orders.",
+        },
+        {
+            "act": "Human Rights Act 2004 (ACT)",
+            "description": "The ACT's human rights charter. Protects right to fair trial (s 21), right to be presumed innocent (s 22), rights in criminal proceedings (s 22), prohibition on retrospective criminal laws (s 25). Courts must interpret legislation consistently with human rights where possible. Relevant to criminal appeal grounds.",
+        },
+        {
+            "act": "Juries Act 1967 (ACT)",
+            "description": "Governs jury selection, empanelment, challenges, and conduct in ACT criminal trials.",
+        },
+        {
+            "act": "Corrections Management Act 2007 (ACT)",
+            "description": "Governs the administration of corrections in the ACT including the Alexander Maconochie Centre (AMC), prisoner management, and community corrections.",
+        },
+        {
+            "act": "Australian Federal Police Act 1979 (Cth) — ACT Policing",
+            "description": "ACT Policing is provided by the Australian Federal Police under a contractual arrangement. Police powers in the ACT are governed by this Act alongside the Crimes Act 1900 (ACT) and Court Procedures Act 2004 (ACT).",
         },
     ],
 }
@@ -1986,6 +2194,30 @@ FEDERAL_CRIMINAL_FRAMEWORK = {
         {
             "act": "Federal Court of Australia Act 1976 (Cth) / Judiciary Act 1903 (Cth) — Federal Criminal Appeals",
             "description": "Federal criminal offences are tried in state/territory courts under Judiciary Act 1903 Part X. Appeals follow the appellate pathway of the state/territory where the trial occurred (e.g., NSW Court of Criminal Appeal, VIC Court of Appeal). Further appeals to the High Court of Australia require special leave under Judiciary Act 1903 s 35A. The Crimes Act 1914 (Cth) Part 1B governs sentencing for federal offences regardless of which state court imposed the sentence.",
+        },
+        {
+            "act": "Telecommunications (Interception and Access) Act 1979 (Cth)",
+            "description": "Governs lawful interception of telecommunications (phone tapping, email interception). Requires warrants for law enforcement agencies. Regulates access to stored communications and telecommunications data (metadata). Key legislation for evidence admissibility in serious criminal cases.",
+        },
+        {
+            "act": "Surveillance Devices Act 2004 (Cth)",
+            "description": "Federal legislation governing use of optical, listening, tracking, and data surveillance devices by Commonwealth law enforcement. Requires warrants. Complementary to state/territory surveillance devices legislation.",
+        },
+        {
+            "act": "Australian Crime Commission Act 2002 (Cth) / Australian Criminal Intelligence Commission Act",
+            "description": "Establishes the ACIC (formerly ACC) with coercive examination powers for investigating serious and organised crime at the federal level. Compels witnesses to answer questions (abrogation of privilege against self-incrimination).",
+        },
+        {
+            "act": "Customs Act 1901 (Cth)",
+            "description": "Contains provisions relevant to drug importation/exportation offences (ss 233-235). Often charged alongside Criminal Code Act 1995 drug offences for border-related drug matters.",
+        },
+        {
+            "act": "Evidence Act 1995 (Cth)",
+            "description": "Commonwealth uniform evidence legislation governing admissibility in federal courts and ACT courts. Mirror legislation adopted by NSW, VIC, TAS, NT, and ACT. Covers relevance, hearsay, tendency/coincidence, opinion, credibility, privilege, and exclusionary discretions (ss 137, 138).",
+        },
+        {
+            "act": "High Court of Australia Act 1979 (Cth)",
+            "description": "Establishes the High Court's jurisdiction. Special leave required for criminal appeals to the High Court (s 35A Judiciary Act 1903). The final appellate court for all Australian criminal matters.",
         },
     ],
 }
