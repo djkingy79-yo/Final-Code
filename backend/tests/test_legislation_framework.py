@@ -13,11 +13,13 @@ from offence_framework import (
     APPEAL_FRAMEWORK,
     HUMAN_RIGHTS_FRAMEWORK,
     COMMON_APPEAL_GROUNDS,
+    NSW_CRIMINAL_FRAMEWORK,
 )
 from services.offence_helpers import (
     get_offence_context,
     get_offence_system_prompt,
     _build_recent_legislation_context,
+    _build_nsw_framework_context,
 )
 
 
@@ -72,7 +74,7 @@ class TestRecentLegislationData:
 
     def test_total_entries_minimum(self):
         total = sum(len(v) for v in RECENT_LEGISLATION_UPDATES.values())
-        assert total >= 18, f"Expected at least 18 recent legislation entries, got {total}"
+        assert total >= 22, f"Expected at least 22 recent legislation entries, got {total}"
 
 
 class TestOffenceContextInjection:
@@ -183,3 +185,81 @@ class TestExistingFrameworkIntegrity:
     def test_human_rights_framework_present(self):
         assert "international" in HUMAN_RIGHTS_FRAMEWORK
         assert "australian" in HUMAN_RIGHTS_FRAMEWORK
+
+
+class TestNSWCriminalFramework:
+    """Verify the full NSW criminal legislative framework."""
+
+    def test_primary_legislation_count(self):
+        assert len(NSW_CRIMINAL_FRAMEWORK["primary_legislation"]) >= 5
+
+    def test_crimes_act_present(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1900" in a for a in acts)
+
+    def test_criminal_procedure_act_present(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Procedure Act 1986" in a for a in acts)
+
+    def test_sentencing_procedure_act_present(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes (Sentencing Procedure) Act 1999" in a for a in acts)
+
+    def test_lepra_present(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("LEPRA" in a for a in acts)
+
+    def test_evidence_act_present(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Evidence Act 1995" in a for a in acts)
+
+    def test_key_regulations_present(self):
+        regs = [r["regulation"] for r in NSW_CRIMINAL_FRAMEWORK["key_regulations"]]
+        assert any("Crimes Regulation 2020" in r for r in regs)
+        assert any("Criminal Procedure Regulation 2017" in r for r in regs)
+        assert any("Crimes (Sentencing Procedure) Regulation 2017" in r for r in regs)
+        assert any("Law Enforcement" in r for r in regs)
+
+    def test_specialised_legislation_present(self):
+        specs = [s["act"] for s in NSW_CRIMINAL_FRAMEWORK["specialised_legislation"]]
+        assert any("Domestic and Personal Violence" in s for s in specs)
+        assert any("Bail Act 2013" in s for s in specs)
+        assert any("Drug Misuse" in s for s in specs)
+        assert any("Summary Offences" in s for s in specs)
+        assert any("Mental Health" in s for s in specs)
+        assert any("Forensic Procedures" in s for s in specs)
+        assert any("Criminal Appeal Act 1912" in s for s in specs)
+        assert any("Jury Act 1977" in s for s in specs)
+
+    def test_nsw_framework_injected_for_nsw_cases(self):
+        case = {"offence_category": "homicide", "state": "nsw"}
+        context = get_offence_context(case)
+        assert "NSW CRIMINAL LEGISLATIVE FRAMEWORK" in context
+        assert "Criminal Procedure Act 1986 No 209" in context
+        assert "Evidence Act 1995 No 25" in context
+        assert "LEPRA" in context
+
+    def test_nsw_framework_not_injected_for_other_states(self):
+        case = {"offence_category": "homicide", "state": "qld"}
+        context = get_offence_context(case)
+        assert "NSW CRIMINAL LEGISLATIVE FRAMEWORK" not in context
+
+    def test_nsw_recent_animal_abuse_present(self):
+        nsw = RECENT_LEGISLATION_UPDATES["nsw"]
+        acts = [e["act"] for e in nsw]
+        assert any("Animal Sexual Abuse" in a for a in acts)
+
+    def test_nsw_good_character_bill_present(self):
+        nsw = RECENT_LEGISLATION_UPDATES["nsw"]
+        acts = [e["act"] for e in nsw]
+        assert any("Good Character" in a for a in acts)
+
+    def test_nsw_surveillance_devices_present(self):
+        nsw = RECENT_LEGISLATION_UPDATES["nsw"]
+        acts = [e["act"] for e in nsw]
+        assert any("Surveillance Devices" in a for a in acts)
+
+    def test_nsw_mental_health_act_present(self):
+        nsw = RECENT_LEGISLATION_UPDATES["nsw"]
+        acts = [e["act"] for e in nsw]
+        assert any("Mental Health" in a for a in acts)

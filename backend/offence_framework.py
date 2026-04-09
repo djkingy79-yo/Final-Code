@@ -1128,7 +1128,131 @@ APPEAL_FRAMEWORK = {
 
 
 # ============================================================================
-# RECENT LEGISLATION UPDATES (2022-2025)
+# NSW COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# Primary Acts, Regulations, and Specialised Legislation
+# Injected into every NSW case prompt as foundational legal context.
+# ============================================================================
+
+NSW_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Crimes Act 1900 No 40 (NSW)",
+            "description": "Primary substantive criminal legislation covering offences against the person, property, sexual offences, fraud, and public order. Contains all major indictable and summary offences.",
+            "key_provisions": [
+                "Part 3 — Offences against the person (ss 18-54D)",
+                "Part 3 Div 10 — Coercive control (ss 54D-54H, commenced 1 July 2024)",
+                "Part 4 — Offences relating to property (ss 112-195)",
+                "Part 3 Div 10A — Sexual offences (ss 61I-80E)",
+                "Part 4AA — Fraud (ss 192E-192J)",
+                "Part 3A — Public order offences (ss 93B-93Z)",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 1986 No 209 (NSW)",
+            "description": "Governs procedures for summary and indictable offences including committal proceedings, trials, case conferences, and appeals.",
+            "key_provisions": [
+                "Chapter 3 — Summary proceedings",
+                "Chapter 4 — Indictable proceedings (including committal)",
+                "Chapter 5 — Case management and pre-trial disclosure",
+                "Chapter 6 — Trial procedures",
+                "Part 4.6 — Court-appointed questioning (vulnerable witnesses)",
+            ]
+        },
+        {
+            "act": "Crimes (Sentencing Procedure) Act 1999 No 92 (NSW)",
+            "description": "Outlines sentencing procedure including purposes of sentencing, aggravating/mitigating factors, standard non-parole periods, guideline judgments, victim impact statements, and sentencing options (ICOs, CCOs, CSOs).",
+            "key_provisions": [
+                "s 3A — Purposes of sentencing",
+                "s 21A — Aggravating, mitigating, and other factors in sentencing",
+                "s 44 — Setting the non-parole period",
+                "s 54A-54D — Standard non-parole periods (Table)",
+                "Part 4 Div 2 — Intensive correction orders",
+                "Part 4 Div 3 — Community correction orders",
+                "Part 7 — Victim impact statements",
+            ]
+        },
+        {
+            "act": "Law Enforcement (Powers and Responsibilities) Act 2002 No 103 (LEPRA) (NSW)",
+            "description": "Governs police powers including stop/search/detain, arrest without warrant, use of force, crime scenes, forensic procedures, and investigative detention.",
+            "key_provisions": [
+                "Part 4 — Search and seizure powers",
+                "Part 5 — Arrest without warrant",
+                "Part 8 — Powers relating to crime scenes",
+                "Part 9 — Forensic procedures",
+                "Part 15 — Safeguards (rights of persons under investigation)",
+            ]
+        },
+        {
+            "act": "Evidence Act 1995 No 25 (NSW)",
+            "description": "Dictates admissibility of evidence in criminal trials including hearsay, tendency/coincidence evidence (s 97, s 97A), opinion evidence, credibility, and privilege.",
+            "key_provisions": [
+                "Part 3.6 — Tendency and coincidence evidence (ss 97-98)",
+                "s 97A — Tendency evidence in child sexual offence proceedings (amended 2020)",
+                "Part 3.2 — Hearsay (ss 59-75)",
+                "Part 3.3 — Opinion evidence (ss 76-80)",
+                "s 137 — Exclusion of prejudicial evidence in criminal proceedings",
+                "s 138 — Exclusion of improperly or illegally obtained evidence",
+                "Part 4.3 — Privilege (client legal privilege, self-incrimination)",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Crimes Regulation 2020 (NSW)",
+            "description": "Supports the Crimes Act 1900, including provisions on identifying major facilities for specific offences.",
+        },
+        {
+            "regulation": "Criminal Procedure Regulation 2017 (NSW)",
+            "description": "Supports the Criminal Procedure Act 1986. Current as of late 2025/2026. Governs forms, prescribed processes, and procedural requirements.",
+        },
+        {
+            "regulation": "Crimes (Sentencing Procedure) Regulation 2017 (NSW)",
+            "description": "Procedural regulation for sentencing matters under the Crimes (Sentencing Procedure) Act 1999.",
+        },
+        {
+            "regulation": "Law Enforcement (Powers and Responsibilities) Regulation 2016 (NSW)",
+            "description": "Detailed procedures regarding police officer duties, search powers, and safeguards under LEPRA.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Crimes (Domestic and Personal Violence) Act 2007 (NSW)",
+            "description": "Governs Apprehended Violence Orders (AVOs) — both Apprehended Domestic Violence Orders (ADVOs) and Apprehended Personal Violence Orders (APVOs). Includes specific domestic violence offences, stalking/intimidation (s 13), contravention of AVO (s 14).",
+        },
+        {
+            "act": "Bail Act 2013 (NSW)",
+            "description": "Rules for granting bail. Significant 2024-2025 amendments expanded 'show cause' requirements for serious offences, strengthened 'unacceptable risk' test, presumption against bail for repeat DV offenders and high-risk youth offenders.",
+        },
+        {
+            "act": "Drug Misuse and Trafficking Act 1985 (NSW)",
+            "description": "Covers possession, use, supply, manufacture, and trafficking of prohibited drugs. Defines trafficable, indictable, commercial, and large commercial quantities.",
+        },
+        {
+            "act": "Summary Offences Act 1988 (NSW)",
+            "description": "Deals with public order and minor offences including offensive conduct (s 4), offensive language (s 4A), trespass, and obstruction.",
+        },
+        {
+            "act": "Mental Health and Cognitive Impairment Forensic Provisions Act 2020 (NSW)",
+            "description": "Procedures for dealing with defendants with mental health conditions or cognitive impairment. Replaces the Mental Health (Forensic Provisions) Act 1990. Governs fitness to be tried, the defence of mental health impairment, and forensic patient management.",
+        },
+        {
+            "act": "Crimes (Forensic Procedures) Act 2000 (NSW)",
+            "description": "Rules for obtaining forensic samples (DNA, fingerprints, body samples) from suspects and convicted offenders. Governs intimate and non-intimate forensic procedures and the NSW DNA database.",
+        },
+        {
+            "act": "Criminal Appeal Act 1912 (NSW)",
+            "description": "Primary appellate legislation for criminal appeals in NSW. Governs appeals to the Court of Criminal Appeal (CCA) against conviction (s 5) and sentence (s 6). Defines grounds for allowing appeals: unsafe/unsatisfactory verdict, wrong decision on a question of law, miscarriage of justice.",
+        },
+        {
+            "act": "Jury Act 1977 (NSW)",
+            "description": "Governs jury selection, empanelment, conduct, and verdicts. Amended by Jury Amendment Act 2024 (commenced 10 March 2025) — up to 3 additional jurors, jury separation during deliberations, expanded misconduct investigation powers.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# RECENT LEGISLATION UPDATES (2022-2026)
 # Verified, commenced Acts that MUST be cited by the LLM when relevant.
 # This data is injected into every report generation prompt.
 # ============================================================================
@@ -1182,6 +1306,38 @@ RECENT_LEGISLATION_UPDATES = {
             "summary": "Expanded 'show cause' requirements for serious offences including aggravated break-and-enter, commercial drug supply, and firearms offences. Strengthened 'unacceptable risk' test emphasising criminal history and community protection. Presumption against bail for repeat domestic violence offenders and high-risk youth offenders. Increased electronic monitoring provisions.",
             "relevant_categories": ["all"],
             "appeal_relevance": "Bail refusal appeals; whether expanded show cause provisions were correctly applied; impact of bail conditions on fair trial rights."
+        },
+        {
+            "act": "Crimes Amendment (Animal Sexual Abuse) Act 2025 (NSW)",
+            "amending_act": "Crimes Amendment (Animal Sexual Abuse) Act 2025 (NSW)",
+            "commenced": "January 2026",
+            "summary": "Updates offences relating to sexual abuse of animals in the Crimes Act 1900 (NSW). Modernises definitions and expands scope of prohibited conduct.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Conviction appeals under updated animal abuse offences; sentencing proportionality."
+        },
+        {
+            "act": "Mental Health and Cognitive Impairment Forensic Provisions Act 2020 (NSW)",
+            "amending_act": "Mental Health and Cognitive Impairment Forensic Provisions Act 2020 (NSW)",
+            "commenced": "2020 (replaces Mental Health (Forensic Provisions) Act 1990)",
+            "summary": "Comprehensive framework for dealing with defendants who have mental health conditions or cognitive impairment. Governs fitness to be tried (Part 4), the defence of mental health impairment (Part 3), special hearings, forensic patient management, and the Mental Health Review Tribunal. Replaces the Mental Health (Forensic Provisions) Act 1990.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Critical for appeals involving mental health defences: fitness to stand trial, defence of mental health impairment, whether cognitive impairment was properly assessed, forensic patient orders, and interaction with mens rea arguments."
+        },
+        {
+            "act": "Crimes (Sentencing Procedure) Amendment (Good Character at Sentencing) Bill 2026 (NSW)",
+            "amending_act": "Crimes (Sentencing Procedure) Amendment (Good Character at Sentencing) Bill 2026 (NSW)",
+            "commenced": "PENDING — under review Feb/March 2026",
+            "summary": "Proposed bill to remove 'good character' as a formal mitigating factor at sentencing under s 21A(3) Crimes (Sentencing Procedure) Act 1999 (NSW). If enacted, sentencing courts could no longer treat previous good character as mitigation. Currently under Parliamentary review.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "PENDING LEGISLATION — if enacted, impacts sentencing appeals where good character was relied upon as mitigating. Watch for commencement date and transitional provisions. NOT YET LAW as of Feb 2026."
+        },
+        {
+            "act": "Surveillance Devices Act 2007 (NSW) — 2022/2026 Regulation Updates",
+            "amending_act": "Surveillance Devices Regulation 2022 (NSW) and 2026 Amendments",
+            "commenced": "2022 (regulation); early 2026 (amendments pending)",
+            "summary": "Changes to allow agencies like ICAC to use otherwise unlawful recordings as evidence. Further reforms pending as of Feb 2026 regarding surveillance device warrants, tracking devices, and admissibility of covertly obtained evidence.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Evidence admissibility appeals: whether surveillance evidence was lawfully obtained; whether unlawfully obtained recordings should be excluded under s 138 Evidence Act 1995; ICAC investigation evidence."
         },
     ],
     "vic": [

@@ -8,7 +8,7 @@ IMPORTANT DESIGN RULES:
   - Always include anti-hallucination controls in system prompts
   - Separate factual extraction from legal inference
 """
-from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES
+from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES, NSW_CRIMINAL_FRAMEWORK
 
 
 def _build_recent_legislation_context(state: str, offence_category: str) -> str:
@@ -104,6 +104,36 @@ RELEVANT {abbreviation} LEGISLATION:
     recent_leg = _build_recent_legislation_context(state_key, offence_category)
     if recent_leg:
         context += recent_leg
+
+    # Inject NSW foundational criminal framework for NSW cases
+    if state_key == 'nsw':
+        context += _build_nsw_framework_context()
+
+    return context
+
+
+def _build_nsw_framework_context() -> str:
+    """Build the NSW foundational criminal legislative framework context block."""
+    context = "\nNSW CRIMINAL LEGISLATIVE FRAMEWORK — FOUNDATIONAL ACTS AND REGULATIONS:\n"
+    context += "The following Acts and Regulations form the bedrock of NSW criminal law. They MUST be cited with correct section numbers where relevant to the case.\n\n"
+
+    context += "PRIMARY LEGISLATION:\n"
+    for act_info in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]:
+        context += f"  {act_info['act']}\n"
+        context += f"    {act_info['description']}\n"
+        for prov in act_info["key_provisions"]:
+            context += f"    - {prov}\n"
+        context += "\n"
+
+    context += "KEY REGULATIONS:\n"
+    for reg in NSW_CRIMINAL_FRAMEWORK["key_regulations"]:
+        context += f"  {reg['regulation']}: {reg['description']}\n"
+    context += "\n"
+
+    context += "SPECIALISED LEGISLATION:\n"
+    for spec in NSW_CRIMINAL_FRAMEWORK["specialised_legislation"]:
+        context += f"  {spec['act']}: {spec['description']}\n"
+    context += "\n"
 
     return context
 
