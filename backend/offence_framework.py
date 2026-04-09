@@ -1251,6 +1251,731 @@ NSW_CRIMINAL_FRAMEWORK = {
 }
 
 
+
+# ============================================================================
+# VICTORIA COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+VIC_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Crimes Act 1958 (Vic)",
+            "description": "Foundational legislation defining most indictable offences in Victoria including murder, manslaughter, assault, sexual offences, theft, stalking, and identity crimes. An indictable offence is one attracting a maximum penalty of two years imprisonment or more.",
+            "key_provisions": [
+                "Part I Div 1 — Offences against the person (murder s 3, manslaughter s 5, assault ss 15-20)",
+                "Part I Div 1 s 21A — Stalking (amended 2024 — course of conduct clarified)",
+                "Part I Div 1 s 34AA-34AB — Non-fatal strangulation and suffocation (new 2023/2024)",
+                "Part I Div 2E — Performance of a crime (new 2025 — social media-driven offending)",
+                "Part I Div 8A — Sexual offences (ss 38-51)",
+                "Part I Div 2 — Theft and related offences",
+                "Part I Div 3 — Fraud and related offences",
+            ]
+        },
+        {
+            "act": "Sentencing Act 1991 (Vic)",
+            "description": "The primary sentencing legislation in Victoria. Establishes purposes and principles of sentencing, specifies factors courts must consider, and outlines sentencing options for adults (imprisonment, community correction orders, fines, diversion). Defines five purposes for sentencing which courts may apply individually or in combination.",
+            "key_provisions": [
+                "s 5 — Sentencing purposes (just punishment, deterrence, rehabilitation, denunciation, community protection)",
+                "Part 2A — Sentencing guidelines and guideline judgments",
+                "Part 3 — Community correction orders",
+                "Part 3A — Aggregate sentences",
+                "Part 9 — Parole (interaction with Corrections Act 1986)",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 2009 (Vic)",
+            "description": "Governs how criminal cases progress through Victorian courts — how charges are laid, committal hearings, disclosure of evidence, guilty pleas, trial procedures, and appeal processes. Protects the rights of accused persons.",
+            "key_provisions": [
+                "Chapter 3 — Summary proceedings",
+                "Chapter 4 — Indictable proceedings (committal proceedings, trial by jury/judge alone)",
+                "Chapter 5 — Appeals and review (Magistrates' Court, County Court, Supreme Court)",
+                "Chapter 7 — Evidence and procedure (including disclosure obligations)",
+                "Part 5.6 — Appeal to Court of Appeal against conviction or sentence",
+            ]
+        },
+        {
+            "act": "Evidence Act 2008 (Vic)",
+            "description": "Uniform evidence legislation governing admissibility of evidence in Victorian courts. Covers relevance, hearsay, tendency and coincidence evidence, opinion evidence, credibility, privilege, and exclusionary discretions.",
+            "key_provisions": [
+                "Part 3.6 — Tendency and coincidence evidence (ss 97-98)",
+                "Part 3.2 — Hearsay (ss 59-75)",
+                "Part 3.3 — Opinion evidence (ss 76-80)",
+                "s 137 — Exclusion of prejudicial evidence in criminal proceedings",
+                "s 138 — Exclusion of improperly or illegally obtained evidence",
+                "Part 4.3 — Client legal privilege and privilege against self-incrimination",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Procedure Regulations 2019 (Vic)",
+            "description": "Supports the Criminal Procedure Act 2009 with prescribed forms, processes, and procedural requirements.",
+        },
+        {
+            "regulation": "Sentencing Regulations 2011 (Vic)",
+            "description": "Supports the Sentencing Act 1991 with procedural detail for sentencing orders.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Summary Offences Act 1966 (Vic)",
+            "description": "Defines less serious (summary) criminal offences including offensive behaviour, disorderly conduct, begging, and public drunkenness.",
+        },
+        {
+            "act": "Family Violence Protection Act 2008 (Vic)",
+            "description": "Governs family violence intervention orders (FVIOs) and related protections. Amended to recognise strangulation as family violence. Contravention of FVIO is a criminal offence (s 123).",
+        },
+        {
+            "act": "Drugs, Poisons and Controlled Substances Act 1981 (Vic)",
+            "description": "Covers drug offences including possession, use, trafficking, and cultivation of drugs of dependence.",
+        },
+        {
+            "act": "Road Safety Act 1986 (Vic)",
+            "description": "Governs serious traffic offences including drink driving, dangerous driving causing death/injury, and licence offences.",
+        },
+        {
+            "act": "Youth Justice Act 2024 (Vic)",
+            "description": "Standalone youth justice framework. Raises minimum age of criminal responsibility from 10 to 12. Strengthens doli incapax for 12-13 year olds. Presumption against detention for under-14s. Replaces Children, Youth and Families Act 2005.",
+        },
+        {
+            "act": "Bail Act 1977 (Vic)",
+            "description": "Governs bail applications. 'Show compelling reason' test for serious offences. 'Unacceptable risk' assessment. Amended by Bail Amendment Act 2025 (extends show compelling reason test for repeat indictable offences on bail).",
+        },
+        {
+            "act": "Criminal Appeal Act 1914 (Vic)",
+            "description": "Governs appeals from criminal trials to the Court of Appeal. Grounds include unsafe/unsatisfactory verdict, wrong decision on question of law, and miscarriage of justice.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# QUEENSLAND COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+QLD_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code Act 1899 (Qld)",
+            "description": "Establishes the substantive criminal law in Queensland. Defines offences as acts or omissions liable to punishment (s 2), divides them into crimes and misdemeanours (s 3). Covers offences against the person, property, public order, and sexual offences. Recently amended to include coercive control (s 334C, commenced 26 May 2025).",
+            "key_provisions": [
+                "Chapter 28 — Homicide (murder s 302, manslaughter s 303)",
+                "Chapter 30 — Assaults (ss 335-340)",
+                "Chapter 32 — Sexual offences (ss 347-352)",
+                "Chapter 33A — Coercive control (s 334C, commenced 26 May 2025 — Hannah's Law)",
+                "Chapter 38 — Stealing and related offences (ss 391-408D)",
+                "Chapter 39 — Fraud (ss 408C-408E)",
+                "Chapter 67 — Attempts (ss 535-543)",
+            ]
+        },
+        {
+            "act": "Penalties and Sentences Act 1992 (Qld)",
+            "description": "Consolidates sentencing powers in Queensland. Provides range of sentencing options (imprisonment, fines, community service, probation). Courts must consider offence seriousness, maximum penalties, victim harm, and principles of consistency. Five sentencing purposes: punishment, rehabilitation, deterrence, denunciation, community protection (s 3).",
+            "key_provisions": [
+                "s 3 — Purposes of sentencing",
+                "s 9 — Sentencing guidelines — general principles",
+                "Part 5 — Imprisonment",
+                "Part 6 — Intensive correction orders",
+                "Part 7 — Probation orders",
+                "Part 9A — Serious violent offences (mandatory non-parole periods)",
+                "Part 9D — Indefinite sentences",
+            ]
+        },
+        {
+            "act": "Evidence Act 1977 (Qld)",
+            "description": "Governs evidence rules in criminal proceedings including witness competency, spousal testimony, oaths, documentary evidence admissibility, and special provisions for vulnerable witnesses. Currently under review for modernisation (2025 review).",
+            "key_provisions": [
+                "Part 2 — Witnesses (competency, compellability, oaths)",
+                "Part 2A — Evidence of special witnesses (children, vulnerable persons)",
+                "s 93 — Admissibility of statements in documents",
+                "s 93A — Admissibility of business records",
+                "Part 3 — Documentary evidence",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 2006 (Qld)",
+            "description": "Underpins criminal proceedings from investigation through to sentencing and includes relevant court procedures.",
+            "key_provisions": [
+                "Chapter 2 — Summary proceedings",
+                "Chapter 3 — Indictable proceedings (committal, indictment, trial)",
+                "Chapter 5 — Disclosure",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Code Regulation 2014 (Qld)",
+            "description": "Supports the Criminal Code with prescribed matters and administrative detail.",
+        },
+        {
+            "regulation": "Penalties and Sentences Regulation 2015 (Qld)",
+            "description": "Supports the Penalties and Sentences Act 1992 with procedural detail.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Domestic and Family Violence Protection Act 2012 (Qld)",
+            "description": "Governs domestic violence protection orders (DVOs) and related protections. Contravention of DVO is a criminal offence (s 177).",
+        },
+        {
+            "act": "Bail Act 1980 (Qld)",
+            "description": "Governs bail applications and conditions in Queensland criminal proceedings.",
+        },
+        {
+            "act": "Drugs Misuse Act 1986 (Qld)",
+            "description": "Covers possession, supply, production, and trafficking of dangerous drugs in Queensland.",
+        },
+        {
+            "act": "Youth Justice Act 1992 (Qld)",
+            "description": "Governs juvenile criminal proceedings. Significantly amended by Making Queensland Safer Act 2024 — 'adult crime, adult time' for 33 serious offences with adult maximum penalties for youth offenders aged 10-17.",
+        },
+        {
+            "act": "Justices Act 1886 (Qld)",
+            "description": "Provides procedures for summary proceedings and committal hearings. Supplements the Criminal Procedure Act 2006.",
+        },
+        {
+            "act": "Criminal Appeal Act 1912 (Qld)",
+            "description": "Governs appeals against conviction and sentence to the Queensland Court of Appeal.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# SOUTH AUSTRALIA COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+SA_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Law Consolidation Act 1935 (SA)",
+            "description": "The foundational legislation consolidating criminal offences and their penalties in South Australia. Covers homicide, assault, sexual offences, property offences, fraud, and various other criminal matters. Recently amended to include coercive control (s 20A, 2024).",
+            "key_provisions": [
+                "Part 3 — Offences against the person (murder s 11, manslaughter s 13)",
+                "Part 3 Div 7A — Persistent sexual exploitation of a child",
+                "Part 3 s 20A — Coercive control (new 2024, max 7 years)",
+                "Part 5 — Offences relating to property",
+                "Part 6 — Fraud, dishonesty and secret commissions",
+                "Part 7 — Criminal defences (self-defence, duress, necessity, mental impairment)",
+                "Part 8A — Serious criminal trespass (home invasion)",
+            ]
+        },
+        {
+            "act": "Sentencing Act 2017 (SA)",
+            "description": "Replaces earlier sentencing legislation. Establishes the sentencing framework — courts must consider nature/seriousness of offence, victim vulnerability, extent of harm, defendant's character and offending history, likelihood of reoffending, age and mental condition, and extent of remorse. Permits up to 40% sentence reduction for early guilty pleas in Magistrates Court, up to 35% in higher courts.",
+            "key_provisions": [
+                "s 10 — Purposes of sentencing",
+                "s 11 — Primary sentencing considerations (seriousness, harm, character)",
+                "Part 3 Div 2 — Imprisonment",
+                "Part 3 Div 3 — Non-parole periods",
+                "Part 3 Div 4 — Community-based sentences",
+                "Part 4 — Sentence discount for guilty pleas (up to 40%/35%)",
+                "Part 5 — Serious repeat offenders (non-parole at least four-fifths of sentence)",
+            ]
+        },
+        {
+            "act": "Evidence Act 1929 (SA)",
+            "description": "Governs admissibility and presentation of evidence in criminal proceedings. Key provisions on witness competency, cross-examination, and victim protections. Recent amendments (effective 16 December 2024) permit Aboriginal persons to give evidence about traditional laws/customs even where otherwise inadmissible as hearsay. Close relatives of accused are competent and compellable.",
+            "key_provisions": [
+                "Part 3 — Witnesses (competency, compellability)",
+                "Part 6 — Evidence in sexual offence cases",
+                "Part 7 — Tendency and coincidence evidence",
+                "s 34P — Audio visual evidence from vulnerable witnesses",
+                "Recent 2024 amendments — Aboriginal traditional law/customs evidence",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 1921 (SA)",
+            "description": "Establishes procedural rules for criminal proceedings including summary jurisdiction, indictable offences, warrants, committals, and court processes.",
+            "key_provisions": [
+                "Part 3 — Preliminary examination (committal proceedings)",
+                "Part 5 — Trial of indictable offences",
+                "Part 6 — Costs",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Law Consolidation Regulations 2018 (SA)",
+            "description": "Supports the Criminal Law Consolidation Act 1935 with prescribed matters.",
+        },
+        {
+            "regulation": "Sentencing Regulations 2018 (SA)",
+            "description": "Supports the Sentencing Act 2017 with procedural detail for sentencing orders.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Summary Offences Act 1953 (SA)",
+            "description": "Covers minor criminal offences and public order matters in South Australia.",
+        },
+        {
+            "act": "Intervention Orders (Prevention of Abuse) Act 2009 (SA)",
+            "description": "Governs intervention orders for domestic and family violence. Contravention of order is a criminal offence (s 31).",
+        },
+        {
+            "act": "Controlled Substances Act 1984 (SA)",
+            "description": "Covers possession, manufacture, supply, and trafficking of controlled substances in South Australia.",
+        },
+        {
+            "act": "Bail Act 1985 (SA)",
+            "description": "Governs bail applications and conditions in South Australian criminal proceedings.",
+        },
+        {
+            "act": "Criminal Law (High Risk Offenders) Act 2015 (SA)",
+            "description": "Allows extended supervision and detention orders for high-risk sexual and violent offenders. Amended 2024 to expand definition of high-risk offender.",
+        },
+        {
+            "act": "Criminal Law (Forensic Procedures) Act 2007 (SA)",
+            "description": "Rules for obtaining forensic samples from suspects and convicted offenders in South Australia.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# WESTERN AUSTRALIA COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+WA_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code Act Compilation Act 1913 (WA)",
+            "description": "Establishes the Criminal Code as the law for criminal offences in Western Australia. Consolidates prior statutes and defines offences triable in the state. No liability for trial except under the Code or other statutes. Covers homicide, assault, sexual offences, property, fraud, and public order.",
+            "key_provisions": [
+                "Chapter XXVIII — Homicide (murder s 279, manslaughter s 280)",
+                "Chapter XXIX — Offences endangering life or health",
+                "Chapter XXX — Assaults (s 313-318B, including new aggravated assault on retail workers s 318B, 2024)",
+                "Chapter XXXI — Sexual offences",
+                "Chapter XXXVIII — Stealing",
+                "Chapter XLI — Fraud (s 409)",
+            ]
+        },
+        {
+            "act": "Sentencing Act 1995 (WA)",
+            "description": "Requires sentences to be proportionate to offence seriousness. Courts consider statutory penalties, circumstances (victim vulnerability), aggravating/mitigating factors, and community protection. Imprisonment restricted to serious cases or public safety needs.",
+            "key_provisions": [
+                "s 6 — Principles of sentencing (proportionality, consistency, community protection)",
+                "Part 3 — Imprisonment",
+                "Part 3A — Indefinite imprisonment",
+                "Part 5 — Community-based orders",
+                "Part 8 — Parole",
+                "Part 14 — Spent convictions",
+            ]
+        },
+        {
+            "act": "Evidence Act 1906 (WA)",
+            "description": "Consolidates evidence rules for civil and criminal proceedings. Covers admissibility, witness competency (including spouses and vulnerable persons), and protections against self-incrimination. A 2025 Bill proposes replacement with uniform evidence laws.",
+            "key_provisions": [
+                "Part II — Witnesses (competency, compellability)",
+                "Part III — Documentary evidence",
+                "Part IV — Various evidentiary matters",
+                "s 36A-36BD — Evidence of children and vulnerable witnesses",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 2004 (WA)",
+            "description": "Modernises procedures for all criminal matters. Indictable offences start in Magistrates Court via prosecution notice, proceed to disclosure/committal, then transfer to District/Supreme Court for plea, trial, or sentencing.",
+            "key_provisions": [
+                "Part 3 — Summary proceedings",
+                "Part 4 — Indictable proceedings (committal, disclosure, trial)",
+                "Part 5 — Sentencing provisions",
+                "Part 7 — Appeals",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Procedure Regulations 2005 (WA)",
+            "description": "Supports the Criminal Procedure Act 2004 with prescribed forms and procedures.",
+        },
+        {
+            "regulation": "Sentencing Regulations 1996 (WA)",
+            "description": "Supports the Sentencing Act 1995 with procedural detail.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Restraining Orders Act 1997 (WA)",
+            "description": "Governs violence restraining orders (VROs) and misconduct restraining orders. Breach of VRO is a criminal offence (s 61). Amended by Family Violence Legislation Reform Act 2024.",
+        },
+        {
+            "act": "Misuse of Drugs Act 1981 (WA)",
+            "description": "Covers possession, supply, manufacture, and trafficking of prohibited drugs in Western Australia.",
+        },
+        {
+            "act": "Bail Act 1982 (WA)",
+            "description": "Governs bail applications and conditions in Western Australian criminal proceedings.",
+        },
+        {
+            "act": "Criminal Investigation Act 2006 (WA)",
+            "description": "Governs police investigation powers including arrest, search and seizure, crime scenes, and forensic procedures.",
+        },
+        {
+            "act": "Young Offenders Act 1994 (WA)",
+            "description": "Governs juvenile criminal proceedings in Western Australia.",
+        },
+        {
+            "act": "Criminal Appeals Act 2004 (WA)",
+            "description": "Governs appeals against conviction and sentence in Western Australian courts.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# TASMANIA COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+TAS_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code Act 1924 (Tas)",
+            "description": "Establishes the core criminal law code in Schedule 1. Defines offences (murder, manslaughter, sexual assaults, property crimes, fraud), parties to crimes, and general principles of criminal responsibility. Most crimes carry max 21 years (except murder/treason). Magistrate summary jurisdiction for offences up to 2 years.",
+            "key_provisions": [
+                "Chapter XII — Homicide (murder s 157, manslaughter s 159)",
+                "Chapter XIV — Assaults (ss 170-184B)",
+                "Chapter XX — Sexual offences (ss 124-185)",
+                "Chapter XXIII — Stealing and related offences",
+                "Chapter XXVI — Fraud (ss 244-253)",
+                "Part II — Criminal responsibility and defences (ss 11-25)",
+                "s 35 — Indecent assault (time limitation removed by Jari's Law 2024)",
+            ]
+        },
+        {
+            "act": "Sentencing Act 1997 (Tas)",
+            "description": "Provides statutory basis for sentencing adults in Magistrates and Supreme Courts. Community protection is the primary purpose. Also includes punishment, rehabilitation, deterrence, denunciation, and victim interests. 2025 amendments add prejudicial/hateful motivations as aggravating factors.",
+            "key_provisions": [
+                "s 3 — Purposes of sentencing (community protection primary)",
+                "Part 3 — Imprisonment",
+                "Part 4 — Community service orders",
+                "Part 5 — Probation",
+                "Part 7 — Suspended sentences",
+                "2025 Amendment — Aggravating factors for hateful motivations (race, religion, gender, age)",
+            ]
+        },
+        {
+            "act": "Evidence Act 2001 (Tas)",
+            "description": "Mirror legislation to the Commonwealth Evidence Act 1995. Governs admissibility in Tasmanian courts. Key reforms include narrower hearsay rules with exceptions, abolition of original document rule (easing electronic records), credibility rules, identification evidence restrictions, and privilege protections.",
+            "key_provisions": [
+                "Part 3.6 — Tendency and coincidence evidence (ss 97-98)",
+                "Part 3.2 — Hearsay (ss 59-75)",
+                "Part 3.3 — Opinion evidence (ss 76-80)",
+                "s 137 — Exclusion of prejudicial evidence",
+                "s 138 — Exclusion of improperly obtained evidence",
+                "Part 4.3 — Client legal privilege",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Code Regulations 2024 (Tas)",
+            "description": "Supports the Criminal Code Act 1924 with prescribed matters.",
+        },
+        {
+            "regulation": "Sentencing Regulations 2018 (Tas)",
+            "description": "Supports the Sentencing Act 1997 with procedural detail.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Police Offences Act 1935 (Tas)",
+            "description": "Covers minor and summary offences in Tasmania. 2024 Amendment Bill proposes increased penalties for vehicle stealing, hooning, trespass with firearm, knife offences, and a new 'road rage' offence.",
+        },
+        {
+            "act": "Family Violence Act 2004 (Tas)",
+            "description": "Governs family violence orders. Breach of order is a criminal offence (s 35). Jari's Law 2024 added mandatory coronial inquests where family violence contributed to death.",
+        },
+        {
+            "act": "Misuse of Drugs Act 2001 (Tas)",
+            "description": "Covers possession, supply, manufacture, and trafficking of prohibited drugs in Tasmania.",
+        },
+        {
+            "act": "Bail Act 1994 (Tas)",
+            "description": "Governs bail applications and conditions in Tasmanian criminal proceedings.",
+        },
+        {
+            "act": "Youth Justice Act 1997 (Tas)",
+            "description": "Governs juvenile criminal proceedings in Tasmania.",
+        },
+        {
+            "act": "Criminal Code Appeal Procedures (Tas)",
+            "description": "Appeals from criminal trials to the Court of Criminal Appeal under the Criminal Code Act 1924 (Part XII).",
+        },
+    ],
+}
+
+
+# ============================================================================
+# NORTHERN TERRITORY COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+NT_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code Act 1983 (NT)",
+            "description": "Codifies most criminal offences in the Northern Territory, replacing common law crimes. Covers offences against the person, property, public order, and sexual offences. Part IIAA outlines general principles of criminal responsibility, defences, and proof burdens. 2023 reforms updated sexual offence provisions including consent (free and voluntary agreement).",
+            "key_provisions": [
+                "Part V — Offences against the person (murder s 156, manslaughter s 160)",
+                "Part VIA — Sexual offences (reformed 2023 — affirmative consent model)",
+                "Part VI — Assaults (ss 186-192)",
+                "Part VIII — Offences relating to property",
+                "Part IIAA — General principles of criminal responsibility",
+                "s 166 — Threats to kill",
+                "s 189 — Stalking",
+                "s 31 — Criminal responsibility (unique NT provision)",
+            ]
+        },
+        {
+            "act": "Sentencing Act 1995 (NT)",
+            "description": "Courts impose sentences guided by s 5 prioritising five purposes: punish justly, aid rehabilitation, deter the offender and others, express community disapproval, protect the community. Mandatory sentencing applies to certain offences (three-strikes property crimes s 78A/78DA, assaults on workers/police s 78D/78DAA). 2024 expansion for assaults on frontline workers.",
+            "key_provisions": [
+                "s 5 — Purposes of sentencing",
+                "s 6 — Sentencing factors (culpability, prevalence, pleas, custody time)",
+                "Part 3 — Imprisonment",
+                "s 78A, 78DA — Mandatory sentencing (property offences, three-strikes)",
+                "s 78D, 78DAA — Mandatory sentencing (assaults on police/emergency workers, 2024 expansion)",
+                "Part 5 — Community-based orders",
+                "Part 7 — Indefinite sentences (reviewable)",
+            ]
+        },
+        {
+            "act": "Evidence (National Uniform Legislation) Act 2011 (NT)",
+            "description": "Uniform evidence legislation for the Northern Territory, mirroring the Commonwealth Evidence Act 1995. Regulates admissibility, witness competency, compellability, hearsay, tendency/coincidence evidence, opinion evidence, and exclusionary discretions.",
+            "key_provisions": [
+                "Part 3.6 — Tendency and coincidence evidence",
+                "Part 3.2 — Hearsay",
+                "s 137 — Exclusion of prejudicial evidence",
+                "s 138 — Exclusion of improperly obtained evidence",
+                "Part 4.3 — Privilege",
+            ]
+        },
+        {
+            "act": "Criminal Procedure Act 1928 (NT) [as amended]",
+            "description": "Procedural rules for criminal proceedings in the Northern Territory.",
+            "key_provisions": [
+                "Summary proceedings",
+                "Indictable proceedings (committal, trial)",
+                "ss 43O-43V — Fitness to stand trial (special hearings/investigations)",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Code Regulations (NT)",
+            "description": "Supports the Criminal Code Act 1983 with prescribed matters.",
+        },
+        {
+            "regulation": "Sentencing Regulations (NT)",
+            "description": "Supports the Sentencing Act 1995 with procedural detail.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Domestic and Family Violence Act 2007 (NT)",
+            "description": "Governs domestic violence orders (DVOs) and related protections in the Northern Territory.",
+        },
+        {
+            "act": "Misuse of Drugs Act 1990 (NT)",
+            "description": "Covers possession, supply, manufacture, and trafficking of dangerous drugs in the Northern Territory.",
+        },
+        {
+            "act": "Bail Act 1982 (NT)",
+            "description": "Governs bail applications and conditions in Northern Territory criminal proceedings.",
+        },
+        {
+            "act": "Police Administration Act 1978 (NT)",
+            "description": "Primary police powers legislation. Power to arrest without warrant (ss 126A, 127), enter premises (ss 126, 126B), stop/search vehicles/persons in authorised drug-search areas (ss 126C, 126D), forensic procedures.",
+        },
+        {
+            "act": "Youth Justice Act 2005 (NT)",
+            "description": "Governs juvenile criminal proceedings in the Northern Territory.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# ACT COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+ACT_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code 2002 (ACT)",
+            "description": "Codifies most serious criminal offences in the ACT and general principles of criminal responsibility (Chapter 2). Covers theft (s 308), robbery (s 309), burglary (s 311), fraud (ss 332-334), and minor theft (s 321). Defines elements of offences (Part 2.2) and criminal responsibility framework.",
+            "key_provisions": [
+                "Chapter 2 — General principles of criminal responsibility (s 6 purpose, Part 2.2 elements)",
+                "Part 3 — Offences against the person",
+                "Part 4 — Sexual offences",
+                "Part 5 — Property offences (theft s 308, robbery s 309, burglary s 311)",
+                "Part 6 — Fraud (ss 332-334)",
+            ]
+        },
+        {
+            "act": "Crimes Act 1900 (ACT)",
+            "description": "Retains legacy offences from its NSW origins (converted to ACT law in 1989). Supplements the Criminal Code 2002 for matters not yet consolidated into the Code. Remains in force alongside the Criminal Code.",
+            "key_provisions": [
+                "Part 2 — Offences against the person",
+                "Part 3 — Sexual offences",
+                "Part 4 — Property offences",
+            ]
+        },
+        {
+            "act": "Crimes (Sentencing) Act 2005 (ACT)",
+            "description": "Governs sentencing procedures in the ACT. Includes good behaviour orders, conditions, and restrictions for offenders. Amended periodically — effective versions noted up to 2026.",
+            "key_provisions": [
+                "Part 4 — Sentencing purposes and considerations",
+                "Part 5 — Imprisonment",
+                "Part 6 — Good behaviour orders",
+                "Part 7 — Community service orders",
+                "Part 8 — Conditional release orders",
+            ]
+        },
+        {
+            "act": "Evidence Act 2011 (ACT)",
+            "description": "ACT-specific evidence legislation regulating admissibility of evidence, relevance, proof, witnesses, and statements in criminal proceedings.",
+            "key_provisions": [
+                "Part 3.6 — Tendency and coincidence evidence",
+                "Part 3.2 — Hearsay",
+                "s 137 — Exclusion of prejudicial evidence",
+                "s 138 — Exclusion of improperly obtained evidence",
+                "Part 4.3 — Privilege",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Criminal Code Regulation 2005 (ACT)",
+            "description": "Supports the Criminal Code 2002 with prescribed matters.",
+        },
+        {
+            "regulation": "Crimes (Sentencing) Regulation 2006 (ACT)",
+            "description": "Supports the Crimes (Sentencing) Act 2005 with procedural detail.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Crimes (Sentence Administration) Act 2005 (ACT)",
+            "description": "Governs administration of sentences including parole, community service, and breach proceedings.",
+        },
+        {
+            "act": "Family Violence Act 2016 (ACT)",
+            "description": "Governs family violence orders and related protections in the ACT.",
+        },
+        {
+            "act": "Drugs of Dependence Act 1989 (ACT)",
+            "description": "Covers possession, supply, manufacture, and trafficking of drugs of dependence in the ACT.",
+        },
+        {
+            "act": "Bail Act 1992 (ACT)",
+            "description": "Governs bail applications and conditions in ACT criminal proceedings.",
+        },
+        {
+            "act": "Children and Young People Act 2008 (ACT)",
+            "description": "Governs juvenile criminal proceedings in the ACT.",
+        },
+        {
+            "act": "Court Procedures Act 2004 (ACT)",
+            "description": "General procedural legislation for ACT courts including criminal proceedings.",
+        },
+    ],
+}
+
+
+# ============================================================================
+# COMMONWEALTH/FEDERAL COMPLETE CRIMINAL LEGISLATIVE FRAMEWORK
+# ============================================================================
+
+FEDERAL_CRIMINAL_FRAMEWORK = {
+    "primary_legislation": [
+        {
+            "act": "Criminal Code Act 1995 (Cth)",
+            "description": "Contains the Criminal Code which defines most substantive Commonwealth criminal offences and general principles of criminal responsibility. Applies nationwide and extraterritorially for serious offences including genocide, war crimes, terrorism, corporate crime, drug importation, child exploitation, and cybercrime. Codifies physical and fault elements (actus reus, mens rea). Amended by Hate Crimes Act 2025.",
+            "key_provisions": [
+                "Chapter 2 — General principles of criminal responsibility (fault elements, defences)",
+                "Part 5.3 — Terrorism (Div 101 terrorist acts, Div 102 terrorist organisations, Div 103 financing terrorism)",
+                "Part 5.1 Div 80 — Treason, sedition, advocating violence (amended by Hate Crimes Act 2025)",
+                "Part 9.1 — Fraud against the Commonwealth",
+                "Part 10.2 — Money laundering",
+                "Part 10.6 — Slavery and people trafficking",
+                "Part 10.7 — Computer offences (cybercrime)",
+                "Part 7.3 — Drug importation/exportation",
+                "Part 10.4 — Child exploitation material",
+            ]
+        },
+        {
+            "act": "Crimes Act 1914 (Cth)",
+            "description": "Australia's first major federal criminal law (enacted 1914). Governs investigations (search warrants, arrests, detention), sentencing (Part 1B), forfeiture, and procedural matters. State court procedures apply unless overridden. Part 1B is the primary sentencing framework for federal offences (NOT state sentencing acts).",
+            "key_provisions": [
+                "Part IAA — Search, information gathering, arrest and related powers",
+                "Part IC — Investigation of Commonwealth offences (detention, rights of suspects, interviews)",
+                "Part IB — Sentencing, imprisonment and release of federal offenders",
+                "s 15AA — Bail (presumption against bail for terrorism offences)",
+                "s 16A — Matters to which court must have regard when sentencing federal offenders",
+                "s 16B — Court must warn of possible imprisonment for federal offences",
+                "s 19B — Discharge without conviction (spent conviction scheme)",
+            ]
+        },
+        {
+            "act": "Judiciary Act 1903 (Cth)",
+            "description": "Part X grants state and territory courts federal jurisdiction for Commonwealth crimes. Covers arrests, trials, committals, and appeals for federal offences tried in state courts. There is no Federal Court criminal jurisdiction.",
+            "key_provisions": [
+                "Part X — Criminal jurisdiction (ss 68-70)",
+                "s 68 — Conferral of federal criminal jurisdiction on state courts",
+                "s 68A — Procedure and evidence in state courts exercising federal jurisdiction",
+            ]
+        },
+        {
+            "act": "Director of Public Prosecutions Act 1983 (Cth)",
+            "description": "Establishes the Commonwealth Director of Public Prosecutions (CDPP) as the independent prosecuting authority for federal criminal offences. The CDPP prosecutes offences under the Criminal Code and Crimes Act.",
+            "key_provisions": [
+                "s 6 — Functions of the Director",
+                "s 9 — Director may prosecute by filing information",
+                "s 16 — Undertaking to give evidence",
+            ]
+        },
+    ],
+    "key_regulations": [
+        {
+            "regulation": "Crimes Regulations 2019 (Cth)",
+            "description": "Supports the Crimes Act 1914 with procedural matters including arrest, detention, and interview procedures.",
+        },
+        {
+            "regulation": "Criminal Code Regulations 2019 (Cth)",
+            "description": "Supports the Criminal Code Act 1995 with prescribed matters.",
+        },
+    ],
+    "specialised_legislation": [
+        {
+            "act": "Australian Federal Police Act 1979 (Cth)",
+            "description": "Establishes the Australian Federal Police (AFP) and governs its powers, functions, and conduct. AFP typically investigates Commonwealth offences.",
+        },
+        {
+            "act": "Proceeds of Crime Act 2002 (Cth)",
+            "description": "Governs confiscation of proceeds and instruments of Commonwealth crime. Allows unexplained wealth orders.",
+        },
+        {
+            "act": "National Anti-Corruption Commission Act 2022 (Cth)",
+            "description": "Establishes the NACC to investigate corruption by Commonwealth public officials.",
+        },
+        {
+            "act": "Foreign Evidence Act 1994 (Cth)",
+            "description": "Rules for obtaining and admitting evidence from foreign countries in Australian proceedings.",
+        },
+        {
+            "act": "Mutual Assistance in Criminal Matters Act 1987 (Cth)",
+            "description": "Framework for international cooperation in criminal investigations and proceedings.",
+        },
+        {
+            "act": "Extradition Act 1988 (Cth)",
+            "description": "Governs extradition of persons to and from Australia for criminal offences.",
+        },
+    ],
+}
+
+
+
 # ============================================================================
 # RECENT LEGISLATION UPDATES (2022-2026)
 # Verified, commenced Acts that MUST be cited by the LLM when relevant.

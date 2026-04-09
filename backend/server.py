@@ -32,7 +32,7 @@ from models import (
     ReportMetadata,
 )
 from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
-from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context
+from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
@@ -3075,6 +3075,8 @@ GROUNDS COUNT: {len(grounds)}
     barrister_state = (case.get('state') or 'nsw').lower()
     barrister_offence_cat = case.get('offence_category', 'homicide')
     recent_legislation_block = _build_recent_legislation_context(barrister_state, barrister_offence_cat)
+    state_framework_block = _build_state_framework_context(barrister_state)
+    federal_framework_block = _build_federal_framework_context()
 
     # DO NOT UNDO — Barrister View system prompt with strict depth requirements and FORENSIC language
     system_prompt = """You are a senior Australian criminal appeal barrister preparing the definitive barrister brief for a criminal appeal matter. This is the CAPSTONE document that synthesises and BUILDS UPON three earlier analytical reports (Quick Summary, Full Detailed Report, and Extensive Log). The output must read like one coherent, authoritative legal document written by a careful appellate specialist who has thoroughly digested all three source reports and is now producing a comprehensive counsel-ready working brief.
@@ -3129,7 +3131,9 @@ TIMELINE SNAPSHOT
 
 DOCUMENT INVENTORY
 {documents_text}
-{recent_legislation_block}"""
+{recent_legislation_block}
+{state_framework_block}
+{federal_framework_block}"""
 
     # DO NOT UNDO — Section groups with calibrated source limits (larger limits cause 502 proxy errors)
     section_groups = [

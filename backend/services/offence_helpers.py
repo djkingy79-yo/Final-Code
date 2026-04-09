@@ -8,7 +8,24 @@ IMPORTANT DESIGN RULES:
   - Always include anti-hallucination controls in system prompts
   - Separate factual extraction from legal inference
 """
-from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES, NSW_CRIMINAL_FRAMEWORK
+from offence_framework import (
+    OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES,
+    NSW_CRIMINAL_FRAMEWORK, VIC_CRIMINAL_FRAMEWORK, QLD_CRIMINAL_FRAMEWORK,
+    SA_CRIMINAL_FRAMEWORK, WA_CRIMINAL_FRAMEWORK, TAS_CRIMINAL_FRAMEWORK,
+    NT_CRIMINAL_FRAMEWORK, ACT_CRIMINAL_FRAMEWORK, FEDERAL_CRIMINAL_FRAMEWORK,
+)
+
+# Map state keys to their criminal framework dictionaries
+STATE_FRAMEWORKS = {
+    "nsw": NSW_CRIMINAL_FRAMEWORK,
+    "vic": VIC_CRIMINAL_FRAMEWORK,
+    "qld": QLD_CRIMINAL_FRAMEWORK,
+    "sa": SA_CRIMINAL_FRAMEWORK,
+    "wa": WA_CRIMINAL_FRAMEWORK,
+    "tas": TAS_CRIMINAL_FRAMEWORK,
+    "nt": NT_CRIMINAL_FRAMEWORK,
+    "act": ACT_CRIMINAL_FRAMEWORK,
+}
 
 
 def _build_recent_legislation_context(state: str, offence_category: str) -> str:
@@ -105,35 +122,72 @@ RELEVANT {abbreviation} LEGISLATION:
     if recent_leg:
         context += recent_leg
 
-    # Inject NSW foundational criminal framework for NSW cases
-    if state_key == 'nsw':
-        context += _build_nsw_framework_context()
+    # Inject state-specific criminal framework
+    context += _build_state_framework_context(state_key)
+
+    # Always inject federal/Commonwealth framework
+    context += _build_federal_framework_context()
 
     return context
 
 
-def _build_nsw_framework_context() -> str:
-    """Build the NSW foundational criminal legislative framework context block."""
-    context = "\nNSW CRIMINAL LEGISLATIVE FRAMEWORK — FOUNDATIONAL ACTS AND REGULATIONS:\n"
-    context += "The following Acts and Regulations form the bedrock of NSW criminal law. They MUST be cited with correct section numbers where relevant to the case.\n\n"
+def _build_state_framework_context(state_key: str) -> str:
+    """Build the state-specific criminal legislative framework context block."""
+    framework = STATE_FRAMEWORKS.get(state_key)
+    if not framework:
+        return ""
+
+    state_name = AUSTRALIAN_STATES.get(state_key, {}).get('name', state_key.upper())
+    context = f"\n{state_name.upper()} CRIMINAL LEGISLATIVE FRAMEWORK — FOUNDATIONAL ACTS AND REGULATIONS:\n"
+    context += f"The following Acts and Regulations form the bedrock of {state_name} criminal law. They MUST be cited with correct section numbers where relevant to the case.\n\n"
 
     context += "PRIMARY LEGISLATION:\n"
-    for act_info in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]:
+    for act_info in framework.get("primary_legislation", []):
         context += f"  {act_info['act']}\n"
         context += f"    {act_info['description']}\n"
-        for prov in act_info["key_provisions"]:
+        for prov in act_info.get("key_provisions", []):
             context += f"    - {prov}\n"
         context += "\n"
 
-    context += "KEY REGULATIONS:\n"
-    for reg in NSW_CRIMINAL_FRAMEWORK["key_regulations"]:
-        context += f"  {reg['regulation']}: {reg['description']}\n"
-    context += "\n"
+    if framework.get("key_regulations"):
+        context += "KEY REGULATIONS:\n"
+        for reg in framework["key_regulations"]:
+            context += f"  {reg['regulation']}: {reg['description']}\n"
+        context += "\n"
 
-    context += "SPECIALISED LEGISLATION:\n"
-    for spec in NSW_CRIMINAL_FRAMEWORK["specialised_legislation"]:
-        context += f"  {spec['act']}: {spec['description']}\n"
-    context += "\n"
+    if framework.get("specialised_legislation"):
+        context += "SPECIALISED LEGISLATION:\n"
+        for spec in framework["specialised_legislation"]:
+            context += f"  {spec['act']}: {spec['description']}\n"
+        context += "\n"
+
+    return context
+
+
+def _build_federal_framework_context() -> str:
+    """Build the Commonwealth/Federal criminal legislative framework context block."""
+    context = "\nCOMMONWEALTH/FEDERAL CRIMINAL LEGISLATIVE FRAMEWORK:\n"
+    context += "The following Commonwealth Acts apply to ALL Australian jurisdictions and MUST be cited where federal offences, sentencing, or procedures are relevant.\n\n"
+
+    context += "PRIMARY LEGISLATION:\n"
+    for act_info in FEDERAL_CRIMINAL_FRAMEWORK.get("primary_legislation", []):
+        context += f"  {act_info['act']}\n"
+        context += f"    {act_info['description']}\n"
+        for prov in act_info.get("key_provisions", []):
+            context += f"    - {prov}\n"
+        context += "\n"
+
+    if FEDERAL_CRIMINAL_FRAMEWORK.get("key_regulations"):
+        context += "KEY REGULATIONS:\n"
+        for reg in FEDERAL_CRIMINAL_FRAMEWORK["key_regulations"]:
+            context += f"  {reg['regulation']}: {reg['description']}\n"
+        context += "\n"
+
+    if FEDERAL_CRIMINAL_FRAMEWORK.get("specialised_legislation"):
+        context += "KEY COMMONWEALTH STATUTES:\n"
+        for spec in FEDERAL_CRIMINAL_FRAMEWORK["specialised_legislation"]:
+            context += f"  {spec['act']}: {spec['description']}\n"
+        context += "\n"
 
     return context
 

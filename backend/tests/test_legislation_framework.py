@@ -14,12 +14,21 @@ from offence_framework import (
     HUMAN_RIGHTS_FRAMEWORK,
     COMMON_APPEAL_GROUNDS,
     NSW_CRIMINAL_FRAMEWORK,
+    VIC_CRIMINAL_FRAMEWORK,
+    QLD_CRIMINAL_FRAMEWORK,
+    SA_CRIMINAL_FRAMEWORK,
+    WA_CRIMINAL_FRAMEWORK,
+    TAS_CRIMINAL_FRAMEWORK,
+    NT_CRIMINAL_FRAMEWORK,
+    ACT_CRIMINAL_FRAMEWORK,
+    FEDERAL_CRIMINAL_FRAMEWORK,
 )
 from services.offence_helpers import (
     get_offence_context,
     get_offence_system_prompt,
     _build_recent_legislation_context,
-    _build_nsw_framework_context,
+    _build_state_framework_context,
+    _build_federal_framework_context,
 )
 
 
@@ -234,15 +243,10 @@ class TestNSWCriminalFramework:
     def test_nsw_framework_injected_for_nsw_cases(self):
         case = {"offence_category": "homicide", "state": "nsw"}
         context = get_offence_context(case)
-        assert "NSW CRIMINAL LEGISLATIVE FRAMEWORK" in context
+        assert "Crimes Act 1900 No 40" in context
         assert "Criminal Procedure Act 1986 No 209" in context
         assert "Evidence Act 1995 No 25" in context
         assert "LEPRA" in context
-
-    def test_nsw_framework_not_injected_for_other_states(self):
-        case = {"offence_category": "homicide", "state": "qld"}
-        context = get_offence_context(case)
-        assert "NSW CRIMINAL LEGISLATIVE FRAMEWORK" not in context
 
     def test_nsw_recent_animal_abuse_present(self):
         nsw = RECENT_LEGISLATION_UPDATES["nsw"]
@@ -263,3 +267,190 @@ class TestNSWCriminalFramework:
         nsw = RECENT_LEGISLATION_UPDATES["nsw"]
         acts = [e["act"] for e in nsw]
         assert any("Mental Health" in a for a in acts)
+
+
+class TestAllStateFrameworks:
+    """Verify all state/territory criminal frameworks are complete and correctly injected."""
+
+    def test_vic_framework_has_crimes_act_1958(self):
+        acts = [a["act"] for a in VIC_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1958" in a for a in acts)
+
+    def test_vic_framework_has_sentencing_act(self):
+        acts = [a["act"] for a in VIC_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Sentencing Act 1991" in a for a in acts)
+
+    def test_vic_framework_has_evidence_act(self):
+        acts = [a["act"] for a in VIC_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Evidence Act 2008" in a for a in acts)
+
+    def test_vic_framework_injected(self):
+        case = {"offence_category": "assault", "state": "vic"}
+        context = get_offence_context(case)
+        assert "Crimes Act 1958" in context
+        assert "Sentencing Act 1991" in context
+
+    def test_qld_framework_has_criminal_code_1899(self):
+        acts = [a["act"] for a in QLD_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1899" in a for a in acts)
+
+    def test_qld_framework_has_penalties_sentences(self):
+        acts = [a["act"] for a in QLD_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Penalties and Sentences Act 1992" in a for a in acts)
+
+    def test_qld_framework_injected(self):
+        case = {"offence_category": "homicide", "state": "qld"}
+        context = get_offence_context(case)
+        assert "Criminal Code Act 1899" in context
+        assert "Penalties and Sentences Act 1992" in context
+
+    def test_sa_framework_has_clca_1935(self):
+        acts = [a["act"] for a in SA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Law Consolidation Act 1935" in a for a in acts)
+
+    def test_sa_framework_has_sentencing_act(self):
+        acts = [a["act"] for a in SA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Sentencing Act 2017" in a for a in acts)
+
+    def test_sa_framework_injected(self):
+        case = {"offence_category": "assault", "state": "sa"}
+        context = get_offence_context(case)
+        assert "Criminal Law Consolidation Act 1935" in context
+        assert "Sentencing Act 2017" in context
+
+    def test_wa_framework_has_criminal_code_1913(self):
+        acts = [a["act"] for a in WA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act Compilation Act 1913" in a for a in acts)
+
+    def test_wa_framework_has_sentencing_act(self):
+        acts = [a["act"] for a in WA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Sentencing Act 1995" in a for a in acts)
+
+    def test_wa_framework_injected(self):
+        case = {"offence_category": "domestic_violence", "state": "wa"}
+        context = get_offence_context(case)
+        assert "Criminal Code Act Compilation Act 1913" in context
+        assert "Sentencing Act 1995" in context
+
+    def test_tas_framework_has_criminal_code_1924(self):
+        acts = [a["act"] for a in TAS_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1924" in a for a in acts)
+
+    def test_tas_framework_has_sentencing_act(self):
+        acts = [a["act"] for a in TAS_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Sentencing Act 1997" in a for a in acts)
+
+    def test_tas_framework_has_evidence_act(self):
+        acts = [a["act"] for a in TAS_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Evidence Act 2001" in a for a in acts)
+
+    def test_tas_framework_injected(self):
+        case = {"offence_category": "homicide", "state": "tas"}
+        context = get_offence_context(case)
+        assert "Criminal Code Act 1924" in context
+        assert "Sentencing Act 1997" in context
+
+    def test_nt_framework_has_criminal_code_1983(self):
+        acts = [a["act"] for a in NT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1983" in a for a in acts)
+
+    def test_nt_framework_has_sentencing_act(self):
+        acts = [a["act"] for a in NT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Sentencing Act 1995" in a for a in acts)
+
+    def test_nt_framework_injected(self):
+        case = {"offence_category": "drug_offences", "state": "nt"}
+        context = get_offence_context(case)
+        assert "Criminal Code Act 1983" in context
+        assert "Sentencing Act 1995" in context
+
+    def test_act_framework_has_criminal_code_2002(self):
+        acts = [a["act"] for a in ACT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code 2002" in a for a in acts)
+
+    def test_act_framework_has_crimes_act_1900(self):
+        acts = [a["act"] for a in ACT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1900" in a for a in acts)
+
+    def test_act_framework_injected(self):
+        case = {"offence_category": "fraud_dishonesty", "state": "act"}
+        context = get_offence_context(case)
+        assert "Criminal Code 2002" in context
+        assert "Crimes Act 1900 (ACT)" in context
+
+
+class TestFederalFramework:
+    """Verify the Commonwealth/Federal criminal framework."""
+
+    def test_criminal_code_act_1995(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1995" in a for a in acts)
+
+    def test_crimes_act_1914(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1914" in a for a in acts)
+
+    def test_judiciary_act_1903(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Judiciary Act 1903" in a for a in acts)
+
+    def test_dpp_act_1983(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Director of Public Prosecutions Act 1983" in a for a in acts)
+
+    def test_federal_framework_always_injected(self):
+        # Federal framework should appear for ANY state
+        for state in ["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act"]:
+            case = {"offence_category": "homicide", "state": state}
+            context = get_offence_context(case)
+            assert "COMMONWEALTH/FEDERAL CRIMINAL LEGISLATIVE FRAMEWORK" in context, f"Federal framework missing for {state}"
+            assert "Criminal Code Act 1995 (Cth)" in context, f"Criminal Code Act 1995 missing for {state}"
+            assert "Crimes Act 1914 (Cth)" in context, f"Crimes Act 1914 missing for {state}"
+
+
+class TestUserProvidedPrimaryActs:
+    """Verify the exact list of primary Acts the user specified."""
+
+    def test_crimes_act_1914_cth(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1914 (Cth)" in a for a in acts)
+
+    def test_crimes_act_1900_act(self):
+        acts = [a["act"] for a in ACT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1900 (ACT)" in a for a in acts)
+
+    def test_crimes_act_1900_nsw(self):
+        acts = [a["act"] for a in NSW_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1900" in a for a in acts)
+
+    def test_criminal_code_1899_qld(self):
+        acts = [a["act"] for a in QLD_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1899 (Qld)" in a for a in acts)
+
+    def test_criminal_code_1924_tas(self):
+        acts = [a["act"] for a in TAS_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1924 (Tas)" in a for a in acts)
+
+    def test_criminal_code_compilation_1913_wa(self):
+        acts = [a["act"] for a in WA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act Compilation Act 1913 (WA)" in a for a in acts)
+
+    def test_criminal_code_act_1995_cth(self):
+        acts = [a["act"] for a in FEDERAL_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1995 (Cth)" in a for a in acts)
+
+    def test_criminal_code_2002_act(self):
+        acts = [a["act"] for a in ACT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code 2002 (ACT)" in a for a in acts)
+
+    def test_criminal_code_act_1983_nt(self):
+        acts = [a["act"] for a in NT_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Code Act 1983 (NT)" in a for a in acts)
+
+    def test_criminal_law_consolidation_act_1935_sa(self):
+        acts = [a["act"] for a in SA_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Criminal Law Consolidation Act 1935 (SA)" in a for a in acts)
+
+    def test_crimes_act_1958_vic(self):
+        acts = [a["act"] for a in VIC_CRIMINAL_FRAMEWORK["primary_legislation"]]
+        assert any("Crimes Act 1958 (Vic)" in a for a in acts)
