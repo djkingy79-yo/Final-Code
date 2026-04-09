@@ -3,49 +3,50 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
 import InstallPrompt from "./components/InstallPrompt";
 import TermsAcceptance from "./components/TermsAcceptance";
 import { FastScrollTop, ScrollToTopOnNav } from "./components/FastScrollTop";
-
-// Pages
-import LandingPage from "./pages/LandingPage";
-import Dashboard from "./pages/Dashboard";
-import CaseDetail from "./pages/CaseDetail";
-import ReportView from "./pages/ReportView";
-import BarristerView from "./pages/BarristerView";
-import HelpPage from "./pages/HelpPage";
-import ResourcesPage from "./pages/ResourcesPage";
-import ProfessionalSummary from "./pages/ProfessionalSummary";
-import TermsOfService from "./pages/TermsOfService";
-import AdminStats from "./pages/AdminStats";
-import LegalGlossary from "./pages/LegalGlossary";
-import SuccessStories from "./pages/SuccessStories";
-import Statistics from "./pages/Statistics";
-import FAQPage from "./pages/FAQPage";
-import LawyerDirectory from "./pages/LawyerDirectory";
-import FormTemplates from "./pages/FormTemplates";
-import CompareCasesPage from "./pages/CompareCasesPage";
-import AboutPage from "./pages/AboutPage";
-import LegalResourcesPage from "./pages/LegalResourcesPage";
-import HowToUsePage from "./pages/HowToUsePage";
-import HowItWorksPage from "./pages/HowItWorksPage";
-import AppealStatisticsPage from "./pages/AppealStatisticsPage";
-import CaselawSearchPage from "./pages/CaselawSearchPage";
-import LegalFrameworkPage from "./pages/LegalFrameworkPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import AdminDashboard from "./pages/AdminDashboard";
-import DocumentPreviewPage from "./pages/DocumentPreviewPage";
-import AcceptShareLink from "./pages/AcceptShareLink";
 import { ThemeProvider } from "./contexts/ThemeContext";
-
 import AppFooter from "./components/AppFooter";
 import OfflineBanner from "./components/OfflineBanner";
 import { initNativeApp } from "./native/appLifecycle";
+
+// Critical pages — eagerly loaded
+import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
+import CaseDetail from "./pages/CaseDetail";
+
+// Heavy pages — lazy loaded for smaller initial bundle
+const ReportView = lazy(() => import("./pages/ReportView"));
+const BarristerView = lazy(() => import("./pages/BarristerView"));
+const HelpPage = lazy(() => import("./pages/HelpPage"));
+const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
+const ProfessionalSummary = lazy(() => import("./pages/ProfessionalSummary"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const AdminStats = lazy(() => import("./pages/AdminStats"));
+const LegalGlossary = lazy(() => import("./pages/LegalGlossary"));
+const SuccessStories = lazy(() => import("./pages/SuccessStories"));
+const Statistics = lazy(() => import("./pages/Statistics"));
+const FAQPage = lazy(() => import("./pages/FAQPage"));
+const LawyerDirectory = lazy(() => import("./pages/LawyerDirectory"));
+const FormTemplates = lazy(() => import("./pages/FormTemplates"));
+const CompareCasesPage = lazy(() => import("./pages/CompareCasesPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const LegalResourcesPage = lazy(() => import("./pages/LegalResourcesPage"));
+const HowToUsePage = lazy(() => import("./pages/HowToUsePage"));
+const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage"));
+const AppealStatisticsPage = lazy(() => import("./pages/AppealStatisticsPage"));
+const CaselawSearchPage = lazy(() => import("./pages/CaselawSearchPage"));
+const LegalFrameworkPage = lazy(() => import("./pages/LegalFrameworkPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
+const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 
 // DO_NOT_UNDO — Use current origin for API calls when running on a custom domain.
 // REACT_APP_BACKEND_URL is baked at build time (preview URL). On production custom
@@ -255,6 +256,7 @@ function AppRouter() {
   }
 
   return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>}>
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route
@@ -422,6 +424,7 @@ function AppRouter() {
         element={<Navigate to="/" replace />}
       />
     </Routes>
+    </Suspense>
   );
 }
 
