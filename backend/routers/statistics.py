@@ -148,8 +148,8 @@ async def get_case_comparison(case_id: str, request: Request):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
     
-    offence_category = case.get("offence_category", "homicide")
-    state = case.get("state", "nsw")
+    offence_category = case.get("offence_category", "other")
+    state = case.get("state", "")
     
     # Get stats for similar cases
     similar_offence_count = await db.cases.count_documents({"offence_category": offence_category})

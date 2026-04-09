@@ -32,7 +32,7 @@ from models import (
     ReportMetadata,
 )
 from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
-from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context
+from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context, get_export_legal_refs
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
@@ -1386,7 +1386,7 @@ VERIFIED APPEAL ISSUES:
 """
 
     # Define prompts based on report type with offence-specific language
-    base_system = get_offence_system_prompt(offence_category)
+    base_system = get_offence_system_prompt(offence_category, state)
     report_guardrails = """
 MANDATORY GUARDRAILS:
 - Use a HYBRID tone: court-ready legal analysis + plain-English action notes for the client.
@@ -4422,7 +4422,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
 
     # Header
     defendant = case.get("defendant_name", "Unknown")
-    state = (case.get("state") or "NSW").upper()
+    state = (case.get("state") or "UNSPECIFIED").upper()
     sentence = case.get("sentence", "")
 
     story.append(Paragraph("BARRISTER QUICK BRIEF", styles['QBTitle']))
@@ -5185,16 +5185,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             
             story.append(Spacer(1, 5*mm))
     
-    # Legal Framework Reference
+    # Legal Framework Reference — state-specific, NO NSW default
     story.append(Paragraph("LEGAL FRAMEWORK REFERENCE", styles['SectionHeader']))
     story.append(Spacer(1, 2*mm))
-    legal_refs = [
-        "- Crimes Act 1900 (NSW) - Primary criminal law for NSW",
-        "- Criminal Appeal Act 1912 (NSW) - Governs appeals in NSW",
-        "- Criminal Code Act 1995 (Cth) - Federal criminal law",
-        "- Evidence Act 1995 (NSW & Cth) - Evidence admissibility",
-        "- Sentencing Act 1995 (NSW) - Sentencing guidelines"
-    ]
+    export_state = (case.get('state') or '').lower()
+    legal_refs = get_export_legal_refs(export_state)
     for ref in legal_refs:
         story.append(Paragraph(ref, styles['LawSection']))
     
@@ -5509,19 +5504,14 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
             
             doc.add_paragraph()
     
-    # Legal Framework Reference
+    # Legal Framework Reference — state-specific, NO NSW default
     doc.add_heading('LEGAL FRAMEWORK REFERENCE', level=1)
     
-    legal_refs = [
-        "Crimes Act 1900 (NSW) - Primary criminal law for New South Wales",
-        "Criminal Appeal Act 1912 (NSW) - Governs criminal appeals in NSW",
-        "Criminal Code Act 1995 (Cth) - Federal criminal law",
-        "Evidence Act 1995 (NSW & Cth) - Rules on evidence admissibility",
-        "Sentencing Act 1995 (NSW) - Sentencing guidelines and procedures"
-    ]
+    export_state_docx = (case.get('state') or '').lower()
+    legal_refs = get_export_legal_refs(export_state_docx)
     
     for ref in legal_refs:
-        doc.add_paragraph(ref, style='List Bullet')
+        doc.add_paragraph(ref.lstrip('- '), style='List Bullet')
     
     doc.add_paragraph()
     

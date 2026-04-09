@@ -22,7 +22,7 @@ import { API } from "../App";
 import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
 import { toast } from "sonner";
 
-const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) => {
+const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState(state);
@@ -111,7 +111,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "nsw" }) =
   const category = framework.category;
   const commonGrounds = framework.common_appeal_grounds || [];
   const appealFramework = framework.appeal_framework || {};
-  const stateInfo = framework.state || { name: "New South Wales", abbreviation: "NSW" };
+  const stateInfo = framework.state || { name: "Unspecified", abbreviation: "N/A" };
 
   const buildLegalHtml = () => {
     let body = `<div class="export-header" style="background:#1e40af;"><h1>Legal Framework</h1><p>${category?.name || "General"} - ${offenceType || "General"} | ${stateInfo.name} (${stateInfo.abbreviation})</p></div><div class="export-body">`;

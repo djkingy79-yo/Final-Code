@@ -343,8 +343,8 @@ async def refresh_case_extract(case_id: str, request: Request):
     # Infer case metadata conservatively from extracts
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
     inferred_metadata = {
-        "state": case.get("state", "nsw"),
-        "offence_category": case.get("offence_category", "homicide"),
+        "state": case.get("state", ""),
+        "offence_category": case.get("offence_category", "other"),
         "offence_type": case.get("offence_type"),
         "sentence": case.get("sentence"),
         "court": case.get("court"),
@@ -425,8 +425,8 @@ async def classify_issues(case_id: str, request: Request):
         raise HTTPException(status_code=400, detail="No completed case extraction found. Run extract/refresh first.")
 
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
-    state = case.get("state", "nsw")
-    offence_cat = case.get("offence_category", "homicide")
+    state = case.get("state", "")
+    offence_cat = case.get("offence_category", "other")
 
     # Build classification prompt
     facts_text = "\n".join([

@@ -56,7 +56,7 @@ async def get_offence_categories():
     return {"categories": categories}
 
 @router.get("/offence-framework/{category}")
-async def get_offence_category_details(category: str, state: str = "nsw"):
+async def get_offence_category_details(category: str, state: str = ""):
     """Get detailed framework for a specific offence category and state"""
     if category not in OFFENCE_CATEGORIES:
         raise HTTPException(status_code=404, detail="Offence category not found")
@@ -78,13 +78,15 @@ async def get_offence_category_details(category: str, state: str = "nsw"):
         "cth_legislation": category_data.get("cth_legislation", {}),
     }
     
-    # Get appeal framework for the state
-    state_appeal = APPEAL_FRAMEWORK.get(state, APPEAL_FRAMEWORK.get("nsw"))
+    # Get appeal framework for the state — do NOT silently default to NSW
+    state_appeal = APPEAL_FRAMEWORK.get(state)
+    if not state_appeal:
+        state_appeal = {"note": "Appeal framework not available for the specified jurisdiction. Please verify the state is set correctly."}
     
     return {
         "category": response_category,
         "common_appeal_grounds": COMMON_APPEAL_GROUNDS,
         "human_rights": HUMAN_RIGHTS_FRAMEWORK,
         "appeal_framework": state_appeal,
-        "state": AUSTRALIAN_STATES.get(state, AUSTRALIAN_STATES.get("nsw"))
+        "state": AUSTRALIAN_STATES.get(state, {"name": state.upper() if state else "Unspecified", "abbreviation": state.upper() if state else "N/A"})
     }

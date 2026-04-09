@@ -33,8 +33,8 @@ def _build_recent_legislation_context(state: str, offence_category: str) -> str:
     entries = []
 
     # State-specific updates
-    state_key = state.lower() if state else 'nsw'
-    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key, [])
+    state_key = state.lower() if state else ''
+    state_updates = RECENT_LEGISLATION_UPDATES.get(state_key, []) if state_key else []
     for update in state_updates:
         cats = update.get('relevant_categories', [])
         if 'all' in cats or offence_category in cats:
@@ -69,7 +69,7 @@ def get_offence_context(case: dict) -> str:
 
     category_data = OFFENCE_CATEGORIES.get(
         offence_category,
-        OFFENCE_CATEGORIES.get('other', OFFENCE_CATEGORIES.get('homicide', {}))
+        OFFENCE_CATEGORIES.get('other', {})
     )
 
     # Jurisdiction handling — do NOT silently default to NSW
@@ -77,11 +77,11 @@ def get_offence_context(case: dict) -> str:
         state_info = AUSTRALIAN_STATES[state]
         jurisdiction_note = f"Jurisdiction: {state_info.get('name')} ({state_info.get('abbreviation')})"
     else:
-        state_info = AUSTRALIAN_STATES.get('nsw')  # reference only
+        state_info = {}
         jurisdiction_note = (
-            "JURISDICTION NOT CONFIRMED — analysis may reference NSW as default framework, "
-            "but this must be verified. Appellate tests, legislation, and procedures differ "
-            "materially between jurisdictions."
+            "JURISDICTION NOT CONFIRMED — the analysis MUST NOT default to any particular state's legislation. "
+            "Appellate tests, legislation, and procedures differ materially between jurisdictions. "
+            "The user must set the correct state before generating reports."
         )
 
     state_key = state if state else ''
@@ -190,6 +190,28 @@ def _build_federal_framework_context() -> str:
         context += "\n"
 
     return context
+
+
+def get_export_legal_refs(state_key: str) -> list:
+    """Build state-specific legal reference strings for PDF/DOCX exports.
+    Returns a list of formatted strings like '- Crimes Act 1900 (NSW) - Primary criminal law for NSW'.
+    Does NOT default to NSW — if state is unrecognised, returns generic Commonwealth-only refs."""
+    framework = STATE_FRAMEWORKS.get(state_key.lower() if state_key else '')
+    state_info = AUSTRALIAN_STATES.get(state_key.lower() if state_key else '', {})
+    state_name = state_info.get('name', (state_key.upper() if state_key else 'Unspecified'))
+
+    refs = []
+    if framework:
+        for act_info in framework.get("primary_legislation", [])[:5]:
+            refs.append(f"- {act_info['act']} - {act_info['description']}")
+    else:
+        refs.append(f"- Jurisdiction: {state_name} — verify applicable criminal legislation for this state/territory")
+
+    # Always add Commonwealth
+    refs.append("- Criminal Code Act 1995 (Cth) - Federal criminal law")
+    refs.append("- Evidence Act 1995 (Cth) - Evidence admissibility (where adopted)")
+    return refs
+
 
 
 def get_offence_system_prompt(offence_category: str, state: str = "") -> str:

@@ -454,3 +454,72 @@ class TestUserProvidedPrimaryActs:
     def test_crimes_act_1958_vic(self):
         acts = [a["act"] for a in VIC_CRIMINAL_FRAMEWORK["primary_legislation"]]
         assert any("Crimes Act 1958 (Vic)" in a for a in acts)
+
+
+class TestNoNSWFallbacks:
+    """Ensure NO code-level fallbacks to NSW or homicide exist."""
+
+    def test_wa_context_no_nsw_crimes_act(self):
+        wa_case = {'state': 'wa', 'offence_category': 'domestic_violence', 'offence_type': 'Common Assault (DV)'}
+        ctx = get_offence_context(wa_case)
+        assert 'Crimes Act 1900 (NSW)' not in ctx, 'NSW Crimes Act found in WA context!'
+
+    def test_qld_context_no_nsw_crimes_act(self):
+        qld_case = {'state': 'qld', 'offence_category': 'assault', 'offence_type': 'GBH'}
+        ctx = get_offence_context(qld_case)
+        assert 'Crimes Act 1900 (NSW)' not in ctx, 'NSW Crimes Act found in QLD context!'
+
+    def test_sa_context_no_nsw_crimes_act(self):
+        sa_case = {'state': 'sa', 'offence_category': 'homicide', 'offence_type': 'Murder'}
+        ctx = get_offence_context(sa_case)
+        assert 'Crimes Act 1900 (NSW)' not in ctx, 'NSW Crimes Act found in SA context!'
+
+    def test_empty_state_no_nsw_default(self):
+        empty_case = {'state': '', 'offence_category': 'assault'}
+        ctx = get_offence_context(empty_case)
+        assert 'Crimes Act 1900 (NSW)' not in ctx, 'NSW Crimes Act crept in with empty state!'
+
+    def test_none_state_no_nsw_default(self):
+        none_case = {'offence_category': 'assault'}
+        ctx = get_offence_context(none_case)
+        assert 'Crimes Act 1900 (NSW)' not in ctx, 'NSW Crimes Act crept in with None state!'
+
+    def test_system_prompt_wa_no_nsw(self):
+        prompt = get_offence_system_prompt('domestic_violence', 'wa')
+        assert 'Western Australia' in prompt
+        assert 'New South Wales' not in prompt
+
+    def test_system_prompt_empty_state_flags_unconfirmed(self):
+        prompt = get_offence_system_prompt('assault', '')
+        assert 'not been confirmed' in prompt.lower() or 'unconfirmed' in prompt.lower() or 'flag this' in prompt.lower()
+
+    def test_export_refs_wa_no_nsw(self):
+        from services.offence_helpers import get_export_legal_refs
+        refs = get_export_legal_refs('wa')
+        refs_str = ' '.join(refs)
+        assert 'WA' in refs_str
+        assert 'Crimes Act 1900 (NSW)' not in refs_str
+
+    def test_export_refs_empty_no_nsw(self):
+        from services.offence_helpers import get_export_legal_refs
+        refs = get_export_legal_refs('')
+        refs_str = ' '.join(refs)
+        assert 'Crimes Act 1900 (NSW)' not in refs_str
+        assert 'Unspecified' in refs_str
+
+    def test_offence_context_no_homicide_fallback(self):
+        """Ensure unknown offence_category doesn't fall back to homicide."""
+        case = {'state': 'vic', 'offence_category': 'nonexistent_category'}
+        ctx = get_offence_context(case)
+        # Should NOT contain homicide-specific keys or elements
+        assert 'Category: Homicide' not in ctx
+
+    def test_wa_has_wa_legislation(self):
+        wa_case = {'state': 'wa', 'offence_category': 'domestic_violence'}
+        ctx = get_offence_context(wa_case)
+        assert 'Criminal Code Act Compilation Act 1913 (WA)' in ctx
+
+    def test_vic_has_vic_legislation(self):
+        vic_case = {'state': 'vic', 'offence_category': 'assault'}
+        ctx = get_offence_context(vic_case)
+        assert 'Crimes Act 1958 (Vic)' in ctx

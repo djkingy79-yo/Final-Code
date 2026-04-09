@@ -43,7 +43,7 @@ async def _background_auto_detect_metadata(case_id: str, user_id: str, content_t
         case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
         if not case:
             return
-        if case.get('offence_type') and case.get('sentence') and case.get('offence_category') and case.get('offence_category') != 'homicide':
+        if case.get('offence_type') and case.get('sentence') and case.get('offence_category') and case.get('state'):
             return
         detect_prompt = f"""Analyse this criminal case document and extract metadata.
 Return ONLY valid JSON (no markdown):
