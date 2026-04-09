@@ -48,19 +48,19 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Barrister View Refactor (Apr 2026): Barrister Brief no longer auto-generates when navigating to the page. User must explicitly select "Barrister View" in the Generate Report dialog and click "Generate Report". Once generated, the Barrister Brief appears in the reports list alongside the other 3 reports as a proper report card with "CAPSTONE" badge. Duplicate old barrister reports cleaned up. Backend returns 404 when no report exists (instead of auto-generating). BarristerView page shows "Not Yet Generated" message instead of auto-retrying.
 - Comprehensive Legal Framework Update (Apr 2026): Deep forensic audit of all criminal law legislation across all Australian jurisdictions (NSW, VIC, QLD, SA, WA, TAS, NT, ACT + Commonwealth). 174 legislation entries across 9 jurisdictions. Added complete criminal frameworks for ALL states/territories (Primary Acts, Key Regulations, Specialised Legislation) plus FEDERAL_CRIMINAL_FRAMEWORK. 27 recent legislation updates (2022-2026). All 11 primary Criminal Codes/Acts verified.
 - Complete NSW/Homicide Fallback Eradication (Apr 2026): Forensic sweep of ALL backend and frontend code. Removed every code-level default to NSW or homicide across: server.py (system prompts, Barrister Brief PDF, PDF/DOCX exports), offence_helpers.py (context builder, system prompt builder, export refs), pipeline.py (case metadata), statistics.py (case stats), documents.py (auto-detect), utilities.py (framework API), classify.py (grounds classification), LegalFrameworkViewer.jsx (component default). Created get_export_legal_refs() helper for dynamic state-specific legislation in PDF/DOCX exports. All `state` parameters now pass through from the case object with no silent NSW substitution. All `offence_category` defaults changed from "homicide" to "other". 93 regression tests passing (12 new anti-fallback tests). Testing agent verified: WA/QLD/empty-state API calls return correct legislation, frontend Legal tab shows correct state, zero NSW contamination.
+- Production Readiness Review (Apr 2026): Full sweep — 31/31 backend API tests (auth, CRUD, legal framework, health), mobile responsiveness verified (375px viewport), all env vars set, DB indexes confirmed, no MongoDB _id leaks.
+- Minor Fixes (Apr 2026): WebSocket chat accept-first pattern (fixes 409 on proxied environments), DialogContent accessibility (VisuallyHidden Description suppresses Radix warnings), mobile dashboard header responsive sizing.
+- Attachment B — Counsel Conference Preparation (Apr 2026): New attachment appended to Barrister View after Attachment A. Generates: key questions for conference (factual, strategic, evidentiary, procedural), identified weak points table, likely prosecution responses per ground, document references checklist, suggested conference agenda. Added to H2 whitelist. Loading message updated.
 
 ## Backlog
 - P0: "How It Works" page screenshots (IMG_4323-4327) — user-uploaded images still need placement
 - P1: Native Mobile App build (Capacitor v7)
 - P2: Camera/Share native device features
-- P2: Counsel conference prep attachment for Barrister View
-- P2: Real-time collaboration/chat
-- P2: Case sharing between users
-- P2: Backend refactoring — decompose server.py (~5900 lines)
+- P2: Backend refactoring — decompose server.py (~6000 lines)
 
 ## Production Readiness (Apr 2026)
 - Full review passed: 31/31 backend tests, all auth flows (login, register, logout, session), CRUD cases, legal framework, health checks, no MongoDB _id leaks
 - Mobile responsiveness: Fixed dashboard header overflow at 375px viewport. Landing page, dashboard, and case detail all pass mobile overflow check
 - Environment: All required env vars set (MONGO_URL, DB_NAME, FRONTEND_URL, ADMIN_EMAILS, CONTACT_EMAIL, EMERGENT_LLM_KEY). Optional vars (RESEND_API_KEY, CORS_ORIGINS, RESEND_FROM_EMAIL, PAYID_EMAIL) all set
 - Database: 31 collections, proper indexes on users/cases/reports/sessions/grounds/documents
-- Minor: WebSocket chat returns 409 (collaboration feature — LOW priority), DialogContent accessibility warnings
+- Minor items resolved: WebSocket accept-first, DialogContent accessibility, mobile responsive buttons
