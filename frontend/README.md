@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# Appeal Case Manager — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React 19 single-page application for the Appeal Case Manager platform.
 
-## Available Scripts
+## Stack
 
-In the project directory, you can run:
+- **React 19** with React Router v7
+- **Tailwind CSS 3.4** for styling
+- **Shadcn/UI** (40+ Radix UI primitives) in `/src/components/ui/`
+- **Sonner** for toast notifications
+- **Axios** for API communication
+- **Capacitor v7** for native iOS/Android builds
+- **React.lazy** code splitting — 26 pages lazy-loaded for faster initial load
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+# Install dependencies (use yarn, not npm)
+yarn install
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# Copy and configure environment
+cp .env.example .env
+# Set REACT_APP_BACKEND_URL to your backend URL
 
-### `npm test`
+# Start development server (hot reload on port 3000)
+yarn start
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Production build
+yarn build
+```
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+src/
+├── App.js                    # Root — routing, auth state, lazy imports
+├── components/
+│   ├── ui/                   # Shadcn component library (40+ components)
+│   ├── AuthModal.jsx         # Login/register + Google Auth
+│   ├── QuickExport.jsx       # Case Export Pack (PDF) + ZIP export
+│   ├── ReportTranslator.jsx  # Multi-language translation UI
+│   ├── ReportsSection.jsx    # Report tier cards and generation
+│   ├── GroundsOfMerit.jsx    # Grounds management and display
+│   ├── TimelineEnhanced.jsx  # Case timeline component
+│   ├── NotesSection.jsx      # Collaborative notes
+│   └── ...
+├── pages/
+│   ├── LandingPage.jsx       # Public landing (eagerly loaded)
+│   ├── Dashboard.jsx         # User dashboard (eagerly loaded)
+│   ├── CaseDetail.jsx        # Case view (eagerly loaded)
+│   ├── ReportView.jsx        # Report display (lazy)
+│   ├── BarristerView.jsx     # Barrister Brief (lazy)
+│   └── ... (20+ more pages, all lazy-loaded)
+├── contexts/
+│   └── ThemeContext.js        # Forced light mode provider
+├── utils/
+│   ├── auSpelling.js         # Australian English normaliser (80+ replacements)
+│   └── exportHtml.js         # Shared HTML export builder
+├── native/
+│   └── appLifecycle.js       # Capacitor native app lifecycle
+└── index.css                 # Global styles, forced light mode overrides
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Design Rules
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Forced light mode** — no dark backgrounds anywhere
+- **Colour palette:** Blue/slate/navy only. No amber or brown.
+- **Action buttons:** Bright blue (`bg-blue-700`) with white text
+- **Fonts:** Crimson Pro (headings), Manrope (body)
+- **Australian English** throughout all UI text
 
-### `npm run eject`
+## Key Commands
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+yarn start          # Dev server (port 3000, hot reload)
+yarn build          # Production build
+yarn test           # Run tests
+npx eslint src/     # Lint all source files
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Environment Variables
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Variable | Description |
+|----------|-------------|
+| `REACT_APP_BACKEND_URL` | Backend API URL (e.g. `https://yourdomain.com.au`) |
+| `WDS_SOCKET_PORT` | WebSocket port for dev server (default: 443) |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Created and Designed by Debra King** | Appeal Case Manager | Australian Law Only

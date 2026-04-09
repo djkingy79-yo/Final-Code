@@ -54,10 +54,10 @@ Appeal Case Manager was designed to democratise access to appeal preparation by 
 - **Intelligent ground merging** — related factual issues are automatically clustered under a single ground with sub-particulars (e.g. judge-alone refusal, jury reduction, and juror conduct are merged under "Procedural Unfairness (Jury Integrity)"). This follows the CCA-preferred approach: **"one ground, multiple particulars"**
 - **Forensic appellate language** throughout — all conclusions framed as arguable, contended, or tenable, not bare declarations. The Court makes findings; the brief identifies where findings are open.
 - **Intelligent ground framing by type:**
-  - Psychiatric/mental state evidence → framed as **conviction safety attack on mens rea** determination (not merely evidentiary criticism)
-  - Jury/procedural issues → clustered as **Procedural Unfairness** with sub-particulars
-  - Sentencing errors → tied to **proportionality and moral culpability**
-  - Ineffective counsel → marked as **CONTINGENT** — requiring evidentiary support (affidavit, transcript confirmation) before advancement
+  - Psychiatric/mental state evidence — framed as **conviction safety attack on mens rea** determination (not merely evidentiary criticism)
+  - Jury/procedural issues — clustered as **Procedural Unfairness** with sub-particulars
+  - Sentencing errors — tied to **proportionality and moral culpability**
+  - Ineffective counsel — marked as **CONTINGENT** — requiring evidentiary support (affidavit, transcript confirmation) before advancement
 - **Ground Priority Reorder** — drag-and-drop or arrow-button reordering of grounds by priority, saved to the database
 - Each ground is individually investigated with supporting legal analysis
 - Covers all recognised appeal grounds under Australian law:
@@ -96,7 +96,7 @@ The platform produces four tiers of progressively detailed analytical reports, e
 | 1 | **Quick Summary** | FREE | Issue identification — identifies and lists potential grounds of appeal with appellate pathways |
 | 2 | **Full Detailed Report** | $150 AUD | Appellate pathway analysis — comprehensive ground-by-ground assessment with legal reasoning, forensic framing, and precedent references |
 | 3 | **Extensive Log Report** | $200 AUD | Operations engine — exhaustive deep-dive with checklists, evidence deployment strategy, Crown response anticipation, and defence rebuttals |
-| 4 | **Barrister Brief** | Unlocked after Tiers 1–3 | Pure 5-minute counsel synthesis — no repetition from lower tiers. Includes **Counsel Synthesis** header, **Priority Order**, and **Barrister Issue Matrix** attachment |
+| 4 | **Barrister Brief** | Unlocked after Tiers 1-3 | Pure 5-minute counsel synthesis — no repetition from lower tiers. Includes **Counsel Synthesis** header, **Priority Order**, and **Barrister Issue Matrix** attachment |
 
 **Report Generation Architecture:**
 - Each report is generated through multiple sequential AI passes to ensure depth and accuracy
@@ -108,7 +108,7 @@ The platform produces four tiers of progressively detailed analytical reports, e
 - Australian English spelling enforced throughout (analyse, organise, defence, offence, behaviour)
 
 ### 7. Counsel Synthesis (Barrister View)
-The Barrister Brief now includes a **Counsel Synthesis** section at the very top — designed to tell a barrister "where do I attack?" in 30 seconds:
+The Barrister Brief includes a **Counsel Synthesis** section at the very top — designed to tell a barrister "where do I attack?" in 30 seconds:
 
 - **Primary Issue:** The single most important attack vector for the appeal
 - **Secondary Issue:** The second strongest line of attack
@@ -123,46 +123,65 @@ A concise, downloadable **2-page PDF** designed for a barrister to review in und
 - Top 3 grounds with viability ratings, appellate pathways, and contingent warnings
 - Professional formatting with branded headers and legal disclaimers
 
-### 9. Legal Framework Viewer
+### 9. Multi-Language Report Translation
+Reports can be translated into **41 languages** using AI-powered translation that preserves legal terminology, case citations, and document formatting:
+- Chinese (Simplified & Traditional), Hindi, Arabic, Spanish, French, German, Italian, Portuguese, Japanese, Korean, Vietnamese, Thai, Filipino/Tagalog, Greek, Turkish, Russian, Polish, Dutch, Swedish, Indonesian, Malay, Persian/Farsi, Urdu, Bengali, Tamil, Telugu, Nepali, Sinhala, Burmese, Khmer, Lao, Amharic, Swahili, Somali, Tigrinya, Tongan, Samoan, Maori, Punjabi
+- Translations are cached for instant subsequent access
+- Translated reports can be exported as **professionally formatted PDFs** with cover pages, legal disclaimers, and page numbers
+- Accessible via a "Translate" button on any report view
+
+### 10. Case Export Pack
+A single, professionally formatted PDF containing ALL generated reports for a case:
+- Professional cover page with case metadata (defendant, court, jurisdiction, sentence, offence)
+- Table of contents
+- Grounds of Merit section with full analysis for each ground
+- Case Timeline table
+- Every paid/generated report's full analysis content
+- Legal Framework Reference
+- Page numbers, footers, and legal disclaimers throughout
+- Only includes reports the user has actually generated and paid for
+
+### 11. Legal Framework Viewer
 - Jurisdiction-specific offence frameworks loaded dynamically based on the case's state and offence category
 - Displays elements of the offence, maximum penalties, sentencing ranges, and relevant legislation
 - Integrated directly into the case workflow for contextual reference
 
-### 10. Progress Analysis
+### 12. Progress Analysis
 - AI-generated assessment of overall case strength and appeal readiness
 - Identifies areas requiring further evidence or documentation
 - Tracks completion status across all case preparation phases
 - Exportable to PDF, Word, and print formats
 
-### 11. Real-Time Collaboration & Chat
+### 13. Real-Time Collaboration & Chat
 - Share cases with other registered users via email invitation
 - WebSocket-powered real-time messaging within shared cases
 - Notification system for new messages and case updates
 - Collaborative notes with pinning, commenting, and version tracking
 - Permission controls for view/edit access
 
-### 12. Document Export System
+### 14. Document Export System
 - **PDF Export:** Professional-formatted documents with branded cover pages, coloured report headers, legal disclaimers, and page-numbered footers
-- **Word Export (.doc):** iOS-compatible Word documents with proper XML envelope and BOM encoding
+- **Word Export (.docx):** iOS-compatible Word documents with proper XML envelope and BOM encoding
 - **Print Preview:** Dedicated `/document-preview` route with automatic print dialogue and clean A4-optimised layout
 - **Bulk Export:** "Print All", "PDF All", and "Word All" functions export the complete case bundle (summary, timeline, grounds, notes, progress) in a single document
 - **Barrister Quick Brief:** 2-page PDF with Counsel Synthesis + Top 3 Grounds
+- **Case Export Pack:** Single formatted PDF with all paid reports, grounds, timeline, and legal framework
 - All exports feature the **"Created and Designed by Deb King"** branding and **"NOT LEGAL ADVICE"** legal disclaimers
 
-### 13. Payment Integration
+### 15. Payment Integration
 - **PayID (Australian bank transfer):** Manual confirmation workflow with email notifications
 - **PayPal:** Full SDK integration with client-side checkout
 - **Stripe:** Secure card payment processing with webhook support
 - Payment status tracking per report tier per case
 
-### 14. Appeal Statistics Dashboard
+### 16. Appeal Statistics Dashboard
 - Comprehensive national and state-by-state criminal appeal statistics
 - Data sourced from ABS Criminal Courts Australia, state Supreme Court annual reviews, Judicial Commission of NSW, Victorian Sentencing Advisory Council, and Legal Services Commissioners
 - Colour-coded state comparison (NSW, VIC, QLD, SA, WA, TAS, NT, ACT)
 - In-depth analysis of why appeal rates are low, systemic barriers, and success factors
 - Educational resource for understanding the appeals landscape
 
-### 15. Interactive Tutorial (How It Works)
+### 17. Interactive Tutorial (How It Works)
 - Nine-step guided walkthrough covering every feature of the platform
 - Each step features a coloured header, description, "What You'll See on Screen" checklist, and pro tips
 - Covers: Account Creation, Document Upload, Timeline, Grounds, Notes, Reports, Legal Framework, Deadlines, and Chat & Collaboration
@@ -171,34 +190,35 @@ A concise, downloadable **2-page PDF** designed for a barrister to review in und
 
 ## Technical Architecture
 
-### Backend — Python / FastAPI
+### Backend — Python 3.11 / FastAPI 0.135
 
-The backend is built on **FastAPI** (v0.135), a high-performance async Python web framework, with **MongoDB** (via Motor async driver) as the primary database.
+The backend is built on **FastAPI** (v0.135.2), a high-performance async Python web framework, with **MongoDB** (via Motor 3.7 async driver) as the primary database.
 
-**Core Engine (`server.py` — 5,500+ lines):**
-- Application factory with middleware configuration (CORS, static files, exception handlers)
+**Core Engine (`server.py` — 5,800+ lines):**
+- Application factory with middleware configuration (CORS, security headers, rate limiting, static files, exception handlers)
 - Multi-pass AI report generation engine with model fallback logic
 - Forensic appellate language enforcement with banned/required phrase lists
-- PDF generation via ReportLab with custom page templates, headers, footers, and branded cover pages
+- PDF generation via ReportLab 4.4 with custom page templates, headers, footers, and branded cover pages
 - DOCX generation via python-docx with styled paragraphs, tables, and section formatting
 - Sentence extraction and normalisation using regex-based parsers
 - Offence framework context builders for all Australian jurisdictions
-- Comprehensive database initialisation with indexes for 30+ collections at startup
+- Comprehensive database initialisation with indexes for 31 collections at startup
 
-**Modular Router Architecture (23 router files):**
+**Modular Router Architecture (25 router files):**
 ```
 /routers/
-├── auth.py              # JWT authentication, registration, Google OAuth
+├── auth.py              # Session-token authentication, registration, Google OAuth, password change
 ├── cases.py             # Case CRUD operations
 ├── documents.py         # Document upload, OCR, text extraction, auto-detect
 ├── timeline.py          # Timeline CRUD, auto-generation, analysis, PDF export
 ├── grounds.py           # Grounds CRUD, AI investigation, auto-identify, priority reorder
 ├── notes.py             # Notes CRUD, pinning, comments, WebSocket collaboration
+├── reports.py           # Report generation and retrieval
 ├── payments.py          # PayID/PayPal/Stripe payment processing
 ├── collaboration.py     # Case sharing, real-time chat, notifications
 ├── analysis.py          # Contradiction scanning, progress analysis
 ├── resources.py         # Resource directory, document templates
-├── export.py            # Appeal package bundling (ZIP/PDF)
+├── export.py            # Case Export Pack (PDF), Quick Export (ZIP), multi-language translation
 ├── statistics.py        # Public appeal statistics endpoints
 ├── analytics.py         # Visit tracking, admin dashboard
 ├── admin.py             # Admin endpoints (contact, user stories)
@@ -207,51 +227,62 @@ The backend is built on **FastAPI** (v0.135), a high-performance async Python we
 ├── messages.py          # Legacy messaging endpoints
 ├── contradictions.py    # AI-powered contradiction detection
 ├── compare.py           # Case comparison and pattern analysis
+├── caselaw.py           # Case law search integration
+├── pipeline.py          # Background pipeline tasks
+├── pipeline_staged.py   # Staged pipeline processing
 ├── utilities.py         # States, offence frameworks, categories
-└── ...
+└── __init__.py
 ```
 
-**Service Layer:**
-```text
+**Service Layer (11 service files + 6 pipeline modules):**
+```
 /services/
 ├── legitimacy_engine.py   # Three-axis appellate viability scoring engine
-├── llm_service.py         # OpenAI GPT-4o integration with Emergent LLM Key
+├── llm_service.py         # OpenAI GPT-4o integration with Emergent Universal LLM Key
+├── ai_service.py          # AI analysis and extraction services
 ├── offence_helpers.py     # Jurisdiction-specific offence context builders
-├── email_service.py       # Transactional emails via Resend API
+├── email_service.py       # Transactional emails via Resend API (v2.23)
 ├── document_helpers.py    # Text extraction pipeline (PDF → OCR → DOCX → plaintext)
+├── caselaw_search.py      # Case law search and retrieval
+├── ground_dedup.py        # Ground deduplication and merging logic
 ├── notes_helpers.py       # WebSocket collaboration helpers
+├── pipeline_models.py     # Pydantic models for pipeline data
 ├── pipeline/
 │   ├── classify.py        # Ground classification with intelligent merging
 │   ├── extract.py         # Document fact/event/finding extraction
 │   ├── verify.py          # Ground verification against extracted record
-│   └── ...
-└── pipeline_models.py     # Pydantic models for pipeline data
+│   ├── argue.py           # Argumentation strategy generation
+│   ├── draft.py           # Draft report composition
+│   └── submit.py          # Report submission and finalisation
+└── __init__.py
 ```
 
 **Authentication:**
-- JWT token-based session management with bcrypt password hashing
+- Session-token-based management with PBKDF2-HMAC-SHA256 password hashing (100,000 iterations + random salt)
 - Google OAuth integration via Emergent-managed social login
 - Role-based access control (admin, user)
-- Brute-force protection and secure password reset via email
+- Brute-force protection (10 attempts/minute/IP) and secure password reset via email
 
 **AI Integration:**
 - **OpenAI GPT-4o** via the Emergent Integrations library and Universal LLM Key
 - Multi-pass generation: each report tier uses tailored system prompts with increasing depth requirements
 - **Forensic appellate language enforcement:** Banned phrases list ("The trial judge erred"), required phrases list ("It is arguable that..."), and ground-type-specific framing rules
+- **Multi-language translation:** 41 languages supported with LLM-powered translation and server-side caching
 - **Background tasks** for heavy LLM operations (16+ document extractions) using `asyncio.create_task` with polling via `task_id` to bypass Cloudflare 100s timeouts
 - Structured output parsing with fallback error handling
 - Context window management: documents, timeline events, and existing report content are compiled into optimised prompt payloads
 - Offence-specific prompt enrichment: the AI receives jurisdiction-specific sentencing frameworks, elements of the offence, and relevant legislative references
 
-### Frontend — React / Tailwind CSS / Shadcn UI
+### Frontend — React 19 / Tailwind CSS 3 / Shadcn UI
 
-The frontend is a **React** (v19) single-page application styled with **Tailwind CSS** (v3) and the **Shadcn/UI** component library built on Radix UI primitives.
+The frontend is a **React** (v19) single-page application styled with **Tailwind CSS** (v3.4) and the **Shadcn/UI** component library built on Radix UI primitives.
 
 **Key Technical Decisions:**
 - **Forced light mode globally** — dark backgrounds are overridden via CSS to ensure maximum readability and accessibility for legal documents
 - **Crimson Pro serif font** for all headings — professional legal typography
 - **Manrope sans-serif** for body text — optimised for screen readability
 - **High-contrast colour palette:** Bright blue action buttons, colour-coded report tiers (Emerald, Blue, Purple, Teal), jurisdiction-specific state colours
+- **Code splitting with React.lazy** — 26 pages are lazy-loaded to reduce initial bundle size (main bundle ~1.4MB)
 - **Shared Australian English normaliser** (`utils/auSpelling.js`) — 80+ American-to-Australian spelling replacements applied across all components displaying AI-generated text
 
 **Frontend Stack:**
@@ -264,41 +295,73 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 - date-fns for date formatting and manipulation
 - Capacitor (v7) configured for native iOS and Android builds
 
-**Component Architecture (111+ files):**
-- Page components: LandingPage, CaseDetail, BarristerView, ReportView, HowItWorksPage, AppealStatisticsPage, DocumentPreviewPage, and more
-- Feature components: ReportsSection, GroundsOfMerit, TimelineEnhanced, LegalFrameworkViewer, NotesSection, CollaborationPanel, LegitimacyPanel
+**Component Architecture (136 files):**
+- Page components: LandingPage, Dashboard, CaseDetail, BarristerView, ReportView, HowItWorksPage, AppealStatisticsPage, DocumentPreviewPage, and more
+- Feature components: ReportsSection, GroundsOfMerit, TimelineEnhanced, LegalFrameworkViewer, NotesSection, CollaborationPanel, LegitimacyPanel, QuickExport, ReportTranslator
 - Utility modules: exportHtml.js (shared HTML export builder with branded templates), auSpelling.js (Australian English normaliser)
 
 ### Database — MongoDB
 
-- **Motor** async driver for non-blocking database operations
-- **30+ indexed collections** initialised at startup: `users`, `cases`, `reports`, `documents`, `grounds_of_merit`, `timeline_events`, `notes`, `payments`, `pipeline_tasks`, `user_sessions`, `notifications`, `case_shares`, `share_links`, `issue_classifications`, `issue_verifications`, `document_extracts`, `case_extracts`, `activities`, `deadlines`, `checklist_items`, `submissions_drafts`, `contradiction_scans`, `case_messages`, `contact_messages`, `visits`, `visit_stats`, `counters`, `password_reset_tokens`, `issue_arguments`
-- TTL indexes for automatic session and password reset token expiry
+- **Motor 3.7** async driver for non-blocking database operations
+- **31 indexed collections** initialised at startup: `users`, `user_sessions`, `cases`, `reports`, `report_translations`, `documents`, `document_extracts`, `case_extracts`, `grounds_of_merit`, `timeline_events`, `notes`, `payments`, `payment_transactions`, `pipeline_tasks`, `notifications`, `case_shares`, `share_links`, `case_messages`, `issue_classifications`, `issue_verifications`, `issue_arguments`, `activities`, `deadlines`, `checklist_items`, `submissions_drafts`, `contradiction_scans`, `contact_messages`, `visits`, `visit_stats`, `counters`, `password_reset_tokens`
+- **Unique compound indexes** on `report_translations` (report_id + language) and `payment_transactions` (case_id + user_id)
+- **TTL indexes** for automatic session and password reset token expiry
 - All ObjectId fields excluded from API responses to ensure JSON serialisation safety
 - UTC timestamps throughout with ISO string storage
 
 ### DevOps & Deployment
 
 - **Kubernetes-ready** containerised deployment via Emergent platform
-- Multi-stage Dockerfile (Node 20 Alpine for frontend build, Python 3.12 Slim for backend)
+- Multi-stage Dockerfile (Node 22 Alpine for frontend build, Python 3.11 for backend)
 - Supervisor-managed processes (backend on port 8001, frontend on port 3000)
 - Ingress routing: `/api/*` → backend, all other routes → frontend
 - Environment-driven configuration: zero hardcoded URLs, secrets, or database credentials
+- **CORS restricted** to explicit production domains (no wildcards)
 - Hot reload enabled for both frontend and backend in development
 - Ruff linting for Python, ESLint for JavaScript
+- GitHub Actions CI pipeline with Node 22, `--frozen-lockfile` enforcement, and lockfile drift detection
 
 ---
 
 ## Security & Compliance
 
-- All passwords hashed with bcrypt (12 rounds)
-- JWT session tokens with configurable expiry and TTL-indexed database storage
-- CORS configuration for production origin restriction
+- All passwords hashed with **PBKDF2-HMAC-SHA256** (100,000 iterations + random 32-byte salt)
+- Session tokens (UUID4) with configurable expiry and TTL-indexed database storage
+- **Security headers middleware:** X-Frame-Options DENY, X-Content-Type-Options nosniff, X-XSS-Protection, Cache-Control no-store
+- **Rate limiting:** 10 requests/minute/IP on authentication endpoints
+- CORS configuration restricted to explicit production domains
 - No sensitive data stored in localStorage beyond session tokens
 - All AI-generated content includes mandatory legal disclaimers
 - Payment processing via PCI-compliant third-party providers (Stripe, PayPal)
 - OCR processing performed server-side — no document content transmitted to unauthorised third parties
 - Google OAuth tokens managed by Emergent's secure authentication proxy
+- Input validation via Pydantic models on all API endpoints
+- Case ownership verification on every data-access endpoint
+
+---
+
+## Environment Setup
+
+### Backend (`/app/backend/.env`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGO_URL` | Yes | MongoDB connection string |
+| `DB_NAME` | Yes | Database name |
+| `CORS_ORIGINS` | Yes | Comma-separated allowed frontend origins |
+| `EMERGENT_LLM_KEY` | Yes | Emergent universal key for AI features |
+| `RESEND_API_KEY` | Yes | Resend.com API key for transactional emails |
+| `RESEND_FROM_EMAIL` | Yes | Sender email address |
+| `CONTACT_EMAIL` | Yes | Admin contact email |
+| `FRONTEND_URL` | Yes | Frontend URL for email links and OAuth callbacks |
+| `ADMIN_EMAILS` | No | Comma-separated admin email addresses |
+| `PAYID_EMAIL` | No | PayID payment notification email |
+
+### Frontend (`/app/frontend/.env`)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `REACT_APP_BACKEND_URL` | Yes | Backend API base URL |
+
+See `.env.example` files in both directories for annotated templates.
 
 ---
 
