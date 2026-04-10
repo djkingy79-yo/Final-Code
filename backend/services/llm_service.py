@@ -165,13 +165,14 @@ def _looks_like_refusal(text: str) -> bool:
 
 
 def _extract_json_object(text: str) -> Optional[dict]:
+    """Extract JSON from LLM response — supports both objects and arrays."""
     if not text:
         return None
 
     # First try direct parse
     try:
         parsed = json.loads(text)
-        if isinstance(parsed, dict):
+        if isinstance(parsed, (dict, list)):
             return parsed
     except Exception:
         pass
@@ -182,12 +183,24 @@ def _extract_json_object(text: str) -> Optional[dict]:
         cleaned = cleaned.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
         try:
             parsed = json.loads(cleaned)
-            if isinstance(parsed, dict):
+            if isinstance(parsed, (dict, list)):
                 return parsed
         except Exception:
             pass
 
-    # Then try largest brace block
+    # Try largest bracket block (array)
+    try:
+        start = text.find("[")
+        end = text.rfind("]")
+        if start != -1 and end != -1 and end > start:
+            candidate = text[start:end + 1]
+            parsed = json.loads(candidate)
+            if isinstance(parsed, list):
+                return parsed
+    except Exception:
+        pass
+
+    # Then try largest brace block (object)
     try:
         start = text.find("{")
         end = text.rfind("}")
