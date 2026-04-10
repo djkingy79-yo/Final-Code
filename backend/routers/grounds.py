@@ -1071,6 +1071,40 @@ async def refresh_legal_references(case_id: str, request: Request):
                 update_fields["legitimacy_scores"] = v_dict["legitimacy_scores"]
                 update_fields["strength"] = v_dict["legitimacy_scores"].get("rating", ground.get("strength", "moderate"))
 
+            # Generate appellate_pathway if missing
+            if not ground.get("appellate_pathway"):
+                try:
+                    from services.offence_helpers import _build_state_framework_context
+                    state = (case.get("state") or "").lower().strip()
+                    leg_context = _build_state_framework_context(state) if state else ""
+                    ap_prompt = f"""Based on the following ground of appeal in a {state.upper()} criminal case, provide the single most appropriate appellate pathway (the statutory provision giving the right to appeal).
+
+Ground Title: {ground.get('title', '')}
+Ground Type: {ground.get('ground_type', 'other')}
+Description: {ground.get('description', '')}
+
+{leg_context}
+
+Return ONLY a concise appellate pathway string, e.g.:
+- "Miscarriage of justice under s 411 Criminal Code Act 1983 (NT)"
+- "Error of law under s 5(1) Criminal Appeal Act 1912 (NSW)"
+- "Sentencing error under s 5(1) Criminal Appeal Act 1912 (NSW)"
+Do NOT return JSON. Return only the plain text appellate pathway."""
+                    from services.llm_service import call_llm_structured
+                    ap_result = await call_llm_structured(
+                        system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision.",
+                        user_prompt=ap_prompt,
+                        session_id=f"appellate_pathway_{ground.get('ground_id', '')}",
+                        task_type="general",
+                        require_json=False,
+                    )
+                    ap_text = ap_result.get("content", "") if isinstance(ap_result, dict) else str(ap_result)
+                    ap_text = ap_text.strip().strip('"').strip("'").strip()
+                    if ap_text and len(ap_text) > 5 and ap_result.get("ok"):
+                        update_fields["appellate_pathway"] = ap_text
+                except Exception as ap_err:
+                    logger.warning(f"Failed to generate appellate pathway for {ground.get('ground_id')}: {ap_err}")
+
             if update_fields:
                 update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
                 await db.grounds_of_merit.update_one(

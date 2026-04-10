@@ -1,0 +1,74 @@
+{
+  "summary": "Iteration 176: Verified Times New Roman formatting across case detail tabs and print/export views. All 9 grounds for case_ac67738895f9 (R v Marika) have appellate pathways populated. Case identity card uses 14pt Times New Roman for values. Print views use 12pt body text with proper heading hierarchy. Footer includes document name, appellant name, and date.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_176.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Case identity card values (Defendant, Offence, State, Sentence) use Times New Roman 14pt as specified",
+    "All 9 grounds have appellate_pathway field populated with relevant legal references",
+    "Grounds screen view displays Appellate Pathway section in blue box for each ground",
+    "Grounds Print View uses Times New Roman 12pt body, 22pt h1, 18pt h2, 14pt h3",
+    "exportHtml.js shared template uses Times New Roman with 10pt italic footer",
+    "Footer format: 'Criminal Appeal Case Management - {Section} on {Appellant} - {Date}'",
+    "Print All button in header opens Complete Case Bundle view",
+    "All 9 tabs (Documents, Timeline, Grounds, Notes, Reports, Legal, Case Law, Progress, Collaboration) navigate correctly",
+    "Timeline print HTML uses Times New Roman 12pt body with proper footer",
+    "WebSocket connection warning for chat is non-critical (chat feature works)"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (all grounds have appellate pathways)",
+    "frontend": "100% (all formatting and navigation verified)"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 176 verified Times New Roman formatting for legal documents. Test case: case_ac67738895f9 (R v Marika, NT). Key findings: (1) Case identity card values use 14pt Times New Roman, (2) All 9 grounds have appellate_pathway populated, (3) Grounds print view uses 12pt body/22pt h1/18pt h2/14pt h3, (4) Footer includes document name, appellant, date, (5) Print All button works and shows Complete Case Bundle, (6) All 9 tabs navigate correctly, (7) exportHtml.js uses Times New Roman throughout.",
+  "tests_verified": {
+    "backend": {
+      "grounds_api": "PASS - 9 grounds returned with appellate_pathway populated",
+      "case_api": "PASS - case data includes defendant, offence, state, sentence"
+    },
+    "frontend": {
+      "case_identity_card_font": "PASS - Times New Roman 14pt for values (Defendant, Offence, State, Sentence)",
+      "grounds_tab_appellate_pathway": "PASS - Appellate Pathway section visible for each ground",
+      "grounds_print_view": "PASS - Times New Roman 12pt body, proper heading sizes",
+      "grounds_print_footer": "PASS - Footer with document name, appellant, date",
+      "timeline_tab": "PASS - Tab loads, Print button present",
+      "notes_tab": "PASS - Tab loads, Print/PDF/Word buttons present",
+      "legal_tab": "PASS - Tab loads with Legal Framework, Print/PDF/Word buttons",
+      "progress_tab": "PASS - Tab loads with Pipeline Progress, Print/PDF/Word buttons",
+      "print_all_button": "PASS - Opens Complete Case Bundle view",
+      "tab_navigation": "PASS - All 9 tabs navigate without errors",
+      "console_errors": "PASS - No critical errors (WebSocket warning is non-blocking)"
+    }
+  },
+  "formatting_verification": {
+    "times_new_roman_applied_to": [
+      "Case identity card values (14pt)",
+      "Print view body text (12pt)",
+      "Print view h1 headings (22pt)",
+      "Print view h2 headings (18pt)",
+      "Print view h3 headings (14pt)",
+      "Print footer (10pt italic)",
+      "Table content in exports",
+      "List items in exports"
+    ],
+    "footer_format": "Criminal Appeal Case Management - {Section} on {Appellant} - {Date}",
+    "appellate_pathway_display": "Blue box with 'Appellate Pathway' heading and legal reference text"
+  }
+}

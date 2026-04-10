@@ -238,32 +238,32 @@ const Timeline = ({
   <style>
     @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0 0 88px; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; }
+    body { margin: 0; padding: 0 0 88px; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; }
     .timeline-print-shell { max-width: 920px; margin: 24px auto; background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); padding: 28px; }
-    .timeline-print-brand { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .timeline-print-brand { text-align: center; font-size: 14pt; font-weight: 700; margin-bottom: 16px; font-family: 'Times New Roman', Times, serif; }
     .timeline-print-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 20px; }
-    .timeline-print-kicker { margin: 0 0 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
-    .timeline-print-header h1 { margin: 0 0 8px; font-size: 18px; }
-    .timeline-print-header p { margin: 0; line-height: 1.5; font-size: 11px; color: #475569; }
+    .timeline-print-kicker { margin: 0 0 8px; font-size: 10pt; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
+    .timeline-print-header h1 { margin: 0 0 8px; font-size: 22pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-header p { margin: 0; line-height: 1.6; font-size: 12pt; color: #475569; }
     .timeline-print-event { padding: 14px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
-    .timeline-print-heading h2 { margin: 0 0 4px; font-size: 15px; }
-    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 12px; }
+    .timeline-print-heading h2 { margin: 0 0 4px; font-size: 18pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 12pt; }
     .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-    .timeline-pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 700; }
+    .timeline-pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 10pt; font-weight: 700; }
     .timeline-pill-alt { background: #eff6ff; color: #1d4ed8; }
     .timeline-pill-neutral { background: #f1f5f9; color: #334155; }
     .timeline-pill-contested { background: #fee2e2; color: #b91c1c; }
     .timeline-print-block { margin-top: 12px; }
-    .timeline-print-block h3 { margin: 0 0 6px; font-size: 13px; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; }
-    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.55; font-size: 12px; }
-    .timeline-print-block ul { margin: 0; padding-left: 18px; }
+    .timeline-print-block h3 { margin: 0 0 6px; font-size: 14pt; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.8; font-size: 12pt; }
+    .timeline-print-block ul { margin: 0; padding-left: 2.5rem; }
     .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; }
     .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; }
-    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1.5px solid #1d4ed8; padding: 8px 24px 10px; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
-    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10px; font-weight: 700; color: #1e3a5f; }
+    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10pt; font-weight: 700; color: #1e3a5f; font-style: italic; font-family: 'Times New Roman', Times, serif; }
     @media print {
       body { background: #ffffff; }
       .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }

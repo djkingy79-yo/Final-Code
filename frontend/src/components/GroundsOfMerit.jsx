@@ -397,11 +397,11 @@ const GroundsOfMerit = ({
           <h1>Detailed Grounds Analysis</h1>
           {/* DO_NOT_UNDO — Case identity must always display in export */}
           <div style={{margin:'16px 0', padding:'12px', border:'2px solid #1d4ed8', borderRadius:'10px', background:'#eff6ff'}}>
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'12px'}}>
-              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong>{caseData?.defendant_name || "—"}</strong></div>
-              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
-              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase'}}>{caseData?.state || "—"}</strong></div>
-              <div><span style={{fontSize:'13px', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong>{caseData?.sentence || "—"}</strong></div>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'14pt', fontFamily:"'Times New Roman', Times, serif"}}>
+              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong style={{fontSize:'14pt'}}>{caseData?.defendant_name || "—"}</strong></div>
+              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize', fontSize:'14pt'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
+              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase', fontSize:'14pt'}}>{caseData?.state || "—"}</strong></div>
+              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong style={{fontSize:'14pt'}}>{caseData?.sentence || "—"}</strong></div>
             </div>
           </div>
         </div>
@@ -521,35 +521,37 @@ const GroundsOfMerit = ({
   <style>
     @page { size: A4; margin: 15mm 15mm 28mm 15mm; }
     * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: Arial, sans-serif; font-size: 11px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; padding-bottom: 60px; }
-    .grounds-export-brand { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+    .grounds-export-brand { text-align: center; font-size: 12pt; font-weight: 700; margin-bottom: 14px; }
     .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 14px; margin-bottom: 20px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 9px; margin: 0 0 6px; }
-    .grounds-export-header h1 { margin: 0 0 6px; font-size: 16px; }
-    .grounds-export-header p { margin: 0; line-height: 1.5; font-size: 9px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10pt; margin: 0 0 6px; }
+    .grounds-export-header h1 { margin: 0 0 6px; font-size: 22pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; }
+    .grounds-export-header p { margin: 0; line-height: 1.6; font-size: 10pt; font-style: italic; }
     .grounds-export-section { padding: 14px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
-    .grounds-export-title-wrap h2 { margin: 0 0 6px; font-size: 14px; font-weight: 800; }
+    .grounds-export-title-wrap h2 { margin: 0 0 6px; font-size: 18pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 2px 7px; border-radius: 999px; font-size: 8px; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 10px; line-height: 1.55; font-size: 11px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 6px; font-size: 12px; font-weight: 800; }
-    .grounds-export-block ul { margin: 0 0 10px; padding-left: 14px; line-height: 1.45; }
-    .grounds-export-block ul li { font-size: 10px !important; -webkit-text-size-adjust: 100%; line-height: 1.5; margin-bottom: 3px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 2px 7px; border-radius: 999px; font-size: 9pt; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 10px; line-height: 1.8; font-size: 12pt; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 6px; font-size: 14pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .grounds-export-block ul { margin: 0 0 10px; padding-left: 2.5rem; line-height: 1.75; }
+    .grounds-export-block ul li { font-size: 12pt !important; -webkit-text-size-adjust: 100%; line-height: 1.75; margin-bottom: 4px; }
     .grounds-export-analysis { margin-top: 12px; }
-    .grounds-export-disclaimer { margin-top: 16px; background: #dc2626; border: 3px solid #b91c1c; padding: 12px 16px; font-weight: 700; line-height: 1.45; font-size: 9px; color: #ffffff; border-radius: 8px; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.6; margin: 0 0 6px; font-size: 11px; }
-    .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; }
-    .legal-report h2 { font-size: 13px; }
-    .legal-report h3 { font-size: 12px; }
-    .legal-report h4 { font-size: 11px; }
+    .grounds-export-disclaimer { margin-top: 16px; background: #dc2626; border: 3px solid #b91c1c; padding: 12px 16px; font-weight: 700; line-height: 1.5; font-size: 10pt; color: #ffffff; border-radius: 8px; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.8; margin: 0 0 8px; font-size: 12pt; font-family: 'Times New Roman', Times, serif; }
+    .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; font-family: 'Times New Roman', Times, serif; }
+    .legal-report h2 { font-size: 18pt; font-weight: 700; }
+    .legal-report h3 { font-size: 14pt; font-weight: 700; }
+    .legal-report h4 { font-size: 12pt; font-weight: 700; }
     .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 9px; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 4px 5px; vertical-align: top; }
+    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 4px 6px; vertical-align: top; font-family: 'Times New Roman', Times, serif; }
     .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
+    .legal-report ul, .legal-report ol { padding-left: 2.5rem; margin: 6px 0 10px; }
+    .legal-report li { font-size: 12pt; line-height: 1.75; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1.5px solid #1d4ed8; padding: 6px 15mm 8px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 9px; color: #334155; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 10pt; font-style: italic; color: #334155; font-family: 'Times New Roman', Times, serif; }
     .print-footer-label { font-weight: 700; }
     .print-footer-date { color: #64748b; }
     .print-footer-page-print::after { content: ''; }
@@ -616,18 +618,19 @@ const GroundsOfMerit = ({
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
-@page{size:A4;margin:15mm 15mm 28mm 15mm}*{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:Arial,sans-serif;font-size:11px;color:#0f172a;padding:20px;padding-bottom:60px;line-height:1.6;max-width:800px;margin:0 auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-h1{font-size:16px;margin:0 0 6px;font-weight:800}h2{font-size:13px;margin:14px 0 6px;border-bottom:2px solid #1d4ed8;padding-bottom:3px;font-weight:800}
-.meta{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700}
-.desc{margin:0 0 12px;font-size:11px}ul{padding-left:14px;margin:0 0 10px}li{margin-bottom:3px;font-size:10px !important;line-height:1.5;-webkit-text-size-adjust:100%}
-.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:5px 9px;border-radius:6px;margin-bottom:5px;font-size:10px}
-.analysis{margin-top:14px;white-space:pre-wrap;font-size:11px}
-table{border-collapse:collapse;width:100%;margin:10px 0}th,td{border:1px solid #cbd5e1;padding:4px 6px;text-align:left;font-size:10px}th{background:#dbeafe;font-weight:700}
+@page{size:A4;margin:15mm 15mm 28mm 15mm}*{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:'Times New Roman',Times,serif;font-size:12pt;color:#0f172a;padding:20px;padding-bottom:60px;line-height:1.8;max-width:800px;margin:0 auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+h1{font-size:22pt;margin:0 0 8px;font-weight:700;font-family:'Times New Roman',Times,serif}h2{font-size:18pt;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px;font-weight:700;font-family:'Times New Roman',Times,serif}
+h3{font-size:14pt;margin:14px 0 6px;font-weight:700;font-family:'Times New Roman',Times,serif}
+.meta{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:999px;font-size:9pt;font-weight:700}
+.desc{margin:0 0 12px;font-size:12pt;line-height:1.8}ul{padding-left:2.5rem;margin:0 0 10px}li{margin-bottom:4px;font-size:12pt !important;line-height:1.75;-webkit-text-size-adjust:100%}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12pt}
+.analysis{margin-top:14px;white-space:pre-wrap;font-size:12pt;line-height:1.8}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-family:'Times New Roman',Times,serif}th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left;font-size:11pt}th{background:#dbeafe;font-weight:700}
 .disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:24px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .disclaimer .disc-hazard{font-size:22px;color:#facc15;flex-shrink:0}
-.disclaimer strong{font-size:12px;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
-.disclaimer p{font-size:10px;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
-.ground-footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1.5px solid #1d4ed8;padding:5px 15mm 7px;font-size:9px;color:#334155;display:flex;justify-content:space-between;align-items:center}
+.disclaimer strong{font-size:12pt;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
+.disclaimer p{font-size:10pt;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
+.ground-footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1.5px solid #1d4ed8;padding:5px 15mm 7px;font-size:10pt;font-style:italic;color:#334155;display:flex;justify-content:space-between;align-items:center;font-family:'Times New Roman',Times,serif}
 .ground-footer .gf-label{font-weight:700}
 .ground-footer .gf-page::after{content:''}
 @media print{body{padding:0;padding-bottom:50px}.ground-footer .gf-page::after{content:"Page " counter(page) " of " counter(pages)}}

@@ -40,16 +40,17 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body h2 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; color: #0f172a; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid ${accentColor}; }
   .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 18px 0 8px; }
   .export-body p { margin-bottom: 10px; }
-  .export-body ul, .export-body ol { margin: 8px 0 12px 20px; }
-  .export-body li { margin-bottom: 4px; }
-  .export-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10px; }
-  .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; }
-  .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; }
+  .export-body ul, .export-body ol { margin: 8px 0 12px; padding-left: 2.5rem; }
+  .export-body li { margin-bottom: 4px; font-size: 12pt; line-height: 1.75; }
+  .export-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
+  .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-family: 'Times New Roman', Times, serif; }
+  .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; font-family: 'Times New Roman', Times, serif; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
+  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
   .export-body .note-card { background: #2563eb; border: 1px solid #1d4ed8; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .export-body .note-title { font-weight: 700; font-size: 12px; color: #ffffff; margin-bottom: 4px; }
-  .export-body .note-date { font-size: 9px; color: #bfdbfe; margin-bottom: 8px; }
-  .export-body .note-content { font-size: 11px; color: #ffffff; white-space: pre-wrap; font-weight: 700; }
+  .export-body .note-title { font-weight: 700; font-size: 14pt; color: #ffffff; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
+  .export-body .note-date { font-size: 10pt; color: #bfdbfe; margin-bottom: 8px; font-style: italic; }
+  .export-body .note-content { font-size: 12pt; color: #ffffff; white-space: pre-wrap; font-weight: 600; font-family: 'Times New Roman', Times, serif; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
@@ -63,8 +64,8 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 13px; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 11px; color: #64748b; }
-  .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
-  .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #475569; }
+  .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1.5px solid #1d4ed8; padding: 8px 24px 10px; }
+  .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 10pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
   .print-footer-page-print::after { content: ''; }
   .page-break { page-break-before: always; }
   @media print {

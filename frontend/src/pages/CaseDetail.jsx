@@ -860,7 +860,7 @@ const CaseDetail = ({ user }) => {
   const buildProgressHtml = () => {
     let body = `<div class="export-header" style="background:#7c3aed;"><h1>Case Progress</h1><p>${caseData?.title || ""} - ${caseData?.defendant_name || ""}</p></div><div class="export-body">`;
     if (progressAnalysis) {
-      body += `<h2>AI Progress Analysis</h2><div style="white-space:pre-wrap;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+      body += `<h2>AI Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
     } else {
       body += `<p>No progress analysis generated yet.</p>`;
     }
@@ -875,14 +875,14 @@ const CaseDetail = ({ user }) => {
     const offenceCapitalised = offence.charAt(0).toUpperCase() + offence.slice(1);
     let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${title} - ${defendant}</p></div>`;
     // DO_NOT_UNDO — Case Identity Card (inline styles for print compatibility)
-    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:18px;color:#0f172a;">${defendant}</strong></div>
-        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:18px;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
-        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:18px;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
-        <div><span style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:16px;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${defendant}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
       </div>
-      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11px;color:#1d4ed8;font-weight:600;">${caseData.court}${caseData?.case_number ? ' — ' + caseData.case_number : ''}</div>` : ''}
+      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${caseData.court}${caseData?.case_number ? ' — ' + caseData.case_number : ''}</div>` : ''}
     </div>`;
     if (caseData?.summary) body += `<div class="export-body"><p>${caseData.summary}</p></div>`;
     // Documents list
@@ -927,7 +927,7 @@ const CaseDetail = ({ user }) => {
             }
           }).filter(Boolean);
           if (cleanEvidence.length > 0) {
-            body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Supporting Evidence</h4><ul>`;
+            body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Supporting Evidence</h4><ul>`;
             cleanEvidence.forEach(text => {
               body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
             });
@@ -937,7 +937,7 @@ const CaseDetail = ({ user }) => {
         // Law sections — handle both objects and raw strings/JSON
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Relevant Legislation</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
           laws.forEach(s => {
             const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             if (typeof s === "string") {
@@ -952,7 +952,7 @@ const CaseDetail = ({ user }) => {
         // Similar cases
         const cases = Array.isArray(g.similar_cases) ? g.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional") : [];
         if (cases.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14px;color:#1e293b;">Similar Cases (AI-Suggested)</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Similar Cases (AI-Suggested)</h4><ul>`;
           cases.forEach(c => {
             body += `<li>${c.case_name || ""}${c.citation ? ` — ${c.citation}` : ""}${c.relevance_note ? `: ${c.relevance_note}` : ""}</li>`;
           });
@@ -961,8 +961,8 @@ const CaseDetail = ({ user }) => {
         // Deep analysis
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
-          body += `<h4 style="margin:12px 0 6px;font-size:13px;color:#1e293b;">Deep Investigation Analysis</h4>`;
-          body += `<div style="white-space:pre-wrap;font-size:12px;line-height:1.6;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Deep Investigation Analysis</h4>`;
+          body += `<div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
         }
         body += `</div>`;
       });
@@ -979,7 +979,7 @@ const CaseDetail = ({ user }) => {
     body += `</div>`;
     // Progress
     if (progressAnalysis) {
-      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12px;line-height:1.6;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
     }
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };
@@ -1132,24 +1132,24 @@ const CaseDetail = ({ user }) => {
           <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-5 legal-content" data-testid="case-identity-card">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Defendant</div>
-                <div className="text-lg sm:text-xl font-bold text-slate-900">{caseData?.defendant_name || "—"}</div>
+                <div className="text-[10pt] font-bold uppercase tracking-widest text-blue-600 mb-0.5" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Defendant</div>
+                <div className="font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '14pt' }}>{caseData?.defendant_name || "—"}</div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Offence</div>
-                <div className="text-lg sm:text-xl font-bold text-slate-900 capitalize">{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</div>
+                <div className="text-[10pt] font-bold uppercase tracking-widest text-blue-600 mb-0.5" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Offence</div>
+                <div className="font-bold text-slate-900 capitalize" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '14pt' }}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">State / Jurisdiction</div>
-                <div className="text-lg sm:text-xl font-bold text-slate-900 uppercase">{caseData?.state || "—"}</div>
+                <div className="text-[10pt] font-bold uppercase tracking-widest text-blue-600 mb-0.5" style={{ fontFamily: "'Times New Roman', Times, serif" }}>State / Jurisdiction</div>
+                <div className="font-bold text-slate-900 uppercase" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '14pt' }}>{caseData?.state || "—"}</div>
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Sentence</div>
-                <div className="text-base font-bold text-slate-900 break-words">{caseData?.sentence || "—"}</div>
+                <div className="text-[10pt] font-bold uppercase tracking-widest text-blue-600 mb-0.5" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Sentence</div>
+                <div className="font-bold text-slate-900 break-words" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '14pt' }}>{caseData?.sentence || "—"}</div>
               </div>
             </div>
             {caseData?.court && (
-              <div className="mt-2 pt-2 border-t border-blue-200 text-xs text-blue-700 font-medium">
+              <div className="mt-2 pt-2 border-t border-blue-200 text-blue-700 font-medium" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '11pt' }}>
                 {caseData.court}{caseData?.case_number ? ` — ${caseData.case_number}` : ""}
               </div>
             )}
@@ -1157,8 +1157,8 @@ const CaseDetail = ({ user }) => {
 
           {caseData?.summary && activeTab !== "grounds" && (
             <div className="mt-3">
-              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1" data-testid="case-summary-heading">Case Summary</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl" data-testid="case-summary-text">{caseData.summary}</p>
+              <h3 className="font-bold text-slate-500 uppercase tracking-wide mb-1" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '10pt' }} data-testid="case-summary-heading">Case Summary</h3>
+              <p className="text-slate-600 leading-relaxed max-w-3xl" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '12pt', lineHeight: '1.8' }} data-testid="case-summary-text">{caseData.summary}</p>
             </div>
           )}
 
