@@ -1,3 +1,5 @@
+import auSpelling from "../utils/auSpelling";
+
 const EvidenceSummary = ({ items = [], expanded = false }) => {
   if (!Array.isArray(items) || items.length === 0) {
     return <div data-testid="evidence-summary-empty" className="text-xs text-slate-400 mt-2">No structured evidence linked yet</div>;
@@ -44,7 +46,7 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
         {cleaned.slice(0, displayCount).map((ev) => (
           <div key={ev.idx} className="border border-slate-100 rounded p-1.5 sm:p-2 text-slate-600 text-xs sm:text-sm leading-snug">
             {ev.filename && <div className="font-medium mb-0.5 text-slate-700 text-xs">{ev.filename}</div>}
-            <div className="text-xs sm:text-sm leading-snug">{ev.text}</div>
+            <div className="text-xs sm:text-sm leading-snug">{auSpelling(ev.text)}</div>
             {(ev.pageRef || ev.chunkRef || ev.verStatus) && (
               <div className="mt-0.5 text-slate-400 text-[10px] sm:text-xs">
                 {ev.pageRef ? `Page: ${ev.pageRef}` : ""}

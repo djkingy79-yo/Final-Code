@@ -8,6 +8,7 @@ import {
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,
   Filter, Search, Download, ChevronDown, ChevronUp, Printer, ArrowUp, ArrowDown
 } from "lucide-react";
+import auSpelling from "../utils/auSpelling";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -529,7 +530,7 @@ const Timeline = ({
                           
                           {/* Title */}
                           <h4 className="font-semibold text-slate-900 text-lg leading-tight">
-                            {event.title}
+                            {auSpelling(event.title)}
                           </h4>
                           
                           {/* Type */}
@@ -612,7 +613,7 @@ const Timeline = ({
                           <div>
                             <h5 className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Description</h5>
                             <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
-                              {event.description}
+                              {auSpelling(event.description)}
                             </p>
                           </div>
                         )}

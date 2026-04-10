@@ -366,6 +366,7 @@ const GroundsOfMerit = ({
   /* DO NOT UNDO — formatAnalysis renders investigation results with clickable links */
   const formatAnalysis = (analysis) => {
     if (!analysis) return null;
+    const auText = auSpelling(analysis);
     return (
       <div className="legal-report prose prose-sm max-w-none">
         <ReactMarkdown 
@@ -384,7 +385,7 @@ const GroundsOfMerit = ({
               <td className="border border-slate-300 px-3 py-2 text-sm break-words align-top">{children}</td>
             ),
           }}
-        >{analysis}</ReactMarkdown>
+        >{auText}</ReactMarkdown>
       </div>
     );
   };
@@ -423,7 +424,7 @@ const GroundsOfMerit = ({
             {ground.appellate_pathway && (
               <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'6px', padding:'8px 12px', marginBottom:'12px'}}>
                 <h3 style={{color:'#1d4ed8', marginBottom:'4px'}}>Appellate Pathway</h3>
-                <p style={{fontSize:'11px', lineHeight:'1.5', margin:0}}>{ground.appellate_pathway}</p>
+                <p style={{fontSize:'11px', lineHeight:'1.5', margin:0}}>{auSpelling(ground.appellate_pathway)}</p>
               </div>
             )}
 
@@ -449,7 +450,7 @@ const GroundsOfMerit = ({
                     const jur = (section.jurisdiction || "NSW").toUpperCase();
                     const actText = section.act || "";
                     const jurInAct = actText.toUpperCase().includes(`(${jur})`);
-                    return <li key={idx}>{`s ${section.section} ${actText}${jurInAct ? "" : ` (${jur})`}`}</li>;
+                    return <li key={idx}>{`s ${section.section.replace(/^s\s+/i, "")} ${actText}${jurInAct ? "" : ` (${jur})`}`}</li>;
                   })}
                 </ul>
               </div>
@@ -479,7 +480,7 @@ const GroundsOfMerit = ({
                       )
                     }}
                   >
-                    {ground.deep_analysis?.full_analysis || ground.analysis}
+                    {auSpelling(ground.deep_analysis?.full_analysis || ground.analysis || "")}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -967,7 +968,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                           {ground.appellate_pathway && (
                             <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                               <p className="text-xs font-bold text-blue-800">Appellate Pathway</p>
-                              <p className="text-xs text-blue-700 mt-0.5">{ground.appellate_pathway}</p>
+                              <p className="text-xs text-blue-700 mt-0.5">{auSpelling(ground.appellate_pathway)}</p>
                             </div>
                           )}
                         </>
@@ -990,9 +991,10 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                               const jur = (section.jurisdiction || "NSW").toUpperCase();
                               const actText = section.act || "";
                               const jurAlreadyInAct = actText.toUpperCase().includes(`(${jur})`);
+                              const secText = section.section.replace(/^s\s+/i, "");
                               return (
                                 <div key={idx} className="text-xs text-blue-700 leading-snug">
-                                  s {section.section} {actText}{jurAlreadyInAct ? "" : ` (${jur})`}
+                                  s {secText} {actText}{jurAlreadyInAct ? "" : ` (${jur})`}
                                 </div>
                               );
                             })}
@@ -1421,7 +1423,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   <div>
                     <h4 className="font-semibold text-slate-900 mb-2">Analysis</h4>
                     <div className="text-slate-700 whitespace-pre-wrap">
-                      {detailGround.analysis}
+                      {auSpelling(detailGround.analysis)}
                     </div>
                   </div>
                 )}
