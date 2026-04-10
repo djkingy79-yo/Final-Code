@@ -252,7 +252,7 @@ const Dashboard = ({ user }) => {
           <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center">
             <Scale className="w-5 h-5 text-white" />
           </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <span className="text-lg font-bold text-slate-900 tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Appeal Manager
           </span>
         </div>
@@ -335,7 +335,7 @@ const Dashboard = ({ user }) => {
               <div>
                 <h1 
                   className="text-2xl font-bold text-slate-900 tracking-tight"
-                  style={{ fontFamily: 'Crimson Pro, serif' }}
+                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
                 >
                   My Cases
                 </h1>
@@ -390,7 +390,7 @@ const Dashboard = ({ user }) => {
           <section>
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-6 h-6 text-red-600" />
-              <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Overview
               </h2>
             </div>
@@ -470,7 +470,7 @@ const Dashboard = ({ user }) => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <Gavel className="w-5 h-5 text-red-600" />
-                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Your Cases
                 </h2>
                 {cases.length > 0 && (
@@ -510,7 +510,7 @@ const Dashboard = ({ user }) => {
                 <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-5">
                   <FolderOpen className="w-8 h-8 text-slate-700" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   {searchQuery ? "No cases found" : "No cases yet"}
                 </h3>
                 <p className="text-sm text-slate-700 mb-5 max-w-sm mx-auto">
@@ -540,7 +540,7 @@ const Dashboard = ({ user }) => {
                       <div className="flex-1 min-w-0">
                         <h3 
                           className="text-base font-semibold text-slate-900 group-hover:text-red-600 transition-colors truncate"
-                          style={{ fontFamily: 'Crimson Pro, serif' }}
+                          style={{ fontFamily: "'Times New Roman', Times, serif" }}
                         >
                           {caseItem.title}
                         </h3>
@@ -598,7 +598,7 @@ const Dashboard = ({ user }) => {
             <section className="mt-8" data-testid="shared-cases-section">
               <div className="flex items-center gap-2 mb-4">
                 <Users className="w-5 h-5 text-teal-600" />
-                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Shared With Me
                 </h2>
                 <span className="text-xs text-slate-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
@@ -615,7 +615,7 @@ const Dashboard = ({ user }) => {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-slate-900 group-hover:text-teal-600 transition-colors truncate" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                        <h3 className="text-base font-semibold text-slate-900 group-hover:text-teal-600 transition-colors truncate" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                           {caseItem.title}
                         </h3>
                         <p className="text-sm text-slate-700 mt-0.5">{caseItem.defendant_name}</p>
@@ -660,7 +660,7 @@ const Dashboard = ({ user }) => {
       <Dialog open={showNewCaseDialog} onOpenChange={setShowNewCaseDialog}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }} className="text-xl">
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }} className="text-xl">
               Create New Case
             </DialogTitle>
           </DialogHeader>

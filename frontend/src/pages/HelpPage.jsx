@@ -590,7 +590,7 @@ const HelpPage = ({ user }) => {
               </Button>
               <div className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-red-600" />
-                <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Help & Glossary
                 </h1>
               </div>
@@ -635,7 +635,7 @@ const HelpPage = ({ user }) => {
             {/* Introduction */}
             <Card className="mb-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
               <CardContent className="p-6">
-                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Welcome to Criminal Appeal AI
                 </h2>
                 <p className="text-slate-300 mb-4">
@@ -666,7 +666,7 @@ const HelpPage = ({ user }) => {
                         <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
                           {section.icon}
                         </div>
-                        <span className="font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                        <span className="font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                           {section.title}
                         </span>
                       </div>
@@ -691,7 +691,7 @@ const HelpPage = ({ user }) => {
             {/* Tips Section */}
             <Card className="mt-8 bg-blue-50 border-blue-200">
               <CardContent className="p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-lg font-bold text-blue-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Tips for Best Results
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-800">
@@ -720,7 +720,7 @@ const HelpPage = ({ user }) => {
             {/* Quick Reference */}
             <Card className="mt-8">
               <CardContent className="p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Quick Reference
                 </h3>
                 <div className="overflow-x-auto">
@@ -756,7 +756,7 @@ const HelpPage = ({ user }) => {
             {/* Glossary Header */}
             <Card className="mb-6 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
               <CardContent className="p-6">
-                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   <BookOpen className="w-6 h-6 inline mr-2" />
                   Legal Glossary
                 </h2>
@@ -790,7 +790,7 @@ const HelpPage = ({ user }) => {
                 
                 return (
                   <div key={category}>
-                    <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                       <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                         {category}
                       </Badge>

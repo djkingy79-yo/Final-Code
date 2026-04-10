@@ -187,7 +187,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
                 <Search className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Contradiction Finder
                 </h2>
                 <p className="text-slate-400 text-sm">
@@ -280,7 +280,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
           {/* Contradictions List */}
           {currentScan.results?.contradictions?.length > 0 ? (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Identified Contradictions
               </h3>
               {currentScan.results.contradictions.map((contradiction, index) => (
@@ -393,7 +393,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
           {currentScan.results?.recommended_actions?.length > 0 && (
             <Card className="bg-white border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <CardTitle className="text-lg" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Recommended Next Steps
                 </CardTitle>
               </CardHeader>
@@ -416,7 +416,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
           {scans.length > 1 && (
             <Card className="bg-white border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center justify-between" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <CardTitle className="text-lg flex items-center justify-between" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Previous Scans
                   <Badge variant="outline">{scans.length} scans</Badge>
                 </CardTitle>
@@ -471,7 +471,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
         <Card className="bg-white border-slate-200">
           <CardContent className="p-12 text-center">
             <Search className="w-16 h-16 text-slate-600/30 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               No Scans Yet
             </h3>
             <p className="text-slate-600 mb-6 max-w-md mx-auto">
@@ -499,7 +499,7 @@ const ContradictionFinder = ({ caseId, documents }) => {
       <Dialog open={showScanDialog} onOpenChange={setShowScanDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Configure Contradiction Scan
             </DialogTitle>
           </DialogHeader>

@@ -62,7 +62,7 @@ const AdminStats = () => {
           <div className="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Shield className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Access Denied
           </h2>
           <p className="text-slate-600 mb-6">{error}</p>
@@ -88,7 +88,7 @@ const AdminStats = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Admin Dashboard
             </span>
           </Link>
@@ -137,7 +137,7 @@ const AdminStats = () => {
             </div>
             <div>
               <p className="text-red-600 font-semibold text-xs uppercase tracking-widest">Admin Only</p>
-              <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Site Analytics
               </h1>
             </div>
@@ -194,7 +194,7 @@ const AdminStats = () => {
         {/* Daily Stats Chart */}
         <Card className="bg-white border-slate-200 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <CardTitle className="text-xl font-semibold text-slate-900 flex items-center gap-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-indigo-600" />
               </div>

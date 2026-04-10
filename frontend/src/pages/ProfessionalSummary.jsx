@@ -34,7 +34,7 @@ const ProfessionalSummary = () => {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <Scale className="w-6 h-6 text-blue-400" />
-            <span className="font-semibold" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="font-semibold" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </div>
@@ -51,7 +51,7 @@ const ProfessionalSummary = () => {
         <div className="text-center mb-10 print-break">
           <h1 
             className="text-3xl font-bold text-slate-900 mb-2"
-            style={{ fontFamily: 'Crimson Pro, serif' }}
+            style={{ fontFamily: "'Times New Roman', Times, serif" }}
             data-testid="prof-title"
           >
             Criminal Appeal Case Management Tool
@@ -62,7 +62,7 @@ const ProfessionalSummary = () => {
 
         {/* Overview */}
         <section className="mb-8" data-testid="prof-overview">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Scale className="w-5 h-5 text-slate-700" />
             Overview
           </h2>
@@ -92,7 +92,7 @@ const ProfessionalSummary = () => {
 
         {/* What The Tool Does */}
         <section className="mb-8" data-testid="prof-what-it-does">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <CheckCircle className="w-5 h-5 text-emerald-600" />
             What This Tool Does
           </h2>
@@ -134,7 +134,7 @@ const ProfessionalSummary = () => {
 
         {/* What The Tool Does NOT Do */}
         <section className="mb-8" data-testid="prof-what-it-does-not">
-          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <XCircle className="w-5 h-5 text-red-600" />
             What This Tool Does NOT Do
           </h2>
@@ -172,7 +172,7 @@ const ProfessionalSummary = () => {
 
         {/* Legal Issues Focus */}
         <section className="mb-8" data-testid="prof-legal-focus">
-          <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <FileText className="w-6 h-6 text-blue-600" />
             Legal Issue Focus Areas
           </h2>
@@ -255,7 +255,7 @@ const ProfessionalSummary = () => {
 
         {/* How It Assists */}
         <section className="mb-8" data-testid="prof-how-it-assists">
-          <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             How It Assists with Appeal Preparation
           </h2>
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">

@@ -87,7 +87,7 @@ const VisitorCounter = ({ variant = "full" }) => {
       {/* Total Visitors */}
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center">
         <Eye className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
           {formatNumber(stats.total_visitors)}
         </p>
         <p className="text-xs text-blue-600">Total Visitors</p>
@@ -96,7 +96,7 @@ const VisitorCounter = ({ variant = "full" }) => {
       {/* Today's Visitors */}
       <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl p-4 border border-emerald-200 text-center">
         <Users className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-emerald-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <p className="text-2xl font-bold text-emerald-700" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
           {formatNumber(stats.today_visitors)}
         </p>
         <p className="text-xs text-emerald-600">Today</p>
@@ -105,7 +105,7 @@ const VisitorCounter = ({ variant = "full" }) => {
       {/* Registered Users */}
       <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200 text-center">
         <UserCheck className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-purple-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <p className="text-2xl font-bold text-purple-700" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
           {formatNumber(stats.registered_users)}
         </p>
         <p className="text-xs text-purple-600">Users</p>
@@ -114,7 +114,7 @@ const VisitorCounter = ({ variant = "full" }) => {
       {/* Cases Created */}
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 text-center">
         <Briefcase className="w-6 h-6 text-red-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <p className="text-2xl font-bold text-blue-700" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
           {formatNumber(stats.cases_created)}
         </p>
         <p className="text-xs text-red-600">Cases</p>

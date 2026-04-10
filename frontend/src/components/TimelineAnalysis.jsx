@@ -28,7 +28,7 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
   const hasIssues = gaps.length > 0 || inconsistencies.length > 0 || contested_facts.length > 0;
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-6" data-testid="timeline-analysis">
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-6 legal-content" data-testid="timeline-analysis">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
           <Lightbulb className="w-5 h-5 text-blue-500" />

@@ -229,7 +229,7 @@ const CaselawSearchPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="caselaw-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="caselaw-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="caselaw-brand-text">
               Appeal Case Manager
             </span>
           </Link>
@@ -266,7 +266,7 @@ const CaselawSearchPage = () => {
               <Search className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Live Caselaw Search
           </h1>
           <p className="text-slate-700 max-w-2xl mx-auto">
@@ -334,7 +334,7 @@ const CaselawSearchPage = () => {
         {/* Selected State Details */}
         {selectedState && databases[selectedState] && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               {databases[selectedState].name} Court Databases
             </h2>
             
@@ -398,7 +398,7 @@ const CaselawSearchPage = () => {
         {/* No Selection - Show All Quick Links */}
         {!selectedState && (
           <div>
-            <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Quick Access - All Jurisdictions
             </h2>
             
@@ -461,7 +461,7 @@ const CaselawSearchPage = () => {
 
         {/* Understanding Judgments */}
         <section className="mt-12 bg-white border border-slate-200 rounded-2xl p-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Understanding Court Judgments
           </h2>
           <div className="grid md:grid-cols-2 gap-6 text-sm">

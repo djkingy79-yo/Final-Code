@@ -248,7 +248,7 @@ const SuccessStories = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-sm font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-sm font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -281,7 +281,7 @@ const SuccessStories = () => {
       <section className="py-8 px-6 bg-white border-b border-slate-100">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-blue-600 font-semibold text-xs uppercase tracking-widest mb-2">From Families Who Used This Tool</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Success Stories
           </h1>
           <p className="text-slate-600 text-base">
@@ -308,7 +308,7 @@ const SuccessStories = () => {
 
         {/* Share Your Story */}
         <div className="mt-10 text-center">
-          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Share Your Story
           </h2>
           <p className="text-slate-600 text-xs mb-4 max-w-md mx-auto">
@@ -409,7 +409,7 @@ const SuccessStories = () => {
       {/* Footer CTA */}
       <section className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Ready to Start Your Journey?
           </h2>
           <p className="text-xs text-slate-700 mb-4">

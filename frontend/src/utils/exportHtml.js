@@ -23,22 +23,22 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Manrope', sans-serif; font-size: 10px; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.7; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   @page { size: A4; margin: 14mm 14mm 22mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
-  .export-header h1 { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .export-header p { font-size: 12px; opacity: 0.85; }
-  .export-meta { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px 32px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 12px; }
+  .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 22pt; font-weight: 700; margin-bottom: 4px; }
+  .export-header p { font-size: 12pt; opacity: 0.85; }
+  .export-meta { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px 32px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 12pt; }
   .export-meta-item { display: flex; flex-direction: column; }
-  .export-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-size: 11px; }
+  .export-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-size: 10pt; }
   .export-meta-value { font-weight: 600; color: #0f172a; }
   .export-body { padding: 24px 32px; }
-  .export-body h2 { font-family: 'Crimson Pro', serif; font-size: 12px; font-weight: 700; color: #0f172a; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid ${accentColor}; }
-  .export-body h3 { font-family: 'Crimson Pro', serif; font-size: 11px; font-weight: 600; color: #1e293b; margin: 18px 0 8px; }
+  .export-body h2 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; color: #0f172a; margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid ${accentColor}; }
+  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 18px 0 8px; }
   .export-body p { margin-bottom: 10px; }
   .export-body ul, .export-body ol { margin: 8px 0 12px 20px; }
   .export-body li { margin-bottom: 4px; }

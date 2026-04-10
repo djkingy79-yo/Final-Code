@@ -267,7 +267,7 @@ const StateAppealStats = () => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
           <p className="text-red-500 font-semibold text-sm uppercase tracking-widest mb-4">Appeals In Your State</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             How Many Appeals Were Filed In Your State?
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto text-base">
@@ -299,7 +299,7 @@ const StateAppealStats = () => {
           <div className="bg-blue-700 px-6 py-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
-                <h3 className="text-white font-bold text-xl" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-white font-bold text-xl" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   {data.name}
                 </h3>
                 <p className="text-blue-100 text-sm">{data.court}</p>
@@ -405,7 +405,7 @@ const StateAppealStats = () => {
 
           {/* Insights */}
           <div className="px-6 py-5 border-t border-slate-200 bg-slate-900/50" data-testid="appeal-stats-insights">
-            <h4 className="font-bold text-slate-900 text-lg mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h4 className="font-bold text-slate-900 text-lg mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               What this data suggests
             </h4>
             <ul className="space-y-2 text-sm text-slate-300">

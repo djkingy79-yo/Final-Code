@@ -647,7 +647,7 @@ const LegalGlossary = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </div>
@@ -677,7 +677,7 @@ const LegalGlossary = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <BookOpen className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Legal Terms Explained
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
@@ -774,7 +774,7 @@ const LegalGlossary = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/50 flex items-center px-8">
               <div>
-                <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   {glossaryCategories.find(c => c.id === activeCategory)?.name}
                 </h2>
                 <p className="text-slate-300 text-sm mt-1">
@@ -798,7 +798,7 @@ const LegalGlossary = () => {
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h3 className={`font-bold text-slate-900 ${viewDensity === "compact" ? "text-sm" : "text-base"}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <h3 className={`font-bold text-slate-900 ${viewDensity === "compact" ? "text-sm" : "text-base"}`} style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                       {item.term}
                     </h3>
                     {item.latin && (

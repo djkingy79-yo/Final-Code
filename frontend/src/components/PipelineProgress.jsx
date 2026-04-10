@@ -120,8 +120,8 @@ export default function PipelineProgress({
   });
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 mb-4" data-testid="pipeline-progress-widget">
-      <div className="font-semibold text-sm text-slate-900 mb-2">Pipeline Progress</div>
+    <div className="rounded-lg border border-slate-200 bg-white p-4 mb-4 legal-content" data-testid="pipeline-progress-widget">
+      <div className="font-bold text-base text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Pipeline Progress</div>
       <div className="text-xs text-slate-500 mb-3">Staged workflow: extract &rarr; classify &rarr; verify &rarr; draft</div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">

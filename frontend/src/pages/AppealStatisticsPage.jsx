@@ -154,7 +154,7 @@ const AppealStatisticsPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -207,7 +207,7 @@ const AppealStatisticsPage = () => {
               <BarChart3 className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-3 text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-6xl font-bold mb-3 text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Australian Appeal Statistics
           </h1>
           <p className="text-blue-100 max-w-2xl mx-auto">
@@ -226,7 +226,7 @@ const AppealStatisticsPage = () => {
         <section className="mb-10 text-center" data-testid="appeal-rate-spotlight-section">
           <div className="rounded-2xl border-2 border-blue-400 bg-blue-700 p-6 md:p-8">
             <p className="text-lg md:text-xl uppercase tracking-wider text-white font-extrabold mb-2">Appeal Access Snapshot</p>
-            <p className="text-5xl md:text-6xl font-black text-white leading-none" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="appeal-rate-spotlight-value">
+            <p className="text-5xl md:text-6xl font-black text-white leading-none" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="appeal-rate-spotlight-value">
               Less than 1%
             </p>
             <p className="text-base md:text-lg text-white font-semibold mt-3 max-w-3xl mx-auto" data-testid="appeal-rate-spotlight-description">
@@ -237,7 +237,7 @@ const AppealStatisticsPage = () => {
 
         {/* National Overview */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             National Overview (2024-25)
           </h2>
           <p className="text-base md:text-lg text-black font-semibold mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
@@ -281,14 +281,14 @@ const AppealStatisticsPage = () => {
 
           {/* ACCESS TO JUSTICE ANALYSIS */}
           <div className="mt-8 bg-blue-600 border-2 border-blue-700 rounded-xl p-6" data-testid="appeal-access-crisis-details">
-            <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-2xl md:text-3xl font-bold text-white flex items-center justify-center gap-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               <AlertTriangle className="w-7 h-7" />
               The Appeal Access Crisis: Why So Few People Exercise Their Rights
             </h3>
 
             <div className="space-y-4 text-sm text-white mt-4">
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Reality: Fewer Than 2% of Convicted Australians Appeal</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>The Reality: Fewer Than 2% of Convicted Australians Appeal</p>
                 <p className="text-sm">
                   Of the <strong>515,460 defendants finalised</strong> in Australian criminal courts in 2023-24 (ABS), 
                   an estimated <strong>1,400+ criminal appeals</strong> were filed across all state and territory Courts of Appeal and Courts of Criminal Appeal. That's a 
@@ -298,7 +298,7 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Limitations</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Data Limitations</p>
                 <p className="text-sm">
                   <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some historical statistics cited are from Judicial Commission studies covering 
                   <strong> 2001-2007</strong>. There is no single national database that comprehensively tracks criminal appeal outcomes across all Australian jurisdictions. 
@@ -308,7 +308,7 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Are Appeal Rates So Low?</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Why Are Appeal Rates So Low?</p>
                 <p className="mb-3 text-sm">This extraordinarily low rate doesn't mean most convictions are fair and error-free. Instead, it reveals major systemic barriers:</p>
                 
                 <div className="space-y-3 ml-4">
@@ -365,7 +365,7 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
-                <p className="font-bold text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>The Hidden Tragedy</p>
+                <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>The Hidden Tragedy</p>
                 <p className="text-sm">
                   Given that <strong>approximately 25-35% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
                   <strong style={{ color: '#fca5a5' }}> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
@@ -387,7 +387,7 @@ const AppealStatisticsPage = () => {
               </div>
 
               <div className="bg-blue-700/70 rounded-lg p-4 border-2 border-blue-400">
-                <p className="font-bold text-2xl mb-2 text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>This Tool's Purpose</p>
+                <p className="font-bold text-2xl mb-2 text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>This Tool's Purpose</p>
                 <p className="text-sm text-white">
                   <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
                   and AI-powered analysis accessible and affordable, the goal is to help those who have grounds for appeal 
@@ -401,7 +401,7 @@ const AppealStatisticsPage = () => {
 
         {/* State by State */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             State by State Statistics
           </h2>
           <p className="text-base text-slate-600 mb-6 text-center">Compare filings, success rates, and timeframes by jurisdiction.</p>
@@ -482,7 +482,7 @@ const AppealStatisticsPage = () => {
 
         {/* Common Grounds of Appeal */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Most Common Grounds of Appeal
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
@@ -515,7 +515,7 @@ const AppealStatisticsPage = () => {
 
         {/* Complaints About Lawyers */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Top Complaints About Lawyers
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
@@ -546,14 +546,14 @@ const AppealStatisticsPage = () => {
 
         {/* Key Insights */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Key Insights
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <CheckCircle className="w-8 h-8 text-emerald-500 mb-3" />
-              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>What Increases Success</h3>
+              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>What Increases Success</h3>
               <ul className="text-sm text-slate-700 space-y-2">
                 <li>Clear legal error (misdirection, procedural breach)</li>
                 <li>Strong evidence supporting the ground</li>
@@ -565,7 +565,7 @@ const AppealStatisticsPage = () => {
 
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <XCircle className="w-8 h-8 text-red-500 mb-3" />
-              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Why Appeals Fail</h3>
+              <h3 className="font-bold text-slate-900 text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Why Appeals Fail</h3>
               <ul className="text-sm text-slate-700 space-y-2">
                 <li>No identifiable legal error</li>
                 <li>Simply disagreeing with the verdict</li>
@@ -579,7 +579,7 @@ const AppealStatisticsPage = () => {
 
         {/* Historical Trends */}
         <section className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Historical Trends
           </h2>
           
@@ -609,7 +609,7 @@ const AppealStatisticsPage = () => {
 
         {/* Data Sources */}
         <section className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-          <h3 className="font-bold text-slate-900 text-2xl mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Data Sources</h3>
+          <h3 className="font-bold text-slate-900 text-2xl mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Data Sources</h3>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">ABS Criminal Courts Australia 2023-24</strong></span>
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">NSW Supreme Court Provisional Statistics (Jan 2026)</strong></span>

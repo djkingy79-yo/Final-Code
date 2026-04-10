@@ -253,7 +253,7 @@ const HowToUsePage = () => {
               <Lightbulb className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             How to Use the App
           </h1>
           <p className="text-base md:text-lg text-slate-700 max-w-2xl mx-auto">
@@ -298,7 +298,7 @@ const HowToUsePage = () => {
                   </div>
                   <span className="text-sm font-bold text-white bg-blue-600 px-3 py-1.5 rounded-lg">STEP {step.num}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl md:text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   {step.title}
                 </h3>
                 <p className="text-slate-700" style={{fontSize:'11px', lineHeight:'1.4'}}>{step.description}</p>
@@ -390,7 +390,7 @@ const HowToUsePage = () => {
               </div>
               <span className="text-sm font-bold text-white bg-blue-600 px-3 py-1.5 rounded-lg">STEP 11</span>
             </div>
-            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Export and Share
             </h3>
             <p className="text-slate-700 mb-3" style={{fontSize:'11px', lineHeight:'1.4'}}>Export your case data for use outside the app — share with your lawyer, barrister, or Legal Aid.</p>
@@ -410,7 +410,7 @@ const HowToUsePage = () => {
 
         {/* What's Next */}
         <div className="mt-16 bg-white rounded-2xl p-8 border-2 border-emerald-200 shadow-lg">
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             What Happens Next?
           </h2>
           <div className="grid md:grid-cols-2 gap-4" style={{fontSize:'10px', lineHeight:'1.4'}}>

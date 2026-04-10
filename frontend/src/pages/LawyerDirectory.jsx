@@ -276,7 +276,7 @@ const LawyerDirectory = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="lawyer-directory-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="lawyer-directory-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="lawyer-directory-brand-text">
               Appeal Case Manager
             </span>
           </div>
@@ -306,7 +306,7 @@ const LawyerDirectory = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <Users className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Find a Criminal Appeal Lawyer
           </h1>
           <p className="text-lg text-slate-700 max-w-2xl mx-auto mb-2">
@@ -371,7 +371,7 @@ const LawyerDirectory = () => {
           <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-3">
             <Globe className="w-5 h-5 text-blue-700" />
             <div>
-              <h2 className="text-sm font-bold text-blue-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-sm font-bold text-blue-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 National Resources
               </h2>
               <p className="text-blue-700 text-[10px]">Australia-wide legal services</p>
@@ -399,7 +399,7 @@ const LawyerDirectory = () => {
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-3">
           <MapPin className="w-5 h-5 text-emerald-700" />
           <div>
-            <h2 className="text-sm font-bold text-emerald-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-sm font-bold text-emerald-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Resources by State
             </h2>
             <p className="text-emerald-700 text-[10px]">State-specific legal services and specialists</p>
@@ -410,7 +410,7 @@ const LawyerDirectory = () => {
           {filteredResources.map((state, index) => (
             <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all`}>
               <div className={`${state.color} text-white px-4 py-2`}>
-                <h3 className="text-sm font-bold flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-sm font-bold flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   <Badge variant="outline" className="bg-white/20 border-white/40 text-white text-[10px] px-2 py-0">
                     {state.code}
                   </Badge>

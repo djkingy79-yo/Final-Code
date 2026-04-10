@@ -650,7 +650,7 @@ const ReportsSection = ({
       {reports.length === 0 ? (
         <Card className="p-12 text-center">
           <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             No reports yet
           </h3>
           <p className="text-slate-700 mb-4">
@@ -970,7 +970,7 @@ const ReportsSection = ({
       >
         <DialogContent className="sm:max-w-lg bg-white text-slate-900 border border-slate-200 max-h-[90vh] overflow-y-auto" data-testid="report-type-dialog">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <DialogTitle className="text-2xl text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Generate Report
             </DialogTitle>
             <DialogDescription className="text-slate-700 text-sm">Select the type of report you'd like to generate.</DialogDescription>

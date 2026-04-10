@@ -44,7 +44,7 @@ const LegalResourcesPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="legal-resources-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="legal-resources-brand-text">
               Appeal Case Manager
             </span>
           </Link>
@@ -74,7 +74,7 @@ const LegalResourcesPage = () => {
       {/* Hero */}
       <section className="py-6 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-resources-hero-title">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="legal-resources-hero-title">
             Legal Resources & Contacts
           </h1>
           <p className="text-base text-slate-700 max-w-xl mx-auto" data-testid="legal-resources-hero-description">
@@ -134,7 +134,7 @@ const LegalResourcesPage = () => {
         {/* ============ SECTION: You Have Options ============ */}
         <div id="options" className="space-y-6">
           <div className="bg-blue-600 border border-blue-700 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-white mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Legal Help You May Not Know About
             </h2>
             <p className="text-blue-50">
@@ -150,7 +150,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <Scale className="w-6 h-6 text-blue-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Legal Aid</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Legal Aid</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Government-funded legal assistance available in every state. While overburdened, they can provide 
                   representation for serious criminal matters and appeals if you meet the eligibility criteria.
@@ -168,7 +168,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
                   <Users className="w-6 h-6 text-emerald-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Pro Bono Legal Services</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Pro Bono Legal Services</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
                   This is not widely advertised but is a genuine option.
@@ -186,7 +186,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
                   <MapPin className="w-6 h-6 text-purple-700" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Community Legal Centres</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Community Legal Centres</h3>
                 <p className="text-slate-700 text-xs mb-2">
                   Independent, non-profit organisations providing free legal advice and assistance. They often help with 
                   matters Legal Aid cannot cover and can refer you to specialist services.
@@ -204,7 +204,7 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <FileText className="w-6 h-6 text-red-600" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Grants & Special Funding</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Grants & Special Funding</h3>
                 <p className="text-slate-700 text-xs mb-3">
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
@@ -220,7 +220,7 @@ const LegalResourcesPage = () => {
 
             {/* Key Message */}
             <div className="bg-blue-600 border border-blue-700 rounded-2xl p-6 text-center" data-testid="legal-resources-dont-give-up">
-              <h3 className="text-white text-2xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Don't Give Up</h3>
+              <h3 className="text-white text-2xl font-bold mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Don't Give Up</h3>
               <p className="text-blue-50 text-base font-semibold">
                 The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services 
                 and community legal centres. Many people have found help when they thought there was none.
@@ -232,7 +232,7 @@ const LegalResourcesPage = () => {
         
           <div id="legal-aid" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Legal Aid Services
               </h2>
               <p className="text-slate-700 text-xs">
@@ -313,7 +313,7 @@ const LegalResourcesPage = () => {
         
           <div id="law-societies" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Law Societies
               </h2>
               <p className="text-slate-700 text-xs">
@@ -391,7 +391,7 @@ const LegalResourcesPage = () => {
 
             {/* Bar Associations */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Bar Associations (Barristers)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -427,7 +427,7 @@ const LegalResourcesPage = () => {
         
           <div id="complaints" className="space-y-6">
             <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Complaints Bodies & Legal Services Commissioners
               </h2>
               <p className="text-slate-700 text-xs">
@@ -518,7 +518,7 @@ const LegalResourcesPage = () => {
         
           <div id="courts" className="space-y-6">
             <div className="bg-white border border-slate-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Courts of Australia
               </h2>
               <p className="text-slate-700 text-xs">
@@ -529,7 +529,7 @@ const LegalResourcesPage = () => {
 
             {/* Federal Courts */}
             <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 <Scale className="w-5 h-5 text-red-600" />
                 Federal Courts
               </h3>
@@ -555,7 +555,7 @@ const LegalResourcesPage = () => {
 
             {/* State/Territory Courts */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 State & Territory Courts
               </h3>
               
@@ -649,7 +649,7 @@ const LegalResourcesPage = () => {
         
           <div id="community" className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Community Legal Centres
               </h2>
               <p className="text-slate-700 text-xs">
@@ -696,7 +696,7 @@ const LegalResourcesPage = () => {
 
             {/* Specialist Services */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Specialist Legal Services
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -740,7 +740,7 @@ const LegalResourcesPage = () => {
         
           <div id="pro-bono" className="space-y-6">
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Pro Bono Legal Services
               </h2>
               <p className="text-slate-700 text-xs">
@@ -787,7 +787,7 @@ const LegalResourcesPage = () => {
 
             {/* Innocence Projects */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Innocence & Wrongful Conviction Projects
               </h3>
               <div className="bg-white border border-slate-200 rounded-xl p-6">
@@ -815,7 +815,7 @@ const LegalResourcesPage = () => {
 
         {/* ============ NEW SECTION: Government & Regulatory Bodies ============ */}
         <div id="government" className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Building className="w-7 h-7 text-blue-600" />
             Government & Regulatory Bodies
           </h2>
@@ -825,7 +825,7 @@ const LegalResourcesPage = () => {
 
           {/* Attorneys-General */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Attorneys-General Departments
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -882,7 +882,7 @@ const LegalResourcesPage = () => {
 
           {/* Ombudsmen */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Ombudsmen & Integrity Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -940,7 +940,7 @@ const LegalResourcesPage = () => {
 
           {/* Human Rights & Discrimination */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Human Rights Commissions
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -975,7 +975,7 @@ const LegalResourcesPage = () => {
 
         {/* ============ NEW SECTION: Legal Profession Bodies ============ */}
         <div id="profession" className="space-y-6">
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Gavel className="w-6 h-6 text-red-600" />
             Legal Profession Bodies
           </h2>
@@ -985,7 +985,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Councils & Societies */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Law Councils & Societies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1019,7 +1019,7 @@ const LegalResourcesPage = () => {
 
           {/* Bar Associations */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Bar Associations (Barristers)
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1037,7 +1037,7 @@ const LegalResourcesPage = () => {
 
           {/* Legal Practice Boards & Conduct */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Legal Practice Boards & Professional Conduct
             </h3>
             <p className="text-slate-700 text-xs mb-3">
@@ -1089,7 +1089,7 @@ const LegalResourcesPage = () => {
 
           {/* Law Reform */}
           <div className="bg-white border border-slate-200 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Law Reform & Research Bodies
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -1131,7 +1131,7 @@ const LegalResourcesPage = () => {
 
         {/* ============ NEW SECTION: Specialist Legal Services ============ */}
         <div id="specialist" className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Users className="w-7 h-7 text-purple-600" />
             Specialist Legal Services
           </h2>
@@ -1194,7 +1194,7 @@ const LegalResourcesPage = () => {
 
         {/* ============ NEW SECTION: Regulatory Agencies ============ */}
         <div id="regulatory" className="space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Shield className="w-7 h-7 text-red-600" />
             Other Regulatory Agencies
           </h2>

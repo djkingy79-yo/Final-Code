@@ -185,7 +185,7 @@ export default function PaymentModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6" data-testid="payment-modal">
         <DialogHeader className="space-y-2">
-          <DialogTitle className="flex items-center gap-2 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <DialogTitle className="flex items-center gap-2 text-lg" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Lock className="w-5 h-5 text-blue-500 shrink-0" />
             <span className="line-clamp-1">{featureInfo.title}</span>
           </DialogTitle>
@@ -204,15 +204,15 @@ export default function PaymentModal({
             <p className={`text-sm mb-1 ${useTrial ? 'text-white/80' : 'text-slate-600'}`}>One-time payment</p>
             {useTrial ? (
               <div>
-                <span className="text-lg line-through text-white/50 mr-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <span className="text-lg line-through text-white/50 mr-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   ${FEATURE_PRICES_DISPLAY[featureType]?.toFixed(2) || "99.00"}
                 </span>
-                <span className="text-3xl sm:text-4xl font-bold text-pink-400" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="trial-price">
+                <span className="text-3xl sm:text-4xl font-bold text-pink-400" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="trial-price">
                   ${price?.toFixed(2)} <span className="text-base font-normal text-white/80">AUD</span>
                 </span>
               </div>
             ) : (
-              <p className="text-3xl sm:text-4xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <p className="text-3xl sm:text-4xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 ${price?.toFixed(2)} <span className="text-base font-normal text-slate-600">AUD</span>
               </p>
             )}

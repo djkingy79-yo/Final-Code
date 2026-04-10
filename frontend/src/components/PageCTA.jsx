@@ -75,7 +75,7 @@ const PageCTA = ({
           <div className="w-16 h-16 bg-blue-800 rounded-xl flex items-center justify-center mx-auto mb-4">
             <FileText className="w-9 h-9 text-white" />
           </div>
-          <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Ready to Build Your Case?
           </h3>
           <p className="text-blue-100 text-lg mb-6">

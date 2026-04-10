@@ -752,7 +752,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   <Lock className={`w-6 h-6 ${trialEligible ? 'text-pink-300' : 'text-red-600'}`} />
                 </div>
                 <div>
-                  <h3 className={`font-semibold text-sm sm:text-base ${trialEligible ? 'text-white' : 'text-slate-900'}`} style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className={`font-semibold text-sm sm:text-base ${trialEligible ? 'text-white' : 'text-slate-900'}`} style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                     {groundsCount} Grounds of Merit Found!
                   </h3>
                   <p className={`text-xs sm:text-sm ${trialEligible ? 'text-white/80' : 'text-slate-600'}`}>
@@ -805,7 +805,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
       {groundsCount === 0 && grounds.length === 0 ? (
         <Card className="p-8 text-center">
           <Scale className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             No grounds of merit identified
           </h3>
           <p className="text-xs text-slate-500 mb-4">
@@ -938,7 +938,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       
                       <h4 
                         className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors"
-                        style={{ fontFamily: 'Crimson Pro, serif' }}
+                        style={{ fontFamily: "'Times New Roman', Times, serif" }}
                       >
                         {auSpelling(ground.title)}
                       </h4>
@@ -1190,7 +1190,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
       <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
         <DialogContent className="max-w-4xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }} className="text-2xl flex items-center gap-3">
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }} className="text-2xl flex items-center gap-3">
               <Scale className="w-6 h-6 text-red-600" />
               Ground of Merit Analysis
             </DialogTitle>
@@ -1268,7 +1268,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                   </div>
                   <h3 
                     className="text-base md:text-xl font-bold text-slate-900"
-                    style={{ fontFamily: 'Crimson Pro, serif' }}
+                    style={{ fontFamily: "'Times New Roman', Times, serif" }}
                   >
                     {auSpelling(detailGround.title)}
                   </h3>

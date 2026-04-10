@@ -101,7 +101,7 @@ const DocumentScanner = ({ onFileScanned, disabled }) => {
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: "Crimson Pro, serif" }}>
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Scanned Document Preview
             </DialogTitle>
           </DialogHeader>

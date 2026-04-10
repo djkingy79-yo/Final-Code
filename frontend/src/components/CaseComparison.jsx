@@ -101,7 +101,7 @@ const CaseComparison = ({ caseId }) => {
           <BarChart3 className="w-5 h-5 text-blue-600" />
         </div>
         <div>
-          <h3 className="font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Compare Your Case
           </h3>
           <p className="text-sm text-slate-500">

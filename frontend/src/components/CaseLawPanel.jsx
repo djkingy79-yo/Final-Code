@@ -75,7 +75,7 @@ const CaseLawPanel = ({ caseId, state, groundId, groundTitle }) => {
   const nationalLinks = data.search_links?.filter(l => l.scope === "national") || [];
 
   return (
-    <div className="space-y-3" data-testid="caselaw-panel">
+    <div className="space-y-3 legal-content" data-testid="caselaw-panel">
       {/* Search bar */}
       <form onSubmit={handleCustomSearch} className="flex gap-2">
         <Input

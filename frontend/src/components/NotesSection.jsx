@@ -436,7 +436,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
       {notes.length === 0 ? (
         <Card className="p-12 text-center" data-testid="notes-empty-state">
           <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "Crimson Pro, serif" }}>
+          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             No notes yet
           </h3>
           <p className="text-slate-600 mb-4">Add notes to track observations, strategy, and legal issues.</p>
@@ -598,7 +598,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
       <Dialog open={showNoteDialog} onOpenChange={setShowNoteDialog}>
         <DialogContent className="sm:max-w-lg" data-testid="note-dialog">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: "Crimson Pro, serif" }}>
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               {editingNote ? "Edit Note" : "Add Note"}
             </DialogTitle>
           </DialogHeader>

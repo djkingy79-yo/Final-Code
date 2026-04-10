@@ -302,7 +302,7 @@ const FAQPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="faq-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="faq-brand-text">
               Appeal Case Manager
             </span>
           </div>
@@ -332,7 +332,7 @@ const FAQPage = () => {
           <div className="w-20 h-20 rounded-2xl bg-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30" data-testid="faq-hero-icon">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="faq-hero-title">
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="faq-hero-title">
             Frequently Asked Questions
           </h1>
           <p className="text-sm text-slate-700 max-w-2xl mx-auto mb-2" data-testid="faq-hero-subtitle">
@@ -395,7 +395,7 @@ const FAQPage = () => {
       <main className="max-w-5xl mx-auto px-6 pb-16">
         <section className="mb-6" data-testid="faq-content-intro">
           <p className="text-xs uppercase tracking-widest text-blue-700 font-semibold mb-1">Quick Answers</p>
-          <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Browse by category or expand individual questions
           </h2>
         </section>
@@ -432,7 +432,7 @@ const FAQPage = () => {
                     }`} />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <h2 className="text-lg font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                       {category.category}
                     </h2>
                     <p className="text-slate-500 text-xs">
@@ -482,7 +482,7 @@ const FAQPage = () => {
 
         {/* Still have questions */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-          <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Still have questions?
           </h3>
           <p className="text-base text-slate-700 mb-3">

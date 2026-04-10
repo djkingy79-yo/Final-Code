@@ -33,7 +33,7 @@ const TermsOfService = () => {
               <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0`}>
                 <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 {title}
               </h2>
             </div>
@@ -44,7 +44,7 @@ const TermsOfService = () => {
             <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${iconBg} flex items-center justify-center flex-shrink-0`}>
               <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-base sm:text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               {title}
             </h2>
           </div>
@@ -67,7 +67,7 @@ const TermsOfService = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -103,7 +103,7 @@ const TermsOfService = () => {
             </div>
           </div>
           <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Legal Document</p>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Terms & Conditions, Privacy Policy
           </h1>
           <p className="text-slate-600 text-sm">Effective Date: 1 January 2025 &nbsp;|&nbsp; Last Updated: April 2025</p>
@@ -118,7 +118,7 @@ const TermsOfService = () => {
           {/* ─── PART A: TERMS & CONDITIONS ─── */}
           <div className="text-center py-4">
             <p className="text-xs uppercase tracking-widest text-blue-600 font-bold">Part A</p>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Terms & Conditions</h2>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Terms & Conditions</h2>
           </div>
 
           {/* 1. Introduction & Acceptance */}
@@ -150,7 +150,7 @@ const TermsOfService = () => {
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500 flex items-center justify-center flex-shrink-0">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h2 className="text-base sm:text-lg font-semibold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-base sm:text-lg font-semibold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 3. About the Creator
               </h2>
             </div>
@@ -168,7 +168,7 @@ const TermsOfService = () => {
                 <AlertTriangle className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   4. Critical Disclaimer: NOT Legal Advice
                 </h2>
                 <div className="text-white text-xs leading-relaxed space-y-2">
@@ -206,7 +206,7 @@ const TermsOfService = () => {
                 <Eye className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-blue-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   6. AI Technology Disclaimer & Limitations
                 </h2>
                 <div className="text-blue-800 text-xs leading-relaxed space-y-2">
@@ -277,7 +277,7 @@ const TermsOfService = () => {
                 <Lock className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-red-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h2 className="text-xl font-bold text-red-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   10. Confidentiality & Legal Professional Privilege Warning
                 </h2>
                 <div className="text-red-800 text-xs leading-relaxed space-y-2">
@@ -392,7 +392,7 @@ const TermsOfService = () => {
           {/* ─── PART B: PRIVACY POLICY ─── */}
           <div className="text-center py-6 mt-4">
             <p className="text-xs uppercase tracking-widest text-blue-600 font-bold">Part B</p>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Privacy Policy</h2>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Privacy Policy</h2>
             <p className="text-slate-500 text-xs mt-1">In compliance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs)</p>
           </div>
 
@@ -505,7 +505,7 @@ const TermsOfService = () => {
           {/* ─── PART C: GENERAL PROVISIONS ─── */}
           <div className="text-center py-6 mt-4">
             <p className="text-xs uppercase tracking-widest text-blue-600 font-bold">Part C</p>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>General Provisions</h2>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>General Provisions</h2>
           </div>
 
           {/* 25. Governing Law */}
@@ -550,7 +550,7 @@ const TermsOfService = () => {
             <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-4">
               <Shield className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               29. Acknowledgment & Acceptance
             </h2>
             <p className="text-slate-300 max-w-2xl mx-auto text-xs leading-relaxed">

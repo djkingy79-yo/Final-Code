@@ -302,7 +302,7 @@ const LegalFrameworkPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="legal-framework-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="legal-framework-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="legal-framework-brand-text">
               Appeal Case Manager
             </span>
           </Link>
@@ -339,7 +339,7 @@ const LegalFrameworkPage = () => {
               <BookOpen className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Legal Framework & Legislation
           </h1>
           <p className="text-slate-700 max-w-2xl mx-auto">

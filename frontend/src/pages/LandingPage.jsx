@@ -66,7 +66,7 @@ const LandingPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </div>
@@ -125,7 +125,7 @@ const LandingPage = () => {
                 <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
                   <Scale className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <span className="text-lg font-semibold text-slate-900 tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Appeal Case Manager
                 </span>
               </div>
@@ -216,7 +216,7 @@ const LandingPage = () => {
               </p>
               <h1 
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 tracking-tight leading-tight mb-6"
-                style={{ fontFamily: 'Crimson Pro, serif' }}
+                style={{ fontFamily: "'Times New Roman', Times, serif" }}
               >
                 Criminal Law Appeal Case Management
               </h1>
@@ -239,7 +239,7 @@ const LandingPage = () => {
               
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
-                <h3 className="text-2xl font-bold text-blue-600 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>Types of Crimes Covered</h3>
+                <h3 className="text-2xl font-bold text-blue-600 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Types of Crimes Covered</h3>
                 <div className="flex flex-wrap gap-2" data-testid="hero-crimes-list">
                   {["Homicide", "Assault", "Sexual Offences", "Drug Offences", "Robbery", "Fraud & Dishonesty", "Firearms & Weapons", "Arson & Property", "Child Abuse Material", "Manslaughter", "Kidnapping", "All Indictable Offences"].map((crime) => (
                     <span key={crime} className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
@@ -324,7 +324,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <p className="text-blue-500 font-semibold text-xs uppercase tracking-widest mb-3">Everything At Your Fingertips</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Complete Criminal Appeal Platform
             </h2>
             <p className="text-slate-700 text-lg max-w-3xl mx-auto">
@@ -539,7 +539,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-indigo-600 font-semibold text-xs uppercase tracking-widest mb-3">What This Tool Does</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Your Complete Appeal Research Companion
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto">
@@ -554,7 +554,7 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Upload className="w-7 h-7 text-blue-600" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Organise Everything
               </h3>
               <p className="text-slate-600 text-sm">
@@ -568,7 +568,7 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="w-7 h-7 text-emerald-600" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 AI-Powered Analysis
               </h3>
               <p className="text-slate-600 text-sm">
@@ -582,7 +582,7 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <FileCheck className="w-7 h-7 text-red-600" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Generate Reports
               </h3>
               <p className="text-slate-600 text-sm">
@@ -596,7 +596,7 @@ const LandingPage = () => {
           <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 border border-indigo-200">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Built for Australian Law</h4>
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Built for Australian Law</h4>
                 <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
@@ -617,7 +617,7 @@ const LandingPage = () => {
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>Free to Get Started</h4>
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Free to Get Started</h4>
                 <ul className="space-y-2 text-sm text-slate-600">
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
@@ -656,7 +656,7 @@ const LandingPage = () => {
               </div>
             </div>
             <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">See It In Action</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               How The Process Works
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -669,28 +669,28 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Upload className="w-7 h-7 text-blue-400" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 1 — Upload</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 1 — Upload</h3>
               <p className="text-slate-600">Create a case and upload your documents. The system organises them instantly.</p>
             </div>
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <BarChart3 className="w-7 h-7 text-emerald-400" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 2 — Free Grounds Count</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 2 — Free Grounds Count</h3>
               <p className="text-slate-600">Get the number of potential grounds. Titles and full analysis unlock for $99.</p>
             </div>
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <FileCheck className="w-7 h-7 text-red-400" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 3 — Paid Reports</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 3 — Paid Reports</h3>
               <p className="text-slate-600">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
             </div>
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Presentation className="w-7 h-7 text-indigo-300" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Step 4 — Barrister View</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 4 — Barrister View</h3>
               <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
             </div>
           </div>
@@ -711,7 +711,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       <section className="py-12 px-6 bg-blue-50 border-t border-b border-blue-200">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-slate-900 font-bold text-xl mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <p className="text-slate-900 font-bold text-xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             All This For Free To Get Started
           </p>
           <p className="text-slate-700 mb-4">
@@ -734,7 +734,7 @@ const LandingPage = () => {
       <section className="py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Australian Appeal Statistics
             </h2>
             <p className="text-slate-600 text-sm">Key figures from Australian criminal appeal courts</p>
@@ -777,7 +777,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-3">Legal Resources & Research</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Resources, Contacts & Research In One Flow
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -793,7 +793,7 @@ const LandingPage = () => {
                   <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Scale className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                     Legal Frameworks
                   </h3>
                 </div>
@@ -815,7 +815,7 @@ const LandingPage = () => {
                   <div className="w-14 h-14 bg-red-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <FileText className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                  <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                     Live Caselaw Search
                   </h3>
                 </div>
@@ -842,7 +842,7 @@ const LandingPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-blue-700 font-semibold text-xs uppercase tracking-widest mb-2">Pricing</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Simple, Affordable Access
             </h2>
             <p className="text-slate-600 text-sm max-w-2xl mx-auto">
@@ -854,7 +854,7 @@ const LandingPage = () => {
             {/* Free Tier */}
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Free</h3>
+                <h3 className="text-lg font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Free</h3>
                 <span className="text-2xl font-bold text-slate-900">$0</span>
               </div>
               <ul className="space-y-3 text-sm text-slate-600 mb-6">
@@ -910,7 +910,7 @@ const LandingPage = () => {
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-700 text-white text-sm font-bold px-4 py-1 rounded-full" data-testid="premium-unlock-pill">
                 UNLOCK FULL ANALYSIS
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4 mt-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Premium Features</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4 mt-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Premium Features</h3>
               
               <ul className="space-y-4 text-sm text-slate-900 mb-6">
                 <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-red-200">
@@ -983,7 +983,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <p className="text-blue-700 text-sm uppercase tracking-widest mb-2 font-semibold">Compare report tiers</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-blue-600" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-600" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               What's in Each Report?
             </h2>
             <p className="text-slate-700 text-base mt-2 max-w-2xl mx-auto">
@@ -1103,7 +1103,7 @@ const LandingPage = () => {
       <section className="py-12 px-6 bg-blue-600 border-t border-blue-700">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-white text-sm uppercase tracking-widest mb-4 font-extrabold">About</p>
-          <h3 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-2xl font-extrabold text-white mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Appeal Case Manager
           </h3>
           <p className="text-white text-base font-bold mb-1">Created and Designed by Deb King</p>
@@ -1122,7 +1122,7 @@ const LandingPage = () => {
       {/* CTA */}
       <section className="py-8 px-6 bg-white">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Ready to Start?
           </h2>
           <p className="text-slate-700 mb-6">
@@ -1164,7 +1164,7 @@ const FeatureCard = ({ icon: Icon, title, desc }) => (
     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-red-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
       <Icon className="w-6 h-6 text-red-600" />
     </div>
-    <h3 className="font-semibold text-slate-900 text-base mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>{title}</h3>
+    <h3 className="font-semibold text-slate-900 text-base mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{title}</h3>
     <p className="text-slate-600 text-sm">{desc}</p>
   </div>
 );

@@ -39,7 +39,7 @@ const TermsAcceptance = ({ onAccept }) => {
         <div className="bg-slate-900 px-6 py-5">
           <div className="flex items-center gap-3">
             <Scale className="w-8 h-8 text-blue-400" />
-            <h1 className="text-xl font-bold text-white" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h1 className="text-xl font-bold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </h1>
           </div>
@@ -48,7 +48,7 @@ const TermsAcceptance = ({ onAccept }) => {
         {/* Content */}
         <div className="p-6 space-y-5">
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Terms of Service & Privacy Policy
             </h2>
             <p className="text-slate-600">

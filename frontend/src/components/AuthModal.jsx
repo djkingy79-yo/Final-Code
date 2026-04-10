@@ -131,7 +131,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
             <DialogTitle 
               className="text-2xl font-bold text-slate-900 mb-1"
-              style={{ fontFamily: 'Crimson Pro, serif' }}
+              style={{ fontFamily: "'Times New Roman', Times, serif" }}
             >
               {mode === "login" ? "Welcome Back" : "Join Appeal Manager"}
             </DialogTitle>

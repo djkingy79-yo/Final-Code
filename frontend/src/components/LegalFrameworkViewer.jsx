@@ -176,7 +176,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
             <div>
               <CardTitle 
                 className="text-xl font-bold text-slate-900"
-                style={{ fontFamily: 'Crimson Pro, serif' }}
+                style={{ fontFamily: "'Times New Roman', Times, serif" }}
               >
                 Legal Framework
               </CardTitle>
@@ -527,7 +527,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
 
         {/* DO NOT UNDO — How to Start Your Appeal Section */}
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <FileText className="w-5 h-5 text-indigo-600" />
             How to Start Your Appeal — Step by Step
           </h4>
@@ -560,7 +560,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
 
         {/* DO NOT UNDO — Appeal Forms & Court Links */}
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <FileText className="w-5 h-5 text-emerald-600" />
             Appeal Forms & Court Registries
           </h4>

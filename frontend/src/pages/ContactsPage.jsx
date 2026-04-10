@@ -23,7 +23,7 @@ const ContactsPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -58,7 +58,7 @@ const ContactsPage = () => {
               <Building className="w-7 h-7 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-3xl md:text-4xl font-bold mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Legal Contacts Directory
           </h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
@@ -79,7 +79,7 @@ const ContactsPage = () => {
         {/* Legal Aid Section */}
           <div id="legal-aid" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Legal Aid Services
               </h2>
               <p className="text-slate-600 text-sm">
@@ -158,7 +158,7 @@ const ContactsPage = () => {
         {/* Law Societies Section */}
           <div id="law-societies" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Law Societies & Bar Associations
               </h2>
               <p className="text-slate-600 text-sm">
@@ -168,7 +168,7 @@ const ContactsPage = () => {
 
             {/* Solicitors */}
             <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Law Societies (Solicitors)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -241,7 +241,7 @@ const ContactsPage = () => {
 
             {/* Bar Associations */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Bar Associations (Barristers)
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -276,7 +276,7 @@ const ContactsPage = () => {
         {/* Complaints Section */}
           <div id="complaints" className="space-y-6">
             <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Complaints Bodies & Legal Services Commissioners
               </h2>
               <p className="text-slate-600 text-sm">
@@ -340,7 +340,7 @@ const ContactsPage = () => {
         {/* Courts Section */}
           <div id="courts" className="space-y-6">
             <div className="bg-slate-100 border border-slate-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Courts of Australia
               </h2>
               <p className="text-slate-600 text-sm">
@@ -350,7 +350,7 @@ const ContactsPage = () => {
 
             {/* Federal Courts */}
             <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Federal Courts
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -427,7 +427,7 @@ const ContactsPage = () => {
         {/* Community Legal Section */}
           <div id="community" className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Community Legal Centres
               </h2>
               <p className="text-slate-600 text-sm">
@@ -473,7 +473,7 @@ const ContactsPage = () => {
 
             {/* Specialist Services */}
             <div className="mt-8">
-              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Specialist Legal Services
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -516,7 +516,7 @@ const ContactsPage = () => {
         {/* Pro Bono Section */}
           <div id="pro-bono" className="space-y-6">
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Pro Bono Legal Services
               </h2>
               <p className="text-slate-600 text-sm">

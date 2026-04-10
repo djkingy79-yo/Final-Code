@@ -477,8 +477,8 @@ const CaseDetail = ({ user }) => {
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
     body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 12px; }
-    h1 { font-family: 'Crimson Pro', serif; font-size: 18px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Crimson Pro', serif; font-size: 14px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
+    h1 { font-family: 'Times New Roman', Times, serif; font-size: 18px; margin-bottom: 6px; color: #0f172a; }
+    h2 { font-family: 'Times New Roman', Times, serif; font-size: 14px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
     h3 { font-size: 13px; margin-top: 14px; color: #1e40af; }
     .meta { font-size: 11px; color: #475569; margin-bottom: 12px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
@@ -1113,7 +1113,7 @@ const CaseDetail = ({ user }) => {
           <div className="flex items-start justify-between gap-4">
             <h1 
               className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight"
-              style={{ fontFamily: 'Crimson Pro, serif' }}
+              style={{ fontFamily: "'Times New Roman', Times, serif" }}
               data-testid="case-title"
             >
               {caseData?.title}
@@ -1129,7 +1129,7 @@ const CaseDetail = ({ user }) => {
             </Button>
           </div>
           {/* DO_NOT_UNDO — Case Identity Card. Must always show defendant, offence, state, sentence prominently with colour. */}
-          <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-5" data-testid="case-identity-card">
+          <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-5 legal-content" data-testid="case-identity-card">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-0.5">Defendant</div>
@@ -1287,7 +1287,7 @@ const CaseDetail = ({ user }) => {
           </div>
 
           {/* Documents Tab */}
-          <TabsContent value="documents" className="space-y-4" data-tab-content>
+          <TabsContent value="documents" className="space-y-4 legal-content" data-tab-content>
             <DocumentsSection
               caseId={caseId}
               documents={documents}
@@ -1297,7 +1297,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Timeline Tab */}
-          <TabsContent value="timeline" className="space-y-4" data-tab-content>
+          <TabsContent value="timeline" className="space-y-4 legal-content" data-tab-content>
             {generatingTimeline && (
               <div className="border border-purple-200 bg-purple-50 rounded-lg overflow-hidden p-4" data-testid="ai-timeline-progress">
                 <div className="flex items-center gap-3 mb-2">
@@ -1313,7 +1313,7 @@ const CaseDetail = ({ user }) => {
             {timeline.length === 0 ? (
               <Card className="p-12 text-center card-elevated">
                 <Clock className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   No events yet
                 </h3>
                 <p className="text-slate-600 mb-4">Build a chronological timeline of case events.</p>
@@ -1350,7 +1350,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Grounds of Merit Tab */}
-          <TabsContent value="grounds" className="space-y-4" data-tab-content>
+          <TabsContent value="grounds" className="space-y-4 legal-content" data-tab-content>
             {autoIdentifying && (
               <div className="border border-blue-200 bg-blue-50 rounded-lg overflow-hidden p-4" data-testid="ai-grounds-progress">
                 <div className="flex items-center gap-3 mb-2">
@@ -1366,7 +1366,7 @@ const CaseDetail = ({ user }) => {
             {grounds.length === 0 && !groundsCount && !autoIdentifying ? (
               <Card className="p-12 text-center card-elevated">
                 <Gavel className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-base font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   No grounds of merit identified
                 </h3>
                 <p className="text-xs text-slate-500 mb-4 max-w-md mx-auto">
@@ -1435,7 +1435,7 @@ const CaseDetail = ({ user }) => {
 
           {/* Notes Tab */}
           {/* Notes Tab */}
-          <TabsContent value="notes" className="space-y-4" data-tab-content>
+          <TabsContent value="notes" className="space-y-4 legal-content" data-tab-content>
             <NotesSection
               caseId={caseId}
               notes={notes}
@@ -1445,7 +1445,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Reports Tab */}
-          <TabsContent value="reports" className="space-y-4" data-tab-content>
+          <TabsContent value="reports" className="space-y-4 legal-content" data-tab-content>
             <ReportsSection
               caseId={caseId}
               reports={reports}
@@ -1459,7 +1459,7 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Legal Framework Tab — DO NOT UNDO */}
-          <TabsContent value="legal" className="space-y-6" data-tab-content>
+          <TabsContent value="legal" className="space-y-6 legal-content" data-tab-content>
             <LegalFrameworkViewer 
               offenceCategory={caseData?.offence_category}
               offenceType={caseData?.offence_type}
@@ -1468,9 +1468,9 @@ const CaseDetail = ({ user }) => {
           </TabsContent>
 
           {/* Case Law Tab — Verified case law database search */}
-          <TabsContent value="caselaw" className="space-y-4" data-tab-content>
+          <TabsContent value="caselaw" className="space-y-4 legal-content" data-tab-content>
             <Card className="p-4">
-              <h3 className="text-base font-bold text-slate-900 mb-1" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-base font-bold text-slate-900 mb-1" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Verified Case Law Search
               </h3>
               <p className="text-xs text-slate-500 mb-4">
@@ -1486,7 +1486,7 @@ const CaseDetail = ({ user }) => {
 
           {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
           {/* DO NOT UNDO — Progress Tab with AI Analysis */}
-          <TabsContent value="progress" className="space-y-6" data-tab-content>
+          <TabsContent value="progress" className="space-y-6 legal-content" data-tab-content>
             {/* Export Buttons */}
             <div className="flex items-center gap-2 flex-wrap" data-testid="progress-export-bar">
               <Button variant="outline" size="sm" onClick={() => {
@@ -1574,7 +1574,7 @@ const CaseDetail = ({ user }) => {
             {/* AI Progress Analysis Results */}
             {progressAnalysis && (
               <Card className="border-purple-200">
-                <CardContent className="p-4 prose prose-sm max-w-none">
+                <CardContent className="p-4 legal-report prose prose-sm max-w-none">
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -1639,7 +1639,7 @@ const CaseDetail = ({ user }) => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="collaboration" className="space-y-6" data-tab-content>
+          <TabsContent value="collaboration" className="space-y-6 legal-content" data-tab-content>
             <ActivityFeed caseId={caseId} />
           </TabsContent>
         </Tabs>
@@ -1660,7 +1660,7 @@ const CaseDetail = ({ user }) => {
       <Dialog open={showEventDialog} onOpenChange={setShowEventDialog}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }} className="text-2xl">
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }} className="text-2xl">
               Add Timeline Event
             </DialogTitle>
           </DialogHeader>
@@ -1924,7 +1924,7 @@ const CaseDetail = ({ user }) => {
       <Dialog open={showGroundDialog} onOpenChange={setShowGroundDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }} className="text-2xl">
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }} className="text-2xl">
               Add Ground of Merit
             </DialogTitle>
           </DialogHeader>

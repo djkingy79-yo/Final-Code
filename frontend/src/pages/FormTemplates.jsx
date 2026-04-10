@@ -755,7 +755,7 @@ const FormTemplates = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </div>
@@ -785,7 +785,7 @@ const FormTemplates = () => {
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <FileText className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Legal Form Templates
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-2">
@@ -839,7 +839,7 @@ const FormTemplates = () => {
         </div>
 
         {/* TIMEFRAME & DEADLINES */}
-        <h2 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-4 text-center" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="forms-timeframe-heading">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-4 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="forms-timeframe-heading">
           Timeframe & Deadlines
         </h2>
 
@@ -878,7 +878,7 @@ const FormTemplates = () => {
             </div>
 
             {/* IF YOU HAVE MISSED THIS DEADLINE */}
-            <h3 className="text-2xl md:text-3xl font-extrabold text-red-700 mb-2 mt-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-2xl md:text-3xl font-extrabold text-red-700 mb-2 mt-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               If You Have Missed This Deadline
             </h3>
 
@@ -911,7 +911,7 @@ const FormTemplates = () => {
 
             {/* Transcripts and Exhibits */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Transcripts and Exhibits — Essential Documents
               </h3>
               <div className="space-y-3 text-sm text-blue-900">
@@ -965,7 +965,7 @@ const FormTemplates = () => {
 
             {/* Process Overview */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-blue-500">
-              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Standard Appeal Process
               </h3>
               <div className="space-y-2 text-sm text-blue-900">
@@ -1065,7 +1065,7 @@ const FormTemplates = () => {
                       <category.icon className={`w-6 h-6 ${category.color}`} />
                     </div>
                     <div className="text-left">
-                      <h3 className="font-semibold text-slate-900 text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      <h3 className="font-semibold text-slate-900 text-lg" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                         {category.name}
                       </h3>
                       <p className="text-sm text-slate-600">{category.forms.length} templates available</p>
@@ -1119,7 +1119,7 @@ const FormTemplates = () => {
         <div className="mt-12 rounded-2xl overflow-hidden bg-slate-900 p-8 md:p-10">
           <div className="text-center">
             <Gavel className="w-14 h-14 md:w-16 md:h-16 text-blue-500 mx-auto mb-4" />
-            <h3 className="text-2xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h3 className="text-2xl md:text-4xl font-bold text-white mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Need Help With Your Forms?
             </h3>
             <p className="text-slate-300 text-base md:text-lg mb-6 max-w-md mx-auto">

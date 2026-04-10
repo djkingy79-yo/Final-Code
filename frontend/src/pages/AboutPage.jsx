@@ -48,7 +48,7 @@ const AboutPage = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center" data-testid="about-brand-icon">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-brand-text">
+            <span className="text-lg font-semibold text-slate-900 tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="about-brand-text">
               Appeal Case Manager
             </span>
           </Link>
@@ -95,7 +95,7 @@ const AboutPage = () => {
             </div>
           </div>
           <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3" data-testid="about-hero-eyebrow">My Story</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-hero-title">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="about-hero-title">
             Why I Built This App
           </h1>
           <p className="text-slate-700 text-lg max-w-2xl mx-auto" data-testid="about-hero-subtitle">
@@ -109,7 +109,7 @@ const AboutPage = () => {
         <div className="max-w-4xl mx-auto">
           {/* Deb's Personal Bio */}
           <div className="bg-white border border-slate-200 rounded-2xl p-8 mb-6" data-testid="about-deb-bio">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               About Deb
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
@@ -133,7 +133,7 @@ const AboutPage = () => {
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center" data-testid="about-business-info">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Criminal Law Appeal Case Management
             </h2>
             <p className="text-blue-700 font-medium">Founded by Debra King</p>
@@ -155,7 +155,7 @@ const AboutPage = () => {
             <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
               <Quote className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               My Journey
             </h2>
           </div>
@@ -202,7 +202,7 @@ const AboutPage = () => {
             <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
               <Gavel className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Joshua Homann — The Reason This App Exists
             </h2>
           </div>
@@ -211,7 +211,7 @@ const AboutPage = () => {
           <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-8" data-testid="about-joshua-card">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <div>
-                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   R v Joshua Homann
                 </h3>
                 <p className="text-slate-700 text-sm">Supreme Court of New South Wales</p>
@@ -321,7 +321,7 @@ const AboutPage = () => {
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Brad Fletcher — Best Mate for Life
             </h2>
           </div>
@@ -330,7 +330,7 @@ const AboutPage = () => {
           <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Brad Fletcher
                 </h3>
                 <p className="text-slate-700 text-sm">Matter Pending</p>
@@ -385,7 +385,7 @@ const AboutPage = () => {
             <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
               <Shield className="w-6 h-6 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Why This Matters
             </h2>
           </div>
@@ -411,7 +411,7 @@ const AboutPage = () => {
 
           <div className="bg-white border border-blue-200 rounded-2xl p-8 text-center mt-8" data-testid="about-mission-quote">
             <Award className="w-12 h-12 text-blue-700 mx-auto mb-4" />
-            <p className="text-slate-900 text-xl font-semibold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <p className="text-slate-900 text-xl font-semibold mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               "If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished."
             </p>
             <p className="text-slate-700 text-sm">
@@ -445,7 +445,7 @@ const AboutPage = () => {
               </div>
             </div>
             <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-2">Get in Touch</p>
-            <h2 className="text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-3xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Contact Deb
             </h2>
             <p className="text-slate-600">
@@ -458,7 +458,7 @@ const AboutPage = () => {
               <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-emerald-600" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>Message Sent!</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Message Sent!</h3>
               <p className="text-slate-600">Thanks for reaching out. Deb will get back to you as soon as possible.</p>
             </div>
           ) : (
@@ -513,7 +513,7 @@ const AboutPage = () => {
       {/* CTA */}
       <section className="py-12 px-6 bg-white" data-testid="about-cta-section">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Ready to Explore Your Options?
           </h2>
           <p className="text-slate-700 mb-8">
@@ -542,7 +542,7 @@ const AboutPage = () => {
             <h3 className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-white mb-3" data-testid="about-acknowledgement-heading">
               Acknowledgment
             </h3>
-            <blockquote className="text-sm sm:text-base font-semibold text-white leading-relaxed" style={{ fontFamily: 'Crimson Pro, serif' }} data-testid="about-acknowledgement-quote">
+            <blockquote className="text-sm sm:text-base font-semibold text-white leading-relaxed" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="about-acknowledgement-quote">
               “This journey wouldn't have been possible without your support, motivation and encouragement ~ To my dear friends Renee Yates & Nigel Willett.”
             </blockquote>
           </div>

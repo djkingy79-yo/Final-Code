@@ -374,7 +374,7 @@ const DocumentsSection = ({
       {documents.length === 0 ? (
         <Card className="p-12 text-center">
           <FileUp className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-lg font-semibold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             No documents yet
           </h3>
           <p className="text-slate-600 mb-4">Upload briefs, case notes, and evidence to build your case.</p>
@@ -454,7 +454,7 @@ const DocumentsSection = ({
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: 'Crimson Pro, serif' }}>Upload Documents</DialogTitle>
+            <DialogTitle style={{ fontFamily: "'Times New Roman', Times, serif" }}>Upload Documents</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             {/* Native Camera Scanner */}

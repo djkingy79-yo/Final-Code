@@ -61,7 +61,7 @@ const ResourcesPage = () => {
             </Button>
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-emerald-600" />
-              <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Resource Directory
               </h1>
             </div>
@@ -73,7 +73,7 @@ const ResourcesPage = () => {
         {/* Intro */}
         <Card className="mb-8 bg-gradient-to-r from-emerald-900 to-emerald-800 text-white">
           <CardContent className="p-6">
-            <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Support Services & Resources
             </h2>
             <p className="text-emerald-100">
@@ -110,7 +110,7 @@ const ResourcesPage = () => {
 
         {/* Support Services */}
         <section className="mb-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Scale className="w-5 h-5 text-slate-600" />
             Support Services
           </h3>
@@ -157,7 +157,7 @@ const ResourcesPage = () => {
 
         {/* Advocacy Groups */}
         <section className="mb-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Users className="w-5 h-5 text-slate-600" />
             Advocacy & Support Groups
           </h3>
@@ -195,7 +195,7 @@ const ResourcesPage = () => {
 
         {/* Courts */}
         <section className="mb-8">
-          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <Building className="w-5 h-5 text-slate-600" />
             Courts
           </h3>

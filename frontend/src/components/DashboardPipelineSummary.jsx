@@ -36,7 +36,7 @@ export default function DashboardPipelineSummary() {
   return (
     <div className="rounded-xl border-2 border-slate-200 p-5 mb-4 bg-white shadow-sm" data-testid="dashboard-pipeline-summary">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="font-bold text-base text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>Pipeline Portfolio Summary</div>
+        <div className="font-bold text-base text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Pipeline Portfolio Summary</div>
         <button
           type="button"
           onClick={loadSummary}

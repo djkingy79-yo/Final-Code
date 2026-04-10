@@ -43,7 +43,7 @@ export default function AcceptShareLink() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 max-w-md text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Unable to Access Case
           </h2>
           <p className="text-sm text-slate-600 mb-6">{error}</p>
@@ -59,7 +59,7 @@ export default function AcceptShareLink() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 max-w-md text-center">
         <Loader2 className="w-10 h-10 text-blue-600 animate-spin mx-auto mb-4" />
-        <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+        <h2 className="text-lg font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
           Joining Shared Case...
         </h2>
         <p className="text-sm text-slate-600 mt-2">Setting up your access</p>

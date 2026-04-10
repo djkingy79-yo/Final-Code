@@ -200,7 +200,7 @@ const CompareCasesPage = ({ user }) => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -237,7 +237,7 @@ const CompareCasesPage = ({ user }) => {
             </div>
             <div>
               <p className="text-red-600 font-semibold text-xs uppercase tracking-widest">Analysis</p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-slate-900" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <h1 className="text-4xl sm:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Compare Cases
               </h1>
             </div>
@@ -284,7 +284,7 @@ const CompareCasesPage = ({ user }) => {
             {/* Case Selection */}
             <Card className="bg-white border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   <Gavel className="w-5 h-5 text-red-600" />
                   Select Cases to Compare
                   <Badge variant="outline" className="ml-2">
@@ -418,7 +418,7 @@ const CompareCasesPage = ({ user }) => {
                 {comparisonResult.insights.length > 0 && (
                   <Card className="bg-white border-slate-200">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                         <Sparkles className="w-5 h-5 text-red-600" />
                         Insights
                       </CardTitle>
@@ -450,7 +450,7 @@ const CompareCasesPage = ({ user }) => {
             {/* Filters */}
             <Card className="bg-white border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   <Filter className="w-5 h-5 text-red-600" />
                   Filter Patterns
                 </CardTitle>
@@ -572,7 +572,7 @@ const CompareCasesPage = ({ user }) => {
                 {/* Ground Type Distribution */}
                 <Card className="bg-white border-slate-200">
                   <CardHeader>
-                    <CardTitle className="text-lg" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                    <CardTitle className="text-lg" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                       Ground Type Distribution
                     </CardTitle>
                   </CardHeader>
@@ -609,7 +609,7 @@ const CompareCasesPage = ({ user }) => {
                 {patterns.insights?.length > 0 && (
                   <Card className="bg-gradient-to-r from-slate-900 to-indigo-950 border-0">
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                         <Sparkles className="w-5 h-5 text-blue-400" />
                         Key Insights
                       </h3>
@@ -629,7 +629,7 @@ const CompareCasesPage = ({ user }) => {
                 {successFactors && !hasInsufficientFactors && successFactors.insights?.length > 0 && (
                   <Card className="bg-white border-slate-200">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                      <CardTitle className="text-lg flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                         <TrendingUp className="w-5 h-5 text-blue-600" />
                         Platform Pattern Indicators
                       </CardTitle>

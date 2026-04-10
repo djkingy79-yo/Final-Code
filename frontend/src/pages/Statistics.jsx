@@ -96,7 +96,7 @@ const Statistics = () => {
             <div className="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center">
               <Scale className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: 'Crimson Pro, serif' }}>
+            <span className="text-lg font-semibold text-white tracking-tight hidden sm:block" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Appeal Case Manager
             </span>
           </Link>
@@ -143,7 +143,7 @@ const Statistics = () => {
             </div>
           </div>
           <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">Analytics</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Case Statistics Dashboard
           </h1>
           <p className="text-slate-600 text-lg max-w-2xl mx-auto">
@@ -202,7 +202,7 @@ const Statistics = () => {
           {/* Cases by Offence Type */}
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                   <AlertTriangle className="w-4 h-4 text-red-600" />
                 </div>
@@ -240,7 +240,7 @@ const Statistics = () => {
           {/* Cases by State */}
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                   <MapPin className="w-4 h-4 text-blue-600" />
                 </div>
@@ -281,7 +281,7 @@ const Statistics = () => {
           {/* Grounds by Type */}
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
                   <Shield className="w-4 h-4 text-purple-600" />
                 </div>
@@ -314,7 +314,7 @@ const Statistics = () => {
           {/* Grounds by Strength */}
           <Card className="bg-white border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: 'Crimson Pro, serif' }}>
+              <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-emerald-600" />
                 </div>
@@ -362,7 +362,7 @@ const Statistics = () => {
                 />
               </div>
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-8 text-center" style={{ fontFamily: 'Crimson Pro, serif' }}>
+                <h3 className="text-2xl font-bold text-white mb-8 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                   Key Insights
                 </h3>
                 <div className="grid md:grid-cols-3 gap-8 text-center">
@@ -397,7 +397,7 @@ const Statistics = () => {
       {/* Footer CTA */}
       <section className="bg-slate-900 px-6 py-12 border-t border-slate-800">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'Crimson Pro, serif' }}>
+          <h2 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Ready to Analyse Your Case?
           </h2>
           <p className="text-slate-400 mb-8">
