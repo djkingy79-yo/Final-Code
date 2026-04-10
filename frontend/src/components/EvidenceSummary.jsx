@@ -25,8 +25,9 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
     const isString = typeof item === "string";
     const text = isString ? extractText(item) : (item?.quote || item?.text || null);
     if (!text) return null;
-    const filename = !isString ? item?.filename : null;
-    const pageRef = !isString ? item?.page_reference : null;
+    const rawFilename = !isString ? item?.filename : null;
+    const filename = (rawFilename && rawFilename.toLowerCase() !== "optional" && rawFilename.toLowerCase() !== "none") ? rawFilename : null;
+    const pageRef = (!isString && item?.page_reference && String(item.page_reference).toLowerCase() !== "none") ? item.page_reference : null;
     const chunkRef = !isString ? item?.chunk_reference : null;
     const verStatus = !isString ? item?.verification_status : null;
     return { text, filename, pageRef, chunkRef, verStatus, idx };
@@ -37,15 +38,15 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
   }
 
   return (
-    <div data-testid="evidence-summary" className="mt-3 text-sm">
-      <div className="font-medium mb-2 text-slate-700">Supporting Evidence ({cleaned.length})</div>
-      <div className="space-y-2">
+    <div data-testid="evidence-summary" className="mt-3 text-xs sm:text-sm">
+      <div className="font-medium mb-1.5 text-slate-700 text-xs sm:text-sm">Supporting Evidence ({cleaned.length})</div>
+      <div className="space-y-1.5">
         {cleaned.slice(0, displayCount).map((ev) => (
-          <div key={ev.idx} className="border border-slate-100 rounded p-2 text-slate-600">
-            {ev.filename && <div className="font-medium mb-1 text-slate-700">{ev.filename}</div>}
-            <div>{ev.text}</div>
+          <div key={ev.idx} className="border border-slate-100 rounded p-1.5 sm:p-2 text-slate-600 text-xs sm:text-sm leading-snug">
+            {ev.filename && <div className="font-medium mb-0.5 text-slate-700 text-xs">{ev.filename}</div>}
+            <div className="text-xs sm:text-sm leading-snug">{ev.text}</div>
             {(ev.pageRef || ev.chunkRef || ev.verStatus) && (
-              <div className="mt-1 text-slate-400">
+              <div className="mt-0.5 text-slate-400 text-[10px] sm:text-xs">
                 {ev.pageRef ? `Page: ${ev.pageRef}` : ""}
                 {ev.pageRef && ev.chunkRef ? " \u2022 " : ""}
                 {ev.chunkRef ? `Chunk: ${ev.chunkRef}` : ""}
@@ -57,7 +58,7 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
         ))}
       </div>
       {cleaned.length > displayCount && (
-        <div className="text-slate-400 mt-1">+{cleaned.length - displayCount} more</div>
+        <div className="text-slate-400 mt-1 text-[10px] sm:text-xs">+{cleaned.length - displayCount} more</div>
       )}
     </div>
   );

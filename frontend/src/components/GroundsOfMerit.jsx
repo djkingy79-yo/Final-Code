@@ -445,9 +445,12 @@ const GroundsOfMerit = ({
               <div className="grounds-export-block">
                 <h3>Relevant Law Sections</h3>
                 <ul>
-                  {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map((section, idx) => (
-                    <li key={idx}>{`s ${section.section} ${section.act} (${(section.jurisdiction || "NSW").toUpperCase()})`}</li>
-                  ))}
+                  {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map((section, idx) => {
+                    const jur = (section.jurisdiction || "NSW").toUpperCase();
+                    const actText = section.act || "";
+                    const jurInAct = actText.toUpperCase().includes(`(${jur})`);
+                    return <li key={idx}>{`s ${section.section} ${actText}${jurInAct ? "" : ` (${jur})`}`}</li>;
+                  })}
                 </ul>
               </div>
             )}
@@ -975,13 +978,25 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         <EvidenceSummary items={ground.supporting_evidence} />
                       )}
                       
-                      {/* Law Sections Preview — DO NOT UNDO: filtered for real section numbers only */}
+                      {/* Law Sections Preview — DO NOT UNDO: displays actual legislation text */}
                       {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 0 && (
-                        <div className="flex items-center gap-2 mt-2">
-                          <BookOpen className="w-4 h-4 text-slate-400" />
-                          <span className="text-xs text-slate-500">
-                            {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length} law section{ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 1 ? 's' : ''} identified
-                          </span>
+                        <div className="mt-2" data-testid={`law-sections-${ground.ground_id}`}>
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <BookOpen className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+                            <span className="text-xs font-semibold text-blue-800">Legal Framework</span>
+                          </div>
+                          <div className="space-y-1 ml-5">
+                            {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map((section, idx) => {
+                              const jur = (section.jurisdiction || "NSW").toUpperCase();
+                              const actText = section.act || "";
+                              const jurAlreadyInAct = actText.toUpperCase().includes(`(${jur})`);
+                              return (
+                                <div key={idx} className="text-xs text-blue-700 leading-snug">
+                                  s {section.section} {actText}{jurAlreadyInAct ? "" : ` (${jur})`}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                       
