@@ -51,18 +51,27 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
     - QLD: "manslaughter s 303" → "manslaughter s 309"
     - VIC: "s 34AA-34AB" → "s 34AD-34AE" for non-fatal strangulation
   - Total: **29 corrections** across the entire legal framework
-  - All verified via web search against AustLII, state legislation sites, and legal practitioner resources
-  - Python lint: zero errors. Backend validated and running
+- **Backend Refactoring (server.py decomposition):**
+  - `server.py`: 6,068 → 426 lines (93% reduction)
+  - Extracted to 6 focused modules:
+    - `services/report_quality.py` (453 lines) — text normalisation, dedup, forensic language
+    - `services/pipeline_orchestrator.py` (529 lines) — pipeline freshness, document extraction
+    - `services/report_generator.py` (1,847 lines) — `analyze_case_with_ai` engine
+    - `services/barrister_generator.py` (1,092 lines) — barrister brief generation
+    - `routers/reports.py` (812 lines) — report CRUD endpoints
+    - `routers/report_exports.py` (1,047 lines) — PDF/DOCX export endpoints
+  - All 19 regression tests passed. Zero regressions.
+- **Camera/Share Native Features**: Already fully implemented (DocumentScanner.jsx, native/camera.js, native/share.js, export share flow). Verified correct.
 
 ## Pending Tasks
 ### P0
-- (none — legal audit complete)
+- (none)
 
 ### P1
 - Verify "How It Works" page images (IMG_4323.png to IMG_4327.png)
 - Build Native Mobile App (Capacitor v7 configured)
 
 ### P2
-- Backend refactoring: decompose server.py (~6000 lines)
-- Camera/Share native device features
+- Camera/Share native device features — DONE (already implemented)
+- Backend refactoring: decompose server.py (~6000 lines) — DONE
 - Counsel conference prep attachment for Barrister View
