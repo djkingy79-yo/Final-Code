@@ -292,6 +292,14 @@ function AppRouter() {
         }
       />
       <Route
+        path="/cases/:caseId/barrister-view"
+        element={
+          <ProtectedRoute>
+            {({ user }) => <BarristerView user={user} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/help"
         element={
           <ProtectedRoute>

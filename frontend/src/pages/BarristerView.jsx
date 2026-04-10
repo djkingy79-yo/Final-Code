@@ -189,7 +189,7 @@ const MarkdownBlock = ({ text, testId }) => (
 const BarristerGroundBlock = ({ ground }) => (
   <div className="border border-slate-200 rounded-lg p-4 mb-4" data-testid={`barrister-ground-block-${ground.ground_id}`}>
     <div className="flex items-center gap-2 mb-2 flex-wrap">
-      <div className="font-semibold text-slate-900" style={{ fontFamily: "Crimson Pro, serif" }}>{ground.title}</div>
+      <div className="font-semibold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{ground.title}</div>
       <StrengthBadge rating={ground.strength} />
       <VerificationBadge status={ground.verification_status} />
     </div>
@@ -430,12 +430,12 @@ export default function BarristerView() {
   <style>
     @page { size: A4; margin: 14mm 14mm 18mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 0 0 88px; color: #0f172a; line-height: 1.65; font-size: 9pt; background: #fff; }
+    body { font-family: 'Times New Roman', Times, serif; padding: 0 0 88px; color: #0f172a; line-height: 1.8; font-size: 12pt; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
     .cover-page-kicker { margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px; font-weight: 800; color: #1d4ed8; }
-    .cover-page h1 { margin: 0 0 10px; font-family: 'Crimson Pro', serif; font-size: 22px; color: #0f172a; }
+    .cover-page h1 { margin: 0 0 10px; font-family: 'Times New Roman', Times, serif; font-size: 22pt; color: #0f172a; font-weight: 700; }
     .cover-page p { margin: 0 0 8px; color: #334155; }
     .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 22px 0 18px; text-align: left; }
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; background: #f8fafc; }
@@ -445,7 +445,7 @@ export default function BarristerView() {
     .page-break { page-break-after: always; break-after: page; }
     .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
     .report-header { background: #14b8a6; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
-    .report-header h1 { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; margin-bottom: 4px; color: #fff; }
     .report-header .meta-line { font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 22px; font-weight: 700; color: #fff; text-align: right; }
     .report-header .grounds-label { font-size: 11px; color: rgba(255,255,255,0.8); text-align: right; }
@@ -454,33 +454,33 @@ export default function BarristerView() {
     .report-header .gen-date { font-size: 11px; color: rgba(255,255,255,0.85); margin-top: 4px; }
     .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-header .case-info-grid .ci-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
-    .report-header .case-info-grid .ci-value { font-size: 13px; font-weight: 700; color: #fff; font-family: 'Crimson Pro', serif; }
+    .report-header .case-info-grid .ci-value { font-size: 12pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
     .sections { padding: 24px 32px; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
     .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #14b8a6; padding-left: 12px; margin-bottom: 12px; }
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Crimson Pro', serif; font-size: 13px; font-weight: 700; color: #0f172a; }
+    .section-title { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #0f172a; }
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; }
-    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Crimson Pro', serif; font-weight: 700; color: #0f766e; margin: 1.2rem 0 0.6rem; }
-    .section-body h2 { font-size: 11pt; border-bottom: 2px solid #0f766e; padding-bottom: 4px; }
-    .section-body h3 { font-size: 10pt; color: #1e40af; }
-    .section-body h4 { font-size: 9.5pt; color: #334155; }
-    .section-body p { margin-bottom: 0.7rem; font-size: 9pt; }
+    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
+    .section-body h2 { font-size: 18pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; margin: 1.2rem 0 0.6rem; page-break-before: always; }
+    .section-body h3 { font-size: 14pt; color: #1e293b; margin: 1rem 0 0.5rem; }
+    .section-body h4 { font-size: 12pt; color: #334155; margin: 0.8rem 0 0.4rem; }
+    .section-body p { margin-bottom: 0.7rem; font-size: 12pt; line-height: 1.8; }
     .section-body strong { color: #0f172a; font-weight: 700; }
-    .section-body ul, .section-body ol { padding-left: 1.2rem; margin: 0.6rem 0; }
-    .section-body li { margin-bottom: 0.4rem; font-size: 9pt; }
+    .section-body ul, .section-body ol { padding-left: 2.5rem; margin: 0.6rem 0; }
+    .section-body li { margin-bottom: 0.4rem; font-size: 12pt; line-height: 1.75; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 9pt !important; table-layout: fixed; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 9pt !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 9pt !important; }
+    .section-body table { width: 100%; min-width: 0; border-collapse: collapse; margin: 12px 0; font-size: 11pt !important; table-layout: fixed; font-family: 'Times New Roman', Times, serif !important; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 8px 10px; text-align: left; border: 1px solid #cbd5e1; font-size: 11pt !important; font-family: 'Times New Roman', Times, serif !important; white-space: normal; word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 8px 10px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 11pt !important; font-family: 'Times New Roman', Times, serif !important; }
     .section-body blockquote { border-left: 4px solid #14b8a6; padding: 10px 14px; margin: 0.8rem 0; background: #f0fdfa; color: #0f766e; }
     .disclaimer-bold { background: #dc2626; border: 3px solid #b91c1c; padding: 20px 28px; margin: 16px 32px; border-radius: 8px; display: flex; gap: 14px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .disclaimer-bold .disc-icon { color: #facc15; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-size: 10px; color: #475569; }
+    .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-style: italic; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
     @media print {
@@ -931,7 +931,7 @@ export default function BarristerView() {
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
                   <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Barrister Brief</p>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "Crimson Pro, serif" }} data-testid="barrister-title">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="barrister-title">
                     {caseData?.title || "Barrister Brief"}
                   </h1>
                   <p className="text-sm text-white/90 mt-1 font-medium">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
@@ -1018,7 +1018,7 @@ export default function BarristerView() {
                       </span>
                       <h3
                         className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
-                        style={{ fontFamily: "Crimson Pro, serif" }}
+                        style={{ fontFamily: "'Times New Roman', Times, serif" }}
                         data-testid={`barrister-section-heading-${index + 1}`}
                       >
                         {section.title}
@@ -1037,7 +1037,7 @@ export default function BarristerView() {
                   <div className="border-l-4 border-teal-500 pl-4 mb-4">
                     <h3
                       className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
-                      style={{ fontFamily: "Crimson Pro, serif" }}
+                      style={{ fontFamily: "'Times New Roman', Times, serif" }}
                     >
                       Grounds of Merit — Detailed Assessment
                     </h3>
@@ -1054,7 +1054,7 @@ export default function BarristerView() {
                   <div className="border-l-4 border-teal-500 pl-4 mb-4">
                     <h3
                       className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
-                      style={{ fontFamily: "Crimson Pro, serif" }}
+                      style={{ fontFamily: "'Times New Roman', Times, serif" }}
                     >
                       Verification and Review Status
                     </h3>
@@ -1138,7 +1138,7 @@ export default function BarristerView() {
         .legal-report h2,
         .legal-report h3,
         .legal-report h4 {
-          font-family: 'Crimson Pro', serif;
+          font-family: 'Times New Roman', Times, serif;
           font-weight: 700;
           color: #1e3a8a;
           margin: 1.2rem 0 0.5rem;

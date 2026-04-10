@@ -4873,96 +4873,108 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         bottomMargin=28*mm
     )
     
-    # Styles
+    # Styles — Legal Report Format: Times New Roman body 12pt, bold headings
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name='ReportTitle',
-        fontSize=20,
+        fontSize=22,
         spaceAfter=12,
         alignment=TA_CENTER,
-        fontName='Helvetica-Bold'
+        fontName='Times-Bold',
+        leading=26
     ))
     styles.add(ParagraphStyle(
         name='ReportSubtitle',
-        fontSize=11,
+        fontSize=12,
         spaceAfter=8,
         alignment=TA_CENTER,
+        fontName='Times-Roman',
         textColor=colors.HexColor('#475569')
     ))
     styles.add(ParagraphStyle(
         name='SectionHeader',
-        fontSize=14,
-        spaceBefore=14,
-        spaceAfter=6,
-        fontName='Helvetica-Bold',
-        textColor=colors.HexColor('#0f172a')
+        fontSize=18,
+        spaceBefore=20,
+        spaceAfter=10,
+        fontName='Times-Bold',
+        textColor=colors.HexColor('#0f172a'),
+        keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='SubHeader',
-        fontSize=12,
-        spaceBefore=8,
-        spaceAfter=5,
-        fontName='Helvetica-Bold',
-        textColor=colors.HexColor('#1e293b')
+        fontSize=14,
+        spaceBefore=14,
+        spaceAfter=8,
+        fontName='Times-Bold',
+        textColor=colors.HexColor('#1e293b'),
+        keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='ReportBodyText',
-        fontSize=10,
-        spaceAfter=5,
+        fontSize=12,
+        spaceAfter=8,
         alignment=TA_JUSTIFY,
-        leading=14
+        leading=18,
+        fontName='Times-Roman'
     ))
     styles.add(ParagraphStyle(
         name='BulletText',
         parent=styles['ReportBodyText'],
-        leftIndent=12,
-        bulletIndent=6
+        leftIndent=24,
+        bulletIndent=12,
+        fontName='Times-Roman',
+        fontSize=12,
+        leading=18
     ))
     styles.add(ParagraphStyle(
         name='LawSection',
-        fontSize=10,
+        fontSize=12,
         spaceAfter=4,
-        leftIndent=18,
-        textColor=colors.HexColor('#1e40af')
+        leftIndent=24,
+        fontName='Times-Italic',
+        textColor=colors.HexColor('#1e40af'),
+        leading=16
     ))
     styles.add(ParagraphStyle(
         name='GroundTitle',
-        fontSize=12,
-        spaceBefore=8,
-        spaceAfter=4,
-        fontName='Helvetica-Bold',
-        textColor=colors.HexColor('#1e3a8a')
+        fontSize=14,
+        spaceBefore=12,
+        spaceAfter=6,
+        fontName='Times-Bold',
+        textColor=colors.HexColor('#1e3a8a'),
+        keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='NumberedSectionHeader',
-        fontSize=13,
-        spaceBefore=12,
-        spaceAfter=6,
-        fontName='Helvetica-Bold',
-        textColor=colors.HexColor('#0f172a')
+        fontSize=16,
+        spaceBefore=18,
+        spaceAfter=8,
+        fontName='Times-Bold',
+        textColor=colors.HexColor('#0f172a'),
+        keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaLabel',
-        fontSize=9,
-        fontName='Helvetica-Bold',
+        fontSize=10,
+        fontName='Times-Bold',
         textColor=colors.HexColor('#64748b'),
         spaceAfter=2,
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaValue',
-        fontSize=11,
-        fontName='Helvetica-Bold',
+        fontSize=12,
+        fontName='Times-Bold',
         textColor=colors.HexColor('#0f172a'),
         spaceAfter=5,
     ))
     # DO_NOT_UNDO — Bold red disclaimer with white text in PDF
     styles.add(ParagraphStyle(
         name='CoverDisclaimer',
-        fontSize=10,
-        fontName='Helvetica-Bold',
+        fontSize=11,
+        fontName='Times-Bold',
         textColor=colors.HexColor('#dc2626'),
         alignment=TA_CENTER,
-        leading=14,
+        leading=16,
     ))
 
     def format_inline(text: str) -> str:
@@ -4995,8 +5007,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         try:
             col_width = doc.width / col_count
             para_rows = []
-            cell_style = ParagraphStyle(name='CellText', fontSize=10, leading=12, fontName='Helvetica', wordWrap='CJK')
-            header_style = ParagraphStyle(name='HeaderCellText', fontSize=10, leading=12, fontName='Helvetica-Bold', textColor=colors.white)
+            cell_style = ParagraphStyle(name='CellText', fontSize=11, leading=14, fontName='Times-Roman', wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=11, leading=14, fontName='Times-Bold', textColor=colors.white)
             for ri, row in enumerate(rows):
                 style = header_style if ri == 0 else cell_style
                 para_rows.append([Paragraph(c[:260], style) for c in row])
@@ -5053,8 +5065,10 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 table_lines = []
             if stripped.startswith("## "):
                 flush_paragraph()
+                # New major section starts on new page
+                story.append(PageBreak())
                 story.append(Paragraph(format_inline(stripped[3:].strip()), styles['SectionHeader']))
-                story.append(Spacer(1, 2*mm))
+                story.append(Spacer(1, 3*mm))
                 continue
             if re.match(r'^\d+\.\s+[A-Z][A-Z0-9\s/&()\-]{4,}$', stripped):
                 flush_paragraph()
@@ -5159,19 +5173,20 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
 
     def draw_page_footer(canvas_obj, pdf_doc):
         canvas_obj.saveState()
-        footer_top = 14 * mm
-        footer_mid = 10 * mm
+        footer_top = 16 * mm
+        footer_mid = 11 * mm
         footer_bottom = 6 * mm
         canvas_obj.setStrokeColor(colors.HexColor('#cbd5e1'))
         canvas_obj.setLineWidth(0.6)
         canvas_obj.line(pdf_doc.leftMargin, footer_top, A4[0] - pdf_doc.rightMargin, footer_top)
+        # Footer: 10pt Times-Italic — Document Name | Appellant | Date | Page X
         canvas_obj.setFillColor(colors.HexColor('#475569'))
-        canvas_obj.setFont('Helvetica', 8)
+        canvas_obj.setFont('Times-Italic', 10)
         canvas_obj.drawString(pdf_doc.leftMargin, footer_mid, footer_label)
         canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, footer_mid, f"Page {canvas_obj.getPageNumber()}")
         if footer_message:
             canvas_obj.setFillColor(colors.HexColor('#1e3a5f'))
-            canvas_obj.setFont('Helvetica-Bold', 8)
+            canvas_obj.setFont('Times-BoldItalic', 9)
             canvas_obj.drawCentredString(A4[0] / 2, footer_bottom, footer_message)
         canvas_obj.restoreState()
 
@@ -5198,8 +5213,9 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     
     case_table = Table(case_data_rows, colWidths=[40*mm, 120*mm])
     case_table.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('FONTNAME', (0, 0), (0, -1), 'Times-Bold'),
+        ('FONTNAME', (1, 0), (1, -1), 'Times-Roman'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
         ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#475569')),
         ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
         ('ALIGN', (1, 0), (1, -1), 'LEFT'),
@@ -5348,45 +5364,79 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Create DOCX document
     doc = DocxDocument()
     
+    # Set default font to Times New Roman 12pt
+    style = doc.styles['Normal']
+    style.font.name = 'Times New Roman'
+    style.font.size = Pt(12)
+    style.paragraph_format.space_after = Pt(6)
+    style.paragraph_format.line_spacing = 1.5
+    
     # Set up styles
     styles = doc.styles
     
     # Title style
     title_style = styles['Title']
-    title_style.font.size = Pt(18)
+    title_style.font.name = 'Times New Roman'
+    title_style.font.size = Pt(22)
     title_style.font.bold = True
-    title_style.font.color.rgb = RGBColor(30, 41, 59)
+    title_style.font.color.rgb = RGBColor(15, 23, 42)
     
-    # Heading 1 style
+    # Heading 1 style — 18pt bold section headers
     h1_style = styles['Heading 1']
-    h1_style.font.size = Pt(14)
+    h1_style.font.name = 'Times New Roman'
+    h1_style.font.size = Pt(18)
     h1_style.font.bold = True
-    h1_style.font.color.rgb = RGBColor(30, 41, 59)
+    h1_style.font.color.rgb = RGBColor(15, 23, 42)
+    h1_style.paragraph_format.space_before = Pt(24)
+    h1_style.paragraph_format.space_after = Pt(12)
+    h1_style.paragraph_format.page_break_before = True
     
-    # Heading 2 style
+    # Heading 2 style — 14pt bold sub-headers
     h2_style = styles['Heading 2']
-    h2_style.font.size = Pt(12)
+    h2_style.font.name = 'Times New Roman'
+    h2_style.font.size = Pt(14)
     h2_style.font.bold = True
     h2_style.font.color.rgb = RGBColor(30, 58, 138)
+    h2_style.paragraph_format.space_before = Pt(18)
+    h2_style.paragraph_format.space_after = Pt(8)
+    h2_style.paragraph_format.page_break_before = False
+    
+    # Heading 3 style — 12pt bold sub-sub-headers
+    h3_style = styles['Heading 3']
+    h3_style.font.name = 'Times New Roman'
+    h3_style.font.size = Pt(12)
+    h3_style.font.bold = True
+    h3_style.font.color.rgb = RGBColor(30, 41, 59)
+    h3_style.paragraph_format.space_before = Pt(12)
+    h3_style.paragraph_format.space_after = Pt(6)
+    
+    # List Bullet style
+    list_style = styles['List Bullet']
+    list_style.font.name = 'Times New Roman'
+    list_style.font.size = Pt(12)
+    list_style.paragraph_format.left_indent = Pt(24)
     
     # Header
     header_para = doc.add_paragraph()
     header_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
     header_run = header_para.add_run("APPEAL CASE MANAGER")
-    header_run.font.size = Pt(12)
+    header_run.font.name = 'Times New Roman'
+    header_run.font.size = Pt(14)
     header_run.font.bold = True
     header_run.font.color.rgb = RGBColor(15, 23, 42)
 
     sub_header = doc.add_paragraph()
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub_run = sub_header.add_run("Criminal Law Appeal Case Management")
-    sub_run.font.size = Pt(10)
+    sub_run.font.name = 'Times New Roman'
+    sub_run.font.size = Pt(11)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
 
     case_line = doc.add_paragraph()
     case_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
     case_run = case_line.add_run(f"Case: {case.get('title', 'Unknown')}")
-    case_run.font.size = Pt(10)
+    case_run.font.name = 'Times New Roman'
+    case_run.font.size = Pt(11)
     case_run.font.color.rgb = RGBColor(71, 85, 105)
 
     doc.add_paragraph()
@@ -5511,7 +5561,11 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         row = case_table.rows[i]
         row.cells[0].text = label
         row.cells[0].paragraphs[0].runs[0].font.bold = True
+        row.cells[0].paragraphs[0].runs[0].font.name = 'Times New Roman'
+        row.cells[0].paragraphs[0].runs[0].font.size = Pt(12)
         row.cells[1].text = str(value)
+        row.cells[1].paragraphs[0].runs[0].font.name = 'Times New Roman'
+        row.cells[1].paragraphs[0].runs[0].font.size = Pt(12)
     
     doc.add_paragraph()
     
@@ -5620,12 +5674,12 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 if r_idx == 0:
                     for run in cell.paragraphs[0].runs:
                         run.bold = True
-                        run.font.size = Pt(10)
-                        run.font.name = 'Arial'
+                        run.font.size = Pt(11)
+                        run.font.name = 'Times New Roman'
                 else:
                     for run in cell.paragraphs[0].runs:
-                        run.font.size = Pt(10)
-                        run.font.name = 'Arial'
+                        run.font.size = Pt(11)
+                        run.font.name = 'Times New Roman'
         doc.add_paragraph()
 
     def render_markdown_docx(text):
@@ -5694,6 +5748,21 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_body_run.font.size = Pt(10)
     disc_body_run.font.bold = True
     disc_body_run.font.color.rgb = RGBColor(220, 38, 38)
+    disc_body_run.font.name = 'Times New Roman'
+    
+    # Add footer to all sections — 10pt italics: Document Name | Appellant | Date | Page
+    for section in doc.sections:
+        footer = section.footer
+        footer.is_linked_to_previous = False
+        footer_para = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        footer_para.clear()
+        footer_text = f"{report_title}  |  {case.get('defendant_name', 'Unknown')}  |  {report.get('generated_at', '')[:10]}"
+        footer_run = footer_para.add_run(footer_text)
+        footer_run.font.name = 'Times New Roman'
+        footer_run.font.size = Pt(10)
+        footer_run.font.italic = True
+        footer_run.font.color.rgb = RGBColor(71, 85, 105)
     
     # Save to buffer
     buffer = BytesIO()
