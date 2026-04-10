@@ -99,7 +99,7 @@ async def register_user(request: RegisterRequest, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         path="/",
         max_age=7 * 24 * 60 * 60
     )
@@ -146,7 +146,7 @@ async def login_user(request: LoginRequest, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         path="/",
         max_age=7 * 24 * 60 * 60
     )
@@ -231,7 +231,7 @@ async def create_session(request: Request, response: Response):
         value=session_token,
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         path="/",
         max_age=7 * 24 * 60 * 60
     )

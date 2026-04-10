@@ -139,9 +139,22 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
         
         <div className="p-6">
-          {/* Google Sign-in Button — <a> tag for reliable iOS webview navigation */}
+          {/* Google Sign-in Button — dual navigation for iOS reliability */}
           <a
             href={googleLoginUrl}
+            target="_self"
+            rel="external noopener"
+            onClick={() => {
+              // Redundant JS navigation — fires alongside <a> tag.
+              // On iOS, the Dialog focus trap can swallow <a> navigation;
+              // this ensures at least one method succeeds.
+              window.location.assign(googleLoginUrl);
+            }}
+            onTouchEnd={(e) => {
+              // iOS touch fallback — fires before onClick on mobile Safari
+              e.preventDefault();
+              window.location.assign(googleLoginUrl);
+            }}
             className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-blue-700 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm no-underline"
             data-testid="google-signin-btn"
           >

@@ -90,18 +90,23 @@ const AuthCallback = () => {
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
     if (sessionId) {
-      for (let attempt = 1; attempt <= 5; attempt++) {
+      // Retry with increasing delays — Emergent auth may need time to propagate session data
+      const delays = [500, 1500, 3000, 5000, 8000];
+      for (let attempt = 0; attempt < delays.length; attempt++) {
         try {
+          if (attempt > 0) {
+            await new Promise(r => setTimeout(r, delays[attempt]));
+          }
           const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
           if (response.data?.session_token) {
             localStorage.setItem("session_token", response.data.session_token);
           }
+          // Clean the URL before navigating (remove session_id from hash/query)
+          window.history.replaceState({}, "", window.location.pathname);
           navigate("/dashboard", { replace: true, state: { user: response.data } });
           return;
         } catch (error) {
-          if (attempt < 5) {
-            await new Promise(r => setTimeout(r, 1500 * attempt));
-          }
+          console.warn(`Auth attempt ${attempt + 1}/${delays.length} failed:`, error?.response?.status);
         }
       }
     }
