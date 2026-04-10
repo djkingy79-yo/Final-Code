@@ -250,7 +250,8 @@ const ProtectedRoute = ({ children }) => {
 function AppRouter() {
   const location = useLocation();
 
-  // Check URL fragment for session_id synchronously during render
+  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+  // Check URL fragment for session_id synchronously during render — MUST run BEFORE ProtectedRoute
   if (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
     return <AuthCallback />;
   }
