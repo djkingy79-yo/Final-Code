@@ -76,6 +76,16 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Print/Screen: CSS @page A4, .legal-report h2 page-break-before: always, fixed print footer
 - Testing: 100% pass — 11 backend tests (PDF/DOCX exports for all report types), all frontend verified
 
+## Unified Legal Formatting — All Tabs (Apr 2026)
+- Extended Times New Roman 12pt legal formatting from Reports to ALL case detail tabs (Documents, Timeline, Grounds, Notes, Reports, Legal, Case Law, Progress, Collaboration)
+- Added `.legal-content` CSS class in `index.css` with comprehensive rules: h1 22pt, h2 18pt, h3 14pt, h4 12pt, body 12pt, lists indented 2.5rem, paragraph spacing, blockquote styling
+- Applied `legal-content` class to all 9 TabsContent wrappers in CaseDetail.jsx
+- Replaced ALL inline `fontFamily: 'Crimson Pro, serif'` references with `fontFamily: "'Times New Roman', Times, serif"` across 35+ component/page files
+- Updated `exportHtml.js` HTML template body/heading fonts from Crimson Pro to Times New Roman
+- Updated CSS variable `--font-heading` from Crimson Pro to Times New Roman
+- Buttons, badges, tab triggers, and form inputs correctly excluded from font override (remain Manrope sans-serif)
+- Testing: 100% pass — all 9 tabs verified (iteration 175)
+
 ## Full Report Regeneration & Verification (Apr 2026)
 - **NSW (case_6cc234434cbd)**: All 4 reports + quick brief verified. Quick Summary 15.9K, Full Detailed 113.7K, Extensive Log 147.7K, Barrister View 156K chars. All correct NSW legislation, zero violations.
 - **6-State Expansion (VIC, QLD, SA, TAS, NT, ACT)**: Created test cases, generated grounds + 24 reports (6×4 tiers). All 24 verified: zero wrong-state legislation, zero language violations, all Barrister Views have Attachment A + B.
