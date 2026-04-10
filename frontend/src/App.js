@@ -80,9 +80,11 @@ axios.interceptors.request.use((config) => {
 // DO_NOT_UNDO — This component handles the Google OAuth redirect.
 // It extracts session_id from the URL hash/query, exchanges it for a session_token,
 // stores it in localStorage, and navigates to /dashboard with user data.
+// Backend handles retry logic for Emergent API propagation delays.
 const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
+  const [authError, setAuthError] = useState(false);
 
   const attemptAuth = async () => {
     const hash = window.location.hash;
@@ -90,24 +92,23 @@ const AuthCallback = () => {
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
     if (sessionId) {
-      // Retry with increasing delays — Emergent auth may need time to propagate session data
-      const delays = [500, 1500, 3000, 5000, 8000];
-      for (let attempt = 0; attempt < delays.length; attempt++) {
-        try {
-          if (attempt > 0) {
-            await new Promise(r => setTimeout(r, delays[attempt]));
-          }
-          const response = await axios.post(`${API}/auth/session`, { session_id: sessionId });
-          if (response.data?.session_token) {
-            localStorage.setItem("session_token", response.data.session_token);
-          }
-          // Clean the URL before navigating (remove session_id from hash/query)
-          window.history.replaceState({}, "", window.location.pathname);
-          navigate("/dashboard", { replace: true, state: { user: response.data } });
-          return;
-        } catch (error) {
-          console.warn(`Auth attempt ${attempt + 1}/${delays.length} failed:`, error?.response?.status);
+      try {
+        // Single call — backend handles Emergent API retries internally.
+        // Timeout is generous to allow backend-side retry delays to complete.
+        const response = await axios.post(
+          `${API}/auth/session`,
+          { session_id: sessionId },
+          { timeout: 30000 }
+        );
+        if (response.data?.session_token) {
+          localStorage.setItem("session_token", response.data.session_token);
         }
+        // Clean the URL before navigating (remove session_id from hash/query)
+        window.history.replaceState({}, "", window.location.pathname);
+        navigate("/dashboard", { replace: true, state: { user: response.data } });
+        return;
+      } catch (error) {
+        console.error("Auth session exchange failed:", error?.response?.status, error?.response?.data?.detail);
       }
     }
 
@@ -117,16 +118,17 @@ const AuthCallback = () => {
       try {
         const me = await axios.get(`${API}/auth/me`);
         if (me.data) {
+          window.history.replaceState({}, "", window.location.pathname);
           navigate("/dashboard", { replace: true, state: { user: me.data } });
           return;
         }
       } catch (error) {
-        // 401 = definitive invalid token, but still preserve for user-initiated retry
+        // Existing token invalid — show error
       }
     }
 
-    // Google auth failed — redirect to landing page with login modal trigger
-    navigate("/?login=true", { replace: true });
+    // All methods failed — show error UI with retry option
+    setAuthError(true);
   };
 
   useEffect(() => {
@@ -135,11 +137,49 @@ const AuthCallback = () => {
     attemptAuth();
   }, [navigate]);
 
+  if (authError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center max-w-sm p-8">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In Failed</h2>
+          <p className="text-slate-600 mb-6 text-sm">The authentication session could not be verified. This can happen if the session expired. Please try again.</p>
+          <div className="flex flex-col gap-3">
+            <button
+              data-testid="auth-retry-google-btn"
+              onClick={() => {
+                // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+                const redirectUrl = window.location.origin + "/dashboard";
+                window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+              }}
+              className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Try Google Sign In Again
+            </button>
+            <button
+              data-testid="auth-go-home-btn"
+              onClick={() => {
+                localStorage.removeItem("session_token");
+                window.location.href = "/";
+              }}
+              className="w-full px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto"></div>
         <p className="mt-4 text-slate-700 font-medium">Authenticating...</p>
+        <p className="mt-2 text-slate-400 text-sm">This may take a few seconds</p>
       </div>
     </div>
   );

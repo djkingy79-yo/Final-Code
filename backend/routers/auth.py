@@ -162,31 +162,48 @@ async def login_user(request: LoginRequest, response: Response):
 @router.post("/session")
 async def create_session(request: Request, response: Response):
     """DO_NOT_UNDO — Exchange session_id for session_token (Google OAuth via Emergent)"""
+    # REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    import asyncio
     body = await request.json()
     session_id = body.get("session_id")
     
     if not session_id:
         raise HTTPException(status_code=400, detail="session_id required")
     
-    # DO_NOT_UNDO — Call Emergent Auth to get user data
+    # DO_NOT_UNDO — Call Emergent Auth to get user data with server-side retry.
+    # Session data may take a moment to propagate on the Emergent side after redirect.
     logger.info(f"Google auth: exchanging session_id (len={len(session_id)})")
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    
+    retry_delays = [0, 1.0, 2.0, 3.0, 5.0]
+    auth_response = None
+    last_error = None
+    
+    for attempt, delay in enumerate(retry_delays):
+        if delay > 0:
+            await asyncio.sleep(delay)
         try:
-            auth_response = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": session_id}
-            )
-            logger.info(f"Google auth: Emergent response status={auth_response.status_code}")
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                auth_response = await client.get(
+                    "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                    headers={"X-Session-ID": session_id}
+                )
+            logger.info(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent status={auth_response.status_code}")
+            if auth_response.status_code == 200:
+                break
         except httpx.ConnectTimeout:
-            logger.error("Google auth: Emergent auth server timed out")
-            raise HTTPException(status_code=504, detail="Authentication server timed out. Please try again.")
+            last_error = "timeout"
+            logger.warning(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent timed out")
         except httpx.RequestError as e:
-            logger.error(f"Google auth: Emergent auth server unreachable: {str(e)}")
-            raise HTTPException(status_code=502, detail=f"Authentication server unreachable: {str(e)}")
+            last_error = str(e)
+            logger.warning(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent error: {e}")
+    
+    if auth_response is None:
+        logger.error(f"Google auth: all {len(retry_delays)} attempts failed (last_error={last_error})")
+        raise HTTPException(status_code=504, detail="Authentication server unreachable. Please try again.")
     
     if auth_response.status_code != 200:
-        logger.warning(f"Google auth: session_id exchange failed with status {auth_response.status_code}: {auth_response.text[:200]}")
-        raise HTTPException(status_code=401, detail="Invalid session_id")
+        logger.warning(f"Google auth: session_id exchange failed after {len(retry_delays)} attempts. Last status={auth_response.status_code}: {auth_response.text[:200]}")
+        raise HTTPException(status_code=401, detail="Invalid or expired session. Please try logging in again.")
     
     user_data = auth_response.json()
     
