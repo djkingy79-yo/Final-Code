@@ -10,7 +10,7 @@ const auSpelling = (text) => {
   const PROTECTED = /(\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`)/g;
   const parts = text.split(PROTECTED);
 
-  const corrected = parts.map((part) => {
+  let corrected = parts.map((part) => {
     // If the part matches a protected pattern, return it untouched
     if (PROTECTED.test(part)) return part;
     // Reset lastIndex since we reuse the regex

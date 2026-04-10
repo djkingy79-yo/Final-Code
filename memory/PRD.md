@@ -32,6 +32,7 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 
 ## Completed — Current Session (10 Apr 2026)
 - **Google Auth Permanent Fix:** Added backend-side retry logic (5 attempts with delays [0,1,2,3,5s]) for Emergent Auth session-data API call. Frontend now makes single call with 30s timeout. Error UI with "Try Google Sign In Again" and "Back to Home" buttons replaces infinite spinner. 100% test pass rate (iteration_179).
+- **auSpelling Safari Crash Fix:** Changed `const corrected` to `let corrected` in `auSpelling.js`. The forensic language enforcement loop (added in previous session) reassigns this variable. Safari throws "Attempted to assign to readonly property" for const reassignment, crashing Timeline and GroundsOfMerit components.
 
 ## Pending Tasks
 ### P0
