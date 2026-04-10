@@ -206,6 +206,7 @@ async def create_session(request: Request, response: Response):
         raise HTTPException(status_code=401, detail="Invalid or expired session. Please try logging in again.")
     
     user_data = auth_response.json()
+    logger.info(f"Google auth: Emergent returned user email={user_data.get('email')}")
     
     # Create or update user
     user_id = f"user_{uuid.uuid4().hex[:12]}"
@@ -221,6 +222,7 @@ async def create_session(request: Request, response: Response):
                 "updated_at": datetime.now(timezone.utc).isoformat()
             }}
         )
+        logger.info(f"Google auth: updated existing user {user_id}")
     else:
         await db.users.insert_one({
             "user_id": user_id,
@@ -230,6 +232,7 @@ async def create_session(request: Request, response: Response):
             "auth_type": "google",
             "created_at": datetime.now(timezone.utc).isoformat()
         })
+        logger.info(f"Google auth: created new user {user_id}")
     
     # Create session
     session_token = uuid.uuid4().hex
@@ -255,6 +258,7 @@ async def create_session(request: Request, response: Response):
     
     user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
     user_doc["session_token"] = session_token
+    logger.info(f"Google auth: SUCCESS — returning session for {user_data.get('email')}, token={session_token[:8]}...")
     return user_doc
 
 @router.get("/me")

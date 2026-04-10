@@ -48,16 +48,12 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 
-// DO_NOT_UNDO — Use current origin for API calls when running on a custom domain.
-// REACT_APP_BACKEND_URL is baked at build time (preview URL). On production custom
-// domains, the app must call its own origin since Emergent proxies /api to the backend.
-const BACKEND_URL = (() => {
-  const envUrl = process.env.REACT_APP_BACKEND_URL;
-  if (envUrl && window.location.origin !== envUrl) {
-    return window.location.origin;
-  }
-  return envUrl || window.location.origin;
-})();
+// DO_NOT_UNDO — Always use REACT_APP_BACKEND_URL (preview URL) for API calls.
+// Custom domains (e.g. criminallawappealmanagement.com.au) proxy HTML only — their
+// Cloudflare proxy returns 520 for /api/* routes. Cross-origin CORS works via
+// Access-Control-Allow-Origin: * on the preview URL, and auth uses Bearer tokens
+// from localStorage (not cookies), so withCredentials is not needed.
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
 export const API = `${BACKEND_URL}/api`;
 
 // Configure axios with timeout

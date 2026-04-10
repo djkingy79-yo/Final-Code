@@ -9,7 +9,6 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 - **Report Language:** STRICT third-person educational tool. No "we", "us", "our", "you", "your". Must use forensic appellate language.
 - **Branding:** Forced light mode. High contrast. Blue/slate/navy only. Action buttons bright blue with white text
 - **Legal Accuracy:** Must cite current, state-specific, and federal Australian legislation
-- **Unified Document Styling:** Times New Roman, 12pt body, bold headings, indented bullets, legal footers
 - **Australian English:** ALL user-facing text must use Australian spelling. auSpelling utility applied to all AI-generated content.
 
 ## Architecture
@@ -18,26 +17,20 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 - Auth: Emergent-managed Google Auth + email/password
 - Payments: PayID (sole payment method)
 - Emails: Resend
+- **CRITICAL:** API calls always go to preview URL (REACT_APP_BACKEND_URL), NOT window.location.origin. Custom domain Cloudflare proxy returns 520 for /api/* routes.
 
 ## Completed — Previous Sessions
-- Fixed Grounds of Merit UI, applied auSpelling to all AI content
-- Fixed Google Sign In iOS compatibility (changed from button onClick to a href)
-- Full forensic codebase audit, dead code removal
-- Removed PayPal/Stripe; PayID is sole payment method
-- Full Forensic Legal Framework Audit (29 corrections across offence_framework.py)
-- Backend Refactoring: server.py 6,068 -> 426 lines (93% reduction)
-- Camera/Share Native Features verified
-- Forensic Australian English Audit (52 new AU spelling conversions)
-- Forensic Appellate Language Audit (90+ sentence-start replacement patterns)
+- All prior work (forensic audit, backend refactor, native features, etc.)
 
 ## Completed — Current Session (10 Apr 2026)
-- **Google Auth Permanent Fix:** Added backend-side retry logic (5 attempts with delays [0,1,2,3,5s]) for Emergent Auth session-data API call. Frontend now makes single call with 30s timeout. Error UI with "Try Google Sign In Again" and "Back to Home" buttons replaces infinite spinner. 100% test pass rate (iteration_179).
-- **auSpelling Safari Crash Fix:** Changed `const corrected` to `let corrected` in `auSpelling.js`. The forensic language enforcement loop (added in previous session) reassigns this variable. Safari throws "Attempted to assign to readonly property" for const reassignment, crashing Timeline and GroundsOfMerit components.
+- **auSpelling Safari Crash Fix:** Changed `const corrected` to `let corrected` — Safari throws "Attempted to assign to readonly property" for const reassignment
+- **Forensic Language Varied Prefixes:** 9 rotating prefixes ("It is arguable that", "It may be contended that", "There is a tenable argument that", etc.) in both frontend auSpelling.js and backend offence_helpers.py. Includes judge possessive patterns and broad catch-all regex.
+- **Generated Badge UI:** Bold white text on teal (#00B09E) background for report card badges
+- **Google Auth Backend Retry:** 5 server-side retries with delays [0,1,2,3,5s] for Emergent session-data API
+- **Google Auth Auto-Retry:** Frontend auto-redirects to fresh Google Sign In on failure (up to 3x), session_id validation (skip <32 chars), URL cleaned immediately
+- **CRITICAL FIX — Custom Domain API Routing:** Custom domain Cloudflare proxy returns 520 for /api/* routes. Changed BACKEND_URL from window.location.origin to always use REACT_APP_BACKEND_URL (preview URL). Cross-origin works via CORS Access-Control-Allow-Origin: *. Auth uses Bearer tokens from localStorage.
 
 ## Pending Tasks
-### P0
-- (none)
-
 ### P1
 - Verify "How It Works" page images (IMG_4323.png to IMG_4327.png)
 - Build Native Mobile App (Capacitor v7 configured)
