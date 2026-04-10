@@ -30,7 +30,7 @@ AUSTRALIAN_STATES = {
         "legal_aid_url": "https://www.lsc.sa.gov.au/",
         "court_forms_url": "https://www.courts.sa.gov.au/forms-and-fees/",
         "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/sa/SASCFC/",
-        "appeal_court": "South Australian Supreme Court Full Court (SASCFC)"
+        "appeal_court": "South Australian Court of Appeal (established 1 January 2021 under Supreme Court (Court of Appeal) Amendment Act 2019; formerly the Full Court of the Supreme Court (SASCFC))"
     },
     "wa": {
         "name": "Western Australia", "abbreviation": "WA",
@@ -1071,9 +1071,9 @@ APPEAL_FRAMEWORK = {
     },
     "sa": {
         "legislation": "Criminal Law Consolidation Act 1935 (SA) Part 11",
-        "court": "Court of Criminal Appeal (SA)",
+        "court": "South Australian Court of Appeal (established 1 January 2021 under Supreme Court (Court of Appeal) Amendment Act 2019)",
         "time_limits": {
-            "notice_of_appeal": "10 business days from sentence"
+            "notice_of_appeal": "21 days from conviction/sentence"
         },
         "forms": [
             {"form": "Notice of Appeal", "purpose": "Appeal against conviction/sentence"}
@@ -1382,8 +1382,8 @@ VIC_CRIMINAL_FRAMEWORK = {
             "description": "Governs bail applications. 'Show compelling reason' test for serious offences. 'Unacceptable risk' assessment. Amended by Bail Amendment Act 2025 (extends show compelling reason test for repeat indictable offences on bail).",
         },
         {
-            "act": "Criminal Appeal Act 1914 (Vic)",
-            "description": "Governs appeals from criminal trials to the Court of Appeal. Grounds include unsafe/unsatisfactory verdict, wrong decision on question of law, and miscarriage of justice.",
+            "act": "Criminal Procedure Act 2009 (Vic) — Part 6.3 (Appeals to Court of Appeal)",
+            "description": "Victorian criminal appeals are governed by Chapter 5 Part 6 of the Criminal Procedure Act 2009 (ss 274-280), not by a standalone Criminal Appeal Act. Grounds include unsafe/unsatisfactory verdict (s 276(1)(a)), wrong decision on question of law (s 276(1)(b)), and miscarriage of justice (s 276(1)(c)). The proviso applies (s 276(1) — appeal dismissed if no substantial miscarriage). Sentence appeals under s 280. Significantly reformed by Justice Legislation Amendment (Criminal Appeals) Act 2019 (de novo appeals abolished, replaced with leave-based appeals; full effect from 5 July 2025). Second or subsequent appeals available in limited circumstances.",
         },
         {
             "act": "Confiscation Act 1997 (Vic)",
@@ -1508,8 +1508,8 @@ QLD_CRIMINAL_FRAMEWORK = {
             "description": "Provides procedures for summary proceedings and committal hearings. Supplements the Criminal Procedure Act 2006.",
         },
         {
-            "act": "Criminal Appeal Act 1912 (Qld)",
-            "description": "Governs appeals against conviction and sentence to the Queensland Court of Appeal.",
+            "act": "Criminal Code Act 1899 (Qld) — Schedule 1, Chapter LXVIII (Appeals)",
+            "description": "Governs criminal appeals in Queensland. No standalone Criminal Appeal Act exists; appeal provisions are contained within the Criminal Code itself. Appeals against conviction (s 668D — within 1 month, on question of law or with leave), determination of appeals (s 668E — unsafe/unsatisfactory verdict, wrong decision on question of law, miscarriage of justice), second or subsequent appeals (double jeopardy exception and subsequent appeals introduced by Criminal Code and Other Legislation (Double Jeopardy Exception and Subsequent Appeals) Amendment Act 2023). The Court of Appeal may dismiss, order retrial, quash conviction, or enter acquittal.",
         },
         {
             "act": "Crime and Corruption Act 2001 (Qld)",
@@ -2475,8 +2475,58 @@ RECENT_LEGISLATION_UPDATES = {
             "appeal_relevance": "Sentencing appeals under increased penalty maxima; scope of new 'road rage' offence; expanded police search powers."
         },
     ],
-    "nt": [],
-    "act": [],
+    "nt": [
+        {
+            "act": "Criminal Code Act 1983 (NT) — Criminal Code Amendment Act 2024",
+            "amending_act": "Criminal Code Amendment Act 2024 (No. 18 of 2024) (NT)",
+            "commenced": "30 October 2024",
+            "summary": "Amendments to the Criminal Code Act 1983 (NT) including new provisions relating to child offences, modifications to criminal responsibility frameworks for young people, and consequential amendments to the Sentencing Act 1995 (NT) and Youth Justice Act 2005 (NT).",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Sentencing and conviction appeals involving youth offenders under amended provisions; interpretation of new child offence definitions."
+        },
+        {
+            "act": "Youth Justice Act 2005 (NT) — Youth Justice Legislation Amendment Act 2025",
+            "amending_act": "Youth Justice Legislation Amendment Act 2025 (NT)",
+            "commenced": "11 August 2025",
+            "summary": "Major youth justice overhaul: removal of 'detention as last resort' principle; narrowed police discretion to divert young people (police may charge based on reasonable suspicion if youth denies involvement); authorises use of restraints (handcuffs, spit hoods) and 'reasonable force' in detention centres; expanded list of offences allowing direct charging of under-18s without diversion. Represents a significant shift from rehabilitation toward custody and control.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Appeals involving youth offenders: removal of 'last resort' detention principle; proportionality challenges; human rights compatibility (noting Royal Commission into Detention of Children recommendations); use of force and restraint in detention."
+        },
+        {
+            "act": "Bail Act 1982 (NT) — Bail and Youth Justice Legislation Amendment Act 2025",
+            "amending_act": "Bail and Youth Justice Legislation Amendment Act 2025 (NT)",
+            "commenced": "30 April 2025",
+            "summary": "Creates presumption against bail for many youth offences. Courts must be satisfied to 'a high degree of confidence' that a child will not reoffend before granting release. No specific criteria established for this threshold. Poses particular challenges for children without stable housing or family support.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Bail refusal appeals for youth; interpretation of 'high degree of confidence' threshold; impact on children in unstable circumstances; human rights challenges."
+        },
+    ],
+    "act": [
+        {
+            "act": "Justice (Age of Criminal Responsibility) Legislation Amendment Act 2023 (ACT) — MACR Reforms",
+            "amending_act": "Justice (Age of Criminal Responsibility) Legislation Amendment Act 2023 (ACT)",
+            "commenced": "1 July 2025 (staged commencement)",
+            "summary": "Raises the minimum age of criminal responsibility (MACR) from 10 to 14 years. From 1 July 2025, children under 14 cannot be charged with a criminal offence. A rebuttable presumption of doli incapax applies to children aged 12-13 ONLY for four specified offences: murder, first-degree sexual assault, first-degree indecent act, and intentionally inflicting grievous bodily harm. The ACT is the first Australian jurisdiction to raise MACR to 14.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Appeals involving child offenders: age of criminal responsibility threshold; doli incapax presumption for 12-13 year olds; transitional provisions; interaction with Children and Young People Act 2008."
+        },
+        {
+            "act": "Crimes Legislation Amendment Act 2024 (ACT) — A2024-12",
+            "amending_act": "Crimes Legislation Amendment Act 2024 (ACT)",
+            "commenced": "April 2024",
+            "summary": "Updates crimes-related laws including: requirement to bring charged persons in custody before court within 48 or 96 hours (depending on offence severity); redefined 'serious offence' as offences punishable by over 1 year imprisonment involving violence or substantial harm; added references to National Anti-Corruption Commission.",
+            "relevant_categories": ["all"],
+            "appeal_relevance": "Procedural appeal grounds: whether custody time limits were observed; classification of offence as 'serious'; NACC referral processes."
+        },
+        {
+            "act": "Crimes (Disclosure) Legislation Amendment Act 2024 (ACT)",
+            "amending_act": "Crimes (Disclosure) Legislation Amendment Act 2024 (ACT)",
+            "commenced": "20 June 2024 (complainant standing provisions); 19 June 2025 (prosecution disclosure obligations)",
+            "summary": "Enhances complainant standing in sexual assault and family violence cases for disclosing protected confidences. Prosecution disclosure obligations commence 19 June 2025, requiring earlier and more comprehensive disclosure of evidence to defence.",
+            "relevant_categories": ["sexual_offences", "domestic_violence"],
+            "appeal_relevance": "Appeals based on prosecution non-disclosure; admissibility of protected confidences in sexual offence/family violence proceedings; complainant standing in disclosure applications."
+        },
+    ],
     "federal": [
         {
             "act": "Criminal Code Amendment (Hate Crimes) Act 2025 (Cth)",

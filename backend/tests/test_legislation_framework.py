@@ -83,7 +83,33 @@ class TestRecentLegislationData:
 
     def test_total_entries_minimum(self):
         total = sum(len(v) for v in RECENT_LEGISLATION_UPDATES.values())
-        assert total >= 22, f"Expected at least 22 recent legislation entries, got {total}"
+        assert total >= 28, f"Expected at least 28 recent legislation entries, got {total}"
+
+    def test_nt_has_entries(self):
+        assert len(RECENT_LEGISLATION_UPDATES["nt"]) >= 3, "NT should have at least 3 recent legislation entries"
+
+    def test_act_has_entries(self):
+        assert len(RECENT_LEGISLATION_UPDATES["act"]) >= 3, "ACT should have at least 3 recent legislation entries"
+
+    def test_nt_youth_justice_amendment_present(self):
+        nt = RECENT_LEGISLATION_UPDATES["nt"]
+        acts = [e["act"] for e in nt]
+        assert any("Youth Justice" in a for a in acts), "NT Youth Justice Legislation Amendment Act missing"
+
+    def test_nt_bail_amendment_present(self):
+        nt = RECENT_LEGISLATION_UPDATES["nt"]
+        acts = [e["act"] for e in nt]
+        assert any("Bail" in a for a in acts), "NT Bail and Youth Justice Amendment missing"
+
+    def test_act_macr_reform_present(self):
+        act_updates = RECENT_LEGISLATION_UPDATES["act"]
+        acts = [e["act"] for e in act_updates]
+        assert any("Age of Criminal Responsibility" in a for a in acts), "ACT MACR reform missing"
+
+    def test_act_disclosure_present(self):
+        act_updates = RECENT_LEGISLATION_UPDATES["act"]
+        acts = [e["act"] for e in act_updates]
+        assert any("Disclosure" in a for a in acts), "ACT Disclosure Amendment missing"
 
 
 class TestOffenceContextInjection:
@@ -513,6 +539,80 @@ class TestNoNSWFallbacks:
         ctx = get_offence_context(case)
         # Should NOT contain homicide-specific keys or elements
         assert 'Category: Homicide' not in ctx
+
+
+class TestLegislativeAuditFixes:
+    """Verify corrections from the deep legislative audit."""
+
+    def test_qld_no_criminal_appeal_act_1912(self):
+        """QLD does NOT have a Criminal Appeal Act 1912 - that's NSW only."""
+        specs = [s["act"] for s in QLD_CRIMINAL_FRAMEWORK["specialised_legislation"]]
+        assert not any("Criminal Appeal Act 1912" in s for s in specs), \
+            "QLD incorrectly references Criminal Appeal Act 1912 (NSW-only legislation)"
+
+    def test_qld_has_correct_appeal_provisions(self):
+        """QLD appeals are via Criminal Code Act 1899 Schedule 1 Chapter LXVIII."""
+        specs = [s["act"] for s in QLD_CRIMINAL_FRAMEWORK["specialised_legislation"]]
+        assert any("Chapter LXVIII" in s or "Appeals" in s for s in specs), \
+            "QLD missing correct Criminal Code appeals reference"
+
+    def test_vic_no_criminal_appeal_act_1914(self):
+        """VIC Criminal Appeal Act 1914 has been superseded by Criminal Procedure Act 2009."""
+        specs = [s["act"] for s in VIC_CRIMINAL_FRAMEWORK["specialised_legislation"]]
+        assert not any(s == "Criminal Appeal Act 1914 (Vic)" for s in specs), \
+            "VIC still references standalone Criminal Appeal Act 1914 (superseded)"
+
+    def test_vic_has_criminal_procedure_appeal_entry(self):
+        """VIC appeals are now governed by Criminal Procedure Act 2009 Part 6.3."""
+        specs = [s["act"] for s in VIC_CRIMINAL_FRAMEWORK["specialised_legislation"]]
+        assert any("Criminal Procedure Act 2009" in s and "Appeal" in s for s in specs), \
+            "VIC missing Criminal Procedure Act 2009 appeals entry in specialised legislation"
+
+    def test_sa_appeal_court_updated(self):
+        """SA Court of Appeal was established 1 January 2021."""
+        sa_info = AUSTRALIAN_STATES["sa"]
+        assert "Court of Appeal" in sa_info["appeal_court"], \
+            "SA appeal court should reference Court of Appeal (est. 2021)"
+
+    def test_sa_appeal_time_limit_21_days(self):
+        """SA appeal time limit is 21 days."""
+        sa_appeal = APPEAL_FRAMEWORK["sa"]
+        assert "21 days" in sa_appeal["time_limits"]["notice_of_appeal"]
+
+    def test_nt_recent_updates_not_empty(self):
+        """NT should now have recent legislation entries."""
+        assert len(RECENT_LEGISLATION_UPDATES["nt"]) >= 3
+
+    def test_act_recent_updates_not_empty(self):
+        """ACT should now have recent legislation entries."""
+        assert len(RECENT_LEGISLATION_UPDATES["act"]) >= 3
+
+    def test_nt_context_includes_recent_leg(self):
+        """NT cases should inject recent legislation into AI context."""
+        case = {"offence_category": "assault", "state": "nt"}
+        context = get_offence_context(case)
+        assert "RECENT LEGISLATION UPDATES" in context
+        assert "Youth Justice" in context
+
+    def test_act_context_includes_recent_leg(self):
+        """ACT cases should inject recent legislation into AI context."""
+        case = {"offence_category": "sexual_offences", "state": "act"}
+        context = get_offence_context(case)
+        assert "RECENT LEGISLATION UPDATES" in context
+        assert "Disclosure" in context or "Age of Criminal Responsibility" in context
+
+    def test_no_fabricated_acts_in_any_framework(self):
+        """Verify none of the frameworks contain known incorrect Act names."""
+        all_specs = []
+        for fw in [NSW_CRIMINAL_FRAMEWORK, VIC_CRIMINAL_FRAMEWORK, QLD_CRIMINAL_FRAMEWORK,
+                    SA_CRIMINAL_FRAMEWORK, WA_CRIMINAL_FRAMEWORK, TAS_CRIMINAL_FRAMEWORK,
+                    NT_CRIMINAL_FRAMEWORK, ACT_CRIMINAL_FRAMEWORK]:
+            for spec in fw.get("specialised_legislation", []):
+                all_specs.append(spec["act"])
+        # Known incorrect references that should not appear
+        assert not any("Criminal Appeal Act 1912 (Qld)" in s for s in all_specs), "QLD has fabricated Criminal Appeal Act 1912"
+        assert not any(s == "Criminal Appeal Act 1914 (Vic)" for s in all_specs), "VIC has superseded Criminal Appeal Act 1914"
+
 
     def test_wa_has_wa_legislation(self):
         wa_case = {'state': 'wa', 'offence_category': 'domestic_violence'}
