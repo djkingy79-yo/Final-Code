@@ -63,16 +63,14 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P2: Backend refactoring — decompose server.py (~6000 lines)
 
 ## Full Report Regeneration & Verification (Apr 2026)
-- **All 4 reports + quick brief regenerated and verified on case_6cc234434cbd (NSW homicide)**:
-  - Quick Summary: 15,885 chars, 7 correct Acts, 0 violations
-  - Full Detailed: 113,660 chars, 8 correct Acts, 0 unqualified assertions
-  - Extensive Log: 147,664 chars, 10 correct Acts, 0 unqualified assertions
-  - Barrister View: 156,005 chars, 12 correct Acts, Attachment A + B present, 0 unqualified assertions
-  - Quick Brief PDF: HTTP 200
-- **Progress Analysis section updated**: Now injects offence_context, anti-hallucination instructions, forensic language filter. Verified: 0 language violations, 0 wrong-state refs
-- **Timeline Analysis section updated**: Removed hardcoded "NSW", now uses dynamic state-specific context
-- **Legal Framework API updated**: `/api/offence-framework` now returns `recent_legislation_updates` for all 9 jurisdictions
-- **Grounds refreshed**: 10/10 grounds updated via `/refresh-legal-refs`, all show correct substantive legislation
+- **NSW (case_6cc234434cbd)**: All 4 reports + quick brief verified. Quick Summary 15.9K, Full Detailed 113.7K, Extensive Log 147.7K, Barrister View 156K chars. All correct NSW legislation, zero violations.
+- **6-State Expansion (VIC, QLD, SA, TAS, NT, ACT)**: Created test cases, generated grounds + 24 reports (6×4 tiers). All 24 verified: zero wrong-state legislation, zero language violations, all Barrister Views have Attachment A + B.
+  - VIC: assault, Criminal Procedure Act 2009. QLD: drugs, Criminal Code 1899. SA: fraud, CLCA 1935. TAS: sexual, Criminal Code 1924. NT: DV, Criminal Code 1983. ACT: robbery, Supreme Court Act 1933.
+- **LLM Error Fix**: Replaced 5 direct LlmChat calls (documents.py, contradictions.py) with centralized retry/fallback service — root cause of LLM 502/timeout failures.
+- **Grounds Investigate Updated**: Now injects offence context + anti-hallucination + forensic language filter (was missing all 3).
+- **Progress Analysis Updated**: Now injects offence_context, anti-hallucination, forensic language filter.
+- **Timeline Analysis Fixed**: Removed hardcoded "NSW", now uses dynamic state.
+- **Legal Framework API Updated**: `/api/offence-framework` now returns `recent_legislation_updates` for all 9 jurisdictions.
 
 ## Production Readiness (Apr 2026)
 - Full review passed: 31/31 backend tests, all auth flows (login, register, logout, session), CRUD cases, legal framework, health checks, no MongoDB _id leaks

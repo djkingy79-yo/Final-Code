@@ -13,6 +13,7 @@ import logging
 
 from config import db
 from auth_utils import get_current_user
+from services.offence_helpers import get_offence_context, enforce_forensic_language
 from models import (
     GroundOfMerit,
     GroundOfMeritCreate,
@@ -717,8 +718,13 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
         # Generate deep analysis text for this ground
         deep_analysis_text = ""
         try:
+            offence_context = get_offence_context(case)
+            state_upper = (case.get('state') or 'unknown').upper()
             # DO NOT UNDO — Appellate-structured deep analysis prompt with FORENSIC language
-            analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({case.get('state', 'NSW').upper()}).
+            analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({state_upper}).
+
+JURISDICTION: {state_upper}
+{offence_context}
 
 Ground: {ground.get('title', '')}
 Type: {ground.get('ground_type', '')}
@@ -738,6 +744,12 @@ Similar cases:
 {json.dumps(verification_dict.get('similar_cases', []), indent=2, default=str)[:1000]}
 
 Legitimacy assessment: {json.dumps(verification_dict.get('legitimacy_scores', {}), default=str)}
+
+LEGISLATION ACCURACY:
+- Do NOT invent or fabricate any legislation, Act, section, or case authority.
+- Only cite Acts that are current and in force for {state_upper}.
+- Distinguish between the appellate pathway legislation and the substantive criminal legislation.
+- If uncertain about a specific section number, omit it rather than guess.
 
 Write a detailed appellate analysis of this ground (600-900 words) using the following MANDATORY structure:
 
@@ -773,11 +785,13 @@ RULES:
 - Do NOT use first or second person."""
 
             deep_analysis_text = await call_llm_with_fallback(
-                system_prompt="You are a senior Australian criminal appellate researcher conducting forensic issue analysis for counsel preparation. Write in formal third person. Use the mandatory structure provided. Australian English only. Use forensic appellate language throughout — frame conclusions as arguable and contended, not as declarations of fact. The Court makes findings; the brief identifies where findings are open.",
+                system_prompt=f"You are a senior Australian criminal appellate researcher conducting forensic issue analysis for counsel preparation in {state_upper}. Write in formal third person. Use the mandatory structure provided. Australian English only. Use forensic appellate language throughout — frame conclusions as arguable and contended, not as declarations of fact. The Court makes findings; the brief identifies where findings are open.",
                 user_prompt=analysis_prompt,
                 session_id=f"deep_analysis_{ground_id}",
                 task_type="ground_deep_analysis",
             )
+            if deep_analysis_text:
+                deep_analysis_text = enforce_forensic_language(deep_analysis_text)
         except Exception as e:
             logger.warning(f"Deep analysis generation failed for ground {ground_id}: {e}")
 

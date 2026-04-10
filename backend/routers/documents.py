@@ -20,6 +20,7 @@ from config import db
 from auth_utils import get_current_user
 from models import Document, DocumentSearchRequest
 from services.document_helpers import extract_text_with_ocr
+from services.llm_service import call_llm_with_fallback, call_llm_for_json
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,6 @@ router = APIRouter(prefix="/api", tags=["documents"])
 async def _background_auto_detect_metadata(case_id: str, user_id: str, content_text: str, filename: str):
     """Background task: auto-detect case metadata from uploaded document via LLM"""
     try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
         case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
         if not case:
             return
@@ -60,16 +60,11 @@ Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unkno
 
 DOCUMENT ({filename}):
 {content_text[:20000]}"""
-        detect_chat = LlmChat(
-            api_key=os.environ.get("EMERGENT_LLM_KEY"),
-            session_id=f"upload_detect_{case_id}",
-            system_message="Extract factual metadata from Australian criminal case documents. Return only valid JSON."
-        ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
-        raw = await asyncio.wait_for(detect_chat.send_message(UserMessage(text=detect_prompt)), timeout=60)
-        raw = (raw or "").strip()
-        if raw.startswith("```"):
-            raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-        meta = json.loads(raw)
+        system_msg = "Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+        raw = await call_llm_for_json(system_msg, detect_prompt, f"upload_detect_{case_id}", max_tokens=2000, timeout_seconds=60)
+        meta = raw if isinstance(raw, dict) else {}
+        if not meta:
+            return
         valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
         valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
         update_fields = {}
@@ -99,7 +94,6 @@ async def _background_auto_generate(case_id: str, user_id: str):
     """Background task: auto-generate/UPDATE timeline events + case summary from ALL documents.
     Runs every time a new document is uploaded. Dedup prevents duplicate events."""
     try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
         case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
         if not case:
             return
@@ -113,12 +107,13 @@ async def _background_auto_generate(case_id: str, user_id: str):
 
         # Always regenerate summary to include ALL documents
         try:
-            summary_chat = LlmChat(
-                api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                session_id=f"summary_{case_id}_{len(docs_with_text)}",
-                system_message="You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum."
-            ).with_model("openai", "gpt-4o").with_params(max_tokens=500)
-            summary = await asyncio.wait_for(summary_chat.send_message(UserMessage(text=f"Summarise this case based on all available documents:\n{doc_context[:15000]}")), timeout=30)
+            summary = await call_llm_with_fallback(
+                "You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum.",
+                f"Summarise this case based on all available documents:\n{doc_context[:15000]}",
+                f"summary_{case_id}_{len(docs_with_text)}",
+                max_tokens=500,
+                timeout_seconds=30,
+            )
             if summary:
                 await db.cases.update_one({"case_id": case_id}, {"$set": {"summary": summary.strip(), "updated_at": datetime.now(timezone.utc).isoformat()}})
                 logger.info(f"Auto-generated/updated summary for {case_id} ({len(docs_with_text)} docs)")
@@ -141,16 +136,14 @@ CRITICAL RULES:
 CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
 DOCUMENTS:
 {doc_context[:25000]}"""
-            tl_chat = LlmChat(
-                api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                session_id=f"tl_{case_id}_{len(docs_with_text)}",
-                system_message="Extract timeline events from Australian criminal case documents. Return only valid JSON array."
-            ).with_model("openai", "gpt-4o").with_params(max_tokens=4000)
-            raw = await asyncio.wait_for(tl_chat.send_message(UserMessage(text=tl_prompt)), timeout=90)
-            raw = (raw or "").strip()
-            if raw.startswith("```"):
-                raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-            events = json.loads(raw)
+            tl_result = await call_llm_for_json(
+                "Extract timeline events from Australian criminal case documents. Return only valid JSON array.",
+                tl_prompt,
+                f"tl_{case_id}_{len(docs_with_text)}",
+                max_tokens=4000,
+                timeout_seconds=90,
+            )
+            events = tl_result if isinstance(tl_result, list) else []
             if isinstance(events, list):
                 created = 0
                 # DO_NOT_UNDO — Timeline fuzzy dedup. Build fingerprints of existing events.
@@ -515,7 +508,6 @@ async def extract_all_documents_text(case_id: str, request: Request):
     detected_metadata = {}
     if successful > 0:
         try:
-            from emergentintegrations.llm.chat import LlmChat, UserMessage
             combined_text = ""
             for doc in documents:
                 ct = doc.get("content_text") or ""
@@ -542,16 +534,10 @@ Rules: offence_category MUST be from the provided list. Read ACTUAL content. If 
 
 DOCUMENTS:
 {combined_text[:30000]}"""
-                chat = LlmChat(
-                    api_key=os.environ.get("EMERGENT_LLM_KEY"),
-                    session_id=f"detect_{case_id}",
-                    system_message="You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Return only valid JSON."
-                ).with_model("openai", "gpt-4o").with_params(max_tokens=2000)
-                raw = await asyncio.wait_for(chat.send_message(UserMessage(text=detect_prompt)), timeout=60)
-                raw = (raw or "").strip()
-                if raw.startswith("```"):
-                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
-                meta = json.loads(raw)
+                system_msg = "You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+                meta = await call_llm_for_json(system_msg, detect_prompt, f"detect_{case_id}", max_tokens=2000, timeout_seconds=60)
+                if not isinstance(meta, dict):
+                    meta = {}
                 update_fields = {}
                 valid_categories = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
                 valid_states = ["nsw","vic","qld","sa","wa","tas","nt","act"]

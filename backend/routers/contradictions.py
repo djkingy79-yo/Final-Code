@@ -8,6 +8,7 @@ from typing import List, Optional
 from datetime import datetime, timezone
 from pydantic import BaseModel
 import os
+import json
 
 from config import db, logger
 from auth_utils import get_current_user, verify_case_ownership
@@ -103,8 +104,7 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
         })
     
     # Perform AI analysis
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-    import json
+    from services.llm_service import call_llm_for_json
     import uuid
     
     focus_instruction = ""
@@ -178,26 +178,15 @@ If no contradictions are found, return an empty contradictions array with an app
 Important: Return ONLY valid JSON, no additional text."""
 
     try:
-        llm_key = os.environ.get("EMERGENT_LLM_KEY", "")
-        
-        chat = LlmChat(
-            api_key=llm_key,
-            session_id=f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
-            system_message="You are a legal contradiction analyst specialising in criminal appeals in Australia."
-        ).with_model("openai", "gpt-4o")
-        
-        response = await chat.send_message(UserMessage(text=prompt))
-        response_text = str(response).strip()
-        
-        # Clean up response if needed
-        if response_text.startswith("```json"):
-            response_text = response_text[7:]
-        if response_text.startswith("```"):
-            response_text = response_text[3:]
-        if response_text.endswith("```"):
-            response_text = response_text[:-3]
-        
-        analysis = json.loads(response_text.strip())
+        analysis = await call_llm_for_json(
+            "You are a legal contradiction analyst specialising in criminal appeals in Australia.",
+            prompt,
+            f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
+            max_tokens=8192,
+            timeout_seconds=120,
+        )
+        if not isinstance(analysis, dict):
+            analysis = {"contradictions": [], "summary": {"total_contradictions": 0, "critical_count": 0, "significant_count": 0, "minor_count": 0, "key_finding": "Analysis could not be parsed.", "overall_assessment": ""}, "recommended_actions": []}
         
         # Add IDs and timestamps to contradictions
         for i, contradiction in enumerate(analysis.get("contradictions", [])):
