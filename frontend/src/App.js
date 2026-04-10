@@ -91,6 +91,11 @@ const AuthCallback = () => {
     const query = window.location.search;
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
+    // Clean the URL immediately after extracting session_id — prevents stale IDs on refresh
+    if (hash.includes("session_id") || query.includes("session_id")) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+
     if (sessionId) {
       try {
         // Single call — backend handles Emergent API retries internally.
@@ -103,12 +108,19 @@ const AuthCallback = () => {
         if (response.data?.session_token) {
           localStorage.setItem("session_token", response.data.session_token);
         }
-        // Clean the URL before navigating (remove session_id from hash/query)
-        window.history.replaceState({}, "", window.location.pathname);
+        sessionStorage.removeItem("auth_auto_retry");
         navigate("/dashboard", { replace: true, state: { user: response.data } });
         return;
       } catch (error) {
         console.error("Auth session exchange failed:", error?.response?.status, error?.response?.data?.detail);
+        // Auto-retry ONCE with a fresh Google redirect (handles stale/expired session_ids)
+        if (!sessionStorage.getItem("auth_auto_retry")) {
+          sessionStorage.setItem("auth_auto_retry", "1");
+          const redirectUrl = window.location.origin + "/dashboard";
+          window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+          return;
+        }
+        sessionStorage.removeItem("auth_auto_retry");
       }
     }
 
@@ -118,16 +130,16 @@ const AuthCallback = () => {
       try {
         const me = await axios.get(`${API}/auth/me`);
         if (me.data) {
-          window.history.replaceState({}, "", window.location.pathname);
           navigate("/dashboard", { replace: true, state: { user: me.data } });
           return;
         }
       } catch (error) {
-        // Existing token invalid — show error
+        // Existing token invalid
       }
     }
 
     // All methods failed — show error UI with retry option
+    sessionStorage.removeItem("auth_auto_retry");
     setAuthError(true);
   };
 
