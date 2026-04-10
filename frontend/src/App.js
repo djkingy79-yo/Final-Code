@@ -96,10 +96,28 @@ const AuthCallback = () => {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    if (sessionId) {
+    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    const freshGoogleRedirect = () => {
+      const redirectUrl = window.location.origin + "/dashboard";
+      window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    };
+
+    // Validate session_id — Emergent session IDs are UUIDs (36 chars with dashes, or 32+ chars)
+    // If it's too short, it's stale/invalid — skip straight to fresh redirect
+    if (sessionId && sessionId.length < 32) {
+      console.warn("Invalid session_id length:", sessionId.length, "— redirecting to fresh Google Sign In");
+      const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
+      if (retryCount < 3) {
+        sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
+        freshGoogleRedirect();
+        return;
+      }
+      // Exceeded max retries — fall through to error/fallback
+    }
+
+    if (sessionId && sessionId.length >= 32) {
       try {
         // Single call — backend handles Emergent API retries internally.
-        // Timeout is generous to allow backend-side retry delays to complete.
         const response = await axios.post(
           `${API}/auth/session`,
           { session_id: sessionId },
@@ -108,19 +126,19 @@ const AuthCallback = () => {
         if (response.data?.session_token) {
           localStorage.setItem("session_token", response.data.session_token);
         }
-        sessionStorage.removeItem("auth_auto_retry");
+        sessionStorage.removeItem("auth_retry_count");
         navigate("/dashboard", { replace: true, state: { user: response.data } });
         return;
       } catch (error) {
-        console.error("Auth session exchange failed:", error?.response?.status, error?.response?.data?.detail);
-        // Auto-retry ONCE with a fresh Google redirect (handles stale/expired session_ids)
-        if (!sessionStorage.getItem("auth_auto_retry")) {
-          sessionStorage.setItem("auth_auto_retry", "1");
-          const redirectUrl = window.location.origin + "/dashboard";
-          window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+        console.error("Auth session exchange failed:", error?.response?.status);
+        // Auto-retry with fresh Google redirect (up to 3 attempts)
+        const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
+        if (retryCount < 3) {
+          sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
+          freshGoogleRedirect();
           return;
         }
-        sessionStorage.removeItem("auth_auto_retry");
+        sessionStorage.removeItem("auth_retry_count");
       }
     }
 
@@ -138,8 +156,16 @@ const AuthCallback = () => {
       }
     }
 
-    // All methods failed — show error UI with retry option
-    sessionStorage.removeItem("auth_auto_retry");
+    // No session_id and no valid token — redirect to fresh Google sign in
+    const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
+    if (retryCount < 3) {
+      sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
+      freshGoogleRedirect();
+      return;
+    }
+
+    // All methods failed after max retries — show error UI
+    sessionStorage.removeItem("auth_retry_count");
     setAuthError(true);
   };
 
