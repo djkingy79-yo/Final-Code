@@ -31,14 +31,26 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 ## Completed — Current Session (10 Apr 2026)
 - **Full Forensic Legal Framework Audit (`offence_framework.py`):**
   - Cross-referenced all legislation codes against real Australian law via web search
-  - **20 corrections applied** (zero hallucinations now):
-    - NSW: s.23 (was "Self-defence" → now "Extreme provocation"), s.23A (was "Excessive self-defence" → now "Substantial impairment by mental health impairment"), s.24 (was "Provocation" → now "Punishment for manslaughter"), s.25 REMOVED (repealed), s.19B (was "Punishment for manslaughter" → now "Mandatory life sentence for murder of police officers")
-    - VIC: s.3A (was "Manslaughter defined" → now "Constructive murder"), s.5 (was "Abolition of year and a day rule" → now "Punishment for manslaughter"), s.31 in Assault (was s.31 → now s.16 "Intentionally causing serious injury")
-    - QLD: s.300 (was "Definition of murder" → now "Unlawful homicide"), s.302 (was "Definition of manslaughter" → now "Definition of murder")
-    - WA: s.280 (was "Unlawful homicide" → now "Manslaughter"), s.281 (was "Killing on provocation" → now "Unlawful assault causing death"), s.283/s.259 REMOVED (incorrect)
-    - TAS: s.156 (was "Murder defined" → now "Culpable homicide"), s.157 (was "Punishment for murder" → now "Murder")
-    - ACT: s.54-56 (corrected from "1st/2nd/3rd degree" to actual ACT offence titles), s.55A corrected
-    - SA: Updated RECENT_LEGISLATION_UPDATES — Coercive Control Act passed Sept 2025 (not still "debated"), commencing ~2027
+  - **20 corrections applied** to OFFENCE_CATEGORIES (zero hallucinations now):
+    - NSW: s.23, s.23A, s.24, s.25 (removed—repealed), s.19B corrected
+    - VIC: s.3A, s.5, s.31→s.16 in Assault corrected
+    - QLD: s.300, s.302 corrected
+    - WA: s.280, s.281 corrected; s.283/s.259 removed (wrong offences)
+    - TAS: s.156, s.157 corrected
+    - ACT: s.54, s.55, s.56, s.55A corrected
+    - SA: RECENT_LEGISLATION_UPDATES coercive control entry updated
+  - **7 corrections applied** to APPEAL_FRAMEWORK:
+    - VIC forms: 8-1A/8-1B → Form 6-2A/6-2C
+    - QLD forms: Form 21/22 → Form 26/28
+    - WA time limits: clarified 28 days (summary) / 21 days (indictable)
+    - TAS time: 21 days → 14 days
+    - NT legislation: Part IIAA → Local Court (Criminal Procedure) Act 1928
+    - ACT legislation: Part 7 → Part 2A
+    - Federal court: removed "Full Federal Court" reference; clarified state court pathway
+  - **2 corrections applied** to STATE CRIMINAL FRAMEWORKS:
+    - QLD: "manslaughter s 303" → "manslaughter s 309"
+    - VIC: "s 34AA-34AB" → "s 34AD-34AE" for non-fatal strangulation
+  - Total: **29 corrections** across the entire legal framework
   - All verified via web search against AustLII, state legislation sites, and legal practitioner resources
   - Python lint: zero errors. Backend validated and running
 

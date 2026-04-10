@@ -1051,8 +1051,8 @@ APPEAL_FRAMEWORK = {
             "application_for_leave": "28 days from sentence"
         },
         "forms": [
-            {"form": "Form 8-1A", "purpose": "Notice of Appeal"},
-            {"form": "Form 8-1B", "purpose": "Application for Leave to Appeal"}
+            {"form": "Form 6-2A", "purpose": "Notice of Application for Leave to Appeal Against Conviction"},
+            {"form": "Form 6-2C", "purpose": "Notice of Application for Leave to Appeal Against Sentence"}
         ]
     },
     "qld": {
@@ -1062,8 +1062,8 @@ APPEAL_FRAMEWORK = {
             "notice_of_appeal": "1 month from conviction/sentence"
         },
         "forms": [
-            {"form": "Form 21", "purpose": "Notice of Appeal against Conviction"},
-            {"form": "Form 22", "purpose": "Notice of Appeal against Sentence"}
+            {"form": "Form 26", "purpose": "Notice of Appeal or Application for Leave to Appeal (Conviction or Sentence)"},
+            {"form": "Form 28", "purpose": "Notice of Application for Extension of Time to Appeal"}
         ]
     },
     "sa": {
@@ -1080,7 +1080,8 @@ APPEAL_FRAMEWORK = {
         "legislation": "Criminal Appeals Act 2004 (WA)",
         "court": "Court of Appeal (Supreme Court of Western Australia)",
         "time_limits": {
-            "notice_of_appeal": "21 days from conviction/sentence"
+            "notice_of_appeal_summary": "28 days from conviction/sentence (appeals from Magistrates Court)",
+            "notice_of_appeal_indictable": "21 days from conviction/sentence (appeals from District/Supreme Court to Court of Appeal)"
         },
         "forms": [
             {"form": "Form 1", "purpose": "Notice of Appeal"}
@@ -1090,24 +1091,25 @@ APPEAL_FRAMEWORK = {
         "legislation": "Criminal Code Act 1924 (Tas) Part XA",
         "court": "Court of Criminal Appeal (Tasmania)",
         "time_limits": {
-            "notice_of_appeal": "21 days from conviction/sentence"
+            "notice_of_appeal": "14 days from conviction/sentence"
         },
         "forms": [
             {"form": "Notice of Appeal", "purpose": "Appeal against conviction/sentence"}
         ]
     },
     "nt": {
-        "legislation": "Criminal Code Act 1983 (NT) Part IIAA",
+        "legislation": "Local Court (Criminal Procedure) Act 1928 (NT) Part VI; Supreme Court Rules (NT) for Court of Criminal Appeal",
         "court": "Court of Criminal Appeal (NT)",
         "time_limits": {
             "notice_of_appeal": "28 days from conviction/sentence"
         },
         "forms": [
-            {"form": "Notice of Appeal", "purpose": "Appeal against conviction/sentence"}
+            {"form": "Notice of Appeal", "purpose": "Appeal from Local Court to Supreme Court"},
+            {"form": "Form 86G", "purpose": "Application for Leave to Appeal to Court of Criminal Appeal"}
         ]
     },
     "act": {
-        "legislation": "Supreme Court Act 1933 (ACT) Part 7",
+        "legislation": "Supreme Court Act 1933 (ACT) Part 2A (Court of Appeal, ss 37E-37S); Court Procedures Rules 2006 (ACT)",
         "court": "Court of Appeal (ACT)",
         "time_limits": {
             "notice_of_appeal": "28 days from conviction/sentence"
@@ -1117,9 +1119,10 @@ APPEAL_FRAMEWORK = {
         ]
     },
     "federal": {
-        "legislation": "Judiciary Act 1903 (Cth)",
-        "court": "Full Federal Court / High Court",
-        "special_leave": "Required for High Court appeals"
+        "legislation": "Judiciary Act 1903 (Cth) Part X; High Court of Australia Act 1979 (Cth)",
+        "court": "High Court of Australia (appeals via state/territory Court of Criminal Appeal; no Federal Court criminal jurisdiction)",
+        "special_leave": "Required for all appeals to the High Court (s 35A Judiciary Act 1903)",
+        "note": "Federal criminal offences are tried in state/territory courts under Judiciary Act 1903 Part X. Appeals follow the appellate pathway of the state/territory where the trial occurred. Further appeal to the High Court requires special leave."
     }
 }
 
@@ -1293,7 +1296,7 @@ VIC_CRIMINAL_FRAMEWORK = {
             "key_provisions": [
                 "Part I Div 1 — Offences against the person (murder s 3, manslaughter s 5, assault ss 15-20)",
                 "Part I Div 1 s 21A — Stalking (amended 2024 — course of conduct clarified)",
-                "Part I Div 1 s 34AA-34AB — Non-fatal strangulation and suffocation (new 2023/2024)",
+                "Part I Div 1 s 34AD-34AE — Non-fatal strangulation and suffocation (new 2024, commenced 13 October 2024)",
                 "Part I Div 2E — Performance of a crime (new 2025 — social media-driven offending)",
                 "Part I Div 8A — Sexual offences (ss 38-51)",
                 "Part I Div 2 — Theft and related offences",
@@ -1428,7 +1431,7 @@ QLD_CRIMINAL_FRAMEWORK = {
             "act": "Criminal Code Act 1899 (Qld)",
             "description": "Establishes the substantive criminal law in Queensland. Defines offences as acts or omissions liable to punishment (s 2), divides them into crimes and misdemeanours (s 3). Covers offences against the person, property, public order, and sexual offences. Recently amended to include coercive control (s 334C, commenced 26 May 2025).",
             "key_provisions": [
-                "Chapter 28 — Homicide (murder s 302, manslaughter s 303)",
+                "Chapter 28 — Homicide (murder s 302, manslaughter s 309)",
                 "Chapter 30 — Assaults (ss 335-340)",
                 "Chapter 32 — Sexual offences (ss 347-352)",
                 "Chapter 33A — Coercive control (s 334C, commenced 26 May 2025 — Hannah's Law)",
