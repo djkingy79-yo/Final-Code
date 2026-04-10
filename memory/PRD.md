@@ -10,11 +10,7 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 - **Branding:** Forced light mode. High contrast. Blue/slate/navy only. Action buttons bright blue with white text
 - **Legal Accuracy:** Must cite current, state-specific, and federal Australian legislation
 - **Unified Document Styling:** Times New Roman, 12pt body, bold headings, indented bullets, legal footers
-- **Australian English:** ALL user-facing text must use Australian spelling (analyse, organise, offence, defence, barrister). auSpelling utility applied to all AI-generated content.
-
-## User
-- **Language:** Australian English (analyse, organise, offence, defence, barrister)
-- **Admin:** djkingy79@gmail.com
+- **Australian English:** ALL user-facing text must use Australian spelling. auSpelling utility applied to all AI-generated content.
 
 ## Architecture
 - React frontend + FastAPI backend + MongoDB
@@ -23,33 +19,23 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 - Payments: PayPal/PayID/Stripe
 - Emails: Resend
 
-## What's Been Implemented
-- Full authentication (Google + email/password)
-- Case CRUD with document upload and management
-- AI-powered timeline generation
-- AI-powered grounds of merit classification with 12-topic dedup
-- Deep investigation analysis per ground
-- Appellate Viability Assessment scoring (9-point scale)
-- Law sections and appellate pathway extraction from verify.py
-- Legal Framework display showing actual legislation text (not just counts)
-- Tiered report generation (Free, $150, $200, Barrister View)
-- Document exports (PDF, DOCX, Print)
-- Unified Times New Roman legal formatting across all tabs and exports
-- Dashboard with pipeline portfolio summary
-- Landing page with CTAs
-- Stats page, How It Works page
-- Mobile-optimised Grounds of Merit UI with reduced fonts
-- Evidence card filtering (removes "optional" filenames and "Page: None")
-- Comprehensive Australian English filter (auSpelling) applied to ALL AI-generated content
-
 ## Completed This Session (10 Apr 2026)
-- Fixed Grounds of Merit UI: Reduced mobile font sizes for evidence cards, Supporting Evidence heading, and Appellate Viability Assessment
-- Replaced "X law sections identified" count-only display with actual Legal Framework text showing legislation
-- Fixed duplicate jurisdiction display and duplicate "s" prefix in law section rendering
-- Applied auSpelling to ALL AI-generated content: deep analysis, evidence text, appellate pathway, timeline events, export templates
-- Expanded auSpelling utility with 15+ additional Australian English conversions (realise, penalise, standardise, legitimise, characterise, optimise, visualise, etc.)
-- Expanded backend normalise_au_spelling with matching conversions
-- Filtered out "optional" filename and "Page: None" garbage from evidence cards
+- Fixed Grounds of Merit UI: Reduced mobile fonts, displayed actual Legal Framework text
+- Applied auSpelling to ALL AI-generated content (deep analysis, evidence, appellate pathway, timeline)
+- Expanded auSpelling utility with 15+ additional Australian English conversions
+- Fixed Barrister report card: forced inline `style={{color:'#ffffff'}}` for bright white text on teal
+- Fixed Google Sign In: Changed from `<button onClick>` to `<a href>` for iOS webview compatibility
+- **Full forensic audit completed:**
+  - Removed 1,689 lines dead frontend code (5 orphaned components)
+  - Removed 2 dead backend router files (messages.py, reports.py)
+  - Deduplicated `is_admin_user` (was in 3 files, now in config.py)
+  - Deduplicated `hash_password` (was in 2 files, now imported from auth.py)
+  - Deduplicated `get_frontend_url` (was in 2 files, now imported from config.py)
+  - Removed 4 unused frontend imports (Badge, useCallback, PlayCircle, useTheme)
+  - Zero lint errors (Python + JavaScript)
+  - All LLM calls verified wrapped in try/except
+  - All MongoDB queries verified with _id exclusion
+  - No hardcoded URLs, API keys, or credentials
 
 ## Pending Tasks
 ### P1
@@ -60,5 +46,3 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
 - Backend refactoring: decompose server.py (~6000 lines)
 - Camera/Share native device features
 - Counsel conference prep attachment for Barrister View
-- Real-time collaboration/chat
-- Case sharing between users

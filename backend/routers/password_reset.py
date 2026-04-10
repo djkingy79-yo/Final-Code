@@ -12,31 +12,18 @@ import os
 import asyncio
 import resend
 
-from config import db, logger, get_frontend_url as get_config_frontend_url, get_contact_email, get_resend_from_email
+from config import db, logger, get_frontend_url, get_contact_email, get_resend_from_email
+from routers.auth import hash_password
 
 router = APIRouter(prefix="/api/auth", tags=["password-reset"])
 
 # Resend configuration
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
-
-
-def get_frontend_url() -> str:
-    return get_config_frontend_url()
-
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
     logger.info("Resend configured for password reset emails")
 else:
     logger.warning("Resend API key not configured - password reset will store tokens but not send emails")
-
-# ============ PASSWORD UTILITIES ============
-
-def hash_password(password: str, salt: str = None) -> tuple:
-    """Hash password with salt"""
-    if salt is None:
-        salt = secrets.token_hex(16)
-    hashed = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000)
-    return hashed.hex(), salt
 
 # ============ REQUEST MODELS ============
 

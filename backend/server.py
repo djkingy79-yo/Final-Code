@@ -74,11 +74,7 @@ from services.pipeline import (
 from services.pipeline_models import CaseExtract
 
 # ── Admin helpers ──
-def is_admin_user(email: str) -> bool:
-    admin_emails = get_admin_emails()
-    normalized = (email or "").strip().lower()
-    allowed = {(e or "").strip().lower() for e in admin_emails}
-    return normalized in allowed
+from config import is_admin_user
 
 
 # ── FastAPI app ──

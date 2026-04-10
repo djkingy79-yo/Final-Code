@@ -11,7 +11,7 @@ import json
 import os
 import logging
 
-from config import db
+from config import db, is_admin_user
 from auth_utils import get_current_user
 from services.offence_helpers import get_offence_context, enforce_forensic_language
 from models import (
@@ -35,14 +35,6 @@ from services.pipeline import (
 from services.pipeline_models import CaseExtract
 
 logger = logging.getLogger(__name__)
-
-ADMIN_EMAILS = [email.strip() for email in os.environ.get("ADMIN_EMAILS", "").split(",") if email.strip()]
-
-
-def is_admin_user(email: str) -> bool:
-    normalized = (email or "").strip().lower()
-    allowed = {(e or "").strip().lower() for e in ADMIN_EMAILS}
-    return normalized in allowed
 
 
 GROUND_TYPES = [

@@ -56,6 +56,13 @@ def get_admin_emails() -> list[str]:
     return [email.strip() for email in os.environ['ADMIN_EMAILS'].split(',') if email.strip()]
 
 
+def is_admin_user(email: str) -> bool:
+    admin_emails = get_admin_emails()
+    normalized = (email or "").strip().lower()
+    allowed = {(e or "").strip().lower() for e in admin_emails}
+    return normalized in allowed
+
+
 def get_contact_email() -> str:
     return os.environ['CONTACT_EMAIL']
 

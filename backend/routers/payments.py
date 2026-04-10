@@ -10,20 +10,12 @@ import os
 import logging
 import secrets
 
-from config import db, get_frontend_url, get_payid_email
+from config import db, get_frontend_url, get_payid_email, is_admin_user, get_admin_emails
 from auth_utils import get_current_user
 from models import FEATURE_PRICES, canonical_feature_type
 from services.email_service import send_payid_status_email, send_admin_payid_alert
 
 logger = logging.getLogger(__name__)
-
-ADMIN_EMAILS = [email.strip() for email in os.environ.get("ADMIN_EMAILS", "").split(",") if email.strip()]
-
-
-def is_admin_user(email: str) -> bool:
-    normalized = (email or "").strip().lower()
-    allowed = {(e or "").strip().lower() for e in ADMIN_EMAILS}
-    return normalized in allowed
 
 
 router = APIRouter(prefix="/api", tags=["payments"])
@@ -185,7 +177,7 @@ async def verify_payid_payment(request: Request):
     frontend_url = get_frontend_url()
     confirm_url = f"{frontend_url}/api/payments/payid/email-confirm/{confirm_token}"
     await send_admin_payid_alert(
-        admin_emails=ADMIN_EMAILS,
+        admin_emails=get_admin_emails(),
         user_email=user.email,
         user_name=user.name if hasattr(user, 'name') else "",
         feature_name=FEATURE_PRICES.get(canonical_type, {}).get("name", canonical_type or "Feature"),
