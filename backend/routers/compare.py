@@ -257,7 +257,7 @@ async def get_anonymized_patterns(
 
     if total_cases == 0:
         return {
-            "total_cases_analyzed": 0,
+            "total_cases_analysed": 0,
             "total_cases": 0,
             "message": "No cases found matching the specified criteria",
             "patterns": {},
@@ -272,7 +272,7 @@ async def get_anonymized_patterns(
 
     if total_cases < MIN_PATTERN_SAMPLE:
         return {
-            "total_cases_analyzed": total_cases,
+            "total_cases_analysed": total_cases,
             "total_cases": total_cases,
             "suppressed": True,
             "message": f"Insufficient data for reliable aggregate pattern analysis. At least {MIN_PATTERN_SAMPLE} cases required.",
@@ -346,9 +346,9 @@ async def get_anonymized_patterns(
         insights.append(f"Average {avg_grounds} grounds recorded per case in this filtered platform dataset")
 
     return {
-        "total_cases_analyzed": total_cases,
+        "total_cases_analysed": total_cases,
         "total_cases": total_cases,
-        "total_grounds_analyzed": total_grounds,
+        "total_grounds_analysed": total_grounds,
         "total_grounds": total_grounds,
         "suppressed": False,
         "filters_applied": {
@@ -421,7 +421,7 @@ async def _get_case_composition_data(request: Request, offence_category: Optiona
         return {
             "message": "Insufficient data for reliable pattern indicators",
             "total_cases": len(all_cases),
-            "total_cases_analyzed": len(all_cases),
+            "total_cases_analysed": len(all_cases),
             "suppressed": True,
             "success_factors": [],
             "disclaimer": "This analysis reflects case preparation patterns within the platform, not legal merit or appeal prospects.",
@@ -510,7 +510,7 @@ async def _get_case_composition_data(request: Request, offence_category: Optiona
         insights.append(f"Well-documented cases average {avg_field(well_documented_cases, 'documents')} documents and {avg_field(well_documented_cases, 'timeline_events')} timeline events")
 
     return {
-        "total_cases_analyzed": len(case_analyses),
+        "total_cases_analysed": len(case_analyses),
         "total_cases": len(all_cases),
         "cases_with_higher_signal_indicators": len(higher_signal_cases),
         "well_documented_count": len(well_documented_cases),

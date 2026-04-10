@@ -199,8 +199,8 @@ Important: Return ONLY valid JSON, no additional text."""
             "case_id": case_id,
             "user_id": user.user_id,
             "scanned_at": datetime.now(timezone.utc).isoformat(),
-            "documents_analyzed": len(documents),
-            "notes_analyzed": len(notes),
+            "documents_analysed": len(documents),
+            "notes_analysed": len(notes),
             "focus_areas": scan_request.focus_areas or ["all"],
             "results": analysis
         }

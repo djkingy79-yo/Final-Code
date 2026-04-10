@@ -549,8 +549,8 @@ Rules:
 # TIMELINE ANALYSIS (PRESERVED FROM EXISTING CODEBASE)
 # ============================================================================
 
-@router.post("/cases/{case_id}/timeline/analyze", response_model=dict)
-async def analyze_timeline(case_id: str, request: Request):
+@router.post("/cases/{case_id}/timeline/analyse", response_model=dict)
+async def analyse_timeline(case_id: str, request: Request):
     """AI-powered timeline analysis to find gaps, inconsistencies, and insights"""
     user = await get_current_user(request)
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
@@ -622,7 +622,7 @@ Provide a comprehensive analysis identifying gaps, inconsistencies, and appeal-r
             "contested_facts": [], "ground_connections": [],
             "key_observations": [response[:2000]], "recommended_actions": []
         }
-    return {"analysis": analysis, "event_count": len(events), "analyzed_at": datetime.now(timezone.utc).isoformat()}
+    return {"analysis": analysis, "event_count": len(events), "analysed_at": datetime.now(timezone.utc).isoformat()}
 
 
 # ============================================================================

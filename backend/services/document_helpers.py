@@ -26,7 +26,7 @@ MENTION_PATTERN = re.compile(r"@([A-Za-z0-9._-]{2,64})")
 # Document categories ranked by appellate relevance
 CATEGORY_PRIORITY = {
     "sentencing_remarks": 1,
-    "judgment": 1,
+    "judgement": 1,
     "transcript": 2,
     "directions": 2,
     "summing_up": 2,

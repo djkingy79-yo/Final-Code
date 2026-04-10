@@ -206,8 +206,8 @@ const Dashboard = ({ user }) => {
   };
 
   // Sidebar navigation items - grouped logically
-  const normalizedEmail = (user?.email || "").trim().toLowerCase();
-  const isAdmin = Boolean(user?.is_admin) || normalizedEmail === "djkingy79@gmail.com";
+  const normalisedEmail = (user?.email || "").trim().toLowerCase();
+  const isAdmin = Boolean(user?.is_admin) || normalisedEmail === "djkingy79@gmail.com";
   
   const navGroups = [
     {

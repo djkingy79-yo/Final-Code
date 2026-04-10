@@ -91,7 +91,7 @@ const Timeline = ({
   onDeleteEvent, 
   onEditEvent,
   onExportPDF,
-  onAnalyze,
+  onAnalyse,
   onReorderEvent,
   analyzing = false
 }) => {
@@ -431,9 +431,9 @@ const Timeline = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={onAnalyze}
+            onClick={onAnalyse}
             disabled={analyzing || events.length < 2}
-            data-testid="analyze-timeline-btn"
+            data-testid="analyse-timeline-btn"
           >
             {analyzing ? "Analysing..." : "AI Analysis"}
           </Button>

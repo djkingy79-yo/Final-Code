@@ -536,7 +536,7 @@ const CompareCasesPage = ({ user }) => {
                       <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <FileText className="w-6 h-6 text-blue-600" />
                       </div>
-                      <p className="text-2xl font-bold text-slate-900">{patterns.total_cases_analyzed}</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.total_cases_analysed}</p>
                       <p className="text-sm text-slate-600">Cases Analysed</p>
                     </CardContent>
                   </Card>
@@ -545,7 +545,7 @@ const CompareCasesPage = ({ user }) => {
                       <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <Gavel className="w-6 h-6 text-red-600" />
                       </div>
-                      <p className="text-2xl font-bold text-slate-900">{patterns.total_grounds_analyzed}</p>
+                      <p className="text-2xl font-bold text-slate-900">{patterns.total_grounds_analysed}</p>
                       <p className="text-sm text-slate-600">Grounds Identified</p>
                     </CardContent>
                   </Card>

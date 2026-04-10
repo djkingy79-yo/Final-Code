@@ -62,6 +62,13 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
     - `routers/report_exports.py` (1,047 lines) — PDF/DOCX export endpoints
   - All 19 regression tests passed. Zero regressions.
 - **Camera/Share Native Features**: Already fully implemented (DocumentScanner.jsx, native/camera.js, native/share.js, export share flow). Verified correct.
+- **Forensic Australian English Language Audit:**
+  - Fixed 10 hardcoded American English strings in API endpoints, response fields, function/prop names, and data-testid attributes
+  - API endpoints renamed: `/timeline/analyze` → `/timeline/analyse`, `/analyze-contradictions` → `/analyse-contradictions`
+  - Response fields: `documents_analyzed` → `documents_analysed`, `analyzed_at` → `analysed_at`, `total_cases_analyzed` → `total_cases_analysed`
+  - Fixed `judgment` → `judgement` in models, LLM prompts, legal disclaimers, and frontend pages
+  - Added **52 new AU spelling conversions** to both frontend (`auSpelling.js`) and backend (`normalise_au_spelling`) dictionaries covering: traumatise, victimise, scrutinise, marginalise, haemorrhage, anaesthetic, paediatric, judgement, manoeuvre, wilful, skilful, pretence, cancelled, labelled, ageing, fulfil, and more
+  - Final scan: zero American English in any user-visible code (only JS API `behavior: "smooth"` which is mandatory)
 
 ## Pending Tasks
 ### P0

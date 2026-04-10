@@ -232,7 +232,7 @@ Generated: {report.get('generated_at', 'Unknown')}
                 
                 analysis_txt = "AI ANALYSIS - CONTRADICTION FINDINGS\n" + "="*50 + "\n\n"
                 analysis_txt += f"Scan Date: {latest_scan.get('scanned_at', 'Unknown')}\n"
-                analysis_txt += f"Documents Analysed: {latest_scan.get('documents_analyzed', 0)}\n\n"
+                analysis_txt += f"Documents Analysed: {latest_scan.get('documents_analysed', latest_scan.get('documents_analyzed', 0))}\n\n"
                 
                 summary = latest_scan.get("results", {}).get("summary", {})
                 analysis_txt += f"Total Findings: {summary.get('total_found', 0)}\n"

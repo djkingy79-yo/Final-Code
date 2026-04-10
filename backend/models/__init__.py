@@ -656,7 +656,7 @@ class SearchMatch(BaseModel):
 PipelineStageType = Literal["extract", "classify", "verify", "project", "draft"]
 
 DocumentCategoryType = Literal[
-    "court_document", "sentencing_remarks", "judgment", "transcript",
+    "court_document", "sentencing_remarks", "judgement", "transcript",
     "submissions", "affidavit", "expert_report", "correspondence",
     "legislation", "case_law", "other",
 ]

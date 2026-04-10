@@ -86,7 +86,7 @@ const CaselawSearchPage = () => {
         {
           name: "Courts SA - Judgments",
           url: "https://www.courts.sa.gov.au/judgments",
-          description: "South Australian courts judgment database with decisions from all court levels.",
+          description: "South Australian courts judgement database with decisions from all court levels.",
           whatYouFind: [
             "Supreme Court full judgments",
             "District Court sentencing remarks",

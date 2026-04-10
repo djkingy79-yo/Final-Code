@@ -408,7 +408,7 @@ const CaseDetail = ({ user }) => {
     }
   };
 
-  const handleAnalyzeTimeline = async () => {
+  const handleAnalyseTimeline = async () => {
     if (timeline.length < 2) {
       toast.error("Need at least 2 timeline events for analysis");
       return;
@@ -418,7 +418,7 @@ const CaseDetail = ({ user }) => {
     toast.info("Analysing timeline for gaps, inconsistencies, and insights...");
     
     try {
-      const response = await axios.post(`${API}/cases/${caseId}/timeline/analyze`, {}, {
+      const response = await axios.post(`${API}/cases/${caseId}/timeline/analyse`, {}, {
         timeout: 120000
       });
       setTimelineAnalysis(response.data.analysis);
@@ -1341,7 +1341,7 @@ const CaseDetail = ({ user }) => {
                   onDeleteEvent={handleDeleteEvent}
                   onReorderEvent={handleReorderEvent}
                   onExportPDF={handleExportTimelinePDF}
-                  onAnalyze={handleAnalyzeTimeline}
+                  onAnalyse={handleAnalyseTimeline}
                   analyzing={analyzingTimeline}
                 />
               </div>

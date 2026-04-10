@@ -254,7 +254,7 @@ const glossaryCategories = [
         term: "Diminished Responsibility",
         simple: "Mental condition affected your ability to understand or control your actions",
         detailed: "A partial defence under s.23A Crimes Act 1900 (NSW). If you had an abnormality of mind that substantially impaired your capacity to understand, judge right from wrong, or control yourself, murder can be reduced to manslaughter.",
-        example: "Severe PTSD from war service substantially impaired judgment during the offence."
+        example: "Severe PTSD from war service substantially impaired judgement during the offence."
       },
       {
         term: "Mental Illness Defence",

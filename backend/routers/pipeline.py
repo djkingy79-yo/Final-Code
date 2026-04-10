@@ -1420,7 +1420,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
         elements.append(t)
 
     elements.append(Spacer(1, 15*mm))
-    elements.append(Paragraph("NOT LEGAL ADVICE — This document is AI-assisted preparation material for legal review. It does not constitute legal advice and should not be relied upon as a substitute for independent legal judgment.", styles["Disclaimer"]))
+    elements.append(Paragraph("NOT LEGAL ADVICE — This document is AI-assisted preparation material for legal review. It does not constitute legal advice and should not be relied upon as a substitute for independent legal judgement.", styles["Disclaimer"]))
     elements.append(PageBreak())
 
     # ── SECTION 1: GROUNDS OF MERIT (RANKED) ──

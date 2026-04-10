@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["analysis"])
 
 
-@router.post("/cases/{case_id}/analyze-contradictions", response_model=dict)
-async def analyze_witness_contradictions(case_id: str, request: Request):
+@router.post("/cases/{case_id}/analyse-contradictions", response_model=dict)
+async def analyse_witness_contradictions(case_id: str, request: Request):
     """AI analysis to find contradictions in documents"""
     user = await get_current_user(request)
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
@@ -59,7 +59,7 @@ Return JSON:
         analysis = json.loads(json_match.strip())
     except (json.JSONDecodeError, IndexError, ValueError):
         analysis = {"contradictions": [], "summary": response[:2000], "total_critical": 0, "total_significant": 0, "total_minor": 0}
-    return {"analysis": analysis, "documents_analyzed": len(documents), "analyzed_at": datetime.now(timezone.utc).isoformat()}
+    return {"analysis": analysis, "documents_analysed": len(documents), "analysed_at": datetime.now(timezone.utc).isoformat()}
 
 
 @router.post("/cases/{case_id}/progress-analysis", response_model=dict)

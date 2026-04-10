@@ -852,7 +852,7 @@ This attachment is designed for the instructing solicitor to use in preparation 
 
 Produce a numbered list of 10-15 specific questions that counsel should address during the conference. These must be case-specific (not generic). Group them under sub-headings:
 - **Factual Clarification** — questions about facts that are ambiguous, contested, or missing from the materials
-- **Strategic Decisions** — questions requiring counsel's judgment on which grounds to advance, abandon, or reframe
+- **Strategic Decisions** — questions requiring counsel's judgement on which grounds to advance, abandon, or reframe
 - **Evidentiary Gaps** — questions about what additional evidence, affidavits, or expert reports are needed
 - **Procedural Matters** — questions about filing deadlines, extension applications, bail, and hearing logistics
 
