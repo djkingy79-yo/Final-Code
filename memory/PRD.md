@@ -62,6 +62,20 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P2: Camera/Share native device features
 - P2: Backend refactoring — decompose server.py (~6000 lines)
 
+## Document Formatting Overhaul (Apr 2026)
+- Unified legal report format across ALL views (screen, print, PDF, DOCX):
+  - Body: Times New Roman 12pt throughout
+  - Headings (##): Times New Roman Bold 18pt, page break before new sections
+  - Subheadings (###): Times New Roman Bold 14pt
+  - Sub-subheadings (####): Times New Roman Bold 12pt
+  - Bullets: Indented 2.5rem, 12pt
+  - Tables: Times New Roman 11pt
+  - Footer on ALL pages: 10pt Times New Roman Italic — Document Name | Appellant | Date | Page X
+- PDF: reportlab with Times-Roman/Times-Bold fonts, PageBreak before ## sections, A4 margins 20mm/15mm/25mm/15mm
+- DOCX: python-docx Heading 1 with page_break_before=True, Times New Roman on all styles, footer via section.footer
+- Print/Screen: CSS @page A4, .legal-report h2 page-break-before: always, fixed print footer
+- Testing: 100% pass — 11 backend tests (PDF/DOCX exports for all report types), all frontend verified
+
 ## Full Report Regeneration & Verification (Apr 2026)
 - **NSW (case_6cc234434cbd)**: All 4 reports + quick brief verified. Quick Summary 15.9K, Full Detailed 113.7K, Extensive Log 147.7K, Barrister View 156K chars. All correct NSW legislation, zero violations.
 - **6-State Expansion (VIC, QLD, SA, TAS, NT, ACT)**: Created test cases, generated grounds + 24 reports (6×4 tiers). All 24 verified: zero wrong-state legislation, zero language violations, all Barrister Views have Attachment A + B.
