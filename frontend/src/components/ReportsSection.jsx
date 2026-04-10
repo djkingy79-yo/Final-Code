@@ -809,7 +809,7 @@ const ReportsSection = ({
               quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
-              barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Barrister Brief", price: "CAPSTONE" },
+              barrister_view: { headerBg: "bg-teal-500", badge: "bg-teal-400", label: "Barrister Brief", price: "CAPSTONE" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             /* DO NOT UNDO — Content card wrapped with statusBanner above it */
@@ -826,17 +826,17 @@ const ReportsSection = ({
                     <div className={`${rTheme.headerBg} text-white px-5 py-3 cursor-pointer flex items-center justify-between`}>
                       <div className="flex items-center gap-3">
                         {expandedReports[report.report_id] ? (
-                          <ChevronDown className="w-5 h-5 text-white/70" />
+                          <ChevronDown className="w-5 h-5 text-white" />
                         ) : (
-                          <ChevronRight className="w-5 h-5 text-white/70" />
+                          <ChevronRight className="w-5 h-5 text-white" />
                         )}
                         <div>
                           <h4 className="font-semibold text-white text-sm uppercase tracking-wide">
                             {rTheme.label}
                           </h4>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <Clock className="w-3 h-3 text-white/60" />
-                            <span className="text-xs text-white/70">
+                            <Clock className="w-3 h-3 text-white" />
+                            <span className="text-xs text-white font-medium">
                               {new Date(report.generated_at || report.created_at).toLocaleDateString('en-AU', {
                                 day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                               })}
