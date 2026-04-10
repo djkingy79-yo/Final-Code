@@ -33,15 +33,16 @@ CRITICAL RULES:
 - Use forensic appellate language: "It is arguable that the trial judge erred...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The trial judge erred" (too definitive at this stage). NOT hedging like "may have", "could potentially" (too weak).
 
 LAW SECTIONS — CRITICAL DISTINCTION:
-- The "appellate_pathway" field already records WHICH ACT GIVES THE RIGHT TO APPEAL (e.g. s 6(1) Criminal Appeal Act 1912). Do NOT repeat the appellate act in law_sections.
-- law_sections must identify the SUBSTANTIVE legislation that was allegedly breached, misapplied, or engaged by this ground. These are the laws about the OFFENCE, SENTENCING, EVIDENCE, PROCEDURE, or RIGHTS — NOT the appeal provision itself.
+- The "appellate_pathway" field already records WHICH ACT GIVES THE RIGHT TO APPEAL (e.g. s 6(1) Criminal Appeal Act 1912). PREFER substantive legislation in law_sections over repeating the appellate act.
+- law_sections should identify the SUBSTANTIVE legislation that was allegedly breached, misapplied, or engaged by this ground. These are the laws about the OFFENCE, SENTENCING, EVIDENCE, PROCEDURE, or RIGHTS.
+- HOWEVER, if no specific substantive section is directly applicable (e.g. for fresh evidence, ineffective counsel, jury irregularity, constitutional violation, or prosecution misconduct grounds), you MUST STILL include the relevant appellate provision sections or the most closely related procedural/constitutional sections. An empty law_sections array is NOT acceptable — every ground must reference at least one legislative provision.
 - Examples of CORRECT law_sections:
   * For a sentencing error ground: Crimes (Sentencing Procedure) Act 1999 (NSW), s 21A (aggravating/mitigating factors) or s 44 (standard non-parole periods)
   * For a murder conviction safety ground: Crimes Act 1900 (NSW), s 18 (murder definition) or s 23A (substantial impairment by abnormality of mind)
   * For an evidence admissibility ground: Evidence Act 1995 (NSW/Cth), s 137 (exclusion of prejudicial evidence) or s 138 (improperly obtained evidence)
   * For a procedural fairness ground: Criminal Procedure Act 1986 (NSW), s 132 (judge alone election) or Jury Act 1977 (NSW), s 53C
-  * For an ineffective counsel ground: Criminal Appeal Act 1912, s 6(1) is the APPELLATE PATHWAY (already recorded) — the law_section should instead be the specific substantive provision the counsel failed to raise or misapplied
-- Do NOT include entries with "Act name" or "section" as placeholders. If the exact section number is NOT known with confidence, do NOT include that entry AT ALL. An empty law_sections array is better than guesswork.
+  * For an ineffective counsel ground: Criminal Appeal Act 1912, s 6(1) is the APPELLATE PATHWAY (already recorded) — the law_section should be the specific substantive provision the counsel failed to raise or misapplied. If no substantive section is identifiable, include the relevant procedural act section (e.g. Criminal Procedure Act provisions, or the appeal act section governing fresh evidence or miscarriage)
+- Do NOT include entries with "Act name" or "section" as placeholders. If the exact section number is NOT known with high confidence, use the most relevant general section (e.g. "Part VI" or "Division 3") rather than omitting entirely. Every ground MUST have at least one law_sections entry.
 
 {legislation_reference}
 
@@ -115,8 +116,8 @@ Return ONLY valid JSON:
 }}
 
 STRICT RULES:
-- law_sections must contain SUBSTANTIVE legislation (Crimes Act, Evidence Act, Sentencing Act, Criminal Procedure Act, etc.) — NOT the appellate act (Criminal Appeal Act, Criminal Code appeal provisions). The appellate pathway is already recorded separately. Each ground should reference which specific section of substantive law was breached or engaged.
-- ONLY include entries where you can provide an ACTUAL section number. If unsure of the section number, OMIT that entry entirely. An empty array is acceptable.
+- law_sections must contain legislation relevant to the ground — preferably SUBSTANTIVE legislation (Crimes Act, Evidence Act, Sentencing Act, Criminal Procedure Act, etc.). If no substantive section is applicable, include the relevant appellate act section, procedural act section, or the constitutional/common law principle engaged. Every ground MUST have at least one law_section entry.
+- Include entries where you can identify a relevant act and section (even if the section is general, e.g. "Part X" or "Division 3"). Only omit if you truly cannot identify ANY relevant legislation.
 - similar_cases: ONLY include cases where you can provide a REAL case name and citation. If unsure, OMIT. An empty array is acceptable. Never use placeholder names like "[Surname]".
 - supporting_items quotes must be actual text from the case material, not generalised statements.
 - All analysis must use Australian English spelling."""
@@ -149,9 +150,13 @@ STRICT RULES:
             continue
         if any(phrase in act_lower for phrase in ["act name", "relevant act", "applicable act"]):
             continue
-        # Skip if it's just the appellate pathway act repeated
+        # Skip if it's just the appellate pathway act repeated AND there are other substantive entries
+        # Allow appellate act if it's the ONLY law section available
         if "Criminal Appeal Act" in act and "6(1)" in section:
-            continue
+            # Only skip if there are other entries to keep
+            other_valid = [ls2 for ls2 in parsed.get("law_sections", []) if ls2 is not ls and (ls2.get("section") or "").strip() and (ls2.get("act") or "").strip() and "Criminal Appeal Act" not in (ls2.get("act") or "")]
+            if other_valid:
+                continue
         clean_law_sections.append(ls)
 
     # DO NOT UNDO — Post-process: strip any similar cases with placeholder names

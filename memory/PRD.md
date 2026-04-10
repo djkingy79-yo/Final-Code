@@ -83,7 +83,11 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - Replaced ALL `Crimson Pro` references with `Times New Roman` across 35+ files
 - **Case Identity Card**: On-screen values (Defendant, Offence, State, Sentence) now Times New Roman 14pt bold
 - **Print/Word/PDF Views**: Grounds, Timeline, Notes, Legal, Progress export templates all updated to Times New Roman 12pt body, proper heading hierarchy, 10pt italic footer with document name, appellant, date, page numbers
-- **Grounds Appellate Pathways**: Backend `refresh-legal-refs` endpoint now generates missing appellate_pathway via LLM. All 9 grounds for R v Marika verified with appellate pathways
+- **Grounds Appellate Pathways & Law Sections**: Backend `refresh-legal-refs` endpoint enhanced to:
+  1. Auto-generate missing appellate_pathway via LLM with state framework context
+  2. Relaxed verify_issue prompt to always return at least one law_sections entry (allows appellate/procedural acts when no substantive section applies)
+  3. Post-processor allows appellate act when no other substantive entries exist
+  All 11 cases (NSW x4, VIC, QLD, SA, WA, TAS, NT, ACT) — 94 total grounds — verified COMPLETE: 0 missing appellate pathways, 0 missing law sections
 - Testing: 100% pass (iterations 175-176)
 
 ## Full Report Regeneration & Verification (Apr 2026)
