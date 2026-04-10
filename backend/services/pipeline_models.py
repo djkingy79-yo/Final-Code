@@ -96,6 +96,7 @@ class IssueClassification(BaseModel):
     linked_finding_ids: List[str] = Field(default_factory=list)
     classification_confidence: ConfidenceType = "moderate"
     jurisdiction: Optional[str] = None
+    law_sections: List[dict] = Field(default_factory=list)
     source_mode: SourceModeType = "ai_generated"
     verification_status: VerificationStatusType = "unverified"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

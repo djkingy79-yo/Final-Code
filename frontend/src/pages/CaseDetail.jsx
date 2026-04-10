@@ -14,7 +14,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
-  MessageSquare, Trash2, Printer, Pencil, Share2, Users, Download
+  MessageSquare, Trash2, Printer, Pencil, Share2, Users, Download, RefreshCw
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -168,6 +168,7 @@ const CaseDetail = ({ user }) => {
   const [showGroundDialog, setShowGroundDialog] = useState(false);
   const [investigatingGround, setInvestigatingGround] = useState(null);
   const [autoIdentifying, setAutoIdentifying] = useState(false);
+  const [refreshingLegalRefs, setRefreshingLegalRefs] = useState(false);
   const [selectedGround, setSelectedGround] = useState(null);
   const [generatingTimeline, setGeneratingTimeline] = useState(false);
   const [analyzingTimeline, setAnalyzingTimeline] = useState(false);
@@ -773,6 +774,32 @@ const CaseDetail = ({ user }) => {
     }
   };
 
+  const handleRefreshLegalRefs = async () => {
+    setRefreshingLegalRefs(true);
+    try {
+      const res = await axios.post(`${API}/cases/${caseId}/grounds/refresh-legal-refs`, {}, {
+        headers: { Authorization: `Bearer ${user?.session_token}` },
+        withCredentials: true,
+        timeout: 180000,
+      });
+      toast.success(res.data?.message || "Legal references refreshed.");
+      // Reload grounds
+      const groundsRes = await axios.get(`${API}/cases/${caseId}/grounds`, {
+        headers: { Authorization: `Bearer ${user?.session_token}` },
+        withCredentials: true,
+      });
+      if (groundsRes.data?.grounds) {
+        setGrounds(groundsRes.data.grounds);
+      }
+    } catch (error) {
+      console.error("Refresh legal refs error:", error);
+      toast.error(error?.response?.data?.detail || "Failed to refresh legal references.");
+    } finally {
+      setRefreshingLegalRefs(false);
+    }
+  };
+
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     return new Date(dateStr).toLocaleDateString("en-AU", {
@@ -1236,6 +1263,22 @@ const CaseDetail = ({ user }) => {
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Ground
+                    </Button>
+                  )}
+                  {groundsUnlocked && grounds.length > 0 && (
+                    <Button 
+                      onClick={handleRefreshLegalRefs}
+                      disabled={refreshingLegalRefs}
+                      variant="outline"
+                      className="border-blue-700 text-blue-700 hover:bg-blue-50"
+                      data-testid="refresh-legal-refs-btn"
+                    >
+                      {refreshingLegalRefs ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                      )}
+                      Refresh Legal Refs
                     </Button>
                   )}
                 </>

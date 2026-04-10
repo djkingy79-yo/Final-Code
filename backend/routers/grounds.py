@@ -1002,3 +1002,75 @@ async def cleanup_ground_duplicates(case_id: str, request: Request):
     }
 
 
+# ============================================================================
+# REFRESH LEGAL REFERENCES — Re-verify all grounds to get substantive law sections
+# ============================================================================
+
+@router.post("/cases/{case_id}/grounds/refresh-legal-refs", response_model=dict)
+async def refresh_legal_references(case_id: str, request: Request):
+    """Re-verify all grounds to update law_sections with substantive legislation
+    (Crimes Act, Evidence Act, etc.) instead of generic appellate act references."""
+    user = await get_current_user(request)
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).to_list(50)
+
+    if not grounds:
+        return {"updated": 0, "message": "No grounds to refresh."}
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case_extract:
+        raise HTTPException(status_code=400, detail="No case extract available. Upload documents first.")
+
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+
+    updated = 0
+    for ground in grounds:
+        try:
+            issue_dict = {
+                "issue_id": ground.get("ground_id", ""),
+                "title": ground.get("title", ""),
+                "ground_type": ground.get("ground_type", "other"),
+                "description": ground.get("description", ""),
+                "appellate_pathway": ground.get("appellate_pathway", ""),
+            }
+            verification = await verify_issue(case, issue_dict, supporting_context)
+            v_dict = verification.model_dump()
+
+            update_fields = {}
+            # Always update law_sections — even if empty — to clear old stale entries
+            update_fields["law_sections"] = v_dict.get("law_sections", [])
+            if v_dict.get("similar_cases"):
+                update_fields["similar_cases"] = v_dict["similar_cases"]
+            if v_dict.get("legitimacy_scores"):
+                update_fields["legitimacy_scores"] = v_dict["legitimacy_scores"]
+                update_fields["strength"] = v_dict["legitimacy_scores"].get("rating", ground.get("strength", "moderate"))
+
+            if update_fields:
+                update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                await db.grounds_of_merit.update_one(
+                    {"ground_id": ground["ground_id"], "case_id": case_id},
+                    {"$set": update_fields}
+                )
+                updated += 1
+        except Exception as e:
+            logger.warning(f"Failed to refresh legal refs for ground {ground.get('ground_id')}: {e}")
+
+    return {
+        "updated": updated,
+        "total": len(grounds),
+        "message": f"Refreshed legal references for {updated}/{len(grounds)} grounds.",
+    }
+
+

@@ -803,7 +803,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
             ),
             "status": "investigated" if verification else "identified",
             "supporting_evidence": (verification or {}).get("supporting_items", []),
-            "law_sections": (verification or {}).get("law_sections", []),
+            "law_sections": (verification or {}).get("law_sections", []) or issue.get("law_sections", []),
             "similar_cases": (verification or {}).get("similar_cases", []),
             "legitimacy_scores": (verification or {}).get("legitimacy_scores", {}),
             "source_mode": "derived",

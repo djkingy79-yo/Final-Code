@@ -138,6 +138,15 @@ Return ONLY valid JSON:
       "appellate_pathway": "<the specific legal mechanism, e.g. 'Miscarriage of justice under {appellate_act}'>",
       "error_identified": "<what specifically went wrong at trial or sentencing>",
       "materiality": "<why this error matters to the outcome>",
+      "law_sections": [
+        {{
+          "act": "<SUBSTANTIVE Act name — the Crimes Act, Evidence Act, Sentencing Act, etc. that was breached or engaged — NOT the Criminal Appeal Act>",
+          "section": "<actual section number e.g. 18, 23A, 137, 21A>",
+          "jurisdiction": "<state abbreviation>",
+          "title": "<what this section covers, e.g. 'definition of murder', 'exclusion of prejudicial evidence', 'aggravating/mitigating factors'>",
+          "verification_status": "unverified"
+        }}
+      ],
       "linked_fact_ids": ["fact_xxx"],
       "linked_event_ids": ["xevt_xxx"],
       "linked_finding_ids": ["find_xxx"],
@@ -150,6 +159,12 @@ STRICT RULES:
 - Identify as many distinct grounds as the evidence supports. Aim for 8-15 grounds if the case material warrants it.
 - However, CLUSTER related factual issues under a single ground with sub-particulars where they share the same underlying legal matrix (e.g. jury-related issues under "Procedural Unfairness (Jury Integrity)"). The Court of Criminal Appeal prefers "one ground, multiple particulars" — this makes the appeal cleaner, stronger, and more persuasive.
 - Each ground MUST include an appellate_pathway field identifying the specific statutory provision engaged.
+- law_sections: identify the SUBSTANTIVE legislation the ground relates to — the Crimes Act, Evidence Act, Sentencing Act, Criminal Procedure Act, Mental Health Act, etc. Do NOT put the Criminal Appeal Act or appellate pathway act here (that is already recorded in appellate_pathway). For example:
+  * Sentencing error → Crimes (Sentencing Procedure) Act 1999 (NSW), s 21A or s 44
+  * Murder conviction safety → Crimes Act 1900 (NSW), s 18 (murder) or s 23A (substantial impairment)
+  * Evidence admissibility → Evidence Act 1995 (NSW/Cth), s 137 or s 138
+  * Procedural fairness → Criminal Procedure Act 1986 (NSW), s 132 (judge alone)
+  * If the exact section is not known, OMIT that law_section entry entirely. An empty array is acceptable.
 - Use forensic appellate language: "It is arguable that the trial judge erred in failing to...", "It is contended that...", NOT bare declarations like "The trial judge erred" and NOT hedging like "may have" or "could potentially".
 - Where psychiatric/mental health evidence undermines intent (mens rea), frame as a CONVICTION SAFETY ground attacking the determination of mental state, not merely an evidentiary criticism.
 - Where multiple jury-related issues exist (judge-alone refusal, jury reduction, juror bias/conduct), cluster under a single procedural unfairness ground with sub-particulars labelled (a), (b), (c).
@@ -177,6 +192,32 @@ STRICT RULES:
 
     issues = []
     for raw in parsed.get("issues", [])[:15]:
+        # Clean law_sections — strip placeholder and appellate-act-only entries
+        raw_law_sections = raw.get("law_sections", [])
+        clean_law_sections = []
+        for ls in raw_law_sections:
+            if not isinstance(ls, dict):
+                continue
+            act = (ls.get("act") or "").strip()
+            section = (ls.get("section") or "").strip()
+            if not act or not section:
+                continue
+            section_lower = section.lower()
+            act_lower = act.lower()
+            skip_phrases = [
+                "not provided", "unknown", "n/a", "section not", "relevant section",
+                "section specific", "identically associated", "applicable section",
+                "associated section", "corresponding section", "appropriate section",
+            ]
+            if any(phrase in section_lower for phrase in skip_phrases):
+                continue
+            if any(phrase in act_lower for phrase in ["act name", "relevant act", "applicable act"]):
+                continue
+            # Skip if it's just the appellate pathway act, not substantive law
+            if "Criminal Appeal Act" in act and "6(1)" in section:
+                continue
+            clean_law_sections.append(ls)
+
         issues.append(IssueClassification(
             case_id=case["case_id"],
             user_id=case["user_id"],
@@ -191,6 +232,7 @@ STRICT RULES:
             appellate_pathway=raw.get("appellate_pathway", ""),
             error_identified=raw.get("error_identified", ""),
             materiality=raw.get("materiality", ""),
+            law_sections=clean_law_sections,
         ))
 
     # DO NOT UNDO — Post-classification: merge overlapping grounds into sub-issues
