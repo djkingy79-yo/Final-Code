@@ -176,38 +176,56 @@ const auSpelling = (text) => {
 
   // DO_NOT_UNDO — Forensic appellate language enforcement
   // Converts direct accusatory language to proper forensic framing
+  // RULE: Never directly blame the judge. Use varied forensic framing — not just "It is arguable".
+  // Rotate: "It is arguable that", "It may be contended that", "There is a tenable argument that",
+  //         "It is open to argument that", "A question arises as to whether",
+  //         "It is submitted that", "Grounds may exist to suggest that",
+  //         "It warrants consideration whether", "It is respectfully submitted that"
+
+  // Counter to rotate forensic prefixes within a single pass
+  let _forensicIdx = 0;
+  const _PREFIXES = [
+    'It is arguable that',
+    'It may be contended that',
+    'There is a tenable argument that',
+    'It is open to argument that',
+    'It is submitted that',
+    'Grounds may exist to suggest that',
+    'It warrants consideration whether',
+    'It is respectfully submitted that',
+    'A question arises as to whether',
+  ];
+  const nextPrefix = () => _PREFIXES[_forensicIdx++ % _PREFIXES.length];
+
   const forensicFixes = [
-    [/^The judge failed to/gm, 'It is arguable that the judge failed to'],
-    [/^The trial judge failed to/gm, 'It is arguable that the trial judge failed to'],
-    [/^The sentencing judge failed to/gm, 'It is arguable that the sentencing judge failed to'],
-    [/^The judge was wrong/gm, 'It is arguable that the judge was wrong'],
-    [/^The judge made an error/gm, 'It is arguable that the judge made an error'],
-    [/^The judge was biased/gm, 'It is arguable that the judge was biased'],
-    [/^The judge misdirected/gm, 'It is arguable that the judge misdirected'],
-    [/^The trial judge misdirected/gm, 'It is arguable that the trial judge misdirected'],
-    [/^The jury was misdirected/gm, 'It is arguable that the jury was misdirected'],
-    [/^The judge ignored/gm, 'It is arguable that the judge ignored'],
-    [/^The judge disregarded/gm, 'It is arguable that the judge disregarded'],
-    [/^The judge overlooked/gm, 'It is arguable that the judge overlooked'],
-    [/^The court ignored/gm, 'It is arguable that the court ignored'],
-    [/^The court wrongly/gm, 'It is arguable that the court wrongly'],
-    [/^The court improperly/gm, 'It is arguable that the court improperly'],
-    [/^The judge should have/gm, 'It is arguable that the judge should have'],
-    [/^The judge ought to have/gm, 'It is arguable that the judge ought to have'],
-    [/^The trial was unfair/gm, 'It is arguable that the trial was unfair'],
-    [/^The verdict is unreasonable/gm, 'It is arguable that the verdict is unreasonable'],
-    [/^The verdict was unreasonable/gm, 'It is arguable that the verdict was unreasonable'],
-    [/^The sentence is inadequate/gm, 'It is arguable that the sentence is inadequate'],
-    [/^The sentence was inadequate/gm, 'It is arguable that the sentence was inadequate'],
-    [/^The directions were inadequate/gm, 'It is arguable that the directions were inadequate'],
-    [/^The evidence was wrongly/gm, 'It is arguable that the evidence was wrongly'],
-    [/^The evidence was improperly/gm, 'It is arguable that the evidence was improperly'],
-    [/^There was no proper/gm, 'It is arguable that there was no proper'],
-    [/^There was a failure to/gm, 'It is arguable that there was a failure to'],
+    // ── Judge possessive patterns (e.g. "The sentencing judge's approach…") ──
+    [/^The (sentencing |trial |appeal )?judge's /gm, (m, mod) => `${nextPrefix()} the ${mod || ''}judge's `],
+    [/(\. )The (sentencing |trial |appeal )?judge's /g, (m, dot, mod) => `${dot}${nextPrefix()} the ${mod || ''}judge's `],
+
+    // ── Judge action patterns — start of line ──
+    [/^The (sentencing |trial |appeal )?judge (failed to|erred|was wrong|made an error|was biased|misdirected|ignored|disregarded|overlooked|should have|ought to have|did not|neglected to|omitted to)/gm,
+      (m, mod, verb) => `${nextPrefix()} the ${mod || ''}judge ${verb}`],
+    [/^The jury was misdirected/gm, () => `${nextPrefix()} the jury was misdirected`],
+    [/^The court (ignored|wrongly|improperly|failed|erred|did not)/gm, (m, verb) => `${nextPrefix()} the court ${verb}`],
+    [/^The trial was unfair/gm, () => `${nextPrefix()} the trial was unfair`],
+    [/^The verdict (is|was) unreasonable/gm, (m, v) => `${nextPrefix()} the verdict ${v} unreasonable`],
+    [/^The sentence (is|was) (inadequate|excessive|manifestly excessive|manifestly inadequate)/gm, (m, v, adj) => `${nextPrefix()} the sentence ${v} ${adj}`],
+    [/^The directions were inadequate/gm, () => `${nextPrefix()} the directions were inadequate`],
+    [/^The evidence was (wrongly|improperly)/gm, (m, adv) => `${nextPrefix()} the evidence was ${adv}`],
+    [/^There was (no proper|a failure to)/gm, (m, rest) => `${nextPrefix()} there was ${rest}`],
+
+    // ── Judge action patterns — mid-sentence (after ". ") ──
+    [/(\. )The (sentencing |trial |appeal )?judge (failed to|erred|was wrong|made an error|was biased|misdirected|ignored|disregarded|overlooked|should have|ought to have|did not|neglected to|omitted to)/g,
+      (m, dot, mod, verb) => `${dot}${nextPrefix()} the ${mod || ''}judge ${verb}`],
+    [/(\. )The (court|jury) (ignored|wrongly|improperly|was misdirected|failed|erred|did not)/g,
+      (m, dot, who, verb) => `${dot}${nextPrefix()} the ${who} ${verb}`],
+
+    // ── Inline blame phrases (anywhere in text) ──
     [/\bwas clearly wrong\b/g, 'was arguably wrong'],
     [/\bwas plainly wrong\b/g, 'was arguably wrong'],
     [/\bwas fundamentally flawed\b/g, 'was arguably fundamentally flawed'],
     [/\bno reasonable judge\b/g, 'arguably no reasonable judge'],
+    [/\bthe (sentencing |trial |appeal )?judge clearly erred\b/gi, (m, mod) => `it is contended that the ${mod || ''}judge erred`],
   ];
   for (const [pattern, replacer] of forensicFixes) {
     corrected = corrected.replace(pattern, replacer);
