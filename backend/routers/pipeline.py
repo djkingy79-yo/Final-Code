@@ -609,7 +609,7 @@ async def verify_issue(case_id: str, issue_id: str, request: Request):
     ]) or "No linked findings available."
 
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
-    state = case.get("state", "nsw")
+    state = case.get("state", "") or ""
 
     verify_prompt = f"""Assess the following identified appellate issue against the extracted record.
 

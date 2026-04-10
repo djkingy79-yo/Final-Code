@@ -165,6 +165,17 @@ STRICT RULES:
             sc["citation"] = None
         clean_similar_cases.append(sc)
 
+    # DO NOT UNDO — Enforce forensic language in verification text fields
+    from services.offence_helpers import enforce_forensic_language
+    supporting_items = parsed.get("supporting_items", [])
+    undermining_items = parsed.get("undermining_items", [])
+    for item_list in [supporting_items, undermining_items]:
+        for item in item_list:
+            if isinstance(item, dict):
+                for key in ["analysis", "significance", "detail", "description", "note"]:
+                    if key in item and isinstance(item[key], str):
+                        item[key] = enforce_forensic_language(item[key])
+
     scores = calculate_ground_rating({
         "ground_type": issue.get("ground_type", "other"),
         "supporting_evidence": parsed.get("supporting_items", []),

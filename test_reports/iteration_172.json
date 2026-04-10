@@ -1,0 +1,70 @@
+{
+  "summary": "Iteration 172 comprehensive verification: All 104 legislation framework tests pass (93 legislation + 12 anti-fallback + 11 forensic language filter). All 8 states/territories return correct state-specific legislation without NSW contamination. Forensic language filter correctly rewrites over-assertive phrases. NSW case grounds contain substantive legislation (Crimes Act 1900) separate from appellate_pathway (Criminal Appeal Act). WA case grounds have no NSW contamination. Refresh Legal Refs endpoint works. Frontend displays Grounds tab with separate law_sections and appellate_pathway fields.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_legislation_framework.py",
+    "/app/backend/tests/test_iteration172_comprehensive.py",
+    "/app/test_reports/pytest/iteration_172_legislation.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All 8 states/territories (NSW, VIC, QLD, SA, WA, TAS, NT, ACT) return correct state-specific legislation via /api/offence-framework endpoint",
+    "No NSW defaults remain in submit.py, extract.py, timeline.py, pipeline.py, compare.py, argue.py",
+    "Forensic language filter (enforce_forensic_language) correctly rewrites: 'The trial judge erred' → 'It is arguable that the trial judge erred'",
+    "Forensic language filter preserves precedent citations and already-forensic language",
+    "NSW case (case_6cc234434cbd) grounds have law_sections with Crimes Act 1900 (NSW) s 23A",
+    "WA case (case_e8a9de2d8331) grounds have no NSW contamination in law_sections",
+    "Appellate pathway (Criminal Appeal Act) is correctly separated from substantive law_sections",
+    "Refresh Legal Refs endpoint POST /api/cases/{case_id}/grounds/refresh-legal-refs returns 200 with updated/total counts"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration172_comprehensive.py"
+  ],
+  "success_rate": {
+    "backend": "100% (104/104 legislation tests + 14/14 comprehensive tests)",
+    "frontend": "100% (Grounds tab displays correctly with separate law_sections and appellate_pathway)"
+  },
+  "test_credentials": {
+    "admin_email": "djkingy79@gmail.com",
+    "admin_password": "Grubbygrub88"
+  },
+  "seed_data_creation": "None - used existing NSW case (case_6cc234434cbd) and WA case (case_e8a9de2d8331)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 172 verified comprehensive legislation framework: (1) All 104 tests pass including 93 legislation framework tests, 12 anti-NSW-fallback tests, and 11 forensic language filter tests. (2) All 8 states return correct state-specific legislation via /api/offence-framework endpoint - VIC returns Crimes Act 1958, QLD returns Criminal Code 1899, WA returns Criminal Code 1913, etc. (3) No NSW contamination in any non-NSW state responses. (4) Forensic language filter rewrites over-assertive phrases like 'The trial judge erred' to 'It is arguable that the trial judge erred'. (5) NSW case grounds have substantive law_sections (Crimes Act 1900 s 23A) separate from appellate_pathway (Criminal Appeal Act 1912). (6) WA case grounds have no NSW contamination. (7) Refresh Legal Refs endpoint works correctly.",
+  "tests_verified": {
+    "backend": {
+      "health_check": "PASS - healthy=true, mongodb=ok, llm_key=ok, email=ok",
+      "login": "PASS - returns session_token",
+      "legislation_framework_tests": "PASS - 104/104 tests passed",
+      "comprehensive_tests": "PASS - 14/14 tests passed",
+      "offence_framework_vic": "PASS - returns Crimes Act 1958 (Vic), no NSW contamination",
+      "offence_framework_qld": "PASS - returns Criminal Code, no NSW contamination",
+      "offence_framework_sa": "PASS - no NSW contamination",
+      "offence_framework_wa": "PASS - returns WA legislation, no NSW contamination",
+      "offence_framework_tas": "PASS - returns Criminal Code, no NSW contamination",
+      "offence_framework_nt": "PASS - no NSW contamination",
+      "offence_framework_act": "PASS - returns Criminal Code 2002 (ACT), no NSW contamination",
+      "offence_framework_nsw": "PASS - returns Crimes Act 1900",
+      "nsw_case_grounds": "PASS - law_sections contain Crimes Act 1900 (NSW) s 23A",
+      "wa_case_grounds": "PASS - no NSW contamination in law_sections",
+      "refresh_legal_refs": "PASS - returns 200 with updated=10, total=10",
+      "forensic_language_filter": "PASS - all 11 filter tests pass"
+    },
+    "frontend": {
+      "homepage": "PASS - displays all 8 states/territories (NSW, VIC, QLD, SA, WA, TAS, NT, ACT, Federal)",
+      "login": "PASS - redirects to dashboard",
+      "case_page": "PASS - displays case details with NSW jurisdiction",
+      "grounds_tab": "PASS - displays grounds with separate law_sections and appellate_pathway",
+      "refresh_legal_refs_button": "PASS - 'Refresh Legal Refs' button found in page content"
+    }
+  }
+}

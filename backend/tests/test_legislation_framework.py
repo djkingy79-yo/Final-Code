@@ -523,3 +523,63 @@ class TestNoNSWFallbacks:
         vic_case = {'state': 'vic', 'offence_category': 'assault'}
         ctx = get_offence_context(vic_case)
         assert 'Crimes Act 1958 (Vic)' in ctx
+
+class TestForensicLanguageFilter:
+    """Ensure over-assertive declarative phrases are rewritten to forensic appellate language."""
+
+    def test_trial_judge_erred(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("The trial judge erred in failing to consider.")
+        assert "It is arguable that the trial judge erred" in result
+
+    def test_conviction_unsafe(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("The conviction is unsafe because the jury was misdirected.")
+        assert "It is arguable that the conviction is unsafe" in result
+
+    def test_sentence_manifestly_excessive(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("The sentence is manifestly excessive.")
+        assert "It is arguable that the sentence is manifestly excessive" in result
+
+    def test_denied_fair_trial(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("The applicant was denied a fair trial.")
+        assert "arguably denied a fair trial" in result
+
+    def test_miscarriage_of_justice(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("This constituted a miscarriage of justice.")
+        assert "arguably constituted" in result
+
+    def test_preserves_precedent_citation(self):
+        from services.offence_helpers import enforce_forensic_language
+        text = "In R v Smith, the Court held that the trial judge erred."
+        result = enforce_forensic_language(text)
+        assert "the Court held that the trial judge erred" in result
+
+    def test_preserves_already_forensic(self):
+        from services.offence_helpers import enforce_forensic_language
+        text = "It is arguable that the trial judge erred in law."
+        result = enforce_forensic_language(text)
+        assert result == text
+
+    def test_no_double_forensic(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("It is arguable that it is arguable that the judge erred.")
+        assert "arguable that it is arguable" not in result
+
+    def test_empty_string(self):
+        from services.offence_helpers import enforce_forensic_language
+        assert enforce_forensic_language("") == ""
+        assert enforce_forensic_language(None) is None
+
+    def test_prosecution_failed(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("The prosecution failed to disclose evidence.")
+        assert "It is arguable that the prosecution failed" in result
+
+    def test_defence_counsel_failed(self):
+        from services.offence_helpers import enforce_forensic_language
+        result = enforce_forensic_language("Defence counsel failed to object.")
+        assert "It is arguable that defence counsel failed" in result

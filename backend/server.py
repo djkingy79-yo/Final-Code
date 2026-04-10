@@ -32,7 +32,7 @@ from models import (
     ReportMetadata,
 )
 from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
-from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context, get_export_legal_refs
+from services.offence_helpers import get_offence_context, get_offence_system_prompt, _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context, get_export_legal_refs, enforce_forensic_language
 from services.document_helpers import build_document_context
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 
@@ -256,6 +256,12 @@ def _split_report_sections(text: str) -> list:
         sections.append((heading, content.strip()))
 
     return sections
+
+
+def _enforce_forensic_language(text: str) -> str:
+    """Wrapper — delegates to shared enforce_forensic_language in offence_helpers."""
+    return enforce_forensic_language(text)
+
 
 
 def _dedupe_report_content(text: str, report_type: str, anchor_terms: set) -> str:
@@ -516,6 +522,9 @@ def _strip_report_placeholders(text: str) -> str:
     cleaned = re.sub(r'<([^>]+)>\s*\[([^\]]+)\]\(([^)]+)\)', r'[\2](\3)', cleaned)
     # Fix raw angle-bracket links: <Text> without markdown
     cleaned = re.sub(r'<(Search [^>]+)>', r'\1', cleaned)
+    
+    # Enforce forensic appellate language — catch over-assertive declarations
+    cleaned = _enforce_forensic_language(cleaned)
     
     return cleaned
 

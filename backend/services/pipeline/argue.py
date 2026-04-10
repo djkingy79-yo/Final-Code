@@ -23,9 +23,14 @@ def _validate_argument_payload(payload: dict) -> bool:
 async def build_issue_argument(case: dict, issue: dict, verification: dict) -> dict:
     system_prompt = """You are a senior Australian criminal appeal barrister.
 Draft structured appellate reasoning from verified issue material.
-Do not overstate the issue.
-Do not say the appeal will succeed.
-Do not invent authority.
+Do not overstate the issue. Do not say the appeal will succeed. Do not invent authority.
+
+FORENSIC LANGUAGE — ABSOLUTE RULE:
+- NEVER use declarative phrases: "The trial judge erred", "The judge clearly erred", "This proves", "The conviction is unsafe", "The sentence is excessive", "The error is established", "was denied", "was deprived".
+- ALWAYS use forensic appellate framing: "It is arguable that...", "It is contended that...", "There is a tenable argument that...", "On one view of the evidence...", "It may be submitted that...", "The available material supports the contention that...".
+- Appellate work identifies ARGUABLE errors — it does NOT declare findings. The Court makes findings.
+- Use Australian English only (analyse, defence, offence, behaviour, favour).
+
 Return JSON only."""
 
     supporting_items = json.dumps(verification.get("supporting_items", []), default=str)
@@ -39,7 +44,7 @@ Return JSON only."""
 
 CASE:
 - Title: {case.get('title', 'Unknown')}
-- State: {case.get('state', 'nsw')}
+- State: {case.get('state', '') or 'UNSPECIFIED'}
 - Offence Category: {case.get('offence_category', 'unknown')}
 - Offence Type: {case.get('offence_type', 'N/A')}
 - Court: {case.get('court', 'N/A')}
@@ -60,8 +65,10 @@ VERIFICATION:
 - Legitimacy Scores: {legitimacy_scores}
 - Verification Status: {verification.get('verification_status', 'reviewed')}
 
+CRITICAL: Frame ALL conclusions using forensic appellate language. NEVER state "The trial judge erred" — instead state "It is arguable that the trial judge erred in...". The distinction is critical for professional appellate work.
+
 Return ONLY valid JSON:
-{{"issue": "short statement of the issue", "legal_significance": "why this issue may matter on appeal", "supporting_analysis": "how the supporting material advances the issue", "undermining_analysis": "what weakens or qualifies the issue", "evidentiary_gaps": ["gap 1", "gap 2"], "appellate_pathway": "unsafe verdict|misdirection|procedural unfairness|sentence error|other", "provisional_strength": "strong|moderate|weak", "caution_note": "brief caution about limits or review requirements"}}"""
+{{"issue": "short statement of the arguable issue", "legal_significance": "why this issue is arguably significant on appeal", "supporting_analysis": "how the supporting material advances the arguable error", "undermining_analysis": "what qualifies or weakens the argument", "evidentiary_gaps": ["gap 1", "gap 2"], "appellate_pathway": "unsafe verdict|misdirection|procedural unfairness|sentence error|other", "provisional_strength": "strong|moderate|weak", "caution_note": "brief caution about limits or review requirements"}}"""""
 
     return await call_llm_for_json(
         system_prompt,

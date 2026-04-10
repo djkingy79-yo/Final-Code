@@ -8,6 +8,7 @@ IMPORTANT DESIGN RULES:
   - Always include anti-hallucination controls in system prompts
   - Separate factual extraction from legal inference
 """
+import re
 from offence_framework import (
     OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES,
     NSW_CRIMINAL_FRAMEWORK, VIC_CRIMINAL_FRAMEWORK, QLD_CRIMINAL_FRAMEWORK,
@@ -287,3 +288,68 @@ MANDATORY ANALYTICAL CONTROLS:
 
 KEY ELEMENTS for {category_name}: {', '.join(category_data.get('key_elements', ['actus reus', 'mens rea'])[:4])}
 Available defences: {', '.join(category_data.get('defences', ['self-defence'])[:5])}"""
+
+
+
+def enforce_forensic_language(text: str) -> str:
+    """Replace over-assertive declarative phrases with forensic appellate language.
+    Only applies to sentence-initial assertions. Preserves mid-sentence references
+    (e.g. 'the Court held that the trial judge erred' in precedent citations)."""
+    if not text:
+        return text
+
+    boundary = r'(?:(?<=\. )|(?<=\.\n)|(?<=\n)|(?:^))'
+    
+    sentence_start_replacements = [
+        ('The trial judge erred', 'It is arguable that the trial judge erred'),
+        ('The sentencing judge erred', 'It is arguable that the sentencing judge erred'),
+        ('The judge erred', 'It is arguable that the judge erred'),
+        ('The court erred', 'It is arguable that the court erred'),
+        ('The judge clearly erred', 'It is contended that the judge erred'),
+        ('The trial judge clearly erred', 'It is contended that the trial judge erred'),
+        ('The magistrate erred', 'It is arguable that the magistrate erred'),
+        ('The conviction is unsafe', 'It is arguable that the conviction is unsafe'),
+        ('The conviction was unsafe', 'It is arguable that the conviction was unsafe'),
+        ('The sentence is excessive', 'It is arguable that the sentence is excessive'),
+        ('The sentence was excessive', 'It is arguable that the sentence was excessive'),
+        ('The sentence is manifestly excessive', 'It is arguable that the sentence is manifestly excessive'),
+        ('The sentence was manifestly excessive', 'It is arguable that the sentence was manifestly excessive'),
+        ('The sentence is manifestly inadequate', 'It is arguable that the sentence is manifestly inadequate'),
+        ('The error is established', 'It is contended that the error is established'),
+        ('This clearly shows', 'The available material supports the contention that'),
+        ('This clearly demonstrates', 'The available material tends to demonstrate that'),
+        ('This proves', 'This material supports the argument that'),
+        ('This demonstrates conclusively', 'This material supports the contention that'),
+        ('This establishes', 'This material tends to support'),
+        ('The prosecution failed to', 'It is arguable that the prosecution failed to'),
+        ('The Crown failed to', 'It is arguable that the Crown failed to'),
+        ('Defence counsel failed to', 'It is arguable that defence counsel failed to'),
+        ('Trial counsel failed to', 'It is arguable that trial counsel failed to'),
+        ('The evidence clearly shows', 'The evidence tends to support the contention that'),
+        ('The evidence proves', 'The evidence supports the argument that'),
+        ('The evidence establishes', 'The evidence tends to establish'),
+        ('The evidence demonstrates', 'The evidence tends to demonstrate'),
+    ]
+
+    for phrase, replacement in sentence_start_replacements:
+        pattern = boundary + re.escape(phrase)
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE | re.MULTILINE)
+
+    context_free = [
+        (r'\bwas denied a fair trial\b', 'was arguably denied a fair trial'),
+        (r'\bwas denied natural justice\b', 'was arguably denied natural justice'),
+        (r'\bwas denied procedural fairness\b', 'was arguably denied procedural fairness'),
+        (r'\bwas deprived of\b', 'was arguably deprived of'),
+        (r'\bconstituted a miscarriage of justice\b', 'arguably constituted a miscarriage of justice'),
+        (r'\bamounted to a miscarriage of justice\b', 'arguably amounted to a miscarriage of justice'),
+        (r'\bconstitutes a miscarriage of justice\b', 'arguably constitutes a miscarriage of justice'),
+        (r'\bamounts to a miscarriage of justice\b', 'arguably amounts to a miscarriage of justice'),
+    ]
+    for pattern, replacement in context_free:
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+
+    text = re.sub(r'It is arguable that it is arguable', 'It is arguable', text, flags=re.IGNORECASE)
+    text = re.sub(r'It is contended that it is contended', 'It is contended', text, flags=re.IGNORECASE)
+    text = re.sub(r'arguably arguably', 'arguably', text, flags=re.IGNORECASE)
+
+    return text

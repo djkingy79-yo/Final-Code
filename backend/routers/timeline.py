@@ -395,7 +395,7 @@ CASE:
 - Title: {case.get('title', 'Unknown')}
 - Defendant: {case.get('defendant_name', 'Unknown')}
 - Court: {case.get('court', 'N/A')}
-- State: {case.get('state', 'nsw')}
+- State: {case.get('state', '') or 'UNSPECIFIED'}
 - Offence Category: {case.get('offence_category', 'unknown')}
 - Offence Type: {case.get('offence_type', 'N/A')}
 

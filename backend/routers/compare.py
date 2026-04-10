@@ -326,7 +326,7 @@ async def get_anonymized_patterns(
     state_dist = {}
     offence_dist = {}
     for case in matching_cases:
-        s = case.get("state", "nsw")
+        s = case.get("state", "") or "unspecified"
         oc = case.get("offence_category", "other")
         state_dist[s] = state_dist.get(s, 0) + 1
         offence_dist[oc] = offence_dist.get(oc, 0) + 1
