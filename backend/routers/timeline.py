@@ -560,7 +560,18 @@ async def analyze_timeline(case_id: str, request: Request):
     if len(events) < 2:
         raise HTTPException(status_code=400, detail="Need at least 2 timeline events for analysis")
     grounds = await db.grounds_of_merit.find({"case_id": case_id, "user_id": user.user_id}, {"_id": 0}).to_list(100)
-    system_prompt = """You are an expert criminal appeals analyst specialising in NSW and Australian federal law. Use Australian English spelling throughout.
+
+    offence_context = get_offence_context(case)
+    state_name = (case.get('state') or 'unknown').upper()
+
+    system_prompt = f"""You are an expert criminal appeals analyst specialising in {state_name} and Australian federal law. Use Australian English spelling throughout.
+
+{offence_context}
+
+LEGISLATION ACCURACY:
+- Do NOT invent or fabricate any legislation, Act, section, or case authority.
+- Only cite Acts that are current and in force for the relevant jurisdiction ({state_name}).
+
 Analyse this timeline of events and provide detailed insights for an appeal case.
 
 Your analysis must include:

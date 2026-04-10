@@ -62,6 +62,18 @@ Deb King is building "Appeal Case Manager" to assist with criminal appeals acros
 - P2: Camera/Share native device features
 - P2: Backend refactoring — decompose server.py (~6000 lines)
 
+## Full Report Regeneration & Verification (Apr 2026)
+- **All 4 reports + quick brief regenerated and verified on case_6cc234434cbd (NSW homicide)**:
+  - Quick Summary: 15,885 chars, 7 correct Acts, 0 violations
+  - Full Detailed: 113,660 chars, 8 correct Acts, 0 unqualified assertions
+  - Extensive Log: 147,664 chars, 10 correct Acts, 0 unqualified assertions
+  - Barrister View: 156,005 chars, 12 correct Acts, Attachment A + B present, 0 unqualified assertions
+  - Quick Brief PDF: HTTP 200
+- **Progress Analysis section updated**: Now injects offence_context, anti-hallucination instructions, forensic language filter. Verified: 0 language violations, 0 wrong-state refs
+- **Timeline Analysis section updated**: Removed hardcoded "NSW", now uses dynamic state-specific context
+- **Legal Framework API updated**: `/api/offence-framework` now returns `recent_legislation_updates` for all 9 jurisdictions
+- **Grounds refreshed**: 10/10 grounds updated via `/refresh-legal-refs`, all show correct substantive legislation
+
 ## Production Readiness (Apr 2026)
 - Full review passed: 31/31 backend tests, all auth flows (login, register, logout, session), CRUD cases, legal framework, health checks, no MongoDB _id leaks
 - Mobile responsiveness: Fixed dashboard header overflow at 375px viewport. Landing page, dashboard, and case detail all pass mobile overflow check

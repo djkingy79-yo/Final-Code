@@ -10,7 +10,8 @@ from offence_framework import (
     COMMON_APPEAL_GROUNDS,
     HUMAN_RIGHTS_FRAMEWORK,
     APPEAL_FRAMEWORK,
-    AUSTRALIAN_STATES
+    AUSTRALIAN_STATES,
+    RECENT_LEGISLATION_UPDATES
 )
 
 router = APIRouter(prefix="/api", tags=["utilities"])
@@ -39,7 +40,8 @@ async def get_offence_framework():
         "common_appeal_grounds": COMMON_APPEAL_GROUNDS,
         "human_rights": HUMAN_RIGHTS_FRAMEWORK,
         "appeal_framework": APPEAL_FRAMEWORK,
-        "states": AUSTRALIAN_STATES
+        "states": AUSTRALIAN_STATES,
+        "recent_legislation_updates": RECENT_LEGISLATION_UPDATES
     }
 
 @router.get("/offence-categories")

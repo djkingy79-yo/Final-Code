@@ -10,6 +10,7 @@ import logging
 from config import db
 from auth_utils import get_current_user
 from services.llm_service import call_llm_with_fallback
+from services.offence_helpers import get_offence_context, enforce_forensic_language
 
 logger = logging.getLogger(__name__)
 
@@ -97,8 +98,26 @@ CHECKLIST ITEMS: {len(checklist)} (Completed: {sum(1 for c in checklist if c.get
         context += "\nDEADLINES:\n"
         for d in deadlines:
             context += f"- {d.get('title', 'Unknown')}: {d.get('due_date', 'Unknown')} (Status: {d.get('status', 'pending')})\n"
-    system_prompt = """You are an expert Australian criminal appeal legal analyst. 
+
+    offence_context = get_offence_context(case)
+    state_name = case.get('state', 'Unknown').upper()
+
+    system_prompt = f"""You are an expert Australian criminal appeal legal analyst.
 Analyse the case progress and provide a comprehensive progress report using Australian English spelling.
+
+JURISDICTION: {state_name}
+{offence_context}
+
+LEGISLATION ACCURACY:
+- Do NOT invent or fabricate any legislation, Act, section, or case authority.
+- Only cite Acts that are current and in force for the relevant jurisdiction.
+- Distinguish between the appellate pathway legislation (e.g., Criminal Appeal Act) and the substantive criminal legislation (e.g., Crimes Act).
+
+LANGUAGE REQUIREMENTS:
+- Use strict third-person forensic appellate language throughout.
+- Do NOT use "we", "us", "our", "you", "your", or "your legal team".
+- Use hedging qualifiers: "It is arguable that", "There is a tenable basis", "It is submitted that".
+- Do NOT make definitive assertions such as "The trial judge erred" — instead use "It is arguable that the trial judge erred".
 
 Structure your analysis with these sections:
 
@@ -126,6 +145,7 @@ Potential issues or weaknesses that need to be addressed.
 Be specific to the jurisdiction and offence type. Use Australian legal terminology and reference relevant courts and processes."""
     try:
         response = await call_llm_with_fallback(system_prompt, f"Analyse the progress of this criminal appeal case:\n\n{context}", f"progress_{case_id}")
+        response = enforce_forensic_language(response)
         return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
