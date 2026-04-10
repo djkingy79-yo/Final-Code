@@ -823,20 +823,20 @@ const ReportsSection = ({
                   onOpenChange={(isOpen) => toggleReportExpand(report.report_id, isOpen)}
                 >
                   <CollapsibleTrigger asChild>
-                    <div className={`${rTheme.headerBg} text-white px-5 py-3 cursor-pointer flex items-center justify-between`}>
+                    <div className={`${rTheme.headerBg} px-5 py-3 cursor-pointer flex items-center justify-between`} style={{color:'#ffffff'}}>
                       <div className="flex items-center gap-3">
                         {expandedReports[report.report_id] ? (
-                          <ChevronDown className="w-5 h-5 text-white" />
+                          <ChevronDown className="w-5 h-5" style={{color:'#ffffff'}} />
                         ) : (
-                          <ChevronRight className="w-5 h-5 text-white" />
+                          <ChevronRight className="w-5 h-5" style={{color:'#ffffff'}} />
                         )}
                         <div>
-                          <h4 className="font-bold text-white text-sm uppercase tracking-wide">
+                          <h4 className="font-bold text-sm uppercase tracking-wide" style={{color:'#ffffff'}}>
                             {rTheme.label}
                           </h4>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <Clock className="w-3 h-3 text-white" />
-                            <span className="text-xs text-white font-medium">
+                            <Clock className="w-3 h-3" style={{color:'#ffffff'}} />
+                            <span className="text-xs font-medium" style={{color:'#ffffff'}}>
                               {new Date(report.generated_at || report.created_at).toLocaleDateString('en-AU', {
                                 day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                               })}
@@ -848,7 +848,7 @@ const ReportsSection = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {rTheme.price && <span className={`${rTheme.badge} px-3 py-1 rounded-full text-xs font-bold text-white`}>{rTheme.price}</span>}
+                        {rTheme.price && <span className={`${rTheme.badge} px-3 py-1 rounded-full text-xs font-bold`} style={{color:'#ffffff'}}>{rTheme.price}</span>}
                         <Button
                           variant="destructive"
                           size="icon"
