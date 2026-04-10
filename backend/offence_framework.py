@@ -71,11 +71,10 @@ OFFENCE_CATEGORIES = {
             "Crimes Act 1900 (NSW)": [
                 {"section": "s.18", "title": "Murder and manslaughter defined"},
                 {"section": "s.19A", "title": "Punishment for murder"},
-                {"section": "s.19B", "title": "Punishment for manslaughter"},
-                {"section": "s.23", "title": "Self-defence"},
-                {"section": "s.23A", "title": "Excessive self-defence (partial defence)"},
-                {"section": "s.24", "title": "Provocation (partial defence)"},
-                {"section": "s.25", "title": "Child destruction"},
+                {"section": "s.19B", "title": "Mandatory life sentence for murder of police officers"},
+                {"section": "s.23", "title": "Extreme provocation (partial defence to murder)"},
+                {"section": "s.23A", "title": "Substantial impairment by mental health impairment or cognitive impairment (partial defence)"},
+                {"section": "s.24", "title": "Punishment for manslaughter"},
                 {"section": "s.27", "title": "Acts done with intent to murder"},
                 {"section": "s.52A", "title": "Dangerous driving occasioning death"},
                 {"section": "s.22A", "title": "Infanticide"},
@@ -84,8 +83,8 @@ OFFENCE_CATEGORIES = {
         "vic_legislation": {
             "Crimes Act 1958 (Vic)": [
                 {"section": "s.3", "title": "Murder defined"},
-                {"section": "s.3A", "title": "Manslaughter defined"},
-                {"section": "s.5", "title": "Abolition of year and a day rule"},
+                {"section": "s.3A", "title": "Constructive murder (unintentional killing during violent crime)"},
+                {"section": "s.5", "title": "Punishment for manslaughter"},
                 {"section": "s.6", "title": "Infanticide"},
                 {"section": "s.6A", "title": "Child homicide"},
                 {"section": "s.6B", "title": "Defensive homicide (abolished)"},
@@ -97,8 +96,8 @@ OFFENCE_CATEGORIES = {
         },
         "qld_legislation": {
             "Criminal Code Act 1899 (Qld)": [
-                {"section": "s.300", "title": "Definition of murder"},
-                {"section": "s.302", "title": "Definition of manslaughter"},
+                {"section": "s.300", "title": "Unlawful homicide"},
+                {"section": "s.302", "title": "Definition of murder"},
                 {"section": "s.303", "title": "Punishment for murder"},
                 {"section": "s.310", "title": "Punishment for manslaughter"},
                 {"section": "s.271", "title": "Self-defence against unprovoked assault"},
@@ -121,18 +120,16 @@ OFFENCE_CATEGORIES = {
         "wa_legislation": {
             "Criminal Code Act Compilation Act 1913 (WA)": [
                 {"section": "s.279", "title": "Murder"},
-                {"section": "s.280", "title": "Unlawful homicide"},
-                {"section": "s.281", "title": "Killing on provocation"},
+                {"section": "s.280", "title": "Manslaughter"},
+                {"section": "s.281", "title": "Unlawful assault causing death"},
                 {"section": "s.282", "title": "Excessive self-defence"},
-                {"section": "s.283", "title": "Manslaughter"},
                 {"section": "s.248", "title": "Self-defence"},
-                {"section": "s.259", "title": "Dangerous driving causing death"},
             ]
         },
         "tas_legislation": {
             "Criminal Code Act 1924 (Tas)": [
-                {"section": "s.156", "title": "Murder defined"},
-                {"section": "s.157", "title": "Punishment for murder"},
+                {"section": "s.156", "title": "Culpable homicide"},
+                {"section": "s.157", "title": "Murder"},
                 {"section": "s.159", "title": "Manslaughter"},
                 {"section": "s.46", "title": "Self-defence"},
                 {"section": "s.160", "title": "Infanticide"},
@@ -187,7 +184,7 @@ OFFENCE_CATEGORIES = {
         },
         "vic_legislation": {
             "Crimes Act 1958 (Vic)": [
-                {"section": "s.31", "title": "Causing serious injury intentionally"},
+                {"section": "s.16", "title": "Intentionally causing serious injury"},
                 {"section": "s.17", "title": "Causing serious injury recklessly"},
                 {"section": "s.18", "title": "Causing injury intentionally or recklessly"},
                 {"section": "s.23", "title": "Administering poison etc with intent"},
@@ -331,10 +328,10 @@ OFFENCE_CATEGORIES = {
         },
         "act_legislation": {
             "Crimes Act 1900 (ACT)": [
-                {"section": "s.54", "title": "Sexual assault in first degree"},
-                {"section": "s.55", "title": "Sexual assault in second degree"},
-                {"section": "s.56", "title": "Sexual assault in third degree"},
-                {"section": "s.55A", "title": "Sexual intercourse with child under 10"},
+                {"section": "s.54", "title": "Sexual intercourse without consent"},
+                {"section": "s.55", "title": "Sexual intercourse with young person"},
+                {"section": "s.56", "title": "Persistent sexual abuse of child or young person"},
+                {"section": "s.55A", "title": "Sexual intercourse with young person under special care"},
             ]
         },
         "cth_legislation": {
@@ -2415,12 +2412,12 @@ RECENT_LEGISLATION_UPDATES = {
     ],
     "sa": [
         {
-            "act": "Criminal Law Consolidation Act 1935 (SA) — Coercive Control (s 20A)",
-            "amending_act": "Criminal Law Consolidation (Section 20A) Amendment Act 2024 (SA) and Criminal Law Consolidation (Coercive Control) Amendment Bill 2024",
-            "commenced": "2024 (enacted); coercive control bill debated August 2025",
-            "summary": "Introduces coercive control as a major indictable offence, max 7 years imprisonment. Amends s 20A of Criminal Law Consolidation Act 1935.",
+            "act": "Criminal Law Consolidation Act 1935 (SA) — Coercive Control",
+            "amending_act": "Criminal Law Consolidation (Section 20A) Amendment Act 2024 (SA) and Criminal Law Consolidation (Coercive Control) Amendment Act 2025 (SA)",
+            "commenced": "Section 20A Amendment: 2024 (enacted). Standalone Coercive Control Act: passed 4 September 2025, expected to commence approximately 2027 pending stakeholder consultation",
+            "summary": "Two-stage reform. First, the Section 20A Amendment Act 2024 amended the existing persistent family violence offence under s 20A. Second, the standalone Criminal Law Consolidation (Coercive Control) Amendment Act 2025 creates a new major indictable offence of coercive control, max 7 years imprisonment. Elements: course of conduct with controlling impact on current or former partner, intent to control, and conduct reasonably likely to cause physical injury or psychological harm (actual harm need not be proved). Defence: course of conduct was reasonable in all the circumstances. Cannot be convicted twice for the same conduct period against the same partner.",
             "relevant_categories": ["domestic_violence"],
-            "appeal_relevance": "New offence category for sentencing; threshold for establishing coercive pattern; harm element interpretation."
+            "appeal_relevance": "New offence category for sentencing; threshold for establishing coercive pattern; harm element interpretation; defence of reasonable conduct; commencement date and transitional provisions critical for prospectivity."
         },
         {
             "act": "Criminal Law (High Risk Offenders) Act 2015 (SA) — 2024 Amendment",
