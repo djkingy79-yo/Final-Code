@@ -301,6 +301,7 @@ def enforce_forensic_language(text: str) -> str:
     boundary = r'(?:(?<=\. )|(?<=\.\n)|(?<=\n)|(?:^))'
     
     sentence_start_replacements = [
+        # === Direct "erred" accusations ===
         ('The trial judge erred', 'It is arguable that the trial judge erred'),
         ('The sentencing judge erred', 'It is arguable that the sentencing judge erred'),
         ('The judge erred', 'It is arguable that the judge erred'),
@@ -308,6 +309,67 @@ def enforce_forensic_language(text: str) -> str:
         ('The judge clearly erred', 'It is contended that the judge erred'),
         ('The trial judge clearly erred', 'It is contended that the trial judge erred'),
         ('The magistrate erred', 'It is arguable that the magistrate erred'),
+
+        # === "failed to" accusations ===
+        ('The judge failed to', 'It is arguable that the judge failed to'),
+        ('The trial judge failed to', 'It is arguable that the trial judge failed to'),
+        ('The sentencing judge failed to', 'It is arguable that the sentencing judge failed to'),
+        ('The prosecution failed to', 'It is arguable that the prosecution failed to'),
+        ('The Crown failed to', 'It is arguable that the Crown failed to'),
+        ('Defence counsel failed to', 'It is arguable that defence counsel failed to'),
+        ('Trial counsel failed to', 'It is arguable that trial counsel failed to'),
+        ('The court failed to', 'It is arguable that the court failed to'),
+        ('The magistrate failed to', 'It is arguable that the magistrate failed to'),
+
+        # === "was wrong" / "made an error" accusations ===
+        ('The judge was wrong', 'It is arguable that the judge was wrong'),
+        ('The trial judge was wrong', 'It is arguable that the trial judge was wrong'),
+        ('The sentencing judge was wrong', 'It is arguable that the sentencing judge was wrong'),
+        ('The court was wrong', 'It is arguable that the court was wrong'),
+        ('The judge made an error', 'It is arguable that the judge made an error'),
+        ('The trial judge made an error', 'It is arguable that the trial judge made an error'),
+        ('The sentencing judge made an error', 'It is arguable that the sentencing judge made an error'),
+
+        # === "was biased" / prejudice accusations ===
+        ('The judge was biased', 'It is arguable that the judge was biased'),
+        ('The trial judge was biased', 'It is arguable that the trial judge was biased'),
+        ('The judge displayed bias', 'It is arguable that the judge displayed bias'),
+        ('The judge was prejudiced', 'It is arguable that the judge was prejudiced'),
+
+        # === "misdirected" accusations ===
+        ('The judge misdirected', 'It is arguable that the judge misdirected'),
+        ('The trial judge misdirected', 'It is arguable that the trial judge misdirected'),
+        ('The jury was misdirected', 'It is arguable that the jury was misdirected'),
+
+        # === "ignored" / "disregarded" / "overlooked" accusations ===
+        ('The judge ignored', 'It is arguable that the judge ignored'),
+        ('The trial judge ignored', 'It is arguable that the trial judge ignored'),
+        ('The sentencing judge ignored', 'It is arguable that the sentencing judge ignored'),
+        ('The judge disregarded', 'It is arguable that the judge disregarded'),
+        ('The trial judge disregarded', 'It is arguable that the trial judge disregarded'),
+        ('The judge overlooked', 'It is arguable that the judge overlooked'),
+        ('The trial judge overlooked', 'It is arguable that the trial judge overlooked'),
+        ('The court ignored', 'It is arguable that the court ignored'),
+        ('The court disregarded', 'It is arguable that the court disregarded'),
+        ('The court overlooked', 'It is arguable that the court overlooked'),
+
+        # === "should have" / "ought to have" accusations ===
+        ('The judge should have', 'It is arguable that the judge should have'),
+        ('The trial judge should have', 'It is arguable that the trial judge should have'),
+        ('The sentencing judge should have', 'It is arguable that the sentencing judge should have'),
+        ('The judge ought to have', 'It is arguable that the judge ought to have'),
+        ('The trial judge ought to have', 'It is arguable that the trial judge ought to have'),
+        ('The court should have', 'It is arguable that the court should have'),
+
+        # === "wrongly" / "improperly" accusations ===
+        ('The court wrongly', 'It is arguable that the court wrongly'),
+        ('The judge wrongly', 'It is arguable that the judge wrongly'),
+        ('The trial judge wrongly', 'It is arguable that the trial judge wrongly'),
+        ('The court improperly', 'It is arguable that the court improperly'),
+        ('The judge improperly', 'It is arguable that the judge improperly'),
+        ('The trial judge improperly', 'It is arguable that the trial judge improperly'),
+
+        # === Conviction/verdict/sentence accusations ===
         ('The conviction is unsafe', 'It is arguable that the conviction is unsafe'),
         ('The conviction was unsafe', 'It is arguable that the conviction was unsafe'),
         ('The sentence is excessive', 'It is arguable that the sentence is excessive'),
@@ -315,20 +377,47 @@ def enforce_forensic_language(text: str) -> str:
         ('The sentence is manifestly excessive', 'It is arguable that the sentence is manifestly excessive'),
         ('The sentence was manifestly excessive', 'It is arguable that the sentence was manifestly excessive'),
         ('The sentence is manifestly inadequate', 'It is arguable that the sentence is manifestly inadequate'),
+        ('The sentence is inadequate', 'It is arguable that the sentence is inadequate'),
+        ('The sentence was inadequate', 'It is arguable that the sentence was inadequate'),
+        ('The verdict is unreasonable', 'It is arguable that the verdict is unreasonable'),
+        ('The verdict was unreasonable', 'It is arguable that the verdict was unreasonable'),
+        ('The verdict is unsafe', 'It is arguable that the verdict is unsafe'),
+        ('The verdict was unsafe', 'It is arguable that the verdict was unsafe'),
+        ('The conviction is unreasonable', 'It is arguable that the conviction is unreasonable'),
+        ('The conviction was unreasonable', 'It is arguable that the conviction was unreasonable'),
+
+        # === Trial/procedural fairness accusations ===
+        ('The trial was unfair', 'It is arguable that the trial was unfair'),
+        ('The trial was not fair', 'It is arguable that the trial was not fair'),
+        ('The directions were inadequate', 'It is arguable that the directions were inadequate'),
+        ('The summing up was inadequate', 'It is arguable that the summing-up was inadequate'),
+        ('The summing-up was inadequate', 'It is arguable that the summing-up was inadequate'),
+        ('The summing up was unbalanced', 'It is arguable that the summing-up was unbalanced'),
+        ('The summing-up was unbalanced', 'It is arguable that the summing-up was unbalanced'),
+
+        # === Evidence accusations ===
+        ('The evidence was wrongly admitted', 'It is arguable that the evidence was wrongly admitted'),
+        ('The evidence was improperly admitted', 'It is arguable that the evidence was improperly admitted'),
+        ('The evidence was wrongly excluded', 'It is arguable that the evidence was wrongly excluded'),
+        ('The evidence was improperly excluded', 'It is arguable that the evidence was improperly excluded'),
+        ('The evidence clearly shows', 'The evidence tends to support the contention that'),
+        ('The evidence proves', 'The evidence supports the argument that'),
+        ('The evidence establishes', 'The evidence tends to establish'),
+        ('The evidence demonstrates', 'The evidence tends to demonstrate'),
+
+        # === "There was no" / "There was a failure" accusations ===
+        ('There was no proper', 'It is arguable that there was no proper'),
+        ('There was no adequate', 'It is arguable that there was no adequate'),
+        ('There was a failure to', 'It is arguable that there was a failure to'),
+        ('There was no consideration', 'It is arguable that there was no consideration'),
+
+        # === Over-assertive declarations ===
         ('The error is established', 'It is contended that the error is established'),
         ('This clearly shows', 'The available material supports the contention that'),
         ('This clearly demonstrates', 'The available material tends to demonstrate that'),
         ('This proves', 'This material supports the argument that'),
         ('This demonstrates conclusively', 'This material supports the contention that'),
         ('This establishes', 'This material tends to support'),
-        ('The prosecution failed to', 'It is arguable that the prosecution failed to'),
-        ('The Crown failed to', 'It is arguable that the Crown failed to'),
-        ('Defence counsel failed to', 'It is arguable that defence counsel failed to'),
-        ('Trial counsel failed to', 'It is arguable that trial counsel failed to'),
-        ('The evidence clearly shows', 'The evidence tends to support the contention that'),
-        ('The evidence proves', 'The evidence supports the argument that'),
-        ('The evidence establishes', 'The evidence tends to establish'),
-        ('The evidence demonstrates', 'The evidence tends to demonstrate'),
     ]
 
     for phrase, replacement in sentence_start_replacements:
@@ -336,14 +425,36 @@ def enforce_forensic_language(text: str) -> str:
         text = re.sub(pattern, replacement, text, flags=re.IGNORECASE | re.MULTILINE)
 
     context_free = [
+        # === Denial of rights ===
         (r'\bwas denied a fair trial\b', 'was arguably denied a fair trial'),
         (r'\bwas denied natural justice\b', 'was arguably denied natural justice'),
         (r'\bwas denied procedural fairness\b', 'was arguably denied procedural fairness'),
         (r'\bwas deprived of\b', 'was arguably deprived of'),
+        # === Miscarriage of justice ===
         (r'\bconstituted a miscarriage of justice\b', 'arguably constituted a miscarriage of justice'),
         (r'\bamounted to a miscarriage of justice\b', 'arguably amounted to a miscarriage of justice'),
         (r'\bconstitutes a miscarriage of justice\b', 'arguably constitutes a miscarriage of justice'),
         (r'\bamounts to a miscarriage of justice\b', 'arguably amounts to a miscarriage of justice'),
+        # === Over-assertive "clearly/plainly" qualifiers ===
+        (r'\bwas clearly wrong\b', 'was arguably wrong'),
+        (r'\bwas clearly erroneous\b', 'was arguably erroneous'),
+        (r'\bwas plainly wrong\b', 'was arguably wrong'),
+        (r'\bwas plainly erroneous\b', 'was arguably erroneous'),
+        (r'\bis clearly wrong\b', 'is arguably wrong'),
+        (r'\bis plainly wrong\b', 'is arguably wrong'),
+        # === "without basis" / "flawed" qualifiers ===
+        (r'\bwithout proper basis\b', 'arguably without proper basis'),
+        (r'\bwithout any basis\b', 'arguably without basis'),
+        (r'\bwithout any proper basis\b', 'arguably without proper basis'),
+        (r'\bwas fundamentally flawed\b', 'was arguably fundamentally flawed'),
+        (r'\bis fundamentally flawed\b', 'is arguably fundamentally flawed'),
+        (r'\bwas fatally flawed\b', 'was arguably fatally flawed'),
+        (r'\bis fatally flawed\b', 'is arguably fatally flawed'),
+        # === "no reasonable" qualifiers ===
+        (r'\bno reasonable judge\b', 'arguably no reasonable judge'),
+        (r'\bno reasonable tribunal\b', 'arguably no reasonable tribunal'),
+        (r'\bno reasonable jury\b', 'arguably no reasonable jury'),
+        (r'\bno reasonable sentencer\b', 'arguably no reasonable sentencer'),
     ]
     for pattern, replacement in context_free:
         text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)

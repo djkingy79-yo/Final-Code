@@ -68,7 +68,19 @@ Building "Appeal Case Manager" to assist with criminal appeals across Australian
   - Response fields: `documents_analyzed` → `documents_analysed`, `analyzed_at` → `analysed_at`, `total_cases_analyzed` → `total_cases_analysed`
   - Fixed `judgment` → `judgement` in models, LLM prompts, legal disclaimers, and frontend pages
   - Added **52 new AU spelling conversions** to both frontend (`auSpelling.js`) and backend (`normalise_au_spelling`) dictionaries covering: traumatise, victimise, scrutinise, marginalise, haemorrhage, anaesthetic, paediatric, judgement, manoeuvre, wilful, skilful, pretence, cancelled, labelled, ageing, fulfil, and more
-  - Final scan: zero American English in any user-visible code (only JS API `behavior: "smooth"` which is mandatory)
+- **Forensic Appellate Language Audit:**
+  - Expanded `enforce_forensic_language` from 28 → 90+ sentence-start replacement patterns covering:
+    - "The judge failed to" → "It is arguable that the judge failed to"
+    - "The judge was wrong/biased/misdirected/ignored/disregarded/overlooked"
+    - "The court wrongly/improperly", "The trial was unfair"
+    - "The verdict is/was unreasonable", "The sentence is/was inadequate"
+    - "The directions were inadequate", "The evidence was wrongly/improperly"
+    - "There was no proper/a failure to", "The judge should/ought to have"
+  - Added 18 context-free patterns: "was clearly wrong" → "was arguably wrong", "fundamentally flawed", "no reasonable judge"
+  - Added matching frontend forensic enforcement to `auSpelling.js` (31 patterns) as safety net
+  - Added matching forensic enforcement to `ReportView.jsx` `cleanAIContent()` function
+  - All 45 test cases pass (32 accusatory patterns caught, 4 preservation tests, 9 context-free)
+  - Verified LLM prompts in both `report_generator.py` and `barrister_generator.py` already contain comprehensive forensic language instructions
 
 ## Pending Tasks
 ### P0

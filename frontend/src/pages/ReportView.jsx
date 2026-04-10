@@ -350,6 +350,44 @@ const cleanAIContent = (text) => {
   // DO_NOT_UNDO — Convert American spellings to Australian English in all report content.
   // Uses shared auSpelling utility for comprehensive coverage.
   cleaned = auSpelling(cleaned);
+
+  // DO_NOT_UNDO — Forensic appellate language enforcement (safety net for backend filter)
+  const forensicFixes = [
+    [/^The judge failed to/gm, 'It is arguable that the judge failed to'],
+    [/^The trial judge failed to/gm, 'It is arguable that the trial judge failed to'],
+    [/^The sentencing judge failed to/gm, 'It is arguable that the sentencing judge failed to'],
+    [/^The judge was wrong/gm, 'It is arguable that the judge was wrong'],
+    [/^The judge made an error/gm, 'It is arguable that the judge made an error'],
+    [/^The judge was biased/gm, 'It is arguable that the judge was biased'],
+    [/^The judge misdirected/gm, 'It is arguable that the judge misdirected'],
+    [/^The trial judge misdirected/gm, 'It is arguable that the trial judge misdirected'],
+    [/^The jury was misdirected/gm, 'It is arguable that the jury was misdirected'],
+    [/^The judge ignored/gm, 'It is arguable that the judge ignored'],
+    [/^The judge disregarded/gm, 'It is arguable that the judge disregarded'],
+    [/^The judge overlooked/gm, 'It is arguable that the judge overlooked'],
+    [/^The court ignored/gm, 'It is arguable that the court ignored'],
+    [/^The court wrongly/gm, 'It is arguable that the court wrongly'],
+    [/^The court improperly/gm, 'It is arguable that the court improperly'],
+    [/^The judge should have/gm, 'It is arguable that the judge should have'],
+    [/^The judge ought to have/gm, 'It is arguable that the judge ought to have'],
+    [/^The trial was unfair/gm, 'It is arguable that the trial was unfair'],
+    [/^The verdict is unreasonable/gm, 'It is arguable that the verdict is unreasonable'],
+    [/^The verdict was unreasonable/gm, 'It is arguable that the verdict was unreasonable'],
+    [/^The sentence is inadequate/gm, 'It is arguable that the sentence is inadequate'],
+    [/^The sentence was inadequate/gm, 'It is arguable that the sentence was inadequate'],
+    [/^The directions were inadequate/gm, 'It is arguable that the directions were inadequate'],
+    [/^The evidence was wrongly/gm, 'It is arguable that the evidence was wrongly'],
+    [/^The evidence was improperly/gm, 'It is arguable that the evidence was improperly'],
+    [/^There was no proper/gm, 'It is arguable that there was no proper'],
+    [/^There was a failure to/gm, 'It is arguable that there was a failure to'],
+    [/\bwas clearly wrong\b/g, 'was arguably wrong'],
+    [/\bwas plainly wrong\b/g, 'was arguably wrong'],
+    [/\bwas fundamentally flawed\b/g, 'was arguably fundamentally flawed'],
+    [/\bno reasonable judge\b/g, 'arguably no reasonable judge'],
+  ];
+  for (const [pattern, replacer] of forensicFixes) {
+    cleaned = cleaned.replace(pattern, replacer);
+  }
   
   return cleaned.trim();
 };
