@@ -843,7 +843,7 @@ const ReportsSection = ({
                             </span>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 mt-2">
-                            <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
+                            <VerificationBadge status={report.verification_status || report.metadata?.verification_status} onDark />
                           </div>
                         </div>
                       </div>
