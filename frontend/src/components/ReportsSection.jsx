@@ -809,7 +809,7 @@ const ReportsSection = ({
               quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
-              barrister_view: { headerBg: "bg-teal-500", badge: "bg-teal-400", label: "Barrister Brief", price: "CAPSTONE" },
+              barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Barrister Brief", price: "CAPSTONE" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             /* DO NOT UNDO — Content card wrapped with statusBanner above it */
@@ -831,7 +831,7 @@ const ReportsSection = ({
                           <ChevronRight className="w-5 h-5 text-white" />
                         )}
                         <div>
-                          <h4 className="font-semibold text-white text-sm uppercase tracking-wide">
+                          <h4 className="font-bold text-white text-sm uppercase tracking-wide">
                             {rTheme.label}
                           </h4>
                           <div className="flex items-center gap-2 mt-0.5">
