@@ -175,16 +175,32 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* NEW USER SPECIAL OFFER — Card banner matching Dashboard — DO NOT UNDO */}
+      {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
       <div className="max-w-6xl mx-auto px-6 pt-2 pb-0">
-        <div className="bg-pink-600 rounded-xl p-3 shadow-lg border-2 border-pink-400 cursor-pointer" onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-pink-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Pink $5 Offer Box */}
+          <div className="rounded-lg p-3 shadow-lg border-2 cursor-pointer" style={{ background: '#db2777', borderColor: '#f472b6' }} onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#ffffff', minWidth: '36px', minHeight: '36px' }}>
+                <Sparkles className="w-5 h-5" style={{ color: '#db2777' }} />
+              </div>
+              <div>
+                <p className="font-black text-base uppercase tracking-wide" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>New User Special Offer</p>
+                <p className="font-black text-sm" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>First time users only — Unlock Grounds of Merit for just <span className="text-2xl font-black" style={{ color: '#ffffff' }}>$5.00</span></p>
+              </div>
             </div>
-            <div>
-              <p className="font-black text-sm uppercase tracking-wide" style={{ color: '#ffffff' }}>New User Special Offer</p>
-              <p className="font-extrabold text-xs" style={{ color: '#ffffff' }}>First time users only — Unlock Grounds of Merit for just <span className="text-lg font-black" style={{ color: '#ffffff' }}>$5.00</span></p>
+          </div>
+
+          {/* Blue CTA Box */}
+          <div className="rounded-lg p-3 shadow-lg border-2 cursor-pointer" style={{ background: '#2563eb', borderColor: '#60a5fa' }} onClick={() => setShowAuthModal(true)} data-testid="hero-cta-box">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#ffffff', minWidth: '36px', minHeight: '36px' }}>
+                <Sparkles className="w-5 h-5" style={{ color: '#2563eb' }} />
+              </div>
+              <div>
+                <p className="font-black text-base uppercase tracking-wide" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>Ready to Log Your Case?</p>
+                <p className="font-black text-sm" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>Try It Now — <button className="inline-flex items-center gap-1 font-black px-4 py-1 rounded-full text-sm hover:opacity-90 transition-colors ml-1" style={{ background: '#ffffff', color: '#1d4ed8' }} onClick={(e) => { e.stopPropagation(); setShowAuthModal(true); }} data-testid="hero-cta-login-btn">Click Here</button></p>
+              </div>
             </div>
           </div>
         </div>
