@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { API } from "../App";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const ReportTranslator = ({ caseId, reportId }) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -210,9 +212,43 @@ const ReportTranslator = ({ caseId, reportId }) => {
               </DialogTitle>
             </DialogHeader>
             <div className="flex-1 overflow-y-auto prose prose-sm max-w-none p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <div style={{ whiteSpace: "pre-wrap", fontFamily: "Helvetica, Arial, sans-serif", fontSize: "14px", lineHeight: "1.6" }}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({children}) => (
+                    <table style={{width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '13px'}}>
+                      {children}
+                    </table>
+                  ),
+                  thead: ({children}) => (
+                    <thead style={{backgroundColor: '#1e3a5f', color: 'white'}}>
+                      {children}
+                    </thead>
+                  ),
+                  th: ({children}) => (
+                    <th style={{border: '1px solid #cbd5e1', padding: '8px 12px', textAlign: 'left', fontWeight: 600}}>
+                      {children}
+                    </th>
+                  ),
+                  td: ({children}) => (
+                    <td style={{border: '1px solid #cbd5e1', padding: '8px 12px', verticalAlign: 'top'}}>
+                      {children}
+                    </td>
+                  ),
+                  tr: ({children, ...props}) => (
+                    <tr style={{backgroundColor: props.isHeader ? undefined : 'white'}} {...props}>
+                      {children}
+                    </tr>
+                  ),
+                  h1: ({children}) => <h1 style={{fontFamily: "'Times New Roman', serif", color: '#1e3a5f', borderBottom: '2px solid #1e3a5f', paddingBottom: '6px'}}>{children}</h1>,
+                  h2: ({children}) => <h2 style={{fontFamily: "'Times New Roman', serif", color: '#1e3a5f', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px'}}>{children}</h2>,
+                  h3: ({children}) => <h3 style={{fontFamily: "'Times New Roman', serif", color: '#334155'}}>{children}</h3>,
+                  p: ({children}) => <p style={{marginBottom: '0.75rem', lineHeight: '1.7'}}>{children}</p>,
+                  strong: ({children}) => <strong style={{color: '#1e3a5f'}}>{children}</strong>,
+                }}
+              >
                 {translatedContent}
-              </div>
+              </ReactMarkdown>
             </div>
             <div className="flex gap-3 justify-end pt-4">
               <Button
