@@ -87,6 +87,28 @@ const AuthCallback = () => {
   const attemptAuth = async () => {
     const hash = window.location.hash;
     const query = window.location.search;
+
+    // Check for OAuth error parameters first (e.g. "Invalid state parameter")
+    const queryParams = new URLSearchParams(query);
+    const hashParams = new URLSearchParams(hash.substring(1));
+    const oauthError = queryParams.get("error") || queryParams.get("error_description") || hashParams.get("error") || hashParams.get("error_description");
+    if (oauthError) {
+      console.warn("OAuth error detected:", oauthError);
+      // Clean the URL
+      window.history.replaceState({}, "", window.location.pathname);
+      // Auto-retry with fresh redirect (up to 3 attempts)
+      const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
+      if (retryCount < 2) {
+        sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
+        const redirectUrl = window.location.origin + "/dashboard";
+        window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+        return;
+      }
+      sessionStorage.removeItem("auth_retry_count");
+      setAuthError(true);
+      return;
+    }
+
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
     // Clean the URL immediately after extracting session_id — prevents stale IDs on refresh
@@ -335,6 +357,10 @@ function AppRouter() {
   // Check URL fragment for session_id synchronously during render — MUST run BEFORE ProtectedRoute
   // EXCEPTION: /payment-success uses session_id for Stripe checkout, not OAuth
   const isPaymentSuccessPage = location.pathname === "/payment-success";
+  // Handle OAuth errors (e.g. "Invalid state parameter") — redirect to AuthCallback for graceful handling
+  if (!isPaymentSuccessPage && (location.search?.includes("error_description=") || location.search?.includes("error=invalid"))) {
+    return <AuthCallback />;
+  }
   if (!isPaymentSuccessPage && (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id="))) {
     return <AuthCallback />;
   }

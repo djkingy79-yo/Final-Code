@@ -40,6 +40,12 @@ frontend/node_modules/.cache/
 # Test credentials
 memory/test_credentials.md
 
+# Legacy test files and audit docs
+docs/audit/
+backend/tests/legacy/
+test_reports/*.pdf
+test_reports/*.docx
+
 # Native build artefacts
 frontend/android/.gradle/
 frontend/android/app/build/
@@ -50,3 +56,4 @@ frontend/node_modules/.cache/default-development/3.pack
 frontend/node_modules/.cache/default-development/6.pack
 frontend/node_modules/.cache/default-development/5.pack
 frontend/node_modules/.cache/default-development/8.pack
+frontend/node_modules/.cache/default-development/12.pack

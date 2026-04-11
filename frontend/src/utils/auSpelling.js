@@ -3,18 +3,18 @@
    that display AI-generated or dynamic content. */
 
 const auSpelling = (text) => {
-  if (!text) return text;
+  if (!text || typeof text !== 'string') return text || '';
 
   // Split text into "protected" (URLs, markdown links, code blocks) and "plain" segments.
   // Only apply spelling corrections to plain-text segments.
-  const PROTECTED = /(\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`)/g;
-  const parts = text.split(PROTECTED);
+  // NOTE: Create fresh regex each call to avoid iOS Safari "readonly lastIndex" bug.
+  const splitRe = /(\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`)/g;
+  const parts = text.split(splitRe);
 
   let corrected = parts.map((part) => {
     // If the part matches a protected pattern, return it untouched
-    if (PROTECTED.test(part)) return part;
-    // Reset lastIndex since we reuse the regex
-    PROTECTED.lastIndex = 0;
+    // Fresh regex per test avoids lastIndex mutation issues on iOS Safari
+    if (/(\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`)/.test(part)) return part;
 
     return part
     .replace(/\bcharacterization\b/gi, (m) => m[0] === 'C' ? 'Characterisation' : 'characterisation')
