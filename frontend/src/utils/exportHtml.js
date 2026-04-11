@@ -54,9 +54,9 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
   .toc-container { background: #ffffff; padding: 14px 32px; }
-  .toc-heading { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 800; margin: 0 0 10px; font-family: 'Times New Roman', Times, serif; }
+  .toc-heading { font-size: 11pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 700; margin: 0 0 8px; font-family: 'Times New Roman', Times, serif; }
   .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
-  .toc-item { font-size: 12pt; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; font-weight: 700; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
+  .toc-item { font-size: 9pt; color: #334155; padding: 2px 0; font-weight: 500; font-family: 'Times New Roman', Times, serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sections { padding: 24px 32px; }
   .section { margin-bottom: 24px; page-break-inside: avoid; }
   .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid ${accentColor}; padding-left: 12px; margin-bottom: 12px; }

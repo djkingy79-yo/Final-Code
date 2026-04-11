@@ -21,7 +21,6 @@ import {
   Printer,
   RefreshCcw,
   Scale,
-  Zap,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { API } from "../App";
@@ -422,7 +421,7 @@ export default function BarristerView() {
       ? `<div class="toc-container" style="padding:14px 32px;">
           <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${sections.length} SECTIONS)</p>
           <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-            ${sections.map((s, i) => `<div class="toc-item" style="font-size:12pt;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
+            ${sections.map((s, i) => `<div class="toc-item" style="font-size:9pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
           </div>
         </div>`
       : "";
@@ -732,17 +731,6 @@ export default function BarristerView() {
     openBarristerPreview("word");
   };
 
-  const handleQuickBrief = async () => {
-    try {
-      toast.info("Opening Quick Brief...");
-      const directUrl = await buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
-      window.open(directUrl, '_blank');
-      toast.success("Quick Brief opened — use Share to save or print.");
-    } catch (error) {
-      toast.error("Failed to generate the Quick Brief PDF.");
-    }
-  };
-
   const handleBackToCase = () => {
     window.location.assign(`/cases/${caseId}`);
   };
@@ -858,15 +846,6 @@ export default function BarristerView() {
               data-testid="barrister-export-pdf-button"
             >
               <Download className="w-4 h-4 mr-2" /> Export PDF
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleQuickBrief}
-              disabled={!isCompleted}
-              className="bg-emerald-700 text-white hover:bg-emerald-600"
-              data-testid="barrister-quick-brief-button"
-            >
-              <Zap className="w-4 h-4 mr-2" /> Quick Brief
             </Button>
             {isCompleted && report?.report_id && (
               <ReportTranslator caseId={caseId} reportId={report.report_id} />
