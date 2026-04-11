@@ -88,6 +88,7 @@ export default function PipelineProgress({
   const classifiedIssues = summary?.issue_classification_count ?? 0;
   const verifiedIssues = summary?.issue_verification_count ?? 0;
   const syncedGrounds = summary?.synced_grounds_count ?? 0;
+  const hasAnyPipelineData = summary && (extractedDocs > 0 || classifiedIssues > 0 || verifiedIssues > 0 || syncedGrounds > 0);
 
   const runAction = async (fn) => {
     try {
@@ -124,6 +125,7 @@ export default function PipelineProgress({
       <div className="font-bold text-base text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Pipeline Progress</div>
       <div className="text-xs text-slate-500 mb-3">Staged workflow: extract &rarr; classify &rarr; verify &rarr; draft</div>
 
+      {hasAnyPipelineData && (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
         <div className="rounded-lg border border-slate-200 p-3 bg-slate-50" data-testid="pipeline-stat-extracted">
           <div className="text-xs text-slate-500">Extracted Docs</div>
@@ -142,6 +144,7 @@ export default function PipelineProgress({
           <div className="text-lg font-semibold text-slate-900">{syncedGrounds}</div>
         </div>
       </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={handleExtractAllDocuments} disabled={loading || documents.length === 0} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-extract-all-btn">
