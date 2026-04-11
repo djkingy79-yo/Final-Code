@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 /* DO_NOT_UNDO — Enhanced service worker for offline access */
 
-const CACHE_NAME = "appeal-case-manager-v2";
+const CACHE_NAME = "appeal-case-manager-v3";
 const STATIC_ASSETS = [
   "/",
   "/index.html",
@@ -88,13 +88,29 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets — cache-first
+  // Static assets — network-first for JS/CSS (ensures code updates reach users immediately)
+  // Cache-first only for images and fonts
+  if (url.pathname.match(/\.(js|css)$/) || url.pathname.startsWith("/static/js/") || url.pathname.startsWith("/static/css/")) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        if (response.ok) {
+          const cloned = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, cloned));
+        }
+        return response;
+      }).catch(() => {
+        return caches.match(request).then((cached) => cached || new Response("", { status: 503 }));
+      })
+    );
+    return;
+  }
+
+  // Images, fonts, other static assets — cache-first
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        // Cache static assets on first fetch
-        if (response.ok && (url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|woff2?|ttf)$/) || url.pathname.startsWith("/static/"))) {
+        if (response.ok && url.pathname.match(/\.(png|jpg|jpeg|svg|woff2?|ttf|webp|ico)$/)) {
           const cloned = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, cloned));
         }

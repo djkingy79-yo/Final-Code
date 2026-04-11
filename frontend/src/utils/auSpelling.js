@@ -1,10 +1,15 @@
 /* DO NOT UNDO — Australian spelling normaliser for ALL user-visible text.
-   Converts American English to Australian English. Used across all components
-   that display AI-generated or dynamic content. */
+   Converts American English to Australian English.
+   
+   CRITICAL iOS SAFARI COMPATIBILITY:
+   - NO const/module-level regex with 'g' flag (causes JIT "readonly property" crash)
+   - NO .replace() chains (same iOS Safari JIT issue)
+   - Uses pure word-by-word string splitting — zero regex in hot paths
+   - Entire function wrapped in try-catch as ultimate safety net
+*/
 
 // ── Word-level American → Australian spelling map ──
-// Keys are lowercase American spellings, values are lowercase Australian spellings.
-const SPELLING_MAP = {
+var WORDS = {
   'characterization': 'characterisation', 'mischaracterization': 'mischaracterisation',
   'behavior': 'behaviour', 'behavioral': 'behavioural',
   'favoring': 'favouring', 'analyzing': 'analysing',
@@ -13,8 +18,8 @@ const SPELLING_MAP = {
   'utilized': 'utilised', 'utilize': 'utilise', 'utilizing': 'utilising',
   'analyze': 'analyse', 'analyzed': 'analysed',
   'organize': 'organise', 'recognize': 'recognise', 'recognizing': 'recognising',
-  'honor': 'honour', 'honors': 'honours', 'honourable': 'honourable', 'honorable': 'honourable',
-  'favor': 'favour', 'favorable': 'favourable', 'favoured': 'favoured', 'favored': 'favoured',
+  'honor': 'honour', 'honors': 'honours', 'honorable': 'honourable',
+  'favor': 'favour', 'favorable': 'favourable', 'favored': 'favoured',
   'labor': 'labour', 'center': 'centre', 'centered': 'centred',
   'colored': 'coloured', 'counseling': 'counselling', 'counselor': 'counsellor',
   'criminalize': 'criminalise', 'criminalized': 'criminalised',
@@ -45,7 +50,7 @@ const SPELLING_MAP = {
   'characterize': 'characterise', 'characterized': 'characterised', 'characterizing': 'characterising',
   'neighbor': 'neighbour', 'neighboring': 'neighbouring',
   'signaling': 'signalling', 'traveling': 'travelling',
-  'modeling': 'modelling', 'programing': 'programming',
+  'modeling': 'modelling',
   'traumatize': 'traumatise', 'traumatized': 'traumatised', 'traumatizing': 'traumatising',
   'victimize': 'victimise', 'victimized': 'victimised', 'victimizing': 'victimising',
   'terrorize': 'terrorise', 'terrorized': 'terrorised',
@@ -61,125 +66,67 @@ const SPELLING_MAP = {
   'pretense': 'pretence', 'dialog': 'dialogue', 'catalog': 'catalogue',
   'canceled': 'cancelled', 'canceling': 'cancelling',
   'labeled': 'labelled', 'labeling': 'labelling',
-  'aging': 'ageing', 'fulfill': 'fulfil', 'fulfilled': 'fulfilled',
+  'aging': 'ageing', 'fulfill': 'fulfil',
   'maneuver': 'manoeuvre', 'willful': 'wilful', 'skillful': 'skilful',
   'rumor': 'rumour', 'humor': 'humour', 'flavor': 'flavour',
   'fiber': 'fibre', 'theater': 'theatre', 'meter': 'metre',
   'hemorrhage': 'haemorrhage', 'anesthetic': 'anaesthetic', 'pediatric': 'paediatric',
-  'licence': 'licence', 'license': 'licence',
+  'license': 'licence'
 };
 
-// Build a single regex from all keys (longest first to avoid partial matches)
-const _sortedKeys = Object.keys(SPELLING_MAP).sort((a, b) => b.length - a.length);
-const _spellingRegex = new RegExp('\\b(' + _sortedKeys.join('|') + ')\\b', 'gi');
+// Simple word-boundary split: split on any non-alphanumeric character while keeping delimiters
+function splitWords(str) {
+  var result = [];
+  var current = '';
+  var i = 0;
+  while (i < str.length) {
+    var ch = str.charAt(i);
+    var isWordChar = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch === '_' || ch === "'";
+    if (isWordChar) {
+      current += ch;
+    } else {
+      if (current.length > 0) {
+        result.push(current);
+        current = '';
+      }
+      result.push(ch);
+    }
+    i++;
+  }
+  if (current.length > 0) {
+    result.push(current);
+  }
+  return result;
+}
 
-// ── Forensic language prefixes ──
-const _PREFIXES = [
-  'It is arguable that',
-  'It may be contended that',
-  'There is a tenable argument that',
-  'It is open to argument that',
-  'It is submitted that',
-  'Grounds may exist to suggest that',
-  'It warrants consideration whether',
-  'It is respectfully submitted that',
-  'A question arises as to whether',
-];
+function replaceWord(word) {
+  var lower = word.toLowerCase();
+  var replacement = WORDS[lower];
+  if (!replacement) return word;
+  // Preserve capitalisation of first letter
+  if (word.charAt(0) >= 'A' && word.charAt(0) <= 'Z') {
+    return replacement.charAt(0).toUpperCase() + replacement.substring(1);
+  }
+  return replacement;
+}
 
-const auSpelling = (text) => {
-  // Guard: return empty string for non-string/falsy input
-  if (!text || typeof text !== 'string') return text || '';
+function auSpelling(text) {
+  if (!text) return text || '';
+  if (typeof text !== 'string') return '';
 
   try {
-    // Step 1: Protect URLs, markdown links, code blocks by replacing with placeholders
-    var placeholders = [];
-    var working = text.replace(/\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s)]+|`[^`]+`/g, function(m) {
-      placeholders.push(m);
-      return '\x00PH' + (placeholders.length - 1) + '\x00';
-    });
-
-    // Step 2: Single-pass dictionary replacement for AU spelling
-    working = working.replace(_spellingRegex, function(match) {
-      var lower = match.toLowerCase();
-      var replacement = SPELLING_MAP[lower];
-      if (!replacement) return match;
-      // Preserve capitalisation of the first letter
-      if (match[0] === match[0].toUpperCase()) {
-        return replacement[0].toUpperCase() + replacement.slice(1);
-      }
-      return replacement;
-    });
-
-    // Step 3: Forensic appellate language enforcement
-    var forensicIdx = 0;
-    function nextPrefix() {
-      return _PREFIXES[forensicIdx++ % _PREFIXES.length];
+    var parts = splitWords(text);
+    var out = '';
+    var i = 0;
+    while (i < parts.length) {
+      out = out + replaceWord(parts[i]);
+      i++;
     }
-
-    // Judge possessive patterns
-    working = working.replace(/^The (sentencing |trial |appeal )?judge's /gm, function(m, mod) {
-      return nextPrefix() + ' the ' + (mod || '') + "judge's ";
-    });
-    working = working.replace(/\. The (sentencing |trial |appeal )?judge's /g, function(m, mod) {
-      return '. ' + nextPrefix() + ' the ' + (mod || '') + "judge's ";
-    });
-
-    // Judge action patterns — start of line
-    working = working.replace(/^The (sentencing |trial |appeal )?judge (failed to|erred|was wrong|made an error|was biased|misdirected|ignored|disregarded|overlooked|should have|ought to have|did not|neglected to|omitted to)/gm, function(m, mod, verb) {
-      return nextPrefix() + ' the ' + (mod || '') + 'judge ' + verb;
-    });
-    working = working.replace(/^The jury was misdirected/gm, function() {
-      return nextPrefix() + ' the jury was misdirected';
-    });
-    working = working.replace(/^The court (ignored|wrongly|improperly|failed|erred|did not)/gm, function(m, verb) {
-      return nextPrefix() + ' the court ' + verb;
-    });
-    working = working.replace(/^The trial was unfair/gm, function() {
-      return nextPrefix() + ' the trial was unfair';
-    });
-    working = working.replace(/^The verdict (is|was) unreasonable/gm, function(m, v) {
-      return nextPrefix() + ' the verdict ' + v + ' unreasonable';
-    });
-    working = working.replace(/^The sentence (is|was) (inadequate|excessive|manifestly excessive|manifestly inadequate)/gm, function(m, v, adj) {
-      return nextPrefix() + ' the sentence ' + v + ' ' + adj;
-    });
-    working = working.replace(/^The directions were inadequate/gm, function() {
-      return nextPrefix() + ' the directions were inadequate';
-    });
-    working = working.replace(/^The evidence was (wrongly|improperly)/gm, function(m, adv) {
-      return nextPrefix() + ' the evidence was ' + adv;
-    });
-    working = working.replace(/^There was (no proper|a failure to)/gm, function(m, rest) {
-      return nextPrefix() + ' there was ' + rest;
-    });
-
-    // Judge action patterns — mid-sentence
-    working = working.replace(/\. The (sentencing |trial |appeal )?judge (failed to|erred|was wrong|made an error|was biased|misdirected|ignored|disregarded|overlooked|should have|ought to have|did not|neglected to|omitted to)/g, function(m, mod, verb) {
-      return '. ' + nextPrefix() + ' the ' + (mod || '') + 'judge ' + verb;
-    });
-    working = working.replace(/\. The (court|jury) (ignored|wrongly|improperly|was misdirected|failed|erred|did not)/g, function(m, who, verb) {
-      return '. ' + nextPrefix() + ' the ' + who + ' ' + verb;
-    });
-
-    // Inline blame phrases
-    working = working.replace(/\bwas clearly wrong\b/g, 'was arguably wrong');
-    working = working.replace(/\bwas plainly wrong\b/g, 'was arguably wrong');
-    working = working.replace(/\bwas fundamentally flawed\b/g, 'was arguably fundamentally flawed');
-    working = working.replace(/\bno reasonable judge\b/g, 'arguably no reasonable judge');
-    working = working.replace(/\bthe (sentencing |trial |appeal )?judge clearly erred\b/gi, function(m, mod) {
-      return 'it is contended that the ' + (mod || '') + 'judge erred';
-    });
-
-    // Step 4: Restore protected placeholders
-    working = working.replace(/\x00PH(\d+)\x00/g, function(m, idx) {
-      return placeholders[parseInt(idx, 10)] || m;
-    });
-
-    return working;
+    return out;
   } catch (e) {
-    // Safety net: if ANY error occurs (iOS Safari JIT, etc.), return original text
+    // Absolute safety net — return original text unchanged
     return text;
   }
-};
+}
 
 export default auSpelling;
