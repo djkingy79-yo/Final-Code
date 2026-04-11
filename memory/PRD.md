@@ -8,9 +8,7 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 - **Report Language:** STRICT third-person educational tool. Forensic appellate language. Australian English only.
 - **UI:** Forced light mode. Blue/slate/navy palette. Bright blue action buttons with white text.
 - **Legal Accuracy:** Cite current, state-specific, and federal Australian legislation with correct section numbers. NO NSW defaults.
-- **Anti-Hallucination:** Every LLM-calling file must have: anti-hallucination controls, no-NSW-default guard, forensic language rules, Australian English mandate.
-- **Citation Integrity:** Post-processing validates all citations against known Australian court abbreviations. Placeholder and suspicious citations are stripped automatically.
-- **Auto-Extraction:** Document upload automatically triggers text extraction, timeline generation, and facts/events/findings identification.
+- **Print Format:** All exported/printed documents: h1=18pt, h3=14pt, h4=14pt, body=12pt, Times New Roman. Footer: "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] DD/MM/YYYY Page X of Y" in Times New Roman, italic, 10pt.
 
 ## Architecture
 - React frontend + FastAPI backend + MongoDB
@@ -20,52 +18,49 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 
 ## What's Been Implemented
 
-### Download Token Security (Apr 2026, Session 3)
-- **Short-lived download tokens** replace session_token exposure in PDF/DOCX download URLs
-- `POST /api/auth/download-token` generates 5-minute, single-use tokens stored in MongoDB
-- `auth_utils.py` validates download_token query params; legacy session_token kept for WebSocket only
-- Frontend updated: `ReportView.jsx`, `BarristerView.jsx`, `ReportsSection.jsx`, `CaseDetail.jsx`
-- New utility: `/app/frontend/src/utils/downloadToken.js`
+### Session 4 (Apr 2026) — Print, Security, Acceptance Pack, Case Law
+- **Print All Fix:** Raw `##` markdown headings now converted to proper HTML headings via `mdToHtml()` helper
+- **Font Sizes Fixed:** Title h1=18pt (was 22pt), h4 subheadings=14pt (was 12pt), body=12pt
+- **Table of Contents:** Added to Complete Case Bundle (Print All / Word All / PDF All)
+- **Australian English in Print:** `auSpelling()` applied to all text in buildPrintAllHtml
+- **Barrister Quick Brief iOS Fix:** Changed from `window.location.assign()` to `window.open()` in new tab
+- **Acceptance Pack Enhanced:** Increased font sizes (body 11pt, was 9pt), added Case Summary section, full ground descriptions + deep analysis + appellate pathway + similar cases + legislation, Notes section, standardised footer
+- **Find Case Law Upgrade:** Tab renamed, API now returns AI-suggested authorities (cases + legislation) from grounds data, copy-to-clipboard for citations, AustLII search links for each authority
+- **Download Token Security:** Short-lived (5-min), single-use tokens replace session_token in download URLs
+- **Standardised Footer:** Exact format across all PDF, DOCX, and browser print views
 
-### Standardised Print/Export Footer (Apr 2026, Session 3)
-- **Exact footer format:** "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] DD/MM/YYYY Page X of Y"
-- Times New Roman, italic, 10pt across ALL export views
-- Backend: `export_footer.py` shared by PDF (NumberedCanvas) and DOCX (apply_docx_footer)
-- Frontend: `exportHtml.js`, `ReportView.jsx`, `BarristerView.jsx` all use matching CSS footer
-- Removed duplicate DOCX footer overwrite in `report_exports.py`
-- Fixed timeline PDF filename Unicode encoding error (em-dash in title)
+### Session 3 (Apr 2026) — Footers, Download Token Security
+- Backend shared footer logic (`export_footer.py`)
+- Download token endpoint and auth integration
 
-### Bug Fixes — iOS Safari & Pipeline (Apr 2026, Session 2)
-- **auSpelling.js COMPLETELY REWRITTEN**: Dictionary-based single-pass approach. Eliminates iOS Safari JIT crash.
-- **`'created_at'` KeyError FIXED**: Added `created_at` field to extraction models.
-- **Timeline Ordering Improved**: Secondary sort by `created_at` + strict chronological ordering.
-- **OAuth Error Handling**: AuthCallback handles "Invalid state parameter" gracefully.
+### Session 2 (Apr 2026) — iOS Safari, Pipeline, Translation
+- `auSpelling.js` iOS-safe rewrite (zero regex)
+- `created_at` KeyError fixes, duplicate index fixes
+- Translation formatting (ReactMarkdown)
+- Service worker cache strategy to network-first
 
-### 9-Jurisdiction End-to-End Validation (Apr 2026, Session 1)
-- **All 9 jurisdictions tested and PASS**: NSW, VIC, QLD, SA, WA, TAS, NT, ACT, Federal
-- Zero NSW default leaks, zero hallucinated citations
+### Session 1 (Apr 2026) — Jurisdiction Validation
+- 9-jurisdiction end-to-end validation (all PASS)
+- Citation anti-hallucination post-processing
 
 ### Previously Completed
 - Stripe + PayID payment integration
 - Payment History Dashboard with PDF receipts
 - Federal jurisdiction routing
-- Citation anti-hallucination post-processing
 - Metadata soft warnings
 - Security hardening (rate limiting, bcrypt)
 - Barrister View deep synthesis + Issue Matrix
 - PDF/DOCX exports with legal disclaimers
-- Translation formatting (ReactMarkdown + remarkGfm for 41 languages)
-- Repository cleanup
 
 ## Test Coverage
-- Download token security: 12/13 PASS (iteration_186)
+- Session 4: iteration_187 — 14/14 backend, 100% frontend
+- Session 3: iteration_186 — 12/13 backend, 100% frontend
+- Session 2: iterations 184-185 — 100% pass
 - 9-jurisdiction matrix: 9/9 PASS
-- Previous iterations 180-185: All passing
 
 ## Backlog
-- P1: "How It Works" page screenshots verification
+- P1: "How It Works" page screenshots verification (user-uploaded IMG_4323-4327)
 - P1: `server.py` monolith refactor (user approved multi-session)
-- P1: Caselaw search feature upgrade
 - P2: Verify "Success Stories" page content compliance
 - P2: Native Mobile App (Capacitor v7)
 - P2: Counsel conference prep attachment for Barrister View
