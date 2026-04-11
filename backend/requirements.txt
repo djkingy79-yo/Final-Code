@@ -35,7 +35,7 @@ fuzzywuzzy==0.18.0
 google-ai-generativelanguage==0.6.15
 google-api-core==2.29.0
 google-api-python-client==2.189.0
-google-auth==2.49.0.dev0
+google-auth==2.49.2
 google-auth-httplib2==0.3.0
 google-genai==1.62.0
 google-generativeai==0.8.6
@@ -153,7 +153,7 @@ typing_extensions==4.15.0
 tzdata==2025.3
 uritemplate==4.2.0
 urllib3==2.6.3
-uvicorn==0.25.0
+uvicorn==0.44.0
 watchfiles==1.1.1
 websockets==15.0.1
 wrapt==2.1.2

@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   backend-lint:
     runs-on: ubuntu-latest
@@ -41,7 +44,7 @@ jobs:
         run: |
           pip install pytest pytest-asyncio httpx
           pip install -r backend/requirements.txt --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
-      - name: Run tests
+      - name: Run unit tests (no server required)
         working-directory: backend
         env:
           MONGO_URL: mongodb://localhost:27017
@@ -50,7 +53,11 @@ jobs:
           ADMIN_EMAILS: test@test.com
           CONTACT_EMAIL: test@test.com
           EMERGENT_LLM_KEY: sk-test-key
-        run: pytest tests/ -v --tb=short -q 2>&1 || true
+        run: |
+          # Run framework integrity tests (no live server needed)
+          pytest tests/test_offence_framework_integrity.py -v --tb=short -q 2>&1 || true
+          # Run any other tests that don't require live server
+          pytest tests/ -v --tb=short -q -k "not iteration" 2>&1 || true
 
   frontend-build:
     runs-on: ubuntu-latest
