@@ -11,7 +11,7 @@ import {
   Scale, Plus, FileText, Clock, Trash2,
   LogOut, FolderOpen, Search, User, HelpCircle, Users, BookOpen,
   FileCheck, Menu, Home, Gavel, ChevronRight, GitCompare,
-  Shield, TrendingUp, Sparkles, Share2
+  Shield, TrendingUp, Sparkles, Share2, CreditCard
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -298,6 +298,18 @@ const Dashboard = ({ user }) => {
               <p className="text-xs text-slate-700 truncate">{user?.email}</p>
             </div>
           </div>
+
+          <Link to="/payment-history" className="block">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-slate-700 hover:text-slate-900 hover:bg-slate-100 text-sm justify-start"
+              data-testid="payment-history-btn"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              Payment History
+            </Button>
+          </Link>
           
           <Button
             onClick={handleLogout}

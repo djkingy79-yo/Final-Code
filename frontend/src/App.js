@@ -48,6 +48,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
+const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
 // DO_NOT_UNDO — Always use REACT_APP_BACKEND_URL (preview URL) for API calls.
 // Custom domains (e.g. criminallawappealmanagement.com.au) proxy HTML only — their
@@ -411,6 +412,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             {() => <PaymentSuccessPage />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payment-history"
+        element={
+          <ProtectedRoute>
+            {() => <PaymentHistoryPage />}
           </ProtectedRoute>
         }
       />
