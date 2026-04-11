@@ -47,6 +47,7 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
+const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
 
 // DO_NOT_UNDO — Always use REACT_APP_BACKEND_URL (preview URL) for API calls.
 // Custom domains (e.g. criminallawappealmanagement.com.au) proxy HTML only — their
@@ -331,7 +332,9 @@ function AppRouter() {
 
   // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
   // Check URL fragment for session_id synchronously during render — MUST run BEFORE ProtectedRoute
-  if (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
+  // EXCEPTION: /payment-success uses session_id for Stripe checkout, not OAuth
+  const isPaymentSuccessPage = location.pathname === "/payment-success";
+  if (!isPaymentSuccessPage && (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id="))) {
     return <AuthCallback />;
   }
 
@@ -402,6 +405,14 @@ function AppRouter() {
       <Route
         path="/document-preview"
         element={<DocumentPreviewPage />}
+      />
+      <Route
+        path="/payment-success"
+        element={
+          <ProtectedRoute>
+            {() => <PaymentSuccessPage />}
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/shared/:token"

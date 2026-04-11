@@ -55,6 +55,7 @@ from routers.pipeline_staged import router as pipeline_staged_router
 from routers.caselaw import router as caselaw_router
 from routers.reports import router as reports_router
 from routers.report_exports import router as report_exports_router
+from routers.stripe_payments import router as stripe_payments_router
 
 # ── FastAPI app ──
 app = FastAPI(title="Criminal Appeal AI", version="2.0.0")
@@ -137,6 +138,13 @@ async def root():
     return {"message": "Criminal Appeal AI API", "status": "operational"}
 
 
+@api_router.post("/webhook/stripe")
+async def stripe_webhook_proxy(request: Request):
+    """Top-level Stripe webhook endpoint."""
+    from routers.stripe_payments import stripe_webhook_handler
+    return await stripe_webhook_handler(request)
+
+
 
 # ── Include api_router (report/export endpoints defined above) ──
 app.include_router(api_router)
@@ -168,6 +176,7 @@ app.include_router(caselaw_router)
 app.include_router(reports_router)
 app.include_router(report_exports_router)
 app.include_router(legislation_router)
+app.include_router(stripe_payments_router)
 
 # DO_NOT_UNDO — CORS Middleware. Uses CORS_ORIGINS env var for allowed origins.
 # Must include ALL domains the frontend is served from (preview, production, custom domain).
