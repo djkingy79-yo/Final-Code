@@ -232,16 +232,13 @@ async def cleanup_orphaned_reports():
     await db.grounds_of_merit.create_index([("case_id", 1), ("priority_order", 1)])
     await db.issue_arguments.create_index([("case_id", 1)])
     
-    # Pipeline collections
+    # Pipeline collections — compound indexes for query performance
+    # DO NOT add unique indexes on *_id fields unless the model always generates them
     await db.document_extracts.create_index([("case_id", 1), ("user_id", 1)])
-    await db.document_extracts.create_index([("extract_id", 1)], unique=True)
-    await db.document_extracts.create_index([("document_id", 1), ("case_id", 1)])
+    await db.document_extracts.create_index([("document_id", 1), ("case_id", 1)], unique=True)
     await db.case_extracts.create_index([("case_id", 1), ("user_id", 1)])
-    await db.case_extracts.create_index([("case_extract_id", 1)], unique=True)
     await db.issue_classifications.create_index([("case_id", 1), ("user_id", 1)])
-    await db.issue_classifications.create_index([("issue_id", 1)], unique=True)
     await db.issue_verifications.create_index([("issue_id", 1), ("case_id", 1)])
-    await db.issue_verifications.create_index([("verification_id", 1)], unique=True)
     await db.pipeline_tasks.create_index([("case_id", 1), ("user_id", 1), ("task_type", 1)])
     await db.pipeline_tasks.create_index([("task_id", 1)], unique=True)
     
