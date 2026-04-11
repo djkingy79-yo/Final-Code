@@ -22,7 +22,7 @@ import { API } from "../App";
 import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
 import { toast } from "sonner";
 
-const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
+const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defendantName = "" }) => {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState(state);
@@ -148,7 +148,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "" }) => {
       });
     }
     body += `</div>`;
-    return buildExportHtml({ title: "Legal Framework", sectionTitle: "Legal Framework", defendantName: "", accentColor: "#1e40af", bodyHtml: body });
+    return buildExportHtml({ title: "Legal Framework", sectionTitle: "Legal Framework", defendantName, accentColor: "#1e40af", bodyHtml: body });
   };
   const handleLegalPrint = () => openExportPreview(buildLegalHtml(), "print");
   const handleLegalPDF = () => openExportPreview(buildLegalHtml(), "pdf");

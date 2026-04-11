@@ -190,9 +190,9 @@ const ReportsSection = ({
       toast.info("Generating PDF...");
       const isIOS = isIOSDevice();
       if (isIOS) {
-        const token = localStorage.getItem("session_token");
+        const { buildSecureDownloadUrl } = await import("../utils/downloadToken");
         const baseUrl = `${API}/cases/${caseId}/reports/${reportId}/export-pdf`;
-        const href = token ? `${baseUrl}?session_token=${token}` : baseUrl;
+        const href = await buildSecureDownloadUrl(baseUrl);
         const a = document.createElement('a');
         a.href = href;
         a.target = '_blank';

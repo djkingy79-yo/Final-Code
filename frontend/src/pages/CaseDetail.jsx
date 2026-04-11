@@ -446,9 +446,9 @@ const CaseDetail = ({ user }) => {
     try {
       const isIOS = isIOSDevice();
       if (isIOS) {
-        const token = localStorage.getItem("session_token");
+        const { buildSecureDownloadUrl } = await import("../utils/downloadToken");
         const baseUrl = `${API}/cases/${caseId}/timeline/export-pdf`;
-        const href = token ? `${baseUrl}?session_token=${token}` : baseUrl;
+        const href = await buildSecureDownloadUrl(baseUrl);
         const a = document.createElement('a');
         a.href = href;
         a.target = '_blank';
@@ -1492,6 +1492,7 @@ const CaseDetail = ({ user }) => {
               notes={notes}
               setNotes={setNotes}
               onNotesChange={fetchCaseData}
+              defendantName={caseData?.defendant_name || caseData?.title || ""}
             />
           </TabsContent>
 
@@ -1516,6 +1517,7 @@ const CaseDetail = ({ user }) => {
               offenceCategory={caseData?.offence_category}
               offenceType={caseData?.offence_type}
               state={caseData?.state}
+              defendantName={caseData?.defendant_name || caseData?.title || ""}
             />
           </TabsContent>
 

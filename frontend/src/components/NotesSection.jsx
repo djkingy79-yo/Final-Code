@@ -98,7 +98,7 @@ const renderMentionedText = (text = "") => {
   });
 };
 
-const NotesSection = ({ caseId, notes, setNotes }) => {
+const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
   const [showNoteDialog, setShowNoteDialog] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [newNote, setNewNote] = useState({
@@ -369,7 +369,7 @@ const NotesSection = ({ caseId, notes, setNotes }) => {
     return buildExportHtml({
       title: "Case Notes",
       sectionTitle: "Notes",
-      defendantName: "",
+      defendantName,
       accentColor: "#2563eb",
       bodyHtml: `<div class="export-header" style="background:#2563eb;"><h1>Case Notes</h1><p>${sortedNotes.length} note${sortedNotes.length !== 1 ? "s" : ""}</p></div><div class="export-body">${notesHtml || "<p>No notes recorded.</p>"}</div>`,
     });

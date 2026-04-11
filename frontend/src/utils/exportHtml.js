@@ -14,8 +14,8 @@ const formatDate = () =>
   new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
 
 export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, accentColor = "#1e40af" }) {
-  const previewDate = formatDate();
-  const footerLabel = `Criminal Appeal Case Management - ${sectionTitle} on ${defendantName || "Unknown"} - ${previewDate}`;
+  const previewDate = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const footerLabel = `Documented from the Criminal Law /Appeal Management Application - ${sectionTitle} - For ${defendantName || "Unknown"} ${previewDate}`;
 
   return `<!DOCTYPE html>
 <html>
@@ -64,16 +64,16 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 13px; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 11px; color: #64748b; }
-  .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1.5px solid #1d4ed8; padding: 8px 24px 10px; }
+  .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
   .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 10pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
-  .print-footer-page-print::after { content: ''; }
+  .print-footer-page::after { content: ''; }
   .page-break { page-break-before: always; }
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     body { background: #fff; }
     .export-container { max-width: none; }
     .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-    .print-footer-page-print::after { content: "Page " counter(page); }
+    .print-footer-page::after { content: "Page " counter(page); }
     .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
     .branding { page-break-inside: avoid; break-inside: avoid; }
     .disclaimer + .branding { page-break-before: avoid; break-before: avoid; }
@@ -122,7 +122,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <div class="print-footer">
   <div class="print-footer-row">
     <span>${footerLabel}</span>
-    <span><span class="print-footer-page-print"></span></span>
+    <span class="print-footer-page"></span>
   </div>
 </div>
 </body>

@@ -960,19 +960,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_body_run.font.color.rgb = RGBColor(220, 38, 38)
     disc_body_run.font.name = 'Times New Roman'
     
-    # Add footer to all sections — 10pt italics: Document Name | Appellant | Date | Page
-    for section in doc.sections:
-        footer = section.footer
-        footer.is_linked_to_previous = False
-        footer_para = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
-        footer_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        footer_para.clear()
-        footer_text = f"{report_title}  |  {case.get('defendant_name', 'Unknown')}  |  {report.get('generated_at', '')[:10]}"
-        footer_run = footer_para.add_run(footer_text)
-        footer_run.font.name = 'Times New Roman'
-        footer_run.font.size = Pt(10)
-        footer_run.font.italic = True
-        footer_run.font.color.rgb = RGBColor(71, 85, 105)
+    # Footer already applied via apply_docx_footer above (line 695)
     
     # Save to buffer
     buffer = BytesIO()

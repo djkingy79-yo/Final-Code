@@ -327,3 +327,22 @@ async def logout(request: Request, response: Response):
     
     response.delete_cookie(key="session_token", path="/", samesite="lax", secure=True)
     return {"message": "Logged out"}
+
+
+
+# ============ DOWNLOAD TOKEN ============
+
+@router.post("/download-token")
+async def generate_download_token(request: Request):
+    """Generate a short-lived, single-use download token for file downloads.
+    Replaces session_token in URLs to prevent session hijack via logs/Referrer."""
+    user = await get_current_user(request)
+    token = secrets.token_urlsafe(32)
+    await db.download_tokens.insert_one({
+        "token": token,
+        "user_id": user.user_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
+        "used": False,
+    })
+    return {"download_token": token}

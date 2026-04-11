@@ -369,11 +369,9 @@ export default function BarristerView() {
     return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : "Not specified";
   }, [caseData, report]);
 
-  const buildAuthUrl = (baseUrl) => {
-    const token = localStorage.getItem("session_token");
-    if (!token) return baseUrl;
-    const separator = baseUrl.includes("?") ? "&" : "?";
-    return `${baseUrl}${separator}session_token=${token}`;
+  const buildAuthUrl = async (baseUrl) => {
+    const { buildSecureDownloadUrl } = await import("../utils/downloadToken");
+    return buildSecureDownloadUrl(baseUrl);
   };
 
   const iosShareOrDownload = async (blob, filename, mimeType) => {
@@ -412,8 +410,8 @@ export default function BarristerView() {
     const notice = mode === "pdf"
       ? '<div class="preview-notice">PDF preview — use Print / Save as PDF to download.</div>'
       : "";
-    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU");
-    const previewFooterLabel = `Criminal Appeal Case Management — Barrister Brief — ${caseData?.defendant_name || caseData?.title || "Appellant"} — ${previewDate}`;
+    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
+    const previewFooterLabel = `Documented from the Criminal Law /Appeal Management Application - Barrister View Report - For ${caseData?.defendant_name || caseData?.title || "Appellant"} ${previewDate}`;
     const defendantName = caseData?.defendant_name || "Appellant";
     const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
     const documentsCount = documents.length;
@@ -482,7 +480,7 @@ export default function BarristerView() {
     .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-style: italic; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .print-footer-page-print::after { content: ''; }
+    .print-footer-page::after { content: ''; }
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -500,7 +498,7 @@ export default function BarristerView() {
       .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .preview-notice { display: none; }
       .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .print-footer-page-print::after { content: counter(page); }
+      .print-footer-page::after { content: "Page " counter(page); }
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
@@ -594,7 +592,7 @@ export default function BarristerView() {
   <div class="print-footer">
     <div class="print-footer-row">
       <span class="print-footer-label">${previewFooterLabel}</span>
-      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
+      <span class="print-footer-page"></span>
     </div>
   </div>
 </body>
@@ -654,7 +652,7 @@ export default function BarristerView() {
 
       // On iOS, open the authenticated URL directly — blob downloads break in Safari
       if (isIOS) {
-        const directUrl = buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
+        const directUrl = await buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
         window.location.assign(directUrl);
         toast.success("Quick Brief opened.");
         return;
