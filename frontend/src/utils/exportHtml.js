@@ -43,7 +43,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body ul, .export-body ol { margin: 8px 0 12px; padding-left: 2.5rem; }
   .export-body li { margin-bottom: 4px; font-size: 12pt; line-height: 1.75; }
   .export-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
-  .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-family: 'Times New Roman', Times, serif; }
+  .export-body th { background: #1d4ed8; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-family: 'Times New Roman', Times, serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; font-family: 'Times New Roman', Times, serif; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
   .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
@@ -70,7 +70,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .section-body li { margin-bottom: 0.4rem; font-size: 12pt; line-height: 1.75; }
   .section-body strong { color: #0f172a; font-weight: 700; }
   .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
-  .section-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .section-body th { background: #1d4ed8; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .section-body td { padding: 7px 10px; border: 1px solid #e2e8f0; }
   .section-body tr:nth-child(even) td { background: #f8fafc; }
 
