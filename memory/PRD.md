@@ -4,7 +4,7 @@
 Criminal appeals case management application for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting (Free, $150 Full Detailed, $200 Extensive Log, Barrister View).
 
 ## Core Requirements
-- **Report Tiers:** Strictly scale in depth. Free → $150 (2x) → $200 (3x). Barrister View locked until all 3 are generated/paid.
+- **Report Tiers:** Strictly scale in depth. Free -> $150 (2x) -> $200 (3x). Barrister View locked until all 3 are generated/paid.
 - **Report Language:** STRICT third-person educational tool. Forensic appellate language. Australian English only.
 - **UI:** Forced light mode. Blue/slate/navy palette. Bright blue action buttons with white text.
 - **Legal Accuracy:** Cite current, state-specific, and federal Australian legislation with correct section numbers. NO NSW defaults.
@@ -12,7 +12,8 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 
 ## Architecture
 - React frontend + FastAPI backend + MongoDB
-- Emergent Google Auth, OpenAI GPT-4o (Emergent LLM Key), Resend emails, PayID payments
+- Emergent Google Auth, OpenAI GPT-4o (Emergent LLM Key), Resend emails
+- Payment methods: Stripe (card/Apple Pay/Google Pay) + PayID (bank transfer)
 - Capacitor v7 configured for native mobile
 
 ## Guardrail Coverage (17/17 files — ALL PASS)
@@ -26,8 +27,23 @@ Files covered: analysis.py, contradictions.py, documents.py, export.py, grounds.
 
 ## What's Been Implemented
 
+### Stripe Payment Integration (Apr 2026)
+- **Backend:** `/api/payments/stripe/create-checkout` creates Stripe Checkout sessions
+- **Backend:** `/api/payments/stripe/status/{session_id}` polls payment status
+- **Backend:** `/api/webhook/stripe` handles Stripe webhook events
+- **Frontend:** `PaymentModal.jsx` updated with two payment methods: Card (Stripe) and PayID (bank transfer)
+- **Frontend:** `PaymentSuccessPage.jsx` handles Stripe redirect with status polling
+- **Frontend:** Fixed AuthCallback conflict with `/payment-success` route (session_id param)
+- Apple Pay and Google Pay available automatically through Stripe Checkout
+
+### Security Hardening (Apr 2026)
+- `hmac.compare_digest` for timing-safe password comparison in auth.py
+- `slowapi` rate limiting on login (5/min) and register (3/min) endpoints
+- Shared limiter instance via config.py for consistency
+- Password minimum length increased to 8 characters
+
 ### Global Anti-Hallucination Layer (Feb 2026)
-- **llm_service.py** `_apply_task_guardrails()`: Universal anti-hallucination rules injected into EVERY LLM call. Forensic language for non-report tasks. No NSW default. Australian English.
+- **llm_service.py** `_apply_task_guardrails()`: Universal anti-hallucination rules injected into EVERY LLM call
 - **17 LLM-calling files** audited and hardened with all 4 guardrail categories
 
 ### Legislation Framework (Feb 2026)
@@ -41,12 +57,18 @@ Files covered: analysis.py, contradictions.py, documents.py, export.py, grounds.
 
 ### Test Suite
 - 21 passing framework integrity tests
+- Stripe payment integration tests (22 pass)
 
 ### Previously Completed
 - All prior features (Barrister View, PDF exports, Google Auth, Safari fix, CI/CD, forensic language enforcer, pipeline_models.py, Stats page)
 
 ## Backlog
-- P1: Verify "How It Works" page screenshots
-- P1: Build Native Mobile App (Capacitor v7)
+- P0: Session token exposure in URLs — replace with short-lived signed download tokens
+- P1: `server.py` monolith refactor — extract routes/services systematically
+- P1: Clean up test/debug files from root directory
+- P1: Verify "How It Works" page screenshots (IMG_4323-4327)
+- P1: Caselaw search feature improvement
+- P2: Verify "Success Stories" page ethical compliance
+- P2: Build Native Mobile App (Capacitor v7)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat, Case sharing

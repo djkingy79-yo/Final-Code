@@ -6,15 +6,13 @@ Handles all authentication: Email/Password + Google OAuth via Emergent
 from fastapi import APIRouter, HTTPException, Response, Request
 from pydantic import BaseModel
 from datetime import datetime, timezone, timedelta
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 import hmac
 import httpx
 import uuid
 import hashlib
 import secrets
 
-from config import db, get_admin_emails
+from config import db, get_admin_emails, limiter
 from auth_utils import get_current_user
 import logging
 
@@ -23,7 +21,6 @@ logger = logging.getLogger(__name__)
 ADMIN_EMAILS = get_admin_emails()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-limiter = Limiter(key_func=get_remote_address)
 
 # ============ PASSWORD UTILITIES ============
 
@@ -53,32 +50,35 @@ class LoginRequest(BaseModel):
 # ============ AUTH ENDPOINTS ============
 
 @router.post("/register")
-async def register_user(request: RegisterRequest, response: Response):
+@limiter.limit("3/minute")
+async def register_user(request: Request, response: Response):
     """Register a new user with email/password"""
+    body = await request.json()
+    reg_data = RegisterRequest(**body)
     # Validate email format
-    if not request.email or '@' not in request.email:
+    if not reg_data.email or '@' not in reg_data.email:
         raise HTTPException(status_code=400, detail="Invalid email format")
     
     # Check password strength
-    if len(request.password) < 8:
+    if len(reg_data.password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
-    if request.password.isdigit() or request.password.isalpha():
+    if reg_data.password.isdigit() or reg_data.password.isalpha():
         raise HTTPException(status_code=400, detail="Password must contain both letters and numbers")
     
     # Check if user exists
-    existing_user = await db.users.find_one({"email": request.email.lower()}, {"_id": 0})
+    existing_user = await db.users.find_one({"email": reg_data.email.lower()}, {"_id": 0})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered. Please login instead.")
     
     # Hash password
-    hashed_password, salt = hash_password(request.password)
+    hashed_password, salt = hash_password(reg_data.password)
     
     # Create user
     user_id = f"user_{uuid.uuid4().hex[:12]}"
     user_doc = {
         "user_id": user_id,
-        "email": request.email.lower(),
-        "name": request.name,
+        "email": reg_data.email.lower(),
+        "name": reg_data.name,
         "password_hash": hashed_password,
         "password_salt": salt,
         "auth_type": "email",
@@ -112,17 +112,20 @@ async def register_user(request: RegisterRequest, response: Response):
     
     return {
         "user_id": user_id,
-        "email": request.email.lower(),
-        "name": request.name,
+        "email": reg_data.email.lower(),
+        "name": reg_data.name,
         "picture": None,
         "session_token": session_token
     }
 
 @router.post("/login")
-async def login_user(request: LoginRequest, response: Response):
+@limiter.limit("5/minute")
+async def login_user(request: Request, response: Response):
     """Login with email/password"""
+    body = await request.json()
+    login_data = LoginRequest(**body)
     # Find user
-    user_doc = await db.users.find_one({"email": request.email.lower()}, {"_id": 0})
+    user_doc = await db.users.find_one({"email": login_data.email.lower()}, {"_id": 0})
     
     if not user_doc:
         raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -132,7 +135,7 @@ async def login_user(request: LoginRequest, response: Response):
         raise HTTPException(status_code=401, detail="This account uses Google login. Please sign in with Google, or set a password first from your profile.")
     
     # Verify password
-    if not verify_password(request.password, user_doc["password_hash"], user_doc["password_salt"]):
+    if not verify_password(login_data.password, user_doc["password_hash"], user_doc["password_salt"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
     # Create session

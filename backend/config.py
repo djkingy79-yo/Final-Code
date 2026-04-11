@@ -80,3 +80,8 @@ _WARN_ENV = ['RESEND_API_KEY']
 _warn_missing = [k for k in _WARN_ENV if not os.environ.get(k)]
 if _warn_missing:
     logger.warning(f"Optional env vars missing (email features will not work): {', '.join(_warn_missing)}")
+
+# ── Shared Rate Limiter (process-safe via slowapi) ──
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+limiter = Limiter(key_func=get_remote_address)
