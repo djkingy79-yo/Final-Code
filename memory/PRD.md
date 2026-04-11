@@ -114,6 +114,9 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **Quick Brief blank page FIXED**: Removed iOS-specific link.click() approach; now uses axios blob download universally.
 - **Acceptance Package removed entirely**: Button, handler function, and Briefcase import deleted from BarristerView.
 - **Barrister View Word export FIXED**: Downloads .doc file directly via blob instead of broken HTML preview.
+- **Build Arguments & Build Submissions Draft REMOVED**: Both buttons + API functions + result display sections removed from PipelineProgress.jsx (caused 500 errors).
+- **Pipeline Progress heading restyled**: Changed to text-xl text-blue-600 (bigger, bright blue).
+- **Progress export completely rewritten**: Now includes TOC (2-column grid), Case Summary, Case Readiness Score, Pipeline Summary, AI Progress Analysis (properly formatted with mdToHtml), and Appeal Checklist. Header changed from purple to blue.
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
