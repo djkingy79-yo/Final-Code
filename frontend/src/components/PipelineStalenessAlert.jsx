@@ -41,25 +41,25 @@ export default function PipelineStalenessAlert({ caseId }) {
   }
 
   return (
-    <div className="rounded border p-4 mb-4" data-testid="staleness-stale">
+    <div className="rounded-lg border-2 border-blue-600 bg-blue-50 p-4 mb-4" data-testid="staleness-stale">
       <div className="flex items-center justify-between gap-3">
-        <div className="font-medium text-yellow-700">Pipeline refresh recommended</div>
+        <div className="font-bold text-blue-700 text-sm">Pipeline Refresh Recommended</div>
         <button
           type="button"
           onClick={load}
           disabled={loading}
-          className="px-2 py-1 rounded border text-xs font-medium"
+          className="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700"
           data-testid="staleness-refresh-btn"
         >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
-      <div className="mt-2 text-xs opacity-80">
+      <div className="mt-2 text-xs text-blue-800 font-semibold">
         One or more staged artifacts appear older than the latest case materials.
       </div>
 
-      <div className="mt-3 space-y-2 text-xs">
+      <div className="mt-3 space-y-2 text-xs text-blue-700 font-medium">
         {staleness.extract_missing_for_documents?.length > 0 ? (
           <div>Documents without extracts: {staleness.extract_missing_for_documents.length}</div>
         ) : null}

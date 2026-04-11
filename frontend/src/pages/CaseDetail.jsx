@@ -911,10 +911,10 @@ const CaseDetail = ({ user }) => {
     let body = `<div class="export-header" style="background:#2563eb;"><h1>Case Progress</h1><p>${escHtml(title)} - ${escHtml(defendant)}</p></div>`;
 
     // TOC
-    body += `<div class="toc-container" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
-      <p class="toc-heading" style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${tocItems.length} Sections)</p>
-      <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+    body += `<div class="toc-container" style="padding:14px 32px;">
+      <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocItems.length} SECTIONS)</p>
+      <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
+        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:12pt;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>`;
 
@@ -1004,10 +1004,10 @@ const CaseDetail = ({ user }) => {
     if (progressAnalysis) tocSections.push("Progress Analysis");
 
     body += `<div class="export-body" style="page-break-after:always;">
-      <div class="toc-container">
-        <p class="toc-heading">Contents (${tocSections.length} Sections)</p>
-        <div class="toc-grid">
-          ${tocSections.map((s, i) => `<div class="toc-item"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+      <div class="toc-container" style="padding:14px 32px;">
+        <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
+        <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
+          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:12pt;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
         </div>
       </div>
     </div>`;

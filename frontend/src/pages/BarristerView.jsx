@@ -419,10 +419,10 @@ export default function BarristerView() {
 
     // Build TOC from sections
     const tocHtml = sections.length > 1
-      ? `<div class="toc-container" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
-          <p class="toc-heading" style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${sections.length} Sections)</p>
-          <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-            ${sections.map((s, i) => `<div class="toc-item" style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
+      ? `<div class="toc-container" style="padding:14px 32px;">
+          <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${sections.length} SECTIONS)</p>
+          <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
+            ${sections.map((s, i) => `<div class="toc-item" style="font-size:12pt;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
           </div>
         </div>`
       : "";
@@ -734,19 +734,10 @@ export default function BarristerView() {
 
   const handleQuickBrief = async () => {
     try {
-      toast.info("Generating Quick Brief PDF...");
-
-      const response = await axios.get(`${API}/cases/${caseId}/reports/barrister-quick-brief`, {
-        responseType: "blob",
-        timeout: 60000,
-      });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      await iosShareOrDownload(
-        blob,
-        `Quick_Brief_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.pdf`,
-        "application/pdf"
-      );
-      toast.success("Quick Brief downloaded.");
+      toast.info("Opening Quick Brief...");
+      const directUrl = await buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
+      window.open(directUrl, '_blank');
+      toast.success("Quick Brief opened — use Share to save or print.");
     } catch (error) {
       toast.error("Failed to generate the Quick Brief PDF.");
     }

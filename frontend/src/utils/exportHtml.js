@@ -53,10 +53,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body .note-content { font-size: 12pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; font-family: 'Times New Roman', Times, serif; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
-  .toc-container { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 14px 32px; }
-  .toc-heading { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin: 0 0 6px; }
-  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
-  .toc-item { font-size: 10pt; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }
+  .toc-container { background: #ffffff; padding: 14px 32px; }
+  .toc-heading { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 800; margin: 0 0 10px; font-family: 'Times New Roman', Times, serif; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+  .toc-item { font-size: 12pt; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; font-weight: 700; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
 
   /* ── Tailwind utilities for captured DOM content ── */
   .flex { display: flex; }
