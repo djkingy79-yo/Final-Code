@@ -342,6 +342,11 @@ async def auto_generate_timeline(case_id: str, request: Request):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
+    # ── Soft metadata validation (logs warnings, does not block) ──
+    from services.case_validation import validate_case_metadata, log_metadata_warnings
+    metadata_val = validate_case_metadata(case)
+    log_metadata_warnings(case_id, metadata_val, "timeline")
+
     documents = await db.documents.find(
         {"case_id": case_id, "user_id": user.user_id},
         {"_id": 0, "file_data": 0}

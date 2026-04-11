@@ -380,6 +380,17 @@ const CaseDetail = ({ user }) => {
       toast.error("No documents with extracted text. Please upload documents and extract text first.");
       return;
     }
+
+    // Soft metadata gate
+    const warnings = caseData?.metadata_warnings || [];
+    if (warnings.length > 0) {
+      const proceed = window.confirm(
+        "Missing case details may reduce accuracy:\n\n" +
+        warnings.map(w => "• " + w).join("\n") +
+        "\n\nProceed anyway?"
+      );
+      if (!proceed) return;
+    }
     
     setGeneratingTimeline(true);
     toast.info("Analysing documents to generate timeline... This may take 30-60 seconds.");
@@ -664,6 +675,16 @@ const CaseDetail = ({ user }) => {
   };
 
   const handleAutoIdentifyGrounds = async () => {
+    // Soft metadata gate — warn but don't block
+    const warnings = caseData?.metadata_warnings || [];
+    if (warnings.length > 0) {
+      const proceed = window.confirm(
+        "Missing case details may reduce accuracy:\n\n" +
+        warnings.map(w => "• " + w).join("\n") +
+        "\n\nProceed anyway?"
+      );
+      if (!proceed) return;
+    }
     setAutoIdentifying(true);
     toast.info("Starting AI analysis — this runs in the background for large cases.");
     try {
@@ -1485,6 +1506,7 @@ const CaseDetail = ({ user }) => {
               paymentSummary={paymentSummary}
               navigate={navigate}
               isAdmin={user?.is_admin}
+              caseData={caseData}
             />
           </TabsContent>
 

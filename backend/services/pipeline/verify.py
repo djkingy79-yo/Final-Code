@@ -165,6 +165,8 @@ STRICT RULES:
         clean_law_sections.append(ls)
 
     # DO NOT UNDO — Post-process: strip any similar cases with placeholder names
+    # Enhanced with citation hallucination detection
+    from services.case_validation import validate_citation
     clean_similar_cases = []
     for sc in parsed.get("similar_cases", []):
         name = sc.get("case_name", "")
@@ -173,6 +175,13 @@ STRICT RULES:
             continue
         if citation and ("verification needed" in citation.lower() or "not available" in citation.lower()):
             sc["citation"] = None
+        # Validate citation format against known Australian court abbreviations
+        full_ref = f"{name} {citation or ''}".strip()
+        result = validate_citation(full_ref)
+        if not result["valid"]:
+            logger.info(f"Stripped hallucinated similar case in verify: {full_ref[:80]} ({result['reason']})")
+            continue
+        sc["verification_status"] = "unverified — check on AustLII"
         clean_similar_cases.append(sc)
 
     # DO NOT UNDO — Enforce forensic language in verification text fields

@@ -32,6 +32,7 @@ from services.pipeline_orchestrator import (
 )
 from config import is_admin_user
 from routers.report_exports import export_report_pdf, export_report_docx
+from services.case_validation import validate_case_metadata, log_metadata_warnings
 
 router = APIRouter(prefix="/api")
 
@@ -107,13 +108,23 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
         title = report_titles.get(report_type, "Report")
         if aggressive_mode:
             title = f"{title} (Aggressive)"
+
+        # ── Citation post-processing: strip hallucinated citations ──
+        from services.case_validation import strip_hallucinated_citations, validate_similar_cases, validate_law_sections
+        clean_analysis = strip_hallucinated_citations(analysis_result.get("analysis", ""))
+        clean_grounds = []
+        for g in analysis_result.get("grounds_of_merit", []):
+            g["similar_cases"] = validate_similar_cases(g.get("similar_cases", []))
+            g["law_sections"] = validate_law_sections(g.get("law_sections", []))
+            clean_grounds.append(g)
+
         await db.reports.update_one(
             {"report_id": report_id},
             {"$set": {
                 "status": "completed",
                 "title": title,
                 "content": {
-                    "analysis": analysis_result["analysis"],
+                    "analysis": clean_analysis,
                     "case_title": (analysis_result.get("case_data") or {}).get("title", ""),
                     "defendant": (analysis_result.get("case_data") or {}).get("defendant_name", ""),
                     "document_count": analysis_result.get("document_count", 0),
@@ -121,7 +132,7 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "aggressive_mode": aggressive_mode,
                     "draft_source": "pipeline" if (analysis_result.get("pipeline_metadata") or {}).get("status") in ("fresh", "refreshed") else "legacy",
                 },
-                "grounds_of_merit": analysis_result.get("grounds_of_merit", []),
+                "grounds_of_merit": clean_grounds,
                 "metadata": {
                     **(analysis_result.get("metadata") or {}),
                     "pipeline_refresh_before_draft": pipeline_refresh_result,
@@ -292,6 +303,12 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
 
     # Create a placeholder report with "generating" status and return immediately
     report_id = f"rpt_{uuid.uuid4().hex[:12]}"
+
+    # ── Soft metadata validation (warns but does not block) ──
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    metadata_validation = validate_case_metadata(case) if case else {"complete": False, "warnings": ["Case not found"]}
+    log_metadata_warnings(case_id, metadata_validation, f"report:{report_type}")
+
     report_titles = {
         "quick_summary": "Quick Case Summary",
         "full_detailed": "Full Detailed Legal Analysis",
@@ -320,6 +337,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
         _run_report_generation(report_id, case_id, user.user_id, report_type, aggressive_mode)
     )
 
+    placeholder["metadata_warnings"] = metadata_validation.get("warnings", [])
     return placeholder
 
 

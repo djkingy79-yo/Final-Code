@@ -135,7 +135,8 @@ const ReportsSection = ({
   documents,
   paymentSummary,
   navigate,
-  isAdmin
+  isAdmin,
+  caseData
 }) => {
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [selectedReportType, setSelectedReportType] = useState(null);
@@ -147,6 +148,8 @@ const ReportsSection = ({
   const [pipelineVerifyLoading, setPipelineVerifyLoading] = useState(false);
   const [pipelineVerifyResult, setPipelineVerifyResult] = useState(null);
   const [pipelineVerifyError, setPipelineVerifyError] = useState("");
+  const [showMetadataConfirm, setShowMetadataConfirm] = useState(false);
+  const [pendingMetadataAction, setPendingMetadataAction] = useState(null);
 
   const requiredReportTypes = ["quick_summary", "full_detailed", "extensive_log"];
   const latestPaymentStatus = paymentSummary?.latest_status_by_feature || {};
@@ -258,6 +261,21 @@ const ReportsSection = ({
       toast.error("Please upload documents before generating a report");
       return;
     }
+
+    // Soft metadata gate — warn if critical fields are missing
+    const warnings = caseData?.metadata_warnings || [];
+    if (warnings.length > 0) {
+      setPendingMetadataAction(() => () => _proceedWithGeneration(reportType));
+      setShowMetadataConfirm(true);
+      return;
+    }
+
+    _proceedWithGeneration(reportType);
+  };
+
+  const _proceedWithGeneration = (reportType) => {
+    setShowMetadataConfirm(false);
+    setPendingMetadataAction(null);
     
     // Admin bypasses all payment
     if (isAdmin) {
@@ -268,7 +286,6 @@ const ReportsSection = ({
     // Check if this report type is free
     const reportTypeInfo = REPORT_TYPES.find(t => t.value === reportType);
     if (reportTypeInfo?.isFree) {
-      // Free report - generate directly without payment
       generateReport(reportType);
       return;
     }
@@ -278,7 +295,6 @@ const ReportsSection = ({
     const featureType = getReportPaymentFeature(reportType);
     const alreadyUnlocked = featureType ? unlockedFeatures[featureType] : false;
     if (existingReport || alreadyUnlocked) {
-      // Already generated this type, just regenerate
       generateReport(reportType);
       return;
     }
@@ -1169,6 +1185,48 @@ const ReportsSection = ({
             <AlertDialogCancel className="bg-blue-700 text-white hover:bg-blue-600 border-blue-700">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDeleteReport} className="bg-red-600 hover:bg-red-700 text-white">
               Delete Report
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Metadata Warning Confirmation Dialog */}
+      <AlertDialog open={showMetadataConfirm} onOpenChange={(open) => { if (!open) { setShowMetadataConfirm(false); setPendingMetadataAction(null); }}}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-amber-700">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              Missing Case Details
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2">
+                <p className="text-sm text-slate-600">
+                  Some case details are missing. This may reduce the accuracy and jurisdiction-specificity of the generated analysis:
+                </p>
+                <ul className="space-y-1.5">
+                  {(caseData?.metadata_warnings || []).map((w, i) => (
+                    <li key={i} className="text-xs text-amber-700 flex items-start gap-1.5 bg-amber-50 p-2 rounded">
+                      <span className="mt-0.5 shrink-0">&#x26A0;</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-slate-500 pt-1">
+                  You can still proceed, but setting these fields first will significantly improve report quality.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-300">
+              Go Back &amp; Fix
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { if (pendingMetadataAction) pendingMetadataAction(); }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              data-testid="metadata-proceed-btn"
+            >
+              Generate Anyway
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

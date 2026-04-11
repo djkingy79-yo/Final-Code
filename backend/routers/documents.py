@@ -45,10 +45,10 @@ async def _background_auto_detect_metadata(case_id: str, user_id: str, content_t
         detect_prompt = f"""Analyse this criminal case document and extract metadata.
 Return ONLY valid JSON (no markdown):
 {{
-  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
+  "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences, cybercrime, arson, perjury, environmental>",
   "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH>",
   "sentence": "<exact sentence if stated, else null>",
-  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act, federal>",
   "court": "<court name if found>",
   "case_number": "<case number if found>",
   "defendant_name": "<defendant full name if found>"
@@ -57,13 +57,13 @@ Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unkno
 
 DOCUMENT ({filename}):
 {content_text[:20000]}"""
-        system_msg = "Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. Use Australian English spelling. Return only valid JSON."
+        system_msg = "Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. If the case is a Commonwealth/federal prosecution (e.g. Criminal Code Act 1995 (Cth), Crimes Act 1914 (Cth), or prosecuted by the Commonwealth DPP), set state to 'federal'. Use Australian English spelling. Return only valid JSON."
         raw = await call_llm_for_json(system_msg, detect_prompt, f"upload_detect_{case_id}", max_tokens=2000, timeout_seconds=60)
         meta = raw if isinstance(raw, dict) else {}
         if not meta:
             return
-        valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
-        valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+        valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences","cybercrime","arson","perjury","environmental"]
+        valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","federal"]
         update_fields = {}
         if meta.get("offence_category") in valid_cats:
             update_fields["offence_category"] = meta["offence_category"]

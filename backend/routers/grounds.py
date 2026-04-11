@@ -910,6 +910,11 @@ async def auto_identify_grounds(case_id: str, request: Request):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
+    # ── Soft metadata validation (logs warnings, does not block) ──
+    from services.case_validation import validate_case_metadata, log_metadata_warnings
+    metadata_val = validate_case_metadata(case)
+    log_metadata_warnings(case_id, metadata_val, "auto_identify_grounds")
+
     # Check if there's already a running task for this case
     active_task = await db.pipeline_tasks.find_one(
         {"case_id": case_id, "user_id": user.user_id, "task_type": "auto_identify", "status": {"$in": ["pending", "extracting", "finalising"]}},
@@ -948,7 +953,8 @@ async def auto_identify_grounds(case_id: str, request: Request):
     return {
         "task_id": task_id,
         "status": "started",
-        "message": f"Analysing {len(documents)} document(s) in the background. This may take a few minutes for large cases."
+        "message": f"Analysing {len(documents)} document(s) in the background. This may take a few minutes for large cases.",
+        "metadata_warnings": metadata_val.get("warnings", []),
     }
 
 
