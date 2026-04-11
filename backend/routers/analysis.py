@@ -116,16 +116,19 @@ Analyse the case progress and provide a comprehensive progress report using Aust
 JURISDICTION: {state_name}
 {offence_context}
 
-LEGISLATION ACCURACY:
-- Do NOT invent or fabricate any legislation, Act, section, or case authority.
-- Only cite Acts that are current and in force for the relevant jurisdiction.
-- Distinguish between the appellate pathway legislation (e.g., Criminal Appeal Act) and the substantive criminal legislation (e.g., Crimes Act).
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent or fabricate any legislation, Act, section, case authority, dates, or names.
+- Only cite Acts that are current and in force for {state_name}.
+- Do NOT default to NSW legislation if this case is from a different jurisdiction.
+- If the jurisdiction is UNSPECIFIED, flag this explicitly and note which jurisdiction's legislation is being applied provisionally.
+- Do NOT fabricate sentencing statistics, comparator cases, or appellate outcomes.
 
-LANGUAGE REQUIREMENTS:
+FORENSIC LANGUAGE:
 - Use strict third-person forensic appellate language throughout.
 - Do NOT use "we", "us", "our", "you", "your", or "your legal team".
 - Use hedging qualifiers: "It is arguable that", "There is a tenable basis", "It is submitted that".
 - Do NOT make definitive assertions such as "The trial judge erred" — instead use "It is arguable that the trial judge erred".
+- Do NOT state that an appeal will succeed or is likely to succeed.
 
 Structure your analysis with these sections:
 

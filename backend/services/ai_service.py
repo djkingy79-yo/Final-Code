@@ -2,6 +2,11 @@
 """
 Criminal Appeal AI - AI Services Module
 Encapsulates all AI/LLM operations for report generation, grounds analysis, etc.
+
+ANTI-HALLUCINATION: extract_law_sections() does NOT default to NSW — returns "UNSPECIFIED"
+if no jurisdiction marker is found in the Act name. Do NOT invent citations.
+FORENSIC LANGUAGE: It is arguable that — all analysis uses forensic appellate framing.
+AUSTRALIAN ENGLISH: All output uses Australian English spelling (analyse, defence, offence).
 """
 import uuid
 import re

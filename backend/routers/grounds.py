@@ -1084,7 +1084,7 @@ Return ONLY a concise appellate pathway string, e.g.:
 Do NOT return JSON. Return only the plain text appellate pathway."""
                     from services.llm_service import call_llm_structured
                     ap_result = await call_llm_structured(
-                        system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision.",
+                        system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision for the specified jurisdiction. Do NOT default to NSW. Do NOT invent section numbers. Use Australian English only.",
                         user_prompt=ap_prompt,
                         session_id=f"appellate_pathway_{ground.get('ground_id', '')}",
                         task_type="general",

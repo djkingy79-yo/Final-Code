@@ -57,7 +57,7 @@ Rules: Read the ACTUAL document. Do NOT default to homicide. If a field is unkno
 
 DOCUMENT ({filename}):
 {content_text[:20000]}"""
-        system_msg = "Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+        system_msg = "Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. Use Australian English spelling. Return only valid JSON."
         raw = await call_llm_for_json(system_msg, detect_prompt, f"upload_detect_{case_id}", max_tokens=2000, timeout_seconds=60)
         meta = raw if isinstance(raw, dict) else {}
         if not meta:
@@ -105,7 +105,7 @@ async def _background_auto_generate(case_id: str, user_id: str):
         # Always regenerate summary to include ALL documents
         try:
             summary = await call_llm_with_fallback(
-                "You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. 3-5 sentences maximum.",
+                "You are a legal analyst. Write a concise factual summary of this criminal case in Australian English. Use third person only. Do NOT invent facts. Do NOT default to NSW if the case is from another jurisdiction. Use forensic language — do not characterise guilt or innocence. 3-5 sentences maximum.",
                 f"Summarise this case based on all available documents:\n{doc_context[:15000]}",
                 f"summary_{case_id}_{len(docs_with_text)}",
                 max_tokens=500,
@@ -134,7 +134,7 @@ CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
 DOCUMENTS:
 {doc_context[:25000]}"""
             tl_result = await call_llm_for_json(
-                "Extract timeline events from Australian criminal case documents. Return only valid JSON array.",
+                "Extract timeline events from Australian criminal case documents. Do NOT invent dates, names, or events not in the documents. Do NOT default to NSW. Use Australian English spelling. Return only valid JSON array.",
                 tl_prompt,
                 f"tl_{case_id}_{len(docs_with_text)}",
                 max_tokens=4000,
@@ -531,7 +531,7 @@ Rules: offence_category MUST be from the provided list. Read ACTUAL content. If 
 
 DOCUMENTS:
 {combined_text[:30000]}"""
-                system_msg = "You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Return only valid JSON."
+                system_msg = "You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. Use Australian English spelling. Return only valid JSON."
                 meta = await call_llm_for_json(system_msg, detect_prompt, f"detect_{case_id}", max_tokens=2000, timeout_seconds=60)
                 if not isinstance(meta, dict):
                     meta = {}

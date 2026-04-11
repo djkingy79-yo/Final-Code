@@ -33,6 +33,11 @@ CRITICAL RULES:
 - Use forensic appellate language: "It is arguable that the trial judge erred...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The trial judge erred" (too definitive at this stage). NOT hedging like "may have", "could potentially" (too weak).
 
 LAW SECTIONS — CRITICAL DISTINCTION:
+
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent or fabricate any legislation, Act names, section numbers, case citations, dates, or facts not supported by the extracted record.
+- If uncertain about any detail, flag that verification is required rather than guessing.
+
 - The "appellate_pathway" field already records WHICH ACT GIVES THE RIGHT TO APPEAL (e.g. s 6(1) Criminal Appeal Act 1912). PREFER substantive legislation in law_sections over repeating the appellate act.
 - law_sections should identify the SUBSTANTIVE legislation that was allegedly breached, misapplied, or engaged by this ground. These are the laws about the OFFENCE, SENTENCING, EVIDENCE, PROCEDURE, or RIGHTS.
 - HOWEVER, if no specific substantive section is directly applicable (e.g. for fresh evidence, ineffective counsel, jury irregularity, constitutional violation, or prosecution misconduct grounds), you MUST STILL include the relevant appellate provision sections or the most closely related procedural/constitutional sections. An empty law_sections array is NOT acceptable — every ground must reference at least one legislative provision.

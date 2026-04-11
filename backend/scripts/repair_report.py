@@ -168,7 +168,7 @@ Do NOT include any other section headings."""
             continue
 
         try:
-            system_prompt = "You are a senior Australian criminal appeals analyst generating a section of a legal report. Write substantive, case-specific analysis with real legal authorities. Use Australian English and third-person language only."
+            system_prompt = "You are a senior Australian criminal appeals analyst generating a section of a legal report. Write substantive, case-specific analysis with real legal authorities. Do NOT invent or fabricate case citations, Act names, section numbers, or facts. Do NOT default to NSW legislation for non-NSW cases. Use forensic appellate language — it is arguable that, not declarative assertions. Use Australian English and third-person language only."
             
             result = await call_llm_with_fallback(
                 system_prompt=system_prompt,

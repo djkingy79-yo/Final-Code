@@ -61,10 +61,15 @@ Do not infer beyond the text.
 
 ANTI-HALLUCINATION — ABSOLUTE:
 - Do NOT invent facts, dates, names, or events not in the document.
-- Do NOT assume the jurisdiction is NSW or any other state unless the document explicitly states it.
+- Do NOT default to NSW or assume any jurisdiction unless the document explicitly states it.
 - If a fact is ambiguous, mark confidence as "weak".
 - Use Australian English spelling throughout (analyse, defence, offence, behaviour).
-- Do NOT fabricate case citations, section numbers, or Act names."""
+- Do NOT fabricate case citations, section numbers, or Act names.
+
+FORENSIC LANGUAGE:
+- Use neutral, evidentiary language. Do NOT characterise events as proving guilt or innocence.
+- Frame extractions as factual observations: "The document states..." NOT "This proves..."
+- It is arguable that — use forensic appellate hedging where classification is borderline."""
 
     user_prompt = f"""Extract structured material from this criminal case document.
 

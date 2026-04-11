@@ -237,23 +237,30 @@ def _basic_text_validation(result: str) -> bool:
 def _apply_task_guardrails(system_prompt: str, task_type: str, require_json: bool) -> str:
     """DO_NOT_UNDO — Report generation MUST NOT include 'cautious language' guardrail.
     That rule was stripping assertive legal analysis and making reports weak/generic."""
+    # Universal anti-hallucination and jurisdiction fidelity guardrails
+    # applied to EVERY LLM call regardless of task type.
+    universal_guardrails = (
+        "\n\nUNIVERSAL ANTI-HALLUCINATION RULES (ABSOLUTE — APPLY TO ALL OUTPUT):\n"
+        "- Do NOT invent or fabricate case names, citations, section numbers, Act names, judge names, dates, or penalty amounts.\n"
+        "- If uncertain about a specific citation or section number, say that verification is required — do NOT guess.\n"
+        "- Do NOT default to NSW legislation when the jurisdiction is unspecified or is a different state.\n"
+        "- Distinguish factual extraction from legal inference.\n"
+        "- Use Australian English spelling throughout (analyse, defence, offence, behaviour, honour, favour, centre, judgement).\n"
+    )
+
     # For report generation, the system prompt already contains comprehensive guardrails.
     # Adding conflicting "cautious language" rules undermines the report quality.
     if task_type == "report_generation":
         guardrails = (
-            "\n\nSAFETY RULES:\n"
-            "- Do not invent authorities, statutory provisions, or case citations.\n"
-            "- If uncertain about a specific citation, say that verification is required.\n"
-            "- Distinguish factual extraction from legal inference.\n"
+            universal_guardrails
+            + "- If uncertain about a specific citation, say that verification is required.\n"
         )
     else:
         guardrails = (
-            "\n\nSAFETY / RELIABILITY RULES:\n"
-            "- Do not invent authorities, statutory provisions, or case citations.\n"
-            "- If uncertain, say that verification is required.\n"
-            "- Distinguish factual extraction from legal inference.\n"
-            "- Use cautious, conditional language for legal analysis.\n"
-            "- Do not state that an appeal will succeed.\n"
+            universal_guardrails
+            + "- Use cautious, conditional language for legal analysis (\"it is arguable\", \"it is contended\", \"there is a tenable argument\").\n"
+            + "- Do NOT state that an appeal will succeed or is likely to succeed.\n"
+            + "- Do NOT use declarative framing: \"The judge erred\", \"This proves\", \"The sentence is excessive\". The Court makes findings; the brief identifies arguable errors.\n"
         )
 
     if require_json:

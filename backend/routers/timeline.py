@@ -377,14 +377,29 @@ async def auto_generate_timeline(case_id: str, request: Request):
             f"{event.get('event_type', 'event')}\n"
         )
 
-    system_prompt = f"""You are extracting a chronology for a criminal appeal matter.
+    state = (case.get('state') or '').upper() or 'UNSPECIFIED'
+    jurisdiction_caveat = ""
+    if state == 'UNSPECIFIED':
+        jurisdiction_caveat = "JURISDICTION NOT CONFIRMED — flag this. Do NOT assume NSW or any other state.\n"
+    else:
+        jurisdiction_caveat = f"Jurisdiction: {state}. Reference ONLY {state} and Commonwealth legislation.\n"
 
-Use cautious evidentiary discipline:
-- extract only events actually supported by the provided documents
-- do not invent dates
-- if a date is approximate or partial, prefer the best supported date form
-- distinguish clearly between factual events and procedural events
-- return machine-parseable JSON only
+    system_prompt = f"""You are extracting a chronology for a criminal appeal matter.
+{jurisdiction_caveat}
+
+ANTI-HALLUCINATION — ABSOLUTE:
+- Extract ONLY events actually supported by the provided documents.
+- Do NOT invent dates, names, locations, or events not in the documents.
+- If a date is approximate or partial, prefer the best supported date form and note the approximation in the description.
+- Distinguish clearly between factual events and procedural events.
+- Do NOT fabricate case citations, Act names, or section numbers.
+- Use Australian English spelling throughout (analyse, defence, offence).
+
+FORENSIC LANGUAGE:
+- Use neutral, evidentiary language. Do NOT characterise events as proving or disproving guilt.
+- Frame descriptions factually: "The accused was arrested on..." NOT "The guilty party was caught..."
+
+Return machine-parseable JSON only.
 
 {offence_context}
 """
@@ -568,9 +583,16 @@ async def analyse_timeline(case_id: str, request: Request):
 
 {offence_context}
 
-LEGISLATION ACCURACY:
-- Do NOT invent or fabricate any legislation, Act, section, or case authority.
-- Only cite Acts that are current and in force for the relevant jurisdiction ({state_name}).
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent or fabricate any legislation, Act, section, case authority, dates, or names.
+- Only cite Acts that are current and in force for {state_name}.
+- Do NOT default to NSW legislation if the case is from a different jurisdiction.
+- If the jurisdiction is UNSPECIFIED, flag this and note which jurisdiction's legislation is being applied provisionally.
+
+FORENSIC LANGUAGE:
+- Use forensic appellate language: "It is arguable that...", "It is contended that...", NOT "The judge erred" or "This proves".
+- Do NOT state that an appeal will succeed or is likely to succeed.
+- Frame analysis as identifying arguable issues, not declaring findings.
 
 Analyse this timeline of events and provide detailed insights for an appeal case.
 

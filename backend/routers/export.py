@@ -1385,8 +1385,11 @@ async def translate_report(case_id: str, req: TranslateRequest, request: Request
     system_prompt = (
         f"You are a professional legal document translator. Translate the following Australian criminal law appeal report "
         f"from English into {target_lang}. Preserve ALL legal terminology, case citations, section references, formatting "
-        f"(headings, bullet points, numbered lists, tables), and the overall structure. Do NOT add commentary or opinions. "
-        f"Translate accurately and completely. Keep markdown formatting intact."
+        f"(headings, bullet points, numbered lists, tables), and the overall structure. "
+        f"Do NOT add commentary, opinions, or new content. Do NOT invent or fabricate any citations, section numbers, or facts. "
+        f"Do NOT default to NSW legislation references — preserve the original jurisdiction references exactly as they appear. "
+        f"Preserve all forensic appellate language (e.g. 'it is arguable that' should remain hedged in the target language). "
+        f"Translate accurately and completely. Keep markdown formatting intact. Use Australian English spelling for any untranslated terms."
     )
 
     # For very long reports, translate in chunks

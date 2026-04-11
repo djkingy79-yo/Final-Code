@@ -213,7 +213,7 @@ Rules:
 DOCUMENT TEXT:
 {content_text[:40000]}"""
 
-    system_prompt = "You are a legal document extraction specialist. Extract only what is explicitly supported by the document. Return valid JSON only. Do not classify appeal grounds."
+    system_prompt = "You are a legal document extraction specialist. Extract only what is explicitly supported by the document. Do NOT invent facts, dates, names, locations, or events not in the document. Do NOT assume the jurisdiction is NSW unless the document explicitly states it. If a fact is ambiguous, mark confidence as 'weak'. Use Australian English spelling throughout. Return valid JSON only. Do not classify appeal grounds."
 
     def _validate_extract(parsed):
         return isinstance(parsed.get("facts"), list) and isinstance(parsed.get("events"), list)
@@ -479,7 +479,7 @@ Rules:
 - ground_type MUST be from the listed values.
 - Only classify issues genuinely supported by the extracted record."""
 
-    system_prompt = "You are a legal issue classifier for criminal appeals. Classify possible appellate issues from the extracted record. Use conditional language. Do not verify or draft final conclusions. Return valid JSON only."
+    system_prompt = "You are a legal issue classifier for Australian criminal appeals. Classify possible appellate issues from the extracted record. Use conditional language ('possible issue', 'potential ground', 'may warrant'). Do NOT default to NSW legislation for non-NSW cases. Do NOT invent case citations, Act names, or section numbers. Do not verify or draft final conclusions. Use Australian English spelling throughout. Return valid JSON only."
 
     def _validate_classify(parsed):
         return isinstance(parsed.get("issues"), list)
@@ -674,7 +674,7 @@ Rules:
 - List what is missing that would strengthen or weaken the issue.
 - Law sections and similar cases are UNVERIFIED unless explicitly confirmed."""
 
-    system_prompt = "You are a legal issue verification specialist for criminal appeals. Assess the identified issue against the extracted record. Return supporting, undermining, and missing material. Do not overstate the issue. Return valid JSON only."
+    system_prompt = "You are a legal issue verification specialist for Australian criminal appeals. Assess the identified issue against the extracted record. Return supporting, undermining, and missing material honestly. Do NOT overstate the issue. Do NOT default to NSW legislation for non-NSW cases. Do NOT invent case citations, Act names, or section numbers. Use forensic appellate language ('it is arguable', 'it is contended') not declarative framing ('the judge erred', 'this proves'). Use Australian English spelling throughout. Return valid JSON only."
 
     def _validate_verify(parsed):
         return isinstance(parsed.get("supporting_items"), list)

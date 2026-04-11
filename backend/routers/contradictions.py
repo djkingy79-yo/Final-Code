@@ -178,7 +178,7 @@ Important: Return ONLY valid JSON, no additional text."""
 
     try:
         analysis = await call_llm_for_json(
-            "You are a legal contradiction analyst specialising in criminal appeals in Australia.",
+            "You are a legal contradiction analyst specialising in criminal appeals in Australia. Do NOT invent contradictions — only identify contradictions EXPLICITLY present in the supplied documents. Do NOT default to NSW or assume any specific jurisdiction unless the documents state it. Use Australian English spelling (analyse, defence, offence). Use forensic appellate language — frame findings as potential issues, not definitive conclusions.",
             prompt,
             f"contradiction_{case_id}_{uuid.uuid4().hex[:8]}",
             max_tokens=8192,
