@@ -27,7 +27,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-  @page { size: A4; margin: 14mm 14mm 22mm; }
+  @page { size: A4; margin: 14mm 14mm 30mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
   .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; margin-bottom: 4px; }
@@ -64,7 +64,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 13px; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 11px; color: #64748b; }
-  .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+  .print-footer { position: fixed; left: 14mm; right: 14mm; bottom: 10mm; background: #fff; border-top: 1px solid #cbd5e1; padding: 6px 0 0; }
   .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 10pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
   .print-footer-page::after { content: ''; }
   .page-break { page-break-before: always; }

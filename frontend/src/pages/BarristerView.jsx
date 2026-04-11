@@ -426,7 +426,7 @@ export default function BarristerView() {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page { size: A4; margin: 14mm 14mm 18mm; }
+    @page { size: A4; margin: 14mm 14mm 30mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Times New Roman', Times, serif; padding: 0 0 88px; color: #0f172a; line-height: 1.8; font-size: 12pt; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
@@ -477,7 +477,7 @@ export default function BarristerView() {
     .disclaimer-bold .disc-icon { color: #facc15; font-size: 28px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
-    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 8px 24px 10px; }
+    .print-footer { position: fixed; left: 14mm; right: 14mm; bottom: 10mm; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 6px 0 0; }
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-style: italic; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page::after { content: ''; }
