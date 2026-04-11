@@ -737,7 +737,7 @@ const ReportView = () => {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page { size: A4; margin: 20mm 15mm 30mm 15mm; }
+    @page { size: A4; margin: 20mm 15mm 20mm 15mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Times New Roman', Times, serif; padding: 0 0 88px; color: #0f172a; line-height: 1.8; font-size: 12pt; background: #fff; }
     .report-container { max-width: 900px; margin: 0 auto; }
@@ -765,8 +765,8 @@ const ReportView = () => {
     .report-header .case-info-grid .ci-value { font-size: 12pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
     .toc { padding: 14px 32px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
     .toc-title { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin-bottom: 6px; }
-    .toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-    .toc-grid a { font-size: 11pt; color: #334155; text-decoration: none; }
+    .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px 16px; }
+    .toc-grid a { font-size: 10pt; color: #334155; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
     .toc-grid a:hover { color: #1d4ed8; }
     .sections { padding: 24px 32px; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
@@ -797,7 +797,7 @@ const ReportView = () => {
     .disclaimer-bold .disc-text { font-size: 14px; color: #ffffff; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 6px; }
     .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 16px; border-radius: 8px; color: #1e3a8a; margin: 16px 32px; font-size: 13px; }
-    .print-footer { position: fixed; left: 15mm; right: 15mm; bottom: 10mm; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 6px 0 0; }
+    .print-footer { display: none; position: fixed; left: 15mm; right: 15mm; bottom: 6mm; background: #ffffff; border-top: 1px solid #cbd5e1; padding: 4px 0 0; }
     .print-footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-style: italic; color: #475569; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page::after { content: ''; }
@@ -817,7 +817,7 @@ const ReportView = () => {
       .disclaimer-bold + .report-branding { page-break-before: avoid; break-before: avoid; }
       .section-body .legal-report-table-wrap { overflow: visible; }
       .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
-      .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .print-footer { display: none; }
       .print-footer-page::after { content: "Page " counter(page); }
     }
     @media (max-width: 768px) {
@@ -833,7 +833,7 @@ const ReportView = () => {
       .report-header .case-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
       .report-header .case-info-grid .ci-value { font-size: 11px; }
       .toc { padding: 10px 16px; }
-      .toc-grid { grid-template-columns: 1fr; gap: 2px; }
+      .toc-grid { grid-template-columns: repeat(2, 1fr); gap: 2px 12px; }
       .sections { padding: 16px; }
       .section-title { font-size: 16px; }
       .section-body { padding: 14px 16px; }
@@ -897,7 +897,7 @@ const ReportView = () => {
             <span class="section-number">${idx+1}</span>
             <span class="section-title">${section.title}</span>
           </div>
-          <div class="section-body">${document.getElementById(section.id)?.querySelector('[data-testid^="report-section-content-"]')?.innerHTML || ''}</div>
+          <div class="section-body">${(document.getElementById(section.id)?.querySelector('[data-testid^="report-section-content-"]')?.innerHTML || '').replace(/<th([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
         </div>
       `).join('')}
     </div>
@@ -1040,22 +1040,22 @@ const ReportView = () => {
             </div>
 
             {/* Case Overview Grid — INSIDE the coloured box */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-white/20 pt-4" data-testid="report-top-summary-box">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-white/20 pt-4" data-testid="report-top-summary-box">
               <div>
                 <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Defendant</p>
-                <p className="font-bold text-white" data-testid="report-summary-accused">{defendantName}</p>
+                <p className="text-sm sm:text-base font-bold text-white" data-testid="report-summary-accused">{defendantName}</p>
               </div>
               <div>
                 <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Offence</p>
-                <p className="font-bold text-white" data-testid="report-summary-offence">{offenceDisplay}</p>
+                <p className="text-sm sm:text-base font-bold text-white" data-testid="report-summary-offence">{offenceDisplay}</p>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Sentence</p>
-                <p className="font-bold text-white" data-testid="report-summary-sentence">{sentenceSummary}</p>
+                <p className="text-sm sm:text-base font-bold text-white" data-testid="report-summary-sentence">{sentenceSummary}</p>
               </div>
               <div>
                 <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Documents</p>
-                <p className="font-bold text-white">{documentsCount} files analysed</p>
+                <p className="text-sm sm:text-base font-bold text-white">{documentsCount} files analysed</p>
               </div>
               <div>
                 <p className="text-xs text-white/70 uppercase tracking-wide mb-1">Timeline Events</p>

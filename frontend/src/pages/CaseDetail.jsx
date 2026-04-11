@@ -940,14 +940,10 @@ const CaseDetail = ({ user }) => {
     if (progressAnalysis) tocSections.push("Progress Analysis");
 
     body += `<div class="export-body" style="page-break-after:always;">
-      <h2 style="margin-bottom:20px;">Table of Contents</h2>
-      <table style="width:100%;border-collapse:collapse;font-family:'Times New Roman',Times,serif;font-size:13pt;color:#1e293b;">
-        ${tocSections.map((s, i) => `<tr style="border-bottom:1px dotted #94a3b8;">
-          <td style="padding:10px 4px;font-weight:600;white-space:nowrap;width:40px;vertical-align:top;">${i + 1}.</td>
-          <td style="padding:10px 4px;">${s}</td>
-          <td style="padding:10px 4px;text-align:right;white-space:nowrap;color:#64748b;font-style:italic;">Section ${i + 1}</td>
-        </tr>`).join('')}
-      </table>
+      <h2 style="margin-bottom:16px;">Table of Contents</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-family:'Times New Roman',Times,serif;font-size:12pt;color:#1e293b;">
+        ${tocSections.map((s, i) => `<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 0;border-bottom:1px dotted #94a3b8;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+      </div>
     </div>`;
 
     if (caseData?.summary) body += `<div class="export-body"><h2>Case Summary</h2><p>${escAu(caseData.summary)}</p></div>`;
