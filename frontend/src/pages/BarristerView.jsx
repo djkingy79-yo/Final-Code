@@ -977,12 +977,12 @@ export default function BarristerView() {
               </div>
             </div>
 
-            <div className="bg-red-700 px-6 sm:px-8 py-4" data-testid="barrister-disclaimer-banner">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" />
+            <div className="bg-red-700 px-4 py-3" data-testid="barrister-disclaimer-banner">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-yellow-300 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-extrabold text-white uppercase tracking-wide mb-1">NOT LEGAL ADVICE</p>
-                  <p className="text-xs text-white leading-relaxed">
+                  <p className="text-xs font-bold text-white uppercase tracking-wide mb-0.5">NOT LEGAL ADVICE</p>
+                  <p className="text-[10px] text-white/90 leading-snug">
                     This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.
                   </p>
                 </div>
