@@ -184,12 +184,13 @@ OFFENCE_CATEGORIES = {
         },
         "vic_legislation": {
             "Crimes Act 1958 (Vic)": [
-                {"section": "s.16", "title": "Intentionally causing serious injury"},
-                {"section": "s.17", "title": "Causing serious injury recklessly"},
-                {"section": "s.18", "title": "Causing injury intentionally or recklessly"},
+                {"section": "s.17", "title": "Causing serious injury intentionally"},
+                {"section": "s.18", "title": "Causing serious injury recklessly"},
+                {"section": "s.19", "title": "Causing injury intentionally"},
+                {"section": "s.20", "title": "Causing injury recklessly"},
+                {"section": "s.21", "title": "Threats to kill or cause serious injury"},
                 {"section": "s.23", "title": "Administering poison etc with intent"},
-                {"section": "s.24", "title": "Threats to kill"},
-                {"section": "s.320", "title": "Assault"},
+                {"section": "s.31", "title": "Assault (preserved provision)"},
             ],
             "Summary Offences Act 1966 (Vic)": [
                 {"section": "s.23", "title": "Assault"},
@@ -478,8 +479,9 @@ OFFENCE_CATEGORIES = {
         },
         "wa_legislation": {
             "Misuse of Drugs Act 1981 (WA)": [
-                {"section": "s.6", "title": "Possession of prohibited drug"},
-                {"section": "s.6", "title": "Possession with intent to sell/supply"},
+                {"section": "s.6(1)(a)", "title": "Possession of prohibited drug"},
+                {"section": "s.6(1)(b)", "title": "Possession with intent to sell or supply"},
+                {"section": "s.6A", "title": "Selling, supplying or offering to supply a prohibited drug"},
                 {"section": "s.7", "title": "Manufacture of prohibited drugs"},
                 {"section": "s.7A", "title": "Cultivation of prohibited plants"},
             ]
@@ -906,10 +908,14 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "wa_legislation": {
-            "Road Traffic Act 1974 (WA)": [
+            "Criminal Code Act Compilation Act 1913 (WA)": [
                 {"section": "s.59", "title": "Reckless driving"},
-                {"section": "s.63", "title": "Driving under influence"},
-                {"section": "s.49", "title": "Driving while disqualified"},
+            ],
+            "Road Traffic (Administration) Act 2008 (WA)": [
+                {"section": "s.70", "title": "Driving under influence of alcohol or drugs"},
+            ],
+            "Road Traffic (Authorisation to Drive) Act 2008 (WA)": [
+                {"section": "s.49", "title": "Driving while licence cancelled or disqualified"},
             ]
         },
         "tas_legislation": {
@@ -930,7 +936,7 @@ OFFENCE_CATEGORIES = {
         },
         "act_legislation": {
             "Crimes Act 1900 (ACT)": [
-                {"section": "s.29", "title": "Culpable driving causing death"},
+                {"section": "s.29", "title": "Culpable driving causing death (also listed under homicide)"},
             ],
             "Road Transport (Alcohol and Drugs) Act 1977 (ACT)": [
                 {"section": "s.22", "title": "Driving under influence"},
@@ -939,6 +945,448 @@ OFFENCE_CATEGORIES = {
         "cth_legislation": {},
         "defences": ["Honest and reasonable mistake", "Duress", "Necessity", "Emergency", "Involuntary intoxication"],
         "key_elements": ["Manner of driving", "Blood alcohol/drug content", "Licence status", "Consequences"]
+    },
+
+    "arson_property_damage": {
+        "name": "Arson & Property Damage",
+        "description": "Arson, malicious damage, and destruction of property offences",
+        "offences": ["Arson", "Malicious Damage", "Destroying or Damaging Property", "Bushfire Arson"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.195", "title": "Destroying or damaging property"},
+                {"section": "s.196", "title": "Destroying or damaging property with intent to injure"},
+                {"section": "s.197", "title": "Dishonestly destroying or damaging property"},
+                {"section": "s.199", "title": "Arson (setting fire to property)"},
+                {"section": "s.203E", "title": "Bushfire (intentionally causing fire)"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.197", "title": "Arson"},
+                {"section": "s.197A", "title": "Arson causing death"},
+                {"section": "s.198", "title": "Destroying or damaging property"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.461", "title": "Arson"},
+                {"section": "s.462", "title": "Attempts to commit arson"},
+                {"section": "s.469", "title": "Wilful damage"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.85", "title": "Arson"},
+                {"section": "s.85A", "title": "Causing a bushfire"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.444", "title": "Criminal damage"},
+                {"section": "s.445", "title": "Arson — setting fire to buildings etc"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.265", "title": "Arson"},
+                {"section": "s.269", "title": "Malicious injury to property"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.239", "title": "Arson"},
+                {"section": "s.241", "title": "Criminal damage"},
+            ]
+        },
+        "act_legislation": {
+            "Criminal Code 2002 (ACT)": [
+                {"section": "s.404", "title": "Arson"},
+                {"section": "s.406", "title": "Damaging property"},
+            ]
+        },
+        "cth_legislation": {},
+        "defences": ["Consent of owner", "Lawful authority", "Accident", "Duress"],
+        "key_elements": ["Intent or recklessness", "Property destroyed or damaged", "Fire or explosion", "Ownership of property"]
+    },
+
+    "cybercrime": {
+        "name": "Cybercrime & Computer Offences",
+        "description": "Computer offences, unauthorised access, data interference, and online criminal activity",
+        "offences": ["Unauthorised Access to Computer", "Data Interference", "Computer Fraud", "Online Identity Theft", "Denial of Service Attack"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.308C", "title": "Unauthorised access to or modification of restricted data in a computer"},
+                {"section": "s.308D", "title": "Unauthorised impairment of electronic communication"},
+                {"section": "s.308E", "title": "Unauthorised access to or modification of restricted data — intention to commit serious indictable offence"},
+                {"section": "s.308H", "title": "Possession of data with intent to commit computer offence"},
+                {"section": "s.308I", "title": "Producing, supplying or obtaining data with intent to commit computer offence"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.247A", "title": "Unauthorised access to or modification of restricted data"},
+                {"section": "s.247B", "title": "Unauthorised impairment of electronic communications"},
+                {"section": "s.247C", "title": "Possession of data with intent to commit computer offence"},
+                {"section": "s.247G", "title": "Producing, supplying or obtaining data with intent to commit computer offence"},
+                {"section": "s.247H", "title": "Unauthorised access to restricted data held in a computer — intent to commit serious offence"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.408D", "title": "Obtaining or dealing with identification information"},
+                {"section": "s.408E", "title": "Computer hacking and misuse"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.44", "title": "Unlawful operation of computer system"},
+                {"section": "s.86D", "title": "Identity theft — misuse of personal identification information"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.440A", "title": "Unlawful use of computer"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.257C", "title": "Computer-related fraud"},
+                {"section": "s.257D", "title": "Damaging computer data"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.222", "title": "Unlawful use of computer"},
+            ]
+        },
+        "act_legislation": {
+            "Criminal Code 2002 (ACT)": [
+                {"section": "s.412", "title": "Unauthorised access to or modification of restricted data"},
+                {"section": "s.413", "title": "Unauthorised impairment of electronic communication"},
+            ]
+        },
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "Div 477", "title": "Serious computer offences (unauthorised access, modification, impairment)"},
+                {"section": "Div 478", "title": "Other computer offences (unauthorised access to restricted data, possession of data)"},
+                {"section": "s.474.14", "title": "Using telecommunications network with intent to commit serious offence"},
+            ]
+        },
+        "defences": ["Lawful authority", "Consent of owner", "Honest and reasonable mistake"],
+        "key_elements": ["Unauthorised access", "Data modification or impairment", "Intent to commit offence", "Use of carriage service/computer"]
+    },
+
+    "perjury_justice_offences": {
+        "name": "Perjury & Administration of Justice Offences",
+        "description": "Perjury, perverting the course of justice, contempt, and related offences",
+        "offences": ["Perjury", "Perverting the Course of Justice", "Contempt of Court", "Intimidating a Witness", "Fabricating Evidence", "Assisting Offender"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.327", "title": "Perjury"},
+                {"section": "s.328", "title": "False statements on oath"},
+                {"section": "s.319", "title": "Perverting the course of justice"},
+                {"section": "s.325", "title": "Intimidating or threatening witnesses or jurors"},
+                {"section": "s.315", "title": "Accessory after the fact"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.314", "title": "Perjury"},
+                {"section": "s.315", "title": "False statutory declarations"},
+                {"section": "s.316", "title": "Perjury — punishment"},
+                {"section": "s.325B", "title": "Perverting the course of justice"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.123", "title": "Perjury"},
+                {"section": "s.124", "title": "Punishment of perjury"},
+                {"section": "s.140", "title": "Attempting to pervert justice"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.242", "title": "Perjury"},
+                {"section": "s.243", "title": "False statements on oath"},
+                {"section": "s.244", "title": "Attempting to pervert the course of justice"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.124", "title": "Perjury"},
+                {"section": "s.143", "title": "Attempting to pervert justice"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.94", "title": "Perjury"},
+                {"section": "s.105", "title": "Perverting the course of justice"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.96", "title": "Perjury"},
+                {"section": "s.109", "title": "Attempting to pervert justice"},
+            ]
+        },
+        "act_legislation": {
+            "Crimes Act 1900 (ACT)": [
+                {"section": "s.353", "title": "Perjury"},
+                {"section": "s.717", "title": "Perverting the course of justice"},
+            ]
+        },
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.137.1", "title": "False or misleading information to Commonwealth entity"},
+                {"section": "s.137.2", "title": "False or misleading documents to Commonwealth entity"},
+                {"section": "s.149.1", "title": "Obstruction of Commonwealth officials"},
+            ]
+        },
+        "defences": ["Honest mistake", "Immateriality of false statement", "Duress"],
+        "key_elements": ["False statement under oath/affirmation", "Knowledge of falsity", "Materiality to proceedings", "Intent to mislead"]
+    },
+
+    "extortion_blackmail": {
+        "name": "Extortion & Blackmail",
+        "description": "Extortion, blackmail, and demanding with menaces",
+        "offences": ["Blackmail", "Extortion", "Demanding Property with Menaces"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.249K", "title": "Blackmail — unwarranted demand with menaces"},
+                {"section": "s.249L", "title": "Aggravated blackmail"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.87", "title": "Blackmail"},
+                {"section": "s.87A", "title": "Aggravated blackmail"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.415", "title": "Extortion"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.172", "title": "Blackmail"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.397", "title": "Extortion"},
+                {"section": "s.398", "title": "Demanding property with menaces"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.242", "title": "Demanding property with menaces"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.226", "title": "Extortion"},
+            ]
+        },
+        "act_legislation": {
+            "Criminal Code 2002 (ACT)": [
+                {"section": "s.332", "title": "Blackmail"},
+            ]
+        },
+        "cth_legislation": {},
+        "defences": ["Claim of right", "Lawful demand", "Duress"],
+        "key_elements": ["Unwarranted demand", "Menaces or threats", "Intent to gain or cause loss", "Absence of reasonable grounds"]
+    },
+
+    "organised_crime": {
+        "name": "Organised Crime & Criminal Consorting",
+        "description": "Participation in criminal organisations, consorting, and organised crime offences",
+        "offences": ["Participation in Criminal Organisation", "Criminal Consorting", "Directing Criminal Organisation Activities"],
+        "nsw_legislation": {
+            "Crimes (Criminal Organisations Control) Act 2012 (NSW)": [
+                {"section": "s.26", "title": "Member of declared organisation must not attend prescribed premises"},
+                {"section": "s.27", "title": "Member of declared organisation must not recruit"},
+            ],
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.93X", "title": "Habitually consorting with convicted offenders"},
+            ]
+        },
+        "vic_legislation": {
+            "Criminal Organisations Control Act 2012 (Vic)": [
+                {"section": "s.24", "title": "Control order offence — member of declared organisation"},
+                {"section": "s.27", "title": "Recruiting for declared organisation"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.60A", "title": "Participants in criminal organisations"},
+                {"section": "s.60B", "title": "Recruiting for criminal organisation"},
+                {"section": "s.77B", "title": "Habitually consorting with recognised offenders"},
+            ]
+        },
+        "sa_legislation": {
+            "Serious and Organised Crime (Control) Act 2008 (SA)": [
+                {"section": "s.22", "title": "Control order offence"},
+                {"section": "s.35", "title": "Offence to recruit for declared organisation"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.221A", "title": "Participation in activities of criminal organisation"},
+                {"section": "s.221B", "title": "Instructing commission of offence for criminal organisation"},
+            ]
+        },
+        "tas_legislation": {},
+        "nt_legislation": {},
+        "act_legislation": {},
+        "cth_legislation": {},
+        "defences": ["Lawful association", "Employment/professional relationship", "Family relationship"],
+        "key_elements": ["Association with convicted offenders", "Pattern of consorting", "Membership of declared organisation", "Facilitation of criminal activity"]
+    },
+
+    "child_exploitation_material": {
+        "name": "Child Exploitation Material",
+        "description": "Production, distribution, and possession of child exploitation material (standalone category)",
+        "offences": ["Producing Child Exploitation Material", "Distributing Child Exploitation Material", "Possessing Child Exploitation Material", "Accessing Child Exploitation Material Online"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.91D", "title": "Production of child abuse material"},
+                {"section": "s.91E", "title": "Dissemination of child abuse material"},
+                {"section": "s.91F", "title": "Possession of child abuse material"},
+                {"section": "s.91G", "title": "Administering digital platform used for child abuse material"},
+                {"section": "s.91H", "title": "Production or dissemination of child abuse material — aggravated"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.51B", "title": "Production of child abuse material"},
+                {"section": "s.51C", "title": "Procuring child for child abuse material"},
+                {"section": "s.51D", "title": "Distribution of child abuse material"},
+                {"section": "s.51E", "title": "Possession of child abuse material"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.228A", "title": "Involving child in making child exploitation material"},
+                {"section": "s.228B", "title": "Making child exploitation material"},
+                {"section": "s.228C", "title": "Distributing child exploitation material"},
+                {"section": "s.228D", "title": "Possessing child exploitation material"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.63A", "title": "Production of child exploitation material"},
+                {"section": "s.63B", "title": "Dissemination of child exploitation material"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.217A", "title": "Child exploitation material — definitions"},
+                {"section": "s.220", "title": "Producing child exploitation material"},
+                {"section": "s.221", "title": "Distributing child exploitation material"},
+                {"section": "s.222", "title": "Possessing child exploitation material"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.130A", "title": "Production of child exploitation material"},
+                {"section": "s.130B", "title": "Distribution of child exploitation material"},
+                {"section": "s.130C", "title": "Possession of child exploitation material"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.125A", "title": "Definition of child abuse material"},
+                {"section": "s.125B", "title": "Producing child abuse material"},
+                {"section": "s.125C", "title": "Distributing child abuse material"},
+                {"section": "s.125D", "title": "Possessing child abuse material"},
+            ]
+        },
+        "act_legislation": {
+            "Criminal Code 2002 (ACT)": [
+                {"section": "s.64A", "title": "Production of child exploitation material"},
+                {"section": "s.65", "title": "Trading child exploitation material"},
+                {"section": "s.66", "title": "Possessing child exploitation material"},
+            ]
+        },
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "Div 474.22", "title": "Using carriage service for child abuse material"},
+                {"section": "Div 474.23", "title": "Possessing, controlling, producing, supplying or obtaining child abuse material for use through carriage service"},
+                {"section": "Div 474.24A", "title": "Aggravated offence — child abuse material depicting child under 13"},
+                {"section": "Div 474.25A", "title": "Using carriage service to transmit indecent communication to person under 16"},
+            ]
+        },
+        "defences": ["Lawful authority (law enforcement)", "Legitimate research (with ethics approval)", "Unsolicited receipt with immediate deletion"],
+        "key_elements": ["Material depicts person under 18", "Sexual or exploitative nature", "Production/distribution/possession", "Use of carriage service"]
+    },
+
+    "corruption_public_officials": {
+        "name": "Corruption & Public Official Offences",
+        "description": "Bribery, corruption of public officials, and related offences",
+        "offences": ["Bribery of Public Official", "Corruption", "Misconduct in Public Office", "Giving False or Misleading Evidence to Commission"],
+        "nsw_legislation": {
+            "Crimes Act 1900 (NSW)": [
+                {"section": "s.249B", "title": "Corrupt commissions or rewards — agents"},
+                {"section": "s.249C", "title": "Corrupt benefits for trustees etc"},
+            ],
+            "Independent Commission Against Corruption Act 1988 (NSW)": [
+                {"section": "s.87", "title": "Offences of giving false or misleading evidence to ICAC"},
+                {"section": "s.80", "title": "Procuring false testimony before ICAC"},
+            ]
+        },
+        "vic_legislation": {
+            "Crimes Act 1958 (Vic)": [
+                {"section": "s.176", "title": "Corrupt inducements to agents or public officers"},
+            ]
+        },
+        "qld_legislation": {
+            "Criminal Code Act 1899 (Qld)": [
+                {"section": "s.87", "title": "Official corruption"},
+                {"section": "s.88", "title": "Extortion by public officers"},
+            ],
+            "Crime and Corruption Act 2001 (Qld)": [
+                {"section": "s.15", "title": "Meaning of corrupt conduct"},
+            ]
+        },
+        "sa_legislation": {
+            "Criminal Law Consolidation Act 1935 (SA)": [
+                {"section": "s.253", "title": "Bribery or corruption of public officers"},
+            ]
+        },
+        "wa_legislation": {
+            "Criminal Code Act Compilation Act 1913 (WA)": [
+                {"section": "s.82", "title": "Official corruption"},
+                {"section": "s.83", "title": "Corruption of members of Parliament"},
+            ]
+        },
+        "tas_legislation": {
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.84", "title": "Official corruption"},
+            ]
+        },
+        "nt_legislation": {
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.77", "title": "Official corruption"},
+            ]
+        },
+        "act_legislation": {
+            "Criminal Code 2002 (ACT)": [
+                {"section": "s.356", "title": "Bribery of public official"},
+            ]
+        },
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.135.4", "title": "Conspiracy to defraud the Commonwealth"},
+                {"section": "s.142.1", "title": "Bribery of a Commonwealth public official"},
+                {"section": "s.142.2", "title": "Corrupting benefits given to or received by Commonwealth public officials"},
+            ],
+            "Corruption of Foreign Public Officials Act 1999 (Cth)": [
+                {"section": "s.6", "title": "Bribing a foreign public official"},
+            ]
+        },
+        "defences": ["Lawful authority", "No corrupt intent", "Duress"],
+        "key_elements": ["Public official or agent", "Corrupt benefit or inducement", "Intent to influence official conduct", "Knowledge of impropriety"]
     }
 }
 
@@ -1018,14 +1466,26 @@ HUMAN_RIGHTS_FRAMEWORK = {
         {"name": "UDHR", "full_name": "Universal Declaration of Human Rights", "articles": [
             {"article": "Art 10", "title": "Right to fair public hearing"},
             {"article": "Art 11", "title": "Presumption of innocence"}
+        ]},
+        {"name": "CAT", "full_name": "Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment", "articles": [
+            {"article": "Art 1", "title": "Definition of torture"},
+            {"article": "Art 15", "title": "Exclusion of evidence obtained by torture"},
+            {"article": "Art 16", "title": "Prevention of cruel, inhuman or degrading treatment"}
+        ]},
+        {"name": "CROC", "full_name": "Convention on the Rights of the Child", "articles": [
+            {"article": "Art 3", "title": "Best interests of the child"},
+            {"article": "Art 37", "title": "Protection from torture, cruel treatment; deprivation of liberty as last resort"},
+            {"article": "Art 40", "title": "Rights of child accused of criminal offence (fair trial, rehabilitation focus)"}
         ]}
     ],
     "australian": [
         {"name": "Australian Human Rights Commission Act 1986 (Cth)"},
+        {"name": "Human Rights (Parliamentary Scrutiny) Act 2011 (Cth)", "note": "Requires statements of compatibility with human rights for all federal legislation"},
         {"name": "Charter of Human Rights and Responsibilities Act 2006 (Vic)"},
         {"name": "Human Rights Act 2004 (ACT)"},
         {"name": "Human Rights Act 2019 (Qld)"}
-    ]
+    ],
+    "note": "SA, WA, TAS, and NT have no domestic charter of human rights. In those jurisdictions, ICCPR arguments operate only through common law principles or federal instruments. Courts may still consider international obligations as interpretive aids."
 }
 
 # Appeal procedural framework for each state
@@ -1119,10 +1579,10 @@ APPEAL_FRAMEWORK = {
         ]
     },
     "federal": {
-        "legislation": "Judiciary Act 1903 (Cth) Part X; High Court of Australia Act 1979 (Cth)",
-        "court": "High Court of Australia (appeals via state/territory Court of Criminal Appeal; no Federal Court criminal jurisdiction)",
+        "legislation": "Judiciary Act 1903 (Cth) Part X; High Court of Australia Act 1979 (Cth); Federal Court of Australia Act 1976 (Cth)",
+        "court": "High Court of Australia (appeals via state/territory Court of Criminal Appeal; Full Federal Court for limited federal matters)",
         "special_leave": "Required for all appeals to the High Court (s 35A Judiciary Act 1903)",
-        "note": "Federal criminal offences are tried in state/territory courts under Judiciary Act 1903 Part X. Appeals follow the appellate pathway of the state/territory where the trial occurred. Further appeal to the High Court requires special leave."
+        "note": "Federal criminal offences are tried in state/territory courts under Judiciary Act 1903 Part X. Appeals follow the appellate pathway of the state/territory where the trial occurred. Further appeal to the High Court requires special leave. The Federal Court of Australia has limited criminal jurisdiction in specific statutory contexts (e.g., contempt, regulatory prosecutions)."
     }
 }
 
@@ -1294,7 +1754,7 @@ VIC_CRIMINAL_FRAMEWORK = {
             "act": "Crimes Act 1958 (Vic)",
             "description": "Foundational legislation defining most indictable offences in Victoria including murder, manslaughter, assault, sexual offences, theft, stalking, and identity crimes. An indictable offence is one attracting a maximum penalty of two years imprisonment or more.",
             "key_provisions": [
-                "Part I Div 1 — Offences against the person (murder s 3, manslaughter s 5, assault ss 15-20)",
+                "Part I Div 1 — Offences against the person (murder s 3, manslaughter s 5, assault ss 17-21, s 31)",
                 "Part I Div 1 s 21A — Stalking (amended 2024 — course of conduct clarified)",
                 "Part I Div 1 s 34AD-34AE — Non-fatal strangulation and suffocation (new 2024, commenced 13 October 2024)",
                 "Part I Div 2E — Performance of a crime (new 2025 — social media-driven offending)",
@@ -1416,6 +1876,10 @@ VIC_CRIMINAL_FRAMEWORK = {
         {
             "act": "Victoria Police Act 2013 (Vic)",
             "description": "Establishes Victoria Police. Governs police powers including arrest, search and seizure, and use of force. Includes provisions on police conduct and oversight by IBAC (Independent Broad-based Anti-corruption Commission).",
+        },
+        {
+            "act": "Crimes (Mental Impairment and Unfitness to be Tried) Act 1997 (Vic)",
+            "description": "Governs the defence of mental impairment, fitness to stand trial, special hearings, and supervision orders for accused persons found not guilty by reason of mental impairment or unfit to be tried. Establishes the Forensic Leave Panel and provides for review of supervision orders.",
         },
     ],
 }
@@ -1547,6 +2011,10 @@ QLD_CRIMINAL_FRAMEWORK = {
             "act": "Police Powers and Responsibilities Act 2000 (Qld) — Part 4 (Surveillance Device Warrants)",
             "description": "Queensland does not have a standalone Surveillance Devices Act. Surveillance device warrants are authorised under Part 4 of the Police Powers and Responsibilities Act 2000. Covers listening devices, optical surveillance, tracking devices.",
         },
+        {
+            "act": "Mental Health Act 2016 (Qld) — Forensic Orders",
+            "description": "Governs forensic orders for persons found not guilty by reason of unsoundness of mind or unfit for trial. Chapter 12 establishes the Mental Health Court. Forensic orders impose treatment, care, and restriction on liberty. Includes provisions for fitness to stand trial assessments and reviews of forensic orders by the Mental Health Review Tribunal.",
+        },
     ],
 }
 
@@ -1672,6 +2140,10 @@ SA_CRIMINAL_FRAMEWORK = {
             "act": "Young Offenders Act 1993 (SA)",
             "description": "Governs juvenile criminal proceedings in South Australia. Establishes the Youth Court. Focuses on diversion (family conferences) and rehabilitation. Children under 10 cannot be charged with an offence.",
         },
+        {
+            "act": "Criminal Law Consolidation Act 1935 (SA) — Part 8A (Mental Impairment)",
+            "description": "Governs the defence of mental impairment (s 269C), fitness to stand trial (s 269H), and special verdicts of not guilty by reason of mental incompetence. Provides for supervision orders, detention orders, and release orders for persons found mentally unfit or not guilty by reason of mental impairment. Reviewed by the Supreme Court.",
+        },
     ],
 }
 
@@ -1793,6 +2265,10 @@ WA_CRIMINAL_FRAMEWORK = {
             "act": "Prisons Act 1981 (WA)",
             "description": "Governs the administration of prisons in Western Australia including prisoner management, discipline, and remission.",
         },
+        {
+            "act": "Criminal Law (Mentally Impaired Accused) Act 1996 (WA)",
+            "description": "Governs accused persons found unfit to stand trial or not guilty by reason of mental impairment. Provides for custody orders (indefinite detention in an authorised hospital or declared place), community-based supervision, and review by the Mentally Impaired Accused Review Board. The Governor may make orders on the Board's recommendation.",
+        },
     ],
 }
 
@@ -1894,6 +2370,10 @@ TAS_CRIMINAL_FRAMEWORK = {
             "act": "Jury Act 2003 (Tas)",
             "description": "Governs jury selection, empanelment, challenges, and conduct in Tasmanian criminal trials.",
         },
+        {
+            "act": "Criminal Justice (Mental Impairment) Act 1999 (Tas)",
+            "description": "Governs the defence of mental impairment, fitness to stand trial, and special verdicts in Tasmania. Provides for supervision orders and forensic patient management for persons found not guilty by reason of insanity or unfit to plead.",
+        },
     ],
 }
 
@@ -1906,13 +2386,14 @@ NT_CRIMINAL_FRAMEWORK = {
     "primary_legislation": [
         {
             "act": "Criminal Code Act 1983 (NT)",
-            "description": "Codifies most criminal offences in the Northern Territory, replacing common law crimes. Covers offences against the person, property, public order, and sexual offences. Part IIAA outlines general principles of criminal responsibility, defences, and proof burdens. 2023 reforms updated sexual offence provisions including consent (free and voluntary agreement).",
+            "description": "Codifies most criminal offences in the Northern Territory, replacing common law crimes. Covers offences against the person, property, public order, and sexual offences. Part III Division AA outlines general principles of criminal responsibility, defences, and proof burdens. Part X governs criminal appeals. 2023 reforms updated sexual offence provisions including consent (free and voluntary agreement).",
             "key_provisions": [
                 "Part V — Offences against the person (murder s 156, manslaughter s 160)",
                 "Part VIA — Sexual offences (reformed 2023 — affirmative consent model)",
                 "Part VI — Assaults (ss 186-192)",
                 "Part VIII — Offences relating to property",
-                "Part IIAA — General principles of criminal responsibility",
+                "Part III Division AA — General principles of criminal responsibility",
+                "Part X — Criminal appeals",
                 "s 166 — Threats to kill",
                 "s 189 — Stalking",
                 "s 31 — Criminal responsibility (unique NT provision)",
@@ -2006,6 +2487,10 @@ NT_CRIMINAL_FRAMEWORK = {
         {
             "act": "Juries Act 1962 (NT)",
             "description": "Governs jury selection, empanelment, challenges, and conduct in Northern Territory criminal trials.",
+        },
+        {
+            "act": "Criminal Code Act 1983 (NT) — ss 43A-43P (Mental Impairment)",
+            "description": "Governs the defence of mental impairment and fitness to stand trial in the Northern Territory. Section 43C provides the defence of mental impairment. Sections 43D-43P govern fitness to stand trial, special hearings, supervision orders, and custodial supervision orders for persons found not guilty by reason of mental impairment or unfit to be tried.",
         },
     ],
 }
@@ -2121,6 +2606,10 @@ ACT_CRIMINAL_FRAMEWORK = {
         {
             "act": "Corrections Management Act 2007 (ACT)",
             "description": "Governs the administration of corrections in the ACT including the Alexander Maconochie Centre (AMC), prisoner management, and community corrections.",
+        },
+        {
+            "act": "Mental Health Act 2015 (ACT) — Forensic Mental Health Orders",
+            "description": "Governs forensic mental health orders for persons found not guilty by reason of mental impairment or unfit to plead. Provides for psychiatric treatment orders, forensic community care orders, and review by the ACT Civil and Administrative Tribunal (ACAT). Interacts with the Criminal Code 2002 (ACT) Chapter 13 mental impairment provisions.",
         },
         {
             "act": "Australian Federal Police Act 1979 (Cth) — ACT Policing",
