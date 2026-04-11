@@ -53,6 +53,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body .note-content { font-size: 12pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; font-family: 'Times New Roman', Times, serif; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
+  .toc-container { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 14px 32px; }
+  .toc-heading { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin: 0 0 6px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
+  .toc-item { font-size: 10pt; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
   .disclaimer .disc-hazard { font-size: 28px; color: #facc15; flex-shrink: 0; }
   .disclaimer strong { display: block; font-size: 13px; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }

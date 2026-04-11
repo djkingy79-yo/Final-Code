@@ -419,10 +419,10 @@ export default function BarristerView() {
 
     // Build TOC from sections
     const tocHtml = sections.length > 1
-      ? `<div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
-          <p style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${sections.length} Sections)</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-            ${sections.map((s, i) => `<div style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
+      ? `<div class="toc-container" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
+          <p class="toc-heading" style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${sections.length} Sections)</p>
+          <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+            ${sections.map((s, i) => `<div class="toc-item" style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
           </div>
         </div>`
       : "";
@@ -577,7 +577,7 @@ export default function BarristerView() {
       </div>
     </div>
     ${tocHtml}
-    <div class="sections">${contentEl.innerHTML.replace(/<th([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
+    <div class="sections">${contentEl.innerHTML.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
   </div>
     <div class="disclaimer-bold">
       <div class="disc-icon">&#9888;</div>
@@ -632,16 +632,7 @@ export default function BarristerView() {
   };
 
   const handleExportDOCX = async () => {
-    const contentEl = document.querySelector('[data-testid="barrister-sections-wrapper"]');
-    if (!contentEl) { toast.error("Unable to export."); return; }
-    const html = contentEl.innerHTML;
-    const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm} th{background:#1d4ed8;color:#ffffff;font-weight:800;padding:8px;}</style></head><body>${html}</body></html>`;
-    const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `Barrister_Brief_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.doc`; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-    toast.success("Word document ready!");
+    openBarristerPreview("word");
   };
 
   const handleQuickBrief = async () => {

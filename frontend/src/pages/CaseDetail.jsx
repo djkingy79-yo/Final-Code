@@ -911,10 +911,10 @@ const CaseDetail = ({ user }) => {
     let body = `<div class="export-header" style="background:#2563eb;"><h1>Case Progress</h1><p>${escHtml(title)} - ${escHtml(defendant)}</p></div>`;
 
     // TOC
-    body += `<div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
-      <p style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${tocItems.length} Sections)</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-        ${tocItems.map((s, i) => `<div style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+    body += `<div class="toc-container" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
+      <p class="toc-heading" style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${tocItems.length} Sections)</p>
+      <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>`;
 
@@ -1004,9 +1004,11 @@ const CaseDetail = ({ user }) => {
     if (progressAnalysis) tocSections.push("Progress Analysis");
 
     body += `<div class="export-body" style="page-break-after:always;">
-      <h2 style="margin-bottom:16px;">Table of Contents</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;font-family:'Times New Roman',Times,serif;font-size:12pt;color:#1e293b;">
-        ${tocSections.map((s, i) => `<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 0;border-bottom:1px dotted #94a3b8;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+      <div class="toc-container">
+        <p class="toc-heading">Contents (${tocSections.length} Sections)</p>
+        <div class="toc-grid">
+          ${tocSections.map((s, i) => `<div class="toc-item"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+        </div>
       </div>
     </div>`;
 
@@ -1212,14 +1214,9 @@ const CaseDetail = ({ user }) => {
               <Button variant="outline" size="sm" onClick={() => {
                 try {
                   const html = buildPrintAllHtml();
-                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
-                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url; a.download = `${caseData?.defendant_name || "case"}_complete_bundle.doc`; document.body.appendChild(a); a.click(); a.remove();
-                  setTimeout(() => URL.revokeObjectURL(url), 5000);
-                  toast.success("Word document ready!");
-                } catch { toast.error("Failed to export Word"); }
+                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View", mode: "word", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
+                } catch { toast.error("Failed to open Word preview"); }
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
@@ -1665,15 +1662,10 @@ const CaseDetail = ({ user }) => {
               }} className="text-slate-700" data-testid="progress-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
-                  toast.info("Generating Word document...");
+                  toast.info("Opening Word preview...");
                   const html = buildProgressHtml();
-                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
-                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url; a.download = `${caseData?.defendant_name || "case"}_progress.doc`; document.body.appendChild(a); a.click(); a.remove();
-                  setTimeout(() => URL.revokeObjectURL(url), 5000);
-                  toast.success("Word document ready!");
+                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, mode: "word", title: "Progress — Word View", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
+                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>

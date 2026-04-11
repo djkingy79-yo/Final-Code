@@ -889,7 +889,7 @@ const ReportView = () => {
         <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
       </div>
     </div>
-    ${sections.length > 1 ? `<div class="toc"><div class="toc-title">Contents (${sections.length} Sections)</div><div class="toc-grid">${sections.map((s, i) => `<a href="#print-section-${i+1}"><strong>${i+1}.</strong> ${s.title}</a>`).join('')}</div></div>` : ''}
+    ${sections.length > 1 ? `<div class="toc-container" style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;"><p class="toc-heading" style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${sections.length} Sections)</p><div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">${sections.map((s, i) => `<div class="toc-item" style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i+1}.</strong> ${s.title}</div>`).join('')}</div></div>` : ''}
     <div class="sections">
       ${sections.map((section, idx) => `
         <div class="section" id="print-section-${idx+1}">
@@ -897,7 +897,7 @@ const ReportView = () => {
             <span class="section-number">${idx+1}</span>
             <span class="section-title">${section.title}</span>
           </div>
-          <div class="section-body">${(document.getElementById(section.id)?.querySelector('[data-testid^="report-section-content-"]')?.innerHTML || '').replace(/<th([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
+          <div class="section-body">${(document.getElementById(section.id)?.querySelector('[data-testid^="report-section-content-"]')?.innerHTML || '').replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
         </div>
       `).join('')}
     </div>
