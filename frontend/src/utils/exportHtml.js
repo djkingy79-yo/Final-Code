@@ -57,6 +57,47 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .toc-heading { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin: 0 0 6px; }
   .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
   .toc-item { font-size: 10pt; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }
+
+  /* ── Tailwind utilities for captured DOM content ── */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .mb-1 { margin-bottom: 4px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .p-2 { padding: 8px; }
+  .p-4 { padding: 16px; }
+  .p-6 { padding: 24px; }
+  .border { border: 1px solid #e2e8f0; }
+  .border-slate-200 { border-color: #e2e8f0; }
+  .rounded { border-radius: 4px; }
+  .rounded-lg { border-radius: 8px; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .font-bold { font-weight: 700; }
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 13px; }
+  .text-slate-400 { color: #94a3b8; }
+  .text-slate-500 { color: #64748b; }
+  .text-slate-600 { color: #475569; }
+  .text-slate-700 { color: #334155; }
+  .text-slate-900 { color: #0f172a; }
+  .text-white { color: #ffffff; }
+  .uppercase { text-transform: uppercase; }
+  .whitespace-pre-wrap { white-space: pre-wrap; }
+  .flex-wrap { flex-wrap: wrap; }
+  .space-y-1 > * + * { margin-top: 4px; }
+  .space-y-2 > * + * { margin-top: 8px; }
+  .underline { text-decoration: underline; }
+  .break-words { overflow-wrap: break-word; }
+  .bg-slate-50 { background-color: #f8fafc; }
+  .inline-flex { display: inline-flex; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
   .disclaimer .disc-hazard { font-size: 28px; color: #facc15; flex-shrink: 0; }
   .disclaimer strong { display: block; font-size: 13px; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }

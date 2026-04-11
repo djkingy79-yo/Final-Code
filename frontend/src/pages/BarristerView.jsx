@@ -463,6 +463,66 @@ export default function BarristerView() {
     .report-header .case-info-grid .ci-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
     .report-header .case-info-grid .ci-value { font-size: 12pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
     .sections { padding: 24px 32px; }
+
+    /* ── Tailwind utilities for captured DOM content ── */
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .mb-1 { margin-bottom: 4px; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-3 { margin-bottom: 12px; }
+    .mb-4 { margin-bottom: 16px; }
+    .mt-1 { margin-top: 4px; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 12px; }
+    .p-2 { padding: 8px; }
+    .p-4 { padding: 16px; }
+    .p-6 { padding: 24px; }
+    .border { border: 1px solid #e2e8f0; }
+    .border-slate-100 { border-color: #f1f5f9; }
+    .border-slate-200 { border-color: #e2e8f0; }
+    .rounded { border-radius: 4px; }
+    .rounded-lg { border-radius: 8px; }
+    .rounded-full { border-radius: 9999px; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .text-xs { font-size: 11px; }
+    .text-sm { font-size: 13px; }
+    .text-base { font-size: 15px; }
+    .text-lg { font-size: 17px; }
+    .text-xl { font-size: 20px; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-slate-600 { color: #475569; }
+    .text-slate-700 { color: #334155; }
+    .text-slate-900 { color: #0f172a; }
+    .text-red-700 { color: #b91c1c; }
+    .text-blue-700 { color: #1d4ed8; }
+    .text-white { color: #ffffff; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-wide { letter-spacing: 0.025em; }
+    .whitespace-pre-wrap { white-space: pre-wrap; }
+    .flex-wrap { flex-wrap: wrap; }
+    .space-y-1 > * + * { margin-top: 4px; }
+    .space-y-2 > * + * { margin-top: 8px; }
+    .space-y-3 > * + * { margin-top: 12px; }
+    .underline { text-decoration: underline; }
+    .break-words { overflow-wrap: break-word; }
+    .bg-slate-50 { background-color: #f8fafc; }
+    .bg-emerald-600, .bg-teal-600 { background-color: #059669; }
+    .bg-green-100 { background-color: #dcfce7; }
+    .bg-red-100 { background-color: #fee2e2; }
+    .bg-yellow-100 { background-color: #fef9c3; }
+    .text-green-800 { color: #166534; }
+    .text-red-800 { color: #991b1b; }
+    .text-yellow-800 { color: #854d0e; }
+    .w-10 { width: 40px; }
+    .h-10 { height: 40px; }
+    .justify-center { justify-content: center; }
+    .inline-flex { display: inline-flex; }
     .section { margin-bottom: 24px; page-break-inside: avoid; }
     .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid #14b8a6; padding-left: 12px; margin-bottom: 12px; }
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12px; font-weight: 700; flex-shrink: 0; }
@@ -577,7 +637,44 @@ export default function BarristerView() {
       </div>
     </div>
     ${tocHtml}
-    <div class="sections">${contentEl.innerHTML.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
+    <div class="sections">
+      ${sections.map((section, idx) => {
+        // Get individual section content from DOM
+        const sectionMarkdownEl = document.querySelector(`[data-testid="barrister-section-markdown-${idx + 1}"]`);
+        const sectionContent = sectionMarkdownEl ? sectionMarkdownEl.innerHTML : '';
+        return `<div class="section">
+          <div class="section-header">
+            <span class="section-number">${idx + 1}</span>
+            <span class="section-title">${section.title}</span>
+          </div>
+          <div class="section-body">${sectionContent.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
+        </div>`;
+      }).join('')}
+      ${(() => {
+        // Grounds of Merit detailed section
+        const groundsSection = document.querySelector('[data-testid="barrister-grounds-detail-section"]');
+        if (!groundsSection) return '';
+        return `<div class="section" style="page-break-before:always;">
+          <div class="section-header">
+            <span class="section-number">&#9733;</span>
+            <span class="section-title">Grounds of Merit — Detailed Assessment</span>
+          </div>
+          <div class="section-body">${groundsSection.innerHTML.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
+        </div>`;
+      })()}
+      ${(() => {
+        // Verification section
+        const verifySection = document.querySelector('[data-testid="barrister-verification-section"]');
+        if (!verifySection) return '';
+        return `<div class="section">
+          <div class="section-header">
+            <span class="section-number">&#10003;</span>
+            <span class="section-title">Verification and Review Status</span>
+          </div>
+          <div class="section-body">${verifySection.innerHTML}</div>
+        </div>`;
+      })()}
+    </div>
   </div>
     <div class="disclaimer-bold">
       <div class="disc-icon">&#9888;</div>
