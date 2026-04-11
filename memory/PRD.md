@@ -3,85 +3,48 @@
 ## Product Overview
 Criminal appeals case management application for Australian jurisdictions. Features secure document management, AI-powered case analysis, and tiered reporting (Free, $150 Full Detailed, $200 Extensive Log, Barrister View).
 
-## Core Requirements
-- **Report Tiers:** Strictly scale in depth. Free -> $150 (2x) -> $200 (3x). Barrister View locked until all 3 are generated/paid.
-- **Report Language:** STRICT third-person educational tool. Forensic appellate language. Australian English only.
-- **UI:** Forced light mode. Blue/slate/navy palette. Bright blue action buttons with white text.
-- **Legal Accuracy:** Cite current, state-specific, and federal Australian legislation with correct section numbers. NO NSW defaults.
-- **Print Format:** All exported/printed documents: h1=18pt, h3=14pt, h4=14pt, body=12pt, Times New Roman. Footer: "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] DD/MM/YYYY Page X of Y" in Times New Roman, italic, 10pt.
-
 ## Architecture
 ```
-/app/
-├── backend/
-│   ├── server.py                 # Thin app factory (170 lines) — middleware, health, router registration
-│   ├── config.py                 # Centralised env vars, DB, logger
-│   ├── auth_utils.py             # Auth helpers (session + download token validation)
-│   ├── routers/
-│   │   ├── __init__.py           # Router registry — register_all_routers(app)
-│   │   ├── auth.py               # Auth + download token endpoint
-│   │   ├── cases.py              # Case CRUD
-│   │   ├── reports.py            # Report endpoints + Quick Brief
-│   │   ├── report_exports.py     # PDF/DOCX generation
-│   │   ├── pipeline.py           # AI pipeline + Acceptance Pack
-│   │   ├── caselaw.py            # Case law search + AI-suggested authorities
-│   │   ├── export.py             # Export + translate
-│   │   ├── timeline.py           # Timeline CRUD + PDF export
-│   │   └── ... (28 routers total)
-│   └── services/
-│       ├── startup_tasks.py      # DB indexes, orphan recovery, dedup (extracted from server.py)
-│       ├── export_footer.py      # Shared footer rendering
-│       ├── report_generator.py   # Multi-pass AI report generation
-│       ├── barrister_generator.py # Barrister View synthesis
-│       └── ... (16 services total)
-└── frontend/
-    └── src/
-        ├── utils/
-        │   ├── auSpelling.js     # Pure string normaliser (iOS safe)
-        │   ├── exportHtml.js     # Shared print HTML builder
-        │   └── downloadToken.js  # Secure download token utility
-        ├── components/
-        │   ├── CaseLawPanel.jsx  # Find Case Law with AI authorities
-        │   └── ReportsSection.jsx
-        └── pages/
-            ├── CaseDetail.jsx    # Main case view with Print All + ToC
-            ├── ReportView.jsx    # Report viewer with print footer
-            └── BarristerView.jsx # Barrister View with Quick Brief/Acceptance Pack
+/app/backend/
+├── server.py                    # App factory (170 lines)
+├── config.py                    # Env vars, DB, logger
+├── auth_utils.py                # Session + download token auth
+├── routers/
+│   ├── __init__.py              # Router registry (29 routers)
+│   ├── auth.py                  # Auth + download token
+│   ├── cases.py                 # Case CRUD
+│   ├── reports.py               # Reports + Quick Brief
+│   ├── report_exports.py        # PDF/DOCX generation (981 lines)
+│   ├── pipeline.py              # AI pipeline (1316 lines, was 1687)
+│   ├── pipeline_staged.py       # Staged pipeline
+│   ├── barrister_pack.py        # NEW: Acceptance Pack PDF (370 lines)
+│   ├── export.py                # Export bundle (1273 lines, was 1674)
+│   ├── translate.py             # NEW: Translation + PDF (474 lines)
+│   ├── caselaw.py               # Case law search + authorities
+│   ├── grounds.py               # Grounds of merit (1131 lines)
+│   └── ... (29 routers total)
+└── services/
+    ├── startup_tasks.py         # DB indexes, orphan recovery, dedup
+    ├── export_footer.py         # Shared footer rendering
+    ├── report_generator.py      # Multi-pass AI reports (1833 lines)
+    ├── barrister_generator.py   # Barrister View synthesis (1107 lines)
+    └── ... (16 services total)
 ```
 
-## Tech Stack
-- React frontend + FastAPI backend + MongoDB
-- Emergent Google Auth, OpenAI GPT-4o (Emergent LLM Key), Resend emails
-- Payment methods: Stripe + PayID
-- Capacitor v7 configured for native mobile
-
-## What's Been Implemented
-
-### Session 5 (Apr 2026) — server.py Monolith Refactor
-- **server.py** reduced from 432 → 170 lines (61% reduction)
-- Extracted startup tasks (DB indexes, orphan recovery, report flagging, dedup) → `services/startup_tasks.py`
-- Consolidated 28 router imports → `routers/__init__.py` with `register_all_routers(app)`
-- Zero functionality changes — pure architectural cleanup
-
-### Session 4 (Apr 2026) — Print, Security, Acceptance Pack, Case Law
-- Print All: Raw `##` markdown → HTML h3/h4, font sizes fixed, Table of Contents, Australian English
-- Barrister Quick Brief iOS fix, Acceptance Pack substantially enhanced
-- Find Case Law: AI-suggested authorities, legislation refs, copy-to-clipboard
-- Download token security, standardised footer across all exports
-
-### Sessions 1-3 (Apr 2026)
-- 9-jurisdiction validation, iOS Safari crash fix, translation formatting
-- Citation anti-hallucination, metadata warnings, security hardening
-- PDF/DOCX export footers, Barrister View deep synthesis
+## Refactoring History
+| Session | File | Before | After | Change |
+|---------|------|--------|-------|--------|
+| 5 | server.py | 432 | 170 | -61% (startup → services/startup_tasks.py) |
+| 6 | pipeline.py | 1687 | 1316 | -22% (acceptance pack → barrister_pack.py) |
+| 6 | export.py | 1674 | 1273 | -24% (translation → translate.py) |
 
 ## Test Coverage
-- Session 5: Regression — 6/6 key flows pass (health, auth, cases, reports, download tokens, case law)
-- Session 4: iteration_187 — 14/14 backend, 100% frontend
-- Session 3: iteration_186 — 12/13 backend, 100% frontend
+- Session 6 regression: 6/6 key flows pass (health, languages, acceptance pack, quick brief, case law, cases)
+- Session 5: iteration_187 — 14/14 backend, 100% frontend
 
 ## Backlog
 - P1: "How It Works" page screenshots verification
-- P2: Verify "Success Stories" page content compliance
+- P2: Success Stories page compliance
 - P2: Native Mobile App (Capacitor v7)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat, Case sharing

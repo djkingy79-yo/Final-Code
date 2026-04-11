@@ -14,7 +14,7 @@ from .statistics import router as statistics_router
 from .compare import router as compare_router
 from .contradictions import router as contradictions_router
 from .export import router as export_router
-from .export import translate_router
+from .translate import translate_router
 from .collaboration import router as collaboration_router
 from .documents import router as documents_router
 from .timeline import router as timeline_router
@@ -32,6 +32,7 @@ from .reports import router as reports_router
 from .report_exports import router as report_exports_router
 from .stripe_payments import router as stripe_payments_router
 from .payment_history import router as payment_history_router
+from .barrister_pack import router as barrister_pack_router
 
 
 _ALL_ROUTERS = [
@@ -63,6 +64,7 @@ _ALL_ROUTERS = [
     legislation_router,
     stripe_payments_router,
     payment_history_router,
+    barrister_pack_router,
 ]
 
 
