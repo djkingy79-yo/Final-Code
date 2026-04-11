@@ -534,6 +534,10 @@ function AppRouter() {
         element={<Navigate to="/legal-resources" replace />}
       />
       <Route
+        path="/contact"
+        element={<Navigate to="/legal-resources" replace />}
+      />
+      <Route
         path="/forgot-password"
         element={<ForgotPasswordPage />}
       />
