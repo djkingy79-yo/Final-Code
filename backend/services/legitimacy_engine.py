@@ -28,6 +28,10 @@ OUTCOME_IMPACT_SCORES = {
     "jury_irregularity": 2,
     "ineffective_counsel": 2,
     "sentencing_error": 2,
+    "evidentiary_error": 2,       # Wrongful admission/exclusion of evidence
+    "cybercrime_procedural": 2,   # Digital evidence chain-of-custody failures
+    "arson_expert_challenge": 2,  # Expert evidence reliability in arson cases
+    "perjury_recantation": 3,     # Witness recantation — determinative if credible
     "constitutional_violation": 1, # Minor (deprioritised — rarely operative in state appeals)
     "other": 1,
 }
@@ -36,11 +40,23 @@ OUTCOME_IMPACT_SCORES = {
 # Ground types with direct appellate authority
 DIRECT_AUTHORITY_GROUNDS = [
     "miscarriage_of_justice", "fresh_evidence", "judicial_error",
-    "prosecution_misconduct", "sentencing_error",
+    "prosecution_misconduct", "sentencing_error", "evidentiary_error",
+    "perjury_recantation",
 ]
 ANALOGOUS_GROUNDS = [
     "procedural_error", "ineffective_counsel", "jury_irregularity",
+    "cybercrime_procedural", "arson_expert_challenge",
 ]
+
+# === Layer 4: Procedural Compliance ===
+# Whether procedural prerequisites for the appeal ground have been met.
+# Scored 0-3 based on appeal framework time limits and court targeting.
+PROCEDURAL_COMPLIANCE_SCORES = {
+    "within_time": 3,            # Appeal filed within statutory time limit
+    "extension_granted": 2,      # Extension of time granted or likely
+    "out_of_time_arguable": 1,   # Out of time but arguable extension case
+    "out_of_time": 0,            # Out of time with no extension — fatal
+}
 
 
 def score_outcome_impact(ground_type: str) -> dict:
@@ -58,6 +74,19 @@ def score_legal_alignment(ground_type: str) -> dict:
         return {"score": 2, "label": "Analogous"}
     else:
         return {"score": 1, "label": "Weak"}
+
+
+def score_procedural_compliance(time_status: str = "within_time", correct_court: bool = True) -> dict:
+    """Score procedural compliance — whether appeal prerequisites are met.
+    Args:
+        time_status: One of 'within_time', 'extension_granted', 'out_of_time_arguable', 'out_of_time'
+        correct_court: Whether the appeal is directed to the correct appellate court
+    """
+    score = PROCEDURAL_COMPLIANCE_SCORES.get(time_status, 1)
+    if not correct_court:
+        score = max(0, score - 1)
+    labels = {3: "Compliant", 2: "Extension required", 1: "Arguable", 0: "Non-compliant"}
+    return {"score": score, "label": labels.get(score, "Non-compliant")}
 
 
 def score_evidence_support(evidence_list: List, undermining_list: List = None) -> dict:
@@ -129,6 +158,14 @@ def _generate_confidence_note(ground_type: str, evidence_score: int) -> str:
         return "Where psychiatric or mental state evidence is involved, this ground should be framed as a conviction safety attack on mens rea determination — whether the requisite mental state (intent to kill, intent to cause GBH, or reckless indifference) was properly established given competing evidence."
     if ground_type == "sentencing_error":
         return "This ground should be framed around proportionality and moral culpability — whether the sentence reflects true culpability given all relevant circumstances, including any mental impairment. Appellate courts afford considerable deference to sentencing judges — manifest excess or specific error required."
+    if ground_type == "evidentiary_error":
+        return "This ground should identify the specific evidence wrongly admitted or excluded, the applicable evidentiary rule (UEA s 137/s 138 or common law), and the materiality of the error to the verdict."
+    if ground_type == "cybercrime_procedural":
+        return "Digital evidence grounds require identification of chain-of-custody failures, forensic methodology challenges, or improper access/seizure of electronic data. The reliability and integrity of digital evidence must be demonstrably compromised."
+    if ground_type == "arson_expert_challenge":
+        return "Expert evidence challenges in arson cases require identification of methodological errors, outdated fire investigation techniques, or failure to exclude accidental causes. Reference to NFPA 921 standards and current forensic fire science may support this ground."
+    if ground_type == "perjury_recantation":
+        return "Witness recantation may support a fresh evidence ground if the recantation is credible and could reasonably have produced a different verdict. However, appellate courts are cautious about recantations — the recanting witness's credibility will be closely scrutinised."
     if ground_type == "constitutional_violation":
         return "Constitutional grounds are rarely the operative pathway in state criminal appeals. Consider reframing under miscarriage of justice or procedural unfairness."
     return "Assessment subject to full transcript, evidentiary, and legal review by qualified counsel."
@@ -136,26 +173,41 @@ def _generate_confidence_note(ground_type: str, evidence_score: int) -> str:
 
 def calculate_ground_rating(ground: Dict) -> Dict:
     """
-    Calculate a defensible three-axis legitimacy rating for a ground of merit.
+    Calculate a defensible four-axis legitimacy rating for a ground of merit.
 
-    Returns dict with:
-      - outcome_impact: {score, label}
-      - legal_alignment: {score, label}
-      - evidence_support: {score, label}
-      - total_score (0-9)
-      - rating: strong | moderate | weak
-      - viability_label: "Arguable — Strong" / "Arguable — Moderate" / "Requires Development"
-      - confidence_note: calibrated note
+    Four-Axis Model:
+      1. Outcome Impact    — Determinative / Influential / Minor
+      2. Legal Alignment   — Direct authority / Analogous / Weak
+      3. Evidence Support   — Strong / Partial / Limited
+      4. Procedural Compliance — Compliant / Extension required / Arguable / Non-compliant
+
+    Returns dict with all axis scores, total, rating, viability_label, and confidence_note.
     """
     ground_type = ground.get("ground_type", "other")
     evidence_list = ground.get("supporting_evidence") or ground.get("key_evidence") or []
     undermining_list = ground.get("undermining_items") or ground.get("undermining_evidence") or []
+    time_status = ground.get("time_status", "within_time")
+    correct_court = ground.get("correct_court", True)
 
     outcome = score_outcome_impact(ground_type)
     legal = score_legal_alignment(ground_type)
     evidence = score_evidence_support(evidence_list, undermining_list)
+    procedural = score_procedural_compliance(time_status, correct_court)
 
+    # Core three-axis total (unchanged for backward compatibility)
     total = outcome["score"] + legal["score"] + evidence["score"]
+
+    # Sentencing-specific scoring path:
+    # Sentencing appeals have different viability tests (manifest excess vs specific error).
+    # Specific error is easier to establish than manifest excess.
+    is_sentencing = ground_type == "sentencing_error"
+    sentencing_subtype = ground.get("sentencing_subtype", "manifest_excess")  # or "specific_error"
+
+    if is_sentencing and sentencing_subtype == "specific_error":
+        # Specific error in sentencing reasoning (e.g., wrong Act, wrong maximum, miscalculation)
+        # is easier to establish — boost legal alignment if evidence supports it
+        if evidence["score"] >= 2:
+            total = min(total + 1, 9)
 
     if total >= 7:
         rating = "strong"
@@ -183,6 +235,10 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         rating = "moderate"
         viability_label = "Arguable \u2014 Moderate"
 
+    # HARD SAFETY RULE: Out of time — flag as non-compliant regardless of other scores
+    if procedural["score"] == 0:
+        viability_label += " (PROCEDURAL WARNING: appeal may be out of time)"
+
     # Flag for contingent grounds
     is_contingent = ground_type == "ineffective_counsel"
 
@@ -190,15 +246,15 @@ def calculate_ground_rating(ground: Dict) -> Dict:
         "outcome_impact": outcome,
         "legal_alignment": legal,
         "evidence_support": evidence,
+        "procedural_compliance": procedural,
         "total_score": total,
         "rating": rating,
         "viability_label": viability_label,
         "confidence_note": _generate_confidence_note(ground_type, evidence["score"]),
         "is_contingent": is_contingent,
-        # Legacy compatibility fields — documented mapping:
-        # - legal_score → legal_alignment.score (unchanged)
-        # - evidence_score → evidence_support.score (unchanged)
-        # - viability_score → overall 1-3 band derived from rating (strong=3, moderate=2, weak=1)
+        "is_sentencing_ground": is_sentencing,
+        "sentencing_subtype": sentencing_subtype if is_sentencing else None,
+        # Legacy compatibility fields
         "legal_score": legal["score"],
         "evidence_score": evidence["score"],
         "outcome_impact_score": outcome["score"],

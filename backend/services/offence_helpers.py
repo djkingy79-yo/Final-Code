@@ -14,6 +14,10 @@ from offence_framework import (
     NSW_CRIMINAL_FRAMEWORK, VIC_CRIMINAL_FRAMEWORK, QLD_CRIMINAL_FRAMEWORK,
     SA_CRIMINAL_FRAMEWORK, WA_CRIMINAL_FRAMEWORK, TAS_CRIMINAL_FRAMEWORK,
     NT_CRIMINAL_FRAMEWORK, ACT_CRIMINAL_FRAMEWORK, FEDERAL_CRIMINAL_FRAMEWORK,
+    SENTENCING_FRAMEWORK, EVIDENCE_FRAMEWORK, MENTAL_IMPAIRMENT_FRAMEWORK,
+    APPEAL_FRAMEWORK, PROCEEDS_OF_CRIME_FRAMEWORK,  # noqa: F401 — re-exported for pipeline modules
+    LANDMARK_CASES,
+    APPEAL_GROUNDS_ACCESSIBILITY,  # noqa: F401 — re-exported for pipeline modules
 )
 
 # Map state keys to their criminal framework dictionaries
@@ -129,6 +133,15 @@ RELEVANT {abbreviation} LEGISLATION:
     # Always inject federal/Commonwealth framework
     context += _build_federal_framework_context()
 
+    # Inject sentencing legislation context
+    context += get_sentencing_context(state_key)
+
+    # Inject evidence legislation context
+    context += get_evidence_context(state_key)
+
+    # Inject jurisdiction completeness warnings
+    context += get_jurisdiction_warnings_prompt(state_key, offence_category)
+
     return context
 
 
@@ -215,6 +228,19 @@ def get_export_legal_refs(state_key: str) -> list:
 
 
 
+def _build_appeal_time_limit_note(state: str) -> str:
+    """Build appeal time limit note from APPEAL_FRAMEWORK."""
+    state_key = state.lower() if state else ''
+    if not state_key or state_key not in APPEAL_FRAMEWORK:
+        return "Jurisdiction not confirmed — verify applicable appeal time limits."
+    appeal_info = APPEAL_FRAMEWORK.get(state_key, {})
+    time_limit = appeal_info.get('time_limit', '')
+    court = appeal_info.get('court', '')
+    if time_limit:
+        return f"Appeal time limit ({state_key.upper()}): {time_limit}. Appellate court: {court}. If the appeal may be out of time, flag this and note whether an extension of time is arguable."
+    return f"Appellate court: {court}. Verify applicable appeal time limits for this jurisdiction."
+
+
 def get_offence_system_prompt(offence_category: str, state: str = "") -> str:
     """
     Generate offence-specific system prompt for AI analysis.
@@ -287,7 +313,13 @@ MANDATORY ANALYTICAL CONTROLS:
 8. LEGISLATION ACCURACY: Always cite legislation with the FULL Act name and year (e.g. "Crimes Act 1900 (NSW)", NOT "Crimes Act (NSW)"). Where an Act has been recently amended, cite the CURRENT version. Do NOT cite provisions that have been repealed, renamed, or superseded. If uncertain whether a provision is current, flag this explicitly rather than guessing.
 
 KEY ELEMENTS for {category_name}: {', '.join(category_data.get('key_elements', ['actus reus', 'mens rea'])[:4])}
-Available defences: {', '.join(category_data.get('defences', ['self-defence'])[:5])}"""
+Available defences: {', '.join(category_data.get('defences', ['self-defence'])[:5])}
+
+MANDATORY — CITE ONLY LEGISLATION IN FORCE AT DATE OF CONVICTION:
+If the offence was committed or the conviction occurred before a legislative amendment commenced, cite the version of the Act as it stood at the relevant date. Retrospective application of amended provisions is itself a potential appeal ground. If uncertain whether the current or former provision applies, flag this explicitly.
+
+ADDITIONAL INSTRUCTION — APPEAL TIME LIMITS:
+{_build_appeal_time_limit_note(state)}"""
 
 
 
@@ -522,3 +554,145 @@ def enforce_forensic_language(text: str) -> str:
     text = re.sub(r'arguably arguably', 'arguably', text, flags=re.IGNORECASE)
 
     return text
+
+
+
+def validate_jurisdiction_completeness(state: str, offence_category: str) -> list:
+    """Validate completeness of legal data for a given jurisdiction and offence category.
+    Returns a list of gap warnings to inject into AI prompts.
+
+    Example: validate_jurisdiction_completeness('wa', 'drug_offences')
+    → ['No sentencing Act referenced for WA drug offences — cite Sentencing Act 1995 (WA)']
+    """
+    warnings = []
+    state_key = state.lower() if state else ''
+
+    if not state_key or state_key not in AUSTRALIAN_STATES:
+        warnings.append("JURISDICTION NOT CONFIRMED — analysis MUST NOT default to any state's legislation.")
+        return warnings
+
+    state_name = AUSTRALIAN_STATES[state_key].get('name', state_key.upper())
+
+    # Check offence category has state-specific legislation
+    category_data = OFFENCE_CATEGORIES.get(offence_category, {})
+    state_leg_key = f"{state_key}_legislation"
+    state_legislation = category_data.get(state_leg_key, {})
+    if not state_legislation and offence_category != 'other':
+        warnings.append(
+            f"No {state_name} legislation referenced for '{category_data.get('name', offence_category)}' offences — "
+            f"verify applicable criminal legislation for {state_name}."
+        )
+
+    # Check sentencing framework exists for this state
+    if state_key not in SENTENCING_FRAMEWORK:
+        warnings.append(f"No sentencing Act referenced for {state_name} — sentencing appeal grounds may lack legislative anchor.")
+
+    # Check evidence framework exists for this state
+    if state_key not in EVIDENCE_FRAMEWORK:
+        warnings.append(f"No Evidence Act referenced for {state_name} — evidentiary appeal grounds may lack legislative anchor.")
+
+    # Check mental impairment framework exists for this state
+    if state_key not in MENTAL_IMPAIRMENT_FRAMEWORK:
+        warnings.append(f"No mental impairment legislation referenced for {state_name}.")
+
+    # Check appeal framework exists for this state
+    if state_key not in APPEAL_FRAMEWORK:
+        warnings.append(f"No appeal pathway referenced for {state_name}.")
+    else:
+        appeal_info = APPEAL_FRAMEWORK[state_key]
+        time_limit = appeal_info.get('time_limit', '')
+        if time_limit:
+            warnings.append(f"APPEAL TIME LIMIT ({state_name}): {time_limit}. Verify whether appeal is within time.")
+
+    return warnings
+
+
+def get_sentencing_context(state: str) -> str:
+    """Build sentencing legislation context string for AI prompts."""
+    state_key = state.lower() if state else ''
+    context = ""
+
+    state_sent = SENTENCING_FRAMEWORK.get(state_key, {})
+    if state_sent:
+        context += f"\nSENTENCING LEGISLATION ({state_key.upper()}):\n"
+        context += f"  {state_sent.get('act', 'Unknown')}\n"
+        for prov in state_sent.get('key_provisions', []):
+            context += f"    - {prov}\n"
+        context += "\n  STANDARD SENTENCING APPEAL GROUNDS:\n"
+        for ground in state_sent.get('sentencing_appeal_grounds', []):
+            context += f"    - {ground}\n"
+        if state_sent.get('note'):
+            context += f"\n  NOTE: {state_sent['note']}\n"
+
+    # Always add federal sentencing for federal offences
+    federal_sent = SENTENCING_FRAMEWORK.get('federal', {})
+    if federal_sent:
+        context += "\n  FEDERAL SENTENCING (Crimes Act 1914 (Cth) Part IB):\n"
+        for prov in federal_sent.get('key_provisions', [])[:4]:
+            context += f"    - {prov}\n"
+        if federal_sent.get('note'):
+            context += f"\n  NOTE: {federal_sent['note']}\n"
+
+    return context
+
+
+def get_evidence_context(state: str) -> str:
+    """Build evidence legislation context string for AI prompts."""
+    state_key = state.lower() if state else ''
+    context = ""
+
+    state_ev = EVIDENCE_FRAMEWORK.get(state_key, {})
+    if state_ev:
+        context += f"\nEVIDENCE LEGISLATION ({state_key.upper()}):\n"
+        context += f"  {state_ev.get('act', 'Unknown')}\n"
+        ev_type = state_ev.get('type', 'unknown')
+        if ev_type == 'uniform':
+            context += "  Type: Uniform Evidence Law jurisdiction\n"
+            uniform = EVIDENCE_FRAMEWORK.get('uniform_evidence_jurisdictions', {})
+            for prov in uniform.get('key_uniform_provisions', []):
+                context += f"    - {prov}\n"
+            for prov in state_ev.get('key_local_provisions', []):
+                context += f"    - [LOCAL] {prov}\n"
+        else:
+            context += "  Type: Non-uniform (distinct evidence regime)\n"
+            if state_ev.get('note'):
+                context += f"  Note: {state_ev['note']}\n"
+            for prov in state_ev.get('key_provisions', []):
+                context += f"    - {prov}\n"
+
+    common_grounds = EVIDENCE_FRAMEWORK.get('common_evidence_appeal_grounds', [])
+    if common_grounds:
+        context += "\n  COMMON EVIDENTIARY APPEAL GROUNDS:\n"
+        for ground in common_grounds:
+            context += f"    - {ground}\n"
+
+    return context
+
+
+def get_landmark_cases_context(ground_types: list = None) -> str:
+    """Build landmark case context for AI prompts based on the appeal ground types."""
+    if not ground_types:
+        ground_types = list(LANDMARK_CASES.keys())
+
+    context = "\nKEY APPELLATE AUTHORITIES (settled law — cite where relevant):\n"
+    found = False
+    for gt in ground_types:
+        cases = LANDMARK_CASES.get(gt, [])
+        if cases:
+            found = True
+            context += f"\n  {gt.replace('_', ' ').title()}:\n"
+            for case in cases:
+                context += f"    - {case['case']}: {case['principle'][:200]}\n"
+
+    return context if found else ""
+
+
+def get_jurisdiction_warnings_prompt(state: str, offence_category: str) -> str:
+    """Build jurisdiction gap warnings for injection into AI system prompts."""
+    warnings = validate_jurisdiction_completeness(state, offence_category)
+    if not warnings:
+        return ""
+    context = "\nJURISDICTION DATA COMPLETENESS WARNINGS:\n"
+    for w in warnings:
+        context += f"  - {w}\n"
+    return context

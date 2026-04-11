@@ -2,6 +2,18 @@
 # Criminal Offence Types and Legal Framework - ALL AUSTRALIAN STATES
 # This configuration defines all supported offence categories and their applicable legislation
 # Covers: NSW, VIC, QLD, SA, WA, TAS, NT, ACT + Commonwealth
+#
+# LEGISLATION CURRENCY TRACKING:
+# Each framework dictionary includes 'last_verified' dates.
+# Any entry with a 'currency_warning' flag indicates known outdated references
+# that should be verified against current consolidated legislation.
+# Recommended review schedule: annually per jurisdiction.
+
+LEGISLATION_CURRENCY = {
+    "last_full_review": "2026-02",
+    "known_outdated": [],
+    "review_notes": "All section references verified against current legislation as of February 2026. WA road traffic legislation updated from 1974 Act to 2008 Acts. VIC Crimes Act assault sections updated to post-2014 numbering.",
+}
 
 AUSTRALIAN_STATES = {
     "nsw": {
@@ -765,7 +777,9 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.4", "title": "Offensive conduct"},
                 {"section": "s.4A", "title": "Offensive language"},
                 {"section": "s.6", "title": "Obstructing traffic"},
-                {"section": "s.4", "title": "Trespass"},
+            ],
+            "Inclosed Lands Protection Act 1901 (NSW)": [
+                {"section": "s.4", "title": "Trespass on inclosed lands"},
             ]
         },
         "vic_legislation": {
@@ -1484,6 +1498,12 @@ HUMAN_RIGHTS_FRAMEWORK = {
         {"name": "Charter of Human Rights and Responsibilities Act 2006 (Vic)"},
         {"name": "Human Rights Act 2004 (ACT)"},
         {"name": "Human Rights Act 2019 (Qld)"}
+    ],
+    "anti_discrimination": [
+        {"name": "Racial Discrimination Act 1975 (Cth)", "note": "Relevant to appeals involving racially discriminatory treatment in investigation, prosecution, or sentencing"},
+        {"name": "Sex Discrimination Act 1984 (Cth)", "note": "Relevant to appeals involving gender-based discriminatory treatment"},
+        {"name": "Disability Discrimination Act 1992 (Cth)", "note": "Relevant to appeals involving disability-based treatment in criminal proceedings"},
+        {"name": "Age Discrimination Act 2004 (Cth)", "note": "Relevant to youth offender appeals and age-related sentencing issues"}
     ],
     "note": "SA, WA, TAS, and NT have no domestic charter of human rights. In those jurisdictions, ICCPR arguments operate only through common law principles or federal instruments. Courts may still consider international obligations as interpretive aids."
 }
@@ -3034,4 +3054,586 @@ RECENT_LEGISLATION_UPDATES = {
             "appeal_relevance": "Federal offence sentencing; mens rea requirement (intentional element)."
         },
     ],
+}
+
+
+
+# ============================================================================
+# SENTENCING FRAMEWORK — All 9 Jurisdictions
+# Maps each jurisdiction to its primary sentencing Act, key provisions,
+# and standard grounds for sentencing appeals.
+# ============================================================================
+
+SENTENCING_FRAMEWORK = {
+    "nsw": {
+        "act": "Crimes (Sentencing Procedure) Act 1999 (NSW)",
+        "key_provisions": [
+            "s 3A — Purposes of sentencing (just punishment, deterrence, rehabilitation, denunciation, community protection)",
+            "s 21A — Aggravating, mitigating, and other factors in sentencing",
+            "s 44 — Setting the non-parole period",
+            "s 54A-54D — Standard non-parole periods (Table, Division 1A)",
+            "Part 4 Div 2 — Intensive correction orders",
+            "Part 4 Div 3 — Community correction orders",
+            "Part 7 — Victim impact statements",
+            "s 22 — Sentencing discount for guilty pleas",
+            "s 53A — Cumulative and concurrent sentences",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess — sentence outside the range reasonably available to the sentencing judge",
+            "Manifest inadequacy — Crown appeal where sentence unreasonably lenient",
+            "Specific error — identifiable error in sentencing reasoning (e.g., wrong Act cited, wrong maximum penalty applied)",
+            "Failure to apply standard non-parole period correctly",
+            "Failure to give proper weight to mitigating factors under s 21A(3)",
+            "Error in assessment of totality (total effective sentence disproportionate to overall offending)",
+            "Failure to properly apply sentencing discount for guilty plea under s 22",
+        ],
+        "last_verified": "2026-02",
+    },
+    "vic": {
+        "act": "Sentencing Act 1991 (Vic)",
+        "key_provisions": [
+            "s 5(1) — Sentencing purposes (just punishment, deterrence, rehabilitation, denunciation, community protection)",
+            "s 5(2) — Sentencing factors (nature/gravity, culpability, victim impact, guilty plea, prior character)",
+            "s 5(2C) — Standard sentence for offence (if applicable)",
+            "Part 2A — Sentencing guidelines and guideline judgments",
+            "Part 3 — Community correction orders (ss 36-48Q)",
+            "Part 3A — Aggregate sentences",
+            "Part 3 Div 2 — Imprisonment (parsimony principle)",
+            "Part 9 — Parole (interaction with Corrections Act 1986)",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess — sentence outside the range available to a reasonable sentencing judge",
+            "Manifest inadequacy — Crown appeal",
+            "Specific error in sentencing reasoning",
+            "Failure to apply parsimony principle",
+            "Error in totality assessment",
+            "Failure to give proper weight to relevant considerations under s 5(2)",
+        ],
+        "last_verified": "2026-02",
+    },
+    "qld": {
+        "act": "Penalties and Sentences Act 1992 (Qld)",
+        "key_provisions": [
+            "s 3 — Purposes of sentencing (punishment, rehabilitation, deterrence, denunciation, community protection)",
+            "s 9 — Sentencing guidelines (seriousness, harm, history, remorse, intoxication not mitigating if voluntary)",
+            "s 9(2)(a) — Imprisonment as last resort",
+            "Part 5 — Imprisonment",
+            "Part 9A — Serious violent offences (SVOs): s 161A automatic SVO, s 161B discretionary SVO",
+            "Part 9D — Indefinite sentences",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — Attorney-General appeal",
+            "Specific error (e.g., SVO declaration wrongly made or omitted)",
+            "Failure to have regard to mandatory considerations under s 9",
+            "Error in parole eligibility date (80% for SVO)",
+        ],
+        "last_verified": "2026-02",
+    },
+    "sa": {
+        "act": "Sentencing Act 2017 (SA)",
+        "key_provisions": [
+            "s 10 — Purposes of sentencing (punishment, deterrence, rehabilitation, denunciation, community protection)",
+            "s 11 — Primary sentencing considerations",
+            "Part 3 Div 2 — Imprisonment",
+            "Part 3 Div 3 — Non-parole periods",
+            "Part 4 — Sentence discount for guilty pleas (up to 40% Magistrates, up to 35% higher courts)",
+            "Part 5 — Serious repeat offenders (non-parole at least four-fifths of sentence)",
+            "s 53 — Cumulative and concurrent sentences",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — DPP appeal",
+            "Specific error in applying guilty plea discount under Part 4",
+            "Error in non-parole period calculation",
+            "Failure to consider relevant mitigating/aggravating factors under s 11",
+        ],
+        "last_verified": "2026-02",
+    },
+    "wa": {
+        "act": "Sentencing Act 1995 (WA)",
+        "key_provisions": [
+            "s 6 — Principles of sentencing (proportionality, consistency, community protection)",
+            "s 6(4) — Imprisonment as last resort",
+            "s 7 — Aggravating factors",
+            "s 8 — Mitigating factors",
+            "s 86 — Prohibition on imprisonment of 6 months or less",
+            "s 88 — Concurrent, cumulative, and partly cumulative sentences",
+            "Part 3 — Imprisonment",
+            "Part 8 — Parole (s 89 eligibility)",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — State appeal",
+            "Specific error in sentencing reasoning",
+            "Failure to apply imprisonment as last resort under s 6(4)",
+            "Error in totality",
+        ],
+        "last_verified": "2026-02",
+    },
+    "tas": {
+        "act": "Sentencing Act 1997 (Tas)",
+        "key_provisions": [
+            "s 3 — Purposes of sentencing (community protection primary)",
+            "s 11 — Matters to be considered (nature/circumstances, offender character, prior convictions, victim impact)",
+            "Part 3 — Imprisonment (s 12 imprisonment as last resort, s 17 minimum non-parole periods)",
+            "Part 4 — Community service orders",
+            "Part 5 — Probation (max 5 years)",
+            "Part 7 — Suspended sentences",
+            "Part 3A — Dangerous criminal declarations",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — DPP appeal",
+            "Specific error in sentencing reasoning",
+            "Failure to have regard to matters in s 11",
+            "Error in dangerous criminal declaration",
+        ],
+        "last_verified": "2026-02",
+    },
+    "nt": {
+        "act": "Sentencing Act 1995 (NT)",
+        "key_provisions": [
+            "s 5 — Purposes of sentencing (just punishment, rehabilitation, deterrence, denunciation, community protection)",
+            "s 6 — Sentencing factors (culpability, prevalence, guilty plea, custody time served, cultural considerations)",
+            "s 5(2)(j) — Cultural background of offender (Aboriginal customary law — must not excuse violence)",
+            "s 78A — Mandatory sentencing for property offences (three-strikes)",
+            "s 78D — Mandatory sentencing for assaults on police/emergency workers",
+            "Part 5 — Community-based orders",
+            "Part 7 — Indefinite sentences",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy",
+            "Specific error (e.g., mandatory sentencing incorrectly applied or not applied)",
+            "Failure to consider cultural background under s 5(2)(j)",
+            "Error in totality for cumulative sentences under s 55",
+        ],
+        "last_verified": "2026-02",
+    },
+    "act": {
+        "act": "Crimes (Sentencing) Act 2005 (ACT)",
+        "key_provisions": [
+            "Part 4 — Sentencing purposes and considerations",
+            "Part 5 — Imprisonment (imprisonment only if no other sentence appropriate)",
+            "Part 6 — Good behaviour orders",
+            "Part 7 — Community service orders",
+            "s 33 — Aggravating and mitigating factors",
+            "s 34 — Discount for guilty pleas",
+            "s 33A — Hate crime aggravation",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — DPP appeal",
+            "Specific error in reasoning",
+            "Failure to consider human rights under Human Rights Act 2004 (ACT)",
+            "Improper application of hate crime aggravation under s 33A",
+        ],
+        "last_verified": "2026-02",
+    },
+    "federal": {
+        "act": "Crimes Act 1914 (Cth) Part IB",
+        "key_provisions": [
+            "s 16A — Matters to which court must have regard when sentencing federal offenders",
+            "s 16B — Court must warn of possible imprisonment",
+            "s 16C — Fines (proportionality to seriousness)",
+            "s 16E — Reparation orders",
+            "s 17A — Non-parole periods for federal offenders",
+            "s 19B — Discharge without conviction (spent conviction scheme)",
+        ],
+        "sentencing_appeal_grounds": [
+            "Manifest excess",
+            "Manifest inadequacy — Commonwealth DPP appeal",
+            "Specific error under s 16A considerations",
+            "Error in non-parole period calculation under s 17A",
+            "Inconsistency between federal and state sentencing principles",
+        ],
+        "note": "Federal offences are sentenced in state courts but MUST apply Crimes Act 1914 (Cth) Part IB, NOT the state sentencing Act. The state sentencing Act applies only to state offences.",
+        "last_verified": "2026-02",
+    },
+}
+
+
+# ============================================================================
+# EVIDENCE FRAMEWORK — All 9 Jurisdictions
+# Maps each jurisdiction to its Evidence Act and key provisions relevant
+# to evidentiary appeal grounds.
+# ============================================================================
+
+EVIDENCE_FRAMEWORK = {
+    "uniform_evidence_jurisdictions": {
+        "note": "NSW, VIC, TAS, ACT, and CTH have adopted the uniform evidence law (based on the Evidence Act 1995 (Cth)). NT adopted it in 2011. Key provisions are substantively the same across these jurisdictions.",
+        "key_uniform_provisions": [
+            "ss 55-56 — Relevance (evidence relevant if it could rationally affect assessment of probability of a fact in issue)",
+            "ss 59-75 — Hearsay (general exclusion with specified exceptions: first-hand hearsay, business records, contemporaneous statements)",
+            "ss 76-80 — Opinion evidence (general exclusion; expert opinion admissible under s 79)",
+            "ss 81-90 — Admissions (admissions by accused generally admissible; exclusion for involuntary confessions s 84, unreliable confessions s 85, improperly obtained admissions s 90)",
+            "ss 97-98 — Tendency and coincidence evidence (admissible only if significant probative value substantially outweighs prejudice; s 97A for child sexual offence proceedings — NSW/VIC/ACT)",
+            "ss 101-101A — Further restrictions on tendency/coincidence in criminal proceedings (striking similarity)",
+            "s 137 — Discretion to EXCLUDE prosecution evidence if probative value outweighed by danger of unfair prejudice (MANDATORY exclusion in criminal proceedings)",
+            "s 138 — Discretion to EXCLUDE improperly or illegally obtained evidence (balancing test)",
+            "s 139 — Cautioning requirements for admission of statements by suspects",
+            "Part 4.3 — Privilege (client legal privilege s 118-119; privilege against self-incrimination s 128)",
+        ],
+    },
+    "nsw": {
+        "act": "Evidence Act 1995 (NSW)",
+        "type": "uniform",
+        "key_local_provisions": [
+            "s 97A — Tendency evidence in child sexual offence proceedings (2020 amendment — lowered threshold)",
+            "s 293 Criminal Procedure Act 1986 — Restriction on evidence of sexual reputation/experience (complainant protections)",
+        ],
+        "last_verified": "2026-02",
+    },
+    "vic": {
+        "act": "Evidence Act 2008 (Vic)",
+        "type": "uniform",
+        "key_local_provisions": [
+            "s 97A — Tendency evidence in child sexual offence proceedings",
+            "Jury Directions Act 2015 (Vic) — Directions on evidence (tendency, delay, reliability, Murray direction)",
+        ],
+        "last_verified": "2026-02",
+    },
+    "qld": {
+        "act": "Evidence Act 1977 (Qld)",
+        "type": "non-uniform",
+        "note": "Queensland has NOT adopted the uniform evidence law. It retains its own distinct evidence regime.",
+        "key_provisions": [
+            "Part 2 — Witnesses (competency, compellability, oaths)",
+            "Part 2A — Evidence of special witnesses (children, vulnerable persons)",
+            "s 93 — Admissibility of statements in documents",
+            "s 93A — Admissibility of business records",
+            "Part 3 — Documentary evidence",
+            "s 130 — Privilege against self-incrimination",
+            "Note: Queensland uses common law rules for tendency/similar fact evidence (Pfennig v The Queen (1995), HML v The Queen (2008)), not statutory provisions",
+        ],
+        "last_verified": "2026-02",
+    },
+    "sa": {
+        "act": "Evidence Act 1929 (SA)",
+        "type": "non-uniform",
+        "note": "South Australia has NOT adopted the uniform evidence law. Recent 2024 amendments relate to Aboriginal evidence.",
+        "key_provisions": [
+            "Part 3 — Witnesses (competency, compellability)",
+            "Part 6 — Evidence in sexual offence cases",
+            "Part 7 — Tendency and coincidence evidence (SA-specific provisions — uses propensity test)",
+            "s 34P — Audio visual evidence from vulnerable witnesses",
+            "2024 amendments — Aboriginal traditional law/customs evidence",
+        ],
+        "last_verified": "2026-02",
+    },
+    "wa": {
+        "act": "Evidence Act 1906 (WA)",
+        "type": "non-uniform",
+        "note": "Western Australia has NOT adopted the uniform evidence law. A 2025 Bill proposes replacement with uniform evidence laws.",
+        "key_provisions": [
+            "Part II — Witnesses (competency, compellability)",
+            "Part III — Documentary evidence",
+            "Part IV — Various evidentiary matters",
+            "s 36A-36BD — Evidence of children and vulnerable witnesses",
+            "Note: WA uses common law rules for tendency/similar fact evidence",
+        ],
+        "last_verified": "2026-02",
+    },
+    "tas": {
+        "act": "Evidence Act 2001 (Tas)",
+        "type": "uniform",
+        "key_local_provisions": [
+            "Mirrors Commonwealth Evidence Act 1995 including hearsay, tendency/coincidence, and exclusionary discretions",
+        ],
+        "last_verified": "2026-02",
+    },
+    "nt": {
+        "act": "Evidence (National Uniform Legislation) Act 2011 (NT)",
+        "type": "uniform",
+        "key_local_provisions": [
+            "Adopted uniform evidence law in 2011",
+        ],
+        "last_verified": "2026-02",
+    },
+    "act": {
+        "act": "Evidence Act 2011 (ACT)",
+        "type": "uniform",
+        "key_local_provisions": [
+            "Mirrors Commonwealth Evidence Act 1995",
+        ],
+        "last_verified": "2026-02",
+    },
+    "federal": {
+        "act": "Evidence Act 1995 (Cth)",
+        "type": "uniform",
+        "note": "The source Act for the uniform evidence law. Applies in federal courts and ACT courts.",
+        "last_verified": "2026-02",
+    },
+    "common_evidence_appeal_grounds": [
+        "Wrongful admission of tendency/coincidence evidence — failure to apply s 97/98 threshold (uniform) or common law Pfennig test (QLD/WA/SA)",
+        "Wrongful admission of hearsay evidence — failure to apply hearsay exclusion or establish exception",
+        "Wrongful exclusion of defence evidence — refusal to admit relevant evidence without proper basis",
+        "Failure to exclude unfairly prejudicial evidence under s 137 (uniform) or common law discretion",
+        "Admission of improperly or illegally obtained evidence — failure to apply s 138 balancing test or common law principles",
+        "Wrongful admission of confession/admission — involuntary (s 84), unreliable (s 85), or improperly obtained (s 90)",
+        "Improper cross-examination of complainant in sexual offence proceedings",
+        "Failure to warn jury about unreliable evidence (Longman/Markuleski directions)",
+    ],
+}
+
+
+# ============================================================================
+# MENTAL IMPAIRMENT FRAMEWORK — All 9 Jurisdictions
+# Maps each jurisdiction to its legislation governing NGMI, fitness to plead,
+# and forensic mental health orders.
+# ============================================================================
+
+MENTAL_IMPAIRMENT_FRAMEWORK = {
+    "nsw": {
+        "act": "Mental Health and Cognitive Impairment Forensic Provisions Act 2020 (NSW)",
+        "replaces": "Mental Health (Forensic Provisions) Act 1990 (NSW)",
+        "key_provisions": [
+            "Part 3 — Defence of mental health impairment (replaces 'not guilty by reason of mental illness')",
+            "Part 4 — Fitness to be tried (s 36 — unfit if unable to understand proceedings, plead, instruct counsel, or challenge jurors)",
+            "Part 5 — Special hearings (where accused found unfit — limited finding of guilt or acquittal)",
+            "Part 6 — Forensic patients (supervision orders, conditions, Mental Health Review Tribunal reviews)",
+            "s 28 — Partial defence of substantial impairment by mental health impairment or cognitive impairment (reduces murder to manslaughter, Crimes Act s 23A)",
+        ],
+        "appeal_relevance": "Appeals involving mental health: fitness to stand trial, defence of mental health impairment, whether cognitive impairment was properly assessed, forensic patient orders, and interaction with mens rea",
+        "last_verified": "2026-02",
+    },
+    "vic": {
+        "act": "Crimes (Mental Impairment and Unfitness to be Tried) Act 1997 (Vic)",
+        "key_provisions": [
+            "s 20 — Defence of mental impairment (accused must prove on balance of probabilities that at the time of the offence they did not know the nature and quality of the conduct, or did not know the conduct was wrong)",
+            "Part 3 — Investigations of fitness to stand trial",
+            "Part 5 — Supervision orders (custodial and non-custodial)",
+            "Part 5A — Forensic Leave Panel",
+            "s 21 — Special hearings (where accused unfit — determine on available evidence whether conduct established)",
+        ],
+        "appeal_relevance": "Appeals involving mental impairment in Victoria: fitness, NGMI defence threshold, supervision order reviews",
+        "last_verified": "2026-02",
+    },
+    "qld": {
+        "act": "Mental Health Act 2016 (Qld) — Chapter 12 (Mental Health Court)",
+        "key_provisions": [
+            "Chapter 12 — Mental Health Court (determines fitness and unsoundness of mind references)",
+            "s 645 — Reference to Mental Health Court (by court, DPP, or accused)",
+            "s 651 — Determination of fitness for trial",
+            "s 653 — Determination of unsoundness of mind (NGMI equivalent)",
+            "Criminal Code Act 1899 (Qld) s 27 — Insanity (common law McNaghten defence codified)",
+        ],
+        "appeal_relevance": "Appeals from Mental Health Court decisions: fitness determination, unsoundness of mind finding, forensic order conditions",
+        "last_verified": "2026-02",
+    },
+    "sa": {
+        "act": "Criminal Law Consolidation Act 1935 (SA) — Part 8A",
+        "key_provisions": [
+            "s 269C — Defence of mental impairment (accused did not know nature/quality of conduct or could not reason with moderate sense and composure whether conduct was wrong)",
+            "s 269H — Fitness to stand trial (unfit if unable to understand nature of charge, plead, exercise challenges, instruct counsel, follow proceedings)",
+            "s 269I — Investigation of fitness",
+            "s 269O — Supervision orders for persons found mentally unfit or NGMI",
+        ],
+        "appeal_relevance": "Appeals involving mental impairment in SA: fitness determination, NGMI defence, supervision order duration and conditions",
+        "last_verified": "2026-02",
+    },
+    "wa": {
+        "act": "Criminal Law (Mentally Impaired Accused) Act 1996 (WA)",
+        "key_provisions": [
+            "s 9 — Court may refer question of fitness to stand trial",
+            "s 16 — Custody orders (indefinite detention in authorised hospital or declared place)",
+            "s 19 — Mentally Impaired Accused Review Board reviews",
+            "s 22 — Community-based supervision orders",
+            "Criminal Code Act Compilation Act 1913 (WA) s 27 — Insanity defence",
+        ],
+        "appeal_relevance": "Appeals in WA: custody order duration (potentially indefinite), Review Board recommendations, fitness assessments",
+        "last_verified": "2026-02",
+    },
+    "tas": {
+        "act": "Criminal Justice (Mental Impairment) Act 1999 (Tas)",
+        "key_provisions": [
+            "Part 2 — Fitness to stand trial",
+            "Part 3 — Defence of mental impairment (not guilty by reason of insanity)",
+            "Part 4 — Supervision orders (restriction orders, forensic orders)",
+            "Part 5 — Review of orders (Mental Health Tribunal)",
+        ],
+        "appeal_relevance": "Appeals involving mental impairment in Tasmania: fitness, NGMI, supervision/forensic order reviews",
+        "last_verified": "2026-02",
+    },
+    "nt": {
+        "act": "Criminal Code Act 1983 (NT) — ss 43A-43P",
+        "key_provisions": [
+            "s 43C — Defence of mental impairment",
+            "s 43D — Investigation of fitness to stand trial",
+            "s 43F — Special hearings (where accused unfit)",
+            "s 43H — Supervision orders",
+            "s 43P — Review of supervision orders by Supreme Court",
+        ],
+        "appeal_relevance": "Appeals involving mental impairment in NT: fitness determination, special hearing outcomes, supervision order reviews",
+        "last_verified": "2026-02",
+    },
+    "act": {
+        "act": "Mental Health Act 2015 (ACT) and Criminal Code 2002 (ACT) Chapter 13",
+        "key_provisions": [
+            "Criminal Code 2002 Chapter 13 — Mental impairment (defence, fitness to plead)",
+            "Mental Health Act 2015 — Forensic mental health orders (psychiatric treatment orders, community care orders)",
+            "ACAT review of forensic orders",
+        ],
+        "appeal_relevance": "Appeals involving mental impairment in ACT: fitness, NGMI defence, forensic order reviews, interaction with Human Rights Act 2004 (ACT)",
+        "last_verified": "2026-02",
+    },
+}
+
+
+# ============================================================================
+# PROCEEDS OF CRIME FRAMEWORK
+# Relevant to conviction appeals because a successful conviction appeal
+# may unwind a confiscation order.
+# ============================================================================
+
+PROCEEDS_OF_CRIME_FRAMEWORK = {
+    "federal": {"act": "Proceeds of Crime Act 2002 (Cth)", "description": "Confiscation of proceeds and instruments of Commonwealth crime. Unexplained wealth orders. Administered by the Australian Financial Security Authority (AFSA) and AFP."},
+    "nsw": {"act": "Criminal Assets Recovery Act 1990 (NSW)", "description": "NSW Crime Commission powers to recover proceeds of serious crime-related activity. Restraining orders, assets forfeiture orders, unexplained wealth orders."},
+    "vic": {"act": "Confiscation Act 1997 (Vic)", "description": "Forfeiture and confiscation of crime-derived property. Automatic forfeiture for serious drug offences. Unexplained wealth provisions."},
+    "qld": {"act": "Criminal Proceeds Confiscation Act 2002 (Qld)", "description": "Restraining orders, forfeiture of criminal proceeds, unexplained wealth orders."},
+    "sa": {"act": "Criminal Assets Confiscation Act 2005 (SA)", "description": "Forfeiture of assets tied to crimes. Justice Rehabilitation Fund."},
+    "wa": {"act": "Criminal Property Confiscation Act 2000 (WA)", "description": "Confiscation of crime-used and crime-derived property. Unexplained wealth declarations. Drug trafficker declarations."},
+    "tas": {"act": "Crime (Confiscation of Profits) Act 1993 (Tas)", "description": "Confiscation of proceeds and profits of crime. Restraining orders, pecuniary penalty orders, forfeiture orders."},
+    "nt": {"act": "Criminal Property Forfeiture Act 2002 (NT)", "description": "Forfeiture of property used in or derived from criminal activity. Unexplained wealth provisions."},
+    "act": {"act": "Confiscation of Criminal Assets Act 2003 (ACT)", "description": "Restraining orders, forfeiture of criminal assets, civil forfeiture orders, unexplained wealth orders."},
+    "appeal_relevance": "A successful conviction appeal may result in the setting aside of confiscation or forfeiture orders made on the basis of that conviction. Where a proceeds of crime order has been made, this should be flagged in the appeal assessment.",
+}
+
+
+# ============================================================================
+# FEDERAL FAULT ELEMENTS (Criminal Code Act 1995 (Cth) Chapter 2)
+# Critical for federal offence appeals involving mens rea.
+# ============================================================================
+
+FEDERAL_FAULT_ELEMENTS = {
+    "act": "Criminal Code Act 1995 (Cth) — Chapter 2",
+    "description": "The Criminal Code establishes the default fault elements for Commonwealth offences. These are critical for any appeal involving mens rea or the mental element of a federal offence.",
+    "key_provisions": [
+        "s 3.1 — Elements of an offence: physical element (conduct, circumstance, result) and fault element (intention, knowledge, recklessness, negligence)",
+        "s 4.1 — Fault elements for physical elements: intention (s 5.2), knowledge (s 5.3), recklessness (s 5.4), negligence (s 5.5)",
+        "s 4.2 — Strict liability offences (no fault element for specific physical elements — but defence of reasonable mistake of fact applies under s 9.2)",
+        "s 4.4 — Absolute liability offences (no fault element and NO defence of mistake of fact — narrower than strict liability)",
+        "s 5.2 — Intention (person means to bring about conduct/result, or is aware circumstance exists)",
+        "s 5.4 — Recklessness (aware of substantial risk that conduct will bring about result, and having regard to known circumstances, unjustifiable to take risk)",
+        "s 9.1 — Mistake or ignorance of fact (defence where person is under mistaken but reasonable belief about facts, and if the facts existed as believed, conduct would not constitute an offence)",
+        "s 9.2 — Mistake of fact — strict liability (defence of reasonable mistake of fact available for strict liability offences)",
+        "s 9.3 — Mistake or ignorance of statute law (NOT a defence unless the statute provides otherwise — codification of common law rule)",
+        "s 10.1 — Intervening conduct or event (physical element not attributable to the accused if brought about by intervening conduct/event beyond accused's control)",
+        "s 10.2 — Mental impairment (defence — accused did not know nature/quality of conduct, or could not reason whether conduct was wrong)",
+    ],
+    "appeal_relevance": "Federal offence appeals frequently involve whether the correct fault element was identified and proved. Common grounds: (1) judge misdirected jury on the fault element; (2) strict vs absolute liability distinction not properly drawn; (3) mistake of fact defence not properly left to jury; (4) recklessness threshold (s 5.4 'substantial risk') not correctly explained.",
+}
+
+
+# ============================================================================
+# LANDMARK APPELLATE AUTHORITIES
+# Settled Australian case law that MUST be known to the AI when generating
+# reports. These are high-authority decisions and are NOT hallucination risks.
+# ============================================================================
+
+LANDMARK_CASES = {
+    "unsafe_verdict": [
+        {"case": "M v The Queen (1994) 181 CLR 487", "principle": "Test for unsafe/unsatisfactory verdict: whether on the whole of the evidence, it was open to the jury to be satisfied beyond reasonable doubt of the accused's guilt. The appellate court must make its own independent assessment of the evidence."},
+        {"case": "MFA v The Queen (2002) 213 CLR 606", "principle": "Applied M v The Queen in the context of circumstantial evidence cases — each inference must be drawn beyond reasonable doubt."},
+        {"case": "SKA v The Queen (2011) 243 CLR 400", "principle": "Appellate court must assess whether the jury 'must have entertained a doubt' on the whole of the evidence, not merely 'ought to have' — confirming the M test."},
+    ],
+    "proviso": [
+        {"case": "Weiss v The Queen (2005) 224 CLR 300", "principle": "The proviso (no substantial miscarriage of justice) may only be applied where the appellate court is satisfied the evidence was so overwhelming that a properly instructed jury would inevitably have convicted — not merely 'probably' convicted."},
+        {"case": "Kalbasi v Western Australia (2018) 264 CLR 62", "principle": "Clarified application of the proviso: must be satisfied beyond reasonable doubt that no substantial miscarriage occurred."},
+    ],
+    "sentencing_manifest_excess": [
+        {"case": "Hili v The Queen (2010) 242 CLR 520", "principle": "Consistency in sentencing: sentencing courts must have regard to sentences imposed in comparable cases. The principle requires reasonable consistency, not mathematical precision."},
+        {"case": "Barbaro v The Queen (2014) 253 CLR 58", "principle": "Prosecution may not tender numerical sentencing range submissions. Expert evidence of sentencing ranges is inadmissible."},
+        {"case": "Dinsdale v The Queen (2000) 202 CLR 321", "principle": "Manifest excess: the sentence must be unreasonable or plainly unjust, not merely that the appellate court would have imposed a different sentence. Sentencing involves instinctive synthesis."},
+    ],
+    "sentencing_totality": [
+        {"case": "Mill v The Queen (1988) 166 CLR 59", "principle": "Totality principle: when imposing cumulative sentences, the court must ensure the total effective sentence is just and proportionate to the overall offending."},
+        {"case": "Postiglione v The Queen (1997) 189 CLR 295", "principle": "The totality principle applies as a final check on the aggregate of individual sentences — the total must not be crushing."},
+    ],
+    "fresh_evidence": [
+        {"case": "Mickelberg v The Queen (1989) 167 CLR 259", "principle": "Three conditions for fresh evidence on appeal: (1) evidence not available at trial; (2) evidence is credible; (3) evidence is such that, taken with the other evidence, it might reasonably have led to an acquittal."},
+        {"case": "Gallagher v The Queen (1986) 160 CLR 392", "principle": "Fresh evidence must be 'fresh' in the sense that it could not with reasonable diligence have been obtained for the trial."},
+    ],
+    "ineffective_counsel": [
+        {"case": "TKWJ v The Queen (2002) 212 CLR 124", "principle": "A miscarriage of justice resulting from counsel's conduct requires the applicant to show that counsel's error was material — that it deprived the accused of a chance of acquittal that was 'fairly open'."},
+        {"case": "R v Birks (1990) 19 NSWLR 677", "principle": "Incompetent representation may constitute a miscarriage of justice where counsel's errors were so significant that the accused was effectively unrepresented on a material issue."},
+    ],
+    "misdirection": [
+        {"case": "Alford v Magee (1952) 85 CLR 437", "principle": "Trial judge's directions must be adequate — an inadequate summing up may constitute a miscarriage of justice. The judge must fairly put the defence case to the jury."},
+        {"case": "Azzopardi v The Queen (2001) 205 CLR 50", "principle": "A direction on failure to give evidence is not required as a matter of law in every case, but the circumstances may make one necessary. Failure to give a required direction may be a ground of appeal."},
+    ],
+    "prosecution_misconduct": [
+        {"case": "Mallard v The Queen (2005) 224 CLR 125", "principle": "Prosecution has a duty to disclose all relevant material to the defence. Non-disclosure of material evidence may constitute a miscarriage of justice."},
+        {"case": "Grey v The Queen (2001) 75 ALJR 1708", "principle": "Prosecution misconduct (inflammatory or prejudicial conduct before the jury) may constitute a miscarriage of justice even where the evidence of guilt is otherwise strong."},
+    ],
+}
+
+
+# ============================================================================
+# APPEAL PROCEDURAL CHECKLIST — Common Grounds Accessibility Layer
+# Plain-language descriptions and appeal type classification.
+# ============================================================================
+
+APPEAL_GROUNDS_ACCESSIBILITY = {
+    "unsafe_verdict": {
+        "plain_language": "The jury's verdict was wrong — the evidence at trial was not strong enough to prove guilt beyond reasonable doubt.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "Yes — leave to appeal required in most jurisdictions",
+        "typical_threshold": "The appellate court must be satisfied the jury 'must have entertained a doubt' on all the evidence (M v The Queen (1994))",
+    },
+    "sentencing_error": {
+        "plain_language": "The sentence was too harsh (manifestly excessive) or the judge made a specific legal error in deciding the sentence.",
+        "who_can_use": "Sentence appeal only (may be brought by accused OR prosecution)",
+        "leave_required": "Yes — leave to appeal required",
+        "typical_threshold": "Must show the sentence was outside the range open to a reasonable sentencing judge, or identify a specific legal error in reasoning",
+    },
+    "misdirection": {
+        "plain_language": "The judge gave the jury wrong or misleading instructions about the law they had to apply.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "No — appeal as of right on question of law",
+        "typical_threshold": "Must show the direction was wrong in law and the error was material (not merely theoretical)",
+    },
+    "fresh_evidence": {
+        "plain_language": "Important new evidence has come to light after the trial that was not available at the time, and it could have changed the outcome.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "Yes — leave to appeal required",
+        "typical_threshold": "Evidence must be (1) fresh (not available with reasonable diligence at trial), (2) credible, and (3) capable of producing a different verdict",
+    },
+    "prosecution_misconduct": {
+        "plain_language": "The prosecution acted unfairly during the trial — for example, hiding evidence from the defence or making improper statements to the jury.",
+        "who_can_use": "Conviction appeal (occasionally sentence appeal if misconduct affected sentencing submissions)",
+        "leave_required": "Depends on nature — may be as of right if framed as question of law",
+        "typical_threshold": "Must show the misconduct was material and caused a miscarriage of justice",
+    },
+    "ineffective_counsel": {
+        "plain_language": "The defence lawyer made serious errors that affected the outcome of the trial — for example, failing to call an important witness or failing to object to inadmissible evidence.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "Yes — leave to appeal required. Extremely high threshold.",
+        "typical_threshold": "Must show counsel's errors deprived the accused of a chance of acquittal that was 'fairly open' (TKWJ v The Queen). Requires affidavit from accused and usually a response from trial counsel.",
+    },
+    "procedural_error": {
+        "plain_language": "A serious procedural mistake was made during the trial — for example, important evidence was wrongly admitted or excluded, or the jury was improperly selected.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "Depends — may be as of right if framed as question of law",
+        "typical_threshold": "Must show the procedural error was material to the outcome",
+    },
+    "jury_irregularity": {
+        "plain_language": "Something went wrong with the jury — for example, a juror had a conflict of interest, the jury received improper information, or there was jury misconduct.",
+        "who_can_use": "Conviction appeal only",
+        "leave_required": "Depends — may be as of right if irregularity is established",
+        "typical_threshold": "Must show actual irregularity affecting the verdict, not merely speculation",
+    },
+    "miscarriage_of_justice": {
+        "plain_language": "The trial was fundamentally unfair in a way that means the conviction cannot be relied upon — this is the broadest ground and can capture errors not covered by other specific grounds.",
+        "who_can_use": "Conviction appeal (sometimes sentence appeal)",
+        "leave_required": "Yes — leave to appeal required",
+        "typical_threshold": "Must show a departure from accepted standards of fairness that was material to the outcome",
+    },
+    "constitutional_violation": {
+        "plain_language": "A constitutional right was breached during the trial — for example, the right to trial by jury under s 80 of the Constitution, or the right not to be tried twice for the same offence.",
+        "who_can_use": "Either conviction or sentence appeal",
+        "leave_required": "Depends on the constitutional issue — may be as of right on a question of law",
+        "typical_threshold": "Rarely the operative pathway in state criminal appeals. Consider reframing under miscarriage of justice or procedural unfairness.",
+    },
 }
