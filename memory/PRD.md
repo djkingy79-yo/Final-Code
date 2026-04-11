@@ -16,56 +16,41 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 - Payment methods: Stripe (card/Apple Pay/Google Pay) + PayID (bank transfer)
 - Capacitor v7 configured for native mobile
 
-## Guardrail Coverage (17/17 files — ALL PASS)
-Every file that calls the LLM has four mandatory guardrail categories:
-1. **Anti-Hallucination (AH):** Do NOT invent/fabricate citations, section numbers, facts, dates
-2. **No NSW Default (NSW):** Do NOT default to NSW legislation for non-NSW cases
-3. **Forensic Language (FOR):** Use "it is arguable that" framing, NOT declarative assertions
-4. **Australian English (AUE):** analyse, defence, offence, behaviour, honour, favour
-
-Files covered: analysis.py, contradictions.py, documents.py, export.py, grounds.py, pipeline.py, timeline.py, barrister_generator.py, llm_service.py (global guardrail layer), argue.py, classify.py, draft.py, extract.py, submit.py, verify.py, report_generator.py, repair_report.py
-
 ## What's Been Implemented
 
-### Payment History & Receipts Page (Apr 2026)
-- **Backend:** `GET /api/payments/history` — all user payments (PayID + Stripe merged/deduped)
-- **Backend:** `GET /api/payments/history/summary` — total spent, completed count, features unlocked, cases
-- **Backend:** `GET /api/payments/receipt/{payment_id}/pdf` — generates professional PDF receipt via reportlab
-- **Frontend:** `PaymentHistoryPage.jsx` with summary dashboard, filter tabs (All/Confirmed/Pending), receipt download
-- **Frontend:** Dashboard sidebar "Payment History" link added
-- Contact support link (djkingy79@gmail.com — transitioning to criminallawappealmanagement@gmail.com)
+### Jurisdiction Flow Hardening (Apr 2026)
+- **Federal jurisdiction support:** Added `federal`/`CTH` to `APPELLATE_PATHWAYS`, `AUSTRALIAN_STATES`, and `STATE_FRAMEWORKS` — federal cases no longer silently fall back to NSW
+- **Federal appellate pathway:** `s 35A Judiciary Act 1903 (Cth)` / `Federal Court of Australia Act 1976 (Cth)` with dual-jurisdiction notes about state trial courts
+- **UI jurisdiction warnings:** Case detail page now shows amber "Action Required" banner when state, offence_category, or offence_type are missing — previously these warnings were only in server logs
+- **Backend:** `GET /api/cases/{case_id}` now returns `metadata_warnings` and `jurisdiction_warnings` arrays
+- **Federal framework context:** `_build_state_framework_context()` now returns federal-specific dual-jurisdiction guidance instead of duplicating the federal framework block
 
 ### Stripe Payment Integration (Apr 2026)
-- **Backend:** `/api/payments/stripe/create-checkout` creates Stripe Checkout sessions
-- **Backend:** `/api/payments/stripe/status/{session_id}` polls payment status
-- **Backend:** `/api/webhook/stripe` handles Stripe webhook events
-- **Frontend:** `PaymentModal.jsx` with two payment methods: Card (Stripe) and PayID (bank transfer)
-- **Frontend:** `PaymentSuccessPage.jsx` handles Stripe redirect with status polling
-- Apple Pay and Google Pay available automatically through Stripe Checkout
+- Backend: `/api/payments/stripe/create-checkout`, `/api/payments/stripe/status/{session_id}`, `/api/webhook/stripe`
+- Frontend: `PaymentModal.jsx` with Card (Stripe) and PayID (bank transfer) options
+- Apple Pay/Google Pay available automatically through Stripe Checkout
+
+### Payment History & Receipts (Apr 2026)
+- Backend: `/api/payments/history`, `/api/payments/history/summary`, `/api/payments/receipt/{payment_id}/pdf`
+- Frontend: `PaymentHistoryPage.jsx` with summary dashboard, filter tabs, receipt download
+- Dashboard sidebar "Payment History" link
 
 ### Security Hardening (Apr 2026)
-- `hmac.compare_digest` for timing-safe password comparison in auth.py
-- `slowapi` rate limiting on login (5/min) and register (3/min) endpoints
-- Shared limiter instance via config.py for consistency
-- Password minimum length increased to 8 characters
+- `hmac.compare_digest` for timing-safe password comparison
+- `slowapi` rate limiting on login (5/min) and register (3/min)
+- Shared limiter instance via config.py
 
 ### Global Anti-Hallucination Layer (Feb 2026)
-- **llm_service.py** `_apply_task_guardrails()`: Universal anti-hallucination rules injected into EVERY LLM call
-- **17 LLM-calling files** audited and hardened with all 4 guardrail categories
+- 17 LLM-calling files audited with 4 guardrail categories
 
 ### Legislation Framework (Feb 2026)
-- **offence_framework.py** (3639 lines): 15 offence categories, comprehensive AU legal frameworks
-
-### Legitimacy Engine (Feb 2026)
-- Four-axis scoring with procedural compliance, sentencing-specific path
+- offence_framework.py: 15 offence categories, all 9 jurisdictions + federal
 
 ### Test Suite
-- 21 passing framework integrity tests
-- Stripe payment integration tests (22 pass)
-- Payment history tests (10 pass)
-
-### Previously Completed
-- All prior features (Barrister View, PDF exports, Google Auth, Safari fix, CI/CD, forensic language enforcer, Stats page)
+- 21 framework integrity tests
+- 22 Stripe integration tests
+- 10 payment history tests
+- 13 jurisdiction flow tests
 
 ## Backlog
 - P0: Session token exposure in URLs — replace with short-lived signed download tokens
