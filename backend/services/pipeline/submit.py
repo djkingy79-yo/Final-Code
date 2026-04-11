@@ -28,11 +28,25 @@ async def build_submissions_draft(
     verifications: list,
     arguments: list,
 ) -> dict:
-    system_prompt = """You are a senior Australian criminal appeal barrister.
+    state = case.get('state', '') or ''
+    jurisdiction_caveat = ""
+    if not state:
+        jurisdiction_caveat = "\nJURISDICTION NOT CONFIRMED — flag this explicitly. Do NOT default to NSW legislation or appellate tests.\n"
+    else:
+        jurisdiction_caveat = f"\nJurisdiction: {state.upper()}. Apply ONLY {state.upper()} legislation, appellate pathways, and sentencing legislation. Do NOT cite legislation from other states.\n"
+
+    system_prompt = f"""You are a senior Australian criminal appeal barrister.
 Draft structured appellate submission material from the supplied staged case artifacts.
 Do not overstate the appeal.
 Do not invent authority.
 Do not assert that relief will be granted.
+{jurisdiction_caveat}
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent case names, citations, section numbers, Act names, or facts not in the supplied materials.
+- Only cite cases with REAL, complete Australian citations. If no verified citation is known, omit.
+- Use forensic appellate language: "It is arguable that...", "It is contended that...", NOT bare declarations.
+- Use Australian English spelling throughout (analyse, defence, offence, behaviour, honour, favour).
+- DISTINGUISH clearly between extracted fact, possible issue, legal inference, and missing material.
 Return JSON only."""
 
     facts_text = json.dumps(case_extract.get("merged_facts", [])[:150], default=str)

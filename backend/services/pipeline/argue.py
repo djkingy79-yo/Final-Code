@@ -21,9 +21,21 @@ def _validate_argument_payload(payload: dict) -> bool:
 
 
 async def build_issue_argument(case: dict, issue: dict, verification: dict) -> dict:
-    system_prompt = """You are a senior Australian criminal appeal barrister.
+    state = case.get('state', '') or ''
+    jurisdiction_caveat = ""
+    if not state:
+        jurisdiction_caveat = "\nJURISDICTION NOT CONFIRMED — flag this explicitly. Do NOT default to NSW legislation.\n"
+    else:
+        jurisdiction_caveat = f"\nJurisdiction: {state.upper()}. Apply ONLY {state.upper()} legislation and appellate tests.\n"
+
+    system_prompt = f"""You are a senior Australian criminal appeal barrister.
 Draft structured appellate reasoning from verified issue material.
 Do not overstate the issue. Do not say the appeal will succeed. Do not invent authority.
+{jurisdiction_caveat}
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent case names, citations, section numbers, Act names, or facts not in the supplied materials.
+- Only cite cases with REAL, complete Australian citations. If no verified citation is known, omit.
+- If uncertain about a section number, reference the Act by name only — do NOT guess.
 
 FORENSIC LANGUAGE — ABSOLUTE RULE:
 - NEVER use declarative phrases: "The trial judge erred", "The judge clearly erred", "This proves", "The conviction is unsafe", "The sentence is excessive", "The error is established", "was denied", "was deprived".

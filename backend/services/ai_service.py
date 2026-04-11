@@ -46,14 +46,27 @@ async def call_llm_with_retry(
 
 
 def extract_law_sections(text: str) -> list:
-    """Extract law section references from AI response text"""
+    """Extract law section references from AI response text.
+    IMPORTANT: Does NOT default to any jurisdiction — returns 'UNSPECIFIED'
+    if the jurisdiction cannot be determined from the Act name."""
     law_sections = []
     section_patterns = re.findall(r'[sS]\.?\s*(\d+[A-Za-z]?)\s+([A-Za-z\s]+(?:Act|Code))\s*(?:\d{4})?', text)
+    # Jurisdiction detection from Act name — NO default to NSW
+    jurisdiction_markers = {
+        "(NSW)": "NSW", "(Vic)": "VIC", "(Qld)": "QLD", "(SA)": "SA",
+        "(WA)": "WA", "(Tas)": "TAS", "(NT)": "NT", "(ACT)": "ACT",
+        "(Cth)": "CTH", "Commonwealth": "CTH",
+    }
     for section_num, act_name in section_patterns[:10]:
+        jurisdiction = "UNSPECIFIED"
+        for marker, jur in jurisdiction_markers.items():
+            if marker in text:
+                jurisdiction = jur
+                break
         law_sections.append({
             "section": section_num,
             "act": act_name.strip(),
-            "jurisdiction": "NSW" if "NSW" in act_name or "1900" in text else "Federal"
+            "jurisdiction": jurisdiction
         })
     return law_sections
 
@@ -123,7 +136,7 @@ Summary: {case.get('summary', 'N/A')}
     return context
 
 
-# Ground types for NSW/Australian murder appeals
+# Ground types for Australian criminal appeals — ALL jurisdictions (NOT NSW-specific)
 GROUND_TYPES = {
     "procedural_error": "Procedural Error",
     "fresh_evidence": "Fresh Evidence",
@@ -131,6 +144,10 @@ GROUND_TYPES = {
     "sentencing_error": "Sentencing Error",
     "judicial_error": "Judicial Error",
     "ineffective_counsel": "Ineffective Counsel",
+    "prosecution_misconduct": "Prosecution Misconduct",
+    "jury_irregularity": "Jury Irregularity",
+    "constitutional_violation": "Constitutional Violation",
+    "evidentiary_error": "Evidentiary Error",
     "other": "Other"
 }
 

@@ -159,12 +159,12 @@ STRICT RULES:
 - Identify as many distinct grounds as the evidence supports. Aim for 8-15 grounds if the case material warrants it.
 - However, CLUSTER related factual issues under a single ground with sub-particulars where they share the same underlying legal matrix (e.g. jury-related issues under "Procedural Unfairness (Jury Integrity)"). The Court of Criminal Appeal prefers "one ground, multiple particulars" — this makes the appeal cleaner, stronger, and more persuasive.
 - Each ground MUST include an appellate_pathway field identifying the specific statutory provision engaged.
-- law_sections: identify the SUBSTANTIVE legislation the ground relates to — the Crimes Act, Evidence Act, Sentencing Act, Criminal Procedure Act, Mental Health Act, etc. Do NOT put the Criminal Appeal Act or appellate pathway act here (that is already recorded in appellate_pathway). For example:
-  * Sentencing error → Crimes (Sentencing Procedure) Act 1999 (NSW), s 21A or s 44
-  * Murder conviction safety → Crimes Act 1900 (NSW), s 18 (murder) or s 23A (substantial impairment)
-  * Evidence admissibility → Evidence Act 1995 (NSW/Cth), s 137 or s 138
-  * Procedural fairness → Criminal Procedure Act 1986 (NSW), s 132 (judge alone)
+- law_sections: identify the SUBSTANTIVE legislation the ground relates to — the Crimes Act/Criminal Code, Evidence Act, Sentencing Act, Criminal Procedure Act, Mental Health Act, etc. for THIS case's jurisdiction ({state.upper() if state else 'UNSPECIFIED'}). Do NOT put the Criminal Appeal Act or appellate pathway act here (that is already recorded in appellate_pathway). Do NOT default to NSW Acts for non-NSW cases. Use the correct Acts for the case jurisdiction. For example:
+  * Sentencing error → the jurisdiction's Sentencing Act (e.g. Sentencing Act 1991 (Vic), Penalties and Sentences Act 1992 (Qld), NOT Crimes (Sentencing Procedure) Act 1999 (NSW) unless the case IS from NSW)
+  * Conviction safety → the jurisdiction's Criminal Code/Act (e.g. Crimes Act 1958 (Vic), Criminal Code Act 1899 (Qld), Criminal Law Consolidation Act 1935 (SA))
+  * Evidence admissibility → the jurisdiction's Evidence Act (e.g. Evidence Act 2008 (Vic), Evidence Act 1977 (Qld))
   * If the exact section is not known, OMIT that law_section entry entirely. An empty array is acceptable.
+  * Do NOT invent section numbers. If uncertain, reference the Act by name only.
 - Use forensic appellate language: "It is arguable that the trial judge erred in failing to...", "It is contended that...", NOT bare declarations like "The trial judge erred" and NOT hedging like "may have" or "could potentially".
 - Where psychiatric/mental health evidence undermines intent (mens rea), frame as a CONVICTION SAFETY ground attacking the determination of mental state, not merely an evidentiary criticism.
 - Where multiple jury-related issues exist (judge-alone refusal, jury reduction, juror bias/conduct), cluster under a single procedural unfairness ground with sub-particulars labelled (a), (b), (c).

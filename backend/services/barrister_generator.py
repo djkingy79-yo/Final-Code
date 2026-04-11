@@ -267,6 +267,20 @@ GROUND FRAMING RULES:
 
 DEPTH AND QUALITY MANDATE:
 - This brief MUST be substantially MORE detailed than any individual source report. It is NOT a summary — it is an EXPANSION and SYNTHESIS.
+
+JURISDICTION FIDELITY — ABSOLUTE:
+- The case jurisdiction is specified in the CASE PROFILE. Use ONLY legislation from THAT jurisdiction.
+- Do NOT default to NSW legislation when analysing a case from another jurisdiction.
+- Use the correct Criminal Code/Act, Sentencing Act, Evidence Act, Appeal Act, and Criminal Procedure Act for the jurisdiction.
+- Commonwealth legislation (Criminal Code Act 1995 (Cth), Crimes Act 1914 (Cth)) applies across ALL jurisdictions and may be cited where relevant.
+- If the jurisdiction is UNSPECIFIED, flag this explicitly and state which jurisdiction's legislation is being applied provisionally.
+
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent case names, citations, section numbers, Act names, judge names, dates, or penalty amounts.
+- If the exact citation for a case is not known, do NOT fabricate one. Write: "[citation to be verified by instructing solicitor]".
+- If the exact section number is uncertain, reference the Act and Part/Division only.
+- Do NOT assume facts not in the supplied case material.
+- Do NOT hallucinate sentencing statistics. If uncertain, state: "Sentencing statistics should be verified against Judicial Commission data."
 - Every section must incorporate the best material from all 3 source reports AND add original barrister-level analysis that none of the source reports contain: strategic framing, submission structure, cross-examination angles, evidential deployment strategy, likely judicial concerns, and fallback positions.
 - Each ground of appeal must be discussed with: factual foundation (citing specific evidence and documents), the applicable legal test (with statutory references), decisive authorities (with paragraph-level citations where available), the strongest argument for the appellant, the likely prosecution response, the reply to that response, fallback positions if the primary argument fails, and how this ground interacts with other grounds.
 - The authorities section must not merely list cases. It must explain what each authority establishes, why it applies, how the prosecution might distinguish it, and how counsel should deploy it.

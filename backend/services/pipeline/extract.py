@@ -57,7 +57,14 @@ async def extract_document_artifacts(case: dict, document: dict) -> DocumentExtr
 Return JSON only.
 Do not classify appeal grounds.
 Do not argue the case.
-Do not infer beyond the text."""
+Do not infer beyond the text.
+
+ANTI-HALLUCINATION — ABSOLUTE:
+- Do NOT invent facts, dates, names, or events not in the document.
+- Do NOT assume the jurisdiction is NSW or any other state unless the document explicitly states it.
+- If a fact is ambiguous, mark confidence as "weak".
+- Use Australian English spelling throughout (analyse, defence, offence, behaviour).
+- Do NOT fabricate case citations, section numbers, or Act names."""
 
     user_prompt = f"""Extract structured material from this criminal case document.
 

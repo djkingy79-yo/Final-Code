@@ -36,12 +36,12 @@ LAW SECTIONS — CRITICAL DISTINCTION:
 - The "appellate_pathway" field already records WHICH ACT GIVES THE RIGHT TO APPEAL (e.g. s 6(1) Criminal Appeal Act 1912). PREFER substantive legislation in law_sections over repeating the appellate act.
 - law_sections should identify the SUBSTANTIVE legislation that was allegedly breached, misapplied, or engaged by this ground. These are the laws about the OFFENCE, SENTENCING, EVIDENCE, PROCEDURE, or RIGHTS.
 - HOWEVER, if no specific substantive section is directly applicable (e.g. for fresh evidence, ineffective counsel, jury irregularity, constitutional violation, or prosecution misconduct grounds), you MUST STILL include the relevant appellate provision sections or the most closely related procedural/constitutional sections. An empty law_sections array is NOT acceptable — every ground must reference at least one legislative provision.
-- Examples of CORRECT law_sections:
-  * For a sentencing error ground: Crimes (Sentencing Procedure) Act 1999 (NSW), s 21A (aggravating/mitigating factors) or s 44 (standard non-parole periods)
-  * For a murder conviction safety ground: Crimes Act 1900 (NSW), s 18 (murder definition) or s 23A (substantial impairment by abnormality of mind)
-  * For an evidence admissibility ground: Evidence Act 1995 (NSW/Cth), s 137 (exclusion of prejudicial evidence) or s 138 (improperly obtained evidence)
-  * For a procedural fairness ground: Criminal Procedure Act 1986 (NSW), s 132 (judge alone election) or Jury Act 1977 (NSW), s 53C
-  * For an ineffective counsel ground: Criminal Appeal Act 1912, s 6(1) is the APPELLATE PATHWAY (already recorded) — the law_section should be the specific substantive provision the counsel failed to raise or misapplied. If no substantive section is identifiable, include the relevant procedural act section (e.g. Criminal Procedure Act provisions, or the appeal act section governing fresh evidence or miscarriage)
+- Examples of CORRECT law_sections (use the CORRECT Acts for the case jurisdiction — do NOT default to NSW Acts for non-NSW cases):
+  * For a sentencing error ground: the jurisdiction's Sentencing Act (e.g. Sentencing Act 1991 (Vic), Penalties and Sentences Act 1992 (Qld), Sentencing Act 2017 (SA))
+  * For a conviction safety ground: the jurisdiction's Criminal Code/Act (e.g. Crimes Act 1958 (Vic), Criminal Code Act 1899 (Qld), Criminal Law Consolidation Act 1935 (SA))
+  * For an evidence admissibility ground: the jurisdiction's Evidence Act (e.g. Evidence Act 2008 (Vic), Evidence Act 1977 (Qld), Evidence Act 1929 (SA))
+  * For a procedural fairness ground: the jurisdiction's Criminal Procedure Act (e.g. Criminal Procedure Act 2009 (Vic))
+  * For an ineffective counsel ground: the law_section should be the specific substantive provision the counsel failed to raise or misapplied — NOT the appellate pathway act
 - Do NOT include entries with "Act name" or "section" as placeholders. If the exact section number is NOT known with high confidence, use the most relevant general section (e.g. "Part VI" or "Division 3") rather than omitting entirely. Every ground MUST have at least one law_sections entry.
 
 {legislation_reference}
@@ -95,7 +95,7 @@ Return ONLY valid JSON:
   "missing_items": ["description of missing transcript, evidence, or proof item needed"],
   "law_sections": [
     {{
-      "act": "Full SUBSTANTIVE Act name (e.g. Crimes Act 1900 (NSW), Evidence Act 1995 (NSW), Crimes (Sentencing Procedure) Act 1999 (NSW)) — NOT the Criminal Appeal Act",
+      "act": "Full SUBSTANTIVE Act name for THIS jurisdiction (e.g. Crimes Act 1958 (Vic), Criminal Code Act 1899 (Qld)) — NOT the Criminal Appeal Act — do NOT default to NSW Acts",
       "section": "actual section number e.g. 18 or 23A or 137 or 21A",
       "jurisdiction": "{state.upper() if state else 'UNSPECIFIED'}",
       "title": "what this section covers (e.g. 'definition of murder', 'substantial impairment', 'exclusion of prejudicial evidence')",

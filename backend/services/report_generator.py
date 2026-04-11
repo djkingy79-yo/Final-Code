@@ -329,12 +329,12 @@ VERIFIED APPEAL ISSUES:
 
     # Define prompts based on report type with offence-specific language
     base_system = get_offence_system_prompt(offence_category, state)
-    report_guardrails = """
+    report_guardrails = f"""
 MANDATORY GUARDRAILS:
 - Use a HYBRID tone: court-ready legal analysis + plain-English action notes for the client.
 - Use Australian English only.
 - Anchor findings to supplied case material; clearly mark uncertainty when evidence is incomplete.
-- Include legislation as: section + Act + jurisdiction + year (e.g. s.18 Crimes Act 1900 (NSW)).
+- Include legislation as: section + Act + jurisdiction + year (e.g. s.18 Crimes Act 1900 (NSW) for NSW, s.3 Crimes Act 1958 (Vic) for VIC).
 - Include sentencing comparisons and precedent outcomes where relevant.
 - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis.
 - DO NOT include witness contradiction sections or witness credibility scoring sections.
@@ -377,19 +377,19 @@ Appellate work is about ARGUABILITY, not declarations. All conclusions must be f
 - For AGGRESSIVE MODE only: stronger language is permitted (e.g. "The Crown's position is untenable", "The error is compelling") but still avoid absolute declarations about the current case.
 
 CONTENT QUALITY — STRICTLY ENFORCED (violations make the report worthless):
-- DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under s.21A(2) of the Crimes (Sentencing Procedure) Act 1999 (NSW), the aggravating factors in Homann's case include the use of a weapon and the vulnerability of the victim. However, it is arguable that the sentencing judge failed to give adequate weight to the mitigating factor under s.21A(3)(d)..."
+- DO the analysis. Do NOT describe what analysis should be done. WRONG: "Delve into aggravating and mitigating factors." RIGHT: "Under the relevant sentencing legislation for {state_info.get('name', 'this jurisdiction')}, the aggravating factors include [cite specific factors from the case material]. However, it is arguable that the sentencing judge failed to give adequate weight to [specific mitigating factor with statutory reference]..."
 - NEVER create filler sections with titles like "URGENCY PRIORITY", "RELEVANCE", "KEY TAKEAWAY", "SUMMARY", "OVERVIEW" as standalone sections. These are padding. Instead, weave relevance and urgency INTO the substantive analysis.
 - NEVER write generic consultant-speak like "Leverage legal databases to draw parallels that authenticate excessive sentencing claims through empirical trends." Instead, NAME the specific cases, cite the specific sentencing outcomes, and EXPLAIN the specific parallels.
 - Every paragraph MUST reference specific names, dates, section numbers, case citations, or document names from the supplied case material. If a paragraph could apply to ANY appeal case, it is too generic — rewrite it with THIS case's specific facts.
 - Avoid repetition across sections. If a point is already covered, deepen it with NEW evidence, dates, or authority rather than restating it.
 - Do NOT reuse boilerplate phrases. Every paragraph must read as drafted specifically for this case and this report tier.
-- For legislation sections: Do NOT just name the Act and describe what it covers in general terms. APPLY each provision to THIS case's specific facts. WRONG: "s.44 discusses parole periods, directly affecting Homann's sentencing outcomes." RIGHT: "Under s.44 of the Crimes (Sentencing Procedure) Act 1999 (NSW), the non-parole period must reflect the objective seriousness of the offence. In Homann's case, the 22-year non-parole period imposed by Justice McCallum is arguable as disproportionate when compared with R v Loveridge [2014] NSWCCA 120 where a 7-year non-parole period was imposed for a one-punch manslaughter..."
+- For legislation sections: Do NOT just name the Act and describe what it covers in general terms. APPLY each provision to THIS case's specific facts. WRONG: "The sentencing Act discusses parole periods." RIGHT: "Under the applicable sentencing legislation for {state_info.get('name', 'the relevant jurisdiction')}, the non-parole period must reflect the objective seriousness of the offence. In [defendant name]'s case, the [X]-year non-parole period imposed is arguable as disproportionate when compared with [specific comparator case with citation]..."
 - For precedent/sentencing tables: Include the full case citation, the specific factual similarity to THIS case, the actual sentence imposed, and the specific relevance to the current appeal. NEVER use a one-line vague description.
 
 LEGISLATION ACCURACY — CRITICAL ANTI-HALLUCINATION RULE:
-- ALWAYS cite the FULL Act name with the year (e.g. "Crimes Act 1900 (NSW)", NOT "Crimes Act (NSW)" or "the Crimes Act").
+- ALWAYS cite the FULL Act name with the year and jurisdiction (e.g. "Crimes Act 1900 (NSW)", "Crimes Act 1958 (Vic)", NOT "Crimes Act" or "the Act").
+- Use ONLY the legislation for the case's jurisdiction ({state_info.get('name', 'UNSPECIFIED')}). Do NOT cite NSW legislation for non-NSW cases.
 - Where RECENT LEGISLATION UPDATES are provided in the case context, you MUST reference these current amendments where they are relevant to the case. Do NOT cite repealed or superseded provisions when a current amended version exists.
-- If a provision has been recently amended (e.g. new coercive control offence under s 54D Crimes Act 1900 (NSW) commenced 1 July 2024, or Jury Amendment Act 2024 commenced 10 March 2025), cite the CURRENT version and note the commencement date.
 - Do NOT fabricate section numbers. If the exact section is not known, reference the Act by name only and note that the specific section should be verified.
 - Where the case involves a recently commenced offence (post-2022), check whether transitional provisions apply — the offence must have been committed AFTER the commencement date for the new provisions to apply.
 

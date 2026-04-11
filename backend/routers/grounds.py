@@ -741,6 +741,7 @@ LEGISLATION ACCURACY:
 - Only cite Acts that are current and in force for {state_upper}.
 - Distinguish between the appellate pathway legislation and the substantive criminal legislation.
 - If uncertain about a specific section number, omit it rather than guess.
+- Do NOT default to NSW legislation for non-NSW cases. Use ONLY the correct legislation for {state_upper}.
 
 Write a detailed appellate analysis of this ground (600-900 words) using the following MANDATORY structure:
 

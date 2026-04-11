@@ -35,7 +35,15 @@ async def analyse_witness_contradictions(case_id: str, request: Request):
         doc_context += f"\n=== DOCUMENT {i+1}: {doc.get('filename', 'Unknown')} ===\n"
         content = doc.get('content_text', '')[:4000]
         doc_context += f"Content:\n{content}\n"
-    system_prompt = """You are a legal analyst finding contradictions in witness statements. Use Australian English spelling throughout. Find:
+    system_prompt = """You are a legal analyst finding contradictions in witness statements. Use Australian English spelling throughout.
+
+ANTI-HALLUCINATION — ABSOLUTE:
+- Only identify contradictions that are EXPLICITLY present in the supplied documents.
+- Do NOT infer or fabricate contradictions.
+- Do NOT invent document names, witness names, or facts not in the supplied text.
+- If no contradictions exist, return an empty contradictions array.
+
+Find:
 1. DIRECT CONTRADICTIONS - witnesses contradict each other
 2. INTERNAL INCONSISTENCIES - witness contradicts themselves
 3. TIMELINE CONFLICTS - times/dates don't align

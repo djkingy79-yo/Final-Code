@@ -46,6 +46,7 @@ from routers.grounds import router as grounds_router
 from routers.payments import router as payments_router
 from routers.resources import router as resources_router
 from routers.analysis import router as analysis_router
+from routers.legislation import router as legislation_router
 from routers.pipeline import router as pipeline_router
 from routers.pipeline_staged import router as pipeline_staged_router
 from routers.caselaw import router as caselaw_router
@@ -176,6 +177,7 @@ app.include_router(pipeline_staged_router)
 app.include_router(caselaw_router)
 app.include_router(reports_router)
 app.include_router(report_exports_router)
+app.include_router(legislation_router)
 
 # DO_NOT_UNDO — CORS Middleware. Uses CORS_ORIGINS env var for allowed origins.
 # Must include ALL domains the frontend is served from (preview, production, custom domain).
