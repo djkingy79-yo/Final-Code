@@ -90,8 +90,8 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - Comprehensive API health audit (all endpoints verified)
 - Full mobile responsiveness audit (all pages at 375px)
 - Fixed config.py _REVENUE_ENV undefined variable bug
+- Success Stories content compliance: removed all "you/your" from UI text, added legal disclaimer, cleaned pricing reference
 
 ## Backlog
 - P2: Build native mobile app (Capacitor build/test)
 - P2: Counsel conference prep attachment for Barrister View
-- P2: Success Stories page content compliance verification

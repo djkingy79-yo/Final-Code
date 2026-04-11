@@ -20,7 +20,7 @@ const successStories = [
     location: "Western Sydney, NSW",
     relationship: "Wife",
     preview: "Legal Aid said there were no grounds. The tool found a misdirection on standard of proof that they'd missed.",
-    full: "My husband got 12 years. Legal Aid looked at it and said no grounds. I didn't accept that. I uploaded the transcript and ran the free scan — it found 3 possible grounds. I paid $99 for the full investigation. One ground stood out: the judge misdirected the jury on the standard of proof. I printed the report and took it to a criminal barrister. He read it, said it was solid, and took the case. Eight months later the appeal court agreed. That charge was quashed and his sentence dropped by 5 years.",
+    full: "My husband got 12 years. Legal Aid looked at it and said no grounds. I didn't accept that. I uploaded the transcript and ran the free scan — it found 3 possible grounds. I paid for the full investigation. One ground stood out: the judge misdirected the jury on the standard of proof. I printed the report and took it to a criminal barrister. He read it, said it was solid, and took the case. Eight months later the appeal court agreed. That charge was quashed and his sentence dropped by 5 years.",
     outcome: "Conviction partially quashed — 5 years off sentence",
     timeframe: "8 months"
   },
@@ -231,7 +231,7 @@ const SuccessStories = () => {
     try {
       await axios.post(`${API}/success-stories`, formData);
       setSubmitted(true);
-      toast.success("Thank you for sharing your story!");
+      toast.success("Thank you for sharing this story!");
     } catch (error) {
       toast.error("Failed to submit. Please try again.");
     } finally {
@@ -306,13 +306,13 @@ const SuccessStories = () => {
           </p>
         </div>
 
-        {/* Share Your Story */}
+        {/* Share a Story */}
         <div className="mt-10 text-center">
           <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
-            Share Your Story
+            Share a Story
           </h2>
           <p className="text-slate-600 text-xs mb-4 max-w-md mx-auto">
-            Has this tool helped you or your family? Your story could give hope to someone going through the same thing.
+            Has this tool helped a family member or loved one? Shared experiences can provide hope to others in similar situations.
           </p>
           
           {!showSubmitForm ? (
@@ -321,13 +321,13 @@ const SuccessStories = () => {
               className="landing-cta-primary text-xs"
               data-testid="share-story-btn"
             >
-              Share My Story
+              Share a Story
             </Button>
           ) : !submitted ? (
             <form onSubmit={handleSubmit} className="max-w-lg mx-auto text-left space-y-3" data-testid="share-story-form">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-semibold text-slate-700 block mb-1">Your Name *</label>
+                  <label className="text-[10px] font-semibold text-slate-700 block mb-1">Name *</label>
                   <Input
                     placeholder="First name & last initial"
                     value={formData.name}
@@ -351,7 +351,7 @@ const SuccessStories = () => {
                 <label className="text-[10px] font-semibold text-slate-700 block mb-1">Email *</label>
                 <Input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="email@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="text-xs h-8"
@@ -359,7 +359,7 @@ const SuccessStories = () => {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-slate-700 block mb-1">Your Story *</label>
+                <label className="text-[10px] font-semibold text-slate-700 block mb-1">The Story *</label>
                 <Textarea
                   placeholder="What happened? How did the tool help?"
                   value={formData.story}
@@ -388,7 +388,7 @@ const SuccessStories = () => {
                   data-testid="story-consent-checkbox"
                 />
                 <span className="text-[10px] text-slate-600">
-                  I consent to my story being published anonymously to help others.
+                  I consent to this story being published anonymously to help others.
                 </span>
               </label>
               <Button type="submit" disabled={loading} className="landing-cta-primary w-full text-xs" data-testid="story-submit-btn">
@@ -400,7 +400,7 @@ const SuccessStories = () => {
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 max-w-md mx-auto" data-testid="story-submitted-confirmation">
               <CheckCircle className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
               <h3 className="text-sm font-bold text-emerald-800 mb-1">Thank you</h3>
-              <p className="text-xs text-emerald-700">Your story has been submitted for review.</p>
+              <p className="text-xs text-emerald-700">The story has been submitted for review.</p>
             </div>
           )}
         </div>
@@ -410,10 +410,10 @@ const SuccessStories = () => {
       <section className="bg-white px-6 py-8 border-t border-slate-200">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-lg font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
-            Ready to Start Your Journey?
+            Ready to Start?
           </h2>
           <p className="text-xs text-slate-700 mb-4">
-            You don't have to do this alone. Let the tool help you find what might have been missed.
+            No one has to do this alone. The tool can help identify what may have been missed.
           </p>
           <Link to="/">
             <Button className="landing-cta-primary text-xs">
@@ -422,6 +422,13 @@ const SuccessStories = () => {
           </Link>
         </div>
       </section>
+
+      {/* Legal Disclaimer */}
+      <div className="bg-slate-50 border-t border-slate-200 px-6 py-4">
+        <p className="text-[9px] text-slate-500 text-center max-w-3xl mx-auto leading-relaxed" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
+          <strong>Disclaimer:</strong> This application is an educational and research tool only. It does not provide legal advice and is not a substitute for consultation with a qualified legal practitioner. All success stories are published with consent and individual results vary. No outcome is guaranteed. Created and designed by Deb King.
+        </p>
+      </div>
     </div>
   );
 };
