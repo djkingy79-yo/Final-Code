@@ -98,6 +98,9 @@ Criminal appeals case management platform for Australian jurisdictions. Features
   - App ID: `com.debking.criminalappeals`
   - App Name: `Appeal Case Manager`
   - Web assets: 16MB per platform
+- **Print footer floating on iOS FIXED**: `.print-footer` now `display: none` by default, only `display: block` in `@media print` — stops footer from floating over content on screen/iOS views
+- **Note cards styling FIXED**: Export note cards changed from blue bg/white text to white bg (#fff) with black text (#0f172a). Dark blue border (#1e3a5f). "Case Notes" header stays bright blue (#2563eb)
+- **Word All export FIXED**: Changed from broken HTML preview navigation to direct `.doc` Blob download (application/msword). Works on all devices including iOS. Both "Word All" and Progress "Word" buttons fixed.
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
