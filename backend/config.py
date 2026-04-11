@@ -77,12 +77,6 @@ def get_payid_email() -> str:
 
 
 # ── Startup Warnings ──
-# TIER 2: Revenue — payments will fail without these
-_REVENUE_ENV = ['STRIPE_API_KEY']
-_revenue_missing = [k for k in _REVENUE_ENV if not os.environ.get(k)]
-if _revenue_missing:
-    logger.warning(f"REVENUE ENV VARS MISSING (payments will not work): {', '.join(_revenue_missing)}")
-
 # TIER 3: Email — notifications/password-reset will fail without these
 _EMAIL_ENV = ['RESEND_API_KEY']
 _email_missing = [k for k in _EMAIL_ENV if not os.environ.get(k)]
@@ -118,7 +112,6 @@ def validate_env_status() -> dict:
 
     return {
         'required': {k: _status(k) for k in _REQUIRED_ENV},
-        'revenue': {k: _status(k) for k in _REVENUE_ENV},
         'email': {k: _status(k) for k in _EMAIL_ENV},
         'optional': {k: _status(k) for k in _OPTIONAL_ENV},
         'security': {

@@ -19,66 +19,32 @@ router = APIRouter(prefix="/api/payments", tags=["payment-history"])
 
 @router.get("/history")
 async def get_payment_history(request: Request):
-    """Get all payments for the current user (both PayID and Stripe)."""
+    """Get all payments for the current user."""
     user = await get_current_user(request)
 
-    # Fetch from both collections
     payid_payments = await db.payments.find(
         {"user_id": user.user_id},
         {"_id": 0},
     ).sort("created_at", -1).to_list(200)
 
-    stripe_txns = await db.payment_transactions.find(
-        {"user_id": user.user_id},
-        {"_id": 0},
-    ).sort("created_at", -1).to_list(200)
-
-    # Merge and deduplicate (Stripe completed payments exist in both collections)
-    seen_ids = set()
     combined = []
-
     for p in payid_payments:
-        pid = p.get("payment_id") or p.get("reference")
-        if pid and pid not in seen_ids:
-            seen_ids.add(pid)
-            combined.append({
-                "payment_id": p.get("payment_id", ""),
-                "case_id": p.get("case_id", ""),
-                "feature_type": p.get("feature_type", ""),
-                "feature_name": FEATURE_PRICES.get(
-                    canonical_feature_type(p.get("feature_type")), {}
-                ).get("name", p.get("feature_type", "Unknown")),
-                "amount": p.get("amount", 0),
-                "currency": "AUD",
-                "method": p.get("method", "payid"),
-                "reference": p.get("reference", ""),
-                "status": p.get("status", "unknown"),
-                "is_trial": p.get("is_trial", False),
-                "created_at": p.get("created_at", ""),
-                "completed_at": p.get("completed_at", ""),
-            })
-
-    # Add Stripe transactions not already in payments
-    for t in stripe_txns:
-        pid = t.get("payment_id") or t.get("stripe_session_id", "")
-        if pid and pid not in seen_ids:
-            seen_ids.add(pid)
-            combined.append({
-                "payment_id": t.get("payment_id", t.get("stripe_session_id", "")),
-                "case_id": t.get("case_id", ""),
-                "feature_type": t.get("feature_type", ""),
-                "feature_name": t.get("feature_name", FEATURE_PRICES.get(
-                    canonical_feature_type(t.get("feature_type")), {}
-                ).get("name", t.get("feature_type", "Unknown"))),
-                "amount": t.get("amount", 0),
-                "currency": t.get("currency", "AUD").upper(),
-                "method": "stripe",
-                "reference": f"STRIPE-{t.get('stripe_session_id', '')[:12]}",
-                "status": "completed" if t.get("payment_status") == "paid" else t.get("status", "pending"),
-                "is_trial": t.get("is_trial", False),
-                "created_at": t.get("created_at", ""),
-                "completed_at": t.get("completed_at", ""),
-            })
+        combined.append({
+            "payment_id": p.get("payment_id", ""),
+            "case_id": p.get("case_id", ""),
+            "feature_type": p.get("feature_type", ""),
+            "feature_name": FEATURE_PRICES.get(
+                canonical_feature_type(p.get("feature_type")), {}
+            ).get("name", p.get("feature_type", "Unknown")),
+            "amount": p.get("amount", 0),
+            "currency": "AUD",
+            "method": p.get("method", "payid"),
+            "reference": p.get("reference", ""),
+            "status": p.get("status", "unknown"),
+            "is_trial": p.get("is_trial", False),
+            "created_at": p.get("created_at", ""),
+            "completed_at": p.get("completed_at", ""),
+        })
 
     # Sort by created_at descending
     combined.sort(key=lambda x: x.get("created_at", ""), reverse=True)
@@ -177,9 +143,7 @@ async def generate_receipt_pdf(payment_id: str, request: Request):
     feature_name = FEATURE_PRICES.get(feature_type, {}).get("name", feature_type or "Premium Feature")
     amount = payment.get("amount", 0)
     method = payment.get("method", "payid").upper()
-    if method == "STRIPE":
-        method = "Card (Stripe)"
-    elif method == "PAYID":
+    if method == "PAYID":
         method = "PayID (Bank Transfer)"
     reference = payment.get("reference", payment_id)
     status = payment.get("status", "unknown").title()

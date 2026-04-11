@@ -124,13 +124,6 @@ async def root():
     return {"message": "Criminal Appeal AI API", "status": "operational"}
 
 
-@api_router.post("/webhook/stripe")
-async def stripe_webhook_proxy(request: Request):
-    """Top-level Stripe webhook endpoint."""
-    from routers.stripe_payments import stripe_webhook_handler
-    return await stripe_webhook_handler(request)
-
-
 app.include_router(api_router)
 
 # ── Register all routers ──

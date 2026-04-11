@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { 
   Lock, Check, Loader2, Building2, Copy, CheckCircle,
-  AlertCircle, X, Smartphone, Search, CreditCard, ArrowLeft
+  AlertCircle, X, Smartphone, Search, ArrowLeft
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -75,7 +75,6 @@ export default function PaymentModal({
   onPaymentSuccess 
 }) {
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null); // null = selection screen, "card" or "payid"
   const [payidReference, setPayidReference] = useState(null);
   const [payidDetails, setPayidDetails] = useState(null);
   const [verifying, setVerifying] = useState(false);
@@ -90,7 +89,6 @@ export default function PaymentModal({
 
   useEffect(() => {
     if (isOpen) {
-      setPaymentMethod(null);
       setPayidReference(null);
       setPayidDetails(null);
       setVerifying(false);
@@ -105,31 +103,6 @@ export default function PaymentModal({
     setCopied(field);
     setTimeout(() => setCopied(""), 2000);
     toast.success("Copied to clipboard!");
-  };
-
-  // ─── Stripe Card Payment ───
-  const handleStripeCheckout = async () => {
-    if (!caseId || !featureType) {
-      toast.error("Missing payment information");
-      return;
-    }
-    setLoading(true);
-    try {
-      const originUrl = window.location.origin;
-      const response = await axios.post(`${API}/payments/stripe/create-checkout`, {
-        feature_type: featureType,
-        case_id: caseId,
-        origin_url: originUrl,
-      });
-      if (response.data.url) {
-        window.location.href = response.data.url;
-      } else {
-        toast.error("Failed to create checkout session");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.detail || "Failed to start card payment");
-      setLoading(false);
-    }
   };
 
   // ─── PayID Flow ───
@@ -207,8 +180,8 @@ export default function PaymentModal({
     onClose();
   };
 
-  // ─── Payment Method Selection Screen ───
-  const renderMethodSelection = () => (
+  // ─── Payment Screen (PayID Only) ───
+  const renderPaymentScreen = () => (
     <div className="space-y-4 py-2">
       {/* Price display */}
       <div className={`rounded-xl p-4 text-center border ${useTrial ? 'bg-gradient-to-r from-blue-600 to-blue-800 border-blue-500' : 'bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200'}`}>
@@ -250,45 +223,25 @@ export default function PaymentModal({
         </ul>
       </details>
 
-      {/* Choose Payment Method */}
+      {/* PayID Payment */}
       <div className="space-y-3">
-        <p className="text-sm font-semibold text-slate-800 text-center">Choose Payment Method</p>
-        
+        <p className="text-sm font-semibold text-slate-800 text-center">Pay via PayID (Bank Transfer)</p>
+
         <Button
-          onClick={() => {
-            setPaymentMethod("card");
-            handleStripeCheckout();
-          }}
+          onClick={() => handlePayIDStart()}
           disabled={loading}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base rounded-xl min-h-[56px] flex items-center justify-center gap-3"
-          data-testid="pay-by-card-btn"
-        >
-          {loading ? (
-            <><Loader2 className="w-5 h-5 animate-spin" />Redirecting to Checkout...</>
-          ) : (
-            <>
-              <CreditCard className="w-5 h-5" />
-              <span>Pay by Card</span>
-              <span className="text-xs opacity-80 ml-1">Apple Pay / Google Pay</span>
-            </>
-          )}
-        </Button>
-
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-slate-200" />
-          <span className="text-xs text-slate-400 uppercase">or</span>
-          <div className="flex-1 h-px bg-slate-200" />
-        </div>
-
-        <Button
-          onClick={() => setPaymentMethod("payid")}
-          variant="outline"
-          className="w-full py-6 text-base rounded-xl min-h-[56px] border-2 border-slate-300 hover:border-blue-400 hover:bg-blue-50 flex items-center justify-center gap-3"
           data-testid="pay-by-payid-btn"
         >
-          <Building2 className="w-5 h-5 text-emerald-600" />
-          <span>Pay by PayID</span>
-          <span className="text-xs opacity-60 ml-1">Bank Transfer</span>
+          {loading ? (
+            <><Loader2 className="w-5 h-5 animate-spin" />Getting Payment Details...</>
+          ) : (
+            <>
+              <Building2 className="w-5 h-5" />
+              <span>Pay by PayID</span>
+              <span className="text-xs opacity-80 ml-1">Bank Transfer</span>
+            </>
+          )}
         </Button>
       </div>
 
@@ -303,11 +256,11 @@ export default function PaymentModal({
     <div className="space-y-4 py-2">
       {/* Back button */}
       <button
-        onClick={() => { setPaymentMethod(null); setPayidDetails(null); setPayidReference(null); }}
+        onClick={() => { setPayidDetails(null); setPayidReference(null); }}
         className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
         data-testid="payid-back-btn"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to payment options
+        <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
       {!payidDetails ? (
@@ -504,7 +457,7 @@ export default function PaymentModal({
           </DialogDescription>
         </DialogHeader>
 
-        {paymentMethod === "payid" ? renderPayIDFlow() : renderMethodSelection()}
+        {payidDetails ? renderPayIDFlow() : renderPaymentScreen()}
       </DialogContent>
     </Dialog>
   );

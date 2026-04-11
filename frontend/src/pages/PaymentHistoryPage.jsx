@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast } from "sonner";
 import {
   ArrowLeft,
-  CreditCard,
   Building2,
   Download,
   Loader2,
@@ -30,7 +29,6 @@ const STATUS_CONFIG = {
 };
 
 const METHOD_CONFIG = {
-  stripe: { icon: CreditCard, label: "Card", color: "text-blue-600" },
   payid: { icon: Building2, label: "PayID", color: "text-emerald-600" },
 };
 

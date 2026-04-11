@@ -30,7 +30,6 @@ from .pipeline_staged import router as pipeline_staged_router
 from .caselaw import router as caselaw_router
 from .reports import router as reports_router
 from .report_exports import router as report_exports_router
-from .stripe_payments import router as stripe_payments_router
 from .payment_history import router as payment_history_router
 from .barrister_pack import router as barrister_pack_router
 
@@ -62,7 +61,6 @@ _ALL_ROUTERS = [
     reports_router,
     report_exports_router,
     legislation_router,
-    stripe_payments_router,
     payment_history_router,
     barrister_pack_router,
 ]
