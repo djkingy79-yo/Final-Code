@@ -12,6 +12,12 @@
 # ===========================================================================
 
 import os
+import sys
+
+# Ensure backend/ is on sys.path so relative imports (from config import ...)
+# resolve correctly regardless of working directory or Procfile invocation.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from datetime import datetime, timezone, timedelta
 
 from fastapi import FastAPI, APIRouter, Request, Response
