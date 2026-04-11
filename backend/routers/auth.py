@@ -6,6 +6,9 @@ Handles all authentication: Email/Password + Google OAuth via Emergent
 from fastapi import APIRouter, HTTPException, Response, Request
 from pydantic import BaseModel
 from datetime import datetime, timezone, timedelta
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+import hmac
 import httpx
 import uuid
 import hashlib
@@ -20,6 +23,7 @@ logger = logging.getLogger(__name__)
 ADMIN_EMAILS = get_admin_emails()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+limiter = Limiter(key_func=get_remote_address)
 
 # ============ PASSWORD UTILITIES ============
 
@@ -31,9 +35,9 @@ def hash_password(password: str, salt: str = None) -> tuple:
     return hashed.hex(), salt
 
 def verify_password(password: str, hashed: str, salt: str) -> bool:
-    """Verify password against hash"""
+    """Verify password against hash — timing-safe comparison."""
     new_hash, _ = hash_password(password, salt)
-    return new_hash == hashed
+    return hmac.compare_digest(new_hash, hashed)
 
 # ============ REQUEST MODELS ============
 
@@ -56,8 +60,10 @@ async def register_user(request: RegisterRequest, response: Response):
         raise HTTPException(status_code=400, detail="Invalid email format")
     
     # Check password strength
-    if len(request.password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    if len(request.password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    if request.password.isdigit() or request.password.isalpha():
+        raise HTTPException(status_code=400, detail="Password must contain both letters and numbers")
     
     # Check if user exists
     existing_user = await db.users.find_one({"email": request.email.lower()}, {"_id": 0})

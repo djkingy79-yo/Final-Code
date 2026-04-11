@@ -135,15 +135,15 @@ TASK_CONFIGS: dict[str, dict] = {
 # ============================================================================
 
 def _default_models_for_task(task_type: str):
-    # DO_NOT_UNDO — Model diversity for 502 resilience. Each slot uses a DIFFERENT
-    # model so retries actually try something new instead of repeating the same failing model.
-    # 6 attempts (was 4) to survive sustained upstream proxy outages.
+    # DO_NOT_UNDO — Model diversity for resilience. Each slot uses a DIFFERENT
+    # model so retries actually try something new instead of repeating the same failing endpoint.
+    # When GPT-4o is down, slots 2 and 4 use different providers/models.
     return [
         ("openai", "gpt-4o"),
         ("anthropic", "claude-sonnet-4-20250514"),
         ("openai", "gpt-4o-mini"),
-        ("openai", "gpt-4o"),
         ("anthropic", "claude-sonnet-4-20250514"),
+        ("openai", "gpt-4o-mini"),
         ("openai", "gpt-4o"),
     ]
 

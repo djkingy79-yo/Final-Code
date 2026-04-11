@@ -23,6 +23,9 @@ from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, APIRouter, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from config import db, logger, client
 
@@ -57,30 +60,17 @@ from routers.report_exports import router as report_exports_router
 app = FastAPI(title="Criminal Appeal AI", version="2.0.0")
 api_router = APIRouter(prefix="/api")
 
+# ── Rate Limiter (process-safe via slowapi) ──
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 
 # ── Security Headers Middleware ──
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """Adds security headers and rate-limits auth endpoints."""
-    _auth_attempts: dict = {}  # IP -> [(timestamp, ...)]
+    """Adds security headers to all responses."""
 
     async def dispatch(self, request: Request, call_next):
-        # Rate limit auth endpoints: 10 requests per minute per IP
-        path = request.url.path
-        if request.method == "POST" and any(p in path for p in ["/auth/login", "/auth/register", "/auth/forgot-password"]):
-            ip = request.client.host if request.client else "unknown"
-            now = datetime.now(timezone.utc)
-            cutoff = now - timedelta(minutes=1)
-            attempts = self._auth_attempts.get(ip, [])
-            attempts = [t for t in attempts if t > cutoff]
-            if len(attempts) >= 10:
-                return Response(
-                    content='{"detail":"Too many attempts. Please wait 1 minute."}',
-                    status_code=429,
-                    media_type="application/json"
-                )
-            attempts.append(now)
-            self._auth_attempts[ip] = attempts
-
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
