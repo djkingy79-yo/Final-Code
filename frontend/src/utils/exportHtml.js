@@ -47,10 +47,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; font-family: 'Times New Roman', Times, serif; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
   .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
-  .export-body .note-card { background: #2563eb; border: 1px solid #1d4ed8; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .export-body .note-title { font-weight: 700; font-size: 14pt; color: #ffffff; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
-  .export-body .note-date { font-size: 10pt; color: #bfdbfe; margin-bottom: 8px; font-style: italic; }
-  .export-body .note-content { font-size: 12pt; color: #ffffff; white-space: pre-wrap; font-weight: 600; font-family: 'Times New Roman', Times, serif; }
+  .export-body .note-card { background: #ffffff; border: 2px solid #1e3a5f; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .export-body .note-title { font-weight: 700; font-size: 14pt; color: #0f172a; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
+  .export-body .note-date { font-size: 10pt; color: #64748b; margin-bottom: 8px; font-style: italic; }
+  .export-body .note-content { font-size: 12pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; font-family: 'Times New Roman', Times, serif; }
   .export-body .section-block { margin-bottom: 20px; padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; page-break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
   .disclaimer { margin: 24px 32px; padding: 16px 20px; background: #dc2626; border: 3px solid #b91c1c; border-radius: 8px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 14px; align-items: flex-start; }
@@ -64,7 +64,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 13px; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 11px; color: #64748b; }
-  .print-footer { position: fixed; left: 14mm; right: 14mm; bottom: 6mm; background: #fff; border-top: 1px solid #cbd5e1; padding: 4px 0 0; }
+  .print-footer { display: none; position: fixed; left: 14mm; right: 14mm; bottom: 6mm; background: #fff; border-top: 1px solid #cbd5e1; padding: 4px 0 0; }
   .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .print-footer-page::after { content: ''; }
   .page-break { page-break-before: always; }
@@ -72,7 +72,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     body { background: #fff; }
     .export-container { max-width: none; }
-    .print-footer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .print-footer { display: block; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     .print-footer-page::after { content: "Page " counter(page); }
     .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
     .branding { page-break-inside: avoid; break-inside: avoid; }

@@ -1148,9 +1148,14 @@ const CaseDetail = ({ user }) => {
               <Button variant="outline" size="sm" onClick={() => {
                 try {
                   const html = buildPrintAllHtml();
-                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View", mode: "word", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
-                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
-                } catch { toast.error("Failed to open Word preview"); }
+                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url; a.download = `${caseData?.defendant_name || "case"}_complete_bundle.doc`; document.body.appendChild(a); a.click(); a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 5000);
+                  toast.success("Word document ready!");
+                } catch { toast.error("Failed to export Word"); }
               }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
@@ -1596,10 +1601,15 @@ const CaseDetail = ({ user }) => {
               }} className="text-slate-700" data-testid="progress-pdf-btn"><Download className="w-4 h-4 mr-1" />PDF</Button>
               <Button variant="outline" size="sm" onClick={() => {
                 try {
-                  toast.info("Opening Word view...");
+                  toast.info("Generating Word document...");
                   const html = buildProgressHtml();
-                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, mode: "word", title: "Progress — Word View", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
-                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
+                  const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+                  const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url; a.download = `${caseData?.defendant_name || "case"}_progress.doc`; document.body.appendChild(a); a.click(); a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 5000);
+                  toast.success("Word document ready!");
                 } catch { toast.error("Failed to export Word"); }
               }} className="text-slate-700" data-testid="progress-word-btn"><FileText className="w-4 h-4 mr-1" />Word</Button>
             </div>
