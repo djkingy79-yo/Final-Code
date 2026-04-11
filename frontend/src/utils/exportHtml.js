@@ -27,6 +27,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   @page { size: A4; margin: 14mm 14mm 20mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }

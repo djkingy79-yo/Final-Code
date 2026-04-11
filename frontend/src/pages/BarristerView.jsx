@@ -437,6 +437,7 @@ export default function BarristerView() {
     @page { size: A4; margin: 14mm 14mm 20mm; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Times New Roman', Times, serif; padding: 0 0 88px; color: #0f172a; line-height: 1.8; font-size: 12pt; background: #fff; }
+    th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 32px 0 16px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 18px; padding: 28px 26px; text-align: center; background: #fff; }
