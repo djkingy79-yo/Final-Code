@@ -107,7 +107,6 @@ const TermsOfService = () => {
             Terms & Conditions, Privacy Policy
           </h1>
           <p className="text-slate-600 text-sm">Effective Date: 1 January 2025 &nbsp;|&nbsp; Last Updated: April 2025</p>
-          <p className="text-slate-500 text-xs mt-2">ABN: Sole Trader &mdash; Debra King, Glenmore Park, NSW 2745, Australia</p>
         </div>
       </section>
 

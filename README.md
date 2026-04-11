@@ -142,8 +142,9 @@ A single, professionally formatted PDF containing ALL generated reports for a ca
 - Only includes reports the user has actually generated and paid for
 
 ### 11. Legal Framework Viewer
-- Jurisdiction-specific offence frameworks loaded dynamically based on the case's state and offence category
+- Jurisdiction-specific legislation covering criminal law, evidence acts, appeal legislation, and human rights across all 9 Australian jurisdictions
 - Displays elements of the offence, maximum penalties, sentencing ranges, and relevant legislation
+- Complete appeal acts for all states: NSW, VIC, QLD, SA, WA, TAS, NT, ACT, and Federal (CTH)
 - Integrated directly into the case workflow for contextual reference
 
 ### 12. Progress Analysis
@@ -166,13 +167,14 @@ A single, professionally formatted PDF containing ALL generated reports for a ca
 - **Bulk Export:** "Print All", "PDF All", and "Word All" functions export the complete case bundle (summary, timeline, grounds, notes, progress) in a single document
 - **Barrister Quick Brief:** 2-page PDF with Counsel Synthesis + Top 3 Grounds
 - **Case Export Pack:** Single formatted PDF with all paid reports, grounds, timeline, and legal framework
-- All exports feature the **"Created and Designed by Deb King"** branding and **"NOT LEGAL ADVICE"** legal disclaimers
+- All exports feature the exact footer: *"Documented from the Criminal Law /Appeal Management Application — [Doc Type] — For [Case Name] [Date] Page X of Y"* (Times New Roman, italic, 10pt)
+- All exports include the **"NOT LEGAL ADVICE"** legal disclaimers
 
 ### 15. Payment Integration
-- **PayID (Australian bank transfer):** Manual confirmation workflow with email notifications
-- **PayPal:** Full SDK integration with client-side checkout
-- **Stripe:** Secure card payment processing with webhook support
+- **PayID (Australian bank transfer):** Secure payment via Australian PayID with reference-based tracking, email notifications, and admin verification workflow
 - Payment status tracking per report tier per case
+- Payment history with downloadable PDF receipts
+- Trial pricing available for first-time users
 
 ### 16. Appeal Statistics Dashboard
 - Comprehensive national and state-by-state criminal appeal statistics
@@ -194,19 +196,19 @@ A single, professionally formatted PDF containing ALL generated reports for a ca
 
 The backend is built on **FastAPI** (v0.135.2), a high-performance async Python web framework, with **MongoDB** (via Motor 3.7 async driver) as the primary database.
 
-**Core Engine (`server.py` — 5,800+ lines):**
-- Application factory with middleware configuration (CORS, security headers, rate limiting, static files, exception handlers)
-- Multi-pass AI report generation engine with model fallback logic
-- Forensic appellate language enforcement with banned/required phrase lists
-- PDF generation via ReportLab 4.4 with custom page templates, headers, footers, and branded cover pages
+**Application Structure:**
+- Thin app factory (`server.py` ~170 lines) — middleware configuration, CORS, security headers, rate limiting, exception handlers
+- Multi-pass AI report generation engine with forensic appellate language enforcement
+- PDF generation via ReportLab 4.4 with custom `NumberedCanvas` for exact page numbering and branded footers
 - DOCX generation via python-docx with styled paragraphs, tables, and section formatting
 - Sentence extraction and normalisation using regex-based parsers
 - Offence framework context builders for all Australian jurisdictions
-- Comprehensive database initialisation with indexes for 31 collections at startup
+- Database initialisation with indexes for 31 collections at startup (`services/startup_tasks.py`)
 
-**Modular Router Architecture (25 router files):**
+**Modular Router Architecture:**
 ```
 /routers/
+├── __init__.py          # Centralised router registration
 ├── auth.py              # Session-token authentication, registration, Google OAuth, password change
 ├── cases.py             # Case CRUD operations
 ├── documents.py         # Document upload, OCR, text extraction, auto-detect
@@ -214,27 +216,30 @@ The backend is built on **FastAPI** (v0.135.2), a high-performance async Python 
 ├── grounds.py           # Grounds CRUD, AI investigation, auto-identify, priority reorder
 ├── notes.py             # Notes CRUD, pinning, comments, WebSocket collaboration
 ├── reports.py           # Report generation and retrieval
-├── payments.py          # PayID/PayPal/Stripe payment processing
+├── report_exports.py    # PDF/DOCX export with branded footers
+├── payments.py          # PayID payment processing and verification
+├── payment_history.py   # Payment history and PDF receipt generation
 ├── collaboration.py     # Case sharing, real-time chat, notifications
 ├── analysis.py          # Contradiction scanning, progress analysis
+├── contradictions.py    # AI-powered contradiction detection
 ├── resources.py         # Resource directory, document templates
-├── export.py            # Case Export Pack (PDF), Quick Export (ZIP), multi-language translation
+├── export.py            # Case Export Pack (PDF), Quick Export (ZIP)
+├── translate.py         # Multi-language AI translation (41 languages)
+├── barrister_pack.py    # Barrister acceptance package generation
+├── pipeline.py          # Background pipeline tasks
+├── pipeline_staged.py   # Staged pipeline processing
 ├── statistics.py        # Public appeal statistics endpoints
 ├── analytics.py         # Visit tracking, admin dashboard
 ├── admin.py             # Admin endpoints (contact, user stories)
 ├── password_reset.py    # Secure password reset flow via email
 ├── deadlines.py         # Deadline tracking, checklist, case strength
-├── messages.py          # Legacy messaging endpoints
-├── contradictions.py    # AI-powered contradiction detection
 ├── compare.py           # Case comparison and pattern analysis
 ├── caselaw.py           # Case law search integration
-├── pipeline.py          # Background pipeline tasks
-├── pipeline_staged.py   # Staged pipeline processing
-├── utilities.py         # States, offence frameworks, categories
-└── __init__.py
+├── legislation.py       # Legislation currency checking
+└── utilities.py         # States, offence frameworks, categories
 ```
 
-**Service Layer (11 service files + 6 pipeline modules):**
+**Service Layer:**
 ```
 /services/
 ├── legitimacy_engine.py   # Three-axis appellate viability scoring engine
@@ -243,9 +248,11 @@ The backend is built on **FastAPI** (v0.135.2), a high-performance async Python 
 ├── offence_helpers.py     # Jurisdiction-specific offence context builders
 ├── email_service.py       # Transactional emails via Resend API (v2.23)
 ├── document_helpers.py    # Text extraction pipeline (PDF → OCR → DOCX → plaintext)
+├── export_footer.py       # Shared PDF/DOCX footer formatting logic
 ├── caselaw_search.py      # Case law search and retrieval
 ├── ground_dedup.py        # Ground deduplication and merging logic
 ├── notes_helpers.py       # WebSocket collaboration helpers
+├── startup_tasks.py       # Database index creation and cleanup tasks
 ├── pipeline_models.py     # Pydantic models for pipeline data
 ├── pipeline/
 │   ├── classify.py        # Ground classification with intelligent merging
@@ -262,6 +269,7 @@ The backend is built on **FastAPI** (v0.135.2), a high-performance async Python 
 - Google OAuth integration via Emergent-managed social login
 - Role-based access control (admin, user)
 - Brute-force protection (10 attempts/minute/IP) and secure password reset via email
+- Short-lived, single-use download tokens for secure export URL sharing
 
 **AI Integration:**
 - **OpenAI GPT-4o** via the Emergent Integrations library and Universal LLM Key
@@ -282,8 +290,9 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 - **Crimson Pro serif font** for all headings — professional legal typography
 - **Manrope sans-serif** for body text — optimised for screen readability
 - **High-contrast colour palette:** Bright blue action buttons, colour-coded report tiers (Emerald, Blue, Purple, Teal), jurisdiction-specific state colours
-- **Code splitting with React.lazy** — 26 pages are lazy-loaded to reduce initial bundle size (main bundle ~1.4MB)
+- **Code splitting with React.lazy** — 26 pages are lazy-loaded to reduce initial bundle size
 - **Shared Australian English normaliser** (`utils/auSpelling.js`) — 80+ American-to-Australian spelling replacements applied across all components displaying AI-generated text
+- **Optimised images** — all screenshots and stock images compressed and resized for fast loading
 
 **Frontend Stack:**
 - React 19 with React Router v7 for client-side routing
@@ -295,17 +304,17 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 - date-fns for date formatting and manipulation
 - Capacitor (v7) configured for native iOS and Android builds
 
-**Component Architecture (136 files):**
-- Page components: LandingPage, Dashboard, CaseDetail, BarristerView, ReportView, HowItWorksPage, AppealStatisticsPage, DocumentPreviewPage, and more
+**Component Architecture:**
+- Page components: LandingPage, Dashboard, CaseDetail, BarristerView, ReportView, HowItWorksPage, HowToUsePage, AppealStatisticsPage, DocumentPreviewPage, SuccessStories, LegalFrameworkPage, LegalResourcesPage, FAQPage, and more
 - Feature components: ReportsSection, GroundsOfMerit, TimelineEnhanced, LegalFrameworkViewer, NotesSection, CollaborationPanel, LegitimacyPanel, QuickExport, ReportTranslator
-- Utility modules: exportHtml.js (shared HTML export builder with branded templates), auSpelling.js (Australian English normaliser)
+- Utility modules: exportHtml.js (shared HTML export builder with branded templates), auSpelling.js (Australian English normaliser), downloadToken.js (secure export token logic)
 
 ### Database — MongoDB
 
 - **Motor 3.7** async driver for non-blocking database operations
-- **31 indexed collections** initialised at startup: `users`, `user_sessions`, `cases`, `reports`, `report_translations`, `documents`, `document_extracts`, `case_extracts`, `grounds_of_merit`, `timeline_events`, `notes`, `payments`, `payment_transactions`, `pipeline_tasks`, `notifications`, `case_shares`, `share_links`, `case_messages`, `issue_classifications`, `issue_verifications`, `issue_arguments`, `activities`, `deadlines`, `checklist_items`, `submissions_drafts`, `contradiction_scans`, `contact_messages`, `visits`, `visit_stats`, `counters`, `password_reset_tokens`
-- **Unique compound indexes** on `report_translations` (report_id + language) and `payment_transactions` (case_id + user_id)
-- **TTL indexes** for automatic session and password reset token expiry
+- **31 indexed collections** initialised at startup: `users`, `user_sessions`, `cases`, `reports`, `report_translations`, `documents`, `document_extracts`, `case_extracts`, `grounds_of_merit`, `timeline_events`, `notes`, `payments`, `pipeline_tasks`, `notifications`, `case_shares`, `share_links`, `case_messages`, `issue_classifications`, `issue_verifications`, `issue_arguments`, `activities`, `deadlines`, `checklist_items`, `submissions_drafts`, `contradiction_scans`, `contact_messages`, `visits`, `visit_stats`, `counters`, `password_reset_tokens`, `download_tokens`
+- **Unique compound indexes** on `report_translations` (report_id + language)
+- **TTL indexes** for automatic session, password reset token, and download token expiry
 - All ObjectId fields excluded from API responses to ensure JSON serialisation safety
 - UTC timestamps throughout with ISO string storage
 
@@ -327,16 +336,18 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 
 - All passwords hashed with **PBKDF2-HMAC-SHA256** (100,000 iterations + random 32-byte salt)
 - Session tokens (UUID4) with configurable expiry and TTL-indexed database storage
+- **Short-lived download tokens** for secure document export — single-use, time-limited, prevents URL sharing of sensitive exports
 - **Security headers middleware:** X-Frame-Options DENY, X-Content-Type-Options nosniff, X-XSS-Protection, Cache-Control no-store
 - **Rate limiting:** 10 requests/minute/IP on authentication endpoints
 - CORS configuration restricted to explicit production domains
 - No sensitive data stored in localStorage beyond session tokens
 - All AI-generated content includes mandatory legal disclaimers
-- Payment processing via PCI-compliant third-party providers (Stripe, PayPal)
+- Payment processing via PayID (Australian bank transfer) — no card data handled by the application
 - OCR processing performed server-side — no document content transmitted to unauthorised third parties
 - Google OAuth tokens managed by Emergent's secure authentication proxy
 - Input validation via Pydantic models on all API endpoints
 - Case ownership verification on every data-access endpoint
+- Service worker with network-first caching strategy to prevent stale code issues
 
 ---
 
@@ -355,6 +366,7 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 | `FRONTEND_URL` | Yes | Frontend URL for email links and OAuth callbacks |
 | `ADMIN_EMAILS` | No | Comma-separated admin email addresses |
 | `PAYID_EMAIL` | No | PayID payment notification email |
+| `ADMIN_EMAIL` | No | Admin notification email |
 
 ### Frontend (`/app/frontend/.env`)
 | Variable | Required | Description |
