@@ -381,6 +381,13 @@ async def get_reports(case_id: str, request: Request):
 async def get_or_generate_barrister_view(case_id: str, request: Request, regenerate: bool = False):
     """Return the current barrister brief or start a fresh synthesis when explicitly requested."""
     user = await get_current_user(request)
+
+    # ── Soft metadata validation for Barrister View ──
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if case:
+        metadata_val = validate_case_metadata(case)
+        log_metadata_warnings(case_id, metadata_val, "barrister_view")
+
     source_reports = await _get_latest_standard_reports(case_id, user.user_id)
     source_signature = _build_barrister_source_signature(source_reports)
 

@@ -1038,7 +1038,18 @@ SOURCE REPORTS
 async def _run_barrister_report_generation(report_id: str, case_id: str, user_id: str):
     """Background task for barrister brief generation — HARDENED with metadata."""
     try:
+        # ── Soft metadata validation (warns but does not block) ──
+        from services.case_validation import validate_case_metadata, log_metadata_warnings, strip_hallucinated_citations
+        case_for_val = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
+        if case_for_val:
+            meta_val = validate_case_metadata(case_for_val)
+            log_metadata_warnings(case_id, meta_val, "barrister_view")
+
         analysis_result = await generate_barrister_brief(case_id, user_id, report_id=report_id)
+
+        # ── Citation post-processing: strip hallucinated citations from Barrister output ──
+        clean_analysis = strip_hallucinated_citations(analysis_result.get("analysis", ""))
+
         await db.reports.update_one(
             {"report_id": report_id},
             {
@@ -1046,7 +1057,7 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
                     "status": "completed",
                     "title": "Barrister Brief",
                     "content": {
-                        "analysis": analysis_result["analysis"],
+                        "analysis": clean_analysis,
                         "case_title": (analysis_result.get("case_data") or {}).get("title", ""),
                         "defendant": (analysis_result.get("case_data") or {}).get("defendant_name", ""),
                         "document_count": analysis_result.get("document_count", 0),
