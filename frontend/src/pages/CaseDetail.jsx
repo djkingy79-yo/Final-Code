@@ -984,15 +984,15 @@ const CaseDetail = ({ user }) => {
     };
 
     let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-    body += `<div style="background:#0f172a;color:#fff;padding:20px 32px;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;font-family:'Times New Roman',Times,serif;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Defendant</div><div style="font-size:14pt;font-weight:700;color:#fff;">${escAu(defendant)}</div></div>
-        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Offence</div><div style="font-size:14pt;font-weight:700;color:#fff;text-transform:capitalize;">${escAu(offenceCapitalised)}</div></div>
-        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Sentence</div><div style="font-size:14pt;font-weight:700;color:#fff;">${escAu(caseData?.sentence || "N/A")}</div></div>
-        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Documents</div><div style="font-size:14pt;font-weight:700;color:#fff;">${documents.length} files analysed</div></div>
-        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Timeline Events</div><div style="font-size:14pt;font-weight:700;color:#fff;">${timeline.length} events</div></div>
+    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(defendant)}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(caseData?.sentence || "N/A")}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Documents</span><br/><strong style="font-size:14pt;color:#0f172a;">${documents.length} files analysed</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Timeline Events</span><br/><strong style="font-size:14pt;color:#0f172a;">${timeline.length} events</strong></div>
       </div>
-      ${caseData?.court ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.2);font-size:11pt;color:rgba(255,255,255,0.85);font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
+      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
     </div>`;
 
     // ── TABLE OF CONTENTS ──
@@ -1008,7 +1008,7 @@ const CaseDetail = ({ user }) => {
       <div class="toc-container" style="padding:14px 32px;">
         <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
         <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:12pt;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:11pt;color:#1e293b;padding:3px 0;font-weight:700;text-transform:uppercase;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
         </div>
       </div>
     </div>`;
