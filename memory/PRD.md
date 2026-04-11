@@ -20,19 +20,30 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 
 ## What's Been Implemented
 
+### Download Token Security (Apr 2026, Session 3)
+- **Short-lived download tokens** replace session_token exposure in PDF/DOCX download URLs
+- `POST /api/auth/download-token` generates 5-minute, single-use tokens stored in MongoDB
+- `auth_utils.py` validates download_token query params; legacy session_token kept for WebSocket only
+- Frontend updated: `ReportView.jsx`, `BarristerView.jsx`, `ReportsSection.jsx`, `CaseDetail.jsx`
+- New utility: `/app/frontend/src/utils/downloadToken.js`
+
+### Standardised Print/Export Footer (Apr 2026, Session 3)
+- **Exact footer format:** "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] DD/MM/YYYY Page X of Y"
+- Times New Roman, italic, 10pt across ALL export views
+- Backend: `export_footer.py` shared by PDF (NumberedCanvas) and DOCX (apply_docx_footer)
+- Frontend: `exportHtml.js`, `ReportView.jsx`, `BarristerView.jsx` all use matching CSS footer
+- Removed duplicate DOCX footer overwrite in `report_exports.py`
+- Fixed timeline PDF filename Unicode encoding error (em-dash in title)
+
 ### Bug Fixes — iOS Safari & Pipeline (Apr 2026, Session 2)
-- **auSpelling.js COMPLETELY REWRITTEN**: Replaced 100+ chained `.replace()` calls with dictionary-based single-pass approach (SPELLING_MAP + single regex). Added try-catch safety net. Eliminates "Attempted to assign to readonly property" crash on iOS Safari JIT.
-- **`'created_at'` KeyError FIXED**: Added `created_at` field to `DocumentExtract`, `IssueClassification`, `IssueVerification` Pydantic models. Added `_safe_isoformat()` helper to `grounds.py` and `pipeline_staged.py`.
-- **Timeline Ordering Improved**: Added secondary sort by `created_at` + enhanced AI prompt for strict chronological ordering with exact date extraction.
-- **OAuth Error Handling**: AuthCallback handles "Invalid state parameter" gracefully with auto-retry.
+- **auSpelling.js COMPLETELY REWRITTEN**: Dictionary-based single-pass approach. Eliminates iOS Safari JIT crash.
+- **`'created_at'` KeyError FIXED**: Added `created_at` field to extraction models.
+- **Timeline Ordering Improved**: Secondary sort by `created_at` + strict chronological ordering.
+- **OAuth Error Handling**: AuthCallback handles "Invalid state parameter" gracefully.
 
 ### 9-Jurisdiction End-to-End Validation (Apr 2026, Session 1)
 - **All 9 jurisdictions tested and PASS**: NSW, VIC, QLD, SA, WA, TAS, NT, ACT, Federal
 - Zero NSW default leaks, zero hallucinated citations
-- Test script at `/app/backend/tests/test_9_jurisdiction_quick.py`
-
-### Repository Cleanup (Apr 2026, Session 1)
-- Moved test/debug scripts, temp exports, audit docs, documentation to proper directories
 
 ### Previously Completed
 - Stripe + PayID payment integration
@@ -43,17 +54,19 @@ Criminal appeals case management application for Australian jurisdictions. Featu
 - Security hardening (rate limiting, bcrypt)
 - Barrister View deep synthesis + Issue Matrix
 - PDF/DOCX exports with legal disclaimers
+- Translation formatting (ReactMarkdown + remarkGfm for 41 languages)
+- Repository cleanup
 
 ## Test Coverage
+- Download token security: 12/13 PASS (iteration_186)
 - 9-jurisdiction matrix: 9/9 PASS
-- Bug fix verification: 100% (iteration 185 — 12 backend, all frontend tests)
-- Previous iterations 180-184: All passing
+- Previous iterations 180-185: All passing
 
 ## Backlog
-- P0: Session token exposure in PDF/DOCX download URLs — replace with short-lived signed tokens
-- P1: `server.py` monolith refactor (user approved multi-session)
 - P1: "How It Works" page screenshots verification
+- P1: `server.py` monolith refactor (user approved multi-session)
 - P1: Caselaw search feature upgrade
+- P2: Verify "Success Stories" page content compliance
 - P2: Native Mobile App (Capacitor v7)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Real-time collaboration/chat, Case sharing

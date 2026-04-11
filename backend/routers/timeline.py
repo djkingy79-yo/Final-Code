@@ -757,5 +757,6 @@ async def export_timeline_pdf(case_id: str, request: Request):
     story.append(Paragraph(disclaimer_text, disclaimer_style))
     doc.build(story, canvasmaker=numbered_canvas)
     buffer.seek(0)
-    filename = f"timeline_{case.get('title', 'case')[:30].replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
-    return Response(content=buffer.getvalue(), media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename={filename}"})
+    safe_title = "".join(c for c in case.get('title', 'case')[:30] if c.isalnum() or c in ' -_').strip().replace(' ', '_')
+    filename = f"timeline_{safe_title}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(content=buffer.getvalue(), media_type="application/pdf", headers={"Content-Disposition": f'attachment; filename="{filename}"'})
