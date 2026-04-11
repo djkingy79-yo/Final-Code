@@ -222,16 +222,20 @@ async def translate_report(case_id: str, req: TranslateRequest, request: Request
 
     translated_content = "\n\n".join(translated_parts)
 
-    # Cache translation
-    await db.report_translations.insert_one({
-        "report_id": req.report_id,
-        "case_id": case_id,
-        "user_id": user.user_id,
-        "language": req.language,
-        "language_name": target_lang,
-        "translated_content": translated_content,
-        "translated_at": datetime.now(timezone.utc).isoformat(),
-    })
+    # Cache translation (upsert to avoid DuplicateKeyError on retry)
+    await db.report_translations.replace_one(
+        {"report_id": req.report_id, "language": req.language},
+        {
+            "report_id": req.report_id,
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "language": req.language,
+            "language_name": target_lang,
+            "translated_content": translated_content,
+            "translated_at": datetime.now(timezone.utc).isoformat(),
+        },
+        upsert=True,
+    )
 
     return {"translated_content": translated_content, "language": req.language, "language_name": target_lang, "cached": False}
 

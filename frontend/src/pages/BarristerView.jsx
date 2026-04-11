@@ -14,7 +14,6 @@ import ReportTranslator from "../components/ReportTranslator";
 import {
   AlertTriangle,
   ArrowLeft,
-  Briefcase,
   Clock,
   Download,
   FileText,
@@ -418,6 +417,16 @@ export default function BarristerView() {
     const eventsCount = timeline.length;
     const reportsCount = sourceReportMeta.length || 3;
 
+    // Build TOC from sections
+    const tocHtml = sections.length > 1
+      ? `<div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
+          <p style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${sections.length} Sections)</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+            ${sections.map((s, i) => `<div style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
+          </div>
+        </div>`
+      : "";
+
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -567,6 +576,7 @@ export default function BarristerView() {
         <div><div class="ci-label">Source Reports</div><div class="ci-value">${reportsCount} reports referenced</div></div>
       </div>
     </div>
+    ${tocHtml}
     <div class="sections">${contentEl.innerHTML.replace(/<th([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
   </div>
     <div class="disclaimer-bold">
@@ -622,47 +632,21 @@ export default function BarristerView() {
   };
 
   const handleExportDOCX = async () => {
-    // Use document-preview route for iOS compatibility (blob URLs fail on Safari)
-    openBarristerPreview("word");
-  };
-
-  const handleDownloadAcceptancePack = async () => {
-    try {
-      toast.info("Generating Acceptance Pack PDF...");
-      const response = await axios.get(`${API}/cases/${caseId}/barrister-pack/generate`, {
-        responseType: "blob",
-        timeout: 120000,
-      });
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      await iosShareOrDownload(
-        blob,
-        `Barrister_Acceptance_Pack_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.pdf`,
-        "application/pdf"
-      );
-      toast.success("Acceptance Pack downloaded.");
-    } catch (error) {
-      toast.error("Failed to generate the Acceptance Pack PDF.");
-    }
+    const contentEl = document.querySelector('[data-testid="barrister-sections-wrapper"]');
+    if (!contentEl) { toast.error("Unable to export."); return; }
+    const html = contentEl.innerHTML;
+    const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm} th{background:#1d4ed8;color:#ffffff;font-weight:800;padding:8px;}</style></head><body>${html}</body></html>`;
+    const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `Barrister_Brief_${caseData?.defendant_name?.replace(/\s+/g, "_") || "case"}.doc`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    toast.success("Word document ready!");
   };
 
   const handleQuickBrief = async () => {
     try {
       toast.info("Generating Quick Brief PDF...");
-      const isIOS = isIOSDevice();
-
-      // On iOS, open in new tab — window.location.assign breaks PDF rendering
-      if (isIOS) {
-        const directUrl = await buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
-        const a = document.createElement('a');
-        a.href = directUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        toast.success("Quick Brief opening — use Share to save or print.");
-        return;
-      }
 
       const response = await axios.get(`${API}/cases/${caseId}/reports/barrister-quick-brief`, {
         responseType: "blob",
@@ -795,15 +779,6 @@ export default function BarristerView() {
               data-testid="barrister-export-pdf-button"
             >
               <Download className="w-4 h-4 mr-2" /> Export PDF
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleDownloadAcceptancePack}
-              disabled={!isCompleted}
-              className="bg-blue-700 text-white hover:bg-blue-600"
-              data-testid="barrister-acceptance-pack-button"
-            >
-              <Briefcase className="w-4 h-4 mr-2" /> Acceptance Pack
             </Button>
             <Button
               size="sm"
