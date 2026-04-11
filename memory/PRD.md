@@ -116,7 +116,12 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **Barrister View Word export FIXED**: Downloads .doc file directly via blob instead of broken HTML preview.
 - **Build Arguments & Build Submissions Draft REMOVED**: Both buttons + API functions + result display sections removed from PipelineProgress.jsx (caused 500 errors).
 - **Pipeline Progress heading restyled**: Changed to text-xl text-blue-600 (bigger, bright blue).
-- **Progress export completely rewritten**: Now includes TOC (2-column grid), Case Summary, Case Readiness Score, Pipeline Summary, AI Progress Analysis (properly formatted with mdToHtml), and Appeal Checklist. Header changed from purple to blue.
+- **Progress export completely rewritten**: Full progress document with TOC, all sections.
+- **Barrister View export REWRITTEN**: Rebuilds each section from data-testid elements using export CSS classes instead of raw Tailwind innerHTML. Green header bars, white section numbers.
+- **Tailwind utility CSS added to ALL export files**: ~50 utility classes ensure captured DOM content renders properly.
+- **ALL TOCs standardized**: Gray bg, "Contents (X Sections)", 2-column grid — identical across all exports.
+- **Word export restored to preview mode**: Opens document-preview page per user request.
+- **Regex bug fixed**: `/<th/gi` → `/<th(?=[\s>])/gi` preventing `<thead>` corruption.
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
