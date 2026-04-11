@@ -33,6 +33,15 @@ from services.pipeline import (
 )
 from services.pipeline_models import CaseExtract
 
+
+def _safe_isoformat(d, key):
+    """Safely convert a datetime field to isoformat string. Handles missing keys and non-datetime values."""
+    if key not in d:
+        d[key] = datetime.now(timezone.utc).isoformat()
+    elif hasattr(d[key], "isoformat"):
+        d[key] = d[key].isoformat()
+    # else: already a string or other type — leave as is
+
 logger = logging.getLogger(__name__)
 
 
@@ -158,7 +167,7 @@ async def _ensure_document_extracts(case: dict, documents: list):
             try:
                 extract = await extract_document_artifacts(case, document)
                 extract_dict = extract.model_dump()
-                extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+                _safe_isoformat(extract_dict, "created_at")
                 await db.document_extracts.update_one(
                     {"case_id": case["case_id"], "document_id": document["document_id"], "user_id": case["user_id"]},
                     {"$set": extract_dict},
@@ -205,7 +214,7 @@ async def _refresh_case_extract_from_pipeline(case: dict) -> dict:
         document_extract_ids=extract_ids,
     )
     case_extract_dict = case_extract.model_dump()
-    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+    _safe_isoformat(case_extract_dict, "created_at")
     await db.case_extracts.update_one(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
         {"$set": case_extract_dict},
@@ -237,7 +246,7 @@ async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict
     persisted = []
     for issue in issues:
         issue_dict = issue.model_dump()
-        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+        _safe_isoformat(issue_dict, "created_at")
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
 
@@ -371,7 +380,7 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
     }
     verification = await verify_issue(case, issue, supporting_context)
     verification_dict = verification.model_dump()
-    verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+    _safe_isoformat(verification_dict, "created_at")
     await db.issue_verifications.update_one(
         {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
         {"$set": verification_dict},
@@ -513,8 +522,8 @@ async def create_ground_of_merit(case_id: str, ground_data: GroundOfMeritCreate,
     )
 
     ground_dict = ground.model_dump()
-    ground_dict["created_at"] = ground_dict["created_at"].isoformat()
-    ground_dict["updated_at"] = ground_dict["updated_at"].isoformat()
+    _safe_isoformat(ground_dict, "created_at")
+    _safe_isoformat(ground_dict, "updated_at")
 
     await db.grounds_of_merit.insert_one(ground_dict)
     await db.cases.update_one(
@@ -697,7 +706,7 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
         }
         verification = await verify_issue(case, issue, supporting_context)
         verification_dict = verification.model_dump()
-        verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+        _safe_isoformat(verification_dict, "created_at")
 
         # Store verification
         await db.issue_verifications.update_one(

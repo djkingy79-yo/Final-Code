@@ -37,6 +37,7 @@ class DocumentExtract(BaseModel):
     facts: List[ExtractedFact] = Field(default_factory=list)
     events: List[ExtractedEvent] = Field(default_factory=list)
     findings: List[ExtractedFinding] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # ============================================================================
@@ -83,6 +84,8 @@ class IssueClassification(BaseModel):
     # Law sections — cleaned by classify.py post-processing
     law_sections: List[dict] = Field(default_factory=list)
 
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 
 # ============================================================================
 # ISSUE VERIFICATION — output of verify_issue()
@@ -109,3 +112,5 @@ class IssueVerification(BaseModel):
     # Review status
     verification_status: str = "draft"
     requires_human_review: bool = True
+
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

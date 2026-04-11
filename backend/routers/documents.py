@@ -120,7 +120,7 @@ async def _background_auto_generate(case_id: str, user_id: str):
         # Always extract timeline events — dedup prevents duplicates
         try:
             tl_prompt = f"""Extract a chronological timeline of events from these case documents.
-Return ONLY a JSON array (no markdown). Each event:
+Return ONLY a JSON array (no markdown), STRICTLY SORTED by date from earliest to latest. Each event:
 {{"date":"YYYY-MM-DD or YYYY if exact date unknown","title":"Brief title","description":"Details","event_type":"incident|arrest|court_hearing|evidence|witness|legal_filing|verdict|appeal|other"}}
 
 CRITICAL RULES:
@@ -129,6 +129,9 @@ CRITICAL RULES:
 - Do NOT use 1 January as a placeholder — use the year only instead
 - Do NOT create duplicate events. Each distinct event should appear only once
 - Use Australian English spelling (analyse, defence, offence, behaviour, characterisation)
+- Sort events strictly chronologically — earliest event first, latest event last
+- Include key procedural milestones: offence date, arrest, charge, committal, trial, sentence, appeal lodgement, appeal hearing
+- Extract EXACT dates from the documents whenever possible (look for patterns like "on 14 March 2022", "dated 5 June 2023")
 
 CASE: {case.get('title','')} | DEFENDANT: {case.get('defendant_name','')}
 DOCUMENTS:
@@ -188,7 +191,10 @@ DOCUMENTS:
                 try:
                     extract = await extract_document_artifacts(case, doc)
                     extract_dict = extract.model_dump()
-                    extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+                    if "created_at" in extract_dict and hasattr(extract_dict["created_at"], "isoformat"):
+                        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+                    elif "created_at" not in extract_dict:
+                        extract_dict["created_at"] = datetime.now(timezone.utc).isoformat()
                     await db.document_extracts.update_one(
                         {"case_id": case_id, "document_id": doc["document_id"], "user_id": user_id},
                         {"$set": extract_dict},

@@ -126,7 +126,7 @@ async def get_timeline(case_id: str, request: Request):
     events = await db.timeline_events.find(
         {"case_id": case_id, "user_id": user.user_id},
         {"_id": 0}
-    ).sort("event_date", 1).to_list(500)
+    ).sort([("event_date", 1), ("created_at", 1)]).to_list(500)
 
     return events
 

@@ -7,6 +7,16 @@ import uuid
 
 from config import db
 from auth_utils import get_current_user
+
+
+def _safe_isoformat(d, key):
+    """Safely convert a datetime field to isoformat string."""
+    if key not in d:
+        d[key] = datetime.now(timezone.utc).isoformat()
+    elif hasattr(d[key], "isoformat"):
+        d[key] = d[key].isoformat()
+
+
 from services.pipeline import (
     extract_document_artifacts,
     classify_case_issues,
@@ -69,7 +79,10 @@ async def _ensure_document_extracts(case: dict, documents: list) -> dict:
 
         extract = await extract_document_artifacts(case, document)
         extract_dict = extract.model_dump()
-        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+        if "created_at" in extract_dict and hasattr(extract_dict["created_at"], "isoformat"):
+            extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+        elif "created_at" not in extract_dict:
+            extract_dict["created_at"] = datetime.now(timezone.utc).isoformat()
 
         await db.document_extracts.update_one(
             {
@@ -123,7 +136,7 @@ async def _refresh_case_extract(case: dict) -> dict:
     )
 
     case_extract_dict = case_extract.model_dump()
-    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+    _safe_isoformat(case_extract_dict, "created_at")
 
     await db.case_extracts.update_one(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
@@ -161,7 +174,7 @@ async def _classify_issues(case: dict, case_extract: dict) -> dict:
     persisted_titles = []
     for issue in issues:
         issue_dict = issue.model_dump()
-        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+        _safe_isoformat(issue_dict, "created_at")
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
 
@@ -245,7 +258,7 @@ async def _verify_top_issues(case: dict, verify_limit: int) -> dict:
         try:
             verification = await verify_issue(case, issue, supporting_context)
             verification_dict = verification.model_dump()
-            verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+            _safe_isoformat(verification_dict, "created_at")
 
             await db.issue_verifications.update_one(
                 {
@@ -363,7 +376,10 @@ async def extract_document(case_id: str, document_id: str, request: Request):
 
     extract = await extract_document_artifacts(case, document)
     extract_dict = extract.model_dump()
-    extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+    if "created_at" in extract_dict and hasattr(extract_dict["created_at"], "isoformat"):
+        extract_dict["created_at"] = extract_dict["created_at"].isoformat()
+    elif "created_at" not in extract_dict:
+        extract_dict["created_at"] = datetime.now(timezone.utc).isoformat()
 
     await db.document_extracts.update_one(
         {"case_id": case_id, "document_id": document_id, "user_id": user.user_id},
@@ -422,7 +438,7 @@ async def refresh_case_extract(case_id: str, request: Request):
     )
 
     case_extract_dict = case_extract.model_dump()
-    case_extract_dict["created_at"] = case_extract_dict["created_at"].isoformat()
+    _safe_isoformat(case_extract_dict, "created_at")
 
     await db.case_extracts.update_one(
         {"case_id": case_id, "user_id": user.user_id},
@@ -463,7 +479,7 @@ async def classify_issues(case_id: str, request: Request):
     inserted = 0
     for issue in issues:
         issue_dict = issue.model_dump()
-        issue_dict["created_at"] = issue_dict["created_at"].isoformat()
+        _safe_isoformat(issue_dict, "created_at")
         issue_title = normalise_au_spelling((issue.title or "").strip())
         # Find existing issue with topic + fuzzy match
         matched_existing = None
@@ -515,7 +531,7 @@ async def verify_single_issue(case_id: str, issue_id: str, request: Request):
 
     verification = await verify_issue(case, issue, supporting_context)
     verification_dict = verification.model_dump()
-    verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+    _safe_isoformat(verification_dict, "created_at")
 
     await db.issue_verifications.update_one(
         {"case_id": case_id, "issue_id": issue_id, "user_id": user.user_id},

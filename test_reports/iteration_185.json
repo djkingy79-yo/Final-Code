@@ -1,0 +1,120 @@
+{
+  "summary": "Iteration 185: Bug Fix Verification - All three reported bugs have been fixed and verified. 1) auSpelling.js iOS Safari crash fixed with dictionary-based approach and try-catch safety net, 2) 'created_at' KeyError fixed by adding field to pipeline models, 3) Timeline chronological ordering improved with secondary sort. All 12 backend tests pass, all frontend tabs load without crash.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration185_bug_fixes.py",
+    "/app/test_reports/pytest/iteration_185_bug_fixes.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "auSpelling.js COMPLETELY REWRITTEN: Uses dictionary map (SPELLING_MAP) + single regex pass instead of 100+ chained .replace() calls. This avoids iOS Safari JIT crash 'Attempted to assign to readonly property'",
+    "auSpelling.js has proper input guards: Line 91 handles null, undefined, empty string, non-string inputs by returning text || ''",
+    "auSpelling.js has try-catch safety net (lines 93-182): Any error returns original text unchanged",
+    "pipeline_models.py: DocumentExtract, IssueClassification, IssueVerification all have 'created_at' field with default factory",
+    "grounds.py and pipeline_staged.py: _safe_isoformat helper function safely converts datetime to isoformat, handles missing keys",
+    "timeline.py: Events sorted by (event_date, created_at) for proper chronological ordering"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "email": "djkingy79@gmail.com",
+    "password": "Grubbygrub88",
+    "role": "admin"
+  },
+  "seed_data_creation": "None - used existing case_f65b65848793 (NSW Folbigg case)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 185 verified three bug fixes: (1) auSpelling.js iOS Safari crash - completely rewritten with dictionary-based single-pass approach, (2) 'created_at' KeyError - added field to DocumentExtract, IssueClassification, IssueVerification models with _safe_isoformat helper, (3) Timeline ordering - secondary sort by created_at. Test case: case_f65b65848793 (NSW Folbigg) with 1 document, 3 timeline events, 7 grounds, 3 reports. All tabs load without crash. Backend endpoints verified: /api/cases/{case_id}/grounds, /api/cases/{case_id}/grounds/auto-identify, /api/cases/{case_id}/grounds/{ground_id}/investigate, /api/cases/{case_id}/timeline.",
+  "tests_verified": {
+    "backend": {
+      "auth": {
+        "login_success": "PASS - Login with admin credentials works"
+      },
+      "created_at_fix": {
+        "grounds_list_no_keyerror": "PASS - GET /api/cases/{case_id}/grounds returns without KeyError",
+        "grounds_auto_identify_status": "PASS - GET /api/cases/{case_id}/grounds/auto-identify/status works",
+        "grounds_auto_identify_endpoint": "PASS - POST /api/cases/{case_id}/grounds/auto-identify works",
+        "pipeline_summary": "PASS - GET /api/pipeline/cases/{case_id}/summary works"
+      },
+      "grounds_investigate": {
+        "get_grounds_for_investigation": "PASS - Found grounds for testing",
+        "investigate_ground": "PASS - POST /api/cases/{case_id}/grounds/{ground_id}/investigate works"
+      },
+      "timeline_ordering": {
+        "events_sorted_chronologically": "PASS - Timeline events returned in chronological order"
+      },
+      "case_detail": {
+        "case_detail_loads": "PASS - GET /api/cases/{case_id} works",
+        "documents_load": "PASS - GET /api/cases/{case_id}/documents works",
+        "reports_load": "PASS - GET /api/cases/{case_id}/reports works"
+      },
+      "dashboard": {
+        "cases_list_loads": "PASS - GET /api/cases works"
+      }
+    },
+    "frontend": {
+      "landing_page": {
+        "loads_correctly": "PASS - Landing page loads with Sign In button"
+      },
+      "login_flow": {
+        "email_password_login": "PASS - Login with djkingy79@gmail.com works",
+        "redirects_to_dashboard": "PASS - After login, redirects to /dashboard"
+      },
+      "dashboard": {
+        "loads_correctly": "PASS - Dashboard loads with 24 cases, 78 documents, 104 timeline events"
+      },
+      "case_detail_page": {
+        "loads_correctly": "PASS - Case detail page loads for case_f65b65848793",
+        "metadata_displayed": "PASS - Defendant (Kathleen Folbigg), State (NSW), Offence (Murder/Manslaughter), Sentence (30 years) displayed",
+        "tabs_visible": "PASS - 9 tabs found (Documents, Timeline, Grounds, Notes, Reports, Legal, Case Law, Progress, Collaboration)"
+      },
+      "timeline_tab": {
+        "loads_without_crash": "PASS - Timeline tab loads without iOS Safari crash",
+        "auSpelling_working": "PASS - No 'Attempted to assign to readonly property' error"
+      },
+      "grounds_tab": {
+        "loads_without_crash": "PASS - Grounds tab loads without iOS Safari crash",
+        "grounds_count": "PASS - 7 grounds displayed"
+      },
+      "reports_tab": {
+        "loads_without_crash": "PASS - Reports tab loads without iOS Safari crash",
+        "reports_count": "PASS - 3 reports displayed"
+      }
+    }
+  },
+  "bug_fixes_verified": {
+    "ios_safari_auspelling_crash": {
+      "status": "FIXED",
+      "file": "frontend/src/utils/auSpelling.js",
+      "description": "Completely rewritten with dictionary-based single-pass approach. Uses SPELLING_MAP object + single regex instead of 100+ chained .replace() calls. Has input guards for null/undefined/empty/non-string and try-catch safety net.",
+      "verification": "Timeline, Grounds, and Reports tabs all load without crash"
+    },
+    "created_at_keyerror": {
+      "status": "FIXED",
+      "files": [
+        "backend/services/pipeline_models.py - Added created_at field to DocumentExtract, IssueClassification, IssueVerification",
+        "backend/routers/grounds.py - Added _safe_isoformat helper",
+        "backend/routers/pipeline_staged.py - Added _safe_isoformat helper",
+        "backend/routers/documents.py - Fixed created_at access"
+      ],
+      "verification": "Grounds auto-identify and investigate endpoints work without KeyError"
+    },
+    "timeline_chronological_ordering": {
+      "status": "FIXED",
+      "file": "backend/routers/timeline.py",
+      "description": "Added secondary sort by created_at: .sort([('event_date', 1), ('created_at', 1)])",
+      "verification": "Timeline events returned in chronological order"
+    }
+  }
+}
