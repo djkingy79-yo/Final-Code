@@ -27,13 +27,20 @@ Files covered: analysis.py, contradictions.py, documents.py, export.py, grounds.
 
 ## What's Been Implemented
 
+### Payment History & Receipts Page (Apr 2026)
+- **Backend:** `GET /api/payments/history` — all user payments (PayID + Stripe merged/deduped)
+- **Backend:** `GET /api/payments/history/summary` — total spent, completed count, features unlocked, cases
+- **Backend:** `GET /api/payments/receipt/{payment_id}/pdf` — generates professional PDF receipt via reportlab
+- **Frontend:** `PaymentHistoryPage.jsx` with summary dashboard, filter tabs (All/Confirmed/Pending), receipt download
+- **Frontend:** Dashboard sidebar "Payment History" link added
+- Contact support link (djkingy79@gmail.com — transitioning to criminallawappealmanagement@gmail.com)
+
 ### Stripe Payment Integration (Apr 2026)
 - **Backend:** `/api/payments/stripe/create-checkout` creates Stripe Checkout sessions
 - **Backend:** `/api/payments/stripe/status/{session_id}` polls payment status
 - **Backend:** `/api/webhook/stripe` handles Stripe webhook events
-- **Frontend:** `PaymentModal.jsx` updated with two payment methods: Card (Stripe) and PayID (bank transfer)
+- **Frontend:** `PaymentModal.jsx` with two payment methods: Card (Stripe) and PayID (bank transfer)
 - **Frontend:** `PaymentSuccessPage.jsx` handles Stripe redirect with status polling
-- **Frontend:** Fixed AuthCallback conflict with `/payment-success` route (session_id param)
 - Apple Pay and Google Pay available automatically through Stripe Checkout
 
 ### Security Hardening (Apr 2026)
@@ -47,20 +54,18 @@ Files covered: analysis.py, contradictions.py, documents.py, export.py, grounds.
 - **17 LLM-calling files** audited and hardened with all 4 guardrail categories
 
 ### Legislation Framework (Feb 2026)
-- **offence_framework.py** (3639 lines): 15 offence categories, SENTENCING/EVIDENCE/MENTAL_IMPAIRMENT/PROCEEDS_OF_CRIME frameworks, LANDMARK_CASES, APPEAL_GROUNDS_ACCESSIBILITY, FEDERAL_FAULT_ELEMENTS, HUMAN_RIGHTS_FRAMEWORK, LEGISLATION_CURRENCY tracking
+- **offence_framework.py** (3639 lines): 15 offence categories, comprehensive AU legal frameworks
 
 ### Legitimacy Engine (Feb 2026)
 - Four-axis scoring with procedural compliance, sentencing-specific path
 
-### Legislation Currency Checker (Feb 2026)
-- AustLII runtime verification: POST /api/legislation/check-currency, POST /api/legislation/batch-check
-
 ### Test Suite
 - 21 passing framework integrity tests
 - Stripe payment integration tests (22 pass)
+- Payment history tests (10 pass)
 
 ### Previously Completed
-- All prior features (Barrister View, PDF exports, Google Auth, Safari fix, CI/CD, forensic language enforcer, pipeline_models.py, Stats page)
+- All prior features (Barrister View, PDF exports, Google Auth, Safari fix, CI/CD, forensic language enforcer, Stats page)
 
 ## Backlog
 - P0: Session token exposure in URLs — replace with short-lived signed download tokens
