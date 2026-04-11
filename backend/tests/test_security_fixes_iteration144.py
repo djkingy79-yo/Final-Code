@@ -117,7 +117,7 @@ class TestAuthFlow:
             print(f"PASS: Login successful - user_id: {data.get('user_id')}")
             return data.get("session_token")
         elif response.status_code == 401:
-            print(f"INFO: Login failed with 401 - credentials may have changed")
+            print("INFO: Login failed with 401 - credentials may have changed")
             pytest.skip("Credentials may have changed - skipping auth tests")
         elif response.status_code == 429:
             print("INFO: Rate limited - skipping")

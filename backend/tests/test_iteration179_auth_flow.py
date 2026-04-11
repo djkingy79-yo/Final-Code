@@ -169,7 +169,7 @@ class TestAuthSessionEndpoint:
         # Verify retry logic took some time (at least a few seconds for retries)
         # With delays [0,1,2,3,5], minimum time should be ~11 seconds if all retries happen
         print(f"✓ Invalid session_id rejected after {elapsed:.1f}s: {data['detail']}")
-        print(f"  (Backend retry logic should have attempted 5 times)")
+        print("  (Backend retry logic should have attempted 5 times)")
 
 
 class TestProtectedRoutes:
@@ -228,7 +228,7 @@ class TestHealthEndpoints:
         response = requests.get(f"{BASE_URL}/api/ready", timeout=30)
         assert response.status_code == 200
         data = response.json()
-        assert data.get("ready") == True
+        assert data.get("ready")
         print("✓ /api/ready returns ready: true")
 
 

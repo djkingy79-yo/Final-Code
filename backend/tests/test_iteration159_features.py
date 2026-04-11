@@ -73,7 +73,7 @@ class TestGroundsReorder:
         # Check if grounds have ground_id
         if grounds:
             assert all("ground_id" in g for g in grounds), "Some grounds missing ground_id"
-            print(f"PASS: All grounds have ground_id")
+            print("PASS: All grounds have ground_id")
 
     def test_reorder_grounds_endpoint_exists(self, auth_token):
         """Test PUT /api/cases/{case_id}/grounds/reorder endpoint exists"""
@@ -219,7 +219,7 @@ class TestGroundsEndpointSorting:
                 assert priority_orders[i] <= priority_orders[i+1], \
                     f"Grounds not sorted by priority_order: {priority_orders[i]} > {priority_orders[i+1]}"
         
-        print(f"PASS: Grounds sorted correctly by priority_order")
+        print("PASS: Grounds sorted correctly by priority_order")
 
 
 if __name__ == "__main__":

@@ -97,7 +97,7 @@ class TestTrialPricingReversion:
         is_eligible = data.get("is_eligible")
         
         # This confirms trial reverts to normal after first purchase
-        assert is_eligible == False, f"Expected is_eligible=False for admin with completed payments, got {is_eligible}"
+        assert not is_eligible, f"Expected is_eligible=False for admin with completed payments, got {is_eligible}"
         
         # Trial price should be None when not eligible
         assert data.get("trial_price") is None, f"Expected trial_price=None, got {data.get('trial_price')}"
@@ -181,7 +181,6 @@ class TestBarristerViewInReportsList:
         print(f"✓ Unique report types found: {report_types}")
         
         # According to the issue, case has: 3 barrister_view, 1 extensive_log, 1 full_detailed, 1 quick_summary
-        expected_types = {"quick_summary", "full_detailed", "extensive_log", "barrister_view"}
         
         # Check that barrister_view is now included
         assert "barrister_view" in report_types, "barrister_view should now be included in reports list"

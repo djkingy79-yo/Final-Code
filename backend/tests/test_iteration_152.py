@@ -195,7 +195,7 @@ class TestLegalFramework:
             response = auth_session.get(f"{BASE_URL}/api/cases/{case_id}/extract")
             if response.status_code == 200:
                 data = response.json()
-                print(f"PASS: Retrieved case extract with legal framework data")
+                print("PASS: Retrieved case extract with legal framework data")
                 
                 # Check for appeal_framework in the data
                 if "appeal_framework" in data:

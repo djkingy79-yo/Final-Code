@@ -155,7 +155,7 @@ class TestReportsEndpoints:
             assert isinstance(data, list), f"Expected list, got {type(data)}"
             print(f"✓ Reports list returned {len(data)} reports for case {TEST_CASE_ID}")
         else:
-            print(f"✓ Reports endpoint working (case not found)")
+            print("✓ Reports endpoint working (case not found)")
     
     def test_barrister_view_endpoint(self, auth_session):
         """GET /api/cases/{case_id}/reports/barrister-view - barrister view status"""
@@ -171,7 +171,7 @@ class TestReportsEndpoints:
             assert "report_id" in data or "status" in data
             print(f"✓ Barrister view endpoint working: {data.get('status', 'completed')}")
         else:
-            print(f"✓ Barrister view endpoint working (not generated or case not found)")
+            print("✓ Barrister view endpoint working (not generated or case not found)")
 
 
 class TestReportExportsEndpoints:
@@ -187,7 +187,7 @@ class TestReportExportsEndpoints:
         )
         # Should return 404 (report not found) not 405 (method not allowed) or 500
         assert response.status_code in [200, 404], f"PDF export endpoint issue: {response.status_code} - {response.text}"
-        print(f"✓ PDF export endpoint exists and routed correctly")
+        print("✓ PDF export endpoint exists and routed correctly")
     
     def test_export_docx_endpoint_exists(self, auth_session):
         """GET /api/cases/{case_id}/reports/{report_id}/export-docx - DOCX export endpoint exists"""
@@ -198,7 +198,7 @@ class TestReportExportsEndpoints:
         )
         # Should return 404 (report not found) not 405 (method not allowed) or 500
         assert response.status_code in [200, 404], f"DOCX export endpoint issue: {response.status_code} - {response.text}"
-        print(f"✓ DOCX export endpoint exists and routed correctly")
+        print("✓ DOCX export endpoint exists and routed correctly")
 
 
 class TestRouterImports:
@@ -223,7 +223,7 @@ class TestRouterImports:
         )
         # Should not return 404 for the route itself (only for missing case)
         assert response.status_code != 405, "Reports router not mounted correctly"
-        print(f"✓ Reports router mounted correctly")
+        print("✓ Reports router mounted correctly")
     
     def test_report_exports_router_mounted(self, auth_session):
         """Verify report_exports router is mounted"""
@@ -234,7 +234,7 @@ class TestRouterImports:
         )
         # Should not return 405 (method not allowed)
         assert response.status_code != 405, "Report exports router not mounted correctly"
-        print(f"✓ Report exports router mounted correctly")
+        print("✓ Report exports router mounted correctly")
 
 
 class TestServiceModules:

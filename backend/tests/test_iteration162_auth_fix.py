@@ -88,7 +88,7 @@ class TestAuthMeEndpoint:
             timeout=10
         )
         assert response.status_code == 401, f"Expected 401, got {response.status_code}: {response.text}"
-        print(f"✓ /api/auth/me returns 401 with invalid token")
+        print("✓ /api/auth/me returns 401 with invalid token")
 
 
 class TestAuthLoginEndpoint:
@@ -116,7 +116,7 @@ class TestAuthLoginEndpoint:
             timeout=10
         )
         assert response.status_code == 401, f"Expected 401, got {response.status_code}: {response.text}"
-        print(f"✓ Login returns 401 for non-existent user")
+        print("✓ Login returns 401 for non-existent user")
 
 
 class TestAuthLoginWithValidCredentials:
@@ -141,7 +141,7 @@ class TestAuthLoginWithValidCredentials:
         assert data["email"] == "djkingy79@gmail.com"
         assert len(data["session_token"]) > 0
         
-        print(f"✓ Login returns 200 with session_token for valid credentials")
+        print("✓ Login returns 200 with session_token for valid credentials")
         return data["session_token"]
     
     def test_me_endpoint_works_with_valid_token(self):

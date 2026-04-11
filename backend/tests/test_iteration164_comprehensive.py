@@ -193,7 +193,7 @@ class TestCasesAPI:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         assert data["defendant_name"] == "Updated Name"
-        print(f"PASS: Case updated successfully")
+        print("PASS: Case updated successfully")
 
     def test_delete_case(self, auth_client):
         """Test DELETE /api/cases/{case_id}"""
@@ -209,7 +209,7 @@ class TestCasesAPI:
         # Delete it
         response = auth_client.delete(f"{BASE_URL}/api/cases/{case_id}")
         assert response.status_code in [200, 204], f"Expected 200/204, got {response.status_code}"
-        print(f"PASS: Case deleted successfully")
+        print("PASS: Case deleted successfully")
 
         # Verify deletion
         get_resp = auth_client.get(f"{BASE_URL}/api/cases/{case_id}")
@@ -581,7 +581,7 @@ class TestDatabaseOperations:
         assert response2.status_code == 200
         data2 = response2.json()
         # If unique index exists, second call should return cached=True
-        assert data2.get("cached") == True, "Second translation should be cached (unique index working)"
+        assert data2.get("cached"), "Second translation should be cached (unique index working)"
         print("PASS: report_translations unique compound index verified (cached=True on second call)")
 
     def test_cases_user_id_index(self, auth_client):

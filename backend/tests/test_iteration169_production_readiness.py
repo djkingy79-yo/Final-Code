@@ -49,7 +49,7 @@ class TestHealthEndpoints:
         response = requests.get(f"{BASE_URL}/api/health/deep")
         assert response.status_code == 200
         data = response.json()
-        assert data["healthy"] == True
+        assert data["healthy"]
         assert data["checks"]["mongodb"]["status"] == "ok"
         assert data["checks"]["llm_key"]["status"] == "ok"
         assert data["checks"]["email"]["status"] == "ok"
@@ -60,8 +60,8 @@ class TestHealthEndpoints:
         response = requests.get(f"{BASE_URL}/api/ready")
         assert response.status_code == 200
         data = response.json()
-        assert data["ready"] == True
-        print(f"✓ Ready endpoint passed")
+        assert data["ready"]
+        print("✓ Ready endpoint passed")
 
 
 class TestAuthFlows:
@@ -100,7 +100,7 @@ class TestAuthFlows:
             "password": "anypassword"
         })
         assert response.status_code == 401
-        print(f"✓ Nonexistent user correctly rejected")
+        print("✓ Nonexistent user correctly rejected")
     
     def test_register_new_user(self):
         """POST /api/auth/register creates new user"""
@@ -128,7 +128,7 @@ class TestAuthFlows:
         assert response.status_code == 400
         data = response.json()
         assert "already registered" in data["detail"].lower() or "email" in data["detail"].lower()
-        print(f"✓ Duplicate email correctly rejected")
+        print("✓ Duplicate email correctly rejected")
     
     def test_get_me_authenticated(self):
         """GET /api/auth/me returns current user info"""
@@ -148,14 +148,14 @@ class TestAuthFlows:
         data = response.json()
         assert data["email"] == ADMIN_EMAIL.lower()
         assert "user_id" in data
-        assert data["is_admin"] == True  # Admin account
+        assert data["is_admin"]  # Admin account
         print(f"✓ Get me success: is_admin={data['is_admin']}")
     
     def test_get_me_unauthenticated(self):
         """GET /api/auth/me without token returns 401"""
         response = requests.get(f"{BASE_URL}/api/auth/me")
         assert response.status_code == 401
-        print(f"✓ Unauthenticated /me correctly rejected")
+        print("✓ Unauthenticated /me correctly rejected")
     
     def test_logout(self):
         """POST /api/auth/logout clears session"""
@@ -174,7 +174,7 @@ class TestAuthFlows:
         assert response.status_code == 200
         data = response.json()
         assert "logged out" in data["message"].lower()
-        print(f"✓ Logout success")
+        print("✓ Logout success")
     
     def test_session_exchange_invalid(self):
         """POST /api/auth/session with invalid session_id returns error"""
@@ -247,7 +247,7 @@ class TestCasesCRUD:
         data = response.json()
         assert data["case_id"] == case_id
         assert "_id" not in data
-        print(f"✓ Get single case success")
+        print("✓ Get single case success")
         return data
     
     def test_update_case(self):
@@ -277,7 +277,7 @@ class TestCasesCRUD:
         # Verify persistence with GET
         get_resp = requests.get(f"{BASE_URL}/api/cases/{case_id}", headers=self.headers)
         assert get_resp.json()["state"] == "wa"
-        print(f"✓ Update persisted correctly")
+        print("✓ Update persisted correctly")
     
     def test_delete_case(self):
         """DELETE /api/cases/{case_id} deletes case"""
@@ -393,7 +393,7 @@ class TestGrounds:
         assert "count" in data
         assert "is_unlocked" in data
         # Admin should have unlocked access
-        assert data["is_unlocked"] == True, "Admin should have unlocked access"
+        assert data["is_unlocked"], "Admin should have unlocked access"
         print(f"✓ List grounds: {data['count']} grounds, unlocked={data['is_unlocked']}")
 
 
@@ -440,7 +440,6 @@ class TestLegalFramework:
         assert "state" in data
         assert data["state"]["abbreviation"] == "NSW"
         # Should have NSW-specific legislation
-        state_leg = data["category"].get("state_legislation", {})
         print(f"✓ NSW homicide framework: state={data['state']['name']}")
     
     def test_offence_framework_wa_domestic_violence(self):
@@ -451,9 +450,8 @@ class TestLegalFramework:
         assert data["state"]["abbreviation"] == "WA"
         assert data["state"]["name"] == "Western Australia"
         # Should NOT have NSW legislation
-        state_leg = data["category"].get("state_legislation", {})
         # Verify no NSW contamination
-        leg_str = str(state_leg).lower()
+        leg_str = str(data).lower()
         assert "crimes act 1900 (nsw)" not in leg_str, "WA should not have NSW Crimes Act"
         print(f"✓ WA domestic violence framework: state={data['state']['name']}")
     
@@ -567,7 +565,7 @@ class TestNoMongoIdExposure:
         data = response.json()
         for case in data[:10]:
             assert "_id" not in case, f"MongoDB _id exposed in case: {case.get('case_id')}"
-        print(f"✓ Cases endpoint: no _id exposure")
+        print("✓ Cases endpoint: no _id exposure")
     
     def test_auth_me_no_id(self):
         """GET /api/auth/me should not expose _id"""
@@ -575,7 +573,7 @@ class TestNoMongoIdExposure:
         assert response.status_code == 200
         data = response.json()
         assert "_id" not in data, "MongoDB _id exposed in /auth/me"
-        print(f"✓ Auth/me endpoint: no _id exposure")
+        print("✓ Auth/me endpoint: no _id exposure")
 
 
 # Cleanup test data

@@ -46,9 +46,9 @@ class TestAdminPaymentBypass:
         
         # Admin should have all features unlocked
         unlocked = data.get("unlocked_features", {})
-        assert unlocked.get("grounds_of_merit") == True, "Admin should have grounds_of_merit unlocked"
-        assert unlocked.get("full_report") == True, "Admin should have full_report unlocked"
-        assert unlocked.get("extensive_report") == True, "Admin should have extensive_report unlocked"
+        assert unlocked.get("grounds_of_merit"), "Admin should have grounds_of_merit unlocked"
+        assert unlocked.get("full_report"), "Admin should have full_report unlocked"
+        assert unlocked.get("extensive_report"), "Admin should have extensive_report unlocked"
         print(f"PASS: Admin payment bypass working - all features unlocked: {unlocked}")
 
 
@@ -64,7 +64,7 @@ class TestTranslationAPI:
         assert len(languages) == 41, f"Expected 41 languages, got {len(languages)}"
         
         # Check some expected languages
-        lang_codes = [l["code"] for l in languages]
+        lang_codes = [lang["code"] for lang in languages]
         assert "es" in lang_codes, "Spanish should be in languages"
         assert "zh" in lang_codes, "Chinese should be in languages"
         assert "ar" in lang_codes, "Arabic should be in languages"
@@ -105,10 +105,10 @@ class TestTranslationAPI:
             print(f"PASS: Translation to Spanish works, cached={data.get('cached', False)}")
         elif response.status_code == 500:
             # Translation service error is acceptable - we're testing error handling
-            print(f"INFO: Translation service returned 500 - error handling working")
+            print("INFO: Translation service returned 500 - error handling working")
         elif response.status_code == 502:
             # Gateway timeout during long translation - acceptable
-            print(f"INFO: Translation timed out (502) - this is expected for long translations")
+            print("INFO: Translation timed out (502) - this is expected for long translations")
         else:
             pytest.fail(f"Unexpected status code: {response.status_code}: {response.text}")
 
@@ -237,7 +237,7 @@ class TestHealthCheck:
         data = response.json()
         
         assert data.get("status") == "healthy", f"Expected healthy status, got {data.get('status')}"
-        print(f"PASS: Health check returns healthy")
+        print("PASS: Health check returns healthy")
 
 
 if __name__ == "__main__":

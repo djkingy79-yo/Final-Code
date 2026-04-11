@@ -126,7 +126,7 @@ class TestRefreshLegalRefs:
                 if has_placeholder:
                     grounds_with_placeholders += 1
         
-        print(f"NSW case grounds analysis:")
+        print("NSW case grounds analysis:")
         print(f"  Total grounds: {len(grounds)}")
         print(f"  Grounds with law_sections: {grounds_with_law_sections}")
         print(f"  Grounds with substantive legislation: {grounds_with_substantive}")

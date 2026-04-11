@@ -194,7 +194,7 @@ class TestFeaturePrices:
         assert "prices" in data
         assert "currency" in data
         assert data.get("currency") == "AUD"
-        print(f"✓ Feature prices endpoint working")
+        print("✓ Feature prices endpoint working")
 
 
 if __name__ == "__main__":

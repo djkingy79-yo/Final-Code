@@ -70,7 +70,7 @@ class TestBarristerQuickBrief:
             timeout=60
         )
         assert response.status_code == 200, f"Quick Brief failed: {response.status_code} - {response.text[:500]}"
-        print(f"✓ Quick Brief endpoint returned 200")
+        print("✓ Quick Brief endpoint returned 200")
     
     def test_quick_brief_returns_pdf_content_type(self, auth_token):
         """Test Quick Brief returns PDF content type"""
@@ -96,7 +96,7 @@ class TestBarristerQuickBrief:
         assert response.status_code == 200
         content = response.content
         assert content[:5] == b'%PDF-', f"PDF does not start with %PDF-, got: {content[:20]}"
-        print(f"✓ Quick Brief PDF is valid (starts with %PDF-)")
+        print("✓ Quick Brief PDF is valid (starts with %PDF-)")
     
     def test_quick_brief_pdf_has_reasonable_size(self, auth_token):
         """Test Quick Brief PDF has reasonable size (>2KB indicates content)"""
@@ -125,7 +125,7 @@ class TestBarristerQuickBrief:
         content = response.content.decode('latin-1', errors='ignore')
         # ReportLab PDFs contain this marker
         assert "ReportLab" in content, "PDF should be generated with ReportLab"
-        print(f"✓ Quick Brief PDF generated with ReportLab")
+        print("✓ Quick Brief PDF generated with ReportLab")
     
     def test_quick_brief_pdf_has_fonts(self, auth_token):
         """Test Quick Brief PDF has Helvetica fonts (used in implementation)"""
@@ -139,7 +139,7 @@ class TestBarristerQuickBrief:
         content = response.content.decode('latin-1', errors='ignore')
         # Check for Helvetica fonts used in the PDF
         assert "Helvetica" in content, "PDF should use Helvetica fonts"
-        print(f"✓ Quick Brief PDF has Helvetica fonts")
+        print("✓ Quick Brief PDF has Helvetica fonts")
     
     def test_quick_brief_has_content_disposition_header(self, auth_token):
         """Test Quick Brief has Content-Disposition header for download"""
@@ -173,7 +173,7 @@ class TestBarristerQuickBrief:
             timeout=30
         )
         assert response.status_code == 404, f"Expected 404 for non-existent case, got: {response.status_code}"
-        print(f"✓ Quick Brief returns 404 for non-existent case")
+        print("✓ Quick Brief returns 404 for non-existent case")
 
 
 class TestGroundsReorderRegression:
@@ -246,14 +246,14 @@ class TestDatabaseIndexes:
         headers = {"Authorization": f"Bearer {auth_token}"}
         response = requests.get(f"{BASE_URL}/api/auth/me", headers=headers, timeout=30)
         assert response.status_code == 200, f"Failed to get user: {response.text}"
-        print(f"✓ Users collection accessible")
+        print("✓ Users collection accessible")
     
     def test_cases_collection_accessible(self, auth_token):
         """Test cases collection is accessible"""
         headers = {"Authorization": f"Bearer {auth_token}"}
         response = requests.get(f"{BASE_URL}/api/cases", headers=headers, timeout=30)
         assert response.status_code == 200, f"Failed to get cases: {response.text}"
-        print(f"✓ Cases collection accessible")
+        print("✓ Cases collection accessible")
     
     def test_reports_collection_accessible(self, auth_token):
         """Test reports collection is accessible"""
@@ -264,7 +264,7 @@ class TestDatabaseIndexes:
             timeout=30
         )
         assert response.status_code == 200, f"Failed to get reports: {response.text}"
-        print(f"✓ Reports collection accessible")
+        print("✓ Reports collection accessible")
     
     def test_grounds_collection_accessible(self, auth_token):
         """Test grounds_of_merit collection is accessible"""
@@ -275,7 +275,7 @@ class TestDatabaseIndexes:
             timeout=30
         )
         assert response.status_code == 200, f"Failed to get grounds: {response.text}"
-        print(f"✓ Grounds collection accessible")
+        print("✓ Grounds collection accessible")
     
     def test_payments_collection_accessible(self, auth_token):
         """Test payments collection is accessible"""
@@ -283,7 +283,7 @@ class TestDatabaseIndexes:
         response = requests.get(f"{BASE_URL}/api/payments", headers=headers, timeout=30)
         # 200 or 404 (no payments) are both valid
         assert response.status_code in [200, 404], f"Unexpected status: {response.status_code}"
-        print(f"✓ Payments collection accessible")
+        print("✓ Payments collection accessible")
 
 
 if __name__ == "__main__":

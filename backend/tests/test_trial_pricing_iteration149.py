@@ -76,7 +76,7 @@ class TestTrialPricingSystem:
         assert "trial_feature" in data, "Missing trial_feature field"
         assert "regular_price" in data, "Missing regular_price field"
         
-        print(f"PASS: Trial status endpoint returns correct structure")
+        print("PASS: Trial status endpoint returns correct structure")
         print(f"  - is_eligible: {data.get('is_eligible')}")
         print(f"  - trial_price: {data.get('trial_price')}")
         print(f"  - trial_feature: {data.get('trial_feature')}")
@@ -170,7 +170,7 @@ class TestTrialPricingSystem:
         assert response.status_code == 200, f"Create reference failed: {response.status_code}"
         
         data = response.json()
-        assert data.get("is_trial") == False, "is_trial should be False when use_trial=false"
+        assert not data.get("is_trial"), "is_trial should be False when use_trial=false"
         assert data.get("amount") == 99, f"Amount should be 99 when not using trial, got {data.get('amount')}"
         
         print(f"PASS: Regular payment reference created - amount=${data.get('amount')}")
@@ -190,7 +190,7 @@ class TestTrialPricingSystem:
         
         data = response.json()
         # Trial should NOT apply to full_report
-        assert data.get("is_trial") == False, "Trial should not apply to full_report"
+        assert not data.get("is_trial"), "Trial should not apply to full_report"
         assert data.get("amount") == 150, f"Full report price should be 150, got {data.get('amount')}"
         
         print(f"PASS: Trial correctly NOT applied to full_report - amount=${data.get('amount')}")
@@ -208,7 +208,7 @@ class TestTrialPricingSystem:
         assert "grounds_of_merit" in prices, "Missing grounds_of_merit in prices"
         assert prices.get("grounds_of_merit", {}).get("price") == 99, "Grounds of merit price should be 99"
         
-        print(f"PASS: Prices endpoint returns correct values")
+        print("PASS: Prices endpoint returns correct values")
         print(f"  - grounds_of_merit: ${prices.get('grounds_of_merit', {}).get('price')}")
         print(f"  - full_report: ${prices.get('full_report', {}).get('price')}")
         print(f"  - extensive_report: ${prices.get('extensive_report', {}).get('price')}")

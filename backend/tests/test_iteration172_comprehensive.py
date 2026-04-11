@@ -23,7 +23,7 @@ class TestHealthAndAuth:
         response = requests.get(f"{BASE_URL}/api/health/deep")
         assert response.status_code == 200
         data = response.json()
-        assert data.get('healthy') == True
+        assert data.get('healthy')
         assert 'checks' in data
         print(f"Health check: {data}")
     
@@ -209,7 +209,7 @@ class TestCaseGrounds:
             law_sections = ground.get('law_sections', [])
             law_str = json.dumps(law_sections)
             assert 'NSW' not in law_str, f"NSW contamination in WA case law_sections: {law_str}"
-            assert 'New South Wales' not in law_str, f"NSW contamination in WA case law_sections"
+            assert 'New South Wales' not in law_str, "NSW contamination in WA case law_sections"
         
         print(f"WA case grounds: {len(grounds)} grounds, no NSW contamination")
     

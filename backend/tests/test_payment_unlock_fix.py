@@ -106,7 +106,7 @@ class TestAdminBypassGroundsEndpoint:
         data = response.json()
         
         # Admin bypass should always return is_unlocked=true
-        assert data.get("is_unlocked") == True, f"Admin should see is_unlocked=true, got: {data.get('is_unlocked')}"
+        assert data.get("is_unlocked"), f"Admin should see is_unlocked=true, got: {data.get('is_unlocked')}"
         
         # Should have grounds array (may be empty)
         assert "grounds" in data, "Response should contain 'grounds' key"
@@ -177,9 +177,9 @@ class TestPaymentsEndpoint:
         
         # Admin should see all features unlocked
         unlocked = data.get("unlocked_features", {})
-        assert unlocked.get("grounds_of_merit") == True, f"Admin should have grounds_of_merit unlocked, got: {unlocked}"
-        assert unlocked.get("full_report") == True, f"Admin should have full_report unlocked, got: {unlocked}"
-        assert unlocked.get("extensive_report") == True, f"Admin should have extensive_report unlocked, got: {unlocked}"
+        assert unlocked.get("grounds_of_merit"), f"Admin should have grounds_of_merit unlocked, got: {unlocked}"
+        assert unlocked.get("full_report"), f"Admin should have full_report unlocked, got: {unlocked}"
+        assert unlocked.get("extensive_report"), f"Admin should have extensive_report unlocked, got: {unlocked}"
         
         print(f"PASS: Admin payments endpoint returns all features unlocked: {unlocked}")
     
@@ -239,7 +239,7 @@ class TestGroundsUnlockLogic:
         
         # The key test: is_unlocked should be true for admin
         # This confirms the canonical_feature_type logic is working
-        assert data.get("is_unlocked") == True, "is_unlocked should be true for admin"
+        assert data.get("is_unlocked"), "is_unlocked should be true for admin"
         
         # Also verify unlock_price is present
         assert "unlock_price" in data, "Response should include unlock_price"
