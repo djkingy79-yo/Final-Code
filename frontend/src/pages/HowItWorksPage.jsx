@@ -146,6 +146,32 @@ const HowItWorksPage = () => {
     },
     {
       num: 4,
+      icon: BookOpen,
+      title: "Case Notes",
+      subtitle: "Record your strategy, research, and follow-up items",
+      color: "bg-blue-600",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      textColor: "text-blue-600",
+      description: "Use the Notes tab to keep track of your research, strategy ideas, and follow-up items. Notes can be categorised and pinned for easy reference.",
+      visual: {
+        alt: "Notes tab with categorised case notes",
+        caption: "Keep track of your strategy and research with categorised notes."
+      },
+      whatYouSee: [
+        "Notes organised by category: Strategy, Research, Follow Up, General",
+        "Pin important notes to keep them at the top of the list",
+        "Each note has a title and detailed content area",
+        "Add as many notes as you need — they stay with your case",
+      ],
+      proTips: [
+        "Record your thoughts as you review each ground — they help when speaking with a lawyer",
+        "Use the Strategy category for legal arguments and the Research category for case law",
+        "Pin your most important notes so they are always visible at the top",
+      ],
+    },
+    {
+      num: 5,
       icon: Search,
       title: "Find Grounds — FREE",
       subtitle: "AI scans your documents and identifies how many appeal grounds exist",
@@ -182,32 +208,6 @@ const HowItWorksPage = () => {
           "Prosecutorial misconduct",
         ],
       },
-    },
-    {
-      num: 5,
-      icon: BookOpen,
-      title: "Case Notes",
-      subtitle: "Record your strategy, research, and follow-up items",
-      color: "bg-blue-600",
-      lightColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-      textColor: "text-blue-600",
-      description: "Use the Notes tab to keep track of your research, strategy ideas, and follow-up items. Notes can be categorised and pinned for easy reference.",
-      visual: {
-        alt: "Notes tab with categorised case notes",
-        caption: "Keep track of your strategy and research with categorised notes."
-      },
-      whatYouSee: [
-        "Notes organised by category: Strategy, Research, Follow Up, General",
-        "Pin important notes to keep them at the top of the list",
-        "Each note has a title and detailed content area",
-        "Add as many notes as you need — they stay with your case",
-      ],
-      proTips: [
-        "Record your thoughts as you review each ground — they help when speaking with a lawyer",
-        "Use the Strategy category for legal arguments and the Research category for case law",
-        "Pin your most important notes so they are always visible at the top",
-      ],
     },
     {
       num: 6,

@@ -70,23 +70,6 @@ const HowToUsePage = () => {
     },
     {
       num: 4,
-      title: "Analyse Potential Grounds of Appeal",
-      icon: BarChart3,
-      color: "red",
-      image: "/images/howto/live-step5-grounds.png",
-      description: "The AI identifies potential grounds of appeal based on your uploaded documents. The free tier shows the number of grounds found. Pay $99 AUD to unlock the full titles, strength ratings, and detailed analysis of each ground.",
-      instructions: [
-        "Go to the 'Grounds' tab in your case",
-        "Click 'Analyse Grounds' to start the AI review of your documents",
-        "The free result shows only the number of grounds identified — not the details",
-        "Pay $99 AUD to unlock the full title and detailed report for each ground found",
-        "Each ground shows its assessed strength: Strong, Moderate, or Potential",
-        "Click 'Investigate' on any ground for a deep AI analysis of that specific issue, including case law and Crown response"
-      ],
-      tip: "The Investigate button runs a deep AI analysis on each individual ground — use it to understand the strength, legal test, relevant case law, and likely Crown response behind each issue."
-    },
-    {
-      num: 5,
       title: "Case Notes",
       icon: Lightbulb,
       color: "blue",
@@ -101,6 +84,23 @@ const HowToUsePage = () => {
         "Notes are saved automatically and can be edited at any time"
       ],
       tip: "Good notes are invaluable when discussing the case with a lawyer. Record your thoughts, questions, and observations as you work through each ground and document."
+    },
+    {
+      num: 5,
+      title: "Analyse Potential Grounds of Appeal",
+      icon: BarChart3,
+      color: "red",
+      image: "/images/howto/live-step5-grounds.png",
+      description: "The AI identifies potential grounds of appeal based on your uploaded documents. The free tier shows the number of grounds found. Pay $99 AUD to unlock the full titles, strength ratings, and detailed analysis of each ground.",
+      instructions: [
+        "Go to the 'Grounds' tab in your case",
+        "Click 'Analyse Grounds' to start the AI review of your documents",
+        "The free result shows only the number of grounds identified — not the details",
+        "Pay $99 AUD to unlock the full title and detailed report for each ground found",
+        "Each ground shows its assessed strength: Strong, Moderate, or Potential",
+        "Click 'Investigate' on any ground for a deep AI analysis of that specific issue, including case law and Crown response"
+      ],
+      tip: "The Investigate button runs a deep AI analysis on each individual ground — use it to understand the strength, legal test, relevant case law, and likely Crown response behind each issue."
     },
     {
       num: 6,
