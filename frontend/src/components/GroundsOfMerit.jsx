@@ -1074,7 +1074,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         size="sm"
                         onClick={() => onInvestigate(ground.ground_id)}
                         disabled={investigating === ground.ground_id}
-                        className="text-blue-700 border-blue-200 hover:bg-blue-50"
+                        className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
                         data-testid={`investigate-${ground.ground_id}`}
                       >
                         {investigating === ground.ground_id ? (
