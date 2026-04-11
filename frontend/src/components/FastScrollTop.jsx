@@ -5,7 +5,7 @@
    ======================================================================== */
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowUp, Home, ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowUp, Home, ArrowLeft } from "lucide-react";
 
 /* Scroll to top on every route change */
 export const ScrollToTopOnNav = () => {
@@ -60,14 +60,6 @@ export const FastScrollTop = () => {
         aria-label="Back to top"
       >
         <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      </button>
-      <button
-        onClick={() => navigate("/about")}
-        className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-600/80 sm:bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-2 border-white/60 flex items-center justify-center transition-colors backdrop-blur-sm"
-        data-testid="global-chat-btn"
-        aria-label="Contact"
-      >
-        <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </button>
     </div>
   );
