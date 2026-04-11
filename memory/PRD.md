@@ -93,8 +93,11 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 
 ## Session 5 Completed (Apr 2026)
 - **PDF Print footer overlap FIXED**: @page bottom margin increased from 30mm to 45mm, footer repositioned to bottom:6mm with 9pt font and nowrap to prevent text wrapping/overlap
-- **Pipeline Progress empty white boxes FIXED**: Stat grid (Extracted Docs, Classified Issues, Verified Issues, Synced Grounds) now only renders when `hasAnyPipelineData` is true — at least one pipeline stat must be > 0
+- **Pipeline Progress empty white boxes FIXED**: Stat grid only renders when `hasAnyPipelineData` is true
+- **Native Mobile App Finalised**: React build + Capacitor v7 sync completed. Removed ~1.4MB of stray debug files from public/. 12 plugins registered for both Android & iOS. Ready for Android Studio / Xcode build.
+  - App ID: `com.debking.criminalappeals`
+  - App Name: `Appeal Case Manager`
+  - Web assets: 16MB per platform
 
 ## Backlog
-- P1: Native mobile app build/test (Capacitor v7 already configured)
 - P2: Counsel conference prep attachment for Barrister View
