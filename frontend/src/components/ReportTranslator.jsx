@@ -48,25 +48,99 @@ const ReportTranslator = ({ caseId, reportId }) => {
       const response = await axios.post(
         `${API}/cases/${caseId}/translate`,
         { language: selectedLang, report_id: reportId },
-        { timeout: 180000 }
+        { timeout: 30000 }
       );
-      setTranslatedContent(response.data.translated_content);
-      setTranslatedLangName(response.data.language_name);
-      setTranslatedLangCode(selectedLang);
-      setShowDialog(false);
-      setShowTranslation(true);
-      toast.success(`Report translated to ${response.data.language_name}${response.data.cached ? " (cached)" : ""}`);
+
+      // If cached result returned immediately
+      if (response.data.translated_content) {
+        setTranslatedContent(response.data.translated_content);
+        setTranslatedLangName(response.data.language_name);
+        setTranslatedLangCode(selectedLang);
+        setShowDialog(false);
+        setShowTranslation(true);
+        toast.success(`Report translated to ${response.data.language_name}${response.data.cached ? " (cached)" : ""}`);
+        setTranslating(false);
+        return;
+      }
+
+      // Background task started — poll for completion
+      if (response.data.status === "started" || response.data.status === "running") {
+        setShowDialog(false);
+        toast.info(`Translating to ${response.data.language_name}... This runs in the background.`);
+        const langName = response.data.language_name;
+        let attempts = 0;
+        const maxAttempts = 120;
+        const pollInterval = 4000;
+
+        const poll = async () => {
+          attempts++;
+          try {
+            const statusRes = await axios.get(
+              `${API}/cases/${caseId}/translate/status?report_id=${reportId}&language=${selectedLang}`,
+              { timeout: 15000 }
+            );
+            const { status, translated_content, error, progress, total_chunks } = statusRes.data;
+
+            if (status === "completed" && translated_content) {
+              setTranslatedContent(translated_content);
+              setTranslatedLangName(langName);
+              setTranslatedLangCode(selectedLang);
+              setShowTranslation(true);
+              setTranslating(false);
+              toast.success(`Translation to ${langName} complete!`);
+              return;
+            }
+
+            if (status === "failed") {
+              setTranslating(false);
+              toast.error(error || "Translation failed. Please try again.");
+              return;
+            }
+
+            if (status === "not_found") {
+              setTranslating(false);
+              toast.error("Translation task not found. Please try again.");
+              return;
+            }
+
+            if (attempts >= maxAttempts) {
+              setTranslating(false);
+              toast.error("Translation is taking longer than expected. Please check back shortly.");
+              return;
+            }
+
+            if (progress > 0 && total_chunks > 0 && attempts % 5 === 0) {
+              toast.info(`Translating... ${progress}/${total_chunks} sections complete.`, { id: "translate-progress" });
+            }
+
+            setTimeout(poll, pollInterval);
+          } catch (pollErr) {
+            if (attempts >= maxAttempts) {
+              setTranslating(false);
+              toast.error("Lost connection to translation. Please refresh and check if it completed.");
+            } else {
+              setTimeout(poll, pollInterval);
+            }
+          }
+        };
+
+        setTimeout(poll, 3000);
+        return;
+      }
+
+      // Unexpected response
+      setTranslating(false);
+      toast.error("Unexpected response from translation service.");
     } catch (error) {
       let msg;
       if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-        msg = "Translation timed out. Large reports take longer — please try again.";
+        msg = "Translation request timed out. Please try again.";
       } else if (error.response?.status === 500) {
         msg = error.response?.data?.detail || "Translation service error. Please try again in a moment.";
       } else {
         msg = error.response?.data?.detail || "Translation failed. Check your connection and try again.";
       }
       toast.error(msg);
-    } finally {
       setTranslating(false);
     }
   };

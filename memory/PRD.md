@@ -54,7 +54,15 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - Rewrote `buildProgressHtml` in CaseDetail.jsx: same section-header pattern replacement
   - Updated Print All metadata header: now uses coloured case info grid with DEFENDANT, OFFENCE, SENTENCE, DOCUMENTS, TIMELINE EVENTS (matching individual report exports)
   - Verified BarristerView and ReportView exports already use correct section pattern
-  - All exports now produce consistent structure: Coloured Header → TOC (2-col grid) → Numbered Sections → Disclaimer → Branding → Footer
+  - All exports now produce consistent structure: Coloured Header -> TOC (2-col grid) -> Numbered Sections -> Disclaimer -> Branding -> Footer
+
+- **TRANSLATOR FIX (502 Timeout)**: Root cause — Kubernetes proxy kills requests after 60s, large report translations take 2-3 minutes
+  - Converted translation to background task pattern (same as grounds auto-identify)
+  - POST `/api/cases/{case_id}/translate` now returns immediately with task_id
+  - GET `/api/cases/{case_id}/translate/status?report_id=...&language=...` polls for completion
+  - Frontend ReportTranslator.jsx updated to poll with progress updates ("3/10 sections complete")
+  - Cached translations still return instantly
+  - Tested: 10-chunk German translation completed in ~2 minutes via polling (130K chars)
 
 ## Remaining / Backlog
 - **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Barrister View

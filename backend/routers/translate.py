@@ -7,8 +7,10 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from datetime import datetime, timezone
 from pydantic import BaseModel
+import asyncio
 import io
 import re
+import uuid
 import logging
 
 from config import db
@@ -16,6 +18,9 @@ from auth_utils import get_current_user, verify_case_ownership
 from services.llm_service import call_llm_structured
 
 logger = logging.getLogger(__name__)
+
+# In-memory store for running translation tasks
+_translate_tasks: dict = {}
 
 translate_router = APIRouter(prefix="/api", tags=["translation"])
 
@@ -143,7 +148,7 @@ async def get_supported_languages():
 
 @translate_router.post("/cases/{case_id}/translate")
 async def translate_report(case_id: str, req: TranslateRequest, request: Request):
-    """Translate a report's analysis into the requested language using AI."""
+    """Start translating a report. Returns cached result instantly or starts background task."""
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
 
@@ -175,69 +180,134 @@ async def translate_report(case_id: str, req: TranslateRequest, request: Request
     if cached:
         return {"translated_content": cached["translated_content"], "language": req.language, "language_name": target_lang, "cached": True}
 
-    # Translate via LLM — chunk if needed
-    system_prompt = (
-        f"You are a professional legal document translator. Translate the following Australian criminal law appeal report "
-        f"from English into {target_lang}. Preserve ALL legal terminology, case citations, section references, formatting "
-        f"(headings, bullet points, numbered lists, tables), and the overall structure. "
-        f"Do NOT add commentary, opinions, or new content. Do NOT invent or fabricate any citations, section numbers, or facts. "
-        f"Do NOT default to NSW legislation references — preserve the original jurisdiction references exactly as they appear. "
-        f"Preserve all forensic appellate language (e.g. 'it is arguable that' should remain hedged in the target language). "
-        f"Translate accurately and completely. Keep markdown formatting intact. Use Australian English spelling for any untranslated terms."
-    )
+    # Check if a task is already running for this report+language
+    task_key = f"{req.report_id}_{req.language}"
+    if task_key in _translate_tasks and _translate_tasks[task_key].get("status") == "running":
+        return {"status": "running", "task_id": _translate_tasks[task_key]["task_id"], "language_name": target_lang}
 
-    # For very long reports, translate in chunks
-    max_chunk = 12000
-    if len(analysis) <= max_chunk:
-        chunks = [analysis]
-    else:
-        paragraphs = analysis.split("\n\n")
-        chunks = []
-        current = ""
-        for para in paragraphs:
-            if len(current) + len(para) + 2 > max_chunk:
-                if current:
-                    chunks.append(current)
-                current = para
-            else:
-                current = current + "\n\n" + para if current else para
-        if current:
-            chunks.append(current)
+    # Start background translation task
+    task_id = str(uuid.uuid4())[:12]
+    _translate_tasks[task_key] = {"task_id": task_id, "status": "running", "progress": 0, "total_chunks": 0}
 
-    translated_parts = []
-    for i, chunk in enumerate(chunks):
-        user_prompt = f"Translate the following into {target_lang}:\n\n{chunk}"
-        result = await call_llm_structured(
-            system_prompt=system_prompt,
-            user_prompt=user_prompt,
-            session_id=f"translate_{req.report_id}_{req.language}_{i}",
-            task_type="general",
-            max_tokens=16384,
-            timeout_seconds=180,
-            require_json=False,
+    asyncio.create_task(_run_translation_background(
+        task_key=task_key,
+        task_id=task_id,
+        report_id=req.report_id,
+        case_id=case_id,
+        user_id=user.user_id,
+        language=req.language,
+        target_lang=target_lang,
+        analysis=analysis,
+    ))
+
+    return {"status": "started", "task_id": task_id, "language_name": target_lang}
+
+
+async def _run_translation_background(*, task_key, task_id, report_id, case_id, user_id, language, target_lang, analysis):
+    """Background coroutine that translates all chunks and caches the result."""
+    try:
+        system_prompt = (
+            f"You are a professional legal document translator. Translate the following Australian criminal law appeal report "
+            f"from English into {target_lang}. Preserve ALL legal terminology, case citations, section references, formatting "
+            f"(headings, bullet points, numbered lists, tables), and the overall structure. "
+            f"Do NOT add commentary, opinions, or new content. Do NOT invent or fabricate any citations, section numbers, or facts. "
+            f"Do NOT default to NSW legislation references — preserve the original jurisdiction references exactly as they appear. "
+            f"Preserve all forensic appellate language (e.g. 'it is arguable that' should remain hedged in the target language). "
+            f"Translate accurately and completely. Keep markdown formatting intact. Use Australian English spelling for any untranslated terms."
         )
-        if not result["ok"]:
-            raise HTTPException(status_code=500, detail=f"Translation failed: {result.get('error', 'Unknown error')}")
-        translated_parts.append(result["content"])
 
-    translated_content = "\n\n".join(translated_parts)
+        max_chunk = 12000
+        if len(analysis) <= max_chunk:
+            chunks = [analysis]
+        else:
+            paragraphs = analysis.split("\n\n")
+            chunks = []
+            current = ""
+            for para in paragraphs:
+                if len(current) + len(para) + 2 > max_chunk:
+                    if current:
+                        chunks.append(current)
+                    current = para
+                else:
+                    current = current + "\n\n" + para if current else para
+            if current:
+                chunks.append(current)
 
-    # Cache translation (upsert to avoid DuplicateKeyError on retry)
-    await db.report_translations.replace_one(
-        {"report_id": req.report_id, "language": req.language},
-        {
-            "report_id": req.report_id,
-            "case_id": case_id,
-            "user_id": user.user_id,
-            "language": req.language,
-            "language_name": target_lang,
-            "translated_content": translated_content,
-            "translated_at": datetime.now(timezone.utc).isoformat(),
-        },
-        upsert=True,
+        _translate_tasks[task_key]["total_chunks"] = len(chunks)
+
+        translated_parts = []
+        for i, chunk in enumerate(chunks):
+            user_prompt = f"Translate the following into {target_lang}:\n\n{chunk}"
+            result = await call_llm_structured(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                session_id=f"translate_{report_id}_{language}_{i}",
+                task_type="general",
+                max_tokens=16384,
+                timeout_seconds=180,
+                require_json=False,
+            )
+            if not result["ok"]:
+                _translate_tasks[task_key] = {"task_id": task_id, "status": "failed", "error": result.get("error", "LLM call failed")}
+                return
+            translated_parts.append(result["content"])
+            _translate_tasks[task_key]["progress"] = i + 1
+
+        translated_content = "\n\n".join(translated_parts)
+
+        # Cache translation
+        await db.report_translations.replace_one(
+            {"report_id": report_id, "language": language},
+            {
+                "report_id": report_id,
+                "case_id": case_id,
+                "user_id": user_id,
+                "language": language,
+                "language_name": target_lang,
+                "translated_content": translated_content,
+                "translated_at": datetime.now(timezone.utc).isoformat(),
+            },
+            upsert=True,
+        )
+
+        _translate_tasks[task_key] = {"task_id": task_id, "status": "completed", "language": language, "language_name": target_lang}
+        logger.info(f"Translation completed: {report_id} -> {target_lang} ({len(chunks)} chunks)")
+
+    except Exception as e:
+        logger.error(f"Background translation failed: {e}")
+        _translate_tasks[task_key] = {"task_id": task_id, "status": "failed", "error": str(e)[:200]}
+
+
+@translate_router.get("/cases/{case_id}/translate/status")
+async def translate_status(case_id: str, report_id: str, language: str, request: Request):
+    """Poll translation progress. Returns cached result when complete."""
+    user = await get_current_user(request)
+    await verify_case_ownership(case_id, user.user_id)
+
+    target_lang = SUPPORTED_LANGUAGES.get(language, language)
+    task_key = f"{report_id}_{language}"
+
+    # Check if cached result exists (translation completed)
+    cached = await db.report_translations.find_one(
+        {"report_id": report_id, "language": language},
+        {"_id": 0},
     )
+    if cached:
+        # Clean up task
+        _translate_tasks.pop(task_key, None)
+        return {"status": "completed", "translated_content": cached["translated_content"], "language": language, "language_name": target_lang}
 
-    return {"translated_content": translated_content, "language": req.language, "language_name": target_lang, "cached": False}
+    # Check in-memory task status
+    task = _translate_tasks.get(task_key)
+    if not task:
+        return {"status": "not_found"}
+
+    if task["status"] == "failed":
+        error = task.get("error", "Unknown error")
+        _translate_tasks.pop(task_key, None)
+        return {"status": "failed", "error": error}
+
+    return {"status": "running", "progress": task.get("progress", 0), "total_chunks": task.get("total_chunks", 0)}
 
 
 @translate_router.get("/cases/{case_id}/translate/{report_id}/pdf")
