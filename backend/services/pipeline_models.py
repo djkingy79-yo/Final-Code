@@ -1,121 +1,111 @@
-# DO NOT UNDO — staged pipeline models. Additive module.
+# DO NOT UNDO — Pipeline models for the staged extraction/classification/verification pipeline.
+# ExtractedFact, ExtractedEvent, ExtractedFinding are re-exported from models/ (canonical source).
+# Pipeline-specific models (DocumentExtract, CaseExtract, IssueClassification, IssueVerification)
+# are defined here with ALL fields that the pipeline code actually uses.
+
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Literal
+from typing import List, Optional
 from datetime import datetime, timezone
 import uuid
 
-ConfidenceType = Literal["strong", "moderate", "weak"]
-StageStatusType = Literal["pending", "completed", "failed", "needs_review"]
-VerificationStatusType = Literal["unverified", "draft", "reviewed", "verified"]
-SourceModeType = Literal["ai_generated", "manual", "imported", "derived"]
+# Re-export extraction models from the canonical source (models/__init__.py)
+# These have the full field definitions (type, quote, page_reference, confidence, etc.)
+from models import (
+    ExtractedFact,
+    ExtractedEvent,
+    ExtractedFinding,
+    SupportingItem,
+    MissingItem,
+    LawSection,
+    SimilarCase,
+    LegitimacyScores,
+)
 
 
-class ExtractedFact(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    fact_id: str = Field(default_factory=lambda: f"fact_{uuid.uuid4().hex[:10]}")
-    type: str
-    text: str
-    quote: Optional[str] = None
-    page_reference: Optional[str] = None
-    confidence: ConfidenceType = "moderate"
-
-
-class ExtractedEvent(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    extracted_event_id: str = Field(default_factory=lambda: f"xevt_{uuid.uuid4().hex[:10]}")
-    title: str
-    event_date: Optional[str] = None
-    event_type: str = "event"
-    event_category: str = "general"
-    description: str = ""
-    quote: Optional[str] = None
-    page_reference: Optional[str] = None
-    significance: str = "normal"
-
-
-class ExtractedFinding(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    finding_id: str = Field(default_factory=lambda: f"find_{uuid.uuid4().hex[:10]}")
-    type: str = "judicial_finding"
-    text: str
-    quote: Optional[str] = None
-    page_reference: Optional[str] = None
-    confidence: ConfidenceType = "moderate"
-
+# ============================================================================
+# DOCUMENT EXTRACT — output of extract_document_artifacts()
+# ============================================================================
 
 class DocumentExtract(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    extract_id: str = Field(default_factory=lambda: f"ext_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
     document_id: str
     filename: str
     document_category: Optional[str] = None
-    stage: str = "extract"
-    status: StageStatusType = "completed"
-    source_mode: SourceModeType = "ai_generated"
-    verification_status: VerificationStatusType = "unverified"
     model_metadata: dict = Field(default_factory=dict)
     facts: List[ExtractedFact] = Field(default_factory=list)
     events: List[ExtractedEvent] = Field(default_factory=list)
     findings: List[ExtractedFinding] = Field(default_factory=list)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+
+# ============================================================================
+# CASE EXTRACT — merged extracts across all documents for a case
+# ============================================================================
 
 class CaseExtract(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    case_extract_id: str = Field(default_factory=lambda: f"cex_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
-    stage: str = "extract"
-    status: StageStatusType = "completed"
-    metadata: dict = Field(default_factory=dict)
     merged_facts: List[dict] = Field(default_factory=list)
     merged_events: List[dict] = Field(default_factory=list)
     merged_findings: List[dict] = Field(default_factory=list)
-    document_extract_ids: List[str] = Field(default_factory=list)
-    verification_status: VerificationStatusType = "unverified"
+    document_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+
+# ============================================================================
+# ISSUE CLASSIFICATION — output of classify_case_issues()
+# Used by classify.py and _merge_overlapping_grounds() with model_copy()
+# ============================================================================
 
 class IssueClassification(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    issue_id: str = Field(default_factory=lambda: f"iss_{uuid.uuid4().hex[:12]}")
+    issue_id: str = Field(default_factory=lambda: f"issue_{uuid.uuid4().hex[:8]}")
     case_id: str
     user_id: str
-    stage: str = "classify"
-    status: str = "identified"
     title: str
-    ground_type: str
-    description: str
-    appellate_pathway: str = ""
-    error_identified: str = ""
-    materiality: str = ""
+    ground_type: str = "other"
+    description: str = ""
+    classification_confidence: str = "moderate"
+
+    # Linked extraction IDs
     linked_fact_ids: List[str] = Field(default_factory=list)
     linked_event_ids: List[str] = Field(default_factory=list)
     linked_finding_ids: List[str] = Field(default_factory=list)
-    classification_confidence: ConfidenceType = "moderate"
-    jurisdiction: Optional[str] = None
-    law_sections: List[dict] = Field(default_factory=list)
-    source_mode: SourceModeType = "ai_generated"
-    verification_status: VerificationStatusType = "unverified"
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+    # Appellate context — populated by classify.py
+    jurisdiction: str = ""
+    appellate_pathway: str = ""
+    error_identified: str = ""
+    materiality: str = ""
+
+    # Law sections — cleaned by classify.py post-processing
+    law_sections: List[dict] = Field(default_factory=list)
+
+
+# ============================================================================
+# ISSUE VERIFICATION — output of verify_issue()
+# ============================================================================
 
 class IssueVerification(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    verification_id: str = Field(default_factory=lambda: f"ver_{uuid.uuid4().hex[:12]}")
     issue_id: str
     case_id: str
     user_id: str
-    stage: str = "verify"
-    status: StageStatusType = "completed"
+
+    # Evidence items
     supporting_items: List[dict] = Field(default_factory=list)
     undermining_items: List[dict] = Field(default_factory=list)
     missing_items: List[str] = Field(default_factory=list)
+
+    # Legal references — populated by verify.py post-processing
     law_sections: List[dict] = Field(default_factory=list)
     similar_cases: List[dict] = Field(default_factory=list)
-    legitimacy_scores: dict = Field(default_factory=dict)
-    verification_status: VerificationStatusType = "reviewed"
+
+    # Legitimacy scoring — calculated by legitimacy_engine
+    legitimacy_scores: Optional[dict] = None
+
+    # Review status
+    verification_status: str = "draft"
     requires_human_review: bool = True
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
