@@ -26,11 +26,11 @@ def _format_export_display_date(value=None) -> str:
     return parsed.astimezone(timezone.utc).strftime("%d/%m/%Y")
 
 
+from services.export_footer import build_footer_label, NumberedCanvas, apply_docx_footer, REPORT_TYPE_LABELS
+
+
 def _build_export_footer_label(case: dict, report_label: str, generated_at=None) -> str:
-    """DO_NOT_UNDO — Footer label with appellant name, report title, and date"""
-    appellant_name = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
-    report_name = (report_label or "Legal Report").strip()
-    return f"Criminal Appeal Case Management — {report_name} — {appellant_name} — {_format_export_display_date(generated_at)}"
+    return build_footer_label(case, report_label, generated_at)
 
 
 def _build_export_footer_message() -> str:
@@ -373,15 +373,14 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
 
     # Report Title
     report_type_labels = {
-        'quick_summary': 'Quick Case Summary',
-        'full_detailed': 'Full Detailed Legal Analysis ($150 AUD)',
-        'extensive_log': 'Extensive Case Log & Analysis ($200 AUD)',
-        'barrister_view': 'Barrister Brief'
+        'quick_summary': 'Case Summary Report (Free)',
+        'full_detailed': 'Full Detailed Report ($150.00)',
+        'extensive_log': 'Extensive Log Report ($200.00)',
+        'barrister_view': 'Barrister View Report'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
     resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)
-    footer_label = _truncate_export_footer(_build_export_footer_label(case, title, report.get('generated_at')))
-    footer_message = _build_export_footer_message()
+    footer_label = _build_export_footer_label(case, title, report.get('generated_at'))
 
     cover_meta = [
         ['Case Title', case.get('title', 'N/A')],
@@ -433,23 +432,9 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     story.append(Spacer(1, 10*mm))
 
     def draw_page_footer(canvas_obj, pdf_doc):
-        canvas_obj.saveState()
-        footer_top = 16 * mm
-        footer_mid = 11 * mm
-        footer_bottom = 6 * mm
-        canvas_obj.setStrokeColor(colors.HexColor('#cbd5e1'))
-        canvas_obj.setLineWidth(0.6)
-        canvas_obj.line(pdf_doc.leftMargin, footer_top, A4[0] - pdf_doc.rightMargin, footer_top)
-        # Footer: 10pt Times-Italic — Document Name | Appellant | Date | Page X
-        canvas_obj.setFillColor(colors.HexColor('#475569'))
-        canvas_obj.setFont('Times-Italic', 10)
-        canvas_obj.drawString(pdf_doc.leftMargin, footer_mid, footer_label)
-        canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, footer_mid, f"Page {canvas_obj.getPageNumber()}")
-        if footer_message:
-            canvas_obj.setFillColor(colors.HexColor('#1e3a5f'))
-            canvas_obj.setFont('Times-BoldItalic', 9)
-            canvas_obj.drawCentredString(A4[0] / 2, footer_bottom, footer_message)
-        canvas_obj.restoreState()
+        pass  # Footer is now rendered by NumberedCanvas for "Page X of Y" support
+
+    numbered_canvas = NumberedCanvas(footer_label)
 
     story.append(Paragraph(title, styles['ReportTitle']))
     story.append(Spacer(1, 5*mm))
@@ -573,7 +558,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     
     # Build PDF
     try:
-        doc.build(story, onFirstPage=draw_page_footer, onLaterPages=draw_page_footer)
+        doc.build(story, canvasmaker=numbered_canvas)
     except Exception as e:
         logger.error(f"PDF build failed: {e}")
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
@@ -703,47 +688,11 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     doc.add_paragraph()
     
     # Report Title
-    report_type_labels = {
-        'quick_summary': 'Quick Case Summary',
-        'full_detailed': 'Full Detailed Legal Analysis', 
-        'extensive_log': 'Extensive Case Log & Analysis',
-        'barrister_view': 'Barrister Brief'
-    }
-    report_title = report_type_labels.get(report.get('report_type'), 'Legal Report')
+    report_title = REPORT_TYPE_LABELS.get(report.get('report_type'), 'Legal Report')
     resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)
-    footer_label = _truncate_export_footer(_build_export_footer_label(case, report_title, report.get('generated_at')))
-    footer_message = _build_export_footer_message()
+    footer_label = _build_export_footer_label(case, report_title, report.get('generated_at'))
 
-    def add_page_number_field(paragraph):
-        run = paragraph.add_run()
-        fld_char_begin = OxmlElement('w:fldChar')
-        fld_char_begin.set(qn('w:fldCharType'), 'begin')
-        instr_text = OxmlElement('w:instrText')
-        instr_text.set(qn('xml:space'), 'preserve')
-        instr_text.text = ' PAGE '
-        fld_char_end = OxmlElement('w:fldChar')
-        fld_char_end.set(qn('w:fldCharType'), 'end')
-        run._r.append(fld_char_begin)
-        run._r.append(instr_text)
-        run._r.append(fld_char_end)
-
-    for section in doc.sections:
-        section.footer_distance = Inches(0.35)
-        footer = section.footer
-        footer_line = footer.paragraphs[0]
-        footer_line.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        footer_line_run = footer_line.add_run(f"{footer_label} — Page ")
-        footer_line_run.font.size = Pt(8)
-        footer_line_run.font.color.rgb = RGBColor(71, 85, 105)
-        add_page_number_field(footer_line)
-
-        if footer_message:
-            footer_msg_para = footer.add_paragraph()
-            footer_msg_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            footer_msg_run = footer_msg_para.add_run(footer_message)
-            footer_msg_run.font.size = Pt(8)
-            footer_msg_run.font.bold = True
-            footer_msg_run.font.color.rgb = RGBColor(30, 58, 95)
+    apply_docx_footer(doc, footer_label)
 
     cover_title = doc.add_paragraph()
     cover_title.alignment = WD_ALIGN_PARAGRAPH.CENTER

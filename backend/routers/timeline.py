@@ -675,9 +675,13 @@ async def export_timeline_pdf(case_id: str, request: Request):
     from reportlab.lib.units import mm
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
     from io import BytesIO
+    from services.export_footer import build_footer_label, NumberedCanvas
+
+    footer_label = build_footer_label(case, "Timeline of Events")
+    numbered_canvas = NumberedCanvas(footer_label)
 
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=20*mm, leftMargin=15*mm, rightMargin=15*mm)
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=25*mm, leftMargin=15*mm, rightMargin=15*mm)
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontSize=18, spaceAfter=12, textColor=colors.HexColor('#0f172a'))
     subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, textColor=colors.HexColor('#64748b'), spaceAfter=20)
@@ -751,7 +755,7 @@ async def export_timeline_pdf(case_id: str, request: Request):
         "any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service."
     )
     story.append(Paragraph(disclaimer_text, disclaimer_style))
-    doc.build(story)
+    doc.build(story, canvasmaker=numbered_canvas)
     buffer.seek(0)
     filename = f"timeline_{case.get('title', 'case')[:30].replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
     return Response(content=buffer.getvalue(), media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename={filename}"})

@@ -1246,26 +1246,13 @@ async def generate_case_export_pack(case_id: str, request: Request):
     ))
 
     # ── Footer ──
-    footer_label = f"Criminal Appeal Case Management — Case Export Pack — {case.get('defendant_name', 'Appellant')}"
-    if len(footer_label) > 118:
-        footer_label = footer_label[:117] + "…"
-
-    def draw_footer(canvas_obj, pdf_doc):
-        canvas_obj.saveState()
-        ft_top = 14 * mm
-        ft_mid = 10 * mm
-        canvas_obj.setStrokeColor(colors.HexColor("#cbd5e1"))
-        canvas_obj.setLineWidth(0.6)
-        canvas_obj.line(pdf_doc.leftMargin, ft_top, A4[0] - pdf_doc.rightMargin, ft_top)
-        canvas_obj.setFillColor(colors.HexColor("#475569"))
-        canvas_obj.setFont("Helvetica", 8)
-        canvas_obj.drawString(pdf_doc.leftMargin, ft_mid, footer_label)
-        canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, ft_mid, f"Page {canvas_obj.getPageNumber()}")
-        canvas_obj.restoreState()
+    from services.export_footer import build_footer_label, NumberedCanvas
+    footer_label = build_footer_label(case, "Case Export Pack")
+    numbered_canvas = NumberedCanvas(footer_label)
 
     # Build
     try:
-        doc.build(story, onFirstPage=draw_footer, onLaterPages=draw_footer)
+        doc.build(story, canvasmaker=numbered_canvas)
     except Exception as e:
         logger.error(f"Case Export Pack PDF build failed: {e}")
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
@@ -1665,25 +1652,13 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
     ))
 
     # ── Footer ──
-    footer_label = f"Criminal Appeal Case Management — {report_label} — {target_lang_name} Translation"
-    if len(footer_label) > 118:
-        footer_label = footer_label[:117] + "…"
-
-    def draw_footer(canvas_obj, pdf_doc):
-        canvas_obj.saveState()
-        ft_mid = 10 * mm
-        ft_top = 14 * mm
-        canvas_obj.setStrokeColor(colors.HexColor("#cbd5e1"))
-        canvas_obj.setLineWidth(0.6)
-        canvas_obj.line(pdf_doc.leftMargin, ft_top, A4[0] - pdf_doc.rightMargin, ft_top)
-        canvas_obj.setFillColor(colors.HexColor("#475569"))
-        canvas_obj.setFont("Helvetica", 8)
-        canvas_obj.drawString(pdf_doc.leftMargin, ft_mid, footer_label)
-        canvas_obj.drawRightString(A4[0] - pdf_doc.rightMargin, ft_mid, f"Page {canvas_obj.getPageNumber()}")
-        canvas_obj.restoreState()
+    from services.export_footer import build_footer_label, NumberedCanvas
+    tr_label = f"{report_label} ({target_lang_name} Translation)"
+    footer_label = build_footer_label(case, tr_label)
+    numbered_canvas = NumberedCanvas(footer_label)
 
     try:
-        doc.build(story, onFirstPage=draw_footer, onLaterPages=draw_footer)
+        doc.build(story, canvasmaker=numbered_canvas)
     except Exception as e:
         logger.error(f"Translated PDF build failed: {e}")
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
