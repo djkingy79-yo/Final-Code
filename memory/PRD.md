@@ -109,6 +109,11 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **Report cover page text enlarged**: Metadata values (Defendant, Offence, Sentence, etc.) increased from text-sm to text-sm/text-base responsive.
 - **TOC compressed to 2-column grid**: Export/print TOC in both ReportView and CaseDetail now uses 2-column grid with text truncation (matching on-screen view).
 - **@page margins reduced**: Bottom margin reduced to 20mm across all export views (footer hidden, no extra margin needed).
+- **Translator DuplicateKeyError FIXED**: `insert_one` → `replace_one` with `upsert=True` in translate.py to prevent crashes on retry translations.
+- **Barrister View TOC added**: All export/print/PDF/Word views now include a compact 2-column grid Table of Contents matching the on-screen format.
+- **Quick Brief blank page FIXED**: Removed iOS-specific link.click() approach; now uses axios blob download universally.
+- **Acceptance Package removed entirely**: Button, handler function, and Briefcase import deleted from BarristerView.
+- **Barrister View Word export FIXED**: Downloads .doc file directly via blob instead of broken HTML preview.
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
