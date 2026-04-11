@@ -650,11 +650,17 @@ export default function BarristerView() {
       toast.info("Generating Quick Brief PDF...");
       const isIOS = isIOSDevice();
 
-      // On iOS, open the authenticated URL directly — blob downloads break in Safari
+      // On iOS, open in new tab — window.location.assign breaks PDF rendering
       if (isIOS) {
         const directUrl = await buildAuthUrl(`${API}/cases/${caseId}/reports/barrister-quick-brief`);
-        window.location.assign(directUrl);
-        toast.success("Quick Brief opened.");
+        const a = document.createElement('a');
+        a.href = directUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success("Quick Brief opening — use Share to save or print.");
         return;
       }
 

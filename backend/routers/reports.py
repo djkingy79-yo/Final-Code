@@ -729,7 +729,10 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         styles['QBDisclaimer']
     ))
 
-    doc.build(story)
+    from services.export_footer import NumberedCanvas, build_footer_label
+    qb_footer_label = build_footer_label(case, "Barrister Quick Brief")
+    numbered_canvas = NumberedCanvas(qb_footer_label)
+    doc.build(story, canvasmaker=numbered_canvas)
     buffer.seek(0)
 
     filename = f"Quick_Brief_{defendant.replace(' ', '_')}_{case_id}.pdf"

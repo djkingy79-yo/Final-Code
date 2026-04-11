@@ -30,7 +30,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   @page { size: A4; margin: 14mm 14mm 22mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
-  .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 22pt; font-weight: 700; margin-bottom: 4px; }
+  .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; margin-bottom: 4px; }
   .export-header p { font-size: 12pt; opacity: 0.85; }
   .export-meta { display: flex; flex-wrap: wrap; gap: 16px; padding: 16px 32px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 12pt; }
   .export-meta-item { display: flex; flex-direction: column; }
@@ -46,7 +46,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-family: 'Times New Roman', Times, serif; }
   .export-body td { padding: 7px 10px; border: 1px solid #e2e8f0; font-family: 'Times New Roman', Times, serif; }
   .export-body tr:nth-child(even) td { background: #f8fafc; }
-  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
+  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
   .export-body .note-card { background: #2563eb; border: 1px solid #1d4ed8; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .export-body .note-title { font-weight: 700; font-size: 14pt; color: #ffffff; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
   .export-body .note-date { font-size: 10pt; color: #bfdbfe; margin-bottom: 8px; font-style: italic; }

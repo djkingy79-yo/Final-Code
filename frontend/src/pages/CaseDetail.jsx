@@ -68,6 +68,7 @@ import PipelineStalenessAlert from "../components/PipelineStalenessAlert";
 import PipelineProgress from "../components/PipelineProgress";
 import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
+import auSpelling from "../utils/auSpelling";
 
 const EVENT_TYPES = [
   // Pre-trial
@@ -893,25 +894,66 @@ const CaseDetail = ({ user }) => {
     const title = caseData?.title || "Case";
     const offence = (caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "N/A");
     const offenceCapitalised = offence.charAt(0).toUpperCase() + offence.slice(1);
-    let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${title} - ${defendant}</p></div>`;
+
+    // Helper: convert markdown headings + bold to HTML and apply AU spelling
+    const mdToHtml = (text) => {
+      if (!text) return '';
+      let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      // Convert markdown headings
+      html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
+      html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
+      html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:18px 0 8px;">$1</h3>');
+      // Bold
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // Double newlines → paragraph breaks
+      html = html.replace(/\n\n/g, '</p><p style="margin-bottom:10px;">');
+      // Single newlines → <br>
+      html = html.replace(/\n/g, '<br/>');
+      return auSpelling('<p style="margin-bottom:10px;">' + html + '</p>');
+    };
+
+    // Escape HTML and apply AU spelling
+    const escAu = (text) => {
+      if (!text) return '';
+      return auSpelling(text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+    };
+
+    let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
     // DO_NOT_UNDO — Case Identity Card (inline styles for print compatibility)
     body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${defendant}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${offenceCapitalised}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(defendant)}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
         <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${caseData?.sentence || "N/A"}</strong></div>
+        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(caseData?.sentence || "N/A")}</strong></div>
       </div>
-      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${caseData.court}${caseData?.case_number ? ' — ' + caseData.case_number : ''}</div>` : ''}
+      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''}</div>` : ''}
     </div>`;
-    if (caseData?.summary) body += `<div class="export-body"><p>${caseData.summary}</p></div>`;
+
+    // ── TABLE OF CONTENTS ──
+    const tocSections = [];
+    if (caseData?.summary) tocSections.push("Case Summary");
+    if (documents.length > 0) tocSections.push("Uploaded Documents");
+    tocSections.push("Timeline Events");
+    tocSections.push("Grounds of Merit");
+    tocSections.push("Notes");
+    if (progressAnalysis) tocSections.push("Progress Analysis");
+
+    body += `<div class="export-body" style="page-break-after:always;">
+      <h2>Table of Contents</h2>
+      <ol style="font-family:'Times New Roman',Times,serif;font-size:14pt;line-height:2.2;color:#1e293b;padding-left:2rem;">
+        ${tocSections.map((s, i) => `<li style="padding-left:8px;border-bottom:1px dotted #cbd5e1;">${s}</li>`).join('')}
+      </ol>
+    </div>`;
+
+    if (caseData?.summary) body += `<div class="export-body"><h2>Case Summary</h2><p>${escAu(caseData.summary)}</p></div>`;
     // Documents list
     if (documents.length > 0) {
       body += `<div class="page-break"></div><div class="export-body"><h2>Uploaded Documents</h2>`;
       body += `<table><thead><tr><th>#</th><th>Filename</th><th>Type</th><th>Uploaded</th></tr></thead><tbody>`;
       documents.forEach((d, i) => {
         const date = d.created_at ? new Date(d.created_at).toLocaleDateString("en-AU") : "";
-        body += `<tr><td>${i + 1}</td><td>${d.filename || d.name || "Document"}</td><td>${d.doc_type || d.type || "—"}</td><td>${date}</td></tr>`;
+        body += `<tr><td>${i + 1}</td><td>${escAu(d.filename || d.name || "Document")}</td><td>${escAu(d.doc_type || d.type || "—")}</td><td>${date}</td></tr>`;
       });
       body += `</tbody></table></div>`;
     }
@@ -920,7 +962,7 @@ const CaseDetail = ({ user }) => {
     if (timeline.length > 0) {
       body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
       timeline.forEach(e => {
-        body += `<tr><td>${e.event_date || ""}</td><td>${e.title || ""}</td><td>${(e.description || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</td></tr>`;
+        body += `<tr><td>${e.event_date || ""}</td><td>${escAu(e.title || "")}</td><td>${escAu(e.description || "")}</td></tr>`;
       });
       body += `</tbody></table>`;
     } else { body += `<p>No timeline events.</p>`; }
@@ -929,9 +971,9 @@ const CaseDetail = ({ user }) => {
     body += `<div class="page-break"></div><div class="export-body"><h2>Grounds of Merit</h2>`;
     if (grounds.length > 0) {
       grounds.forEach((g, i) => {
-        body += `<div class="section-block"><h3>Ground ${i + 1}: ${g.title || ""}</h3>`;
-        body += `<p>${(g.description || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>`;
-        body += `<p><strong>Strength:</strong> ${(g.strength || "N/A").charAt(0).toUpperCase() + (g.strength || "N/A").slice(1)} &nbsp; <strong>Type:</strong> ${(g.ground_type || "N/A").replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>`;
+        body += `<div class="section-block"><h3>Ground ${i + 1}: ${escAu(g.title || "")}</h3>`;
+        body += `<p>${escAu(g.description || "")}</p>`;
+        body += `<p><strong>Strength:</strong> ${escAu((g.strength || "N/A").charAt(0).toUpperCase() + (g.strength || "N/A").slice(1))} &nbsp; <strong>Type:</strong> ${escAu((g.ground_type || "N/A").replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))}</p>`;
         // Supporting evidence — filter garbage strings
         const evidence = Array.isArray(g.supporting_evidence) ? g.supporting_evidence : [];
         if (evidence.length > 0) {
@@ -947,9 +989,9 @@ const CaseDetail = ({ user }) => {
             }
           }).filter(Boolean);
           if (cleanEvidence.length > 0) {
-            body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Supporting Evidence</h4><ul>`;
+            body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Supporting Evidence</h4><ul>`;
             cleanEvidence.forEach(text => {
-              body += `<li>${text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`;
+              body += `<li>${escAu(text)}</li>`;
             });
             body += `</ul>`;
           }
@@ -957,12 +999,12 @@ const CaseDetail = ({ user }) => {
         // Law sections — handle both objects and raw strings/JSON
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
           laws.forEach(s => {
             const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             if (typeof s === "string") {
               try { const parsed = JSON.parse(s); body += `<li>s ${esc(parsed.section)} ${esc(parsed.act || parsed.title)} (${esc((parsed.jurisdiction || "NSW").toUpperCase())})</li>`; }
-              catch { body += `<li>${s.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</li>`; }
+              catch { body += `<li>${escAu(s)}</li>`; }
             } else if (typeof s === "object" && s) {
               body += `<li>s ${esc(s.section)} ${esc(s.act || s.title)} (${esc((s.jurisdiction || "NSW").toUpperCase())})</li>`;
             }
@@ -972,17 +1014,17 @@ const CaseDetail = ({ user }) => {
         // Similar cases
         const cases = Array.isArray(g.similar_cases) ? g.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional") : [];
         if (cases.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Similar Cases (AI-Suggested)</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Similar Cases (AI-Suggested)</h4><ul>`;
           cases.forEach(c => {
-            body += `<li>${c.case_name || ""}${c.citation ? ` — ${c.citation}` : ""}${c.relevance_note ? `: ${c.relevance_note}` : ""}</li>`;
+            body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`;
           });
           body += `</ul>`;
         }
-        // Deep analysis
+        // Deep analysis — render markdown headings properly
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
-          body += `<h4 style="margin:12px 0 6px;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Deep Investigation Analysis</h4>`;
-          body += `<div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${analysis.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
+          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Deep Investigation Analysis</h4>`;
+          body += `<div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div>`;
         }
         body += `</div>`;
       });
@@ -993,13 +1035,13 @@ const CaseDetail = ({ user }) => {
     if (notes.length > 0) {
       notes.forEach(n => {
         const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
-        body += `<div class="note-card"><div class="note-title">${n.title || "Untitled"}</div><div class="note-date">${date}</div><div class="note-content">${(n.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+        body += `<div class="note-card"><div class="note-title">${escAu(n.title || "Untitled")}</div><div class="note-date">${date}</div><div class="note-content">${escAu(n.content || "")}</div></div>`;
       });
     } else { body += `<p>No notes.</p>`; }
     body += `</div>`;
     // Progress
     if (progressAnalysis) {
-      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div>`;
     }
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };
@@ -1247,7 +1289,7 @@ const CaseDetail = ({ user }) => {
                 </TabsTrigger>
                 <TabsTrigger value="caselaw" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-caselaw">
                   <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">Case Law</span><span className="sm:hidden">Law</span>
+                  <span className="hidden sm:inline">Find Case Law</span><span className="sm:hidden">Law</span>
                 </TabsTrigger>
                 <TabsTrigger value="progress" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-progress">
                   <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -1525,7 +1567,7 @@ const CaseDetail = ({ user }) => {
           <TabsContent value="caselaw" className="space-y-4 legal-content" data-tab-content>
             <Card className="p-4">
               <h3 className="text-base font-bold text-slate-900 mb-1" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
-                Verified Case Law Search
+                Find Case Law
               </h3>
               <p className="text-xs text-slate-500 mb-4">
                 Search official Australian court databases directly. All results open in the source 

@@ -1359,6 +1359,11 @@ async def generate_barrister_pack(case_id: str, request: Request):
         {"_id": 0, "document_id": 1, "filename": 1}
     ).to_list(200)
 
+    notes = await db.notes.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+
     # Build PDF
     buffer = BytesIO()
     doc = SimpleDocTemplate(
@@ -1368,13 +1373,13 @@ async def generate_barrister_pack(case_id: str, request: Request):
     )
 
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="PackTitle", fontName="Helvetica-Bold", fontSize=18, spaceAfter=6, textColor=colors.HexColor("#0f172a"), alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name="PackSubtitle", fontName="Helvetica", fontSize=10, spaceAfter=12, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name="SectionHead", fontName="Helvetica-Bold", fontSize=13, spaceAfter=8, spaceBefore=16, textColor=colors.HexColor("#0f4c81")))
-    styles.add(ParagraphStyle(name="SubHead", fontName="Helvetica-Bold", fontSize=11, spaceAfter=4, spaceBefore=10, textColor=colors.HexColor("#1e293b")))
-    styles.add(ParagraphStyle(name="BodyText2", fontName="Helvetica", fontSize=9, spaceAfter=4, leading=13, alignment=TA_JUSTIFY))
-    styles.add(ParagraphStyle(name="Small", fontName="Helvetica", fontSize=8, spaceAfter=2, textColor=colors.HexColor("#94a3b8")))
-    styles.add(ParagraphStyle(name="Disclaimer", fontName="Helvetica-Oblique", fontSize=7, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="PackTitle", fontName="Helvetica-Bold", fontSize=20, spaceAfter=6, textColor=colors.HexColor("#0f172a"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="PackSubtitle", fontName="Helvetica", fontSize=11, spaceAfter=12, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="SectionHead", fontName="Helvetica-Bold", fontSize=14, spaceAfter=8, spaceBefore=16, textColor=colors.HexColor("#0f4c81")))
+    styles.add(ParagraphStyle(name="SubHead", fontName="Helvetica-Bold", fontSize=12, spaceAfter=4, spaceBefore=10, textColor=colors.HexColor("#1e293b")))
+    styles.add(ParagraphStyle(name="BodyText2", fontName="Helvetica", fontSize=11, spaceAfter=6, leading=15, alignment=TA_JUSTIFY))
+    styles.add(ParagraphStyle(name="Small", fontName="Helvetica", fontSize=9, spaceAfter=3, textColor=colors.HexColor("#475569"), leading=12))
+    styles.add(ParagraphStyle(name="Disclaimer", fontName="Helvetica-Oblique", fontSize=8, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
 
     elements = []
 
@@ -1423,6 +1428,18 @@ async def generate_barrister_pack(case_id: str, request: Request):
     elements.append(Paragraph("NOT LEGAL ADVICE — This document is AI-assisted preparation material for legal review. It does not constitute legal advice and should not be relied upon as a substitute for independent legal judgement.", styles["Disclaimer"]))
     elements.append(PageBreak())
 
+    # ── CASE SUMMARY ──
+    case_summary = case.get("summary", "")
+    if case_summary:
+        elements.append(Paragraph("Case Summary", styles["SectionHead"]))
+        elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+        elements.append(Spacer(1, 3*mm))
+        for para in case_summary.split("\n\n"):
+            para = para.strip()
+            if para:
+                elements.append(Paragraph(para.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"), styles["BodyText2"]))
+        elements.append(PageBreak())
+
     # ── SECTION 1: GROUNDS OF MERIT (RANKED) ──
     elements.append(Paragraph("1. Grounds of Merit", styles["SectionHead"]))
     elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
@@ -1435,9 +1452,12 @@ async def generate_barrister_pack(case_id: str, request: Request):
         strength_order = {"strong": 0, "moderate": 1, "weak": 2}
         sorted_grounds = sorted(grounds, key=lambda g: strength_order.get(g.get("strength", "moderate"), 1))
 
+        def safe_para(text):
+            return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
         for idx, g in enumerate(sorted_grounds, 1):
             strength = str(g.get("strength", "moderate")).upper()
-            elements.append(Paragraph(f"Ground {idx}: {g.get('title', 'Untitled')}", styles["SubHead"]))
+            elements.append(Paragraph(f"Ground {idx}: {safe_para(g.get('title', 'Untitled'))}", styles["SubHead"]))
 
             # Strength and verification
             meta_parts = [f"<b>Strength:</b> {strength}"]
@@ -1448,10 +1468,15 @@ async def generate_barrister_pack(case_id: str, request: Request):
                 meta_parts.append(f"<b>Type:</b> {gt.replace('_', ' ').title()}")
             elements.append(Paragraph(" &nbsp;|&nbsp; ".join(meta_parts), styles["Small"]))
 
-            # Description
+            # Full description (not truncated)
             desc = g.get("description", "")
             if desc:
-                elements.append(Paragraph(desc, styles["BodyText2"]))
+                elements.append(Paragraph(safe_para(desc), styles["BodyText2"]))
+
+            # Appellate pathway
+            pathway = g.get("appellate_pathway", "")
+            if pathway:
+                elements.append(Paragraph(f"<b>Appellate Pathway:</b> {safe_para(pathway)}", styles["BodyText2"]))
 
             # Legitimacy scores
             ls = g.get("legitimacy_scores")
@@ -1459,29 +1484,63 @@ async def generate_barrister_pack(case_id: str, request: Request):
                 score_text = f"Legal basis: {ls.get('legal_score', 0)}/3 &nbsp;|&nbsp; Evidence support: {ls.get('evidence_score', 0)}/3 &nbsp;|&nbsp; Appellate viability: {ls.get('viability_score', 0)}/3 &nbsp;|&nbsp; <b>Total: {ls.get('total_score', 0)}/9</b>"
                 elements.append(Paragraph(score_text, styles["Small"]))
 
-            # Supporting evidence
+            # Supporting evidence — show all, not just top 3
             evidence = g.get("supporting_evidence", [])
             if evidence:
-                elements.append(Paragraph(f"<b>Supporting Evidence ({len(evidence)}):</b>", styles["Small"]))
-                for e in evidence[:3]:
+                elements.append(Paragraph(f"<b>Supporting Evidence ({len(evidence)}):</b>", styles["SubHead"]))
+                for e in evidence[:8]:
                     quote = e.get("quote", e) if isinstance(e, dict) else str(e)
                     fname = e.get("filename", "") if isinstance(e, dict) else ""
-                    prefix = f"{fname}: " if fname else ""
-                    elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {prefix}{quote[:200]}", styles["Small"]))
+                    prefix = f"<b>{safe_para(fname)}:</b> " if fname else ""
+                    elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {prefix}{safe_para(str(quote)[:300])}", styles["BodyText2"]))
 
-            # Law sections
+            # Law sections — show all
             law = g.get("law_sections", [])
             if law:
-                elements.append(Paragraph(f"<b>Legislation ({len(law)}):</b>", styles["Small"]))
-                for law_item in law[:3]:
+                elements.append(Paragraph(f"<b>Relevant Legislation ({len(law)}):</b>", styles["SubHead"]))
+                for law_item in law[:10]:
                     if isinstance(law_item, dict):
-                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {law_item.get('section', '')} {law_item.get('act', '')} {('— ' + law_item.get('title', '')) if law_item.get('title') else ''}", styles["Small"]))
+                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; s {safe_para(law_item.get('section', ''))} {safe_para(law_item.get('act', ''))} {('— ' + safe_para(law_item.get('title', ''))) if law_item.get('title') else ''} ({safe_para((law_item.get('jurisdiction', 'NSW')).upper())})", styles["BodyText2"]))
+                    elif isinstance(law_item, str):
+                        elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {safe_para(law_item)}", styles["BodyText2"]))
+
+            # Similar cases
+            similar = g.get("similar_cases", [])
+            valid_cases = [c for c in similar if isinstance(c, dict) and c.get("case_name") and c["case_name"] not in ("Case name", "None", "optional") and "[Surname]" not in c["case_name"]]
+            if valid_cases:
+                elements.append(Paragraph(f"<b>Similar Cases ({len(valid_cases)}):</b>", styles["SubHead"]))
+                for c in valid_cases[:6]:
+                    case_text = safe_para(c.get("case_name", ""))
+                    if c.get("citation"):
+                        case_text += f" — {safe_para(c['citation'])}"
+                    if c.get("relevance_note"):
+                        case_text += f": {safe_para(c['relevance_note'])}"
+                    elements.append(Paragraph(f"&nbsp;&nbsp;&bull; {case_text}", styles["BodyText2"]))
+
+            # Deep analysis
+            deep = g.get("deep_analysis", {})
+            full_analysis = deep.get("full_analysis", "") if isinstance(deep, dict) else ""
+            if not full_analysis:
+                full_analysis = g.get("analysis", "")
+            if full_analysis:
+                elements.append(Paragraph("<b>Deep Investigation Analysis:</b>", styles["SubHead"]))
+                # Split into paragraphs and render
+                for para in full_analysis.split("\n\n"):
+                    para = para.strip()
+                    if not para:
+                        continue
+                    # Strip markdown headings
+                    if para.startswith("##"):
+                        heading = para.lstrip("#").strip()
+                        elements.append(Paragraph(safe_para(heading), styles["SubHead"]))
+                    else:
+                        elements.append(Paragraph(safe_para(para), styles["BodyText2"]))
 
             # Human review warning
             if g.get("requires_human_review"):
-                elements.append(Paragraph("<b>Requires human review before filing or reliance in advice.</b>", styles["Small"]))
+                elements.append(Paragraph("<b><font color='#dc2626'>Requires independent human review before filing or reliance in advice.</font></b>", styles["BodyText2"]))
 
-            elements.append(Spacer(1, 4*mm))
+            elements.append(Spacer(1, 6*mm))
 
     elements.append(PageBreak())
 
@@ -1547,8 +1606,33 @@ async def generate_barrister_pack(case_id: str, request: Request):
 
     elements.append(PageBreak())
 
-    # ── SECTION 4: VERIFICATION SUMMARY ──
-    elements.append(Paragraph("4. Verification Summary", styles["SectionHead"]))
+    # ── SECTION 4: CASE NOTES ──
+    elements.append(Paragraph("4. Case Notes", styles["SectionHead"]))
+    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
+    elements.append(Spacer(1, 3*mm))
+
+    if not notes:
+        elements.append(Paragraph("No case notes have been recorded.", styles["BodyText2"]))
+    else:
+        for note in notes:
+            note_title = (note.get("title") or "Untitled").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            note_content = (note.get("content") or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            note_date = note.get("created_at", "")
+            if note_date:
+                try:
+                    from dateutil.parser import parse as parse_date
+                    note_date = parse_date(note_date).strftime("%d %B %Y")
+                except Exception:
+                    note_date = str(note_date)[:10]
+            elements.append(Paragraph(f"{note_title} — <i>{note_date}</i>", styles["SubHead"]))
+            if note_content:
+                elements.append(Paragraph(note_content, styles["BodyText2"]))
+            elements.append(Spacer(1, 3*mm))
+
+    elements.append(PageBreak())
+
+    # ── SECTION 5: VERIFICATION SUMMARY ──
+    elements.append(Paragraph("5. Verification Summary", styles["SectionHead"]))
     elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f4c81")))
     elements.append(Spacer(1, 3*mm))
 
@@ -1586,15 +1670,18 @@ async def generate_barrister_pack(case_id: str, request: Request):
     elements.append(Paragraph("NOT LEGAL ADVICE — AI-assisted preparation material for legal review. All grounds, authorities, and procedural issues should be independently verified before use in court or formal advice.", styles["Disclaimer"]))
     elements.append(Paragraph(f"Generated {datetime.now(timezone.utc).strftime('%d %B %Y %H:%M UTC')} by Appeal Case Manager", styles["Disclaimer"]))
 
-    # Build PDF
-    doc.build(elements)
+    # Build PDF with standardised footer
+    from services.export_footer import NumberedCanvas, build_footer_label
+    footer_label = build_footer_label(case, "Barrister Acceptance Pack")
+    numbered_canvas = NumberedCanvas(footer_label)
+    doc.build(elements, canvasmaker=numbered_canvas)
     buffer.seek(0)
 
-    defendant = case.get("defendant_name", "case").replace(" ", "_")
-    filename = f"Barrister_Acceptance_Pack_{defendant}_{datetime.now(timezone.utc).strftime('%Y%m%d')}.pdf"
+    safe_defendant = "".join(c for c in case.get("defendant_name", "case")[:30] if c.isalnum() or c in ' -_').strip().replace(' ', '_')
+    filename = f"Barrister_Acceptance_Pack_{safe_defendant}_{datetime.now(timezone.utc).strftime('%Y%m%d')}.pdf"
 
     return StreamingResponse(
         buffer,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename={filename}"},
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
