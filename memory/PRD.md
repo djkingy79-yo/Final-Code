@@ -93,6 +93,7 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - Success Stories content compliance: removed all "you/your" from UI text, added legal disclaimer, cleaned pricing reference
 - Mobile typography fixes: compact footer disclaimer, larger headings / smaller body text on How To Use page, smaller Grants heading on Legal Resources
 - "Made with Emergent" badge removed via CSS + inline HTML override
+- Legal Framework: added appeal legislation for SA, TAS, NT, ACT (were missing); added VIC Criminal Appeals Act 2019, QLD District Court Act, CTH Federal Court Act; fixed "you/your" language in Appeal Basics and Human Rights sections
 
 ## Backlog
 - P2: Build native mobile app (Capacitor build/test)

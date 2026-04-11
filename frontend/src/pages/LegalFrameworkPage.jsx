@@ -223,19 +223,40 @@ const LegalFrameworkPage = () => {
   const appealActs = {
     nsw: [
       { name: "Criminal Appeal Act 1912 (NSW)", url: "https://legislation.nsw.gov.au/view/html/inforce/current/act-1912-016", desc: "Governs appeals to the Court of Criminal Appeal" },
-      { name: "Crimes (Appeal and Review) Act 2001", url: "https://legislation.nsw.gov.au/view/html/inforce/current/act-2001-120", desc: "Reviews of convictions, petitions for mercy" },
+      { name: "Crimes (Appeal and Review) Act 2001", url: "https://legislation.nsw.gov.au/view/html/inforce/current/act-2001-120", desc: "Reviews of convictions, petitions for mercy, annulment of Local Court convictions" },
     ],
     vic: [
-      { name: "Criminal Procedure Act 2009 (Vic) - Part 6.3", url: "https://www.legislation.vic.gov.au/in-force/acts/criminal-procedure-act-2009", desc: "Appeals against conviction and sentence" },
+      { name: "Criminal Appeals Act 2019 (Vic)", url: "https://www.legislation.vic.gov.au/in-force/acts/criminal-appeals-act-2019", desc: "Right of appeal against conviction and sentence, leave to appeal, fresh evidence" },
+      { name: "Criminal Procedure Act 2009 (Vic) - Part 6.3", url: "https://www.legislation.vic.gov.au/in-force/acts/criminal-procedure-act-2009", desc: "Appeal procedures, interlocutory appeals, case stated" },
     ],
     qld: [
-      { name: "Criminal Code Act 1899 (Qld) - Chapter 67", url: "https://www.legislation.qld.gov.au/view/html/inforce/current/act-1899-009", desc: "Appeal provisions in Queensland" },
+      { name: "Criminal Code Act 1899 (Qld) - Chapter 67", url: "https://www.legislation.qld.gov.au/view/html/inforce/current/act-1899-009", desc: "Appeal provisions against conviction and sentence in Queensland" },
+      { name: "District Court of Queensland Act 1967 - Part 6", url: "https://www.legislation.qld.gov.au/view/html/inforce/current/act-1967-018", desc: "Appeals from Magistrates Court to District Court" },
+    ],
+    sa: [
+      { name: "Criminal Law Consolidation Act 1935 (SA) - Part 11", url: "https://www.legislation.sa.gov.au/lz?path=/c/a/criminal%20law%20consolidation%20act%201935", desc: "Appeals against conviction and sentence, reserving questions of law" },
+      { name: "Supreme Court Act 1935 (SA) - Part 4", url: "https://www.legislation.sa.gov.au/lz?path=/c/a/supreme%20court%20act%201935", desc: "Full Court appeal jurisdiction, criminal appeal procedures" },
     ],
     wa: [
-      { name: "Criminal Appeals Act 2004 (WA)", url: "https://www.legislation.wa.gov.au/legislation/statutes.nsf/main_mrtitle_221_homepage.html", desc: "Appeals against conviction and sentence" },
+      { name: "Criminal Appeals Act 2004 (WA)", url: "https://www.legislation.wa.gov.au/legislation/statutes.nsf/main_mrtitle_221_homepage.html", desc: "Appeals against conviction and sentence to the Court of Appeal" },
+    ],
+    tas: [
+      { name: "Criminal Code Act 1924 (Tas) - Part XIV", url: "https://www.legislation.tas.gov.au/view/html/inforce/current/act-1924-069", desc: "Appeals from Supreme Court, stated cases, new trial applications" },
+      { name: "Justices Act 1959 (Tas) - Part VIII", url: "https://www.legislation.tas.gov.au/view/html/inforce/current/act-1959-015", desc: "Appeals from Magistrates Court" },
+    ],
+    nt: [
+      { name: "Criminal Code Act 1983 (NT) - Part VIII", url: "https://legislation.nt.gov.au/Legislation/CRIMINAL-CODE-ACT-1983", desc: "Appeals against conviction and sentence to the Court of Appeal" },
+      { name: "Supreme Court Act 1979 (NT)", url: "https://legislation.nt.gov.au/Legislation/SUPREME-COURT-ACT-1979", desc: "Court of Appeal jurisdiction, criminal appeal procedures" },
+      { name: "Local Court Act 2015 (NT) - Part 7", url: "https://legislation.nt.gov.au/Legislation/LOCAL-COURT-ACT-2015", desc: "Appeals from Local Court decisions" },
+    ],
+    act: [
+      { name: "Supreme Court Act 1933 (ACT) - Part 7", url: "https://www.legislation.act.gov.au/a/1933-34/", desc: "Appeals to the Court of Appeal against conviction and sentence" },
+      { name: "Crimes Act 1900 (ACT) - Part 18", url: "https://www.legislation.act.gov.au/a/1900-40/", desc: "Criminal appeal provisions, stated cases" },
+      { name: "Magistrates Court Act 1930 (ACT) - Part 3.10", url: "https://www.legislation.act.gov.au/a/1930-21/", desc: "Appeals from Magistrates Court" },
     ],
     cth: [
-      { name: "Judiciary Act 1903 (Cth)", url: "https://www.legislation.gov.au/C2004A01586/latest/text", desc: "Appeals to the High Court" },
+      { name: "Judiciary Act 1903 (Cth)", url: "https://www.legislation.gov.au/C2004A01586/latest/text", desc: "Appeals to the High Court of Australia, special leave" },
+      { name: "Federal Court of Australia Act 1976 (Cth)", url: "https://www.legislation.gov.au/C2004A01586/latest/text", desc: "Federal Court appellate jurisdiction" },
     ],
   };
 
@@ -461,7 +482,7 @@ const LegalFrameworkPage = () => {
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-slate-900 mb-2">Appeal Legislation</h2>
               <p className="text-sm text-slate-700">
-                These acts govern how criminal appeals work — the grounds you can rely on, time limits, procedures, and the powers of the appeal court.
+                These acts govern how criminal appeals work — the grounds that can be relied upon, time limits, procedures, and the powers of the appeal court.
               </p>
             </div>
 
@@ -502,7 +523,7 @@ const LegalFrameworkPage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-900">Grounds</h4>
-                  <p>You must identify specific legal errors — not just disagree with the outcome. Common grounds: misdirection, procedural unfairness, manifestly excessive sentence.</p>
+                  <p>The appellant must identify specific legal errors — not just disagree with the outcome. Common grounds: misdirection, procedural unfairness, manifestly excessive sentence.</p>
                 </div>
               </div>
             </div>
@@ -513,7 +534,7 @@ const LegalFrameworkPage = () => {
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-slate-900 mb-2">Human Rights & Fair Trial</h2>
               <p className="text-sm text-slate-700">
-                Australia has signed international treaties protecting your rights. While not always directly enforceable, 
+                Australia has signed international treaties protecting fundamental rights. While not always directly enforceable, 
                 courts must consider these when interpreting Australian law. Some states also have their own human rights legislation.
               </p>
             </div>
