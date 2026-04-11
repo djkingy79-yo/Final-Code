@@ -30,6 +30,7 @@ STATE_FRAMEWORKS = {
     "tas": TAS_CRIMINAL_FRAMEWORK,
     "nt": NT_CRIMINAL_FRAMEWORK,
     "act": ACT_CRIMINAL_FRAMEWORK,
+    "federal": FEDERAL_CRIMINAL_FRAMEWORK,
 }
 
 
@@ -150,6 +151,21 @@ def _build_state_framework_context(state_key: str) -> str:
     framework = STATE_FRAMEWORKS.get(state_key)
     if not framework:
         return ""
+
+    # For federal cases, the federal framework is already injected via _build_federal_framework_context()
+    # so we only add the note about trial jurisdiction and appellate pathway
+    if state_key == "federal":
+        return (
+            "\nFEDERAL CRIMINAL JURISDICTION NOTE:\n"
+            "Federal criminal offences under the Criminal Code Act 1995 (Cth) and Crimes Act 1914 (Cth) "
+            "are tried in state/territory courts exercising federal jurisdiction under Judiciary Act 1903 (Cth) Part X. "
+            "Appeals follow the appellate pathway of the state/territory where the trial occurred. "
+            "Further appeal to the High Court of Australia requires special leave under s 35A Judiciary Act 1903 (Cth). "
+            "The Federal Court of Australia has limited criminal jurisdiction in specific statutory contexts "
+            "(e.g. contempt, regulatory prosecutions under the Federal Court of Australia Act 1976 (Cth)).\n"
+            "IMPORTANT: Identify which state/territory court conducted the trial, as the applicable procedural "
+            "rules and appellate pathway depend on that trial court's jurisdiction.\n"
+        )
 
     state_name = AUSTRALIAN_STATES.get(state_key, {}).get('name', state_key.upper())
     context = f"\n{state_name.upper()} CRIMINAL LEGISLATIVE FRAMEWORK — FOUNDATIONAL ACTS AND REGULATIONS:\n"
@@ -572,6 +588,23 @@ def validate_jurisdiction_completeness(state: str, offence_category: str) -> lis
         return warnings
 
     state_name = AUSTRALIAN_STATES[state_key].get('name', state_key.upper())
+
+    # Federal cases use cth_legislation, not {state}_legislation
+    if state_key == "federal":
+        category_data = OFFENCE_CATEGORIES.get(offence_category, {})
+        cth_leg = category_data.get('cth_legislation', {})
+        if not cth_leg and offence_category != 'other':
+            warnings.append(
+                f"No Commonwealth legislation referenced for '{category_data.get('name', offence_category)}' offences — "
+                f"verify applicable federal criminal legislation."
+            )
+        # Federal cases: note the dual-jurisdiction complexity
+        warnings.append(
+            "FEDERAL JURISDICTION: Federal offences are tried in state/territory courts under Judiciary Act 1903 (Cth) Part X. "
+            "Identify which state/territory court conducted the trial — the procedural rules and initial appellate pathway "
+            "depend on that trial court's jurisdiction."
+        )
+        return warnings
 
     # Check offence category has state-specific legislation
     category_data = OFFENCE_CATEGORIES.get(offence_category, {})

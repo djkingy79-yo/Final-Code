@@ -1164,6 +1164,37 @@ const CaseDetail = ({ user }) => {
           {/* Review Status — hidden for clarity, the tabs themselves convey status */}
         </div>
 
+        {/* Jurisdiction & Metadata Warnings */}
+        {caseData && (caseData.metadata_warnings?.length > 0 || caseData.jurisdiction_warnings?.length > 0) && (
+          <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-2" data-testid="jurisdiction-warnings">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-amber-800 text-sm mb-2">Case Metadata — Action Required</p>
+                <ul className="space-y-1">
+                  {(caseData.metadata_warnings || []).map((w, i) => (
+                    <li key={`mw-${i}`} className="text-xs text-amber-700 flex items-start gap-1.5">
+                      <span className="text-amber-500 mt-0.5 shrink-0">&#x25CF;</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                  {(caseData.jurisdiction_warnings || []).filter(w =>
+                    !w.startsWith("APPEAL TIME LIMIT")
+                  ).map((w, i) => (
+                    <li key={`jw-${i}`} className="text-xs text-amber-700 flex items-start gap-1.5">
+                      <span className="text-amber-500 mt-0.5 shrink-0">&#x25CF;</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-[10px] text-amber-600 mt-2">
+                  Set these fields under Case Details to ensure accurate, jurisdiction-specific analysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex flex-col gap-4">

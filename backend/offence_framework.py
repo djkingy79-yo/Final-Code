@@ -72,6 +72,13 @@ AUSTRALIAN_STATES = {
         "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/act/ACTCA/",
         "appeal_court": "ACT Court of Appeal (ACTCA)"
     },
+    "federal": {
+        "name": "Commonwealth/Federal", "abbreviation": "CTH",
+        "legal_aid_url": "https://www.ag.gov.au/legal-system/legal-assistance-services",
+        "court_forms_url": "https://www.fedcourt.gov.au/forms-and-fees/forms",
+        "cca_search_url": "https://www.austlii.edu.au/cgi-bin/viewtoc/au/cases/cth/HCA/",
+        "appeal_court": "High Court of Australia (HCA) / Full Federal Court (where applicable)"
+    },
 }
 
 OFFENCE_CATEGORIES = {

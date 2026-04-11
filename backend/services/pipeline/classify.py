@@ -46,6 +46,7 @@ APPELLATE_PATHWAYS = {
     "tas": "s 401 Criminal Code Act 1924 (Tas)",
     "nt": "s 411 Criminal Code Act 1983 (NT)",
     "act": "s 37 Supreme Court Act 1933 (ACT)",
+    "federal": "s 35A Judiciary Act 1903 (Cth) (special leave to High Court); Federal Court of Australia Act 1976 (Cth) (where applicable)",
 }
 
 

@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from config import db
 from models import Case, CaseCreate, ChecklistItem, DEFAULT_CHECKLIST
 from auth_utils import get_current_user
+from services.offence_helpers import validate_jurisdiction_completeness
 
 router = APIRouter(prefix="/api/cases", tags=["cases"])
 
@@ -87,7 +88,21 @@ async def get_case(case_id: str, request: Request):
     
     case["document_count"] = await db.documents.count_documents({"case_id": case_id})
     case["event_count"] = await db.timeline_events.count_documents({"case_id": case_id})
-    
+
+    # Inject jurisdiction completeness warnings for UI display
+    state = case.get("state", "")
+    offence_cat = case.get("offence_category", "")
+    metadata_warnings = []
+    if not state:
+        metadata_warnings.append("State/jurisdiction is not set. Reports may default to generic analysis without state-specific legislation.")
+    if not offence_cat:
+        metadata_warnings.append("Offence category is not set. Reports will lack offence-specific legislation references and elements to prove.")
+    if not case.get("offence_type"):
+        metadata_warnings.append("Specific offence type is not set. The AI will need to infer the offence from case documents, which reduces accuracy.")
+    jurisdiction_warnings = validate_jurisdiction_completeness(state, offence_cat) if state and offence_cat else []
+    case["metadata_warnings"] = metadata_warnings
+    case["jurisdiction_warnings"] = jurisdiction_warnings
+
     return case
 
 
