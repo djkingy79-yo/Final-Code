@@ -137,7 +137,17 @@ async def get_stripe_payment_status(session_id: str, request: Request):
 
     # Poll Stripe for status
     stripe_checkout = _get_stripe_checkout(str(request.base_url))
-    checkout_status = await stripe_checkout.get_checkout_status(session_id)
+    try:
+        checkout_status = await stripe_checkout.get_checkout_status(session_id)
+    except Exception as e:
+        logger.warning(f"Stripe session lookup failed for {session_id}: {e}")
+        return {
+            "status": txn.get("status", "pending"),
+            "payment_status": txn.get("payment_status", "unpaid"),
+            "feature_type": txn.get("feature_type"),
+            "amount": txn.get("amount"),
+            "error": "Session expired or not found on Stripe",
+        }
 
     new_status = checkout_status.payment_status
     session_status = checkout_status.status
