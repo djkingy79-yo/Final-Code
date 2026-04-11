@@ -21,15 +21,12 @@ FRONTEND_COMPONENTS_DIR = ROOT / "frontend" / "src" / "components"
 # Add backend to path for direct imports
 sys.path.insert(0, str(BACKEND_DIR))
 
-from services.legitimacy_engine import (
+from services.legitimacy_engine import (  # noqa: E402
     calculate_ground_rating,
     _generate_confidence_note,
-    score_outcome_impact,
-    score_legal_alignment,
-    score_evidence_support,
 )
-from services.pipeline.classify import _merge_overlapping_grounds
-from services.pipeline_models import IssueClassification
+from services.pipeline.classify import _merge_overlapping_grounds  # noqa: E402
+from services.pipeline_models import IssueClassification  # noqa: E402
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 

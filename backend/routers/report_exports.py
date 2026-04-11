@@ -5,17 +5,14 @@
 
 import re
 from datetime import datetime, timezone
-from typing import List
 
 from fastapi import APIRouter, HTTPException, Request, Response
-from starlette.responses import StreamingResponse
 
 from config import db, logger
 from auth_utils import get_current_user
 from services.offence_helpers import get_export_legal_refs
 from services.report_quality import _strip_report_placeholders, _clean_sentence_candidate, _is_valid_sentence_candidate
 from services.barrister_generator import _coerce_utc_datetime
-from config import is_admin_user
 
 router = APIRouter(prefix="/api")
 

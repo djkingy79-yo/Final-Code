@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 import asyncio
 import uuid
 import json
-import os
 import logging
 
 from config import db, is_admin_user

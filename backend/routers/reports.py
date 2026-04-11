@@ -13,15 +13,13 @@ from starlette.responses import StreamingResponse
 
 from config import db, logger
 from auth_utils import get_current_user
-from models import ReportRequest, FEATURE_PRICES, feature_type_variants, ReportMetadata
+from models import ReportRequest, FEATURE_PRICES, feature_type_variants
 from services.report_generator import analyze_case_with_ai
 from services.barrister_generator import (
-    generate_barrister_brief,
     _get_latest_standard_reports,
     _build_barrister_source_signature,
     _run_barrister_report_generation,
     _coerce_utc_datetime,
-    BARRISTER_SOURCE_TYPES,
     BARRISTER_GENERATION_TIMEOUT_MINUTES,
 )
 from services.pipeline_orchestrator import (
@@ -32,7 +30,6 @@ from services.pipeline_orchestrator import (
     _auto_verify_selected_issues,
     _sync_pipeline_projection_to_grounds,
 )
-from services.offence_helpers import get_export_legal_refs
 from config import is_admin_user
 from routers.report_exports import export_report_pdf, export_report_docx
 

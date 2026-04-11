@@ -878,7 +878,7 @@ async def generate_case_export_pack(case_id: str, request: Request):
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import mm
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
+    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)

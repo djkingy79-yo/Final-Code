@@ -6,7 +6,6 @@ Handles forgot password and password reset functionality
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, timezone, timedelta
-import hashlib
 import secrets
 import os
 import asyncio

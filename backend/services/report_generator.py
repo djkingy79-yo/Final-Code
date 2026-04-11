@@ -5,42 +5,28 @@
 
 import os
 import re
-import uuid
 import asyncio
 from datetime import datetime, timezone
-from typing import List
 
 from fastapi import HTTPException
 
-from config import db, logger, get_admin_emails
-from services.llm_service import call_llm_with_fallback, call_llm_for_json, call_llm_structured
+from config import db, logger
+from services.llm_service import call_llm_for_json, call_llm_structured
 from services.offence_helpers import (
     get_offence_context, get_offence_system_prompt,
-    _build_recent_legislation_context, _build_state_framework_context,
-    _build_federal_framework_context, get_export_legal_refs, enforce_forensic_language,
 )
 from services.document_helpers import build_document_context
 from services.report_quality import (
-    _normalise_text, _token_set, _jaccard_similarity,
-    _build_anchor_terms, _paragraph_quality_score,
-    _split_report_sections, _enforce_forensic_language,
-    _dedupe_report_content, _strip_report_placeholders,
+    _build_anchor_terms, _split_report_sections, _dedupe_report_content, _strip_report_placeholders,
     _sanitise_suspect_authorities,
     _clean_sentence_candidate, _is_valid_sentence_candidate,
 )
 from services.pipeline_orchestrator import (
     _enforce_pipeline_freshness,
-    _refresh_pipeline_for_reporting,
-    _pipeline_artifacts_missing_or_stale,
-    _sync_pipeline_projection_to_grounds,
-    _auto_verification_limit_for_report_type,
-    _select_issues_for_auto_verification,
-    _auto_verify_selected_issues,
     _load_issue_arguments,
     _load_submission_draft,
 )
 from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
-from config import is_admin_user
 from models import ReportMetadata
 
 

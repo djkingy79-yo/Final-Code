@@ -4,7 +4,6 @@
 # ===========================================================================
 
 import uuid
-import asyncio
 from datetime import datetime, timezone
 
 from config import db, logger
@@ -14,7 +13,6 @@ from services.pipeline import (
     verify_issue,
 )
 from services.pipeline_models import CaseExtract
-from services.llm_service import call_llm_with_fallback
 from routers.pipeline_staged import (
     _ensure_document_extracts as _staged_ensure_extracts,
     _refresh_case_extract as _staged_refresh_case,

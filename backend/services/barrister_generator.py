@@ -3,31 +3,21 @@
 # Extracted from server.py — generate_barrister_brief and utilities
 # ===========================================================================
 
-import os
 import re
-import uuid
 from datetime import datetime, timezone
 from typing import List
 
 from fastapi import HTTPException
 
-from config import db, logger, get_admin_emails
+from config import db, logger
 from services.llm_service import call_llm_with_fallback
 from services.offence_helpers import (
-    get_offence_context, get_offence_system_prompt,
     _build_recent_legislation_context, _build_state_framework_context,
-    _build_federal_framework_context, get_export_legal_refs, enforce_forensic_language,
+    _build_federal_framework_context,
 )
-from services.document_helpers import build_document_context
 from services.report_quality import (
     _strip_report_placeholders,
-    _sanitise_suspect_authorities,
-    _dedupe_report_content,
-    _build_anchor_terms,
 )
-from services.pipeline_orchestrator import _sync_pipeline_projection_to_grounds
-from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
-from config import is_admin_user
 from models import ReportMetadata
 
 BARRISTER_SOURCE_TYPES = ["quick_summary", "full_detailed", "extensive_log"]

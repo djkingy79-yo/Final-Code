@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from datetime import datetime, timezone
 import uuid
-import os
 import logging
 import secrets
 
