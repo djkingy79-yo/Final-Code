@@ -115,7 +115,7 @@ async def deep_health_check():
     return {"healthy": all_ok, "checks": checks, "timestamp": datetime.now(timezone.utc).isoformat()}
 
 
-# ── API root + Stripe webhook proxy ──
+# ── API root ──
 api_router = APIRouter(prefix="/api")
 
 

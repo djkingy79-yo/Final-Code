@@ -135,7 +135,6 @@ async def generate_receipt_pdf(payment_id: str, request: Request):
                                     spaceBefore=6*mm, spaceAfter=3*mm, fontName="Times-Bold")
     normal_style = ParagraphStyle("ReceiptNormal", parent=styles["Normal"],
                                    fontSize=10, leading=14, fontName="Times-Roman")
-    bold_style = ParagraphStyle("ReceiptBold", parent=normal_style, fontName="Times-Bold")
     small_style = ParagraphStyle("ReceiptSmall", parent=normal_style, fontSize=8,
                                   textColor=colors.HexColor("#6b7280"))
 

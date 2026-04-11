@@ -1,7 +1,10 @@
 # DO NOT UNDO — staged verification pipeline. Additive module.
+import logging
 from services.llm_service import call_llm_for_json
 from services.legitimacy_engine import calculate_ground_rating
 from services.pipeline_models import IssueVerification
+
+logger = logging.getLogger(__name__)
 
 
 def _validate_issue_verification(payload: dict) -> bool:
