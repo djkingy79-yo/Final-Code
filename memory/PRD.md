@@ -122,6 +122,9 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **ALL TOCs standardized**: Gray bg, "Contents (X Sections)", 2-column grid — identical across all exports.
 - **Word export restored to preview mode**: Opens document-preview page per user request.
 - **Regex bug fixed**: `/<th/gi` → `/<th(?=[\s>])/gi` preventing `<thead>` corruption.
+- **PipelineStalenessAlert restored with BOLD BLUE styling**: bg-blue-50, border-blue-600, text-blue-700/800, font-bold throughout. Button in bright blue (#2563eb).
+- **ALL export TOCs standardised to BOLD UPPERCASE**: Heading "CONTENTS (X SECTIONS)" in 13pt/800 weight, items in 12pt/700 weight/uppercase. Applied across ALL 4 locations (exportHtml.js, BarristerView, ReportView, CaseDetail).
+- **Quick Brief opens PDF in browser**: Changed from blob download to `window.open()` for inline PDF viewing on iOS.
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
