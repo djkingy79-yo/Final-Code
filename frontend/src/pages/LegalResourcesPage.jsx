@@ -204,13 +204,13 @@ const LegalResourcesPage = () => {
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <FileText className="w-6 h-6 text-red-600" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Grants & Special Funding</h3>
-                <p className="text-slate-700 text-xs mb-3">
+                <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Grants & Special Funding</h3>
+                <p className="text-slate-700 text-[10px] mb-3">
                   Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
                   These are rarely advertised but can cover legal costs.
                 </p>
-                <ul className="text-xs text-slate-600 space-y-1 mb-3">
-                  <li>• <a href="https://www.lawfoundation.net.au" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Law Foundation Grants</a></li>
+                <ul className="text-[10px] text-slate-600 space-y-1 mb-3">
+                  <li>• <a href="https://www.lawfoundation.net.au" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline text-[10px]">Law Foundation Grants</a></li>
                   <li>• State-based legal assistance funding</li>
                   <li>• Innocence projects (for wrongful convictions)</li>
                   <li>• University law clinics</li>

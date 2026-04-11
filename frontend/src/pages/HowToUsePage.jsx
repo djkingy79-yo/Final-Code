@@ -269,8 +269,8 @@ const HowToUsePage = () => {
           <div className="flex items-start gap-4">
             <AlertTriangle className="w-8 h-8 text-white shrink-0 mt-1" />
             <div>
-              <h2 className="font-extrabold text-white mb-1.5" style={{fontSize:'13px'}}>Before You Start</h2>
-              <ul className="text-white space-y-0.5 font-semibold" style={{fontSize:'10px', lineHeight:'1.4'}}>
+              <h2 className="font-extrabold text-white mb-2" style={{fontSize:'20px'}}>Before You Start</h2>
+              <ul className="text-white/90 space-y-0.5 font-normal" style={{fontSize:'8px', lineHeight:'1.3'}}>
                 <li>- <span className="font-extrabold">Gather your documents</span> — transcripts, evidence, court records, witness statements, sentencing remarks, expert reports</li>
                 <li>- <span className="font-extrabold">Note key dates</span> — incident date, arrest, trial start, verdict, sentencing date</li>
                 <li>- <span className="font-extrabold">Know your deadline</span> — you usually have 28 days from sentencing to file an appeal</li>
@@ -413,9 +413,9 @@ const HowToUsePage = () => {
           <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             What Happens Next?
           </h2>
-          <div className="grid md:grid-cols-2 gap-4" style={{fontSize:'10px', lineHeight:'1.4'}}>
+          <div className="grid md:grid-cols-2 gap-4" style={{fontSize:'8px', lineHeight:'1.3'}}>
             <div>
-              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'12px'}}>If Grounds Are Found</h3>
+              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'18px'}}>If Grounds Are Found</h3>
               <ul className="text-slate-700 space-y-2">
                 <li>- Review the detailed analysis for each ground</li>
                 <li>- Generate a Full Detailed Report to share with a lawyer</li>
@@ -424,7 +424,7 @@ const HowToUsePage = () => {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'12px'}}>Getting Legal Help</h3>
+              <h3 className="font-bold text-slate-900 mb-1.5" style={{fontSize:'18px'}}>Getting Legal Help</h3>
               <ul className="text-slate-700 space-y-2">
                 <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Legal Aid</Link> in your state</li>
                 <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Pro Bono services</Link></li>
