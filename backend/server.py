@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from datetime import datetime, timezone
 
-from fastapi import FastAPI, APIRouter, Request, Response
+from fastapi import FastAPI, APIRouter, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -75,6 +75,26 @@ async def readiness_check():
             status_code=503,
             media_type="application/json"
         )
+
+
+@app.get("/api/health/env")
+async def env_health_check(request: Request):
+    """Environment variable validation — admin-only diagnostic endpoint.
+    Returns status of all required/optional env vars without exposing values."""
+    from config import validate_env_status, is_admin_user
+    from auth_utils import get_current_user
+
+    try:
+        user = await get_current_user(request)
+        if not is_admin_user(user.email):
+            raise HTTPException(status_code=403, detail="Admin access required")
+    except Exception:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    return {
+        "env_status": validate_env_status(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 @app.get("/api/health/deep")

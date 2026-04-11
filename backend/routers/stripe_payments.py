@@ -24,6 +24,8 @@ STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 
 
 def _get_stripe_checkout(base_url: str) -> StripeCheckout:
+    if not STRIPE_API_KEY:
+        raise HTTPException(status_code=503, detail="Payment service unavailable — STRIPE_API_KEY not configured")
     webhook_url = f"{base_url}api/webhook/stripe"
     return StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
 

@@ -14,6 +14,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # ── Startup Validation ──
+# TIER 1: Fatal — app cannot function without these
 _REQUIRED_ENV = ['MONGO_URL', 'DB_NAME', 'FRONTEND_URL', 'ADMIN_EMAILS', 'CONTACT_EMAIL', 'EMERGENT_LLM_KEY']
 _missing = [k for k in _REQUIRED_ENV if not os.environ.get(k)]
 if _missing:
@@ -76,10 +77,54 @@ def get_payid_email() -> str:
 
 
 # ── Startup Warnings ──
-_WARN_ENV = ['RESEND_API_KEY']
-_warn_missing = [k for k in _WARN_ENV if not os.environ.get(k)]
-if _warn_missing:
-    logger.warning(f"Optional env vars missing (email features will not work): {', '.join(_warn_missing)}")
+# TIER 2: Revenue — payments will fail without these
+_REVENUE_ENV = ['STRIPE_API_KEY']
+_revenue_missing = [k for k in _REVENUE_ENV if not os.environ.get(k)]
+if _revenue_missing:
+    logger.warning(f"REVENUE ENV VARS MISSING (payments will not work): {', '.join(_revenue_missing)}")
+
+# TIER 3: Email — notifications/password-reset will fail without these
+_EMAIL_ENV = ['RESEND_API_KEY']
+_email_missing = [k for k in _EMAIL_ENV if not os.environ.get(k)]
+if _email_missing:
+    logger.warning(f"Optional env vars missing (email features will not work): {', '.join(_email_missing)}")
+
+# TIER 4: Security — warn if CORS is wildcard in production
+_cors_raw = os.environ.get('CORS_ORIGINS', '')
+_frontend = os.environ.get('FRONTEND_URL', '')
+if _cors_raw.strip() == '*' and 'preview.emergentagent.com' not in _frontend:
+    logger.warning("SECURITY: CORS_ORIGINS is set to '*' — restrict to specific origins for production")
+
+# TIER 5: Optional with sensible defaults — log if missing so operator knows
+_OPTIONAL_ENV = ['PAYID_EMAIL', 'RESEND_FROM_EMAIL']
+_opt_missing = [k for k in _OPTIONAL_ENV if not os.environ.get(k)]
+if _opt_missing:
+    logger.info(f"Optional env vars using defaults: {', '.join(_opt_missing)}")
+
+
+def validate_env_status() -> dict:
+    """Return a diagnostic summary of all env vars without exposing values.
+    Used by /api/health/env endpoint.
+    """
+    def _status(key):
+        val = os.environ.get(key, '')
+        if not val:
+            return 'missing'
+        if val.startswith('sk_test_') or val == 'sk_test_emergent':
+            return 'test_key'
+        if len(val) < 5:
+            return 'suspicious'
+        return 'set'
+
+    return {
+        'required': {k: _status(k) for k in _REQUIRED_ENV},
+        'revenue': {k: _status(k) for k in _REVENUE_ENV},
+        'email': {k: _status(k) for k in _EMAIL_ENV},
+        'optional': {k: _status(k) for k in _OPTIONAL_ENV},
+        'security': {
+            'CORS_ORIGINS': 'wildcard' if _cors_raw.strip() == '*' else 'restricted',
+        },
+    }
 
 # ── Shared Rate Limiter (process-safe via slowapi) ──
 from slowapi import Limiter
