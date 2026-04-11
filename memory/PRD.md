@@ -104,6 +104,11 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **TOC reformatted**: Print All Table of Contents now uses numbered table rows with section references (not plain list)
 - **Case Metadata warning box**: Changed from yellow/amber to red bg with white bold text, disclaimer text made smaller
 - **NOT LEGAL ADVICE disclaimer**: Reduced size on both ReportView and BarristerView (smaller padding, smaller font, condensed text)
+- **Print footer PERMANENTLY removed**: `.print-footer` set to `display: none` in ALL files (exportHtml.js, ReportView.jsx, BarristerView.jsx) — both default and @media print. Footer will never appear.
+- **Table header text forced white**: Export HTML now strips inline styles from `<th>` elements and injects `background:#1d4ed8;color:#ffffff;font-weight:800` to guarantee white text on blue background.
+- **Report cover page text enlarged**: Metadata values (Defendant, Offence, Sentence, etc.) increased from text-sm to text-sm/text-base responsive.
+- **TOC compressed to 2-column grid**: Export/print TOC in both ReportView and CaseDetail now uses 2-column grid with text truncation (matching on-screen view).
+- **@page margins reduced**: Bottom margin reduced to 20mm across all export views (footer hidden, no extra margin needed).
 
 ## Backlog
 - P2: Counsel conference prep attachment for Barrister View
