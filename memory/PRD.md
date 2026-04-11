@@ -16,45 +16,42 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - Backend: FastAPI + MongoDB
 - AI: OpenAI GPT-4o (Emergent LLM Key)
 - Auth: Emergent-managed Google OAuth + Email/Password
-- Payments: Stripe (sk_test_emergent for preview)
+- Payments: PayID only (Stripe removed)
 - Emails: Resend
 - Exports: reportlab (PDF), python-docx (DOCX)
 
 ## Architecture
 ```
 /app/backend/
-├── server.py              # Thin app factory (~170 lines)
+├── server.py              # Thin app factory
 ├── config.py              # Centralised env variables
 ├── auth_utils.py          # Auth middleware
 ├── routers/               # All API routes
 │   ├── __init__.py        # Router registration
-│   ├── auth.py, cases.py, pipeline.py, export.py
-│   ├── stripe_payments.py, translate.py, barrister_pack.py
-│   ├── collaboration.py, contradictions.py, legislation.py
-│   └── analysis.py, admin.py, analytics.py, utilities.py
+│   ├── payments.py        # PayID payment flow
+│   ├── payment_history.py # Payment history & receipts
+│   ├── translate.py, barrister_pack.py, export.py
+│   ├── pipeline.py, collaboration.py, contradictions.py
+│   └── legislation.py, analysis.py, admin.py, etc.
 ├── services/
 │   ├── startup_tasks.py   # DB indexes, cleanup
 │   └── export_footer.py   # Shared footer logic
 
 /app/frontend/src/
 ├── App.js                 # Route definitions
-├── components/            # Reusable components
-│   ├── AppFooter.jsx, AuthModal.jsx, PaymentModal.jsx
-│   ├── FastScrollTop.jsx  # Floating action buttons (mobile-responsive)
+├── components/
+│   ├── PaymentModal.jsx   # PayID-only payment
+│   ├── AppFooter.jsx, AuthModal.jsx
+│   ├── FastScrollTop.jsx  # Mobile-responsive FABs
 │   └── ShareCaseModal.jsx
-├── pages/                 # Page components
+├── pages/
 │   ├── Dashboard.jsx, CaseDetail.jsx, LandingPage.jsx
 │   ├── ReportView.jsx, BarristerView.jsx
-│   ├── HowItWorksPage.jsx, HowToUsePage.jsx
-│   └── FAQPage.jsx, AppealStatisticsPage.jsx, etc.
+│   ├── PaymentHistoryPage.jsx (PayID only)
+│   └── HowItWorksPage.jsx, FAQPage.jsx, etc.
 └── utils/
     ├── auSpelling.js, exportHtml.js, downloadToken.js
 ```
-
-## Key DB Collections
-- `cases`, `documents`, `timeline_events`, `grounds`, `notes`, `reports`
-- `sessions`, `users`, `payments`, `download_tokens`
-- `notifications`, `share_links`, `case_shares`, `messages`
 
 ## Completed Features (All Sessions)
 - Full authentication (Google OAuth + email/password + password reset)
@@ -64,38 +61,37 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - 4-tier report generation (Free, Full Detailed, Extensive Log, Barrister View)
 - Barrister Issue Matrix attachment
 - PDF/DOCX export with exact footer formatting
-- Print All with Table of Contents and markdown rendering
-- Stripe payment integration
-- PayID/PayPal payment flows
+- Print All with Table of Contents
+- PayID payment integration
 - Case law search with AI-suggested cases
-- Legal framework with jurisdiction-specific legislation links
+- Legal framework with jurisdiction-specific legislation
 - Collaboration/chat with WebSocket support
 - Case sharing with share links
 - Translation to 41 languages
 - Acceptance package generation
 - Contradiction scanning
 - Download token security for exports
-- How It Works / How To Use tutorial pages with screenshots
+- Tutorial pages (How It Works, How To Use) with screenshots
 - FAQ (42 answers across 8 categories)
-- Appeal Statistics page
-- Success Stories page
-- Notification system
-- Admin dashboard
+- Appeal Statistics, Success Stories, About pages
+- Notification system, Admin dashboard
 - Mobile-responsive FABs
-- Service worker with network-first caching
+- Service worker (network-first caching)
 - Capacitor v7 configured for native mobile
 
-## Session 3 Completed (Apr 2026)
-- Fixed Stripe checkout 404 (was test script using wrong URL; updated to valid sk_test_emergent key)
-- Fixed broken /contact route (added redirect to /legal-resources)
-- Fixed mobile FAB overlap (reduced button sizes on mobile: h-8 w-8)
-- Comprehensive API health audit (all endpoints verified healthy)
-- Full mobile responsiveness audit (all key pages verified at 375px)
-- Navigation link audit (all footer and internal links verified working)
+## Session 4 Completed (Apr 2026)
+- Stripe completely removed (router, package, env key, frontend, config validation)
+- PaymentModal simplified to PayID-only flow
+- Image optimisation: 1.7MB total savings across 31 images
+- "Made with Emergent" badge hidden via CSS (#emergent-badge)
+- .gitignore cleaned (removed 12 redundant .pack file entries)
+- Fixed /contact broken route (redirect to /legal-resources)
+- Fixed mobile FAB overlap (smaller buttons on mobile)
+- Comprehensive API health audit (all endpoints verified)
+- Full mobile responsiveness audit (all pages at 375px)
+- Fixed config.py _REVENUE_ENV undefined variable bug
 
 ## Backlog
 - P2: Build native mobile app (Capacitor build/test)
 - P2: Counsel conference prep attachment for Barrister View
 - P2: Success Stories page content compliance verification
-- P2: Real-time collaboration/chat enhancements
-- P2: Case sharing enhancements
