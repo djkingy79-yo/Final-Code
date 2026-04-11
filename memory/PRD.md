@@ -8,7 +8,7 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - **Report Language:** Strict third-person educational tool. No "we/us/our/you/your".
 - **Branding:** Forced light mode. High contrast. Blue/slate/navy only. Bright blue action buttons with white text.
 - **Legal Accuracy:** Cite current, state-specific, and federal Australian legislation.
-- **Print Formatting:** Exact footer: "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] [Date] Page X of Y" (Times New Roman, italic, 10pt).
+- **Print Formatting:** Exact footer: "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] [Date] Page X of Y" (Times New Roman, italic, 9pt).
 - **Australian English:** analyse, organise, judgement, offence, defence throughout.
 
 ## Tech Stack
@@ -41,6 +41,7 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 ├── App.js                 # Route definitions
 ├── components/
 │   ├── PaymentModal.jsx   # PayID-only payment
+│   ├── PipelineProgress.jsx # Pipeline stat grid + actions
 │   ├── AppFooter.jsx, AuthModal.jsx
 │   ├── FastScrollTop.jsx  # Mobile-responsive FABs
 │   └── ShareCaseModal.jsx
@@ -48,6 +49,7 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 │   ├── Dashboard.jsx, CaseDetail.jsx, LandingPage.jsx
 │   ├── ReportView.jsx, BarristerView.jsx
 │   ├── PaymentHistoryPage.jsx (PayID only)
+│   ├── DocumentPreviewPage.jsx
 │   └── HowItWorksPage.jsx, FAQPage.jsx, etc.
 └── utils/
     ├── auSpelling.js, exportHtml.js, downloadToken.js
@@ -80,21 +82,19 @@ Criminal appeals case management platform for Australian jurisdictions. Features
 - Capacitor v7 configured for native mobile
 
 ## Session 4 Completed (Apr 2026)
-- Stripe completely removed (router, package, env key, frontend, config validation)
-- PaymentModal simplified to PayID-only flow
-- Image optimisation: 1.7MB total savings across 31 images
-- "Made with Emergent" badge hidden via CSS (#emergent-badge)
-- .gitignore cleaned (removed 12 redundant .pack file entries)
-- Fixed /contact broken route (redirect to /legal-resources)
-- Fixed mobile FAB overlap (smaller buttons on mobile)
-- Comprehensive API health audit (all endpoints verified)
-- Full mobile responsiveness audit (all pages at 375px)
-- Fixed config.py _REVENUE_ENV undefined variable bug
-- Success Stories content compliance: removed all "you/your" from UI text, added legal disclaimer, cleaned pricing reference
-- Mobile typography fixes: compact footer disclaimer, larger headings / smaller body text on How To Use page, smaller Grants heading on Legal Resources
-- "Made with Emergent" badge removed via CSS + inline HTML override
-- Legal Framework: added appeal legislation for SA, TAS, NT, ACT (were missing); added VIC Criminal Appeals Act 2019, QLD District Court Act, CTH Federal Court Act; fixed "you/your" language in Appeal Basics and Human Rights sections
+- Stripe completely removed; PayID-only payment flow
+- Image optimisation: 1.7MB total savings
+- "Made with Emergent" badge hidden
+- Mobile FAB overlap fixed
+- Success Stories content compliance
+- Legal Framework: added appeal legislation for SA, TAS, NT, ACT, CTH
+- Google Login permanent fix (button onClick instead of link)
+- Full lint cleanup + dead code removal
+
+## Session 5 Completed (Apr 2026)
+- **PDF Print footer overlap FIXED**: @page bottom margin increased from 30mm to 45mm, footer repositioned to bottom:6mm with 9pt font and nowrap to prevent text wrapping/overlap
+- **Pipeline Progress empty white boxes FIXED**: Stat grid (Extracted Docs, Classified Issues, Verified Issues, Synced Grounds) now only renders when `hasAnyPipelineData` is true — at least one pipeline stat must be > 0
 
 ## Backlog
-- P2: Build native mobile app (Capacitor build/test)
+- P1: Native mobile app build/test (Capacitor v7 already configured)
 - P2: Counsel conference prep attachment for Barrister View
