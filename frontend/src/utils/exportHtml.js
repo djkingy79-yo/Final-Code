@@ -57,6 +57,22 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .toc-heading { font-size: 13pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 800; margin: 0 0 10px; font-family: 'Times New Roman', Times, serif; }
   .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
   .toc-item { font-size: 12pt; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 3px 0; font-weight: 700; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
+  .sections { padding: 24px 32px; }
+  .section { margin-bottom: 24px; page-break-inside: avoid; }
+  .section-header { display: flex; align-items: center; gap: 10px; border-left: 4px solid ${accentColor}; padding-left: 12px; margin-bottom: 12px; }
+  .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12pt; font-weight: 700; flex-shrink: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .section-title { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+  .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; }
+  .section-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 18px 0 8px; }
+  .section-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
+  .section-body p { margin-bottom: 0.7rem; font-size: 12pt; line-height: 1.8; }
+  .section-body ul, .section-body ol { padding-left: 2.5rem; margin: 0.6rem 0; }
+  .section-body li { margin-bottom: 0.4rem; font-size: 12pt; line-height: 1.75; }
+  .section-body strong { color: #0f172a; font-weight: 700; }
+  .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
+  .section-body th { background: ${accentColor}; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .section-body td { padding: 7px 10px; border: 1px solid #e2e8f0; }
+  .section-body tr:nth-child(even) td { background: #f8fafc; }
 
   /* ── Tailwind utilities for captured DOM content ── */
   .flex { display: flex; }
@@ -123,6 +139,9 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     .branding { page-break-inside: avoid; break-inside: avoid; }
     .disclaimer + .branding { page-break-before: avoid; break-before: avoid; }
     .export-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
+    .section { page-break-inside: avoid; }
+    .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-body th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .export-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   }
   @media (max-width: 768px) {

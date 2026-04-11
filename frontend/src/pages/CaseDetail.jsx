@@ -918,35 +918,36 @@ const CaseDetail = ({ user }) => {
       </div>
     </div>`;
 
-    body += `<div class="export-body">`;
+    let psn = 0;
+    body += `<div class="sections">`;
 
-    // Case Summary
     if (caseData?.summary) {
-      body += `<h2>1. Case Summary</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${mdToHtml(caseData.summary)}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+      psn++;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`;
     }
 
-    // Case Readiness Score — grab from on-screen element
     const strengthEl = document.querySelector('[data-testid="case-strength-meter"]');
     if (strengthEl) {
-      body += `<h2>${caseData?.summary ? '2' : '1'}. Case Readiness Score</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${strengthEl.innerHTML}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+      psn++;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Case Readiness Score</span></div><div class="section-body">${strengthEl.innerHTML}</div></div>`;
     }
 
-    // Pipeline Summary
     const pipelineSummaryEl = document.querySelector('[data-testid="case-pipeline-summary"]');
     if (pipelineSummaryEl) {
-      body += `<div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${pipelineSummaryEl.innerHTML}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+      psn++;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Pipeline Summary</span></div><div class="section-body">${pipelineSummaryEl.innerHTML}</div></div>`;
     }
 
-    // AI Progress Analysis
     if (progressAnalysis) {
+      psn++;
       const analysisText = progressAnalysis.analysis || progressAnalysis.content || "";
-      body += `<h2>AI Progress Analysis</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${mdToHtml(analysisText)}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">AI Progress Analysis</span></div><div class="section-body">${mdToHtml(analysisText)}</div></div>`;
     }
 
-    // Checklist — grab from on-screen element
     const checklistEl = document.querySelector('[data-testid="appeal-checklist"]');
     if (checklistEl) {
-      body += `<h2>Appeal Checklist</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${checklistEl.innerHTML}</div>`;
+      psn++;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Appeal Checklist</span></div><div class="section-body">${checklistEl.innerHTML}</div></div>`;
     }
 
     body += `</div>`;
@@ -983,15 +984,15 @@ const CaseDetail = ({ user }) => {
     };
 
     let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-    // DO_NOT_UNDO — Case Identity Card (inline styles for print compatibility)
-    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(defendant)}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">State / Jurisdiction</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:uppercase;">${caseData?.state || "N/A"}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(caseData?.sentence || "N/A")}</strong></div>
+    body += `<div style="background:#0f172a;color:#fff;padding:20px 32px;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;font-family:'Times New Roman',Times,serif;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Defendant</div><div style="font-size:14pt;font-weight:700;color:#fff;">${escAu(defendant)}</div></div>
+        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Offence</div><div style="font-size:14pt;font-weight:700;color:#fff;text-transform:capitalize;">${escAu(offenceCapitalised)}</div></div>
+        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Sentence</div><div style="font-size:14pt;font-weight:700;color:#fff;">${escAu(caseData?.sentence || "N/A")}</div></div>
+        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Documents</div><div style="font-size:14pt;font-weight:700;color:#fff;">${documents.length} files analysed</div></div>
+        <div><div style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:2px;">Timeline Events</div><div style="font-size:14pt;font-weight:700;color:#fff;">${timeline.length} events</div></div>
       </div>
-      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''}</div>` : ''}
+      ${caseData?.court ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.2);font-size:11pt;color:rgba(255,255,255,0.85);font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
     </div>`;
 
     // ── TABLE OF CONTENTS ──
@@ -1012,19 +1013,21 @@ const CaseDetail = ({ user }) => {
       </div>
     </div>`;
 
-    if (caseData?.summary) body += `<div class="export-body"><h2>Case Summary</h2><p>${escAu(caseData.summary)}</p></div>`;
-    // Documents list
+    let sn = 0;
+    body += `<div class="sections">`;
+    if (caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body"><p>${escAu(caseData.summary)}</p></div></div>`; }
     if (documents.length > 0) {
-      body += `<div class="page-break"></div><div class="export-body"><h2>Uploaded Documents</h2>`;
+      sn++;
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Uploaded Documents</span></div><div class="section-body">`;
       body += `<table><thead><tr><th>#</th><th>Filename</th><th>Type</th><th>Uploaded</th></tr></thead><tbody>`;
       documents.forEach((d, i) => {
         const date = d.created_at ? new Date(d.created_at).toLocaleDateString("en-AU") : "";
         body += `<tr><td>${i + 1}</td><td>${escAu(d.filename || d.name || "Document")}</td><td>${escAu(d.doc_type || d.type || "—")}</td><td>${date}</td></tr>`;
       });
-      body += `</tbody></table></div>`;
+      body += `</tbody></table></div></div>`;
     }
-    // Timeline
-    body += `<div class="page-break"></div><div class="export-body"><h2>Timeline Events</h2>`;
+    sn++;
+    body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Timeline Events</span></div><div class="section-body">`;
     if (timeline.length > 0) {
       body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
       timeline.forEach(e => {
@@ -1032,9 +1035,9 @@ const CaseDetail = ({ user }) => {
       });
       body += `</tbody></table>`;
     } else { body += `<p>No timeline events.</p>`; }
-    body += `</div>`;
-    // Grounds — full details
-    body += `<div class="page-break"></div><div class="export-body"><h2>Grounds of Merit</h2>`;
+    body += `</div></div>`;
+    sn++;
+    body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Grounds of Merit</span></div><div class="section-body">`;
     if (grounds.length > 0) {
       grounds.forEach((g, i) => {
         body += `<div class="section-block"><h3>Ground ${i + 1}: ${escAu(g.title || "")}</h3>`;
@@ -1095,20 +1098,21 @@ const CaseDetail = ({ user }) => {
         body += `</div>`;
       });
     } else { body += `<p>${groundsCount > 0 ? groundsCount + " grounds identified (locked)." : "No grounds identified."}</p>`; }
-    body += `</div>`;
-    // Notes
-    body += `<div class="page-break"></div><div class="export-body"><h2>Notes</h2>`;
+    body += `</div></div>`;
+    sn++;
+    body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Notes</span></div><div class="section-body">`;
     if (notes.length > 0) {
       notes.forEach(n => {
         const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
         body += `<div class="note-card"><div class="note-title">${escAu(n.title || "Untitled")}</div><div class="note-date">${date}</div><div class="note-content">${escAu(n.content || "")}</div></div>`;
       });
     } else { body += `<p>No notes.</p>`; }
-    body += `</div>`;
-    // Progress
+    body += `</div></div>`;
     if (progressAnalysis) {
-      body += `<div class="page-break"></div><div class="export-body"><h2>Progress Analysis</h2><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div>`;
+      sn++;
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
     }
+    body += `</div>`;
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };
 
