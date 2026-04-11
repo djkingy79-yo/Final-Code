@@ -878,15 +878,79 @@ const CaseDetail = ({ user }) => {
     }
   };
 
+  // ── Shared HTML helpers for exports ──
+  const escHtml = (text) => {
+    if (!text) return '';
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  };
+  const mdToHtml = (text) => {
+    if (!text) return '';
+    let html = escHtml(text);
+    html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
+    html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
+    html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:18px 0 8px;">$1</h3>');
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\n\n/g, '</p><p style="margin-bottom:10px;">');
+    html = html.replace(/\n/g, '<br/>');
+    return auSpelling('<p style="margin-bottom:10px;">' + html + '</p>');
+  };
+
   const buildProgressHtml = () => {
-    let body = `<div class="export-header" style="background:#7c3aed;"><h1>Case Progress</h1><p>${caseData?.title || ""} - ${caseData?.defendant_name || ""}</p></div><div class="export-body">`;
-    if (progressAnalysis) {
-      body += `<h2>AI Progress Analysis</h2><div style="white-space:pre-wrap;font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${(progressAnalysis.analysis || progressAnalysis.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
-    } else {
-      body += `<p>No progress analysis generated yet.</p>`;
+    const defendant = caseData?.defendant_name || "Unknown";
+    const title = caseData?.title || "Case";
+
+    // ── TOC ──
+    const tocItems = [];
+    if (caseData?.summary) tocItems.push("Case Summary");
+    tocItems.push("Case Readiness Score");
+    tocItems.push("Grounds Review Progress");
+    tocItems.push("Documentation Completeness");
+    if (progressAnalysis) tocItems.push("AI Progress Analysis");
+    tocItems.push("Appeal Checklist");
+
+    let body = `<div class="export-header" style="background:#2563eb;"><h1>Case Progress</h1><p>${escHtml(title)} - ${escHtml(defendant)}</p></div>`;
+
+    // TOC
+    body += `<div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:14px 32px;">
+      <p style="font-size:10pt;text-transform:uppercase;letter-spacing:0.05em;color:#475569;font-weight:700;margin:0 0 6px;">Contents (${tocItems.length} Sections)</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+        ${tocItems.map((s, i) => `<div style="font-size:10pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+      </div>
+    </div>`;
+
+    body += `<div class="export-body">`;
+
+    // Case Summary
+    if (caseData?.summary) {
+      body += `<h2>1. Case Summary</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${mdToHtml(caseData.summary)}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
     }
+
+    // Case Readiness Score — grab from on-screen element
+    const strengthEl = document.querySelector('[data-testid="case-strength-meter"]');
+    if (strengthEl) {
+      body += `<h2>${caseData?.summary ? '2' : '1'}. Case Readiness Score</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${strengthEl.innerHTML}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+    }
+
+    // Pipeline Summary
+    const pipelineSummaryEl = document.querySelector('[data-testid="case-pipeline-summary"]');
+    if (pipelineSummaryEl) {
+      body += `<div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${pipelineSummaryEl.innerHTML}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+    }
+
+    // AI Progress Analysis
+    if (progressAnalysis) {
+      const analysisText = progressAnalysis.analysis || progressAnalysis.content || "";
+      body += `<h2>AI Progress Analysis</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${mdToHtml(analysisText)}</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;" />`;
+    }
+
+    // Checklist — grab from on-screen element
+    const checklistEl = document.querySelector('[data-testid="appeal-checklist"]');
+    if (checklistEl) {
+      body += `<h2>Appeal Checklist</h2><div style="font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.8;">${checklistEl.innerHTML}</div>`;
+    }
+
     body += `</div>`;
-    return buildExportHtml({ title: "Case Progress", sectionTitle: "Progress", defendantName: caseData?.defendant_name || "", accentColor: "#7c3aed", bodyHtml: body });
+    return buildExportHtml({ title: "Case Progress", sectionTitle: "Progress", defendantName: defendant, accentColor: "#2563eb", bodyHtml: body });
   };
 
   const buildPrintAllHtml = () => {
