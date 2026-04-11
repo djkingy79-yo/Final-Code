@@ -14,11 +14,11 @@ from models import (
     ExtractedFact,
     ExtractedEvent,
     ExtractedFinding,
-    SupportingItem,
-    MissingItem,
-    LawSection,
-    SimilarCase,
-    LegitimacyScores,
+    SupportingItem,  # noqa: F401 — re-exported for pipeline modules
+    MissingItem,  # noqa: F401 — re-exported for pipeline modules
+    LawSection,  # noqa: F401 — re-exported for pipeline modules
+    SimilarCase,  # noqa: F401 — re-exported for pipeline modules
+    LegitimacyScores,  # noqa: F401 — re-exported for pipeline modules
 )
 
 
