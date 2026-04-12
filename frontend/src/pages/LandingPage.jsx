@@ -237,7 +237,7 @@ const LandingPage = () => {
                 Criminal Law Appeal Case Management
               </h1>
               <p className="text-lg md:text-xl text-slate-700 mb-6 max-w-xl leading-relaxed">
-                Organise case documents, generate timelines, and produce premium appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions.
+                Organise case documents, generate timelines, and produce educational appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions. This Application does not guarantee any particular outcome in any legal matter.
               </p>
               
               {/* State Badges — DO NOT UNDO */}
@@ -504,7 +504,7 @@ const LandingPage = () => {
                 <h3 className="font-bold text-slate-900 text-lg">Reports & Export</h3>
               </div>
               <p className="text-slate-700 text-sm mb-3">
-                Generate premium reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Barrister View for conference-ready presentations.
+                Generate educational reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Barrister View for conference-ready presentations.
               </p>
               <div className="text-orange-400 text-xs font-medium">
                 ✓ Professional formatting • Barrister View • Document bundling
@@ -560,7 +560,7 @@ const LandingPage = () => {
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto">
               This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions. 
-              Whether you're representing yourself or working with a lawyer, get the tools you need to understand your case.
+              Whether you're representing yourself or working with a lawyer, get the tools you need to improve access to appeal preparation resources. This Application does not guarantee any particular outcome. All outputs are provided strictly for informational, educational, and research purposes only.
             </p>
           </div>
 
@@ -731,7 +731,7 @@ const LandingPage = () => {
             All This For Free To Get Started
           </p>
           <p className="text-slate-700 mb-4">
-            No credit card • No commitment • Pay only for premium AI analysis when you need it
+            No credit card • No commitment • Pay only for detailed AI analysis when you need it
           </p>
           <Button
             onClick={() => setShowAuthModal(true)}
