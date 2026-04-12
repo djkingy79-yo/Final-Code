@@ -64,11 +64,12 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 12pt; font-weight: 700; flex-shrink: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .section-title { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
   .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; }
-  .section-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 18px 0 8px; }
-  .section-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #1e293b; margin: 14px 0 6px; }
-  .section-body p { margin-bottom: 0.7rem; font-size: 12pt; line-height: 1.8; }
-  .section-body ul, .section-body ol { padding-left: 2.5rem; margin: 0.6rem 0; }
-  .section-body li { margin-bottom: 0.4rem; font-size: 12pt; line-height: 1.75; }
+  .section-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; color: #1e293b; margin: 24px 0 10px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
+  .section-body h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .section-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #1e293b; margin: 20px 0 8px; }
+  .section-body p { margin-bottom: 12px; font-size: 12pt; line-height: 1.8; }
+  .section-body ul, .section-body ol { padding-left: 2.5rem; margin: 8px 0 16px; }
+  .section-body li { margin-bottom: 6px; font-size: 12pt; line-height: 1.75; }
   .section-body strong { color: #0f172a; font-weight: 700; }
   .section-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
   .section-body th { background: #1d4ed8; color: #fff; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
