@@ -169,10 +169,21 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-white text-center text-sm md:text-base font-medium notice-white" style={{ color: "#ffffff" }}>
             <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5 text-white notice-white" style={{ color: "#ffffff" }} />
-            <strong className="text-white notice-white" style={{ color: "#ffffff" }}>NOT LEGAL ADVICE</strong> — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All results must be verified by a qualified Australian legal professional. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.
+            <strong className="text-white notice-white" style={{ color: "#ffffff" }}>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
             <Link to="/terms" className="landing-notice-link underline ml-2 notice-white">Read full terms</Link>
           </p>
         </div>
+      </div>
+
+      {/* Logo */}
+      <div className="max-w-6xl mx-auto px-6 pt-3 pb-1 flex justify-center">
+        <img 
+          src="/logo.png" 
+          alt="Criminal Law Appeal Management - Founded by Deb King"
+          className="h-20 sm:h-24 md:h-28 object-contain"
+          loading="eager"
+          data-testid="landing-logo"
+        />
       </div>
 
       {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
@@ -290,11 +301,12 @@ const LandingPage = () => {
             <div className="relative mt-8 lg:mt-0">
               <div className="relative max-w-md mx-auto lg:max-w-none">
                 <img 
-                  src="/logo.png" 
-                  alt="Criminal Law Appeal Management - Founded by Deb King"
-                  className="rounded-3xl shadow-2xl w-full object-contain ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] bg-slate-900"
+                  src="/images/stock/courtroom.jpg" 
+                  alt="Australian courtroom"
+                  className="rounded-3xl shadow-2xl w-full object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
                   loading="eager"
                   decoding="async"
+                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
                 {/* Floating Card - hidden (avoids misleading counts) */}
                 <div className="hidden" data-testid="hero-grounds-floating-card">
