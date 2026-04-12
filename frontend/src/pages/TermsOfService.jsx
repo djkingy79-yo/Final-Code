@@ -185,7 +185,7 @@ const TermsOfService = () => {
             <p>The Application provides AI-assisted document analysis, case organisation, and research support tools designed to assist Users in understanding and preparing materials related to criminal appeal matters across Australian jurisdictions. The Application offers the following features:</p>
             <ul className="list-disc list-inside space-y-1.5 ml-2">
               <li>Case creation and management for criminal appeal matters</li>
-              <li>Document upload, storage, and AI-powered text extraction (including OCR for scanned documents)</li>
+              <li>Document upload, camera document scanning, storage, and AI-powered text extraction (including OCR for scanned and photographed documents)</li>
               <li>AI-generated chronological timeline analysis of case events</li>
               <li>AI identification and analysis of potential grounds of appeal</li>
               <li>Tiered AI-generated reports (Quick Summary, Full Detailed Report, Extensive Log Report)</li>

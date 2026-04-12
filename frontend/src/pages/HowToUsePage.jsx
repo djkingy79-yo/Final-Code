@@ -38,17 +38,18 @@ const HowToUsePage = () => {
       icon: Upload,
       color: "emerald",
       image: "/images/howto/live-step3-documents.png",
-      description: "Upload all relevant case documents — transcripts, evidence briefs, sentencing remarks, witness statements, expert reports — and extract the text so the AI can analyse them.",
+      description: "Upload all relevant case documents — transcripts, evidence briefs, sentencing remarks, witness statements, expert reports — or use the 'Scan Document' button to photograph pages directly with your camera. The system extracts text automatically via OCR so the AI can analyse them.",
       instructions: [
         "Open your case and go to the 'Documents' tab",
         "Click 'Upload Document' or drag and drop files into the upload area",
-        "Supported formats: PDF, DOCX, images (JPG, PNG) — scanned documents are supported via OCR",
+        "Or click 'Scan Document' to photograph pages with your phone camera — supports multi-page scanning",
+        "Supported formats: PDF, DOCX, images (JPG, PNG) — scanned and photographed documents are supported via OCR",
         "After uploading, click the 'Extract Text' button on each document to pull the text content",
-        "The system uses OCR (Optical Character Recognition) to extract text from scanned and photographed documents",
+        "The camera scanner automatically runs OCR on each page to extract text",
         "Upload as many documents as you need — there is no limit",
         "You can upload additional documents at any time as you receive them"
       ],
-      tip: "Upload everything you have — the more documents, the better the AI analysis. Always click 'Extract Text' after uploading each document.",
+      tip: "Upload everything you have — the more documents, the better the AI analysis. Use 'Scan Document' to photograph court papers, letters, or any physical documents you have on hand.",
       extraTip: "If you add new documents later, just press 'Extract Text' on the new files and the AI will automatically include them in future analyses. You do not need to re-run previous steps."
     },
     {

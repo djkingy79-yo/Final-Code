@@ -101,7 +101,7 @@ const ProfessionalSummary = () => {
               <ul className="space-y-3 text-slate-700">
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
-                  <span><strong>Document Organisation and OCR:</strong> Assists with uploading, categorising, and managing trial transcripts, evidence briefs, witness statements, expert reports, sentencing remarks, and court documents in a centralised system. Optical character recognition (OCR) extracts text from scanned and photographed documents automatically.</span>
+                  <span><strong>Document Organisation and OCR:</strong> Assists with uploading, categorising, and managing trial transcripts, evidence briefs, witness statements, expert reports, sentencing remarks, and court documents in a centralised system. Includes a camera document scanner for photographing physical pages with multi-page support. Optical character recognition (OCR) extracts text from scanned and photographed documents automatically.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>

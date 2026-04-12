@@ -84,21 +84,22 @@ const HowItWorksPage = () => {
       num: 2,
       icon: Upload,
       title: "Upload Documents & Extract Text",
-      subtitle: "Upload your transcripts, exhibits, and evidence then extract the text",
+      subtitle: "Upload files, scan with your camera, or drag and drop — then extract the text",
       color: "bg-emerald-600",
       lightColor: "bg-emerald-50",
       borderColor: "border-emerald-200",
       textColor: "text-emerald-600",
-      description: "Inside your case, go to the 'Documents' tab. Upload all relevant case materials. After uploading, click the 'Extract Text' button on each document so the AI can read and analyse the content.",
+      description: "Inside your case, go to the 'Documents' tab. Upload files, or use 'Scan Document' to photograph pages with your camera (supports multi-page scanning). After uploading, click 'Extract Text' so the AI can read and analyse the content.",
       visual: {
         alt: "Documents tab with uploaded case files",
-        caption: "Upload documents and click Extract Text so the AI can analyse them."
+        caption: "Upload documents, scan with camera, and click Extract Text so the AI can analyse them."
       },
       whatYouSee: [
         "A drag-and-drop upload area — drop multiple files at once",
+        "A 'Scan Document' button — photograph pages with your phone camera, supports multi-page scanning",
         "Support for PDF, DOCX, TXT, JPG, and PNG files",
         "An 'Extract Text' button on each document — click it to process the document",
-        "OCR processing converts scanned documents to readable text",
+        "OCR processing converts scanned and photographed documents to readable text",
         "Document list showing file name, type, size, and upload date",
       ],
       proTips: [

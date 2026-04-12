@@ -357,10 +357,10 @@ const LandingPage = () => {
                 <h3 className="font-bold text-slate-900 text-lg">Case Management</h3>
               </div>
               <p className="text-slate-700 text-sm mb-3">
-                Create unlimited cases, upload documents with OCR, track deadlines with calendar view, and organise everything in one secure place.
+                Create unlimited cases, upload documents with OCR, scan documents with your camera, track deadlines with calendar view, and organise everything in one secure place.
               </p>
               <div className="text-blue-400 text-xs font-medium">
-                ✓ Unlimited document upload • Deadline tracker • Progress checklist
+                ✓ Unlimited document upload • Camera scan with OCR • Deadline tracker • Progress checklist
               </div>
             </div>
 
@@ -681,7 +681,7 @@ const LandingPage = () => {
                 <Upload className="w-7 h-7 text-blue-400" />
               </div>
               <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 1 — Upload</h3>
-              <p className="text-slate-600">Create a case and upload your documents. The system organises them instantly.</p>
+              <p className="text-slate-600">Create a case and upload your documents or scan them with your camera. The system organises them instantly.</p>
             </div>
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">

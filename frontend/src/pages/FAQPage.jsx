@@ -92,11 +92,11 @@ const faqs = [
       },
       {
         q: "What file formats are supported?",
-        a: "You can upload PDF, DOCX, DOC, TXT, and image files (JPG, PNG). For scanned documents, the OCR technology extracts the text automatically. Maximum file size is 50MB per document."
+        a: "You can upload PDF, DOCX, DOC, TXT, and image files (JPG, PNG). You can also use the 'Scan Document' button to photograph pages directly with your phone camera — it supports multi-page scanning. For scanned documents and camera photos, the OCR technology extracts the text automatically. Maximum file size is 50MB per document."
       },
       {
         q: "How does the OCR (text extraction) work?",
-        a: "OCR (Optical Character Recognition) automatically converts scanned documents and images into searchable text. This allows the AI to analyse documents that are photos or scans of paper documents."
+        a: "OCR (Optical Character Recognition) automatically converts scanned documents, camera photos, and images into searchable text. When you use the 'Scan Document' feature, OCR runs automatically on each photographed page. For uploaded files, click 'Extract Text' to trigger OCR processing. This allows the AI to analyse documents that are photos or scans of paper documents."
       }
     ]
   },
@@ -132,7 +132,7 @@ const faqs = [
     questions: [
       {
         q: "What does the free version include?",
-        a: "Free features include: unlimited document uploads, AI-generated timeline, Quick Summary reports, appeal progress checklist, and the legal glossary. You can manage your entire case without paying."
+        a: "Free features include: unlimited document uploads, camera document scanning with OCR, AI-generated timeline, Quick Summary reports, appeal progress checklist, and the legal glossary. You can manage your entire case without paying."
       },
       {
         q: "What are the paid features?",

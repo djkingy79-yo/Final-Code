@@ -341,14 +341,15 @@ const HelpPage = ({ user }) => {
     },
     {
       id: "upload-docs",
-      title: "Step 3: Upload Documents",
+      title: "Step 3: Upload or Scan Documents",
       icon: <Upload className="w-5 h-5" />,
       content: (
         <div className="space-y-4 text-slate-700">
           <ol className="list-decimal list-inside space-y-2">
             <li>Click on your case to open it</li>
             <li>You'll see the <strong>Documents</strong> tab (default view)</li>
-            <li>Click <strong>"Upload Document"</strong> button</li>
+            <li>Click <strong>"Upload Document"</strong> to select files from your device, or click <strong>"Scan Document"</strong> to photograph pages with your camera</li>
+            <li>The camera scanner supports <strong>multi-page scanning</strong> — photograph each page, then upload all at once</li>
             <li>Select one or multiple files (PDF, DOCX, TXT, or images)</li>
             <li>Choose a category:
               <ul className="list-disc list-inside ml-4 mt-1 text-sm">
@@ -366,7 +367,8 @@ const HelpPage = ({ user }) => {
             <p className="font-medium text-blue-800">Important — Extract Text First:</p>
             <ul className="list-disc list-inside text-blue-700 mt-1 text-sm">
               <li>After uploading, click <strong>"Extract Text"</strong> for PDF/Word documents</li>
-              <li>For scanned documents or images, click <strong>"OCR Scan"</strong></li>
+              <li>Camera-scanned pages automatically run OCR to extract text</li>
+              <li>For other scanned documents or images, click <strong>"OCR Scan"</strong></li>
               <li>The AI can only analyse documents that have extracted text</li>
             </ul>
           </div>
