@@ -88,7 +88,7 @@ const WebDocumentScanner = ({ caseId, onDocumentsChange, disabled }) => {
       <Button
         onClick={() => setOpen(true)}
         disabled={disabled}
-        className="bg-blue-700 text-white hover:bg-blue-600"
+        className="bg-blue-700 text-white hover:bg-blue-600 w-full"
         data-testid="scan-document-web-btn"
       >
         <Camera className="w-4 h-4 mr-2" />

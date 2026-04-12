@@ -340,12 +340,12 @@ const DocumentsSection = ({
       )}
       
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 justify-end">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {documents.length > 0 && (
           <Button
             onClick={handleExtractAllText}
             disabled={extractingText}
-            className="bg-blue-700 text-white hover:bg-blue-600"
+            className="bg-blue-700 text-white hover:bg-blue-600 w-full"
             data-testid="extract-all-text-to-case-btn"
           >
             {extractingText ? (
@@ -363,7 +363,7 @@ const DocumentsSection = ({
         )}
         <Button 
           onClick={() => setShowUploadDialog(true)}
-          className="bg-blue-700 text-white hover:bg-blue-600"
+          className="bg-blue-700 text-white hover:bg-blue-600 w-full"
           data-testid="upload-doc-btn"
         >
           <Upload className="w-4 h-4 mr-2" />
