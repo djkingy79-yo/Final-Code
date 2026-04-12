@@ -175,17 +175,6 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Logo */}
-      <div className="max-w-6xl mx-auto px-6 pt-3 pb-1 flex justify-center">
-        <img 
-          src="/logo.png" 
-          alt="Criminal Law Appeal Management - Founded by Deb King"
-          className="h-20 sm:h-24 md:h-28 object-contain"
-          loading="eager"
-          data-testid="landing-logo"
-        />
-      </div>
-
       {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
       <div className="max-w-6xl mx-auto px-6 pt-2 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -301,12 +290,11 @@ const LandingPage = () => {
             <div className="relative mt-8 lg:mt-0">
               <div className="relative max-w-md mx-auto lg:max-w-none">
                 <img 
-                  src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/6fe186d3d7a5b01e3d3c6076c0a6aefc22c07aea5667124e0978d927d9c58335.png" 
-                  alt="Barrister desk with gavel, authorities bundle, and appeal brief"
-                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
+                  src="/logo.png" 
+                  alt="Criminal Law Appeal Management - Founded by Deb King"
+                  className="rounded-3xl shadow-2xl w-full object-contain ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] bg-slate-900 p-4"
                   loading="eager"
                   decoding="async"
-                  onError={(e) => { e.target.src = '/images/stock/courtroom.jpg'; }}
                 />
                 {/* Floating Card - hidden (avoids misleading counts) */}
                 <div className="hidden" data-testid="hero-grounds-floating-card">
