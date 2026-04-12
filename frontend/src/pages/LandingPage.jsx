@@ -1162,7 +1162,7 @@ const LandingPage = () => {
 
 // Simple Feature Card Component - Enhanced
 const SectionBackToTop = ({ onClick, testId }) => (
-  <div className="py-4 text-center border-t border-slate-200 bg-white" data-testid={testId}>
+  <div className="py-2 text-center bg-white" data-testid={testId}>
     <button
       onClick={onClick}
       className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
