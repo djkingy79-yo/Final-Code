@@ -209,7 +209,7 @@ const LandingPage = () => {
       {/* ============================================ */}
       {/* SECTION 1: HERO */}
       {/* ============================================ */}
-      <section className="relative pt-8 pb-20 md:pt-12 md:pb-28 px-6 overflow-hidden">
+      <section className="relative pt-8 pb-8 md:pt-12 md:pb-12 px-6 overflow-hidden">
         {/* Background Image with Blue Overlay — DO NOT UNDO */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -317,8 +317,6 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-hero" />
 
       {/* ============================================ */}
       {/* COMPLETE APP CAPABILITIES - At A Glance */}
