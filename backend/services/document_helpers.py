@@ -147,7 +147,12 @@ def extract_text_with_ocr(file_data_base64: str, filename: str, file_type: str) 
 
     try:
         file_bytes = base64.b64decode(file_data_base64)
+        # Normalise file_type: handle both MIME types (image/jpeg) and extensions (jpg)
         file_ext = file_type.lower().replace(".", "")
+        if "/" in file_ext:
+            file_ext = file_ext.split("/")[-1]  # image/jpeg -> jpeg, application/pdf -> pdf
+        if file_ext == "vnd.openxmlformats-officedocument.wordprocessingml.document":
+            file_ext = "docx"
 
         if file_ext == "pdf":
             extracted_text, ocr_used = _extract_pdf(file_bytes, filename)

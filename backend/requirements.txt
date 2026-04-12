@@ -106,6 +106,7 @@ pyflakes==3.4.0
 Pygments==2.19.2
 PyJWT==2.12.1
 pymongo==4.16.0
+PyMuPDF==1.27.2.2
 pyOpenSSL==26.0.0
 pyparsing==3.3.2
 pypdf==6.9.2

@@ -372,8 +372,7 @@ async def ocr_document(case_id: str, document_id: str, request: Request):
         raise HTTPException(status_code=404, detail="Document not found")
     if not doc.get('file_data'):
         raise HTTPException(status_code=400, detail="No file data available")
-    file_content = base64.b64decode(doc['file_data'])
-    content_text, ocr_used = extract_text_with_ocr(file_content, doc.get('filename', ''), doc.get('file_type', ''))
+    content_text, ocr_used = extract_text_with_ocr(doc['file_data'], doc.get('filename', ''), doc.get('file_type', ''))
     if not content_text.strip():
         return {"document_id": document_id, "filename": doc.get('filename', ''), "success": False, "ocr_used": ocr_used, "message": "No text could be extracted from this document", "content_length": 0}
     await db.documents.update_one(
@@ -401,8 +400,7 @@ async def ocr_all_documents(case_id: str, request: Request):
         if not doc.get('file_data'):
             results.append({"document_id": doc['document_id'], "filename": doc.get('filename'), "status": "skipped", "reason": "No file data"})
             continue
-        file_content = base64.b64decode(doc['file_data'])
-        content_text, ocr_used = extract_text_with_ocr(file_content, doc.get('filename', ''), doc.get('file_type', ''))
+        content_text, ocr_used = extract_text_with_ocr(doc['file_data'], doc.get('filename', ''), doc.get('file_type', ''))
         if content_text.strip():
             await db.documents.update_one(
                 {"document_id": doc['document_id']},

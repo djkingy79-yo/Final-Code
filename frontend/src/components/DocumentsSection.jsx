@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import DocumentScanner from "./DocumentScanner";
+import WebDocumentScanner from "./WebDocumentScanner";
 import { Label } from "./ui/label";
 import { API } from "../App";
 
@@ -368,6 +369,11 @@ const DocumentsSection = ({
           <Upload className="w-4 h-4 mr-2" />
           Upload Document
         </Button>
+        <WebDocumentScanner
+          caseId={caseId}
+          onDocumentsChange={onDocumentsChange}
+          disabled={uploading}
+        />
       </div>
       
       {/* Documents List */}
