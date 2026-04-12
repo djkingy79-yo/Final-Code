@@ -427,8 +427,8 @@ const AboutPage = () => {
           <Quote className="w-12 h-12 text-blue-500/30 mx-auto mb-4" />
           <blockquote className="text-xl text-slate-700 italic leading-relaxed">
             "I just wanted to create something that could help others without them spending years working it out themselves. 
-            Josh spent 10 years being told he had no options. Ten years. This app found multiple severe grounds in weeks. 
-            That's why this exists."
+            Navigating the appeals process is overwhelming, especially for those without legal training. 
+            This tool was built to help people understand and navigate that process."
           </blockquote>
           <p className="text-slate-900 font-semibold mt-4">— Debra King</p>
           <p className="text-slate-700 text-sm mt-1">Founder, Appeal Case Manager</p>
