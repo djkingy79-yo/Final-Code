@@ -116,9 +116,9 @@ const HowToUsePage = () => {
         "Full Detailed: 15 sections, 15,000-20,000 words — includes comparative sentencing, submissions blueprint, and 800+ words per ground",
         "Extensive Log: 20 sections, 25,000-35,000 words — includes 5 exclusive sections (hearing prep, conference pack, risk assessment) and 1,200+ words per ground",
         "Download reports as PDF or Word (DOCX) documents to share with your lawyer",
-        "All three reports must be generated to unlock the Barrister View"
+        "All three reports must be generated to unlock the Appellate Research Brief"
       ],
-      tip: "The Full Detailed Report is ideal to take to a lawyer for initial review. Generate all three to unlock the Barrister View — the capstone counsel-ready brief.",
+      tip: "The Full Detailed Report is ideal to take to a lawyer for initial review. Generate all three to unlock the Appellate Research Brief — the capstone counsel-ready brief.",
       reportScreenshots: [
         { label: "Quick Summary (Free)", image: "/images/howto/live-report-quick-summary.png", color: "emerald" },
         { label: "Full Detailed Report ($150 AUD)", image: "/images/howto/live-report-full-detailed.png", color: "blue" },
@@ -127,20 +127,20 @@ const HowToUsePage = () => {
     },
     {
       num: 7,
-      title: "Use Barrister View",
+      title: "Use Appellate Research Brief",
       icon: FileCheck,
       color: "teal",
       image: "/images/howto/live-barrister.png",
-      description: "Once all three reports are generated, the Barrister View unlocks. It synthesises every report into one hearing-ready brief with 12 sections plus the Barrister Issue Matrix attachment.",
+      description: "Once all three reports are generated, the Appellate Research Brief unlocks. It synthesises every report into one hearing-ready brief with 12 sections plus the Appellate Issue Matrix attachment.",
       instructions: [
         "Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)",
-        "Click 'Barrister View' from your case reports once unlocked",
+        "Click 'Appellate Research Brief' from your case reports once unlocked",
         "Opens a clean, professional presentation synthesising all three reports into one document",
-        "Includes 'Attachment A — Barrister Issue Matrix' for quick counsel reference",
+        "Includes 'Attachment A — Appellate Issue Matrix' for quick counsel reference",
         "Can be printed or exported to PDF or Word document",
         "Designed specifically for conference-ready presentation to counsel"
       ],
-      tip: "Use the Barrister View when meeting with legal professionals. It is designed as a counsel-grade brief that consolidates everything into one authoritative document."
+      tip: "Use the Appellate Research Brief when meeting with legal professionals. It is designed as a counsel-grade brief that consolidates everything into one authoritative document."
     },
     {
       num: 8,
@@ -429,7 +429,7 @@ const HowToUsePage = () => {
                 <li>- Apply to <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Legal Aid</Link> in your state</li>
                 <li>- Contact <Link to="/legal-resources" className="text-blue-700 hover:underline font-semibold">Pro Bono services</Link></li>
                 <li>- Find a lawyer via your <Link to="/lawyers" className="text-blue-700 hover:underline font-semibold">Lawyer Directory</Link></li>
-                <li>- Use the Barrister View when meeting with counsel</li>
+                <li>- Use the Appellate Research Brief when meeting with counsel</li>
               </ul>
             </div>
           </div>

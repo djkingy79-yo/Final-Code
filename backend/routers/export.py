@@ -773,7 +773,7 @@ REPORT_TYPE_LABELS = {
     "quick_summary": "Quick Case Summary (Free)",
     "full_detailed": "Full Detailed Legal Analysis ($150 AUD)",
     "extensive_log": "Extensive Case Log & Analysis ($200 AUD)",
-    "barrister_view": "Barrister Brief (Counsel Synthesis)",
+    "barrister_view": "Appellate Research Brief (Counsel Synthesis)",
 }
 GROUND_TYPE_LABELS = {
     "procedural_error": "Procedural Error",

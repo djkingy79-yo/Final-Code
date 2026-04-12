@@ -116,7 +116,7 @@ const faqs = [
       },
       {
         q: "What's included in an Extensive Log Report?",
-        a: "The Extensive Log ($200 AUD) is the most comprehensive option with 20 sections. It includes everything in the Full Detailed Report plus 5 exclusive sections: Hearing Preparation Notes (anticipated bench questions and responses), Barrister Conference Pack (authorities shortlist, orders sought, case strengths/weaknesses), Court Pathway Operations Playbook (filing sequence per court level), Similar Case Search Options (tailored AustLII search strings), and Risk Assessment with Contingency Planning per ground. Features 300+ words per ground, 12+ sentencing comparisons, and 15+ precedent cases. Target: 7,000-10,000 words."
+        a: "The Extensive Log ($200 AUD) is the most comprehensive option with 20 sections. It includes everything in the Full Detailed Report plus 5 exclusive sections: Hearing Preparation Notes (anticipated bench questions and responses), Counsel Conference Pack (authorities shortlist, orders sought, case strengths/weaknesses), Court Pathway Operations Playbook (filing sequence per court level), Similar Case Search Options (tailored AustLII search strings), and Risk Assessment with Contingency Planning per ground. Features 300+ words per ground, 12+ sentencing comparisons, and 15+ precedent cases. Target: 7,000-10,000 words."
       },
       {
         q: "Can I share reports with my lawyer?",

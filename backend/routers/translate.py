@@ -73,7 +73,7 @@ REPORT_TYPE_LABELS = {
     "quick_summary": "Quick Summary Report",
     "full_detailed": "Full Detailed Report",
     "extensive_log": "Extensive Log Report",
-    "barrister_view": "Barrister View Report",
+    "barrister_view": "Appellate Research Brief",
     "acceptance_pack": "Barrister Acceptance Pack",
     "translated": "Translated Report",
 }

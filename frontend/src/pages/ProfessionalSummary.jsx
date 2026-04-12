@@ -113,7 +113,7 @@ const ProfessionalSummary = () => {
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
-                  <span><strong>Tiered Report Generation:</strong> Produces four tiers of analysis reports — a free Quick Summary (8 sections), a Full Detailed Report with 15 sections including comparative sentencing tables and submissions blueprints ($150), an Extensive Log with 20 sections including hearing preparation notes and risk assessment ($200), and a capstone Barrister View that synthesises all three reports into a single counsel-ready brief.</span>
+                  <span><strong>Tiered Report Generation:</strong> Produces four tiers of analysis reports — a free Quick Summary (8 sections), a Full Detailed Report with 15 sections including comparative sentencing tables and submissions blueprints ($150), an Extensive Log with 20 sections including hearing preparation notes and risk assessment ($200), and a capstone Appellate Research Brief that synthesises all three reports into a single counsel-ready brief.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
@@ -274,7 +274,7 @@ const ProfessionalSummary = () => {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">4</span>
-                <span><strong>Tiered Report Generation:</strong> Generate reports at increasing levels of depth — from a free Quick Summary overview through to a Full Detailed Report ($150) with comparative sentencing tables and submissions blueprints, an Extensive Log ($200) with hearing preparation notes and risk assessment, and a capstone Barrister View synthesising all three into one counsel-ready document.</span>
+                <span><strong>Tiered Report Generation:</strong> Generate reports at increasing levels of depth — from a free Quick Summary overview through to a Full Detailed Report ($150) with comparative sentencing tables and submissions blueprints, an Extensive Log ($200) with hearing preparation notes and risk assessment, and a capstone Appellate Research Brief synthesising all three into one counsel-ready document.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">5</span>
@@ -286,7 +286,7 @@ const ProfessionalSummary = () => {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">7</span>
-                <span><strong>Export and Briefing:</strong> All reports export to professionally formatted PDF or Word documents suitable for briefing counsel, filing with court, or inclusion in appeal books. The Barrister View is formatted specifically for conference-ready presentation.</span>
+                <span><strong>Export and Briefing:</strong> All reports export to professionally formatted PDF or Word documents suitable for briefing counsel, filing with court, or inclusion in appeal books. The Appellate Research Brief is formatted specifically for conference-ready presentation.</span>
               </li>
             </ol>
           </div>

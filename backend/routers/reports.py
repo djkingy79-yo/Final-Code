@@ -470,7 +470,7 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
         "case_id": case_id,
         "user_id": user.user_id,
         "report_type": "barrister_view",
-        "title": "Barrister Brief",
+        "title": "Appellate Research Brief",
         "content": {
             "analysis": "",
             "document_count": len(source_reports),
@@ -534,10 +534,10 @@ async def export_latest_barrister_view_docx(case_id: str, request: Request):
     return await export_report_docx(case_id, report["report_id"], request)
 
 
-# DO NOT UNDO — Barrister Quick Brief: 2-page PDF with Counsel Synthesis + Priority Order + top 3 grounds
+# DO NOT UNDO — Quick Research Brief: 2-page PDF with Counsel Synthesis + Priority Order + top 3 grounds
 @router.get("/cases/{case_id}/reports/barrister-quick-brief")
 async def export_barrister_quick_brief(case_id: str, request: Request):
-    """Generate a concise 2-page Barrister Quick Brief PDF.
+    """Generate a concise 2-page Quick Research Brief PDF.
     Contains Counsel Synthesis, Priority Order, and top 3 grounds only.
     Designed for a barrister to review in under 5 minutes before a conference."""
     from reportlab.lib import colors
@@ -562,7 +562,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     report_owner_id = case.get("user_id", user.user_id)
     report = await _get_latest_completed_barrister_report(case_id, report_owner_id)
     if not report:
-        raise HTTPException(status_code=404, detail="Completed barrister report not found. Generate the Barrister View first.")
+        raise HTTPException(status_code=404, detail="Completed barrister report not found. Generate the Appellate Research Brief first.")
 
     # Get grounds sorted by priority
     grounds = await db.grounds_of_merit.find(
@@ -630,7 +630,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         MAX_SYNTHESIS_CHARS = 1200
         truncated_synthesis = counsel_synthesis
         if len(counsel_synthesis) > MAX_SYNTHESIS_CHARS:
-            truncated_synthesis = counsel_synthesis[:MAX_SYNTHESIS_CHARS].rsplit(".", 1)[0] + ". [See full Barrister View for complete synthesis.]"
+            truncated_synthesis = counsel_synthesis[:MAX_SYNTHESIS_CHARS].rsplit(".", 1)[0] + ". [See full Appellate Research Brief for complete synthesis.]"
 
         # Parse the synthesis into sub-sections
         sections = re_mod.split(r"###\s+", truncated_synthesis)
@@ -659,7 +659,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
                         clean = re_mod.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", clean)
                         story.append(Paragraph(clean, styles['QBBody']))
     else:
-        story.append(Paragraph("Counsel Synthesis not available. Generate a new Barrister View report with the latest prompt to include this section.", styles['QBBody']))
+        story.append(Paragraph("Counsel Synthesis not available. Generate a new Appellate Research Brief report with the latest prompt to include this section.", styles['QBBody']))
 
     story.append(Spacer(1, 4*mm))
     story.append(line_table)
@@ -712,7 +712,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         story.append(Spacer(1, 2*mm))
 
     if len(grounds) > 3:
-        story.append(Paragraph(f"<i>{len(grounds) - 3} additional ground(s) detailed in the full Barrister View report.</i>", styles['QBBody']))
+        story.append(Paragraph(f"<i>{len(grounds) - 3} additional ground(s) detailed in the full Appellate Research Brief.</i>", styles['QBBody']))
 
     # Footer disclaimer
     story.append(Spacer(1, 6*mm))
@@ -730,7 +730,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     ))
 
     from services.export_footer import NumberedCanvas, build_footer_label
-    qb_footer_label = build_footer_label(case, "Barrister Quick Brief")
+    qb_footer_label = build_footer_label(case, "Quick Research Brief")
     numbered_canvas = NumberedCanvas(qb_footer_label)
     doc.build(story, canvasmaker=numbered_canvas)
     buffer.seek(0)

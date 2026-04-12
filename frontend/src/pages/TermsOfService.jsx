@@ -189,7 +189,7 @@ const TermsOfService = () => {
               <li>AI-generated chronological timeline analysis of case events</li>
               <li>AI identification and analysis of potential grounds of appeal</li>
               <li>Tiered AI-generated reports (Quick Summary, Full Detailed Report, Extensive Log Report)</li>
-              <li>Barrister View synthesis combining all three report tiers into a single counsel-ready brief</li>
+              <li>Appellate Research Brief synthesis combining all three report tiers into a single counsel-ready brief</li>
               <li>Case notes, collaboration tools, and progress tracking</li>
               <li>Legal framework references with links to legislation via AustLII</li>
               <li>PDF and Word (DOCX) document export functionality</li>

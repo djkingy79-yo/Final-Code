@@ -300,7 +300,7 @@ export default function BarristerView() {
         const detail = barristerRes.reason?.response?.data?.detail;
         setReport(null);
         setStatus("not_generated");
-        setErrorMessage(typeof detail === "string" ? detail : "Barrister Brief has not been generated yet. Generate it from the Reports section.");
+        setErrorMessage(typeof detail === "string" ? detail : "Appellate Research Brief has not been generated yet. Generate it from the Reports section.");
         return;
       }
 
@@ -404,12 +404,12 @@ export default function BarristerView() {
       return;
     }
 
-    const title = `Barrister Brief — ${caseData?.title || "Case"}`;
+    const title = `Appellate Research Brief — ${caseData?.title || "Case"}`;
     const notice = mode === "pdf"
       ? '<div class="preview-notice">PDF preview — use Print / Save as PDF to download.</div>'
       : "";
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
-    const previewFooterLabel = `Documented from the Criminal Law /Appeal Management Application - Barrister View Report - For ${caseData?.defendant_name || caseData?.title || "Appellant"} ${previewDate}`;
+    const previewFooterLabel = `Documented from the Criminal Law /Appeal Management Application - Appellate Research Brief Report - For ${caseData?.defendant_name || caseData?.title || "Appellant"} ${previewDate}`;
     const defendantName = caseData?.defendant_name || "Appellant";
     const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
     const documentsCount = documents.length;
@@ -616,7 +616,7 @@ export default function BarristerView() {
     <div class="report-header">
       <div class="header-row">
         <div>
-          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">Barrister Brief</div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">Appellate Research Brief</div>
           <h1>${title}</h1>
           <div class="meta-line">${meta}</div>
           <div class="badge">BARRISTER BRIEF</div>
@@ -749,12 +749,12 @@ export default function BarristerView() {
                 <div>
                   <p className="text-lg font-bold text-white">
                     {genElapsed < 10
-                      ? "Connecting to Barrister Engine"
+                      ? "Connecting to Analysis Engine"
                       : genElapsed < 30
                       ? "Loading Case Materials"
                       : genElapsed < 60
                       ? "Retrieving Source Reports"
-                      : "Preparing Barrister Brief"}
+                      : "Preparing Appellate Research Brief"}
                   </p>
                   <p className="text-sm text-white/80">
                     {genElapsed < 10
@@ -862,14 +862,14 @@ export default function BarristerView() {
               <AlertTriangle className="w-8 h-8 text-blue-600 flex-shrink-0 mt-1" />
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                  {status === "not_generated" ? "Barrister Brief Not Yet Generated" : "Barrister View Unavailable"}
+                  {status === "not_generated" ? "Appellate Research Brief Not Yet Generated" : "Appellate Research Brief Unavailable"}
                 </h1>
                 <p className="mt-3 text-slate-700 max-w-3xl">
-                  {errorMessage || "This case does not yet have the three completed standard reports required to unlock the Barrister View."}
+                  {errorMessage || "This case does not yet have the three completed standard reports required to unlock the Appellate Research Brief."}
                 </p>
                 {status === "not_generated" && (
                   <p className="mt-2 text-sm text-slate-500">
-                    Go to the Reports tab and select "Barrister View" then click "Generate Report" to create the brief.
+                    Go to the Reports tab and select "Appellate Research Brief" then click "Generate Report" to create the brief.
                   </p>
                 )}
               </div>
@@ -890,12 +890,12 @@ export default function BarristerView() {
                       {genElapsed < 30
                         ? "Synthesising All Reports"
                         : genElapsed < 120
-                        ? "Writing Barrister Analysis"
+                        ? "Writing Research Analysis"
                         : genElapsed < 300
                         ? "Building Grounds of Merit Assessment"
                         : genElapsed < 600
                         ? "Constructing Issue Matrix"
-                        : "Finalising Barrister Brief"}
+                        : "Finalising Appellate Research Brief"}
                     </p>
                     <p className="text-sm text-white/80">
                       {genElapsed < 30
@@ -948,7 +948,7 @@ export default function BarristerView() {
             <div className="flex items-start gap-4">
               <AlertTriangle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Barrister Brief generation failed</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Appellate Research Brief generation failed</h1>
                 <p className="mt-3 text-slate-700 max-w-3xl">{errorMessage || "The brief could not be generated on the last attempt."}</p>
                 <Button
                   className="mt-5 bg-blue-700 text-white hover:bg-blue-600"
@@ -968,9 +968,9 @@ export default function BarristerView() {
             <div className="bg-teal-500 text-white p-6 sm:p-8" data-testid="barrister-hero">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
-                  <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Barrister Brief</p>
+                  <p className="text-sm uppercase tracking-wider font-semibold text-white mb-1">Appellate Research Brief</p>
                   <h1 className="text-2xl sm:text-3xl font-bold text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="barrister-title">
-                    {caseData?.title || "Barrister Brief"}
+                    {caseData?.title || "Appellate Research Brief"}
                   </h1>
                   <p className="text-sm text-white/90 mt-1 font-medium">{caseData?.court || "Court"} — {(caseData?.state || "NSW").toUpperCase()}</p>
                 </div>

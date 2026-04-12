@@ -376,7 +376,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         'quick_summary': 'Case Summary Report (Free)',
         'full_detailed': 'Full Detailed Report ($150.00)',
         'extensive_log': 'Extensive Log Report ($200.00)',
-        'barrister_view': 'Barrister View Report'
+        'barrister_view': 'Appellate Research Brief'
     }
     title = report_type_labels.get(report.get('report_type'), 'Legal Report')
     resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)

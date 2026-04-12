@@ -34,7 +34,7 @@ const FEATURE_INFO = {
       "4-6 similar cases with AustLII decision links",
       "Step-by-step appeal filing guide for your court",
       "Strategic recommendations for presenting your case",
-      "PDF and Word export + Barrister View"
+      "PDF and Word export + Appellate Research Brief"
     ]
   },
   extensive_report: {
@@ -48,7 +48,7 @@ const FEATURE_INFO = {
       "Sentencing comparison with before/after sentence modelling",
       "Complete appeal strategy with oral & written submission advice",
       "Links to required appeal forms and court registries",
-      "Barrister conference dossier"
+      "Counsel conference dossier"
     ]
   }
 };

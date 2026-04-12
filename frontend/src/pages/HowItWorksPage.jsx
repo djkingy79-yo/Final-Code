@@ -218,23 +218,23 @@ const HowItWorksPage = () => {
       lightColor: "bg-indigo-50",
       borderColor: "border-indigo-200",
       textColor: "text-indigo-600",
-      description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis. All three reports must be generated to unlock the Barrister View.",
+      description: "In the Reports tab, select your report type. Each tier provides increasing depth of analysis. All three reports must be generated to unlock the Appellate Research Brief.",
       visual: {
         alt: "Reports tab showing generated reports with export options",
-        caption: "Three report tiers — from free overview to hearing-ready briefs. Generate all three to unlock Barrister View."
+        caption: "Three report tiers — from free overview to hearing-ready briefs. Generate all three to unlock Appellate Research Brief."
       },
       whatYouSee: [
         "Three report tiers to choose from (see pricing below)",
         "Each report generates with professional formatting: tables, links, case citations",
         "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice",
         "Reports can be exported as PDF or Word (DOCX) documents for legal consultations",
-        "All three reports must be generated before the Barrister View becomes available",
+        "All three reports must be generated before the Appellate Research Brief becomes available",
       ],
       proTips: [
         "Start with the FREE Quick Summary to get an overview before committing to a paid report",
         "Full Detailed Reports include legislation links and comparative sentencing tables",
         "Extensive Log Reports are designed to be handed directly to a barrister",
-        "Generate all three to unlock the Barrister View — the capstone synthesis",
+        "Generate all three to unlock the Appellate Research Brief — the capstone synthesis",
       ],
       showPricingAfter: true,
     },
@@ -376,7 +376,7 @@ const HowItWorksPage = () => {
         "20 sections — everything in Full Detailed plus 5 exclusives",
         "1,200+ words per ground with fallback positions and key authority",
         "Hearing preparation notes with anticipated bench questions",
-        "Barrister conference pack with authorities shortlist and orders sought",
+        "Counsel conference pack with authorities shortlist and orders sought",
         "Court pathway playbook with filing sequences for each court level",
         "Similar case search options with tailored AustLII queries",
         "Risk assessment with contingency planning per ground",
@@ -384,7 +384,7 @@ const HowItWorksPage = () => {
       ],
     },
     {
-      title: "Barrister View",
+      title: "Appellate Research Brief",
       price: "UNLOCKS",
       color: "bg-teal-600",
       badge: "bg-teal-400",
@@ -392,7 +392,7 @@ const HowItWorksPage = () => {
       features: [
         "Unlocks after all 3 reports are generated",
         "Capstone synthesis combining all three reports into one brief",
-        "Barrister-ready format with table of contents",
+        "Counsel-ready format with table of contents",
         "All grounds, strategies, and authorities consolidated",
         "Export to PDF or Word (DOCX) document for legal consultations",
       ],
@@ -447,7 +447,7 @@ const HowItWorksPage = () => {
             How It Works — Step by Step
           </h1>
           <p className="text-slate-700 max-w-3xl mx-auto text-sm md:text-base mb-6" data-testid="how-it-works-hero-description">
-            Follow this detailed guide to go from uploading your first document to having a barrister-ready appeal report. Every screen explained.
+            Follow this detailed guide to go from uploading your first document to having a counsel-ready appeal report. Every screen explained.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-700">
@@ -629,7 +629,7 @@ const HowItWorksPage = () => {
               </div>
             </section>
 
-            {/* Report Pricing + Barrister View — rendered after the Reports step */}
+            {/* Report Pricing + Appellate Research Brief — rendered after the Reports step */}
             {step.showPricingAfter && (
               <section className="pt-4" data-testid="how-it-works-pricing-section">
                 <div className="text-center mb-8">

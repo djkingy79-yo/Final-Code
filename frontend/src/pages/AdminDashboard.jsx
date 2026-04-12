@@ -332,7 +332,7 @@ const AdminDashboard = () => {
                       <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.extensive_log || 0}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-600">Barrister View</span>
+                      <span className="text-sm text-slate-600">Appellate Research Brief</span>
                       <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.barrister_view || 0}</span>
                     </div>
                   </div>

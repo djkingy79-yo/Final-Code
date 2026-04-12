@@ -529,7 +529,7 @@ const HelpPage = ({ user }) => {
               <li><strong>"Export PDF"</strong> — Download as PDF file</li>
               <li><strong>"Export Word"</strong> — Download as editable Word document</li>
               <li><strong>"Print"</strong> — Print directly from browser</li>
-              <li><strong>"Barrister View"</strong> — Clean A4 format for presentation</li>
+              <li><strong>"Appellate Research Brief"</strong> — Clean A4 format for presentation</li>
             </ul>
           </div>
         </div>
@@ -551,12 +551,12 @@ const HelpPage = ({ user }) => {
     },
     {
       id: "barrister",
-      title: "Barrister View",
+      title: "Appellate Research Brief",
       icon: <Eye className="w-5 h-5" />,
       content: (
         <ol className="list-decimal list-inside space-y-2 text-slate-700">
           <li>Open any report</li>
-          <li>Click <strong>"Barrister View"</strong> button</li>
+          <li>Click <strong>"Appellate Research Brief"</strong> button</li>
           <li>This shows a clean, professional A4 format with:
             <ul className="list-disc list-inside ml-4 mt-1">
               <li>Case information header</li>

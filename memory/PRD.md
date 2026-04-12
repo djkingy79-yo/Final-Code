@@ -1,10 +1,10 @@
 # Appeal Case Manager — Product Requirements Document
 
 ## Original Problem Statement
-Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features: secure document management, AI-powered case analysis, tiered reporting system (Free Quick Summary, $150 Full Detailed, $200 Extensive Log, locked Barrister View).
+Build "Appeal Case Manager" to assist with criminal appeals across Australian jurisdictions. Features: secure document management, AI-powered case analysis, tiered reporting system (Free Quick Summary, $150 Full Detailed, $200 Extensive Log, locked Appellate Research Brief).
 
 ## Core Requirements
-- **Report Tiers:** Strictly scale in depth. Barrister View is capstone synthesis.
+- **Report Tiers:** Strictly scale in depth. Appellate Research Brief is capstone synthesis.
 - **Report Language:** STRICT third-person educational tool. No "we", "us", "our", "you", "your". Forensic appellate language.
 - **Branding:** Forced light mode globally. High contrast only. No amber/brown (blue/slate/navy). Bright blue action buttons with white text.
 - **Print/Export:** Exacting standards for footer, TOC, paragraph numbering, layout parity between on-screen and exported (PDF/Word/Print).
@@ -21,14 +21,14 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 
 ## Key Files
 - `/app/frontend/src/utils/exportHtml.js` — Shared export CSS/HTML wrapper
-- `/app/frontend/src/pages/BarristerView.jsx` — Barrister Brief view + custom export builder
+- `/app/frontend/src/pages/BarristerView.jsx` — Appellate Research Brief view + custom export builder
 - `/app/frontend/src/pages/ReportView.jsx` — Standard report view + custom export builder
 - `/app/frontend/src/pages/CaseDetail.jsx` — Case detail with Print All/PDF All/Word All + Progress export
 
 ## What's Been Implemented
 
 ### Completed (Previous Sessions)
-- Full multi-tier report generation pipeline (Quick Summary, Full Detailed, Extensive Log, Barrister View)
+- Full multi-tier report generation pipeline (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief)
 - Document upload & management
 - Timeline generation & analysis
 - Grounds of Merit identification & investigation
@@ -44,7 +44,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - TOC formats synchronised to 2-column grid
 - Case Metadata warning styling updated
 - Translation API DuplicateKeyError fixed
-- Barrister View PDF export rewritten with inline Tailwind CSS
+- Appellate Research Brief PDF export rewritten with inline Tailwind CSS
 - Quick Brief blank page fixed
 
 ### Completed (11 April 2026 — Current Session)
@@ -65,7 +65,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - Tested: 10-chunk German translation completed in ~2 minutes via polling (130K chars)
 
 ## Remaining / Backlog
-- **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Barrister View
+- **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
 
 ## Test Credentials
 - Email: djkingy79@gmail.com

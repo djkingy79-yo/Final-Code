@@ -237,7 +237,7 @@ const LandingPage = () => {
                 Criminal Law Appeal Case Management
               </h1>
               <p className="text-lg md:text-xl text-slate-700 mb-6 max-w-xl leading-relaxed">
-                Organise case documents, generate timelines, and produce educational appeal reports with comparative sentencing tables, options matrices, and barrister-ready strategy notes across all Australian jurisdictions. This Application does not guarantee any particular outcome in any legal matter.
+                Organise case documents, generate timelines, and produce educational appeal reports with comparative sentencing tables, options matrices, and counsel-ready strategy notes across all Australian jurisdictions. This Application does not guarantee any particular outcome in any legal matter.
               </p>
               
               {/* State Badges — DO NOT UNDO */}
@@ -501,10 +501,10 @@ const LandingPage = () => {
                 <h3 className="font-bold text-slate-900 text-lg">Reports & Export</h3>
               </div>
               <p className="text-slate-700 text-sm mb-3">
-                Generate educational reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Barrister View for conference-ready presentations.
+                Generate educational reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Appellate Research Brief for conference-ready presentations.
               </p>
               <div className="text-orange-400 text-xs font-medium">
-                ✓ Professional formatting • Barrister View • Document bundling
+                ✓ Professional formatting • Appellate Research Brief • Document bundling
               </div>
             </div>
 
@@ -600,7 +600,7 @@ const LandingPage = () => {
               </h3>
               <p className="text-slate-600 text-sm">
                 Create detailed reports with legal citations, case law references, and structured analysis. 
-                Export to PDF or present in Barrister View for legal meetings.
+                Export to PDF or present in Appellate Research Brief for legal meetings.
               </p>
             </div>
           </div>
@@ -701,7 +701,7 @@ const LandingPage = () => {
               <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Presentation className="w-7 h-7 text-indigo-300" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 4 — Barrister View</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 4 — Appellate Research Brief</h3>
               <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
             </div>
           </div>
@@ -962,10 +962,10 @@ const LandingPage = () => {
                   </svg>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <strong className="text-teal-700">Barrister View</strong>
+                      <strong className="text-teal-700">Appellate Research Brief</strong>
                       <span className="text-teal-700 font-bold text-xs">UNLOCKS AFTER ALL 3</span>
                     </div>
-                    <p className="text-sm text-slate-700 mt-1">Capstone synthesis combining all three reports into a single barrister-ready brief with all grounds, strategies, and authorities consolidated</p>
+                    <p className="text-sm text-slate-700 mt-1">Capstone synthesis combining all three reports into a single counsel-ready brief with all grounds, strategies, and authorities consolidated</p>
                   </div>
                 </li>
               </ul>
@@ -1089,8 +1089,8 @@ const LandingPage = () => {
 
           <div className="mt-4 bg-teal-50 border border-teal-200 rounded-xl p-4 text-center" data-testid="barrister-view-comparison-note">
             <p className="text-teal-800 font-semibold text-sm">
-              <strong className="text-teal-900">Barrister View</strong> — Unlocks after all three reports above are generated. 
-              A capstone synthesis combining every ground, strategy, authority, and recommendation into a single barrister-ready brief.
+              <strong className="text-teal-900">Appellate Research Brief</strong> — Unlocks after all three reports above are generated. 
+              A capstone synthesis combining every ground, strategy, authority, and recommendation into a single counsel-ready brief.
             </p>
           </div>
 

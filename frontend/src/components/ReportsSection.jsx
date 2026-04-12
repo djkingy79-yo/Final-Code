@@ -106,7 +106,7 @@ const REPORT_TYPES = [
   { 
     value: "full_detailed", 
     label: "Full Detailed Report", 
-    description: "Barrister-grade deep dossier with comparative sentencing, appeal forms, external case links and full options matrix",
+    description: "Counsel-grade deep dossier with comparative sentencing, appeal forms, external case links and full options matrix",
     price: 150.00,
     priceId: "full_report",
     isFree: false,
@@ -315,7 +315,7 @@ const ReportsSection = ({
     setGeneratingReport(true);
     setGenElapsed(0);
     setShowReportDialog(false);
-    toast.info("Generating Barrister Brief — this may take 10-20 minutes...");
+    toast.info("Generating Appellate Research Brief — this may take 10-20 minutes...");
 
     const startTime = Date.now();
     elapsedRef.current = setInterval(() => {
@@ -333,7 +333,7 @@ const ReportsSection = ({
       if (status === "generating" && reportId) {
         pollForCompletion(reportId);
       } else if (status === "completed") {
-        toast.success("Barrister Brief generated successfully!");
+        toast.success("Appellate Research Brief generated successfully!");
         if (onReportsChange) onReportsChange();
         setGeneratingReport(false);
         if (elapsedRef.current) clearInterval(elapsedRef.current);
@@ -341,10 +341,10 @@ const ReportsSection = ({
     } catch (error) {
       const isTimeout = error?.code === "ECONNABORTED";
       if (isTimeout) {
-        toast.info("Barrister Brief generation started — it will appear in your reports list when complete.");
+        toast.info("Appellate Research Brief generation started — it will appear in your reports list when complete.");
         if (onReportsChange) onReportsChange();
       } else {
-        toast.error(error?.response?.data?.detail || "Failed to start Barrister Brief generation");
+        toast.error(error?.response?.data?.detail || "Failed to start Appellate Research Brief generation");
       }
       setGeneratingReport(false);
       if (elapsedRef.current) clearInterval(elapsedRef.current);
@@ -825,7 +825,7 @@ const ReportsSection = ({
               quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
-              barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Barrister Brief", price: "CAPSTONE" },
+              barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Appellate Research Brief", price: "CAPSTONE" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
             
             /* DO NOT UNDO — Content card wrapped with statusBanner above it */
@@ -896,7 +896,7 @@ const ReportsSection = ({
                           data-testid={`view-report-btn-${report.report_id}`}
                         >
                           <Eye className="w-4 h-4 mr-1.5" />
-                          {report.report_type === 'barrister_view' ? 'View Barrister Brief' : 'Full Report Page'}
+                          {report.report_type === 'barrister_view' ? 'View Appellate Research Brief' : 'Full Report Page'}
                         </Button>
                         <Button
                           variant="outline"
@@ -1063,7 +1063,7 @@ const ReportsSection = ({
               );
             })}
 
-            {/* Barrister View - locked option */}
+            {/* Appellate Research Brief - locked option */}
             <div
               className={`p-4 border-2 rounded-xl transition-all ${
                 hasAllReports
@@ -1081,14 +1081,14 @@ const ReportsSection = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <h4 className={`font-bold text-base ${hasAllReports ? 'text-slate-900' : 'text-slate-400'}`}>Barrister View</h4>
+                    <h4 className={`font-bold text-base ${hasAllReports ? 'text-slate-900' : 'text-slate-400'}`}>Appellate Research Brief</h4>
                     <Badge variant="outline" className={`px-3 py-1 text-xs font-bold ${hasAllReports ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-slate-100 text-slate-400 border-slate-200'}`}>
                       {hasAllReports ? 'UNLOCKED' : 'LOCKED'}
                     </Badge>
                   </div>
                   <p className={`text-sm mb-2 ${hasAllReports ? 'text-slate-600' : 'text-slate-400'}`}>
                     {hasAllReports
-                      ? "Capstone synthesis combining all three reports into a single barrister-ready brief. Click Generate to create."
+                      ? "Capstone synthesis combining all three reports into a single counsel-ready brief. Click Generate to create."
                       : "Generate and pay for all three reports to unlock this view."}
                   </p>
                   {!hasAllReports && (
@@ -1101,7 +1101,7 @@ const ReportsSection = ({
                   )}
                   {hasAllReports && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
-                      {["All-in-one brief", "Barrister-ready format", "Complete case synthesis"].map((f, i) => (
+                      {["All-in-one brief", "Counsel-ready format", "Complete case synthesis"].map((f, i) => (
                         <span key={i} className="flex items-center gap-1 text-xs text-blue-700">
                           <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
                           {f}
