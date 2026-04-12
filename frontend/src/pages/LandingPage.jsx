@@ -504,7 +504,7 @@ const LandingPage = () => {
                 Generate educational reports with legal citations, comparative sentencing tables, relief options matrices, export to PDF/DOCX, and use Appellate Research Brief for conference-ready presentations.
               </p>
               <div className="text-orange-400 text-xs font-medium">
-                ✓ Professional formatting • Appellate Research Brief • Document bundling
+                ✓ Professional formatting • Appellate Research Brief • Document bundling • Translate reports into 41 languages
               </div>
             </div>
 
@@ -600,7 +600,7 @@ const LandingPage = () => {
               </h3>
               <p className="text-slate-600 text-sm">
                 Create detailed reports with legal citations, case law references, and structured analysis. 
-                Export to PDF or present in Appellate Research Brief for legal meetings.
+                Export to PDF or present in Appellate Research Brief for legal meetings. Translate any report into 41 languages.
               </p>
             </div>
           </div>
@@ -626,6 +626,10 @@ const LandingPage = () => {
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Progress tracker for appeal process</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Translate reports into 41 languages</span>
                   </li>
                 </ul>
               </div>

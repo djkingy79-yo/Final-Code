@@ -109,7 +109,7 @@ const HowToUsePage = () => {
       icon: FileCheck,
       color: "indigo",
       image: "/images/howto/live-step8-reports.png",
-      description: "Create professional reports summarising your case, grounds, and findings. Three tiers are available, each with increasing depth of analysis. All reports can be exported as PDF or Word documents.",
+      description: "Create professional reports summarising your case, grounds, and findings. Three tiers are available, each with increasing depth of analysis. All reports can be exported as PDF or Word documents and translated into 41 languages.",
       instructions: [
         "Go to the 'Reports' tab in your case",
         "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
@@ -117,6 +117,7 @@ const HowToUsePage = () => {
         "Full Detailed: 15 sections, 15,000-20,000 words — includes comparative sentencing, submissions blueprint, and 800+ words per ground",
         "Extensive Log: 20 sections, 25,000-35,000 words — includes 5 exclusive sections (hearing prep, conference pack, risk assessment) and 1,200+ words per ground",
         "Download reports as PDF or Word (DOCX) documents to share with your lawyer",
+        "Translate any report into 41 languages using the Translate button",
         "All three reports must be generated to unlock the Appellate Research Brief"
       ],
       tip: "The Full Detailed Report is ideal to take to a lawyer for initial review. Generate all three to unlock the Appellate Research Brief — the capstone counsel-ready brief.",

@@ -121,6 +121,10 @@ const faqs = [
       {
         q: "Can I share reports with my lawyer?",
         a: "Yes! Reports can be downloaded as PDF and shared with anyone. The professional formatting makes them suitable for review by barristers, solicitors, and legal aid services."
+      },
+      {
+        q: "Can I translate reports into other languages?",
+        a: "Yes! Any report can be translated into 41 languages including Chinese, Hindi, Arabic, Vietnamese, Korean, Thai, Filipino, Greek, Turkish, Italian, Spanish, French, German, Maori, Samoan, Tongan, and many more. Just click the 'Translate' button on any generated report. Translations are cached so you only pay for the first translation of each report."
       }
     ]
   },

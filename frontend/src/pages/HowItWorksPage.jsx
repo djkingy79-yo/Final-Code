@@ -229,6 +229,7 @@ const HowItWorksPage = () => {
         "Each report generates with professional formatting: tables, links, case citations",
         "Sections include: Case Overview, Grounds of Appeal, Comparative Sentencing, Legislation, Strategic Advice",
         "Reports can be exported as PDF or Word (DOCX) documents for legal consultations",
+        "Translate any report into 41 languages for non-English-speaking clients or family members",
         "All three reports must be generated before the Appellate Research Brief becomes available",
       ],
       proTips: [

@@ -125,7 +125,7 @@ const ProfessionalSummary = () => {
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
-                  <span><strong>Document Export:</strong> All reports can be exported as professionally formatted PDF or Word (DOCX) documents with proper legal disclaimers, page numbering, and court-ready typography suitable for briefing counsel or inclusion in appeal documentation.</span>
+                  <span><strong>Document Export:</strong> All reports can be exported as professionally formatted PDF or Word (DOCX) documents with proper legal disclaimers, page numbering, and court-ready typography suitable for briefing counsel or inclusion in appeal documentation. Reports can be translated into 41 languages for non-English-speaking clients and family members.</span>
                 </li>
               </ul>
             </CardContent>
@@ -286,7 +286,7 @@ const ProfessionalSummary = () => {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">7</span>
-                <span><strong>Export and Briefing:</strong> All reports export to professionally formatted PDF or Word documents suitable for briefing counsel, filing with court, or inclusion in appeal books. The Appellate Research Brief is formatted specifically for conference-ready presentation.</span>
+                <span><strong>Export and Briefing:</strong> All reports export to professionally formatted PDF or Word documents suitable for briefing counsel, filing with court, or inclusion in appeal books. The Appellate Research Brief is formatted specifically for conference-ready presentation. Reports can be translated into 41 languages.</span>
               </li>
             </ol>
           </div>
