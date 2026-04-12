@@ -1331,6 +1331,7 @@ const CaseDetail = ({ user }) => {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex flex-col gap-4">
+            <p className="text-sm font-bold text-blue-700 uppercase tracking-wide" data-testid="case-tabs-heading">Select a tab below to manage your case</p>
             <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
               <TabsList className="bg-white border border-slate-200 rounded-xl p-1 inline-flex min-w-max">
                 <TabsTrigger value="documents" className="rounded-lg text-xs sm:text-sm px-2 sm:px-3" data-testid="tab-documents">
