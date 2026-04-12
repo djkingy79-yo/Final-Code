@@ -277,48 +277,16 @@ const CaselawSearchPage = () => {
             Find cases similar to yours, understand legal precedents, and research appeal outcomes.
           </p>
           <a 
-            href="https://www.austlii.edu.au/"
+            href="https://www.caselaw.nsw.gov.au/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
+            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
             data-testid="caselaw-hero-austlii-btn"
           >
             <Search className="w-4 h-4" />
-            Search AustLII — All Australian Courts
+            Live Search on Caselaw
             <ExternalLink className="w-4 h-4" />
           </a>
-        </div>
-      </section>
-
-      {/* What is Caselaw */}
-      <section className="py-8 px-6 bg-blue-50 border-b border-blue-200">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h2 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-blue-600" />
-                What is Case Law?
-              </h2>
-              <p className="text-slate-700 text-sm leading-relaxed">
-                Case law (also called "precedent" or "judge-made law") consists of the written decisions made by judges 
-                when they decide cases. These decisions interpret legislation, apply legal principles, and create 
-                binding precedents that other courts must follow.
-              </p>
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-blue-600" />
-                Why Search Case Law?
-              </h2>
-              <ul className="text-slate-700 text-sm space-y-1">
-                <li>• Find cases with similar facts to yours</li>
-                <li>• Understand how courts interpret specific laws</li>
-                <li>• Research successful appeal arguments</li>
-                <li>• Identify sentencing patterns and ranges</li>
-                <li>• Support your own legal arguments with precedent</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -448,7 +416,7 @@ const CaselawSearchPage = () => {
                   href="https://www.austlii.edu.au/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-800 hover:bg-blue-900 text-white border-2 border-white px-6 py-3 rounded-xl font-bold flex items-center gap-2"
+                  className="bg-red-600 hover:bg-red-500 text-white border-2 border-white px-6 py-3 rounded-xl font-bold flex items-center gap-2"
                 >
                   Search AustLII
                   <ExternalLink className="w-4 h-4" />
