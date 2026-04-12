@@ -236,7 +236,7 @@ const LandingPage = () => {
               >
                 Criminal Law Appeal Case Management
               </h1>
-              <p className="text-lg md:text-xl text-slate-700 mb-6 max-w-xl leading-relaxed">
+              <p className="text-base text-slate-700 mb-6 max-w-xl leading-relaxed">
                 Organise case documents, generate timelines, and produce educational appeal reports with comparative sentencing tables, options matrices, and counsel-ready strategy notes across all Australian jurisdictions. This Application does not guarantee any particular outcome in any legal matter.
               </p>
               
