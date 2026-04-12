@@ -16,7 +16,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')
 SESSION_TOKEN = "b23b07fbf4b44749a4d228d0feba92e2"
 CASE_ID = "case_ba08d8e0ad0d"
 REPORT_ID = "rpt_1d3ddfc9c595"
@@ -53,7 +53,7 @@ class TestHealthAndBasicEndpoints:
         assert len(languages) == 41, f"Expected 41 languages, got {len(languages)}"
         print(f"Languages endpoint: {len(languages)} languages returned")
         # Verify some key languages exist
-        lang_codes = [l["code"] for l in languages]
+        lang_codes = [lang["code"] for lang in languages]
         assert "zh" in lang_codes, "Chinese (Simplified) should be available"
         assert "es" in lang_codes, "Spanish should be available"
         assert "ar" in lang_codes, "Arabic should be available"

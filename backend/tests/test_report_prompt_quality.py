@@ -19,16 +19,7 @@ def auth_session():
     """Create authenticated session for testing"""
     session = requests.Session()
     session.headers.update({"Content-Type": "application/json"})
-    
-    # Login
-    login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-        "email": TEST_EMAIL,
-        "password": TEST_PASSWORD
-    })
-    
-    if login_response.status_code != 200:
-        pytest.skip(f"Login failed with status {login_response.status_code}: {login_response.text}")
-    
+    session.headers["Authorization"] = "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"
     return session
 
 

@@ -11,7 +11,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
@@ -24,17 +24,8 @@ TEST_BARRISTER_REPORT_ID = "rpt_1d3ddfc9c595"
 
 @pytest.fixture(scope="module")
 def auth_token():
-    """Get authentication token for API calls"""
-    response = requests.post(
-        f"{BASE_URL}/api/auth/login",
-        json={"email": TEST_EMAIL, "password": TEST_PASSWORD}
-    )
-    if response.status_code == 200:
-        data = response.json()
-        # This app uses session_token
-        return data.get("session_token") or data.get("token") or data.get("access_token")
-    pytest.skip(f"Authentication failed: {response.status_code} - {response.text}")
-
+    """Return session token directly (Google OAuth - no email/password login)"""
+    return "61bbcd763e9a47ed8d7ad1a7bcf1854a"
 
 @pytest.fixture(scope="module")
 def auth_headers(auth_token):
@@ -86,7 +77,7 @@ class TestTranslatorDuplicateKeyFix:
         
         data = response2.json()
         # Should be cached on retry
-        assert data.get("cached") == True, "Second request should return cached translation"
+        assert data.get("cached") is True, "Second request should return cached translation"
         print("SUCCESS: Retry translation returned cached result without DuplicateKeyError")
     
     def test_translate_different_language(self, auth_headers):
@@ -155,7 +146,7 @@ class TestLanguagesEndpoint:
         languages = data["languages"]
         
         # Verify some expected languages exist
-        lang_codes = [l["code"] for l in languages]
+        lang_codes = [lang["code"] for lang in languages]
         assert "es" in lang_codes, "Spanish not in supported languages"
         assert "fr" in lang_codes, "French not in supported languages"
         assert "zh" in lang_codes, "Chinese not in supported languages"

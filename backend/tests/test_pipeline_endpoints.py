@@ -18,12 +18,12 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')
 
 # Test credentials from test_credentials.md
 TEST_EMAIL = "test@example.com"
 TEST_PASSWORD = "TestPassword123!"
-TEST_CASE_ID = "case_87ef925be713"
+TEST_CASE_ID = "case_ba08d8e0ad0d"
 
 # Documents with content_text > 100 chars (from review request)
 DOCUMENT_IDS_WITH_CONTENT = [
@@ -45,17 +45,8 @@ def session():
     s = requests.Session()
     s.headers.update({"Content-Type": "application/json"})
     
-    # Login to get session token
-    login_response = s.post(f"{BASE_URL}/api/auth/login", json={
-        "email": TEST_EMAIL,
-        "password": TEST_PASSWORD
-    })
-    
-    if login_response.status_code == 200:
-        data = login_response.json()
-        token = data.get("session_token")
-        if token:
-            s.headers.update({"Authorization": f"Bearer {token}"})
+    # Use direct session token (Google OAuth - no email/password login)
+    s.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
     
     return s
 

@@ -25,7 +25,7 @@ class TestHealthCheck:
         response = requests.get(f"{BASE_URL}/api/")
         assert response.status_code == 200
         data = response.json()
-        assert "Justitia AI" in data.get("message", "")
+        assert "Criminal Appeal" in data.get("message", "")
         print("✓ API root endpoint passed")
 
 

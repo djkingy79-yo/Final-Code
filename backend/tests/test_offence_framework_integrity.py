@@ -52,7 +52,7 @@ class TestSectionReferences:
                         errors.append(f"{cat_key}/cth_legislation/{act_name}[{i}]: missing 'section'")
                     if not sec.get("title"):
                         errors.append(f"{cat_key}/cth_legislation/{act_name}[{i}]: missing 'title'")
-        assert not errors, f"Section reference errors:\n" + "\n".join(errors)
+        assert not errors, "Section reference errors:\n" + "\n".join(errors)
 
 
 class TestNoDuplicateSections:
@@ -71,7 +71,7 @@ class TestNoDuplicateSections:
                         if s in seen:
                             duplicates.append(f"{cat_key}/{leg_key}/{act_name}: duplicate '{s}'")
                         seen.add(s)
-        assert not duplicates, f"Duplicate sections found:\n" + "\n".join(duplicates)
+        assert not duplicates, "Duplicate sections found:\n" + "\n".join(duplicates)
 
 
 class TestAppealFrameworkCoverage:

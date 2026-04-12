@@ -16,8 +16,8 @@ import time
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials from the review request
-SESSION_TOKEN = "test_session_8962c167"
-CASE_ID = "case_b2aa32564f2b"
+SESSION_TOKEN = "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+CASE_ID = "case_ba08d8e0ad0d"
 EXISTING_REPORT_ID = "rpt_0d36ed7d31ab"
 ADMIN_USER_ID = "user_d2287f20104b"
 
@@ -26,7 +26,7 @@ ADMIN_USER_ID = "user_d2287f20104b"
 def auth_session():
     """Create authenticated session with cookie"""
     session = requests.Session()
-    session.cookies.set("session_token", SESSION_TOKEN)
+    session.headers['Authorization'] = f'Bearer {SESSION_TOKEN}'
     session.headers.update({"Content-Type": "application/json"})
     return session
 

@@ -12,9 +12,9 @@ import requests
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials from previous iteration (iteration_26)
-ADMIN_SESSION_TOKEN = "sFc-8brIFR8jJ1vVbc5ioTxkGjMV5gd92JhLnJfb9nQ"
-TEST_CASE_ID = "case_cec9b5706fae"
-TEST_REPORT_ID = "rpt_01e4334f84b9"
+ADMIN_SESSION_TOKEN = "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+TEST_CASE_ID = "case_ba08d8e0ad0d"
+TEST_REPORT_ID = "rpt_1d3ddfc9c595"
 
 
 @pytest.fixture(scope="module")
@@ -23,7 +23,7 @@ def auth_session():
     session = requests.Session()
     session.headers.update({
         "Content-Type": "application/json",
-        "Cookie": f"session_token={ADMIN_SESSION_TOKEN}"
+        "Authorization": f"Bearer {ADMIN_SESSION_TOKEN}"
     })
     return session
 

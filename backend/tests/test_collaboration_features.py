@@ -10,8 +10,8 @@ BASE_URL = 'http://localhost:8001'
 # Test credentials
 TEST_EMAIL = "test@example.com"
 TEST_PASSWORD = "TestPassword123!"
-TEST_CASE_ID = "case_a97ea91f0692"  # Dummy Murder Appeal Demonstration
-TEST_SESSION_TOKEN = "test_token_placeholder"
+TEST_CASE_ID = "case_ba08d8e0ad0d"  # Dummy Murder Appeal Demonstration
+TEST_SESSION_TOKEN = "61bbcd763e9a47ed8d7ad1a7bcf1854a"
 
 
 class TestCollaborationAPIs:
