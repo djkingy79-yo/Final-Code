@@ -144,6 +144,7 @@ const AuthCallback = () => {
         );
         if (response.data?.session_token) {
           localStorage.setItem("session_token", response.data.session_token);
+          localStorage.setItem("auth_user", JSON.stringify(response.data));
         }
         sessionStorage.removeItem("auth_retry_count");
         navigate("/dashboard", { replace: true, state: { user: response.data } });
@@ -219,6 +220,7 @@ const AuthCallback = () => {
               data-testid="auth-go-home-btn"
               onClick={() => {
                 localStorage.removeItem("session_token");
+                localStorage.removeItem("auth_user");
                 window.location.href = "/";
               }}
               className="w-full px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
@@ -249,7 +251,9 @@ const AuthCallback = () => {
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const initialUser = location.state?.user || null;
+  const stateUser = location.state?.user || null;
+  const cachedUser = (() => { try { const u = localStorage.getItem("auth_user"); return u ? JSON.parse(u) : null; } catch { return null; } })();
+  const initialUser = stateUser || cachedUser;
   const [isAuthenticated, setIsAuthenticated] = useState(initialUser ? true : null);
   const [termsAccepted, setTermsAccepted] = useState(initialUser ? initialUser.terms_accepted === true : null);
   const [user, setUser] = useState(initialUser);
@@ -274,6 +278,7 @@ const ProtectedRoute = ({ children }) => {
         setIsAuthenticated(true);
         setTermsAccepted(response.data.terms_accepted === true);
         setAuthFailed(false);
+        localStorage.setItem("auth_user", JSON.stringify(response.data));
       } catch (error) {
         if (attempt < 5) {
           await new Promise(r => setTimeout(r, 1500 * attempt));
@@ -324,7 +329,7 @@ const ProtectedRoute = ({ children }) => {
             </button>
             <button
               data-testid="session-relogin-btn"
-              onClick={() => { localStorage.removeItem("session_token"); navigate("/", { replace: true }); }}
+              onClick={() => { localStorage.removeItem("session_token"); localStorage.removeItem("auth_user"); navigate("/", { replace: true }); }}
               className="w-full px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
             >
               Log In Again

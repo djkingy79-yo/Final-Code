@@ -183,9 +183,11 @@ const Dashboard = ({ user }) => {
     try {
       await axios.post(`${API}/auth/logout`);
       localStorage.removeItem("session_token");
+      localStorage.removeItem("auth_user");
       navigate("/", { replace: true });
     } catch (error) {
       localStorage.removeItem("session_token");
+      localStorage.removeItem("auth_user");
       navigate("/", { replace: true });
     }
   };
