@@ -392,7 +392,8 @@ const CaselawSearchPage = () => {
                   className="text-left p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold bg-red-600"
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold"
+                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
                     >
                       {state.abbrev}
                     </div>
