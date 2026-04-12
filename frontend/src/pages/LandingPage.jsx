@@ -292,7 +292,7 @@ const LandingPage = () => {
                 <img 
                   src="/logo.png" 
                   alt="Criminal Law Appeal Management - Founded by Deb King"
-                  className="rounded-3xl shadow-2xl w-full object-contain ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] bg-slate-900 p-4"
+                  className="rounded-3xl shadow-2xl w-full object-contain ios-image-safe image-safe h-[320px] sm:h-[400px] lg:h-[500px] bg-slate-900 p-2"
                   loading="eager"
                   decoding="async"
                 />
