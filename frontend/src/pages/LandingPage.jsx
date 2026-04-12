@@ -655,8 +655,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-what-it-does" />
-
       {/* ============================================ */}
       {/* HOW THE PROCESS WORKS — Steps 1-4 */}
       {/* ============================================ */}
@@ -781,8 +779,6 @@ const LandingPage = () => {
       {/* ============================================ */}
       <StateAppealStats />
 
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-pricing" />
-
       {/* ============================================ */}
       {/* SECTION 3: LEGAL RESOURCES & RESEARCH */}
       {/* ============================================ */}
@@ -845,8 +841,6 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-
-      <SectionBackToTop onClick={scrollToTop} testId="landing-back-to-top-after-about" />
 
       {/* ============================================ */}
       {/* SECTION 5: PRICING */}
