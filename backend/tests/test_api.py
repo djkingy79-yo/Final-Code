@@ -7,7 +7,7 @@ import requests
 import os
 
 BASE_URL = 'http://localhost:8001'
-SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', '')
+SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', '61bbcd763e9a47ed8d7ad1a7bcf1854a')
 
 class TestHealthCheck:
     """Health check tests"""

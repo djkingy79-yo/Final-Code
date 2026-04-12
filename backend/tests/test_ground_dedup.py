@@ -7,6 +7,7 @@ Verifies that:
 """
 import asyncio
 import sys
+import pytest
 sys.path.insert(0, '/app/backend')
 
 from services.ground_dedup import (
@@ -215,6 +216,7 @@ def test_australian_spelling():
     return failures == 0
 
 
+@pytest.mark.asyncio
 async def test_cleanup_function():
     """Test the cleanup function against real DB data."""
     print("\n=== TEST 5: DB Cleanup Function ===")
@@ -293,6 +295,7 @@ async def test_cleanup_function():
     return success
 
 
+@pytest.mark.asyncio
 async def test_idempotent_sync():
     """Test that running sync multiple times doesn't create duplicates."""
     print("\n=== TEST 6: Idempotent Sync Simulation ===")

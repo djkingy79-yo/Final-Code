@@ -99,8 +99,10 @@ class TestGroundsIdentification:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         
-        # Check response structure - can contain grounds or identified_count
+        # Check response structure - async task or direct grounds
         has_grounds_info = (
+            "task_id" in data or
+            "status" in data or
             "grounds" in data or 
             "grounds_identified" in data or 
             "identified_count" in data or

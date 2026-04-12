@@ -205,7 +205,7 @@ class TestExistingFrameworkIntegrity:
         assert expected.issubset(set(OFFENCE_CATEGORIES.keys()))
 
     def test_all_states_exist(self):
-        expected = {"nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act"}
+        expected = {"nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act", "federal"}
         assert expected == set(AUSTRALIAN_STATES.keys())
 
     def test_appeal_framework_all_states(self):

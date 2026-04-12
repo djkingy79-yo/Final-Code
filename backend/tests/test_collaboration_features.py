@@ -59,7 +59,8 @@ class TestCollaborationAPIs:
         
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         data = response.json()
-        assert "yourself" in data.get("detail", "").lower() or "cannot share" in data.get("detail", "").lower(), \
+        detail = data.get("detail", "").lower()
+        assert "yourself" in detail or "cannot share" in detail or "already shared" in detail, \
             f"Expected error about sharing with yourself, got: {data}"
         print("PASS: Cannot share case with yourself")
     

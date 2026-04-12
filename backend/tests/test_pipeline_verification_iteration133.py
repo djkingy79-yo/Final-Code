@@ -11,7 +11,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstr
 # Test credentials
 TEST_EMAIL = "test@example.com"
 TEST_PASSWORD = "TestPassword123!"
-TEST_CASE_ID = "case_a97ea91f0692"  # Dummy Murder Appeal
+TEST_CASE_ID = "case_ba08d8e0ad0d"  # Dummy Murder Appeal
 
 
 class TestAuth:
