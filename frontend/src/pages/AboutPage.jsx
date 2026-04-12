@@ -90,9 +90,12 @@ const AboutPage = () => {
         
         <div className="max-w-4xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30" data-testid="about-hero-icon">
-              <Heart className="w-8 h-8 text-white" />
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Criminal Law Appeal Management - Founded by Deb King"
+              className="w-64 sm:w-80 md:w-96 rounded-2xl shadow-2xl"
+              data-testid="about-hero-logo"
+            />
           </div>
           <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3" data-testid="about-hero-eyebrow">My Story</p>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }} data-testid="about-hero-title">
