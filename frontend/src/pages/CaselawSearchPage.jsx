@@ -259,20 +259,34 @@ const CaselawSearchPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="py-12 px-6 bg-white">
+      <section className="py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-700 flex items-center justify-center">
-              <Search className="w-7 h-7 text-white" />
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Criminal Law Appeal Management"
+              className="h-28 sm:h-36 object-contain"
+              data-testid="caselaw-hero-logo"
+            />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Live Caselaw Search
           </h1>
-          <p className="text-slate-700 max-w-2xl mx-auto">
+          <p className="text-slate-700 max-w-2xl mx-auto mb-5">
             Search real Australian court decisions across all states and territories. 
             Find cases similar to yours, understand legal precedents, and research appeal outcomes.
           </p>
+          <a 
+            href="https://www.austlii.edu.au/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
+            data-testid="caselaw-hero-austlii-btn"
+          >
+            <Search className="w-4 h-4" />
+            Search AustLII — All Australian Courts
+            <ExternalLink className="w-4 h-4" />
+          </a>
         </div>
       </section>
 
@@ -410,8 +424,7 @@ const CaselawSearchPage = () => {
                   className="text-left p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold`}
-                      style={{ backgroundColor: state.color === 'blue' ? '#2563eb' : state.color === 'purple' ? '#9333ea' : state.color === 'red' ? '#dc2626' : state.color === 'blue_alt' ? '#1e3a8a' : state.color === 'emerald' ? '#059669' : state.color === 'teal' ? '#0d9488' : state.color === 'orange' ? '#ea580c' : state.color === 'indigo' ? '#4f46e5' : '#475569' }}
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-xs font-bold bg-red-600"
                     >
                       {state.abbrev}
                     </div>
