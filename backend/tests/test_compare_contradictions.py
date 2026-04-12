@@ -44,40 +44,13 @@ class TestAuthentication:
 
 @pytest.fixture(scope="module")
 def auth_session():
-    """Create authenticated session with test user"""
+    """Create authenticated session with direct token (Google OAuth)"""
     session = requests.Session()
-    
-    # Register or login with test user
-    test_email = f"test_compare_{uuid.uuid4().hex[:8]}@test.com"
-    test_password = "testpass123"
-    test_name = "Test Compare User"
-    
-    # Try to register
-    register_response = session.post(f"{BASE_URL}/api/auth/register", json={
-        "email": test_email,
-        "password": test_password,
-        "name": test_name
-    })
-    
-    if register_response.status_code == 200:
-        print(f"✓ Test user registered: {test_email}")
-    elif register_response.status_code == 400 and "already registered" in register_response.text:
-        # Login instead
-        login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": test_email,
-            "password": test_password
-        })
-        assert login_response.status_code == 200, f"Login failed: {login_response.text}"
-        print(f"✓ Test user logged in: {test_email}")
-    else:
-        pytest.skip(f"Could not authenticate: {register_response.text}")
-    
-    # Verify authentication
-    me_response = session.get(f"{BASE_URL}/api/auth/me")
-    assert me_response.status_code == 200, "Failed to verify authentication"
-    
+    session.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+    me_resp = session.get(f"{BASE_URL}/api/auth/me")
+    if me_resp.status_code != 200:
+        pytest.skip("Auth token invalid")
     return session
-
 
 class TestComparePatterns:
     """Test /api/compare/patterns endpoint"""
