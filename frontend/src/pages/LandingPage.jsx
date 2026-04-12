@@ -301,12 +301,12 @@ const LandingPage = () => {
             <div className="relative mt-8 lg:mt-0">
               <div className="relative max-w-md mx-auto lg:max-w-none">
                 <img 
-                  src="/images/stock/courtroom.jpg" 
-                  alt="Australian courtroom"
-                  className="rounded-3xl shadow-2xl w-full object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
+                  src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/6fe186d3d7a5b01e3d3c6076c0a6aefc22c07aea5667124e0978d927d9c58335.png" 
+                  alt="Barrister desk with gavel, authorities bundle, and appeal brief"
+                  className="rounded-3xl shadow-2xl w-full object-contain sm:object-cover ios-image-safe image-safe h-[280px] sm:h-[350px] lg:h-[450px] border-4 border-white/20 bg-slate-100"
                   loading="eager"
                   decoding="async"
-                  onError={(e) => { e.target.style.display = 'none'; }}
+                  onError={(e) => { e.target.src = '/images/stock/courtroom.jpg'; }}
                 />
                 {/* Floating Card - hidden (avoids misleading counts) */}
                 <div className="hidden" data-testid="hero-grounds-floating-card">
