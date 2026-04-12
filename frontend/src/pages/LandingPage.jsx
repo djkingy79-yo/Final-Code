@@ -169,7 +169,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-white text-center text-sm md:text-base font-medium notice-white" style={{ color: "#ffffff" }}>
             <AlertTriangle className="w-4 h-4 inline mr-2 -mt-0.5 text-white notice-white" style={{ color: "#ffffff" }} />
-            <strong className="text-white notice-white" style={{ color: "#ffffff" }}>NOT LEGAL ADVICE</strong> — Australian Law Only. Creator is not a lawyer. All results must be verified by a qualified legal professional.
+            <strong className="text-white notice-white" style={{ color: "#ffffff" }}>NOT LEGAL ADVICE</strong> — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All results must be verified by a qualified Australian legal professional. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.
             <Link to="/terms" className="landing-notice-link underline ml-2 notice-white">Read full terms</Link>
           </p>
         </div>
