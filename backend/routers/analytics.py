@@ -175,6 +175,57 @@ async def get_dashboard_stats(request: Request):
         # Reports generated
         total_reports = await db.reports.count_documents({}) if "reports" in await db.list_collection_names() else 0
         
+        # Reports by type (completed only)
+        reports_by_type = {}
+        for rtype in ["quick_summary", "full_detailed", "extensive_log", "barrister_view"]:
+            reports_by_type[rtype] = await db.reports.count_documents({"report_type": rtype, "status": "completed"})
+        
+        # === SALES METRICS ===
+        today_start = now.strftime("%Y-%m-%dT00:00:00")
+        week_start = week_ago.isoformat()
+        month_start = month_ago.isoformat()
+        
+        # Total sales (payments with amount > 0)
+        total_sales = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}})
+        sales_today = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": today_start}})
+        sales_7d = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": week_start}})
+        sales_30d = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": month_start}})
+        
+        # Total revenue
+        revenue_pipeline = [
+            {"$match": {"status": "completed", "amount": {"$gt": 0}}},
+            {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+        ]
+        revenue_result = await db.payments.aggregate(revenue_pipeline).to_list(1)
+        total_revenue = revenue_result[0]["total"] if revenue_result else 0
+        
+        # Revenue by period
+        revenue_today_pipeline = [
+            {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": today_start}}},
+            {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+        ]
+        rev_today_result = await db.payments.aggregate(revenue_today_pipeline).to_list(1)
+        revenue_today = rev_today_result[0]["total"] if rev_today_result else 0
+        
+        revenue_7d_pipeline = [
+            {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": week_start}}},
+            {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+        ]
+        rev_7d_result = await db.payments.aggregate(revenue_7d_pipeline).to_list(1)
+        revenue_7d = rev_7d_result[0]["total"] if rev_7d_result else 0
+        
+        revenue_30d_pipeline = [
+            {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": month_start}}},
+            {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+        ]
+        rev_30d_result = await db.payments.aggregate(revenue_30d_pipeline).to_list(1)
+        revenue_30d = rev_30d_result[0]["total"] if rev_30d_result else 0
+        
+        # Sales by feature type
+        sales_by_feature = {}
+        for ftype in ["full_report", "extensive_report", "grounds_of_merit"]:
+            sales_by_feature[ftype] = await db.payments.count_documents({"feature_type": ftype, "status": "completed", "amount": {"$gt": 0}})
+        
         # Deadlines tracked
         total_deadlines = await db.deadlines.count_documents({})
         
@@ -243,11 +294,23 @@ async def get_dashboard_stats(request: Request):
             },
             "engagement": {
                 "reports_generated": total_reports,
+                "reports_by_type": reports_by_type,
                 "deadlines_tracked": total_deadlines,
                 "notes_created": total_notes,
                 "contact_messages": total_messages,
                 "unread_messages": unread_messages,
                 "success_stories": total_stories
+            },
+            "sales": {
+                "total_sales": total_sales,
+                "today": sales_today,
+                "last_7d": sales_7d,
+                "last_30d": sales_30d,
+                "total_revenue": total_revenue,
+                "revenue_today": revenue_today,
+                "revenue_7d": revenue_7d,
+                "revenue_30d": revenue_30d,
+                "by_feature": sales_by_feature
             },
             "visits": {
                 "total": total_visits,

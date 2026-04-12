@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import {
   Users, Briefcase, FileText, TrendingUp, Activity, MessageCircle,
   Heart, Calendar, Eye, ArrowUp, ArrowDown, BarChart3,
-  CheckCircle, Clock, Building2, Loader2
+  CheckCircle, Clock, Building2, Loader2, DollarSign, ShoppingCart
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -237,6 +237,111 @@ const AdminDashboard = () => {
         </div>
 
         {/* Secondary Metrics */}
+        
+        {/* Sales & Revenue Section */}
+        {stats.sales && (
+          <Card className="mb-8 bg-gradient-to-r from-emerald-50 to-blue-50 border-emerald-200" data-testid="sales-section">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-emerald-600" />
+                Sales & Revenue
+              </CardTitle>
+              <CardDescription>Payment tracking across all report tiers</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Revenue Row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 text-center border border-emerald-200" data-testid="revenue-total">
+                  <DollarSign className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-emerald-700">${stats.sales.total_revenue?.toLocaleString() || 0}</p>
+                  <p className="text-xs text-emerald-600 font-medium">Total Revenue</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-blue-200" data-testid="revenue-today">
+                  <DollarSign className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-blue-700">${stats.sales.revenue_today?.toLocaleString() || 0}</p>
+                  <p className="text-xs text-blue-600 font-medium">Today</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-indigo-200" data-testid="revenue-7d">
+                  <DollarSign className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-indigo-700">${stats.sales.revenue_7d?.toLocaleString() || 0}</p>
+                  <p className="text-xs text-indigo-600 font-medium">Last 7 Days</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-purple-200" data-testid="revenue-30d">
+                  <DollarSign className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-purple-700">${stats.sales.revenue_30d?.toLocaleString() || 0}</p>
+                  <p className="text-xs text-purple-600 font-medium">Last 30 Days</p>
+                </div>
+              </div>
+
+              {/* Sales Count Row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 text-center border border-slate-200" data-testid="sales-total">
+                  <ShoppingCart className="w-6 h-6 text-slate-700 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-slate-900">{stats.sales.total_sales}</p>
+                  <p className="text-xs text-slate-600 font-medium">Total Sales</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-slate-200" data-testid="sales-today">
+                  <ShoppingCart className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-slate-900">{stats.sales.today}</p>
+                  <p className="text-xs text-slate-600 font-medium">Sales Today</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-slate-200" data-testid="sales-7d">
+                  <ShoppingCart className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-slate-900">{stats.sales.last_7d}</p>
+                  <p className="text-xs text-slate-600 font-medium">Sales (7 Days)</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 text-center border border-slate-200" data-testid="sales-30d">
+                  <ShoppingCart className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-slate-900">{stats.sales.last_30d}</p>
+                  <p className="text-xs text-slate-600 font-medium">Sales (30 Days)</p>
+                </div>
+              </div>
+
+              {/* Sales by Feature Type */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-4 border border-slate-200" data-testid="sales-by-feature">
+                  <p className="text-sm font-bold text-slate-700 mb-3">Sales by Report Tier</p>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Full Detailed Report ($150)</span>
+                      <span className="font-bold text-slate-900">{stats.sales.by_feature?.full_report || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Extensive Log Report ($200)</span>
+                      <span className="font-bold text-slate-900">{stats.sales.by_feature?.extensive_report || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Grounds of Merit</span>
+                      <span className="font-bold text-slate-900">{stats.sales.by_feature?.grounds_of_merit || 0}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-slate-200" data-testid="reports-by-type">
+                  <p className="text-sm font-bold text-slate-700 mb-3">Reports Generated (All)</p>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Quick Summary (Free)</span>
+                      <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.quick_summary || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Full Detailed</span>
+                      <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.full_detailed || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Extensive Log</span>
+                      <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.extensive_log || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Barrister View</span>
+                      <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.barrister_view || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <Card>
             <CardContent className="pt-6 text-center">
