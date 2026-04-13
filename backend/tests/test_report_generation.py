@@ -14,7 +14,7 @@ import requests
 import os
 
 BASE_URL = 'http://localhost:8001'
-SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', '61bbcd763e9a47ed8d7ad1a7bcf1854a')
+SESSION_TOKEN = os.environ.get('TEST_SESSION_TOKEN', 'ci_test_token_permanent_20260412')
 TEST_CASE_ID = os.environ.get('TEST_CASE_ID', '')
 
 

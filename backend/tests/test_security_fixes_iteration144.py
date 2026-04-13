@@ -127,17 +127,8 @@ class TestAuthFlow:
     
     def test_auth_me_with_bearer_token(self):
         """GET /api/auth/me with Bearer token returns user data"""
-        # First login to get token
-        login_response = requests.post(
-            f"{BASE_URL}/api/auth/login",
-            json={"email": TEST_EMAIL, "password": TEST_PASSWORD},
-            timeout=10
-        )
-        
-        if login_response.status_code != 200:
-            pytest.skip("Could not login to get token")
-        
-        token = login_response.json().get("session_token")
+        # Use direct session token (Google OAuth)
+        token = "ci_test_token_permanent_20260412"
         
         # Now test /auth/me
         response = requests.get(
@@ -154,17 +145,8 @@ class TestAuthFlow:
     
     def test_logout_invalidates_session(self):
         """POST /api/auth/logout invalidates session correctly"""
-        # First login to get token
-        login_response = requests.post(
-            f"{BASE_URL}/api/auth/login",
-            json={"email": TEST_EMAIL, "password": TEST_PASSWORD},
-            timeout=10
-        )
-        
-        if login_response.status_code != 200:
-            pytest.skip("Could not login to get token")
-        
-        token = login_response.json().get("session_token")
+        # Use direct session token (Google OAuth)
+        token = "ci_test_token_permanent_20260412"
         
         # Logout
         logout_response = requests.post(

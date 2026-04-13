@@ -10,7 +10,7 @@ import pytest
 import requests
 
 BASE_URL = 'http://localhost:8001'
-ADMIN_SESSION_TOKEN = "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+ADMIN_SESSION_TOKEN = "ci_test_token_permanent_20260412"
 CASE_ID = "case_ba08d8e0ad0d"
 
 

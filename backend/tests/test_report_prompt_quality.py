@@ -19,7 +19,7 @@ def auth_session():
     """Create authenticated session for testing"""
     session = requests.Session()
     session.headers.update({"Content-Type": "application/json"})
-    session.headers["Authorization"] = "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"
+    session.headers["Authorization"] = "Bearer ci_test_token_permanent_20260412"
     return session
 
 

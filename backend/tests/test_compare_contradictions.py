@@ -46,7 +46,7 @@ class TestAuthentication:
 def auth_session():
     """Create authenticated session with direct token (Google OAuth)"""
     session = requests.Session()
-    session.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+    session.headers.update({"Authorization": "Bearer ci_test_token_permanent_20260412"})
     me_resp = session.get(f"{BASE_URL}/api/auth/me")
     if me_resp.status_code != 200:
         pytest.skip("Auth token invalid")

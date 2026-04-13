@@ -12,7 +12,7 @@ import requests
 BASE_URL = 'http://localhost:8001'
 
 # Test credentials from previous iteration (iteration_26)
-ADMIN_SESSION_TOKEN = "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+ADMIN_SESSION_TOKEN = "ci_test_token_permanent_20260412"
 TEST_CASE_ID = "case_ba08d8e0ad0d"
 TEST_REPORT_ID = "rpt_1d3ddfc9c595"
 

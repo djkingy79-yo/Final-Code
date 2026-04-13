@@ -27,7 +27,7 @@ class TestHealthAndAuth:
     
 def auth_token():
     """Return session token directly (Google OAuth)"""
-    return "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+    return "ci_test_token_permanent_20260412"
 def auth_headers(auth_token):
     """Get headers with auth token"""
     return {"Authorization": f"Bearer {auth_token}"}

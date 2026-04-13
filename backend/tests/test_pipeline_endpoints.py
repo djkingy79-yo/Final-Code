@@ -46,7 +46,7 @@ def session():
     s.headers.update({"Content-Type": "application/json"})
     
     # Use direct session token (Google OAuth - no email/password login)
-    s.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+    s.headers.update({"Authorization": "Bearer ci_test_token_permanent_20260412"})
     
     return s
 

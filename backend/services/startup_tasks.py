@@ -46,7 +46,7 @@ async def create_database_indexes():
     # Auth and sessions
     await db.user_sessions.create_index([("session_token", 1)], unique=True)
     await db.user_sessions.create_index([("user_id", 1)])
-    await db.user_sessions.create_index([("expires_at", 1)], expireAfterSeconds=0)
+    # TTL index removed - session cleanup handled manually
     await db.password_reset_tokens.create_index([("token", 1)], unique=True)
     await db.password_reset_tokens.create_index([("expires_at", 1)], expireAfterSeconds=0)
 

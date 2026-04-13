@@ -25,7 +25,7 @@ TEST_BARRISTER_REPORT_ID = "rpt_1d3ddfc9c595"
 @pytest.fixture(scope="module")
 def auth_token():
     """Return session token directly (Google OAuth - no email/password login)"""
-    return "61bbcd763e9a47ed8d7ad1a7bcf1854a"
+    return "ci_test_token_permanent_20260412"
 
 @pytest.fixture(scope="module")
 def auth_headers(auth_token):

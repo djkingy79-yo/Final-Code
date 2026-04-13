@@ -23,7 +23,7 @@ class TestAuth:
     
     def test_login_returns_session_token(self, session):
         """Login check - use direct token (Google OAuth)"""
-        session.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+        session.headers.update({"Authorization": "Bearer ci_test_token_permanent_20260412"})
         response = session.get(f"{BASE_URL}/api/auth/me", timeout=30)
         assert response.status_code == 200, f"Auth failed: {response.text}"
         print("Auth verified with session token")
@@ -35,7 +35,7 @@ class TestVerifyBatchEndpoint:
     @pytest.fixture(scope="class")
     def auth_session(self):
         session = requests.Session()
-        session.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+        session.headers.update({"Authorization": "Bearer ci_test_token_permanent_20260412"})
         return session
     
     def test_verify_batch_with_limit_3(self, auth_session):
@@ -105,7 +105,7 @@ class TestReportsRegression:
     @pytest.fixture(scope="class")
     def auth_session(self):
         session = requests.Session()
-        session.headers.update({"Authorization": "Bearer 61bbcd763e9a47ed8d7ad1a7bcf1854a"})
+        session.headers.update({"Authorization": "Bearer ci_test_token_permanent_20260412"})
         return session
     
     def test_get_reports_list(self, auth_session):
