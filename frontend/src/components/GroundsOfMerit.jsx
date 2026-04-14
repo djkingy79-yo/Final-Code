@@ -981,10 +981,10 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       
                       {/* Law Sections Preview — DO NOT UNDO: displays actual legislation text */}
                       {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 0 && (
-                        <div className="mt-2" data-testid={`law-sections-${ground.ground_id}`}>
+                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`law-sections-${ground.ground_id}`}>
                           <div className="flex items-center gap-1.5 mb-1">
-                            <BookOpen className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-                            <span className="text-xs font-semibold text-blue-800">Legal Framework</span>
+                            <BookOpen className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                            <span className="text-xs font-bold text-blue-800">Legal Framework</span>
                           </div>
                           <div className="space-y-1 ml-5">
                             {ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map((section, idx) => {
