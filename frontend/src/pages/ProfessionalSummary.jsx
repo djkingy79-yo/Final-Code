@@ -49,6 +49,7 @@ const ProfessionalSummary = () => {
       <div className="max-w-4xl mx-auto px-6 py-10">
         {/* Title */}
         <div className="text-center mb-10 print-break">
+          <img src="/logo.png" alt="Appeal Case Manager" className="mx-auto mb-4 w-24 h-24 object-contain" data-testid="prof-logo" />
           <h1 
             className="text-3xl font-bold text-slate-900 mb-2"
             style={{ fontFamily: "'Times New Roman', Times, serif" }}
