@@ -250,7 +250,15 @@ def _build_appeal_time_limit_note(state: str) -> str:
     if not state_key or state_key not in APPEAL_FRAMEWORK:
         return "Jurisdiction not confirmed — verify applicable appeal time limits."
     appeal_info = APPEAL_FRAMEWORK.get(state_key, {})
+    # Support both 'time_limit' (string) and 'time_limits' (dict) formats
     time_limit = appeal_info.get('time_limit', '')
+    if not time_limit:
+        time_limits_dict = appeal_info.get('time_limits', {})
+        if time_limits_dict:
+            time_limit = time_limits_dict.get('notice_of_appeal',
+                         time_limits_dict.get('notice_of_intention',
+                         time_limits_dict.get('notice_of_appeal_indictable',
+                         time_limits_dict.get('notice_of_appeal_summary', ''))))
     court = appeal_info.get('court', '')
     if time_limit:
         return f"Appeal time limit ({state_key.upper()}): {time_limit}. Appellate court: {court}. If the appeal may be out of time, flag this and note whether an extension of time is arguable."
@@ -634,6 +642,13 @@ def validate_jurisdiction_completeness(state: str, offence_category: str) -> lis
     else:
         appeal_info = APPEAL_FRAMEWORK[state_key]
         time_limit = appeal_info.get('time_limit', '')
+        if not time_limit:
+            time_limits_dict = appeal_info.get('time_limits', {})
+            if time_limits_dict:
+                time_limit = time_limits_dict.get('notice_of_appeal',
+                             time_limits_dict.get('notice_of_intention',
+                             time_limits_dict.get('notice_of_appeal_indictable',
+                             time_limits_dict.get('notice_of_appeal_summary', ''))))
         if time_limit:
             warnings.append(f"APPEAL TIME LIMIT ({state_name}): {time_limit}. Verify whether appeal is within time.")
 

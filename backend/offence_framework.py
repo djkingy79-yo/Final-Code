@@ -1621,6 +1621,7 @@ APPEAL_FRAMEWORK = {
 # ============================================================================
 
 NSW_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Crimes Act 1900 No 40 (NSW)",
@@ -1776,6 +1777,7 @@ NSW_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 VIC_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Crimes Act 1958 (Vic)",
@@ -1917,6 +1919,7 @@ VIC_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 QLD_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code Act 1899 (Qld)",
@@ -2051,6 +2054,7 @@ QLD_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 SA_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Law Consolidation Act 1935 (SA)",
@@ -2180,6 +2184,7 @@ SA_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 WA_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code Act Compilation Act 1913 (WA)",
@@ -2305,6 +2310,7 @@ WA_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 TAS_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code Act 1924 (Tas)",
@@ -2410,6 +2416,7 @@ TAS_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 NT_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code Act 1983 (NT)",
@@ -2528,6 +2535,7 @@ NT_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 ACT_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code 2002 (ACT)",
@@ -2651,12 +2659,24 @@ ACT_CRIMINAL_FRAMEWORK = {
 # ============================================================================
 
 FEDERAL_CRIMINAL_FRAMEWORK = {
+    "last_verified": "2026-04-14",
     "primary_legislation": [
         {
             "act": "Criminal Code Act 1995 (Cth)",
             "description": "Contains the Criminal Code which defines most substantive Commonwealth criminal offences and general principles of criminal responsibility. Applies nationwide and extraterritorially for serious offences including genocide, war crimes, terrorism, corporate crime, drug importation, child exploitation, and cybercrime. Codifies physical and fault elements (actus reus, mens rea). Amended by Hate Crimes Act 2025.",
             "key_provisions": [
                 "Chapter 2 — General principles of criminal responsibility (fault elements, defences)",
+                "s 4.1 — Physical elements (conduct, result, circumstance)",
+                "s 4.2 — Intention (purpose or belief that conduct will occur)",
+                "s 4.4 — Absolute liability — no fault element required; mistake of fact not a defence",
+                "s 5.2 — Intention (as fault element for physical element of conduct, result, or circumstance)",
+                "s 5.4 — Recklessness (awareness of substantial risk; unjustifiable taking of risk)",
+                "s 5.6 — Negligence (such a great falling short of reasonable standard of care)",
+                "s 9.1 — Mistake or ignorance of fact (negates fault element if reasonable)",
+                "s 9.2 — Mistake of fact (strict liability — honest and reasonable mistake defence)",
+                "s 9.3 — Mistake of fact (absolute liability — no defence of mistake available)",
+                "s 10.1 — Insanity (mental impairment defence — cognitive and volitional limbs)",
+                "s 10.2 — Intoxication (self-induced intoxication and its effect on fault elements)",
                 "Part 5.3 — Terrorism (Div 101 terrorist acts, Div 102 terrorist organisations, Div 103 financing terrorism)",
                 "Part 5.1 Div 80 — Treason, sedition, advocating violence (amended by Hate Crimes Act 2025)",
                 "Part 9.1 — Fraud against the Commonwealth",

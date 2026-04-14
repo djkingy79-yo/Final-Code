@@ -70,6 +70,11 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **SERVER-SIDE LLM SYNTHESIS VERIFICATION**: Confirmed the existing Appellate Research Brief generation is 100% server-side LLM synthesis via `barrister_generator.py`. Multi-pass GPT-4o synthesis fetches all 3 completed reports, runs 4 section groups + expansion passes + tables + attachments. No frontend JS/regex merging. Requires all 3 reports completed and paid before unlocking.
 - **GROUNDS: APPELLATE PATHWAY RESTORED**: Moved the blue Appellate Pathway box to appear after Supporting Evidence and before Legal Framework. Fixed the investigate endpoint to generate `appellate_pathway` via LLM when missing. Created backfill endpoint (`POST /api/cases/{id}/grounds/backfill-pathways`) and ran it on the Homann case — all 9 grounds now show correct NSW appellate pathway provisions.
 - **GROUNDS: DISCLAIMER MESSAGE RESTORED**: Added the disclaimer at the bottom of every ground card: "This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner."
+- **LEGAL FRAMEWORK HARDENING (14 Apr 2026)**:
+  - Added Federal Criminal Code s.4.4 (absolute liability), s.4.1, s.5.2, s.5.4, s.5.6 (fault elements), s.9.1/9.2/9.3 (mistake of fact), s.10.1 (insanity), s.10.2 (intoxication) to FEDERAL_CRIMINAL_FRAMEWORK
+  - Fixed appeal time limit extraction to support both `time_limit` string and `time_limits` dict formats — NSW and WA now correctly report their time limits in system prompts
+  - Added `last_verified: "2026-04-14"` to all 9 state/federal criminal frameworks for currency tracking
+  - Created comprehensive self-test suite (`tests/test_legal_framework.py`) — 202 tests covering all frameworks, offence categories, anti-hallucination, forensic language, citation validation, jurisdiction completeness
 
 ## Remaining / Backlog
 - **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
