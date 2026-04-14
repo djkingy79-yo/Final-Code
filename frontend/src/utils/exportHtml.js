@@ -28,7 +28,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #1e293b; background: #fff; padding-bottom: 80px; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  @page { size: A4; margin: 14mm 14mm 20mm; }
+  @page { size: A4; margin: 14mm 14mm 28mm; }
   .export-container { max-width: 900px; margin: 0 auto; }
   .export-header { background: ${accentColor}; color: #fff; padding: 28px 32px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
   .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 18pt; font-weight: 700; margin-bottom: 4px; }
@@ -127,15 +127,15 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 13px; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 11px; color: #64748b; }
-  .print-footer { display: none; position: fixed; left: 14mm; right: 14mm; bottom: 6mm; background: #fff; border-top: 1px solid #cbd5e1; padding: 4px 0 0; }
-  .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #cbd5e1; padding: 4px 14mm 0; }
+  .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 8pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .print-footer-page::after { content: ''; }
   .page-break { page-break-before: always; }
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     body { background: #fff; }
     .export-container { max-width: none; }
-    .print-footer { display: none; }
+    .print-footer { display: block; }
     .print-footer-page::after { content: "Page " counter(page); }
     .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
     .branding { page-break-inside: avoid; break-inside: avoid; }
