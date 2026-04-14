@@ -50,6 +50,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(SecurityHeadersMiddleware)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
+)
+
 
 # ── Health Checks ──
 @app.get("/health")
@@ -128,29 +136,6 @@ app.include_router(api_router)
 
 # ── Register all routers ──
 register_all_routers(app)
-
-# DO_NOT_UNDO — CORS Middleware. Uses CORS_ORIGINS env var for allowed origins.
-# Must include ALL domains the frontend is served from (preview, production, custom domain).
-_cors_origins_raw = os.environ.get("CORS_ORIGINS", "")
-_frontend_url = os.environ.get("FRONTEND_URL", "").replace("/api", "")
-_all_origins = set()
-if _cors_origins_raw.strip() == "*":
-    _all_origins = {"*"}
-else:
-    for src in [_cors_origins_raw, _frontend_url]:
-        for o in src.split(","):
-            o = o.strip().strip('"').strip("'")
-            if o:
-                _all_origins.add(o)
-if not _all_origins:
-    logger.warning("CORS: No origins configured — set CORS_ORIGINS or FRONTEND_URL in .env")
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True if "*" not in _all_origins else False,
-    allow_origins=list(_all_origins),
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "Accept"],
-)
 
 
 # ── Startup / Shutdown ──

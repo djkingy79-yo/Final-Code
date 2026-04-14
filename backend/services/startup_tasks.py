@@ -8,7 +8,22 @@ Startup and shutdown tasks for the Criminal Appeal AI application.
 """
 
 from datetime import datetime, timezone, timedelta
+from pymongo.errors import OperationFailure
 from config import db, logger, client
+
+
+async def _safe_create_index(collection, keys, **kwargs):
+    """Create an index, dropping any conflicting index with the same name first."""
+    try:
+        await collection.create_index(keys, **kwargs)
+    except OperationFailure:
+        # Build the default index name MongoDB would use (e.g. "field1_1_field2_1")
+        index_name = kwargs.get("name") or "_".join(f"{k}_{d}" for k, d in keys)
+        try:
+            await collection.drop_index(index_name)
+        except OperationFailure:
+            pass
+        await collection.create_index(keys, **kwargs)
 
 
 async def create_database_indexes():
@@ -17,68 +32,68 @@ async def create_database_indexes():
     must be ensured at startup to guarantee query performance in deployment.
     """
     # Core collections
-    await db.users.create_index([("user_id", 1)], unique=True)
-    await db.users.create_index([("email", 1)], unique=True)
-    await db.cases.create_index([("case_id", 1)], unique=True)
-    await db.cases.create_index([("user_id", 1)])
-    await db.reports.create_index([("report_id", 1)], unique=True)
-    await db.reports.create_index([("case_id", 1), ("user_id", 1)])
-    await db.reports.create_index([("case_id", 1), ("report_type", 1)])
-    await db.documents.create_index([("document_id", 1)], unique=True)
-    await db.documents.create_index([("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.users, [("user_id", 1)], unique=True)
+    await _safe_create_index(db.users, [("email", 1)], unique=True)
+    await _safe_create_index(db.cases, [("case_id", 1)], unique=True)
+    await _safe_create_index(db.cases, [("user_id", 1)])
+    await _safe_create_index(db.reports, [("report_id", 1)], unique=True)
+    await _safe_create_index(db.reports, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.reports, [("case_id", 1), ("report_type", 1)])
+    await _safe_create_index(db.documents, [("document_id", 1)], unique=True)
+    await _safe_create_index(db.documents, [("case_id", 1), ("user_id", 1)])
 
     # Grounds and analysis
-    await db.grounds_of_merit.create_index([("ground_id", 1)], unique=True)
-    await db.grounds_of_merit.create_index([("case_id", 1), ("user_id", 1)])
-    await db.grounds_of_merit.create_index([("case_id", 1), ("priority_order", 1)])
-    await db.issue_arguments.create_index([("case_id", 1)])
+    await _safe_create_index(db.grounds_of_merit, [("ground_id", 1)], unique=True)
+    await _safe_create_index(db.grounds_of_merit, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.grounds_of_merit, [("case_id", 1), ("priority_order", 1)])
+    await _safe_create_index(db.issue_arguments, [("case_id", 1)])
 
     # Pipeline collections — compound indexes for query performance
     # DO NOT add unique indexes on *_id fields unless the model always generates them
-    await db.document_extracts.create_index([("case_id", 1), ("user_id", 1)])
-    await db.document_extracts.create_index([("document_id", 1), ("case_id", 1)], unique=True)
-    await db.case_extracts.create_index([("case_id", 1), ("user_id", 1)])
-    await db.issue_classifications.create_index([("case_id", 1), ("user_id", 1)])
-    await db.issue_verifications.create_index([("issue_id", 1), ("case_id", 1)])
-    await db.pipeline_tasks.create_index([("case_id", 1), ("user_id", 1), ("task_type", 1)])
-    await db.pipeline_tasks.create_index([("task_id", 1)], unique=True)
+    await _safe_create_index(db.document_extracts, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.document_extracts, [("document_id", 1), ("case_id", 1)], unique=True)
+    await _safe_create_index(db.case_extracts, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.issue_classifications, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.issue_verifications, [("issue_id", 1), ("case_id", 1)])
+    await _safe_create_index(db.pipeline_tasks, [("case_id", 1), ("user_id", 1), ("task_type", 1)])
+    await _safe_create_index(db.pipeline_tasks, [("task_id", 1)], unique=True)
 
     # Auth and sessions
-    await db.user_sessions.create_index([("session_token", 1)], unique=True)
-    await db.user_sessions.create_index([("user_id", 1)])
+    await _safe_create_index(db.user_sessions, [("session_token", 1)], unique=True)
+    await _safe_create_index(db.user_sessions, [("user_id", 1)])
     # TTL index removed - session cleanup handled manually
-    await db.password_reset_tokens.create_index([("token", 1)], unique=True)
-    await db.password_reset_tokens.create_index([("expires_at", 1)], expireAfterSeconds=0)
+    await _safe_create_index(db.password_reset_tokens, [("token", 1)], unique=True)
+    await _safe_create_index(db.password_reset_tokens, [("expires_at", 1)], expireAfterSeconds=0)
 
     # Case features
-    await db.notes.create_index([("case_id", 1), ("user_id", 1)])
-    await db.timeline_events.create_index([("case_id", 1)])
-    await db.deadlines.create_index([("case_id", 1), ("user_id", 1)])
-    await db.checklist_items.create_index([("case_id", 1), ("user_id", 1)])
-    await db.submissions_drafts.create_index([("case_id", 1), ("user_id", 1)])
-    await db.activities.create_index([("case_id", 1)])
-    await db.contradiction_scans.create_index([("case_id", 1)])
+    await _safe_create_index(db.notes, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.timeline_events, [("case_id", 1)])
+    await _safe_create_index(db.deadlines, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.checklist_items, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.submissions_drafts, [("case_id", 1), ("user_id", 1)])
+    await _safe_create_index(db.activities, [("case_id", 1)])
+    await _safe_create_index(db.contradiction_scans, [("case_id", 1)])
 
     # Payments
-    await db.payments.create_index([("user_id", 1)])
-    await db.payments.create_index([("case_id", 1)])
-    await db.payments.create_index([("payment_id", 1)], unique=True)
+    await _safe_create_index(db.payments, [("user_id", 1)])
+    await _safe_create_index(db.payments, [("case_id", 1)])
+    await _safe_create_index(db.payments, [("payment_id", 1)], unique=True)
 
     # Sharing
-    await db.case_shares.create_index([("case_id", 1)])
-    await db.share_links.create_index([("link_id", 1)], unique=True)
+    await _safe_create_index(db.case_shares, [("case_id", 1)])
+    await _safe_create_index(db.share_links, [("link_id", 1)], unique=True)
 
     # Analytics
-    await db.visits.create_index([("timestamp", 1)])
-    await db.visit_stats.create_index([("date", 1)])
-    await db.contact_messages.create_index([("created_at", 1)])
+    await _safe_create_index(db.visits, [("timestamp", 1)])
+    await _safe_create_index(db.visit_stats, [("date", 1)])
+    await _safe_create_index(db.contact_messages, [("created_at", 1)])
 
     # Notifications
-    await db.notifications.create_index([("user_id", 1), ("read", 1)])
-    await db.case_messages.create_index([("case_id", 1)])
+    await _safe_create_index(db.notifications, [("user_id", 1), ("read", 1)])
+    await _safe_create_index(db.case_messages, [("case_id", 1)])
 
     # Counters
-    await db.counters.create_index([("name", 1)], unique=True)
+    await _safe_create_index(db.counters, [("name", 1)], unique=True)
 
 
 async def recover_orphaned_reports():
