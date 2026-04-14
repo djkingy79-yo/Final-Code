@@ -28,11 +28,13 @@ from models import (
 
 class DocumentExtract(BaseModel):
     model_config = ConfigDict(extra="ignore")
+    extract_id: str = Field(default_factory=lambda: f"dex_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
     document_id: str
     filename: str
     document_category: Optional[str] = None
+    status: str = "completed"
     model_metadata: dict = Field(default_factory=dict)
     facts: List[ExtractedFact] = Field(default_factory=list)
     events: List[ExtractedEvent] = Field(default_factory=list)
@@ -46,11 +48,15 @@ class DocumentExtract(BaseModel):
 
 class CaseExtract(BaseModel):
     model_config = ConfigDict(extra="ignore")
+    case_extract_id: str = Field(default_factory=lambda: f"cex_{uuid.uuid4().hex[:12]}")
     case_id: str
     user_id: str
+    status: str = "completed"
+    metadata: dict = Field(default_factory=dict)
     merged_facts: List[dict] = Field(default_factory=list)
     merged_events: List[dict] = Field(default_factory=list)
     merged_findings: List[dict] = Field(default_factory=list)
+    document_extract_ids: List[Optional[str]] = Field(default_factory=list)
     document_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

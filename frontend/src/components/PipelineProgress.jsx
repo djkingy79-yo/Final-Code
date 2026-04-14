@@ -154,13 +154,13 @@ export default function PipelineProgress({
         <Button variant="outline" size="sm" onClick={() => runAction(() => syncGrounds(caseId))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-sync-grounds-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Sync Grounds"}
         </Button>
-        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 0))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-all-btn">
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 0))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-refresh-all-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh Pipeline Now"}
         </Button>
-        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 3))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-verify-3-btn">
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 3))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-refresh-verify-3-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh + Verify Top 3"}
         </Button>
-        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 6))} disabled={loading} className="bg-slate-700 text-white hover:bg-slate-600" data-testid="pipeline-refresh-verify-6-btn">
+        <Button variant="outline" size="sm" onClick={() => runAction(() => refreshAllPipeline(caseId, 6))} disabled={loading} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pipeline-refresh-verify-6-btn">
           {loading ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" />Working...</> : "Refresh + Verify Top 6"}
         </Button>
       </div>

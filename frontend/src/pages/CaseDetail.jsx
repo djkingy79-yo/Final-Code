@@ -1298,7 +1298,7 @@ const CaseDetail = ({ user }) => {
         </div>
 
         {/* Jurisdiction & Metadata Warnings */}
-        {caseData && (caseData.metadata_warnings?.length > 0 || caseData.jurisdiction_warnings?.length > 0) && (
+        {caseData && (caseData.metadata_warnings?.length > 0 || (caseData.jurisdiction_warnings || []).filter(w => !w.startsWith("APPEAL TIME LIMIT")).length > 0) && (
           <div className="bg-red-600 border-2 border-red-700 rounded-xl p-4 mb-2" data-testid="jurisdiction-warnings">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-white shrink-0 mt-0.5" />

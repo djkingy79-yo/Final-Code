@@ -75,6 +75,9 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - Fixed appeal time limit extraction to support both `time_limit` string and `time_limits` dict formats — NSW and WA now correctly report their time limits in system prompts
   - Added `last_verified: "2026-04-14"` to all 9 state/federal criminal frameworks for currency tracking
   - Created comprehensive self-test suite (`tests/test_legal_framework.py`) — 202 tests covering all frameworks, offence categories, anti-hallucination, forensic language, citation validation, jurisdiction completeness
+- **PIPELINE 500 FIX (14 Apr 2026)**: Added missing `extract_id`, `status` fields to `DocumentExtract` model and `case_extract_id`, `status`, `metadata`, `document_extract_ids` to `CaseExtract` model — fixes AttributeError crash on Extract All Documents, Refresh Case Extract, and Refresh Pipeline.
+- **BLANK PIPELINE BUTTONS FIX**: Changed "Refresh Pipeline Now", "Refresh + Verify Top 3", "Refresh + Verify Top 6" buttons from invisible `bg-slate-700` to bright blue `bg-blue-700`.
+- **METADATA BANNER FIX**: Red "Case Metadata — Action Required" banner no longer shows when the only warning is an appeal time limit (which is informational, not an action item).
 
 ## Remaining / Backlog
 - **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
