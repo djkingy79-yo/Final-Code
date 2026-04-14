@@ -47,7 +47,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - Appellate Research Brief PDF export rewritten with inline Tailwind CSS
 - Quick Brief blank page fixed
 
-### Completed (11 April 2026 — Current Session)
+### Completed (11 April 2026)
 - **FORENSIC AUDIT OF ALL EXPORTS**: Ensured 100% formatting parity across all 4 export code paths
   - Added `.section`, `.section-header`, `.section-number`, `.section-title`, `.section-body` CSS to `exportHtml.js`
   - Rewrote `buildPrintAllHtml` in CaseDetail.jsx: replaced plain `<h2>` tags with section-header pattern (numbered badge + left border + uppercase title + bordered body container)
@@ -62,7 +62,9 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - GET `/api/cases/{case_id}/translate/status?report_id=...&language=...` polls for completion
   - Frontend ReportTranslator.jsx updated to poll with progress updates ("3/10 sections complete")
   - Cached translations still return instantly
-  - Tested: 10-chunk German translation completed in ~2 minutes via polling (130K chars)
+
+### Completed (14 April 2026)
+- **BACK TO REPORTS NAVIGATION FIX**: "Back to Case" buttons in ReportView.jsx and BarristerView.jsx now navigate to `/cases/${caseId}?tab=reports` (landing on Reports tab instead of default Documents tab). Button text updated to "Back to Reports". CaseDetail.jsx correctly parses the `?tab=reports` query parameter. Verified working.
 
 ## Remaining / Backlog
 - **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
