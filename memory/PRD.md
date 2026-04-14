@@ -65,6 +65,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 
 ### Completed (14 April 2026)
 - **BACK TO REPORTS NAVIGATION FIX**: "Back to Case" buttons in ReportView.jsx and BarristerView.jsx now navigate to `/cases/${caseId}?tab=reports` (landing on Reports tab instead of default Documents tab). Button text updated to "Back to Reports". CaseDetail.jsx correctly parses the `?tab=reports` query parameter. Verified working.
+- **DEPLOYMENT INDEX CRASH FIX**: Wrapped all `create_index` calls in `startup_tasks.py` with a safe helper (`_safe_create_index`) that catches `OperationFailure`, drops the conflicting index by name, then recreates it. Fixes crash on line 39 where a non-unique `document_extracts` index conflicted with the new unique version.
 
 ## Remaining / Backlog
 - **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
