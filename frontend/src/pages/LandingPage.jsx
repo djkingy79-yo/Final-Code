@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import AuthModal from "../components/AuthModal";
+import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
 
 import StateAppealStats from "../components/StateAppealStats";
@@ -36,7 +37,7 @@ const LandingPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("session_token");
     if (token) {
-      axios.get(`${window.location.origin}/api/auth/me`)
+      axios.get(`${API}/auth/me`)
         .then(() => { navigate("/dashboard", { replace: true }); })
         .catch(() => { /* No-op — preserve token for ProtectedRoute/AuthCallback retry logic */ });
     }

@@ -87,56 +87,26 @@ const AuthCallback = () => {
     const hash = window.location.hash;
     const query = window.location.search;
 
-    // Check for OAuth error parameters first (e.g. "Invalid state parameter")
+    // Check for OAuth error parameters first
     const queryParams = new URLSearchParams(query);
     const hashParams = new URLSearchParams(hash.substring(1));
     const oauthError = queryParams.get("error") || queryParams.get("error_description") || hashParams.get("error") || hashParams.get("error_description");
     if (oauthError) {
       console.warn("OAuth error detected:", oauthError);
-      // Clean the URL
       window.history.replaceState({}, "", window.location.pathname);
-      // Auto-retry with fresh redirect (up to 3 attempts)
-      const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
-      if (retryCount < 2) {
-        sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
-        const redirectUrl = window.location.origin + "/dashboard";
-        window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
-        return;
-      }
-      sessionStorage.removeItem("auth_retry_count");
       setAuthError(true);
       return;
     }
 
     const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
 
-    // Clean the URL immediately after extracting session_id — prevents stale IDs on refresh
+    // Clean the URL immediately after extracting session_id
     if (hash.includes("session_id") || query.includes("session_id")) {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    const freshGoogleRedirect = () => {
-      const redirectUrl = window.location.origin + "/dashboard";
-      window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
-    };
-
-    // Validate session_id — Emergent session IDs are UUIDs (36 chars with dashes, or 32+ chars)
-    // If it's too short, it's stale/invalid — skip straight to fresh redirect
-    if (sessionId && sessionId.length < 32) {
-      console.warn("Invalid session_id length:", sessionId.length, "— redirecting to fresh Google Sign In");
-      const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
-      if (retryCount < 3) {
-        sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
-        freshGoogleRedirect();
-        return;
-      }
-      // Exceeded max retries — fall through to error/fallback
-    }
-
     if (sessionId && sessionId.length >= 32) {
       try {
-        // Single call — backend handles Emergent API retries internally.
         const response = await axios.post(
           `${API}/auth/session`,
           { session_id: sessionId },
@@ -145,47 +115,32 @@ const AuthCallback = () => {
         if (response.data?.session_token) {
           localStorage.setItem("session_token", response.data.session_token);
           localStorage.setItem("auth_user", JSON.stringify(response.data));
-        }
-        sessionStorage.removeItem("auth_retry_count");
-        navigate("/dashboard", { replace: true, state: { user: response.data } });
-        return;
-      } catch (error) {
-        console.error("Auth session exchange failed:", error?.response?.status);
-        // Auto-retry with fresh Google redirect (up to 3 attempts)
-        const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
-        if (retryCount < 3) {
-          sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
-          freshGoogleRedirect();
+          sessionStorage.removeItem("auth_retry_count");
+          navigate("/dashboard", { replace: true, state: { user: response.data } });
           return;
         }
-        sessionStorage.removeItem("auth_retry_count");
+      } catch (error) {
+        console.error("Auth session exchange failed:", error?.response?.status);
       }
     }
 
-    // Fallback: check existing localStorage token
+    // Check existing localStorage token as fallback
     const existingToken = localStorage.getItem("session_token");
     if (existingToken) {
       try {
         const me = await axios.get(`${API}/auth/me`);
         if (me.data) {
+          localStorage.setItem("auth_user", JSON.stringify(me.data));
           navigate("/dashboard", { replace: true, state: { user: me.data } });
           return;
         }
       } catch (error) {
-        // Existing token invalid
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("auth_user");
       }
     }
 
-    // No session_id and no valid token — redirect to fresh Google sign in
-    const retryCount = parseInt(sessionStorage.getItem("auth_retry_count") || "0", 10);
-    if (retryCount < 3) {
-      sessionStorage.setItem("auth_retry_count", String(retryCount + 1));
-      freshGoogleRedirect();
-      return;
-    }
-
-    // All methods failed after max retries — show error UI
-    sessionStorage.removeItem("auth_retry_count");
+    // All methods failed — show error with manual retry button (NO auto-redirect)
     setAuthError(true);
   };
 
