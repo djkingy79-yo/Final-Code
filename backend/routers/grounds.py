@@ -818,6 +818,40 @@ RULES:
             }
             update_fields["analysis"] = deep_analysis_text
 
+        # DO NOT UNDO — Generate appellate_pathway if missing
+        if not ground.get("appellate_pathway"):
+            try:
+                from services.offence_helpers import _build_state_framework_context
+                state = (case.get("state") or "").lower().strip()
+                leg_context = _build_state_framework_context(state) if state else ""
+                ap_prompt = f"""Based on the following ground of appeal in a {state.upper()} criminal case, provide the single most appropriate appellate pathway (the statutory provision giving the right to appeal).
+
+Ground Title: {ground.get('title', '')}
+Ground Type: {ground.get('ground_type', 'other')}
+Description: {ground.get('description', '')}
+
+{leg_context}
+
+Return ONLY a concise appellate pathway string, e.g.:
+- "Miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)"
+- "Error of law under s 5(1) Criminal Appeal Act 1912 (NSW)"
+- "Sentencing error under s 5(1) Criminal Appeal Act 1912 (NSW)"
+Do NOT return JSON. Return only the plain text appellate pathway."""
+                from services.llm_service import call_llm_structured
+                ap_result = await call_llm_structured(
+                    system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision for the specified jurisdiction. Do NOT default to NSW. Do NOT invent section numbers. Use Australian English only.",
+                    user_prompt=ap_prompt,
+                    session_id=f"appellate_pathway_{ground_id}",
+                    task_type="general",
+                    require_json=False,
+                )
+                ap_text = ap_result.get("content", "") if isinstance(ap_result, dict) else str(ap_result)
+                ap_text = ap_text.strip().strip('"').strip("'").strip()
+                if ap_text and len(ap_text) > 5 and (not isinstance(ap_result, dict) or ap_result.get("ok")):
+                    update_fields["appellate_pathway"] = ap_text
+            except Exception as ap_err:
+                logger.warning(f"Failed to generate appellate pathway during investigation for {ground_id}: {ap_err}")
+
         await db.grounds_of_merit.update_one(
             {"ground_id": ground_id, "case_id": case_id},
             {"$set": update_fields}
@@ -1129,3 +1163,61 @@ Do NOT return JSON. Return only the plain text appellate pathway."""
     }
 
 
+
+
+@router.post("/cases/{case_id}/grounds/backfill-pathways", response_model=dict)
+async def backfill_appellate_pathways(case_id: str, request: Request):
+    """Backfill appellate_pathway for all grounds in a case that are missing it."""
+    user = await get_current_user(request)
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    grounds = await db.grounds_of_merit.find(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0}
+    ).to_list(100)
+
+    updated = 0
+    state = (case.get("state") or "").lower().strip()
+
+    for ground in grounds:
+        if ground.get("appellate_pathway"):
+            continue
+        try:
+            from services.offence_helpers import _build_state_framework_context
+            leg_context = _build_state_framework_context(state) if state else ""
+            ap_prompt = f"""Based on the following ground of appeal in a {state.upper()} criminal case, provide the single most appropriate appellate pathway (the statutory provision giving the right to appeal).
+
+Ground Title: {ground.get('title', '')}
+Ground Type: {ground.get('ground_type', 'other')}
+Description: {ground.get('description', '')}
+
+{leg_context}
+
+Return ONLY a concise appellate pathway string, e.g.:
+- "Miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)"
+- "Error of law under s 5(1) Criminal Appeal Act 1912 (NSW)"
+- "Sentencing error under s 5(1) Criminal Appeal Act 1912 (NSW)"
+Do NOT return JSON. Return only the plain text appellate pathway."""
+            from services.llm_service import call_llm_structured
+            ap_result = await call_llm_structured(
+                system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision for the specified jurisdiction. Do NOT default to NSW. Do NOT invent section numbers. Use Australian English only.",
+                user_prompt=ap_prompt,
+                session_id=f"backfill_pathway_{ground.get('ground_id', '')}",
+                task_type="general",
+                require_json=False,
+            )
+            ap_text = ap_result.get("content", "") if isinstance(ap_result, dict) else str(ap_result)
+            ap_text = ap_text.strip().strip('"').strip("'").strip()
+            if ap_text and len(ap_text) > 5 and (not isinstance(ap_result, dict) or ap_result.get("ok")):
+                await db.grounds_of_merit.update_one(
+                    {"ground_id": ground["ground_id"], "case_id": case_id},
+                    {"$set": {"appellate_pathway": ap_text}}
+                )
+                updated += 1
+                logger.info(f"Backfilled appellate_pathway for {ground['ground_id']}: {ap_text}")
+        except Exception as e:
+            logger.warning(f"Backfill appellate_pathway failed for {ground.get('ground_id')}: {e}")
+
+    return {"updated": updated, "total": len(grounds), "message": f"Backfilled appellate pathways for {updated}/{len(grounds)} grounds."}

@@ -963,20 +963,20 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                           <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-snug whitespace-pre-line">
                             {auSpelling(ground.description)}
                           </p>
-                          
-                          {/* Appellate Pathway — DO NOT UNDO */}
-                          {ground.appellate_pathway && (
-                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                              <p className="text-xs font-bold text-blue-800">Appellate Pathway</p>
-                              <p className="text-xs text-blue-700 mt-0.5">{auSpelling(ground.appellate_pathway)}</p>
-                            </div>
-                          )}
                         </>
                       )}
                       
                       {/* Supporting Evidence Tags */}
                       {ground.supporting_evidence && ground.supporting_evidence.length > 0 && (
                         <EvidenceSummary items={ground.supporting_evidence} />
+                      )}
+
+                      {/* Appellate Pathway — DO NOT UNDO — blue box before Legal Framework */}
+                      {ground.appellate_pathway && (
+                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`appellate-pathway-${ground.ground_id}`}>
+                          <p className="text-xs font-bold text-blue-800">Appellate Pathway</p>
+                          <p className="text-xs text-blue-700 mt-0.5">{auSpelling(ground.appellate_pathway)}</p>
+                        </div>
                       )}
                       
                       {/* Law Sections Preview — DO NOT UNDO: displays actual legislation text */}
@@ -1056,6 +1056,13 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                         Added {formatDate(ground.created_at)}
                         {ground.deep_analysis && " • Has deep analysis"}
                       </p>
+
+                      {/* DO NOT UNDO — Disclaimer at end of every ground */}
+                      <div className="mt-3 p-2.5 bg-slate-50 border border-slate-200 rounded-lg" data-testid={`ground-disclaimer-${ground.ground_id}`}>
+                        <p className="text-xs text-slate-500 leading-relaxed italic">
+                          This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.
+                        </p>
+                      </div>
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-1 mt-2 sm:mt-0 sm:ml-4 sm:flex-shrink-0">
