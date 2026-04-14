@@ -109,8 +109,10 @@ const ReportTranslator = ({ caseId, reportId }) => {
               return;
             }
 
-            if (progress > 0 && total_chunks > 0 && attempts % 5 === 0) {
+            if (progress > 0 && total_chunks > 0) {
               toast.info(`Translating... ${progress}/${total_chunks} sections complete.`, { id: "translate-progress" });
+            } else if (attempts % 3 === 0) {
+              toast.info("Translating... please wait.", { id: "translate-progress" });
             }
 
             setTimeout(poll, pollInterval);
