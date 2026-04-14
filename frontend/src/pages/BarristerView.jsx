@@ -733,7 +733,7 @@ export default function BarristerView() {
   };
 
   const handleBackToCase = () => {
-    window.location.assign(`/cases/${caseId}`);
+    window.location.assign(`/cases/${caseId}?tab=reports`);
   };
 
   if (loading) {
@@ -817,7 +817,7 @@ export default function BarristerView() {
             className="bg-blue-700 text-white hover:bg-blue-600"
             data-testid="barrister-back-button"
           >
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Reports
           </Button>
 
           <div className="flex items-center gap-2 flex-wrap">

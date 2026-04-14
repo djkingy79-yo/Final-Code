@@ -653,7 +653,7 @@ const ReportView = () => {
     } catch (error) {
       if (requestId !== requestRef.current) return;
       toast.error("Failed to load report");
-      navigate(`/cases/${caseId}`);
+      navigate(`/cases/${caseId}?tab=reports`);
     } finally {
       if (requestId !== requestRef.current) return;
       setLoading(false);
@@ -665,7 +665,7 @@ const ReportView = () => {
   };
 
   const handleBackToCase = () => {
-    window.location.assign(`/cases/${caseId}`);
+    window.location.assign(`/cases/${caseId}?tab=reports`);
   };
 
   const iosShareOrDownload = async (blob, filename, mimeType) => {
@@ -1031,7 +1031,7 @@ const ReportView = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between gap-3 flex-wrap text-slate-900">
             <Button size="sm" onClick={handleBackToCase} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="back-btn">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back to Case
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back to Reports
             </Button>
             <div className="flex items-center gap-2 flex-wrap">
               <Button size="sm" onClick={handlePrint} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="print-btn">
