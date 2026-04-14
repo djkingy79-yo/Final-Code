@@ -12,7 +12,14 @@ const ProfessionalSummary = () => {
   const navigate = useNavigate();
 
   const handlePrint = () => {
-    window.print();
+    // iOS Safari in-app browsers may not support window.print()
+    // Open in full Safari first if needed, then print
+    try {
+      window.print();
+    } catch (e) {
+      // Fallback: open in new tab for manual print
+      window.open(window.location.href, '_blank');
+    }
   };
 
   return (
@@ -38,10 +45,13 @@ const ProfessionalSummary = () => {
               Appeal Case Manager
             </span>
           </div>
-          <Button onClick={handlePrint} variant="outline" className="text-white border-white hover:bg-white hover:text-slate-900">
+          <Button onClick={handlePrint} variant="outline" className="text-white border-white hover:bg-white hover:text-slate-900" data-testid="prof-print-btn">
             <FileText className="w-4 h-4 mr-2" />
             Print / Save PDF
           </Button>
+          <a href={window.location.href} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-300 hover:text-white underline ml-2 no-print">
+            Open in browser to print
+          </a>
         </div>
       </div>
 
