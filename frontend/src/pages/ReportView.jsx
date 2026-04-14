@@ -1047,6 +1047,38 @@ const ReportView = () => {
             </div>
           </div>
         </div>
+        {/* Quick Navigate between reports */}
+        {sourceReports.length > 0 && (
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-1.5 border-t border-slate-100">
+            <div className="flex items-center gap-2 flex-wrap text-xs" data-testid="report-quick-nav">
+              <span className="text-slate-400 font-medium uppercase tracking-wider mr-1">Jump to:</span>
+              {sourceReports
+                .filter(r => r.status === "completed" && !r.content?.aggressive_mode)
+                .sort((a, b) => {
+                  const order = ["quick_summary", "full_detailed", "extensive_log", "barrister_view"];
+                  return order.indexOf(a.report_type) - order.indexOf(b.report_type);
+                })
+                .map(r => {
+                  const labels = { quick_summary: "Quick Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
+                  const isCurrent = r.report_id === reportId;
+                  const href = r.report_type === "barrister_view"
+                    ? `/cases/${caseId}/reports/${r.report_id}/barrister`
+                    : `/cases/${caseId}/reports/${r.report_id}`;
+                  return (
+                    <button
+                      key={r.report_id}
+                      onClick={() => { if (!isCurrent) window.location.assign(href); }}
+                      disabled={isCurrent}
+                      className={`px-2.5 py-1 rounded-md font-medium transition-colors ${isCurrent ? 'bg-blue-700 text-white cursor-default' : 'bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-700'}`}
+                      data-testid={`quick-nav-${r.report_type}`}
+                    >
+                      {labels[r.report_type] || r.report_type}
+                    </button>
+                  );
+                })}
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
