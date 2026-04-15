@@ -164,7 +164,9 @@ const AuthCallback = () => {
               data-testid="auth-retry-google-btn"
               onClick={() => {
                 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-                const redirectUrl = window.location.origin + "/dashboard";
+                // Always use the preview URL for OAuth redirect — custom domains are not registered with Emergent auth
+                const previewOrigin = BACKEND_URL || window.location.origin;
+                const redirectUrl = previewOrigin + "/auth/callback";
                 window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
               }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
