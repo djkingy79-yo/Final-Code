@@ -146,6 +146,15 @@ const AuthCallback = () => {
       }
     }
 
+    // If on a custom domain and session exchange failed, redirect to preview URL to retry
+    const previewUrl = BACKEND_URL;
+    const isOnCustomDomain = previewUrl && !window.location.origin.includes("preview.emergentagent.com") && !window.location.origin.includes("localhost");
+    if (isOnCustomDomain && sessionId) {
+      console.log("Custom domain auth failed — redirecting to preview URL for session exchange");
+      window.location.href = `${previewUrl}/auth/callback#session_id=${sessionId}`;
+      return;
+    }
+
     // All methods failed — show error with manual retry button (NO auto-redirect)
     setAuthError(true);
   };
@@ -170,7 +179,11 @@ const AuthCallback = () => {
               data-testid="auth-retry-google-btn"
               onClick={() => {
                 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-                const redirectUrl = window.location.origin + "/auth/callback";
+                // Custom domains are not registered with Emergent OAuth — always redirect via preview URL
+                const previewUrl = BACKEND_URL;
+                const isCustomDomain = previewUrl && !window.location.origin.includes("preview.emergentagent.com") && !window.location.origin.includes("localhost");
+                const authOrigin = isCustomDomain ? previewUrl : window.location.origin;
+                const redirectUrl = authOrigin + "/auth/callback";
                 window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
               }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"

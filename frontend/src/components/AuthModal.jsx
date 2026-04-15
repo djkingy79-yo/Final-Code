@@ -31,8 +31,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [errors, setErrors] = useState({});
 
   // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  const googleLoginUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(`${window.location.origin}/auth/callback`)}`;
+  // Custom domains are not registered with Emergent OAuth — always redirect via preview URL
+  const previewUrl = process.env.REACT_APP_BACKEND_URL;
+  const isCustomDomain = previewUrl && !window.location.origin.includes("preview.emergentagent.com") && !window.location.origin.includes("localhost");
+  const authOrigin = isCustomDomain ? previewUrl : window.location.origin;
+  const googleLoginUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(`${authOrigin}/auth/callback`)}`;
 
   const validateForm = () => {
     const newErrors = {};
