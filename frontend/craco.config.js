@@ -55,6 +55,45 @@ const webpackConfig = {
     },
     configure: (webpackConfig) => {
 
+      // ── Code Splitting — break the 7MB bundle into smaller chunks ──
+      // Custom domain proxy (Cloudflare) returns 520 on large files.
+      // Split into vendor chunks < 500KB each.
+      if (!isDevServer) {
+        webpackConfig.optimization = {
+          ...webpackConfig.optimization,
+          splitChunks: {
+            chunks: 'all',
+            maxSize: 400000, // 400KB max per chunk
+            cacheGroups: {
+              radix: {
+                test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+                name: 'vendor-radix',
+                priority: 30,
+                reuseExistingChunk: true,
+              },
+              capacitor: {
+                test: /[\\/]node_modules[\\/]@capacitor[\\/]/,
+                name: 'vendor-capacitor',
+                priority: 25,
+                reuseExistingChunk: true,
+              },
+              react: {
+                test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+                name: 'vendor-react',
+                priority: 20,
+                reuseExistingChunk: true,
+              },
+              vendor: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor-misc',
+                priority: 10,
+                reuseExistingChunk: true,
+              },
+            },
+          },
+        };
+      }
+
       // Add ignored patterns to reduce watched directories
         webpackConfig.watchOptions = {
           ...webpackConfig.watchOptions,
@@ -85,6 +124,10 @@ if (config.enableVisualEdits && babelMetadataPlugin) {
 }
 
 webpackConfig.devServer = (devServerConfig) => {
+  // Enable compression to reduce bundle transfer size
+  // Custom domain Cloudflare proxy fails on large uncompressed responses
+  devServerConfig.compress = true;
+
   // Apply visual edits dev server setup only if enabled
   if (config.enableVisualEdits && setupDevServer) {
     devServerConfig = setupDevServer(devServerConfig);
