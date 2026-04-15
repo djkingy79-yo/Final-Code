@@ -27,9 +27,12 @@ async def get_current_user(request: Request) -> User:
         if download_token:
             return await _resolve_download_token(download_token)
 
-    # Fallback: legacy session_token query param (WebSocket connections)
+    # Fallback: session_token query param (WebSocket connections only — browsers cannot send
+    # custom headers on WebSocket upgrade). Logged without the token value for security.
     if not session_token:
-        session_token = request.query_params.get("session_token")
+        qs_token = request.query_params.get("session_token")
+        if qs_token:
+            session_token = qs_token
     
     if not session_token:
         raise HTTPException(status_code=401, detail="Not authenticated")

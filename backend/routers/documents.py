@@ -234,7 +234,12 @@ async def upload_document(
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
+
+    # Enforce 20MB upload limit to prevent OOM/DoS
+    MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # 20 MB
     file_content = await file.read()
+    if len(file_content) > MAX_UPLOAD_SIZE:
+        raise HTTPException(status_code=413, detail=f"File too large. Maximum upload size is {MAX_UPLOAD_SIZE // (1024*1024)}MB.")
     file_base64 = base64.b64encode(file_content).decode('utf-8')
     content_text = ""
     file_type = file.content_type or "application/octet-stream"

@@ -568,9 +568,10 @@ const CaseDetail = ({ user }) => {
       window.location.assign(`${window.location.origin}/document-preview?mode=${mode}`);
       return;
     }
-    previewWindow.document.open();
-    previewWindow.document.write(html);
-    previewWindow.document.close();
+    const doc = previewWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
     previewWindow.focus();
     if (mode === "print") {
       setTimeout(() => previewWindow.print(), 600);

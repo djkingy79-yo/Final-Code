@@ -674,8 +674,17 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
   const handleGroundPrint = () => {
     if (!detailGround) return;
     const html = buildSingleGroundHtml(detailGround);
-    const w = window.open("", "_blank");
-    if (w) { w.document.write(html); w.document.close(); w.print(); }
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.left = "-9999px";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open(); doc.write(html); doc.close();
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    setTimeout(() => document.body.removeChild(iframe), 5000);
   };
 
   const handleGroundPDF = () => {
@@ -683,8 +692,8 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
     const html = buildSingleGroundHtml(detailGround);
     const w = window.open("", "_blank");
     if (w) {
-      w.document.write(html);
-      w.document.close();
+      const doc = w.document;
+      doc.open(); doc.write(html); doc.close();
       toast.success("PDF view opened — use Print / Save as PDF to download.");
     }
   };
