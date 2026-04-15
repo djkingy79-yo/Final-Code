@@ -82,6 +82,7 @@ const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
   const [authError, setAuthError] = useState(false);
+  const [errorDetail, setErrorDetail] = useState("");
 
   const attemptAuth = async () => {
     const hash = window.location.hash;
@@ -94,6 +95,7 @@ const AuthCallback = () => {
     if (oauthError) {
       console.warn("OAuth error detected:", oauthError);
       window.history.replaceState({}, "", window.location.pathname);
+      setErrorDetail(`OAuth error: ${oauthError}`);
       setAuthError(true);
       return;
     }
@@ -105,10 +107,31 @@ const AuthCallback = () => {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
+    if (!sessionId || sessionId.length < 32) {
+      setErrorDetail(`No valid session_id found (hash=${hash ? "yes" : "no"}, query=${query ? "yes" : "no"}, sid_len=${sessionId?.length || 0})`);
+      // Check existing localStorage token as fallback
+      const existingToken = localStorage.getItem("session_token");
+      if (existingToken) {
+        try {
+          const me = await axios.get(`${API}/auth/me`);
+          if (me.data) {
+            localStorage.setItem("auth_user", JSON.stringify(me.data));
+            navigate("/dashboard", { replace: true, state: { user: me.data } });
+            return;
+          }
+        } catch (error) {
+          localStorage.removeItem("session_token");
+          localStorage.removeItem("auth_user");
+        }
+      }
+      setAuthError(true);
+      return;
+    }
+
     if (sessionId && sessionId.length >= 32) {
-      // Retry the session exchange — Emergent session_id can take a moment to propagate,
-      // especially when arriving via a custom domain proxy (extra network hop).
+      // Retry the session exchange — Emergent session_id can take a moment to propagate
       const retryDelays = [0, 1500, 3000, 5000];
+      let lastErr = "";
       for (const delay of retryDelays) {
         if (delay > 0) await new Promise(r => setTimeout(r, delay));
         try {
@@ -124,10 +147,13 @@ const AuthCallback = () => {
             navigate("/dashboard", { replace: true, state: { user: response.data } });
             return;
           }
+          lastErr = `No token in response (status=${response.status})`;
         } catch (error) {
-          console.error(`Auth session exchange attempt failed (delay=${delay}ms):`, error?.response?.status);
+          lastErr = `${error?.response?.status || error.message}`;
+          console.error(`Auth attempt (delay=${delay}ms): ${lastErr}`);
         }
       }
+      setErrorDetail(`Session exchange failed after ${retryDelays.length} attempts. Last error: ${lastErr}. API: ${API}`);
     }
 
     // Check existing localStorage token as fallback
@@ -146,16 +172,7 @@ const AuthCallback = () => {
       }
     }
 
-    // If on a custom domain and session exchange failed, redirect to preview URL to retry
-    const previewUrl = BACKEND_URL;
-    const isOnCustomDomain = previewUrl && !window.location.origin.includes("preview.emergentagent.com") && !window.location.origin.includes("localhost");
-    if (isOnCustomDomain && sessionId) {
-      console.log("Custom domain auth failed — redirecting to preview URL for session exchange");
-      window.location.href = `${previewUrl}/auth/callback#session_id=${sessionId}`;
-      return;
-    }
-
-    // All methods failed — show error with manual retry button (NO auto-redirect)
+    // All methods failed
     setAuthError(true);
   };
 
@@ -173,17 +190,14 @@ const AuthCallback = () => {
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
           </div>
           <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In Failed</h2>
-          <p className="text-slate-600 mb-6 text-sm">The authentication session could not be verified. This can happen if the session expired. Please try again.</p>
+          <p className="text-slate-600 mb-2 text-sm">The authentication session could not be verified. This can happen if the session expired. Please try again.</p>
+          {errorDetail && <p className="text-xs text-red-500 mb-4 font-mono bg-red-50 p-2 rounded break-all">{errorDetail}</p>}
           <div className="flex flex-col gap-3">
             <button
               data-testid="auth-retry-google-btn"
               onClick={() => {
                 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-                // Custom domains are not registered with Emergent OAuth — always redirect via preview URL
-                const previewUrl = BACKEND_URL;
-                const isCustomDomain = previewUrl && !window.location.origin.includes("preview.emergentagent.com") && !window.location.origin.includes("localhost");
-                const authOrigin = isCustomDomain ? previewUrl : window.location.origin;
-                const redirectUrl = authOrigin + "/auth/callback";
+                const redirectUrl = window.location.origin + "/auth/callback";
                 window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
               }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
