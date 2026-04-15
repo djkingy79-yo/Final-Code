@@ -165,6 +165,11 @@ const LandingPage = () => {
         )}
       </header>
 
+      {/* Logo */}
+      <div className="max-w-4xl mx-auto px-6 pt-4 pb-1 flex justify-center">
+        <img src="/logo.png" alt="Appeal Case Manager" className="w-36 h-36 object-contain" data-testid="landing-logo-top" />
+      </div>
+
       {/* Single Clear Disclaimer */}
       <div className="max-w-4xl mx-auto px-6 pt-3 pb-1">
         <div className="bg-red-700 rounded-lg px-4 py-2.5">
