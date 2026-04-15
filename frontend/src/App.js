@@ -106,21 +106,27 @@ const AuthCallback = () => {
     }
 
     if (sessionId && sessionId.length >= 32) {
-      try {
-        const response = await axios.post(
-          `${API}/auth/session`,
-          { session_id: sessionId },
-          { timeout: 30000 }
-        );
-        if (response.data?.session_token) {
-          localStorage.setItem("session_token", response.data.session_token);
-          localStorage.setItem("auth_user", JSON.stringify(response.data));
-          sessionStorage.removeItem("auth_retry_count");
-          navigate("/dashboard", { replace: true, state: { user: response.data } });
-          return;
+      // Retry the session exchange — Emergent session_id can take a moment to propagate,
+      // especially when arriving via a custom domain proxy (extra network hop).
+      const retryDelays = [0, 1500, 3000, 5000];
+      for (const delay of retryDelays) {
+        if (delay > 0) await new Promise(r => setTimeout(r, delay));
+        try {
+          const response = await axios.post(
+            `${API}/auth/session`,
+            { session_id: sessionId },
+            { timeout: 30000 }
+          );
+          if (response.data?.session_token) {
+            localStorage.setItem("session_token", response.data.session_token);
+            localStorage.setItem("auth_user", JSON.stringify(response.data));
+            sessionStorage.removeItem("auth_retry_count");
+            navigate("/dashboard", { replace: true, state: { user: response.data } });
+            return;
+          }
+        } catch (error) {
+          console.error(`Auth session exchange attempt failed (delay=${delay}ms):`, error?.response?.status);
         }
-      } catch (error) {
-        console.error("Auth session exchange failed:", error?.response?.status);
       }
     }
 
@@ -164,9 +170,7 @@ const AuthCallback = () => {
               data-testid="auth-retry-google-btn"
               onClick={() => {
                 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-                // Always use the preview URL for OAuth redirect — custom domains are not registered with Emergent auth
-                const previewOrigin = BACKEND_URL || window.location.origin;
-                const redirectUrl = previewOrigin + "/auth/callback";
+                const redirectUrl = window.location.origin + "/auth/callback";
                 window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
               }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
