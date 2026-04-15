@@ -197,6 +197,19 @@ const LandingPage = () => {
       {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
       <div className="max-w-6xl mx-auto px-6 pt-2 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Pink $5 Offer Box */}
+          <div className="rounded-lg p-3 shadow-lg border-2 cursor-pointer" style={{ background: '#db2777', borderColor: '#f472b6' }} onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#ffffff', minWidth: '36px', minHeight: '36px' }}>
+                <Sparkles className="w-5 h-5" style={{ color: '#db2777' }} />
+              </div>
+              <div>
+                <p className="font-black text-base uppercase tracking-wide" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>New User Special Offer</p>
+                <p className="font-black text-sm" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>First time users only — Unlock Grounds of Merit for just <span className="text-2xl font-black" style={{ color: '#ffffff' }}>$5.00</span></p>
+              </div>
+            </div>
+          </div>
+
           {/* Blue CTA Box */}
           <div className="rounded-lg p-3 shadow-lg border-2 cursor-pointer" style={{ background: '#2563eb', borderColor: '#60a5fa' }} onClick={() => setShowAuthModal(true)} data-testid="hero-cta-box">
             <div className="flex items-center gap-2">
@@ -318,21 +331,6 @@ const LandingPage = () => {
                 <div className="absolute -top-4 -right-4 bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg text-xs sm:text-sm font-semibold">
                   AI-Powered
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Pink $5 Offer Box — below second logo */}
-        <div className="max-w-6xl mx-auto px-6 mt-4">
-          <div className="rounded-lg p-3 shadow-lg border-2 cursor-pointer" style={{ background: '#db2777', borderColor: '#f472b6' }} onClick={() => setShowAuthModal(true)} data-testid="hero-trial-offer">
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#ffffff', minWidth: '36px', minHeight: '36px' }}>
-                <Sparkles className="w-5 h-5" style={{ color: '#db2777' }} />
-              </div>
-              <div>
-                <p className="font-black text-base uppercase tracking-wide" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>New User Special Offer</p>
-                <p className="font-black text-sm" style={{ color: '#ffffff', fontFamily: "'Times New Roman', Times, serif" }}>First time users only — Unlock Grounds of Merit for just <span className="text-2xl font-black" style={{ color: '#ffffff' }}>$5.00</span></p>
               </div>
             </div>
           </div>
