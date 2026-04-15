@@ -121,5 +121,13 @@ def validate_env_status() -> dict:
 
 # ── Shared Rate Limiter (process-safe via slowapi) ──
 from slowapi import Limiter
-from slowapi.util import get_remote_address
-limiter = Limiter(key_func=get_remote_address)
+
+def _get_real_client_ip(request) -> str:
+    """Extract real client IP behind Cloudflare/proxy. Falls back to direct IP."""
+    return (
+        request.headers.get("CF-Connecting-IP")
+        or request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+
+limiter = Limiter(key_func=_get_real_client_ip)

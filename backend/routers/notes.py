@@ -7,6 +7,7 @@ from typing import List
 from datetime import datetime, timezone
 import uuid
 import json
+import asyncio
 import logging
 
 from config import db
@@ -237,29 +238,43 @@ async def notes_collaboration_ws(websocket: WebSocket, case_id: str):
         case_connections[user.user_id] = websocket
         presence = await get_presence_snapshot(case_id)
         await broadcast_notes_event(case_id, "presence_update", {"users": presence})
-        while True:
-            raw_message = await websocket.receive_text()
-            if not raw_message:
-                continue
-            if raw_message == "ping":
-                await websocket.send_json({"type": "pong", "payload": {"timestamp": datetime.now(timezone.utc).isoformat()}})
-                continue
+
+        # Server-side heartbeat to keep connection alive through Cloudflare 100s idle timeout
+        async def heartbeat():
             try:
-                payload = json.loads(raw_message)
-            except json.JSONDecodeError:
-                continue
-            if payload.get("type") == "typing":
-                await broadcast_notes_event(case_id, "typing", {
-                    "user_id": user.user_id, "name": user.name,
-                    "note_id": payload.get("note_id"),
-                    "is_typing": bool(payload.get("is_typing", False))
-                })
-    except WebSocketDisconnect:
-        pass
+                while True:
+                    await asyncio.sleep(60)
+                    await websocket.send_json({"type": "heartbeat"})
+            except Exception:
+                pass
+
+        heartbeat_task = asyncio.create_task(heartbeat())
+
+        try:
+            while True:
+                raw_message = await websocket.receive_text()
+                if not raw_message:
+                    continue
+                if raw_message == "ping":
+                    await websocket.send_json({"type": "pong", "payload": {"timestamp": datetime.now(timezone.utc).isoformat()}})
+                    continue
+                try:
+                    payload = json.loads(raw_message)
+                except json.JSONDecodeError:
+                    continue
+                if payload.get("type") == "typing":
+                    await broadcast_notes_event(case_id, "typing", {
+                        "user_id": user.user_id, "name": user.name,
+                        "note_id": payload.get("note_id"),
+                        "is_typing": bool(payload.get("is_typing", False))
+                    })
+        except WebSocketDisconnect:
+            pass
     except HTTPException:
         if websocket.client_state.value != 3:
             await websocket.close(code=4401)
     finally:
+        heartbeat_task.cancel()
         case_connections = notes_ws_connections.get(case_id, {})
         for uid, ws in list(case_connections.items()):
             if ws is websocket:

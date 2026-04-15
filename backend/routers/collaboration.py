@@ -477,29 +477,41 @@ async def chat_websocket(websocket: WebSocket, case_id: str):
             "online_users": list(case_connections.keys())
         })
 
-        while True:
-            raw = await websocket.receive_text()
-            if raw == "ping":
-                await websocket.send_json({"type": "pong"})
-                continue
-
+        # Server-side heartbeat to keep connection alive through Cloudflare 100s idle timeout
+        async def heartbeat():
             try:
-                data = json.loads(raw)
-            except json.JSONDecodeError:
-                continue
+                while True:
+                    await asyncio.sleep(60)
+                    await websocket.send_json({"type": "heartbeat"})
+            except Exception:
+                pass
 
-            if data.get("type") == "typing":
-                await broadcast_chat_event(case_id, "typing", {
-                    "user_id": user.user_id,
-                    "name": user.name,
-                    "is_typing": data.get("is_typing", False)
-                })
+        heartbeat_task = asyncio.create_task(heartbeat())
 
-    except WebSocketDisconnect:
-        pass
+        try:
+            while True:
+                raw = await websocket.receive_text()
+                if raw == "ping":
+                    await websocket.send_json({"type": "pong"})
+                    continue
+
+                try:
+                    data = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+
+                if data.get("type") == "typing":
+                    await broadcast_chat_event(case_id, "typing", {
+                        "user_id": user.user_id,
+                        "name": user.name,
+                        "is_typing": data.get("is_typing", False)
+                    })
+        except WebSocketDisconnect:
+            pass
     except Exception:
         pass
     finally:
+        heartbeat_task.cancel()
         conns = chat_ws_connections.get(case_id, {})
         for uid, ws in list(conns.items()):
             if ws is websocket:

@@ -44,7 +44,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-        if request.url.scheme == "https":
+        # Check both direct HTTPS and Cloudflare/proxy forwarded HTTPS (Flexible SSL)
+        is_https = request.url.scheme == "https" or request.headers.get("X-Forwarded-Proto") == "https"
+        if is_https:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
 
@@ -55,7 +57,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "Accept"],
+    allow_headers=["*"],
 )
 
 
