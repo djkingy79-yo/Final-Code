@@ -165,8 +165,21 @@ const LandingPage = () => {
         )}
       </header>
 
+      {/* Hero headings above logo */}
+      <div className="max-w-4xl mx-auto px-6 pt-4 pb-1 text-center">
+        <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">
+          All Australian States & Territories • All Criminal Offences
+        </p>
+        <h1 
+          className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight mb-2"
+          style={{ fontFamily: "'Times New Roman', Times, serif" }}
+        >
+          Criminal Law Appeal Case Management
+        </h1>
+      </div>
+
       {/* Logo */}
-      <div className="max-w-4xl mx-auto px-6 pt-4 pb-1 flex justify-center">
+      <div className="max-w-4xl mx-auto px-6 pt-1 pb-1 flex justify-center">
         <img src="/logo.png" alt="Appeal Case Manager" className="w-auto h-[320px] sm:h-[400px] object-contain" data-testid="landing-logo-top" />
       </div>
 
