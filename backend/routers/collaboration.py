@@ -5,6 +5,7 @@ Handles case sharing, real-time chat, activity feed, and notifications
 from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from typing import Dict
+from datetime import datetime, timezone
 import os
 import asyncio
 import json
@@ -190,6 +191,16 @@ async def accept_share_link(token: str, request: Request):
     link = await db.share_links.find_one({"token": token, "is_active": True}, {"_id": 0})
     if not link:
         raise HTTPException(status_code=404, detail="Invalid or expired share link")
+
+    # Enforce expiry if set
+    link_expires = link.get("expires_at")
+    if link_expires:
+        exp = datetime.fromisoformat(link_expires) if isinstance(link_expires, str) else link_expires
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        if exp < datetime.now(timezone.utc):
+            await db.share_links.update_one({"token": token}, {"$set": {"is_active": False}})
+            raise HTTPException(status_code=410, detail="This share link has expired")
 
     if link["owner_id"] == user.user_id:
         return {"case_id": link["case_id"], "message": "You own this case"}

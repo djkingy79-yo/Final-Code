@@ -244,6 +244,24 @@ async def upload_document(
     content_text = ""
     file_type = file.content_type or "application/octet-stream"
     filename_lower = file.filename.lower() if file.filename else ""
+
+    # Validate actual file content using magic bytes (not user-supplied content_type)
+    ALLOWED_EXTENSIONS = {'.pdf', '.txt', '.docx', '.doc', '.png', '.jpg', '.jpeg', '.heic', '.tiff', '.bmp', '.gif'}
+    file_ext = '.' + filename_lower.rsplit('.', 1)[-1] if '.' in filename_lower else ''
+    if file_ext and file_ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"File type '{file_ext}' is not supported. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}")
+    try:
+        import magic
+        detected_type = magic.from_buffer(file_content[:2048], mime=True)
+        safe_types = {'application/pdf', 'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                      'application/msword', 'image/png', 'image/jpeg', 'image/heic', 'image/tiff', 'image/bmp', 'image/gif',
+                      'application/octet-stream'}
+        if detected_type not in safe_types and not detected_type.startswith('text/'):
+            raise HTTPException(status_code=400, detail=f"File content type '{detected_type}' is not allowed.")
+        file_type = detected_type
+    except ImportError:
+        pass  # python-magic not installed — fall back to client content_type
+
     try:
         if "text" in file_type or filename_lower.endswith('.txt'):
             content_text = file_content.decode('utf-8', errors='ignore')

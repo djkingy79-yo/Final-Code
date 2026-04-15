@@ -4,7 +4,7 @@ Extracted from server.py monolith.
 """
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import uuid
 import logging
 import secrets
@@ -166,11 +166,12 @@ async def verify_payid_payment(request: Request):
         "Payment Notice Received - Awaiting Confirmation", "Payment Notice Received",
         "<p style=\"margin:0 0 14px;line-height:1.7;\">This email confirms that the PayID payment notice was received and marked for review. Once the payment is received and confirmed, the feature will unlock automatically.</p>",
     )
-    # Generate a secure one-click confirmation token for the admin email
+    # Generate a secure one-click confirmation token for the admin email (48h expiry)
     confirm_token = secrets.token_urlsafe(32)
+    confirm_expires_at = (datetime.now(timezone.utc) + timedelta(hours=48)).isoformat()
     await db.payments.update_one(
         {"reference": reference},
-        {"$set": {"confirm_token": confirm_token}}
+        {"$set": {"confirm_token": confirm_token, "confirm_token_expires_at": confirm_expires_at}}
     )
     # Notify admin with a one-click confirm link
     frontend_url = get_frontend_url()
@@ -243,6 +244,20 @@ async def email_confirm_payid_payment(confirm_token: str):
         <p>This confirmation link is not valid. It may have already been used or the payment was not found.</p>
         </body></html>""", status_code=404)
 
+    # Check token expiry
+    token_expires = payment.get("confirm_token_expires_at")
+    if token_expires:
+        from datetime import datetime, timezone
+        exp = datetime.fromisoformat(token_expires) if isinstance(token_expires, str) else token_expires
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        if exp < datetime.now(timezone.utc):
+            return HTMLResponse(content="""
+            <html><body style="font-family:Arial,sans-serif;text-align:center;padding:60px;background:#fef2f2;">
+            <h1 style="color:#dc2626;">Link Expired</h1>
+            <p>This confirmation link has expired (48 hour limit). Please confirm the payment manually from the admin dashboard.</p>
+            </body></html>""", status_code=410)
+
     reference = payment.get("reference", "")
 
     if payment.get("status") == "completed":
@@ -252,10 +267,11 @@ async def email_confirm_payid_payment(confirm_token: str):
         <p>Payment <strong>{reference}</strong> has already been confirmed and the feature is unlocked.</p>
         </body></html>""")
 
-    # Confirm the payment
+    # Confirm the payment and invalidate the token
     await db.payments.update_one(
         {"confirm_token": confirm_token},
-        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat(), "confirmed_by": "email-link"}}
+        {"$set": {"status": "completed", "completed_at": datetime.now(timezone.utc).isoformat(), "confirmed_by": "email-link"},
+         "$unset": {"confirm_token": "", "confirm_token_expires_at": ""}}
     )
 
     # Unlock the feature on the case

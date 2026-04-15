@@ -12,13 +12,13 @@ import uuid
 import asyncio
 import resend
 
-from config import db, logger, get_admin_emails, get_contact_email, get_resend_from_email
+from config import db, logger, get_admin_emails, get_contact_email, get_resend_from_email, limiter
 from auth_utils import get_current_user
 
 router = APIRouter(prefix="/api", tags=["admin"])
 
 # Admin configuration
-ADMIN_EMAILS = get_admin_emails()
+ADMIN_EMAILS = get_admin_emails()  # Cached at startup; use get_admin_emails() for live checks
 
 # Resend email configuration
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
@@ -123,7 +123,8 @@ async def get_visit_stats(request: Request):
 # ============ CONTACT FORM ============
 
 @router.post("/contact")
-async def submit_contact_form(contact: ContactMessage):
+@limiter.limit("3/minute")
+async def submit_contact_form(request: Request, contact: ContactMessage):
     """Submit a contact form message"""
     try:
         # Store message in database
@@ -142,19 +143,24 @@ async def submit_contact_form(contact: ContactMessage):
         email_sent = False
         if RESEND_API_KEY:
             try:
+                import html as html_mod
+                safe_name = html_mod.escape(contact.name or "")
+                safe_email = html_mod.escape(contact.email or "")
+                safe_subject = html_mod.escape(contact.subject or "")
+                safe_message = html_mod.escape(contact.message or "")
                 html_content = f"""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                     <h2 style="color: #1e293b; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">
                         New Contact Form Message
                     </h2>
                     <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <p><strong>From:</strong> {contact.name}</p>
-                        <p><strong>Email:</strong> {contact.email}</p>
-                        <p><strong>Subject:</strong> {contact.subject}</p>
+                        <p><strong>From:</strong> {safe_name}</p>
+                        <p><strong>Email:</strong> {safe_email}</p>
+                        <p><strong>Subject:</strong> {safe_subject}</p>
                     </div>
                     <div style="background: #fff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
                         <p><strong>Message:</strong></p>
-                        <p style="white-space: pre-wrap;">{contact.message}</p>
+                        <p style="white-space: pre-wrap;">{safe_message}</p>
                     </div>
                     <p style="color: #64748b; font-size: 12px; margin-top: 20px;">
                         Sent from Appeal Case Manager contact form

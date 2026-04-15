@@ -170,7 +170,7 @@ async def flag_undersized_reports():
     }
     flagged_count = 0
     for rtype, min_chars in min_completed_targets.items():
-        async for report in db.reports.find({"status": "completed", "report_type": rtype}):
+        async for report in db.reports.find({"status": "completed", "report_type": rtype}).limit(500):
             analysis = (report.get("content", {}).get("analysis") or "")
             if len(analysis) < min_chars:
                 await db.reports.update_one(
@@ -185,7 +185,7 @@ async def flag_undersized_reports():
     # DO_NOT_UNDO — Only restore if the report actually meets the minimum target.
     # Reports below the target MUST stay failed so the user can regenerate them.
     for rtype, min_chars in min_completed_targets.items():
-        async for report in db.reports.find({"status": "failed", "report_type": rtype}):
+        async for report in db.reports.find({"status": "failed", "report_type": rtype}).limit(500):
             analysis = (report.get("content", {}).get("analysis") or report.get("content", {}).get("partial_analysis") or "")
             if analysis and len(analysis) >= min_chars:
                 await db.reports.update_one(

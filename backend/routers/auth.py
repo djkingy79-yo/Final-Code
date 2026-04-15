@@ -18,7 +18,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-ADMIN_EMAILS = get_admin_emails()
+ADMIN_EMAILS = get_admin_emails()  # Cached at startup; use get_admin_emails() for live checks
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -266,9 +266,18 @@ async def create_session(request: Request, response: Response):
     )
     
     user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
-    user_doc["session_token"] = session_token
+    # Return ONLY safe fields — never leak password_hash, password_salt, or internal fields
+    safe_response = {
+        "user_id": user_doc.get("user_id"),
+        "email": user_doc.get("email"),
+        "name": user_doc.get("name"),
+        "picture": user_doc.get("picture"),
+        "session_token": session_token,
+        "terms_accepted": user_doc.get("terms_accepted", False),
+        "created_at": user_doc.get("created_at"),
+    }
     logger.info(f"Google auth: SUCCESS — returning session for {user_data.get('email')}, token={session_token[:8]}...")
-    return user_doc
+    return safe_response
 
 @router.get("/me")
 async def get_me(request: Request):
@@ -279,7 +288,7 @@ async def get_me(request: Request):
     user_doc = await db.users.find_one({"user_id": user.user_id}, {"_id": 0})
     user_dict["terms_accepted"] = user_doc.get("terms_accepted", False)
     user_dict["terms_accepted_at"] = user_doc.get("terms_accepted_at")
-    user_dict["is_admin"] = user.email in ADMIN_EMAILS
+    user_dict["is_admin"] = user.email in get_admin_emails()
     return user_dict
 
 @router.post("/accept-terms")

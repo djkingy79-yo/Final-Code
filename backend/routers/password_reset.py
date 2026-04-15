@@ -133,7 +133,6 @@ async def forgot_password(request: ForgotPasswordRequest):
             "success": True,
             "message": "If an account exists with this email, a password reset link has been sent.",
             "email_sent": email_sent,
-            "token_for_testing": reset_token if not RESEND_API_KEY else None  # Only in dev mode
         }
         
     except Exception as e:
