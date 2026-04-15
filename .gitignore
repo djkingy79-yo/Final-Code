@@ -1,4 +1,4 @@
-# DO_NOT_UNDO — .gitignore. All entries in this file are approved and must be preserved.
+# DO_NOT_UNDO — .gitignore
 # Dependencies
 node_modules/
 __pycache__/
@@ -25,12 +25,16 @@ Thumbs.db
 # Logs
 *.log
 
-# Environment files — NEVER commit secrets
+# Environment and credential files — NEVER commit secrets
 backend/.env
 frontend/.env
 .env
 .env.*
 *.env
+credentials.json
+*.pem
+*.key
+.credentials
 
 # Capacitor
 frontend/android/
@@ -44,35 +48,10 @@ htmlcov/
 # Misc
 *.bak
 *.tmp
+
+# Webpack cache
+frontend/node_modules/.cache/
 frontend/node_modules/.cache/default-development/27.pack
 frontend/node_modules/.cache/default-development/0.pack
-frontend/node_modules/.cache/default-development/40.pack
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
-frontend/node_modules/.cache/default-development/1.pack
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
 frontend/node_modules/.cache/default-development/2.pack
--e 
-# Environment and credential files
-.env
-.env.*
-*.env
-credentials.json
-*.pem
-*.key
-.credentials
+frontend/node_modules/.cache/default-development/40.pack
