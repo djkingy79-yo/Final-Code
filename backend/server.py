@@ -143,16 +143,28 @@ register_all_routers(app)
 # ── Startup / Shutdown ──
 @app.on_event("startup")
 async def on_startup():
-    from services.startup_tasks import (
-        create_database_indexes,
-        recover_orphaned_reports,
-        flag_undersized_reports,
-        dedup_grounds_on_startup,
-    )
+    import asyncio
+    from services.startup_tasks import create_database_indexes
+
+    # Only indexes on startup — fast and required before serving requests
     await create_database_indexes()
-    await recover_orphaned_reports()
-    await flag_undersized_reports()
-    await dedup_grounds_on_startup()
+
+    # Heavy scans run in background AFTER app is ready to serve health checks
+    async def _background_startup():
+        await asyncio.sleep(5)
+        from services.startup_tasks import (
+            recover_orphaned_reports,
+            flag_undersized_reports,
+            dedup_grounds_on_startup,
+        )
+        try:
+            await recover_orphaned_reports()
+            await flag_undersized_reports()
+            await dedup_grounds_on_startup()
+        except Exception as e:
+            logger.error(f"Background startup task failed: {e}")
+
+    asyncio.create_task(_background_startup())
 
 
 @app.on_event("shutdown")
