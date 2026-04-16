@@ -646,55 +646,49 @@ async def delete_ground_of_merit(case_id: str, ground_id: str, request: Request)
 
 
 # ============================================================================
-# INVESTIGATE SINGLE GROUND
+# INVESTIGATE SINGLE GROUND — Background task pattern to avoid CF 524 timeout
 # ============================================================================
 
-@router.post("/cases/{case_id}/grounds/{ground_id}/investigate", response_model=dict)
-async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Request):
-    """Deep investigation of a specific ground via staged pipeline verification"""
-    user = await get_current_user(request)
+# In-memory task tracker for investigation jobs
+_investigate_tasks = {}
 
-    ground = await db.grounds_of_merit.find_one(
-        {"ground_id": ground_id, "case_id": case_id, "user_id": user.user_id},
-        {"_id": 0}
-    )
-    if not ground:
-        raise HTTPException(status_code=404, detail="Ground of merit not found")
 
-    case = await db.cases.find_one(
-        {"case_id": case_id, "user_id": user.user_id},
-        {"_id": 0}
-    )
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
-
+async def _run_investigation(task_id: str, case_id: str, ground_id: str, user_id: str):
+    """Background task that performs the full investigation pipeline."""
     try:
-        # DO NOT re-run _ensure_pipeline_identification here — it re-classifies
-        # ALL issues and creates new grounds. We only want to verify THIS ground.
+        _investigate_tasks[task_id] = {"status": "running", "progress": "Fetching ground data..."}
+
+        ground = await db.grounds_of_merit.find_one(
+            {"ground_id": ground_id, "case_id": case_id, "user_id": user_id}, {"_id": 0}
+        )
+        if not ground:
+            _investigate_tasks[task_id] = {"status": "failed", "error": "Ground not found"}
+            return
+
+        case = await db.cases.find_one(
+            {"case_id": case_id, "user_id": user_id}, {"_id": 0}
+        )
+        if not case:
+            _investigate_tasks[task_id] = {"status": "failed", "error": "Case not found"}
+            return
+
+        _investigate_tasks[task_id]["progress"] = "Looking up issue classification..."
 
         issue = await db.issue_classifications.find_one(
-            {
-                "case_id": case_id,
-                "user_id": user.user_id,
-                "title": ground.get("title"),
-                "ground_type": ground.get("ground_type"),
-            },
+            {"case_id": case_id, "user_id": user_id, "title": ground.get("title"), "ground_type": ground.get("ground_type")},
             {"_id": 0}
         )
-
         if not issue:
             issue = {
                 "issue_id": f"compat_{ground_id}",
-                "case_id": case_id,
-                "user_id": user.user_id,
+                "case_id": case_id, "user_id": user_id,
                 "title": ground.get("title", "Untitled ground"),
                 "ground_type": ground.get("ground_type", "other"),
                 "description": ground.get("description", ""),
             }
 
-        # Verify ONLY this issue and update ONLY this ground — not all grounds
         case_extract = await db.case_extracts.find_one(
-            {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+            {"case_id": case_id, "user_id": user_id}, {"_id": 0}
         )
         if not case_extract:
             case_extract = {"merged_facts": [], "merged_events": [], "merged_findings": []}
@@ -704,23 +698,23 @@ async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Req
             "events": case_extract.get("merged_events", []),
             "findings": case_extract.get("merged_findings", []),
         }
+
+        _investigate_tasks[task_id]["progress"] = "Verifying ground against evidence..."
         verification = await verify_issue(case, issue, supporting_context)
         verification_dict = verification.model_dump()
         _safe_isoformat(verification_dict, "created_at")
 
-        # Store verification
         await db.issue_verifications.update_one(
-            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id},
-            {"$set": verification_dict},
-            upsert=True,
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user_id},
+            {"$set": verification_dict}, upsert=True,
         )
 
-        # Generate deep analysis text for this ground
+        _investigate_tasks[task_id]["progress"] = "Generating deep analysis..."
+
         deep_analysis_text = ""
         try:
             offence_context = get_offence_context(case)
             state_upper = (case.get('state') or 'unknown').upper()
-            # DO NOT UNDO — Appellate-structured deep analysis prompt with FORENSIC language
             analysis_prompt = f"""Analyse the following ground of appeal in the criminal case of {case.get('defendant_name', 'the appellant')} ({state_upper}).
 
 JURISDICTION: {state_upper}
@@ -796,7 +790,8 @@ RULES:
         except Exception as e:
             logger.warning(f"Deep analysis generation failed for ground {ground_id}: {e}")
 
-        # Update ONLY this ground with verification results — DO NOT re-sync all
+        _investigate_tasks[task_id]["progress"] = "Saving results..."
+
         update_fields = {
             "status": "investigated",
             "verification_status": "verified",
@@ -818,13 +813,13 @@ RULES:
             }
             update_fields["analysis"] = deep_analysis_text
 
-        # DO NOT UNDO — Generate appellate_pathway if missing
+        # Generate appellate_pathway if missing
         if not ground.get("appellate_pathway"):
             try:
                 from services.offence_helpers import _build_state_framework_context
                 state = (case.get("state") or "").lower().strip()
                 leg_context = _build_state_framework_context(state) if state else ""
-                ap_prompt = f"""Based on the following ground of appeal in a {state.upper()} criminal case, provide the single most appropriate appellate pathway (the statutory provision giving the right to appeal).
+                ap_prompt = f"""Based on the following ground of appeal in a {state.upper()} criminal case, provide the single most appropriate appellate pathway.
 
 Ground Title: {ground.get('title', '')}
 Ground Type: {ground.get('ground_type', 'other')}
@@ -832,11 +827,7 @@ Description: {ground.get('description', '')}
 
 {leg_context}
 
-Return ONLY a concise appellate pathway string, e.g.:
-- "Miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)"
-- "Error of law under s 5(1) Criminal Appeal Act 1912 (NSW)"
-- "Sentencing error under s 5(1) Criminal Appeal Act 1912 (NSW)"
-Do NOT return JSON. Return only the plain text appellate pathway."""
+Return ONLY a concise appellate pathway string. Do NOT return JSON."""
                 from services.llm_service import call_llm_structured
                 ap_result = await call_llm_structured(
                     system_prompt="You are an Australian appellate law expert. Provide the correct appellate pathway provision for the specified jurisdiction. Do NOT default to NSW. Do NOT invent section numbers. Use Australian English only.",
@@ -850,24 +841,82 @@ Do NOT return JSON. Return only the plain text appellate pathway."""
                 if ap_text and len(ap_text) > 5 and (not isinstance(ap_result, dict) or ap_result.get("ok")):
                     update_fields["appellate_pathway"] = ap_text
             except Exception as ap_err:
-                logger.warning(f"Failed to generate appellate pathway during investigation for {ground_id}: {ap_err}")
+                logger.warning(f"Failed to generate appellate pathway: {ap_err}")
 
         await db.grounds_of_merit.update_one(
             {"ground_id": ground_id, "case_id": case_id},
             {"$set": update_fields}
         )
 
-        # Return updated ground
         updated = await db.grounds_of_merit.find_one(
             {"ground_id": ground_id, "case_id": case_id}, {"_id": 0}
         )
-        return updated or verification_dict
+        _investigate_tasks[task_id] = {"status": "completed", "result": updated}
 
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Ground investigation pipeline failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Ground investigation failed: {str(e)}")
+        logger.error(f"Background investigation failed for {ground_id}: {e}")
+        _investigate_tasks[task_id] = {"status": "failed", "error": str(e)}
+
+
+@router.post("/cases/{case_id}/grounds/{ground_id}/investigate", response_model=dict)
+async def investigate_ground_of_merit(case_id: str, ground_id: str, request: Request):
+    """Start background investigation of a ground. Returns task_id for polling."""
+    user = await get_current_user(request)
+
+    ground = await db.grounds_of_merit.find_one(
+        {"ground_id": ground_id, "case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not ground:
+        raise HTTPException(status_code=404, detail="Ground not found")
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    # Mark ground as investigating
+    await db.grounds_of_merit.update_one(
+        {"ground_id": ground_id, "case_id": case_id},
+        {"$set": {"status": "investigating"}}
+    )
+
+    task_id = f"inv_{ground_id}_{uuid.uuid4().hex[:8]}"
+    _investigate_tasks[task_id] = {"status": "started", "progress": "Starting investigation..."}
+
+    import asyncio
+    asyncio.create_task(_run_investigation(task_id, case_id, ground_id, user.user_id))
+
+    return {"status": "started", "task_id": task_id, "ground_id": ground_id}
+
+
+@router.get("/cases/{case_id}/grounds/{ground_id}/investigate/status", response_model=dict)
+async def investigate_ground_status(case_id: str, ground_id: str, task_id: str, request: Request):
+    """Poll investigation status."""
+    await get_current_user(request)
+
+    task = _investigate_tasks.get(task_id)
+    if not task:
+        # Task not found in memory — check if the ground is already investigated
+        ground = await db.grounds_of_merit.find_one(
+            {"ground_id": ground_id, "case_id": case_id}, {"_id": 0}
+        )
+        if ground and ground.get("status") == "investigated":
+            return {"status": "completed", "result": ground}
+        return {"status": "not_found"}
+
+    if task["status"] == "completed":
+        # Clean up the task from memory
+        result = task.get("result", {})
+        _investigate_tasks.pop(task_id, None)
+        return {"status": "completed", "result": result}
+
+    if task["status"] == "failed":
+        error = task.get("error", "Unknown error")
+        _investigate_tasks.pop(task_id, None)
+        return {"status": "failed", "error": error}
+
+    return {"status": "running", "progress": task.get("progress", "Processing...")}
 
 
 # ============================================================================

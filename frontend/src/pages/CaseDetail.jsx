@@ -641,20 +641,59 @@ const CaseDetail = ({ user }) => {
 
   const handleInvestigateGround = async (groundId) => {
     setInvestigatingGround(groundId);
-    toast.info("Investigating this ground with speed optimisation. Large matters can still take up to 2-3 minutes.");
+    toast.info("Investigating ground — this runs in the background...");
     try {
-      const response = await axios.post(`${API}/cases/${caseId}/grounds/${groundId}/investigate`, {}, {
-        timeout: 180000 // 3 minute timeout for complex AI analysis
+      // Start the background investigation
+      const startResponse = await axios.post(`${API}/cases/${caseId}/grounds/${groundId}/investigate`, {}, {
+        timeout: 30000
       });
-      setGrounds(grounds.map(g => g.ground_id === groundId ? response.data : g));
-      toast.success("Deep investigation complete!");
+      const taskId = startResponse.data?.task_id;
+      if (!taskId) {
+        // Old-style direct response (fallback)
+        if (startResponse.data?.ground_id) {
+          setGrounds(grounds.map(g => g.ground_id === groundId ? startResponse.data : g));
+          toast.success("Deep investigation complete!");
+          setInvestigatingGround(null);
+          return;
+        }
+        throw new Error("No task_id returned");
+      }
+
+      // Poll for completion
+      const pollInterval = 3000;
+      const maxAttempts = 60; // 3 minutes max
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        await new Promise(r => setTimeout(r, pollInterval));
+        try {
+          const statusRes = await axios.get(
+            `${API}/cases/${caseId}/grounds/${groundId}/investigate/status?task_id=${taskId}`,
+            { timeout: 15000 }
+          );
+          const { status, progress, result, error } = statusRes.data;
+
+          if (status === "completed" && result) {
+            setGrounds(prev => prev.map(g => g.ground_id === groundId ? result : g));
+            toast.success("Deep investigation complete!");
+            setInvestigatingGround(null);
+            return;
+          }
+          if (status === "failed") {
+            toast.error(error || "Investigation failed. Please try again.");
+            setInvestigatingGround(null);
+            return;
+          }
+          // Still running — update progress toast
+          if (attempt % 3 === 0) {
+            toast.info(progress || "Investigating...", { id: "investigate-progress" });
+          }
+        } catch {
+          // Poll failed — keep trying
+        }
+      }
+      toast.error("Investigation timed out. Please check the ground — it may have completed.");
     } catch (error) {
       console.error("Investigate error:", error);
-      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
-        toast.error("Investigation timed out. Please retry — the system now prioritises key evidence for faster results.");
-      } else {
-        toast.error("Failed to investigate ground. Please try again.");
-      }
+      toast.error("Failed to start investigation. Please try again.");
     } finally {
       setInvestigatingGround(null);
     }
