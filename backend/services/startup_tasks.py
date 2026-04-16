@@ -8,22 +8,52 @@ Startup and shutdown tasks for the Criminal Appeal AI application.
 """
 
 from datetime import datetime, timezone, timedelta
-from pymongo.errors import OperationFailure
+from pymongo.errors import OperationFailure, DuplicateKeyError
 from config import db, logger, client
 
 
 async def _safe_create_index(collection, keys, **kwargs):
-    """Create an index, dropping any conflicting index with the same name first."""
+    """Create an index, dropping any conflicting index with the same name first.
+    Catches both OperationFailure (index option conflict) and DuplicateKeyError
+    (existing documents violate the new unique constraint)."""
     try:
         await collection.create_index(keys, **kwargs)
-    except OperationFailure:
-        # Build the default index name MongoDB would use (e.g. "field1_1_field2_1")
+    except (OperationFailure, DuplicateKeyError):
         index_name = kwargs.get("name") or "_".join(f"{k}_{d}" for k, d in keys)
         try:
             await collection.drop_index(index_name)
-        except OperationFailure:
+        except (OperationFailure, DuplicateKeyError):
             pass
-        await collection.create_index(keys, **kwargs)
+        try:
+            await collection.create_index(keys, **kwargs)
+        except DuplicateKeyError:
+            # Unique index can't be created due to existing duplicate documents.
+            # Log and skip — the dedup step should have handled this.
+            coll_name = collection.name if hasattr(collection, 'name') else str(collection)
+            logger.warning(f"Cannot create unique index on {coll_name} ({index_name}) — duplicate documents exist. Run dedup first.")
+
+
+async def _dedup_document_extracts():
+    """Remove duplicate document_extracts entries, keeping only the newest per (document_id, case_id).
+    Must run BEFORE the unique index is created."""
+    pipeline = [
+        {"$group": {
+            "_id": {"document_id": "$document_id", "case_id": "$case_id"},
+            "count": {"$sum": 1},
+            "ids": {"$push": "$_id"},
+            "newest": {"$max": "$created_at"},
+        }},
+        {"$match": {"count": {"$gt": 1}}},
+    ]
+    duplicates = await db.document_extracts.aggregate(pipeline).to_list(1000)
+    total_removed = 0
+    for group in duplicates:
+        ids_to_remove = group["ids"][:-1]  # Keep the last one (newest by insertion order)
+        if ids_to_remove:
+            result = await db.document_extracts.delete_many({"_id": {"$in": ids_to_remove}})
+            total_removed += result.deleted_count
+    if total_removed:
+        logger.info(f"Dedup: removed {total_removed} duplicate document_extracts across {len(duplicates)} groups")
 
 
 async def create_database_indexes():
@@ -49,7 +79,8 @@ async def create_database_indexes():
     await _safe_create_index(db.issue_arguments, [("case_id", 1)])
 
     # Pipeline collections — compound indexes for query performance
-    # DO NOT add unique indexes on *_id fields unless the model always generates them
+    # Dedup document_extracts BEFORE creating unique index to avoid DuplicateKeyError
+    await _dedup_document_extracts()
     await _safe_create_index(db.document_extracts, [("case_id", 1), ("user_id", 1)])
     await _safe_create_index(db.document_extracts, [("document_id", 1), ("case_id", 1)], unique=True)
     await _safe_create_index(db.case_extracts, [("case_id", 1), ("user_id", 1)])
