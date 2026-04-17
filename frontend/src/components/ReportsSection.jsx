@@ -419,7 +419,7 @@ const ReportsSection = ({
       }
       const detail = error?.response?.data?.detail;
       const statusCode = error?.response?.status;
-      if (statusCode === 409 && (typeof detail === 'object' ? detail?.message : detail || '').includes("Pipeline is stale")) {
+      if (statusCode === 409 && ((typeof detail === 'object' ? (detail?.message || '') : (detail || ''))).includes("Pipeline is stale")) {
         toast.error("Pipeline is out of date. Please refresh pipeline before generating report.");
         stopGenerating();
         return;
