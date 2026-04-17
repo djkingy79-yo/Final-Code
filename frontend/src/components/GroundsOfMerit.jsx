@@ -397,12 +397,12 @@ const GroundsOfMerit = ({
           <p className="grounds-export-kicker">Grounds of Merit</p>
           <h1>Detailed Grounds Analysis</h1>
           {/* DO_NOT_UNDO — Case identity must always display in export */}
-          <div style={{margin:'16px 0', padding:'12px', border:'2px solid #1d4ed8', borderRadius:'10px', background:'#eff6ff'}}>
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', fontSize:'14pt', fontFamily:"'Times New Roman', Times, serif"}}>
-              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong style={{fontSize:'14pt'}}>{caseData?.defendant_name || "—"}</strong></div>
-              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize', fontSize:'14pt'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
-              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase', fontSize:'14pt'}}>{caseData?.state || "—"}</strong></div>
-              <div><span style={{fontSize:'10pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong style={{fontSize:'14pt'}}>{caseData?.sentence || "—"}</strong></div>
+          <div style={{margin:'8px 0', padding:'8px', border:'2px solid #1d4ed8', borderRadius:'8px', background:'#eff6ff'}}>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'6px', fontSize:'10pt', fontFamily:"'Times New Roman', Times, serif"}}>
+              <div><span style={{fontSize:'7pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Defendant</span><br/><strong style={{fontSize:'10pt'}}>{caseData?.defendant_name || "—"}</strong></div>
+              <div><span style={{fontSize:'7pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Offence</span><br/><strong style={{textTransform:'capitalize', fontSize:'10pt'}}>{caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "—"}</strong></div>
+              <div><span style={{fontSize:'7pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>State</span><br/><strong style={{textTransform:'uppercase', fontSize:'10pt'}}>{caseData?.state || "—"}</strong></div>
+              <div><span style={{fontSize:'7pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.1em', color:'#2563eb'}}>Sentence</span><br/><strong style={{fontSize:'10pt'}}>{caseData?.sentence || "—"}</strong></div>
             </div>
           </div>
         </div>
@@ -422,9 +422,9 @@ const GroundsOfMerit = ({
 
             {/* Appellate Pathway — DO NOT UNDO */}
             {ground.appellate_pathway && (
-              <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'6px', padding:'8px 12px', marginBottom:'12px'}}>
-                <h3 style={{color:'#1d4ed8', marginBottom:'4px'}}>Appellate Pathway</h3>
-                <p style={{fontSize:'11px', lineHeight:'1.5', margin:0}}>{auSpelling(ground.appellate_pathway)}</p>
+              <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'4px', padding:'4px 8px', marginBottom:'6px'}}>
+                <h3 style={{color:'#1d4ed8', marginBottom:'2px', fontSize:'10pt'}}>Appellate Pathway</h3>
+                <p style={{fontSize:'9pt', lineHeight:'1.4', margin:0}}>{auSpelling(ground.appellate_pathway)}</p>
               </div>
             )}
 
@@ -487,7 +487,7 @@ const GroundsOfMerit = ({
             )}
 
             {/* DO NOT UNDO — Per-ground appellate disclaimer */}
-            <div style={{marginTop:'12px', padding:'8px 12px', background:'#f1f5f9', border:'1px solid #cbd5e1', borderRadius:'6px', fontSize:'10px', lineHeight:'1.5', color:'#475569', fontStyle:'italic'}}>
+            <div style={{marginTop:'6px', padding:'4px 8px', background:'#f1f5f9', border:'1px solid #cbd5e1', borderRadius:'4px', fontSize:'8pt', lineHeight:'1.4', color:'#475569', fontStyle:'italic'}}>
               This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.
             </div>
           </section>
@@ -523,47 +523,43 @@ const GroundsOfMerit = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grounds of Merit Export</title>
   <style>
-    @page { size: A4; margin: 15mm 15mm 28mm 15mm; }
+    @page { size: A4; margin: 20mm 20mm 30mm 20mm; }
     * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 20px; padding-bottom: 60px; }
-    .grounds-export-brand { text-align: center; font-size: 12pt; font-weight: 700; margin-bottom: 14px; }
-    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 14px; margin-bottom: 20px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 10pt; margin: 0 0 6px; }
-    .grounds-export-header h1 { margin: 0 0 6px; font-size: 22pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; }
-    .grounds-export-header p { margin: 0; line-height: 1.6; font-size: 10pt; font-style: italic; }
-    .grounds-export-section { padding: 14px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
-    .grounds-export-title-wrap h2 { margin: 0 0 6px; font-size: 18pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 2px 7px; border-radius: 999px; font-size: 9pt; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 10px; line-height: 1.8; font-size: 12pt; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 6px; font-size: 14pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .grounds-export-block ul { margin: 0 0 10px; padding-left: 2.5rem; line-height: 1.75; }
-    .grounds-export-block ul li { font-size: 12pt !important; -webkit-text-size-adjust: 100%; line-height: 1.75; margin-bottom: 4px; }
-    .grounds-export-analysis { margin-top: 12px; }
-    .grounds-export-disclaimer { margin-top: 16px; background: #dc2626; border: 3px solid #b91c1c; padding: 12px 16px; font-weight: 700; line-height: 1.5; font-size: 10pt; color: #ffffff; border-radius: 8px; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.8; margin: 0 0 8px; font-size: 12pt; font-family: 'Times New Roman', Times, serif; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 10pt; line-height: 1.6; }
+    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 24px 28px; padding-bottom: 60px; }
+    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 10px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 8pt; margin: 0 0 4px; }
+    .grounds-export-header h1 { margin: 0 0 4px; font-size: 16pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; }
+    .grounds-export-section { padding: 8px 0 4px; }
+    .grounds-export-section:not(:first-of-type) { page-break-before: always; }
+    .grounds-export-title-wrap h2 { margin: 0 0 4px; font-size: 13pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 1px 6px; border-radius: 999px; font-size: 7pt; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 6px; line-height: 1.5; font-size: 10pt; }
+    .grounds-export-block { margin-bottom: 6px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 3px; font-size: 11pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .grounds-export-block ul { margin: 0 0 6px; padding-left: 2rem; line-height: 1.5; }
+    .grounds-export-block ul li { font-size: 10pt !important; line-height: 1.5; margin-bottom: 2px; }
+    .grounds-export-analysis { margin-top: 6px; }
+    .grounds-export-disclaimer { margin-top: 12px; background: #dc2626; border: 2px solid #b91c1c; padding: 8px 12px; font-weight: 700; line-height: 1.4; font-size: 8pt; color: #ffffff; border-radius: 6px; display: flex; gap: 8px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.5; margin: 0 0 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; font-family: 'Times New Roman', Times, serif; }
-    .legal-report h2 { font-size: 18pt; font-weight: 700; }
-    .legal-report h3 { font-size: 14pt; font-weight: 700; }
-    .legal-report h4 { font-size: 12pt; font-weight: 700; }
-    .legal-report-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .legal-report table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; font-size: 11pt; font-family: 'Times New Roman', Times, serif; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 4px 6px; vertical-align: top; font-family: 'Times New Roman', Times, serif; }
-    .legal-report th { background: #1d4ed8; color: #ffffff; font-weight: 800; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+    .legal-report h2 { font-size: 13pt; font-weight: 700; margin: 6px 0 3px; }
+    .legal-report h3 { font-size: 11pt; font-weight: 700; margin: 5px 0 2px; }
+    .legal-report h4 { font-size: 10pt; font-weight: 700; margin: 4px 0 2px; }
+    .legal-report-table-wrap { overflow-x: auto; }
+    .legal-report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9pt; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 3px 5px; vertical-align: top; }
+    .legal-report th { background: #1d4ed8; color: #fff; font-weight: 800; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
-    .legal-report ul, .legal-report ol { padding-left: 2.5rem; margin: 6px 0 10px; }
-    .legal-report li { font-size: 12pt; line-height: 1.75; margin-bottom: 4px; font-family: 'Times New Roman', Times, serif; }
-    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1.5px solid #1d4ed8; padding: 6px 15mm 8px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 10pt; font-style: italic; color: #334155; font-family: 'Times New Roman', Times, serif; }
-    .print-footer-label { font-weight: 700; }
-    .print-footer-date { color: #64748b; }
-    .print-footer-page-print::after { content: ''; }
+    .legal-report ul, .legal-report ol { padding-left: 2rem; margin: 4px 0 6px; }
+    .legal-report li { font-size: 10pt; line-height: 1.5; margin-bottom: 2px; }
+    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 4px 20mm 6px; }
+    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #334155; font-family: 'Times New Roman', Times, serif; }
     @media print {
-      body { background: #ffffff; }
-      .grounds-export-shell { max-width: none; padding: 0; padding-bottom: 50px; }
-      .legal-report-table-wrap { overflow: visible; }
-      .print-footer { position: fixed; bottom: 0; }
+      body { background: #fff; }
+      .grounds-export-shell { max-width: none; padding: 0; padding-bottom: 40px; }
+      .print-footer { display: block; }
       .print-footer-page-print::after { content: "Page " counter(page) " of " counter(pages); }
     }
   </style>
