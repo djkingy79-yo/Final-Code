@@ -85,6 +85,20 @@ async def create_database_indexes():
     await _safe_create_index(db.document_extracts, [("document_id", 1), ("case_id", 1)], unique=True)
     await _safe_create_index(db.case_extracts, [("case_id", 1), ("user_id", 1)])
     await _safe_create_index(db.issue_classifications, [("case_id", 1), ("user_id", 1)])
+    # Drop stale unique indexes left by older code versions that cause DuplicateKeyError on null values
+    for coll, stale_indexes in [
+        (db.issue_verifications, ["verification_id_1"]),
+        (db.issue_classifications, ["classification_id_1"]),
+        (db.pipeline_tasks, ["pipeline_task_id_1"]),
+        (db.case_extracts, ["case_extract_id_1"]),
+        (db.document_extracts, ["extract_id_1"]),
+    ]:
+        for idx_name in stale_indexes:
+            try:
+                await coll.drop_index(idx_name)
+                logger.info(f"Dropped stale index {idx_name} from {coll.name}")
+            except (OperationFailure, Exception):
+                pass
     await _safe_create_index(db.issue_verifications, [("issue_id", 1), ("case_id", 1)])
     await _safe_create_index(db.pipeline_tasks, [("case_id", 1), ("user_id", 1), ("task_type", 1)])
     await _safe_create_index(db.pipeline_tasks, [("task_id", 1)], unique=True)

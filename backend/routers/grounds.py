@@ -381,6 +381,8 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
     verification = await verify_issue(case, issue, supporting_context)
     verification_dict = verification.model_dump()
     _safe_isoformat(verification_dict, "created_at")
+    if not verification_dict.get("verification_id"):
+        verification_dict["verification_id"] = f"ver_{uuid.uuid4().hex[:12]}"
     await db.issue_verifications.update_one(
         {"case_id": case["case_id"], "issue_id": issue["issue_id"], "user_id": case["user_id"]},
         {"$set": verification_dict},
@@ -703,6 +705,9 @@ async def _run_investigation(task_id: str, case_id: str, ground_id: str, user_id
         verification = await verify_issue(case, issue, supporting_context)
         verification_dict = verification.model_dump()
         _safe_isoformat(verification_dict, "created_at")
+        # Ensure verification_id is set to avoid DuplicateKeyError on stale unique indexes
+        if not verification_dict.get("verification_id"):
+            verification_dict["verification_id"] = f"ver_{uuid.uuid4().hex[:12]}"
 
         await db.issue_verifications.update_one(
             {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user_id},
