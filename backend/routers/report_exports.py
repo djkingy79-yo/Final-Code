@@ -26,7 +26,7 @@ def _format_export_display_date(value=None) -> str:
     return parsed.astimezone(timezone.utc).strftime("%d/%m/%Y")
 
 
-from services.export_footer import build_footer_label, NumberedCanvas, apply_docx_footer, REPORT_TYPE_LABELS
+from services.export_footer import build_footer_label, NumberedCanvas, apply_docx_footer, REPORT_TYPE_LABELS  # noqa: E402
 
 
 def _build_export_footer_label(case: dict, report_label: str, generated_at=None) -> str:
@@ -580,10 +580,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
 async def export_report_docx(case_id: str, report_id: str, request: Request):
     """Export a report as DOCX (Microsoft Word) with Grounds of Merit and Legal References"""
     from docx import Document as DocxDocument
-    from docx.shared import Inches, Pt, RGBColor
+    from docx.shared import Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
     from io import BytesIO
     
     user = await get_current_user(request)

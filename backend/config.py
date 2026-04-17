@@ -120,7 +120,7 @@ def validate_env_status() -> dict:
     }
 
 # ── Shared Rate Limiter (process-safe via slowapi) ──
-from slowapi import Limiter
+from slowapi import Limiter  # noqa: E402
 
 def _get_real_client_ip(request) -> str:
     """Extract real client IP behind Cloudflare/proxy. Falls back to direct IP."""

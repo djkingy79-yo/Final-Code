@@ -17,13 +17,13 @@ def _safe_isoformat(d, key):
         d[key] = d[key].isoformat()
 
 
-from services.pipeline import (
+from services.pipeline import (  # noqa: E402
     extract_document_artifacts,
     classify_case_issues,
     verify_issue,
     draft_report_from_verified_material,
 )
-from services.pipeline_models import CaseExtract
+from services.pipeline_models import CaseExtract  # noqa: E402
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/pipeline", tags=["pipeline-staged"])

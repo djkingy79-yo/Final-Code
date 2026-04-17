@@ -1270,4 +1270,4 @@ async def generate_case_export_pack(case_id: str, request: Request):
 
 # Translation routes moved to routers/translate.py
 # Re-export for backward compatibility with routers/__init__.py
-from routers.translate import translate_router  # noqa: F401
+from routers.translate import translate_router  # noqa: F401, E402
