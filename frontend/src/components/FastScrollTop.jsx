@@ -7,13 +7,13 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowUp, Home, ArrowLeft } from "lucide-react";
 
-/* Scroll to top on every route change */
+/* Scroll to top on every route change (including query param changes like ?tab=) */
 export const ScrollToTopOnNav = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [location.pathname, location.search]);
 
   return null;
 };
@@ -46,7 +46,7 @@ export const FastScrollTop = () => {
         <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </button>
       <button
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/dashboard")}
         className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-blue-600/80 sm:bg-blue-600 hover:bg-blue-700 text-white shadow-lg border-2 border-white/60 flex items-center justify-center transition-colors backdrop-blur-sm"
         data-testid="global-home-btn"
         aria-label="Home"

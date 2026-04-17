@@ -1369,7 +1369,7 @@ const CaseDetail = ({ user }) => {
         )}
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); window.scrollTo(0, 0); }} className="space-y-6">
           <div className="flex flex-col gap-4">
             <p className="text-base font-bold text-blue-700 uppercase tracking-wide text-center" data-testid="case-tabs-heading">Select a tab below to manage your case</p>
             <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
