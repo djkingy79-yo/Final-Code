@@ -567,8 +567,7 @@ const GroundsOfMerit = ({
 <body>${contentMarkup}
   <div class="print-footer">
     <div class="print-footer-row">
-      <span class="print-footer-label">Grounds of Merit Report — ${caseData?.defendant_name || 'Appellant'}</span>
-      <span class="print-footer-date">${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
+      <span class="print-footer-label">Criminal Law Appeal Management / Grounds of Merit — ${caseData?.defendant_name || 'Appellant'} — ${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
       <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
   </div>
