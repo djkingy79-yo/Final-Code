@@ -1,5 +1,13 @@
 # Appeal Case Manager — Changelog
 
+
+## 18 Apr 2026 — Backend PDF/Word Export Formatting Parity
+- **Font sizing reduced to match frontend print CSS** (`exportHtml.js`): Body 11pt, H1 16pt, H2 15pt, H3 13pt, tables 9pt, cover meta 10pt, cover disclaimer 9pt, body disclaimer 8pt. Applied across both ReportLab PDF and python-docx DOCX in `/app/backend/routers/report_exports.py`.
+- **Footer label standardised** in `/app/backend/services/export_footer.py` → `Criminal Law Appeal Management / {Document Name} — {Defendant} — {Date}`. Footer font now 7pt Times-Italic (matches HTML print footer). Propagates to all export endpoints using `build_footer_label` (reports, timeline, translate, barrister pack, case export).
+- **NumberedCanvas double-page bug fixed** — `showPage()` now calls `self._startPage()` instead of `_Canvas.showPage(self)`, so pages are committed exactly once in `save()`. PDFs previously produced 2× page count with alternating blank pages; now correct. 10-page Case Summary went from 20 pages/40KB → 10 pages/22KB.
+- **Cover page tightened** — removed duplicate header block, reduced top spacer (18mm→6mm), cover table padding (10→5), margins (20mm→18mm) to eliminate wasted whitespace.
+- **Regression:** 12/12 backend export endpoint tests pass (`test_export_endpoints_iteration201.py`) — reports, timeline, barrister-pack, and case export all produce valid PDFs with correct footer + font sizing.
+
 ## 9 Apr 2026 (Session 5) — Comprehensive Legal Framework Update
 - **RECENT_LEGISLATION_UPDATES:** Added 27 verified recently commenced Australian Acts (2022-2026) to `offence_framework.py`, covering all jurisdictions.
 - **Key Acts Added:** NSW Coercive Control (s 54D, 1 Jul 2024), Jury Amendment Act 2024 (10 Mar 2025), Knife Crime Act 2024, Racial and Religious Hatred Act 2025, Bail Act 2013 amendments, Child Protection Amendment Act 2024, Animal Sexual Abuse Act 2025, Good Character Bill 2026 (pending), Surveillance Devices Regulation updates; VIC Youth Justice Act 2024, Non-Fatal Strangulation Act, Performance Crime Act 2025, Anti-vilification Act 2025; QLD Coercive Control (s 334C, 26 May 2025), Making Queensland Safer Act 2024; SA Coercive Control (s 20A), High Risk Offenders Amendment; WA Family Violence Legislation Reform Act 2024; TAS Jari's Law; Federal Hate Crimes Act 2025, Wage Theft Act 2024.
