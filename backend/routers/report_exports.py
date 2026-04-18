@@ -128,114 +128,115 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=20*mm,
-        leftMargin=20*mm,
-        topMargin=20*mm,
-        bottomMargin=28*mm
+        rightMargin=18*mm,
+        leftMargin=18*mm,
+        topMargin=18*mm,
+        bottomMargin=22*mm
     )
     
-    # Styles — Legal Report Format: Times New Roman body 12pt, bold headings
+    # Styles — Legal Report Format: Times New Roman body 11pt, bold headings (matches frontend print CSS)
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name='ReportTitle',
-        fontSize=22,
-        spaceAfter=12,
+        fontSize=16,
+        spaceAfter=6,
         alignment=TA_CENTER,
         fontName='Times-Bold',
-        leading=26
+        leading=20
     ))
     styles.add(ParagraphStyle(
         name='ReportSubtitle',
-        fontSize=12,
-        spaceAfter=8,
+        fontSize=10,
+        spaceAfter=4,
         alignment=TA_CENTER,
         fontName='Times-Roman',
         textColor=colors.HexColor('#475569')
     ))
     styles.add(ParagraphStyle(
         name='SectionHeader',
-        fontSize=18,
-        spaceBefore=20,
-        spaceAfter=10,
+        fontSize=15,
+        spaceBefore=12,
+        spaceAfter=6,
         fontName='Times-Bold',
         textColor=colors.HexColor('#0f172a'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='SubHeader',
-        fontSize=14,
-        spaceBefore=14,
-        spaceAfter=8,
+        fontSize=13,
+        spaceBefore=8,
+        spaceAfter=4,
         fontName='Times-Bold',
         textColor=colors.HexColor('#1e293b'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='ReportBodyText',
-        fontSize=12,
-        spaceAfter=8,
+        fontSize=11,
+        spaceAfter=4,
         alignment=TA_JUSTIFY,
-        leading=18,
+        leading=14,
         fontName='Times-Roman'
     ))
     styles.add(ParagraphStyle(
         name='BulletText',
         parent=styles['ReportBodyText'],
-        leftIndent=24,
-        bulletIndent=12,
+        leftIndent=20,
+        bulletIndent=10,
         fontName='Times-Roman',
-        fontSize=12,
-        leading=18
+        fontSize=11,
+        leading=14
     ))
     styles.add(ParagraphStyle(
         name='LawSection',
-        fontSize=12,
-        spaceAfter=4,
-        leftIndent=24,
+        fontSize=11,
+        spaceAfter=2,
+        leftIndent=20,
         fontName='Times-Italic',
         textColor=colors.HexColor('#1e40af'),
-        leading=16
+        leading=14
     ))
     styles.add(ParagraphStyle(
         name='GroundTitle',
-        fontSize=14,
-        spaceBefore=12,
-        spaceAfter=6,
+        fontSize=13,
+        spaceBefore=8,
+        spaceAfter=4,
         fontName='Times-Bold',
         textColor=colors.HexColor('#1e3a8a'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='NumberedSectionHeader',
-        fontSize=16,
-        spaceBefore=18,
-        spaceAfter=8,
+        fontSize=15,
+        spaceBefore=12,
+        spaceAfter=6,
         fontName='Times-Bold',
         textColor=colors.HexColor('#0f172a'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaLabel',
-        fontSize=10,
+        fontSize=8,
         fontName='Times-Bold',
         textColor=colors.HexColor('#64748b'),
-        spaceAfter=2,
+        spaceAfter=1,
     ))
     styles.add(ParagraphStyle(
         name='CoverMetaValue',
-        fontSize=12,
-        fontName='Times-Bold',
+        fontSize=10,
+        fontName='Times-Roman',
         textColor=colors.HexColor('#0f172a'),
-        spaceAfter=5,
+        spaceAfter=3,
+        leading=13,
     ))
     # DO_NOT_UNDO — Bold red disclaimer with white text in PDF
     styles.add(ParagraphStyle(
         name='CoverDisclaimer',
-        fontSize=11,
+        fontSize=9,
         fontName='Times-Bold',
         textColor=colors.HexColor('#dc2626'),
         alignment=TA_CENTER,
-        leading=16,
+        leading=12,
     ))
 
     def format_inline(text: str) -> str:
@@ -268,26 +269,26 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         try:
             col_width = doc.width / col_count
             para_rows = []
-            cell_style = ParagraphStyle(name='CellText', fontSize=11, leading=14, fontName='Times-Roman', wordWrap='CJK')
-            header_style = ParagraphStyle(name='HeaderCellText', fontSize=11, leading=14, fontName='Times-Bold', textColor=colors.white)
+            cell_style = ParagraphStyle(name='CellText', fontSize=9, leading=12, fontName='Times-Roman', wordWrap='CJK')
+            header_style = ParagraphStyle(name='HeaderCellText', fontSize=9, leading=12, fontName='Times-Bold', textColor=colors.white)
             for ri, row in enumerate(rows):
                 style = header_style if ri == 0 else cell_style
                 para_rows.append([Paragraph(c[:260], style) for c in row])
             table = Table(para_rows, colWidths=[col_width] * col_count, repeatRows=1)
             table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e293b')),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1d4ed8')),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white]),
                 ('LEFTPADDING', (0, 0), (-1, -1), 4),
                 ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-                ('TOPPADDING', (0, 0), (-1, -1), 3),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+                ('TOPPADDING', (0, 0), (-1, -1), 2),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
             ]))
             story.append(table)
-            story.append(Spacer(1, 4*mm))
+            story.append(Spacer(1, 3*mm))
         except Exception as e:
             logger.warning(f"PDF table render failed: {e}")
             for row in rows:
@@ -304,7 +305,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 if paragraph:
                     try:
                         story.append(Paragraph(format_inline(paragraph), styles['ReportBodyText']))
-                        story.append(Spacer(1, 2*mm))
+                        story.append(Spacer(1, 1*mm))
                     except Exception as e:
                         logger.warning(f"PDF paragraph failed: {e}")
                         # Fallback: strip all XML-like content
@@ -329,39 +330,34 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 # New major section starts on new page
                 story.append(PageBreak())
                 story.append(Paragraph(format_inline(stripped[3:].strip()), styles['SectionHeader']))
-                story.append(Spacer(1, 3*mm))
+                story.append(Spacer(1, 2*mm))
                 continue
             if re.match(r'^\d+\.\s+[A-Z][A-Z0-9\s/&()\-]{4,}$', stripped):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped), styles['NumberedSectionHeader']))
-                story.append(Spacer(1, 2*mm))
+                story.append(Spacer(1, 1*mm))
                 continue
             if stripped.startswith("### "):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped[4:].strip()), styles['SubHeader']))
-                story.append(Spacer(1, 1*mm))
                 continue
             if stripped.startswith("#### "):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped[5:].strip()), styles['SubHeader']))
-                story.append(Spacer(1, 1*mm))
                 continue
             if re.match(r'^Ground\s+\d+\s*:', stripped, re.I):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped), styles['GroundTitle']))
-                story.append(Spacer(1, 1*mm))
                 continue
             if stripped.startswith("- ") or stripped.startswith("• "):
                 flush_paragraph()
                 bullet_text = stripped[2:].strip()
                 story.append(Paragraph(format_inline(f"- {bullet_text}"), styles['BulletText']))
-                story.append(Spacer(1, 1*mm))
                 continue
             # Handle numbered lists
             if re.match(r'^\d+\.\s', stripped):
                 flush_paragraph()
                 story.append(Paragraph(format_inline(stripped), styles['BulletText']))
-                story.append(Spacer(1, 1*mm))
                 continue
             buffer.append(stripped)
 
@@ -391,11 +387,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         ['Sentence', resolved_sentence],
     ]
 
-    story.append(Spacer(1, 18*mm))
+    story.append(Spacer(1, 6*mm))
     story.append(Paragraph("Appeal Case Manager", styles['ReportSubtitle']))
     story.append(Paragraph(title, styles['ReportTitle']))
     story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
-    story.append(Spacer(1, 10*mm))
+    story.append(Spacer(1, 4*mm))
 
     cover_table_rows = []
     for idx in range(0, len(cover_meta), 2):
@@ -405,43 +401,29 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             Paragraph(f"<b>{left[0]}</b><br/>{left[1]}", styles['CoverMetaValue']),
             Paragraph(f"<b>{right[0]}</b><br/>{right[1]}", styles['CoverMetaValue'])
         ])
-    cover_table = Table(cover_table_rows, colWidths=[80*mm, 80*mm])
+    cover_table = Table(cover_table_rows, colWidths=[87*mm, 87*mm])
     cover_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f8fafc')),
-        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
-        ('INNERGRID', (0, 0), (-1, -1), 1, colors.HexColor('#e2e8f0')),
+        ('BOX', (0, 0), (-1, -1), 0.6, colors.HexColor('#cbd5e1')),
+        ('INNERGRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#e2e8f0')),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-        ('TOPPADDING', (0, 0), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
     ]))
     story.append(cover_table)
-    story.append(Spacer(1, 12*mm))
+    story.append(Spacer(1, 6*mm))
     story.append(Paragraph(
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created.",
         styles['CoverDisclaimer']
     ))
     story.append(PageBreak())
 
-    # Header
-    story.append(Paragraph("APPEAL CASE MANAGER", styles['ReportTitle']))
-    story.append(Paragraph("Criminal Law Appeal Case Management", styles['ReportSubtitle']))
-    story.append(Spacer(1, 8*mm))
-    story.append(Paragraph(f"Case: {case.get('title', 'Unknown')}", styles['ReportSubtitle']))
-    story.append(Spacer(1, 10*mm))
-
-    def draw_page_footer(canvas_obj, pdf_doc):
-        pass  # Footer is now rendered by NumberedCanvas for "Page X of Y" support
-
-    numbered_canvas = NumberedCanvas(footer_label)
-
-    story.append(Paragraph(title, styles['ReportTitle']))
-    story.append(Spacer(1, 5*mm))
-    
     # Case Info Table — skip N/A fields
     # Get grounds for PDF header
     pdf_grounds = await db.grounds_of_merit.find({"case_id": case_id}, {"_id": 0}).to_list(100)
+    numbered_canvas = NumberedCanvas(footer_label)
     case_data_rows = [
         ['Case Title:', case.get('title', 'N/A')],
         ['Defendant:', case.get('defendant_name', 'N/A')],
@@ -457,24 +439,24 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     case_data_rows.append(['Grounds:', f"{len(pdf_grounds)} identified"])
     case_data_rows.append(['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'])
     
-    case_table = Table(case_data_rows, colWidths=[40*mm, 120*mm])
+    case_table = Table(case_data_rows, colWidths=[40*mm, 130*mm])
     case_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (0, -1), 'Times-Bold'),
         ('FONTNAME', (1, 0), (1, -1), 'Times-Roman'),
-        ('FONTSIZE', (0, 0), (-1, -1), 12),
+        ('FONTSIZE', (0, 0), (-1, -1), 11),
         ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#475569')),
         ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
         ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
     ]))
     story.append(case_table)
-    story.append(Spacer(1, 10*mm))
+    story.append(Spacer(1, 6*mm))
     
     # Grounds of Merit Section
     if grounds:
         story.append(Paragraph("GROUNDS OF MERIT", styles['SectionHeader']))
-        story.append(Spacer(1, 5*mm))
+        story.append(Spacer(1, 2*mm))
         
         ground_type_labels = {
             'procedural_error': 'Procedural Error',
@@ -523,17 +505,17 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                 for evidence in ground.get('supporting_evidence', []):
                     story.append(Paragraph(f"- {evidence}", styles['LawSection']))
             
-            story.append(Spacer(1, 5*mm))
+            story.append(Spacer(1, 3*mm))
     
     # Legal Framework Reference — state-specific, NO NSW default
     story.append(Paragraph("LEGAL FRAMEWORK REFERENCE", styles['SectionHeader']))
-    story.append(Spacer(1, 2*mm))
+    story.append(Spacer(1, 1*mm))
     export_state = (case.get('state') or '').lower()
     legal_refs = get_export_legal_refs(export_state)
     for ref in legal_refs:
         story.append(Paragraph(ref, styles['LawSection']))
     
-    story.append(Spacer(1, 10*mm))
+    story.append(Spacer(1, 5*mm))
     
     # Main Analysis Content
     story.append(Paragraph("DETAILED ANALYSIS", styles['SectionHeader']))
@@ -542,18 +524,17 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     render_markdown(analysis_text)
 
     # DO_NOT_UNDO — Bold red disclaimer in PDF body
-    story.append(Spacer(1, 15*mm))
-    story.append(Spacer(1, 5*mm))
+    story.append(Spacer(1, 8*mm))
     story.append(Paragraph(
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE",
-        ParagraphStyle(name='DisclaimerTitle', fontSize=12, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), spaceAfter=4)
+        ParagraphStyle(name='DisclaimerTitle', fontSize=10, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), spaceAfter=3)
     ))
     story.append(Paragraph(
         "This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. "
         "The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified "
         "by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. "
         "No solicitor-client relationship is created by using this service.",
-        ParagraphStyle(name='DisclaimerBody', fontSize=10, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), leading=14)
+        ParagraphStyle(name='DisclaimerBody', fontSize=8, fontName='Helvetica-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), leading=11)
     ))
     
     # Build PDF
@@ -608,12 +589,12 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Create DOCX document
     doc = DocxDocument()
     
-    # Set default font to Times New Roman 12pt
+    # Set default font to Times New Roman 11pt (matches frontend print CSS)
     style = doc.styles['Normal']
     style.font.name = 'Times New Roman'
-    style.font.size = Pt(12)
-    style.paragraph_format.space_after = Pt(6)
-    style.paragraph_format.line_spacing = 1.5
+    style.font.size = Pt(11)
+    style.paragraph_format.space_after = Pt(4)
+    style.paragraph_format.line_spacing = 1.3
     
     # Set up styles
     styles = doc.styles
@@ -621,51 +602,51 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Title style
     title_style = styles['Title']
     title_style.font.name = 'Times New Roman'
-    title_style.font.size = Pt(22)
+    title_style.font.size = Pt(16)
     title_style.font.bold = True
     title_style.font.color.rgb = RGBColor(15, 23, 42)
     
-    # Heading 1 style — 18pt bold section headers
+    # Heading 1 style — 15pt bold section headers
     h1_style = styles['Heading 1']
     h1_style.font.name = 'Times New Roman'
-    h1_style.font.size = Pt(18)
+    h1_style.font.size = Pt(15)
     h1_style.font.bold = True
     h1_style.font.color.rgb = RGBColor(15, 23, 42)
-    h1_style.paragraph_format.space_before = Pt(24)
-    h1_style.paragraph_format.space_after = Pt(12)
+    h1_style.paragraph_format.space_before = Pt(14)
+    h1_style.paragraph_format.space_after = Pt(6)
     h1_style.paragraph_format.page_break_before = True
     
-    # Heading 2 style — 14pt bold sub-headers
+    # Heading 2 style — 13pt bold sub-headers
     h2_style = styles['Heading 2']
     h2_style.font.name = 'Times New Roman'
-    h2_style.font.size = Pt(14)
+    h2_style.font.size = Pt(13)
     h2_style.font.bold = True
     h2_style.font.color.rgb = RGBColor(30, 58, 138)
-    h2_style.paragraph_format.space_before = Pt(18)
-    h2_style.paragraph_format.space_after = Pt(8)
+    h2_style.paragraph_format.space_before = Pt(10)
+    h2_style.paragraph_format.space_after = Pt(4)
     h2_style.paragraph_format.page_break_before = False
     
-    # Heading 3 style — 12pt bold sub-sub-headers
+    # Heading 3 style — 11pt bold sub-sub-headers
     h3_style = styles['Heading 3']
     h3_style.font.name = 'Times New Roman'
-    h3_style.font.size = Pt(12)
+    h3_style.font.size = Pt(11)
     h3_style.font.bold = True
     h3_style.font.color.rgb = RGBColor(30, 41, 59)
-    h3_style.paragraph_format.space_before = Pt(12)
-    h3_style.paragraph_format.space_after = Pt(6)
+    h3_style.paragraph_format.space_before = Pt(8)
+    h3_style.paragraph_format.space_after = Pt(3)
     
     # List Bullet style
     list_style = styles['List Bullet']
     list_style.font.name = 'Times New Roman'
-    list_style.font.size = Pt(12)
-    list_style.paragraph_format.left_indent = Pt(24)
+    list_style.font.size = Pt(11)
+    list_style.paragraph_format.left_indent = Pt(20)
     
     # Header
     header_para = doc.add_paragraph()
     header_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
     header_run = header_para.add_run("APPEAL CASE MANAGER")
     header_run.font.name = 'Times New Roman'
-    header_run.font.size = Pt(14)
+    header_run.font.size = Pt(13)
     header_run.font.bold = True
     header_run.font.color.rgb = RGBColor(15, 23, 42)
 
@@ -673,18 +654,16 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     sub_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub_run = sub_header.add_run("Criminal Law Appeal Case Management")
     sub_run.font.name = 'Times New Roman'
-    sub_run.font.size = Pt(11)
+    sub_run.font.size = Pt(10)
     sub_run.font.color.rgb = RGBColor(71, 85, 105)
 
     case_line = doc.add_paragraph()
     case_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
     case_run = case_line.add_run(f"Case: {case.get('title', 'Unknown')}")
     case_run.font.name = 'Times New Roman'
-    case_run.font.size = Pt(11)
+    case_run.font.size = Pt(10)
     case_run.font.color.rgb = RGBColor(71, 85, 105)
 
-    doc.add_paragraph()
-    
     # Report Title
     report_title = REPORT_TYPE_LABELS.get(report.get('report_type'), 'Legal Report')
     resolved_sentence = await _derive_export_sentence(case, case_id, user.user_id, report)
@@ -695,13 +674,15 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_title = doc.add_paragraph()
     cover_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_title_run = cover_title.add_run(report_title)
-    cover_title_run.font.size = Pt(18)
+    cover_title_run.font.name = 'Times New Roman'
+    cover_title_run.font.size = Pt(16)
     cover_title_run.font.bold = True
     cover_title_run.font.color.rgb = RGBColor(15, 23, 42)
 
     cover_subtitle = doc.add_paragraph()
     cover_subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_subtitle_run = cover_subtitle.add_run("Appeal Case Manager")
+    cover_subtitle_run.font.name = 'Times New Roman'
     cover_subtitle_run.font.size = Pt(10)
     cover_subtitle_run.font.bold = True
     cover_subtitle_run.font.color.rgb = RGBColor(29, 78, 216)
@@ -709,10 +690,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_case = doc.add_paragraph()
     cover_case.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cover_case_run = cover_case.add_run(case.get('title', 'Unknown case'))
-    cover_case_run.font.size = Pt(11)
+    cover_case_run.font.name = 'Times New Roman'
+    cover_case_run.font.size = Pt(10)
     cover_case_run.font.color.rgb = RGBColor(71, 85, 105)
 
-    doc.add_paragraph()
     cover_info = [
         ('Case Title', case.get('title', 'N/A')),
         ('Defendant', case.get('defendant_name', 'N/A')),
@@ -727,7 +708,15 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         row = cover_table.rows[row_idx]
         row.cells[0].text = label
         row.cells[1].text = str(value)
-        row.cells[0].paragraphs[0].runs[0].font.bold = True
+        for run in row.cells[0].paragraphs[0].runs:
+            run.font.bold = True
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+            run.font.color.rgb = RGBColor(100, 116, 139)
+        for run in row.cells[1].paragraphs[0].runs:
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+            run.font.color.rgb = RGBColor(15, 23, 42)
 
     cover_disclaimer = doc.add_paragraph()
     cover_disclaimer.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -735,7 +724,8 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created."
     )
     # DO_NOT_UNDO — Cover page disclaimer in bold red
-    cover_disclaimer_run.font.size = Pt(10)
+    cover_disclaimer_run.font.name = 'Times New Roman'
+    cover_disclaimer_run.font.size = Pt(9)
     cover_disclaimer_run.font.bold = True
     cover_disclaimer_run.font.color.rgb = RGBColor(220, 38, 38)
 
@@ -743,8 +733,6 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
 
     title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    
-    doc.add_paragraph()
     
     # Case Information Table — skip N/A fields
     case_info = [
@@ -770,10 +758,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         row.cells[0].text = label
         row.cells[0].paragraphs[0].runs[0].font.bold = True
         row.cells[0].paragraphs[0].runs[0].font.name = 'Times New Roman'
-        row.cells[0].paragraphs[0].runs[0].font.size = Pt(12)
+        row.cells[0].paragraphs[0].runs[0].font.size = Pt(11)
         row.cells[1].text = str(value)
         row.cells[1].paragraphs[0].runs[0].font.name = 'Times New Roman'
-        row.cells[1].paragraphs[0].runs[0].font.size = Pt(12)
+        row.cells[1].paragraphs[0].runs[0].font.size = Pt(11)
     
     doc.add_paragraph()
     
@@ -882,11 +870,11 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 if r_idx == 0:
                     for run in cell.paragraphs[0].runs:
                         run.bold = True
-                        run.font.size = Pt(11)
+                        run.font.size = Pt(9)
                         run.font.name = 'Times New Roman'
                 else:
                     for run in cell.paragraphs[0].runs:
-                        run.font.size = Pt(11)
+                        run.font.size = Pt(9)
                         run.font.name = 'Times New Roman'
         doc.add_paragraph()
 
@@ -941,7 +929,8 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_title = doc.add_paragraph()
     disc_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disc_run = disc_title.add_run("NOT LEGAL ADVICE")
-    disc_run.font.size = Pt(12)
+    disc_run.font.name = 'Times New Roman'
+    disc_run.font.size = Pt(10)
     disc_run.font.bold = True
     disc_run.font.color.rgb = RGBColor(220, 38, 38)
     
@@ -953,7 +942,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         "by this tool must be independently verified by a qualified Australian legal professional before any action is taken. "
         "This tool covers Australian law only. No solicitor-client relationship is created by using this service."
     )
-    disc_body_run.font.size = Pt(10)
+    disc_body_run.font.size = Pt(8)
     disc_body_run.font.bold = True
     disc_body_run.font.color.rgb = RGBColor(220, 38, 38)
     disc_body_run.font.name = 'Times New Roman'

@@ -19,11 +19,11 @@ def format_export_date(dt=None):
 
 
 def build_footer_label(case: dict, doc_type: str, generated_at=None) -> str:
-    """Build the standardised footer label string."""
-    case_title = (case.get("title") or case.get("defendant_name") or "Appellant").strip()
+    """Build the standardised footer label string (matches frontend exportHtml.js)."""
+    defendant = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
     doc_type = (doc_type or "Legal Report").strip()
     date_str = format_export_date(generated_at)
-    return f"Documented from the Criminal Law /Appeal Management Application - {doc_type} - For {case_title} {date_str}"
+    return f"Criminal Law Appeal Management / {doc_type} — {defendant} — {date_str}"
 
 
 # ============ ReportLab PDF "Page X of Y" Canvas ============
@@ -49,8 +49,9 @@ class NumberedCanvas:
                 self._saved_page_states = []
 
             def showPage(self):
+                # Save page state and start a fresh page (don't commit yet)
                 self._saved_page_states.append(dict(self.__dict__))
-                _Canvas.showPage(self)
+                self._startPage()
 
             def save(self):
                 total = len(self._saved_page_states)
@@ -62,21 +63,21 @@ class NumberedCanvas:
 
             def _draw_footer(self, page_num, total_pages):
                 self.saveState()
-                footer_y = 11 * mm
-                line_y = 16 * mm
-                self.setStrokeColor(colors.HexColor('#cbd5e1'))
+                footer_y = 10 * mm
+                line_y = 14 * mm
+                self.setStrokeColor(colors.HexColor('#1d4ed8'))
                 self.setLineWidth(0.6)
-                self.line(20 * mm, line_y, A4[0] - 20 * mm, line_y)
+                self.line(18 * mm, line_y, A4[0] - 18 * mm, line_y)
                 self.setFillColor(colors.HexColor('#475569'))
-                self.setFont('Times-Italic', 10)
+                self.setFont('Times-Italic', 7)
                 label = outer._footer_label
                 page_str = f"Page {page_num} of {total_pages}"
                 # Truncate label if too long to fit
-                max_w = A4[0] - 40 * mm - self.stringWidth(page_str, 'Times-Italic', 10) - 10 * mm
-                while self.stringWidth(label, 'Times-Italic', 10) > max_w and len(label) > 30:
+                max_w = A4[0] - 36 * mm - self.stringWidth(page_str, 'Times-Italic', 7) - 8 * mm
+                while self.stringWidth(label, 'Times-Italic', 7) > max_w and len(label) > 30:
                     label = label[:-4] + "..."
-                self.drawString(20 * mm, footer_y, label)
-                self.drawRightString(A4[0] - 20 * mm, footer_y, page_str)
+                self.drawString(18 * mm, footer_y, label)
+                self.drawRightString(A4[0] - 18 * mm, footer_y, page_str)
                 self.restoreState()
 
         return _Numbered(filename, **kwargs)
@@ -108,7 +109,7 @@ def apply_docx_footer(doc, footer_label):
 
     def style_run(run):
         run.font.name = 'Times New Roman'
-        run.font.size = Pt(10)
+        run.font.size = Pt(7)
         run.font.italic = True
         run.font.color.rgb = RGBColor(71, 85, 105)
 
