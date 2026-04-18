@@ -119,7 +119,13 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
       body += `<h2>State Legislation (${stateInfo.abbreviation})</h2>`;
       Object.entries(category.state_legislation).forEach(([key, val]) => {
         body += `<div class="section-block"><h3>${key}</h3>`;
-        if (Array.isArray(val)) val.forEach(v => { body += `<p>${typeof v === "object" ? JSON.stringify(v) : v}</p>`; });
+        if (Array.isArray(val)) val.forEach(v => { 
+          if (typeof v === "object" && v !== null) {
+            body += `<p><strong>${v.section || ""}</strong> — ${v.title || ""}</p>`;
+          } else {
+            body += `<p>${v}</p>`;
+          }
+        });
         else if (typeof val === "object") Object.entries(val).forEach(([k, v]) => { body += `<p><strong>${k}:</strong> ${Array.isArray(v) ? v.join(", ") : v}</p>`; });
         else body += `<p>${val}</p>`;
         body += `</div>`;
@@ -465,7 +471,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                         <div key={key} className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-red-600" />
                           <span className="text-[12px] text-slate-700">
-                            <span className="font-medium" style={{textTransform:'capitalize'}}>{key.replace(/_/g, ' ')}:</span> {typeof value === "object" ? JSON.stringify(value) : String(value)}
+                            <span className="font-medium" style={{textTransform:'capitalize'}}>{key.replace(/_/g, ' ')}:</span> {typeof value === "object" ? (value.notice_of_appeal || value.notice_of_intention || Object.values(value).join(", ")) : String(value)}
                           </span>
                         </div>
                       ))}
@@ -485,7 +491,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                             </div>
                           );
                         }
-                        const formName = form?.form || form?.name || form?.title || (typeof form === "object" ? JSON.stringify(form) : String(form));
+                        const formName = form?.form || form?.name || form?.title || (typeof form === "object" ? `${form.form || ''} ${form.purpose || ''}`.trim() : String(form));
                         const formPurpose = form?.purpose || form?.description || "";
                         return (
                           <div key={idx} className="flex items-center gap-2">
