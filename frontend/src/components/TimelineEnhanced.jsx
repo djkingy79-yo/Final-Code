@@ -237,38 +237,37 @@ const Timeline = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeHtml(caseInfo?.title || "Case")} — Timeline</title>
   <style>
-    @page { size: A4; margin: 14mm 14mm 18mm; }
+    @page { size: A4; margin: 18mm 18mm 26mm; }
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0 0 88px; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.8; }
-    .timeline-print-shell { max-width: 920px; margin: 24px auto; background: #ffffff; border: 1px solid #cbd5e1; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); padding: 28px; }
-    .timeline-print-brand { text-align: center; font-size: 14pt; font-weight: 700; margin-bottom: 16px; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 16px; margin-bottom: 20px; }
-    .timeline-print-kicker { margin: 0 0 8px; font-size: 10pt; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
-    .timeline-print-header h1 { margin: 0 0 8px; font-size: 22pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-header p { margin: 0; line-height: 1.6; font-size: 12pt; color: #475569; }
-    .timeline-print-event { padding: 14px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
-    .timeline-print-heading h2 { margin: 0 0 4px; font-size: 18pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 12pt; }
-    .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-    .timeline-pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 10pt; font-weight: 700; }
+    body { margin: 0; padding: 0 0 60px; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; }
+    .timeline-print-shell { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 24px; }
+    .timeline-print-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 14px; }
+    .timeline-print-kicker { margin: 0 0 4px; font-size: 8pt; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
+    .timeline-print-header h1 { margin: 0 0 4px; font-size: 16pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-header p { margin: 0 0 3px; line-height: 1.4; font-size: 10pt; color: #475569; }
+    .timeline-print-event { padding: 10px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
+    .timeline-print-heading h2 { margin: 0 0 3px; font-size: 13pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 10pt; }
+    .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+    .timeline-pill { display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 8pt; font-weight: 700; }
     .timeline-pill-alt { background: #eff6ff; color: #1d4ed8; }
     .timeline-pill-neutral { background: #f1f5f9; color: #334155; }
     .timeline-pill-contested { background: #fee2e2; color: #b91c1c; }
-    .timeline-print-block { margin-top: 12px; }
-    .timeline-print-block h3 { margin: 0 0 6px; font-size: 14pt; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.8; font-size: 12pt; }
-    .timeline-print-block ul { margin: 0; padding-left: 2.5rem; }
-    .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; }
-    .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; }
-    .print-footer { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; border-top: 1.5px solid #1d4ed8; padding: 8px 24px 10px; }
-    .print-footer-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 10pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-block { margin-top: 6px; }
+    .timeline-print-block h3 { margin: 0 0 3px; font-size: 11pt; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.5; font-size: 11pt; }
+    .timeline-print-block ul { margin: 0; padding-left: 2rem; }
+    .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; }
+    .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 6px 10px; }
+    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
+    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
     .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .print-footer-page-print::after { content: ''; }
-    .print-footer-message { margin-top: 4px; text-align: center; font-size: 10pt; font-weight: 700; color: #1e3a5f; font-style: italic; font-family: 'Times New Roman', Times, serif; }
     @media print {
-      body { background: #ffffff; }
+      body { background: #ffffff; padding-bottom: 40px; }
       .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
-      .print-footer-page-print::after { content: 'Page ' counter(page); }
+      .print-footer { display: block; }
+      .print-footer-page-print::after { content: 'Page ' counter(page) ' of ' counter(pages); }
     }
   </style>
 </head>
@@ -278,36 +277,35 @@ const Timeline = ({
       <p class="timeline-print-kicker">Timeline</p>
       <h1>${escapeHtml(caseInfo?.title || "Case Timeline")}</h1>
       <p>${escapeHtml(caseInfo?.defendant_name || "")} ${caseInfo?.court ? `• ${escapeHtml(caseInfo.court)}` : ""} ${caseInfo?.case_number ? `• ${escapeHtml(caseInfo.case_number)}` : ""}</p>
-      <p>${filteredEvents.length} event${filteredEvents.length === 1 ? "" : "s"} included in this printout. All expanded timeline details are included below.</p>
+      <p>${filteredEvents.length} event${filteredEvents.length === 1 ? "" : "s"} included.</p>
     </div>
     ${eventsMarkup || `<p>No timeline events available.</p>`}
-    <div style="background:#dc2626;border:3px solid #b91c1c;padding:16px 20px;border-radius:8px;margin-top:28px;page-break-inside:avoid;display:flex;gap:14px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-      <span style="font-size:28px;color:#facc15;flex-shrink:0;">&#9888;</span>
+    <div style="background:#dc2626;border:2px solid #b91c1c;padding:10px 14px;border-radius:6px;margin-top:16px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <span style="font-size:22px;color:#facc15;flex-shrink:0;">&#9888;</span>
       <div>
-        <strong style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#ffffff;display:block;margin-bottom:6px;">NOT LEGAL ADVICE</strong>
-        <p style="font-size:12px;color:#ffffff;margin:0;line-height:1.6;font-weight:700;">This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
+        <strong style="font-size:10pt;text-transform:uppercase;letter-spacing:0.06em;color:#ffffff;display:block;margin-bottom:3px;">NOT LEGAL ADVICE</strong>
+        <p style="font-size:8pt;color:#ffffff;margin:0;line-height:1.4;font-weight:700;">This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
       </div>
     </div>
-    <div style="text-align:center;margin:24px 0;padding:16px 0;">
-      <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
-      <div style="display:inline-flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+    <div style="text-align:center;margin:14px 0;padding:10px 0;">
+      <p style="font-size:10pt;font-weight:700;color:#334155;margin:0 0 6px;">Created and Designed by Deb King</p>
+      <div style="display:inline-flex;align-items:center;gap:8px;">
+        <div style="width:30px;height:30px;background:#dc2626;border-radius:5px;display:flex;align-items:center;justify-content:center;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
         </div>
         <div style="text-align:left;">
-          <p style="margin:0;font-weight:700;font-size:13px;color:#0f172a;">Appeal Case Manager</p>
-          <p style="margin:0;font-size:11px;color:#64748b;">Founded by Debra King</p>
-          <p style="margin:0;font-size:11px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+          <p style="margin:0;font-weight:700;font-size:10pt;color:#0f172a;">Appeal Case Manager</p>
+          <p style="margin:0;font-size:8pt;color:#64748b;">Founded by Debra King</p>
+          <p style="margin:0;font-size:8pt;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
         </div>
       </div>
     </div>
   </div>
   <div class="print-footer">
     <div class="print-footer-row">
-      <span class="print-footer-label">${escapeHtml(footerLabel)}</span>
+      <span class="print-footer-label">Criminal Law Appeal Management / Timeline — ${escapeHtml(caseInfo?.defendant_name || "Appellant")} — ${previewDate}</span>
       <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
-    <div class="print-footer-message">${escapeHtml(footerMessage)}</div>
   </div>
 </body>
 </html>`;

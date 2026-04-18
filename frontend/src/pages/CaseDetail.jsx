@@ -487,23 +487,28 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
-    body { font-family: 'Manrope', 'Arial', sans-serif; padding: 28px; color: #0f172a; line-height: 1.7; font-size: 12px; }
-    h1 { font-family: 'Times New Roman', Times, serif; font-size: 18px; margin-bottom: 6px; color: #0f172a; }
-    h2 { font-family: 'Times New Roman', Times, serif; font-size: 14px; margin-top: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 4px; color: #0f172a; }
-    h3 { font-size: 13px; margin-top: 14px; color: #1e40af; }
-    .meta { font-size: 11px; color: #475569; margin-bottom: 12px; }
-    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 8px 12px; border-radius: 8px; color: #1e3a8a; margin-bottom: 16px; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    td, th { border: 1px solid #cbd5e1; padding: 6px 10px; text-align: left; font-size: 13px; }
-    th { background: #dbeafe; font-weight: 700; color: #0f172a; }
-    ul, ol { padding-left: 18px; }
-    li { margin-bottom: 4px; font-size: 13px; }
-    .disclaimer-box { background: #dc2626; border: 3px solid #b91c1c; padding: 16px 20px; border-radius: 8px; margin-top: 32px; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 14px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .disclaimer-box .disc-hazard { font-size: 28px; color: #facc15; flex-shrink: 0; }
-    .disclaimer-box strong { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 6px; }
-    .disclaimer-box p { font-size: 12px; color: #ffffff; margin: 0; line-height: 1.6; font-weight: 700; }
+    @page { size: A4; margin: 18mm 18mm 26mm; }
+    body { font-family: 'Times New Roman', Times, serif; padding: 24px; color: #0f172a; line-height: 1.5; font-size: 11pt; }
+    h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; margin-bottom: 4px; color: #0f172a; }
+    h2 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; margin-top: 14px; border-bottom: 2px solid #1e3a8a; padding-bottom: 3px; color: #0f172a; }
+    h3 { font-size: 11pt; margin-top: 10px; color: #1e40af; }
+    p { font-size: 11pt; line-height: 1.5; margin-bottom: 5px; }
+    .meta { font-size: 10pt; color: #475569; margin-bottom: 8px; }
+    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 6px 10px; border-radius: 6px; color: #1e3a8a; margin-bottom: 10px; font-size: 10pt; }
+    table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 9pt; page-break-before: always; }
+    td, th { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: left; font-size: 9pt; word-wrap: break-word; overflow-wrap: break-word; }
+    th { background: #1d4ed8; color: #fff; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    ul, ol { padding-left: 2rem; }
+    li { margin-bottom: 2px; font-size: 11pt; line-height: 1.5; }
+    .disclaimer-box { background: #dc2626; border: 2px solid #b91c1c; padding: 10px 14px; border-radius: 6px; margin-top: 16px; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .disclaimer-box .disc-hazard { font-size: 22px; color: #facc15; flex-shrink: 0; }
+    .disclaimer-box strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 3px; }
+    .disclaimer-box p { font-size: 8pt; color: #ffffff; margin: 0; line-height: 1.4; font-weight: 700; }
     .no-print { display: none !important; }
-    @media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } .disclaimer-box { page-break-inside: avoid; break-inside: avoid; } }
+    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
+    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
+    .print-footer-page::after { content: ''; }
+    @media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } .disclaimer-box { page-break-inside: avoid; break-inside: avoid; } .print-footer { display: block; } .print-footer-page::after { content: "Page " counter(page) " of " counter(pages); } }
   </style>
 </head>
 <body>
@@ -517,6 +522,12 @@ const CaseDetail = ({ user }) => {
     <div>
     <strong>NOT LEGAL ADVICE</strong>
     <p>This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
+    </div>
+  </div>
+  <div class="print-footer">
+    <div class="print-footer-row">
+      <span>Criminal Law Appeal Management / ${tabLabel} — ${caseData?.defendant_name || 'Appellant'} — ${new Date().toLocaleDateString('en-AU')}</span>
+      <span class="print-footer-page"></span>
     </div>
   </div>
 </body>
@@ -951,10 +962,10 @@ const CaseDetail = ({ user }) => {
     let body = `<div class="export-header" style="background:#2563eb;"><h1>Case Progress</h1><p>${escHtml(title)} - ${escHtml(defendant)}</p></div>`;
 
     // TOC
-    body += `<div class="toc-container" style="padding:14px 32px;">
-      <p class="toc-heading" style="font-size:11pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 8px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocItems.length} SECTIONS)</p>
-      <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:9pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+    body += `<div class="toc-container" style="padding:10px 24px;">
+      <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocItems.length} SECTIONS)</p>
+      <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>`;
 
@@ -1005,16 +1016,16 @@ const CaseDetail = ({ user }) => {
       if (!text) return '';
       let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       // Convert markdown headings
-      html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
-      html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
-      html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:18px 0 8px;">$1</h3>');
+      html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:11pt;font-weight:700;color:#1e293b;margin:8px 0 4px;">$1</h4>');
+      html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:11pt;font-weight:700;color:#1e293b;margin:8px 0 4px;">$1</h4>');
+      html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:13pt;font-weight:700;color:#1e293b;margin:10px 0 5px;">$1</h3>');
       // Bold
       html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
       // Double newlines → paragraph breaks
-      html = html.replace(/\n\n/g, '</p><p style="margin-bottom:10px;">');
+      html = html.replace(/\n\n/g, '</p><p style="margin-bottom:5px;">');
       // Single newlines → <br>
       html = html.replace(/\n/g, '<br/>');
-      return auSpelling('<p style="margin-bottom:10px;">' + html + '</p>');
+      return auSpelling('<p style="margin-bottom:5px;">' + html + '</p>');
     };
 
     // Escape HTML and apply AU spelling
@@ -1024,15 +1035,15 @@ const CaseDetail = ({ user }) => {
     };
 
     let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-    body += `<div style="margin:16px 32px;padding:14px;border:2px solid #1d4ed8;border-radius:10px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(defendant)}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:14pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:14pt;color:#0f172a;">${escAu(caseData?.sentence || "N/A")}</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Documents</span><br/><strong style="font-size:14pt;color:#0f172a;">${documents.length} files analysed</strong></div>
-        <div><span style="font-size:10pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Timeline Events</span><br/><strong style="font-size:14pt;color:#0f172a;">${timeline.length} events</strong></div>
+    body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:10pt;color:#0f172a;">${escAu(defendant)}</strong></div>
+        <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:10pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
+        <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Sentence</span><br/><strong style="font-size:10pt;color:#0f172a;">${escAu(caseData?.sentence || "N/A")}</strong></div>
+        <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Documents</span><br/><strong style="font-size:10pt;color:#0f172a;">${documents.length} files analysed</strong></div>
+        <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Timeline Events</span><br/><strong style="font-size:10pt;color:#0f172a;">${timeline.length} events</strong></div>
       </div>
-      ${caseData?.court ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #bfdbfe;font-size:11pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
+      ${caseData?.court ? `<div style="margin-top:6px;padding-top:6px;border-top:1px solid #bfdbfe;font-size:10pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
     </div>`;
 
     // ── TABLE OF CONTENTS ──
@@ -1045,10 +1056,10 @@ const CaseDetail = ({ user }) => {
     if (progressAnalysis) tocSections.push("Progress Analysis");
 
     body += `<div class="export-body" style="page-break-after:always;">
-      <div class="toc-container" style="padding:14px 32px;">
-        <p class="toc-heading" style="font-size:11pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 8px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
-        <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:9pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+      <div class="toc-container" style="padding:10px 24px;">
+        <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
+        <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
+          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
         </div>
       </div>
     </div>`;
