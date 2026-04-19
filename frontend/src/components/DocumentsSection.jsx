@@ -74,6 +74,7 @@ const DocumentsSection = ({
   const [showSearchResults, setShowSearchResults] = useState(false);
   
   const [extractingText, setExtractingText] = useState(false);
+  const [extractProgress, setExtractProgress] = useState("");
   const [setRunningOcr] = useState(false);
 
   const handleUploadDocuments = async () => {
@@ -146,6 +147,7 @@ const DocumentsSection = ({
 
   const handleExtractAllText = async () => {
     setExtractingText(true);
+    setExtractProgress("Starting extraction...");
     try {
       // Start background task — returns task_id immediately
       const startRes = await axios.post(`${API}/cases/${caseId}/extract-all-text`, {}, { timeout: 30000 });
@@ -168,6 +170,9 @@ const DocumentsSection = ({
             { params: { task_id: taskId }, timeout: 20000 }
           );
           const st = pollRes.data?.status;
+          if (pollRes.data?.progress) {
+            setExtractProgress(pollRes.data.progress);
+          }
           if (st === "completed") {
             finalResult = pollRes.data.result || {};
             break;
@@ -211,6 +216,7 @@ const DocumentsSection = ({
       toast.error(msg);
     } finally {
       setExtractingText(false);
+      setExtractProgress("");
     }
   };
 
@@ -393,11 +399,14 @@ const DocumentsSection = ({
             disabled={extractingText}
             className="bg-blue-700 text-white hover:bg-blue-600 w-full"
             data-testid="extract-all-text-to-case-btn"
+            title={extractingText && extractProgress ? extractProgress : undefined}
           >
             {extractingText ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Extracting...
+                <Loader2 className="w-4 h-4 mr-2 animate-spin flex-shrink-0" />
+                <span className="truncate" data-testid="extract-progress-label">
+                  {extractProgress || "Extracting..."}
+                </span>
               </>
             ) : (
               <>
