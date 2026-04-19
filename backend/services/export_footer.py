@@ -1,7 +1,15 @@
-# DO NOT UNDO — Shared export footer utilities for all PDF and DOCX exports.
+# ===========================================================================
+# DO NOT UNDO — ENTIRE FILE PROTECTED
+# Shared export footer utilities for all PDF and DOCX exports.
+# All formatting standards, font sizes, footer text, and OOXML field code
+# logic in this file are approved by Deb King and must be preserved.
+# Do not remove imports, rename functions, or refactor without explicit instruction.
+# Pay special attention to `docx.oxml.ns.qn` — it is REQUIRED for DOCX page-number
+# field attributes; removing it will crash all Word exports.
+# ===========================================================================
 # Implements the standardised footer format:
-# "Documented from the Criminal Law /Appeal Management Application - [Doc Type] - For [Case Name] [Date] Page X of Y"
-# Font: Times New Roman, Italic, 10pt
+# "Criminal Law Appeal Management / [Doc Name] — [Defendant] — [Date]" + "Page X of Y"
+# Font: Times New Roman, Italic, 7pt, color #475569.
 
 from datetime import datetime, timezone
 

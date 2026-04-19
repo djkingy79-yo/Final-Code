@@ -1,6 +1,11 @@
 # ===========================================================================
-# Report PDF & DOCX Export Routes
-# Extracted from server.py — document export endpoints
+# DO NOT UNDO — ENTIRE FILE PROTECTED
+# Report PDF & DOCX Export Routes (extracted from server.py)
+# All ReportLab styles, python-docx styles, font sizes, cover page layout,
+# spacers, footers, and disclaimer text in this file are approved by Deb King
+# and must be preserved. Font sizes are calibrated to match the frontend print
+# CSS exactly (Body 11pt, H1 16pt, H2 15pt, H3 13pt, tables 9pt, footer 7pt).
+# Do not refactor, rename, or reduce without explicit instruction.
 # ===========================================================================
 
 import re
