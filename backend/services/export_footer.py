@@ -90,7 +90,10 @@ def apply_docx_footer(doc, footer_label):
     Footer format: [label] Page X of Y — Times New Roman, Italic, 10pt."""
     from docx.shared import Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from docx.oxml.ns import qn
+    # DO NOT REMOVE — `qn` is used below on lines ~100, ~102, ~105 to set
+    # OOXML attributes (w:fldCharType, xml:space) inside the page-number
+    # field. Removing it will crash DOCX exports with NameError.
+    from docx.oxml.ns import qn  # noqa: F401 — used via qn() calls below
     from docx.oxml import OxmlElement
     from docx.shared import Inches
 
