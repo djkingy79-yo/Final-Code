@@ -5,7 +5,6 @@ Tests the two new features:
 2. GET /api/cases/{case_id}/pipeline/status - Pipeline status for Progress widget
 """
 import pytest
-import requests
 import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')

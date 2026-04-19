@@ -13,9 +13,7 @@ Files of reference:
 """
 
 import requests
-import json
 import sys
-from datetime import datetime
 
 # Configuration
 API_BASE = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
@@ -210,7 +208,7 @@ def test_no_502_error_handling():
             print("✅ No raw 502 error text found in backend responses")
             return True
         else:
-            print(f"❌ Some endpoints returned raw 502 errors")
+            print("❌ Some endpoints returned raw 502 errors")
             return False
             
     except Exception as e:

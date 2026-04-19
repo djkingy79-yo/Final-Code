@@ -5,9 +5,7 @@ Testing only the 4 specific endpoints mentioned in the review request
 """
 
 import requests
-import json
 import sys
-from datetime import datetime
 
 # Configuration
 BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
@@ -56,7 +54,7 @@ def test_backend_sanity():
                 print(f"   ✅ PASS - Authenticated as: {user_name}")
                 results.append(("Auth Login", True, f"User: {user_name}"))
             else:
-                print(f"   ❌ FAIL - No session_token in response")
+                print("   ❌ FAIL - No session_token in response")
                 results.append(("Auth Login", False, "No session_token"))
                 return results
         else:
@@ -99,7 +97,7 @@ def test_backend_sanity():
                 print(f"   ✅ PASS - {event_count} timeline events")
                 results.append(("GET Case Timeline", True, f"{event_count} events"))
             else:
-                print(f"   ❌ FAIL - Response not a list")
+                print("   ❌ FAIL - Response not a list")
                 results.append(("GET Case Timeline", False, "Response not a list"))
         else:
             print(f"   ❌ FAIL - HTTP {response.status_code}: {response.text[:100]}")
@@ -123,7 +121,7 @@ def test_backend_sanity():
                     print(f"   ✅ PASS - {grounds_count} grounds")
                     results.append(("GET Case Grounds", True, f"{grounds_count} grounds"))
                 else:
-                    print(f"   ❌ FAIL - 'grounds' key is not a list")
+                    print("   ❌ FAIL - 'grounds' key is not a list")
                     results.append(("GET Case Grounds", False, "'grounds' key is not a list"))
             elif isinstance(data, list):
                 grounds_count = len(data)

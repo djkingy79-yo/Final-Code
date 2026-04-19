@@ -4,7 +4,6 @@ Tests the new 5-stage pipeline: Extract → Classify → Verify → Project → 
 New endpoints at /api/pipeline prefix + regression tests for old /api/cases prefix
 """
 import pytest
-import requests
 import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')

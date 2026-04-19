@@ -20,7 +20,6 @@ import io
 import re
 import zlib
 from zipfile import ZipFile
-from xml.etree import ElementTree as ET
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -66,12 +65,11 @@ class TestHealthEndpoint:
         data = response.json()
         assert data.get("status") == "healthy", f"Backend not healthy: {data}"
         assert data.get("database") == "connected", f"Database not connected: {data}"
-        print(f"PASS: Health endpoint returns 200, status=healthy, database=connected")
+        print("PASS: Health endpoint returns 200, status=healthy, database=connected")
 
 
 def decode_pdf_streams(pdf_content):
     """Decode PDF streams (ASCII85 + FlateDecode) to extract text content."""
-    import zlib
     
     def ascii85_decode(data):
         """Decode ASCII85 encoded data."""
@@ -116,12 +114,12 @@ def decode_pdf_streams(pdf_content):
             decoded = ascii85_decode(match)
             decompressed = zlib.decompress(decoded)
             all_text += decompressed.decode('latin-1', errors='replace')
-        except:
+        except Exception:
             try:
                 # Try just FlateDecode
                 decompressed = zlib.decompress(match)
                 all_text += decompressed.decode('latin-1', errors='replace')
-            except:
+            except Exception:
                 pass
     
     return all_text
@@ -141,11 +139,11 @@ class TestReportPDFExport:
         # Check PDF magic bytes
         content = response.content
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
-        print(f"PASS: PDF export returns 200 with valid %PDF magic bytes")
+        print("PASS: PDF export returns 200 with valid %PDF magic bytes")
         
         # Check content type
         assert 'application/pdf' in response.headers.get('Content-Type', ''), "Wrong content type"
-        print(f"PASS: Content-Type is application/pdf")
+        print("PASS: Content-Type is application/pdf")
         
         return content
     
@@ -179,7 +177,7 @@ class TestReportPDFExport:
             assert max_count < 30, f"Page count seems too high ({max_count}), possible double-page bug"
             print(f"PASS: PDF page count ({max_count}) is reasonable (not doubled)")
         else:
-            print(f"INFO: Could not extract exact page count, but PDF is valid")
+            print("INFO: Could not extract exact page count, but PDF is valid")
     
     def test_pdf_footer_format(self, auth_session):
         """Verify PDF footer contains correct format: 'Criminal Law Appeal Management / {Doc} — {Defendant} — {Date}'."""
@@ -195,12 +193,12 @@ class TestReportPDFExport:
         
         # Check for footer text pattern in decoded PDF content
         assert 'Criminal Law Appeal Management' in decoded_text, \
-            f"Footer label 'Criminal Law Appeal Management' not found in PDF streams"
-        print(f"PASS: PDF contains 'Criminal Law Appeal Management' footer label")
+            "Footer label 'Criminal Law Appeal Management' not found in PDF streams"
+        print("PASS: PDF contains 'Criminal Law Appeal Management' footer label")
         
         # Check for "Page X of Y" pattern
         assert 'Page' in decoded_text and 'of' in decoded_text, "Page numbering not found in PDF"
-        print(f"PASS: PDF contains page numbering")
+        print("PASS: PDF contains page numbering")
 
 
 class TestReportDOCXExport:
@@ -217,12 +215,12 @@ class TestReportDOCXExport:
         # Check DOCX is valid ZIP
         content = response.content
         assert content[:2] == b'PK', f"Invalid DOCX: not a ZIP file (magic bytes: {content[:4]})"
-        print(f"PASS: DOCX export returns 200 with valid ZIP structure")
+        print("PASS: DOCX export returns 200 with valid ZIP structure")
         
         # Check content type
         content_type = response.headers.get('Content-Type', '')
         assert 'openxmlformats' in content_type or 'application/vnd' in content_type, f"Wrong content type: {content_type}"
-        print(f"PASS: Content-Type is correct for DOCX")
+        print("PASS: Content-Type is correct for DOCX")
         
         return content
     
@@ -254,21 +252,21 @@ class TestReportDOCXExport:
                 # 11pt = 22 half-points, 15pt = 30, 13pt = 26
                 assert b'w:val="22"' in styles_xml or b'w:sz val="22"' in styles_xml or b'22' in styles_xml, \
                     "11pt font size (22 half-points) not found"
-                print(f"PASS: DOCX contains 11pt font size references")
+                print("PASS: DOCX contains 11pt font size references")
                 
                 # Check for footer in document
                 if 'word/footer1.xml' in zf.namelist():
                     footer_xml = zf.read('word/footer1.xml')
                     assert b'Criminal Law Appeal Management' in footer_xml, "Footer label not in DOCX footer"
-                    print(f"PASS: DOCX footer contains correct label")
+                    print("PASS: DOCX footer contains correct label")
                     
                     # Check footer font size is 7pt (14 half-points)
                     # The footer should have 7pt italic Times New Roman
                     assert b'14' in footer_xml or b'w:val="14"' in footer_xml, \
                         "7pt footer font size (14 half-points) not found"
-                    print(f"PASS: DOCX footer has 7pt font size")
+                    print("PASS: DOCX footer has 7pt font size")
                 else:
-                    print(f"INFO: No separate footer file found, footer may be inline")
+                    print("INFO: No separate footer file found, footer may be inline")
                     
         except Exception as e:
             print(f"INFO: Could not parse DOCX structure: {e}")
@@ -287,19 +285,19 @@ class TestTimelinePDFExport:
         
         # Timeline might not have events, so 400 is acceptable
         if response.status_code == 400:
-            print(f"INFO: Timeline export returned 400 (likely no events) - acceptable")
+            print("INFO: Timeline export returned 400 (likely no events) - acceptable")
             return
         
         assert response.status_code == 200, f"Timeline PDF export failed: {response.status_code}"
         
         content = response.content
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
-        print(f"PASS: Timeline PDF export returns 200 with valid PDF")
+        print("PASS: Timeline PDF export returns 200 with valid PDF")
         
         # Decode PDF streams to check for footer
         decoded_text = decode_pdf_streams(content)
         assert 'Criminal Law Appeal Management' in decoded_text, "Footer label not in timeline PDF"
-        print(f"PASS: Timeline PDF contains correct footer label")
+        print("PASS: Timeline PDF contains correct footer label")
 
 
 class TestBarristerQuickBrief:
@@ -313,19 +311,19 @@ class TestBarristerQuickBrief:
         
         # Quick brief requires a completed barrister report, so 404 is acceptable
         if response.status_code == 404:
-            print(f"INFO: Quick brief returned 404 (no barrister report) - acceptable")
+            print("INFO: Quick brief returned 404 (no barrister report) - acceptable")
             return
         
         assert response.status_code == 200, f"Quick brief export failed: {response.status_code}"
         
         content = response.content
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
-        print(f"PASS: Quick brief export returns 200 with valid PDF")
+        print("PASS: Quick brief export returns 200 with valid PDF")
         
         # Check for footer
         assert b'Criminal Law Appeal Management' in content or b'Quick Research Brief' in content, \
             "Footer/title not in quick brief PDF"
-        print(f"PASS: Quick brief PDF contains expected content")
+        print("PASS: Quick brief PDF contains expected content")
 
 
 class TestBarristerPackExport:
@@ -341,12 +339,12 @@ class TestBarristerPackExport:
         
         content = response.content
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
-        print(f"PASS: Barrister pack export returns 200 with valid PDF")
+        print("PASS: Barrister pack export returns 200 with valid PDF")
         
         # Decode PDF streams to check for footer
         decoded_text = decode_pdf_streams(content)
         assert 'Criminal Law Appeal Management' in decoded_text, "Footer label not in barrister pack PDF"
-        print(f"PASS: Barrister pack PDF contains correct footer label")
+        print("PASS: Barrister pack PDF contains correct footer label")
 
 
 class TestBarristerViewExports:
@@ -360,14 +358,14 @@ class TestBarristerViewExports:
         
         # Barrister view might not exist, so 404 is acceptable
         if response.status_code == 404:
-            print(f"INFO: Barrister view PDF returned 404 (no barrister report) - acceptable")
+            print("INFO: Barrister view PDF returned 404 (no barrister report) - acceptable")
             return
         
         assert response.status_code == 200, f"Barrister view PDF export failed: {response.status_code}"
         
         content = response.content
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
-        print(f"PASS: Barrister view PDF export returns 200 with valid PDF")
+        print("PASS: Barrister view PDF export returns 200 with valid PDF")
     
     def test_barrister_view_export_docx(self, auth_session):
         """Verify barrister-view/export-docx returns HTTP 200 with valid DOCX."""
@@ -377,14 +375,14 @@ class TestBarristerViewExports:
         
         # Barrister view might not exist, so 404 is acceptable
         if response.status_code == 404:
-            print(f"INFO: Barrister view DOCX returned 404 (no barrister report) - acceptable")
+            print("INFO: Barrister view DOCX returned 404 (no barrister report) - acceptable")
             return
         
         assert response.status_code == 200, f"Barrister view DOCX export failed: {response.status_code}"
         
         content = response.content
-        assert content[:2] == b'PK', f"Invalid DOCX: not a ZIP file"
-        print(f"PASS: Barrister view DOCX export returns 200 with valid DOCX")
+        assert content[:2] == b'PK', "Invalid DOCX: not a ZIP file"
+        print("PASS: Barrister view DOCX export returns 200 with valid DOCX")
 
 
 class TestFooterLabelFormat:

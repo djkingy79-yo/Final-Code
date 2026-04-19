@@ -5,9 +5,7 @@ Testing live backend at https://criminal-appeals-au-2.preview.emergentagent.com/
 """
 
 import requests
-import json
 import sys
-from typing import Dict, Any, Optional
 
 # Configuration
 BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"

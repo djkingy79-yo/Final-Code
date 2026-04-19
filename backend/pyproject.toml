@@ -1,0 +1,4 @@
+[tool.ruff]
+# Exclude legacy/archived test scripts kept for reference only — they are not run in CI
+# and are not part of the production pytest suite.
+extend-exclude = ["tests/legacy"]

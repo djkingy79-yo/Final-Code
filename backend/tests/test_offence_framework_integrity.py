@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pytest
 from offence_framework import (
-    OFFENCE_CATEGORIES, AUSTRALIAN_STATES, APPEAL_FRAMEWORK,
+    OFFENCE_CATEGORIES, APPEAL_FRAMEWORK,
     SENTENCING_FRAMEWORK, EVIDENCE_FRAMEWORK, MENTAL_IMPAIRMENT_FRAMEWORK,
     HUMAN_RIGHTS_FRAMEWORK,
 )

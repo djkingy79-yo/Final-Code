@@ -10,20 +10,17 @@ sys.path.insert(0, "/app/backend")
 
 import pytest
 from offence_framework import (
-    OFFENCE_CATEGORIES, AUSTRALIAN_STATES, RECENT_LEGISLATION_UPDATES,
-    NSW_CRIMINAL_FRAMEWORK, VIC_CRIMINAL_FRAMEWORK, QLD_CRIMINAL_FRAMEWORK,
-    SA_CRIMINAL_FRAMEWORK, WA_CRIMINAL_FRAMEWORK, TAS_CRIMINAL_FRAMEWORK,
-    NT_CRIMINAL_FRAMEWORK, ACT_CRIMINAL_FRAMEWORK, FEDERAL_CRIMINAL_FRAMEWORK,
+    OFFENCE_CATEGORIES, RECENT_LEGISLATION_UPDATES,
+    FEDERAL_CRIMINAL_FRAMEWORK,
     SENTENCING_FRAMEWORK, EVIDENCE_FRAMEWORK, MENTAL_IMPAIRMENT_FRAMEWORK,
     APPEAL_FRAMEWORK, PROCEEDS_OF_CRIME_FRAMEWORK, LANDMARK_CASES,
-    APPEAL_GROUNDS_ACCESSIBILITY, HUMAN_RIGHTS_FRAMEWORK,
+    HUMAN_RIGHTS_FRAMEWORK,
 )
 from services.offence_helpers import (
     STATE_FRAMEWORKS, enforce_forensic_language, validate_jurisdiction_completeness,
-    get_offence_context, get_offence_system_prompt, get_export_legal_refs,
     _build_appeal_time_limit_note,
 )
-from services.case_validation import validate_case_metadata, validate_citation, strip_hallucinated_citations
+from services.case_validation import validate_citation, strip_hallucinated_citations
 
 ALL_STATES = ["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act"]
 
