@@ -345,7 +345,7 @@ const LandingPage = () => {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://static.prod-images.emergentagent.com/jobs/f60b6a6d-a118-49cd-899d-586e4a8a87a6/images/e20c677eb0c9cdb1ef84e9e79a9f3bbd37795a24bfbe29e4d8cfe78da35bf516.png" 
+            src={`${process.env.PUBLIC_URL || ""}/images/court-custody-hero.png`}
             alt="Court custody scene representing high-stakes criminal appeal review"
             className="w-full h-full object-contain sm:object-cover ios-image-safe image-safe opacity-20"
             loading="lazy"
@@ -1169,7 +1169,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Bottom spacer for Emergent badge */}
+      {/* Bottom spacer */}
       <div className="h-16" />
 
     </div>

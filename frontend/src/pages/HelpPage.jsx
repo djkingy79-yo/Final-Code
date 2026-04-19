@@ -9,7 +9,7 @@ import {
   Scale, ArrowLeft, FileText, Clock, Upload, Search, 
   Sparkles, Gavel, MessageSquare, Eye,
   CheckCircle, ChevronDown, ChevronUp, HelpCircle, BookOpen,
-  AlertTriangle, Info
+  AlertTriangle, Info, Smartphone
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -303,6 +303,81 @@ const HelpPage = ({ user }) => {
           </div>
         </div>
       )
+    },
+    {
+      id: "mobile-app",
+      title: "Get the iOS & Android App",
+      icon: <Smartphone className="w-5 h-5" />,
+      content: (() => {
+        const iosUrl = process.env.REACT_APP_IOS_APP_STORE_URL || "";
+        const androidUrl = process.env.REACT_APP_GOOGLE_PLAY_URL || "";
+        const iosLive = iosUrl.startsWith("http");
+        const androidLive = androidUrl.startsWith("http");
+        return (
+        <div className="space-y-4 text-slate-700" data-testid="help-mobile-cta-section">
+          <p>
+            The full Appeal Case Manager experience is available as a native app on iPhone, iPad, and Android —
+            same login, same cases, everything synced to your account.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <a
+              href={iosLive ? iosUrl : "#"}
+              target={iosLive ? "_blank" : undefined}
+              rel={iosLive ? "noopener noreferrer" : undefined}
+              onClick={(e) => { if (!iosLive) e.preventDefault(); }}
+              className={`flex items-center gap-3 p-4 rounded-lg border transition-colors ${
+                iosLive
+                  ? "border-slate-900 bg-white hover:bg-slate-50"
+                  : "border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed pointer-events-none"
+              }`}
+              aria-disabled={!iosLive}
+              data-testid="help-app-store-cta"
+            >
+              <div className="w-12 h-12 rounded-lg bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor" aria-hidden="true">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs text-slate-500">Download on the</div>
+                <div className="text-lg font-semibold text-slate-900">App Store</div>
+                <div className="text-xs text-slate-500 mt-0.5">{iosLive ? "Tap to install" : "Coming soon"}</div>
+              </div>
+            </a>
+            <a
+              href={androidLive ? androidUrl : "#"}
+              target={androidLive ? "_blank" : undefined}
+              rel={androidLive ? "noopener noreferrer" : undefined}
+              onClick={(e) => { if (!androidLive) e.preventDefault(); }}
+              className={`flex items-center gap-3 p-4 rounded-lg border transition-colors ${
+                androidLive
+                  ? "border-slate-900 bg-white hover:bg-slate-50"
+                  : "border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed pointer-events-none"
+              }`}
+              aria-disabled={!androidLive}
+              data-testid="help-google-play-cta"
+            >
+              <div className="w-12 h-12 rounded-lg bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor" aria-hidden="true">
+                  <path d="M3.61 1.81c-.27.28-.42.72-.42 1.29v17.79c0 .58.15 1.01.44 1.28l.07.06 9.96-9.95v-.24L3.69 1.76zM17.11 15.42L13.84 12l3.27-3.42 2.41 1.39c1.04.61 1.04 1.6 0 2.21zM13.11 11.29l-9.46 9.45c.34.36.91.41 1.55.05l11.18-6.34z"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs text-slate-500">Get it on</div>
+                <div className="text-lg font-semibold text-slate-900">Google Play</div>
+                <div className="text-xs text-slate-500 mt-0.5">{androidLive ? "Tap to install" : "Coming soon"}</div>
+              </div>
+            </a>
+          </div>
+          <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm">
+            <p className="text-blue-900">
+              <strong>Prefer the web?</strong> The full app works in any modern browser —
+              Safari, Chrome, Edge, Firefox. No download needed.
+            </p>
+          </div>
+        </div>
+        );
+      })()
     },
     {
       id: "signin",

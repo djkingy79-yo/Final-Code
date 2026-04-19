@@ -1,6 +1,17 @@
 # Appeal Case Manager — Changelog
 
 
+## 19 Apr 2026 — Mobile CTA + Emergent Reference Cleanup (Partial)
+- **Mobile CTA added** to `HelpPage.jsx` → new "Get the iOS & Android App" section between "What is Criminal Appeal AI?" and "Step 1: Sign In". App Store + Google Play buttons are greyed-out placeholders showing "Coming soon" by default, and **auto-activate** when `REACT_APP_IOS_APP_STORE_URL` and/or `REACT_APP_GOOGLE_PLAY_URL` env vars are set (will open in new tab once live). Uses inline Apple/Google logo SVGs (no external CDN). `data-testid`s: `help-mobile-cta-section`, `help-app-store-cta`, `help-google-play-cta`.
+- **Emergent CDN image purged.** Landing page hero image (`static.prod-images.emergentagent.com/...png`) downloaded to `/app/frontend/public/images/court-custody-hero.png` (1.28 MB). `LandingPage.jsx` now references the local asset via `${PUBLIC_URL}/images/court-custody-hero.png`.
+- **Cosmetic cleanup.** Removed "Emergent badge" code comment from LandingPage.jsx.
+- **Remaining Emergent touchpoints documented for Deb** (can't auto-remove — require her input):
+  - `auth.emergentagent.com` Google OAuth redirect — needs Deb's own Google Cloud OAuth app (`client_id` + `client_secret`) for me to rewire to direct Google OAuth.
+  - `EMERGENT_LLM_KEY` — needs Deb's own OpenAI/Anthropic/Gemini API key to swap off the universal key.
+  - `REACT_APP_BACKEND_URL` preview URL — goes away when backend is deployed to Deb's own host (Vercel/Railway/VPS).
+- **Refund / billing concern** (user said she paid >$3k): explicitly NOT handled by main agent. Must be routed via `support_agent` if she requests again.
+
+
 ## 19 Apr 2026 — P1 Mobile Prep + P2 Attachment B Verification
 - **P2 — Counsel Conference Prep (Attachment B) verified COMPLETE.** Feature was already shipped in `services/barrister_generator.py` (lines 846–911). Verified present in all 5 most recent barrister reports (rpt_1d3ddfc9c595, rpt_3ef5f8797fdb, rpt_a976824bd035, rpt_35c073a0c8f8, rpt_e0300749db58). Contains B.1 Key Questions, B.2 Weak Points (markdown table), B.3 Likely Prosecution Responses, B.4 Document References (checklist table), B.5 Suggested Conference Agenda. Parsed by `parseBarristerSections` in `BarristerView.jsx` and rendered via ReactMarkdown+remarkGfm (tables render correctly).
 - **P1 — Mobile build prep COMPLETE.**
