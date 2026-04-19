@@ -1,6 +1,14 @@
 # Appeal Case Manager — Changelog
 
 
+## 19 Apr 2026 — Real Backend-Fed Pass-by-Pass Report Progress
+- **New feature on request:** Multi-pass report generation now emits real progress per pass instead of time-based estimates. Applies to Full Detailed (8 passes, 15 sections) and Extensive Log (10 passes, 24 sections).
+- **Backend (`services/report_generator.py`):** Added `PASS_TITLES` dict mapping each pass label to a human-readable section title (e.g. `PASS 3/8` → "Grounds of Merit — Part 1"). Added `_update_report_pass_progress()` helper that persists `{current_pass, total_passes, pass_label, pass_title}` to `reports.generation_progress` before each pass runs. Helper wrapped in try/except so it cannot break generation.
+- **Backend (`routers/reports.py`):** Extended `GET /cases/{case_id}/reports/{report_id}/status` to return `progress` sub-object when `status='generating'`. Added `$unset: {generation_progress: 1}` to all 3 completion/failure DB writes (success, backup restore, failure) to prevent stale progress leaking.
+- **Frontend (`components/ReportsSection.jsx`):** Added `genProgress` state; `pollForCompletion` captures it every 3 s; in-flight banner now displays `PASS 3/8 — Grounds of Merit — Part 1` with a pill per pass (completed / active-pulsing / pending) and a real progress bar driven by `current_pass / total_passes`. Falls back to the existing time-based labels before the first poll returns.
+- **Regression:** 7/7 backend tests pass (`test_report_progress_iteration203.py`). Existing elapsed timer, PipelineProgress widget, and document-extract ticker all intact.
+
+
 ## 19 Apr 2026 — "Request timed out" + "Failed to extract text" — Permanent Fix
 - **Root cause:** Frontend `axios.defaults.timeout = 30000` was too tight, AND the synchronous `/api/cases/{case_id}/extract-all-text` endpoint made an LLM metadata-detect call that regularly took 60–90 seconds. Any case load while the backend was saturated by upload-triggered background work would timeout on the frontend even though the backend eventually succeeded.
 - **Permanent fix — background polling (same pattern as `/investigate`):**
