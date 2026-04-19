@@ -73,6 +73,9 @@ jobs:
           CONTACT_EMAIL: test@test.com
           EMERGENT_LLM_KEY: sk-test-key
           PYTHONPATH: ${{ github.workspace }}/backend
+          # Pulled from repo Settings → Secrets → TEST_PASSWORD.
+          # Safe fallback if the secret isn't set (unit tests don't actually authenticate).
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || 'change-me-local-only' }}
         run: |
           pytest tests/test_offence_framework_integrity.py \
             tests/test_ground_dedup.py \
@@ -120,6 +123,9 @@ jobs:
           CONTACT_EMAIL: test@test.com
           EMERGENT_LLM_KEY: sk-test-key
           PYTHONPATH: ${{ github.workspace }}/backend
+          # Pulled from repo Settings → Secrets → TEST_PASSWORD.
+          # Safe fallback if the secret isn't set.
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || 'change-me-local-only' }}
         run: |
           pytest tests/test_ground_dedup.py::test_cleanup_function \
             tests/test_ground_dedup.py::test_idempotent_sync \
