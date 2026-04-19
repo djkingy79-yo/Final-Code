@@ -40,6 +40,7 @@ import DisclaimerReminder from "../components/DisclaimerReminder";
 import ShareCaseModal from "../components/ShareCaseModal";
 import NotificationBell from "../components/NotificationBell";
 import DashboardPipelineSummary from "../components/DashboardPipelineSummary";
+import MobileAppBanner from "../components/MobileAppBanner";
 
 const Dashboard = ({ user }) => {
   const navigate = useNavigate();
@@ -478,6 +479,9 @@ const Dashboard = ({ user }) => {
 
           {/* Pipeline Portfolio Summary */}
           <DashboardPipelineSummary />
+
+          {/* Install mobile app banner (only appears once the store URLs are configured) */}
+          <MobileAppBanner />
 
           {/* Cases Section */}
           <section>
