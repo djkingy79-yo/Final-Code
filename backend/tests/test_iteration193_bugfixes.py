@@ -15,7 +15,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstr
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
 
 # Test case and report IDs from agent context
 TEST_CASE_ID = "case_ba08d8e0ad0d"

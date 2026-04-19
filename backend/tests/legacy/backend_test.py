@@ -10,7 +10,8 @@ import sys
 # Configuration
 BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+import os
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
 CASE_ID = "case_76056187ad4f"
 REPORT_ID = "rpt_0520d60ed7aa"  # Specific report from review request
 REPORT_ID_1 = "rpt_1cc1bfeace33"

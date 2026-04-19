@@ -23,7 +23,7 @@ if not BASE_URL:
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
 TEST_CASE_ID = "case_0885e6d0cba8"  # Tasmania v Scott - known case with documents
 
 

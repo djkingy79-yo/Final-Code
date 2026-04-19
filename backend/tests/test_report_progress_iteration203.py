@@ -18,7 +18,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
 TEST_CASE_ID = "case_0885e6d0cba8"
 TEST_REPORT_ID = "rpt_35acb07876ff"
 

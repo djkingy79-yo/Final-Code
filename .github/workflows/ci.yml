@@ -152,20 +152,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Check for exposed credentials
+      - name: Check for exposed credentials in production code
         run: |
-          echo "Checking for hardcoded credentials..."
-          ! grep -rn 'Grubbygrub88' \
+          echo "Scanning production code for hardcoded credentials..."
+          # Production code only — tests/ reads TEST_PASSWORD from env vars with safe placeholder fallbacks.
+          MATCHES=$(grep -rn \
+            -e 'Grubbygrub88' \
+            -e 'sk-[a-zA-Z0-9]\{20,\}' \
+            -e 'AKIA[0-9A-Z]\{16\}' \
+            -e 'AIza[0-9A-Za-z_-]\{35\}' \
+            -e 'ghp_[0-9A-Za-z]\{36\}' \
             backend/ frontend/src/ \
             --include="*.py" \
             --include="*.js" \
             --include="*.jsx" \
-            || (echo "CREDENTIALS FOUND" && exit 1)
-          echo "No credentials found"
+            --include="*.ts" \
+            --include="*.tsx" \
+            --exclude-dir=tests \
+            --exclude-dir=node_modules \
+            --exclude-dir=build \
+            || true)
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Hardcoded credentials detected in production code"
+            echo "$MATCHES"
+            exit 1
+          fi
+          echo "✅ No credentials found in production code"
       - name: Check .env not committed
         run: |
           if [ -f "backend/.env" ]; then
-            echo "WARNING: backend/.env should not be committed"
+            echo "::error::backend/.env should not be committed"
             exit 1
           fi
-          echo ".env not committed"
+          echo "✅ .env not committed"

@@ -10,7 +10,8 @@ import sys
 # Configuration
 BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com/api"
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = "Grubbygrub88"
+import os
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
 CASE_ID = "case_76056187ad4f"
 
 def test_backend_sanity():
