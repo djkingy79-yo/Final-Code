@@ -420,6 +420,10 @@ function AppRouter() {
         element={<TermsOfService />}
       />
       <Route
+        path="/privacy"
+        element={<Navigate to="/terms#privacy" replace />}
+      />
+      <Route
         path="/document-preview"
         element={<DocumentPreviewPage />}
       />

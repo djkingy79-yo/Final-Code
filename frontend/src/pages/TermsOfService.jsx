@@ -3,15 +3,27 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Scale, ArrowLeft, Shield, AlertTriangle, FileText, Users, Lock, Eye, Mail, Menu, X, ChevronDown, CreditCard, Gavel, Ban, RefreshCcw, Globe, Database, Cookie, UserX, BookOpen } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const TermsOfService = () => {
-
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
+
+  // If the URL has #privacy (or user lands via /privacy → /terms#privacy), scroll to that section
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      // Wait for the page to render, then scroll
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [location.hash]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -389,7 +401,7 @@ const TermsOfService = () => {
           </SectionCard>
 
           {/* ─── PART B: PRIVACY POLICY ─── */}
-          <div className="text-center py-6 mt-4">
+          <div id="privacy" className="text-center py-6 mt-4 scroll-mt-24">
             <p className="text-xs uppercase tracking-widest text-blue-600 font-bold">Part B</p>
             <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Privacy Policy</h2>
             <p className="text-slate-500 text-xs mt-1">In compliance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs)</p>
