@@ -6,6 +6,7 @@ Verifies that:
 3. Multiple sync runs don't multiply grounds
 """
 import asyncio
+import socket
 import sys
 import pytest
 sys.path.insert(0, '/app/backend')
@@ -13,6 +14,23 @@ sys.path.insert(0, '/app/backend')
 from services.ground_dedup import (
     is_ground_duplicate, _extract_topics, normalise_au_spelling,
     cleanup_duplicate_grounds
+)
+
+
+def _mongo_available(host: str = "localhost", port: int = 27017) -> bool:
+    """Return True only if a TCP connection to MongoDB succeeds quickly."""
+    try:
+        with socket.create_connection((host, port), timeout=0.5):
+            return True
+    except OSError:
+        return False
+
+
+# Integration tests in this module need a live MongoDB. Auto-skip when it's
+# unreachable (e.g. on CI) so we don't fail the whole suite on infra.
+requires_mongo = pytest.mark.skipif(
+    not _mongo_available(),
+    reason="MongoDB not reachable on localhost:27017 — skipping integration test.",
 )
 
 
@@ -216,6 +234,7 @@ def test_australian_spelling():
     return failures == 0
 
 
+@requires_mongo
 @pytest.mark.asyncio
 async def test_cleanup_function():
     """Test the cleanup function against real DB data."""
@@ -295,6 +314,7 @@ async def test_cleanup_function():
     return success
 
 
+@requires_mongo
 @pytest.mark.asyncio
 async def test_idempotent_sync():
     """Test that running sync multiple times doesn't create duplicates."""
