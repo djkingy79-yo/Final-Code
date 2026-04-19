@@ -1,6 +1,19 @@
 # Appeal Case Manager — Changelog
 
 
+## 19 Apr 2026 — "Request timed out" + "Failed to extract text" — Permanent Fix
+- **Root cause:** Frontend `axios.defaults.timeout = 30000` was too tight, AND the synchronous `/api/cases/{case_id}/extract-all-text` endpoint made an LLM metadata-detect call that regularly took 60–90 seconds. Any case load while the backend was saturated by upload-triggered background work would timeout on the frontend even though the backend eventually succeeded.
+- **Permanent fix — background polling (same pattern as `/investigate`):**
+  - Converted `/api/cases/{case_id}/extract-all-text` to return a `task_id` immediately (~180 ms).
+  - Added `GET /api/cases/{case_id}/extract-all-text/status?task_id=...` polling endpoint that returns `running` (with progress string) → `completed` (with result payload) → `not_found` if task expired.
+  - Worker `_run_extract_all_text()` runs as `asyncio.create_task`, updates progress at each stage (Loading docs → Extracting text (i/n) → Analysing for metadata).
+- **Frontend hardening:**
+  - `axios.defaults.timeout`: 30 000 → 60 000 ms (still bounded; LLM paths now use polling).
+  - `DocumentsSection.handleExtractAllText` rewired to start task + poll every 3 s with 20 s per-poll timeout; graceful "taking longer than expected" fallback.
+  - `CaseDetail.fetchCaseData` now uses explicit 90 s timeout for the main case GET + documents GET, 60 s for the 5 other parallel fetches.
+- **Regression:** 12/12 backend tests pass (`test_extract_all_text_iteration202.py`). Auto-detect metadata (offence category / state / court / case number) confirmed persisted on task completion.
+
+
 ## 18 Apr 2026 — Backend PDF/Word Export Formatting Parity
 - **Font sizing reduced to match frontend print CSS** (`exportHtml.js`): Body 11pt, H1 16pt, H2 15pt, H3 13pt, tables 9pt, cover meta 10pt, cover disclaimer 9pt, body disclaimer 8pt. Applied across both ReportLab PDF and python-docx DOCX in `/app/backend/routers/report_exports.py`.
 - **Footer label standardised** in `/app/backend/services/export_footer.py` → `Criminal Law Appeal Management / {Document Name} — {Defendant} — {Date}`. Footer font now 7pt Times-Italic (matches HTML print footer). Propagates to all export endpoints using `build_footer_label` (reports, timeline, translate, barrister pack, case export).
