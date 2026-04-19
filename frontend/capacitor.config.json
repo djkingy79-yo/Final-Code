@@ -6,7 +6,11 @@
   "server": {
     "androidScheme": "https",
     "iosScheme": "https",
-    "allowNavigation": ["*.emergentagent.com"]
+    "allowNavigation": [
+      "*.emergentagent.com",
+      "criminallawappealmanagement.com.au",
+      "*.criminallawappealmanagement.com.au"
+    ]
   },
   "plugins": {
     "SplashScreen": {

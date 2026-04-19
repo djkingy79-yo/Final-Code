@@ -19,11 +19,11 @@
   - [x] grounds.py router (1277 lines)
   - [x] 23 other domain routers extracted (auth, admin, payments, collaboration, exports, pipeline, translate, etc.)
 
-- [ ] **Native Mobile App** - Capacitor configured, needs build and test
+- [x] **Native Mobile App** - Prep complete (19 Apr 2026). Capacitor v7 synced, custom domain whitelisted, build guide at `/app/frontend/MOBILE_BUILD.md`. Final `.ipa`/`.aab` production builds must be run on Deb's Mac (Xcode) + Android Studio.
 
 ## P2 - Medium Priority
 - [ ] Verified Case Law Database integration
-- [ ] Counsel conference prep attachment for Barrister View
+- [x] Counsel conference prep attachment for Barrister View (DONE — verified 19 Apr 2026, Attachment B live in all recent barrister reports)
 - [x] Real-time Collaboration/Chat for Notes section (DONE — collaboration.py, messages.py, NotesSection.jsx)
 - [x] Case Sharing between registered users (DONE — ShareCaseModal.jsx, NotificationBell.jsx, collaboration.py)
 

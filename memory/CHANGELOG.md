@@ -1,6 +1,15 @@
 # Appeal Case Manager — Changelog
 
 
+## 19 Apr 2026 — P1 Mobile Prep + P2 Attachment B Verification
+- **P2 — Counsel Conference Prep (Attachment B) verified COMPLETE.** Feature was already shipped in `services/barrister_generator.py` (lines 846–911). Verified present in all 5 most recent barrister reports (rpt_1d3ddfc9c595, rpt_3ef5f8797fdb, rpt_a976824bd035, rpt_35c073a0c8f8, rpt_e0300749db58). Contains B.1 Key Questions, B.2 Weak Points (markdown table), B.3 Likely Prosecution Responses, B.4 Document References (checklist table), B.5 Suggested Conference Agenda. Parsed by `parseBarristerSections` in `BarristerView.jsx` and rendered via ReactMarkdown+remarkGfm (tables render correctly).
+- **P1 — Mobile build prep COMPLETE.**
+  - Re-ran `yarn build` (18 s) + `npx cap sync` (both iOS + Android) — 12 Capacitor plugins synced.
+  - Updated `capacitor.config.json` → `allowNavigation` now whitelists `*.emergentagent.com`, `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au` (stops mobile CORS failures on custom domain).
+  - Created `/app/frontend/MOBILE_BUILD.md` with step-by-step Xcode + Android Studio build instructions, signing notes, keystore commands, release-bundle upload steps, and re-sync workflow.
+  - Native `.ipa` and `.aab` production builds must be completed on Deb's Mac / with Android Studio (Linux container has no JDK/Xcode) — all project state is deploy-ready.
+
+
 ## 19 Apr 2026 — Full Critical Triage & CI Parity Sweep
 - **Triage result: zero critical backend/frontend/security/build blockers.** Production code was already clean.
 - **Fixes applied (minimal, test-scaffolding only):**
