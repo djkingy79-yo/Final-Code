@@ -7,6 +7,11 @@ on:  # yamllint disable-line rule:truthy
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    # Nightly full-suite run at 17:00 UTC = 3am AEST / 4am AEDT.
+    # Catches silent regressions from upstream package drift (Mongo image,
+    # python-docx, ruff, eslint rule updates, etc.) between commits.
+    - cron: "0 17 * * *"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
