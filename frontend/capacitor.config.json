@@ -7,7 +7,6 @@
     "androidScheme": "https",
     "iosScheme": "https",
     "allowNavigation": [
-      "*.emergentagent.com",
       "criminallawappealmanagement.com.au",
       "*.criminallawappealmanagement.com.au"
     ]

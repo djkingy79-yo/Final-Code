@@ -18,9 +18,27 @@ the native build on a Mac (iOS) and any machine with Android Studio (Android).
 
 ## One-Time Setup (already done, re-run whenever web code changes)
 
+### ⚠ CRITICAL — Set the Production Backend URL Before Building
+
+The native apps bundle `REACT_APP_BACKEND_URL` at build time. Whatever is in
+`frontend/.env` when you run `yarn build` gets shipped. Before a production
+release:
+
 ```bash
 cd /app/frontend
-REACT_APP_BACKEND_URL=https://criminal-appeals-au-2.preview.emergentagent.com yarn build
+# Point at YOUR production backend (replace with your real API host):
+REACT_APP_BACKEND_URL=https://api.criminallawappealmanagement.com.au yarn build
+npx cap sync
+```
+
+If you skip this step the app will call the Emergent preview URL from your
+customers' phones — don't.
+
+### Standard Re-Sync (after web code changes)
+
+```bash
+cd /app/frontend
+yarn build        # uses whatever REACT_APP_BACKEND_URL is in .env
 npx cap sync
 ```
 
@@ -77,9 +95,17 @@ network, preferences, push-notifications, share, splash-screen, status-bar.
 ## Known Gotchas
 
 - **CORS / backend URL**: The app calls `REACT_APP_BACKEND_URL` bundled at
-  build time. Must rebuild + sync if you change that env var.
+  build time. Must rebuild + sync if you change that env var. Set it to your
+  production API domain BEFORE the release build.
+- **Emergent auth hop**: Google OAuth redirects via `auth.emergentagent.com`
+  (Emergent's managed social login). This is unavoidable unless you swap to
+  a different auth provider — it's just the auth hop, not your backend.
 - **Cloudflare cookies**: Session token is stored in `Capacitor Preferences`
   (persistent across app launches) — no cookie issues on native.
 - **iOS signing**: Requires an Apple Developer account ($99/yr).
 - **Android permissions**: Camera + notifications are requested at runtime
   via Capacitor prompts. No further config needed.
+- **allowNavigation**: Capacitor config whitelist is already set to
+  `criminallawappealmanagement.com.au` + subdomains. Emergent's preview
+  domain is NOT whitelisted — if you ever need to test against the preview,
+  add it back temporarily or build with the preview URL.
