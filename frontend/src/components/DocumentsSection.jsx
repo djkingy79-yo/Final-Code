@@ -147,8 +147,53 @@ const DocumentsSection = ({
   const handleExtractAllText = async () => {
     setExtractingText(true);
     try {
-      const response = await axios.post(`${API}/cases/${caseId}/extract-all-text`);
-      const { successful_extractions, total_documents, detected_metadata } = response.data;
+      // Start background task — returns task_id immediately
+      const startRes = await axios.post(`${API}/cases/${caseId}/extract-all-text`, {}, { timeout: 30000 });
+      const taskId = startRes.data?.task_id;
+      if (!taskId) {
+        toast.error("Failed to start text extraction");
+        return;
+      }
+
+      // Poll every 3s (max ~5 minutes)
+      const maxAttempts = 100;
+      let attempt = 0;
+      let finalResult = null;
+      while (attempt < maxAttempts) {
+        await new Promise(r => setTimeout(r, 3000));
+        attempt += 1;
+        try {
+          const pollRes = await axios.get(
+            `${API}/cases/${caseId}/extract-all-text/status`,
+            { params: { task_id: taskId }, timeout: 20000 }
+          );
+          const st = pollRes.data?.status;
+          if (st === "completed") {
+            finalResult = pollRes.data.result || {};
+            break;
+          }
+          if (st === "failed") {
+            throw new Error(pollRes.data?.error || "Extraction failed");
+          }
+          if (st === "not_found") {
+            throw new Error("Task expired before completion");
+          }
+          // still running — continue polling
+        } catch (pollErr) {
+          if (pollErr.response || pollErr.message === "Task expired before completion" || pollErr.message === "Extraction failed") {
+            throw pollErr;
+          }
+          // transient network blip — keep polling
+        }
+      }
+
+      if (!finalResult) {
+        toast.info("Extraction is taking longer than expected. Refresh in a moment to see results.");
+        if (onDocumentsChange) onDocumentsChange();
+        return;
+      }
+
+      const { successful_extractions, total_documents, detected_metadata } = finalResult;
       toast.success(`Extracted text from ${successful_extractions}/${total_documents} documents`);
       if (detected_metadata && Object.keys(detected_metadata).length > 0) {
         const parts = [];
@@ -162,7 +207,8 @@ const DocumentsSection = ({
       }
       if (onDocumentsChange) onDocumentsChange();
     } catch (error) {
-      toast.error("Failed to extract text");
+      const msg = error?.response?.data?.detail || error?.message || "Failed to extract text";
+      toast.error(msg);
     } finally {
       setExtractingText(false);
     }

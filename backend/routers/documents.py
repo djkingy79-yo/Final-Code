@@ -482,68 +482,116 @@ async def extract_document_text(case_id: str, document_id: str, request: Request
 
 @router.post("/cases/{case_id}/extract-all-text", response_model=dict)
 async def extract_all_documents_text(case_id: str, request: Request):
-    """Extract text from all documents in a case"""
+    """Start background text extraction + metadata auto-detect for all documents. Returns task_id for polling."""
     user = await get_current_user(request)
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    documents = await db.documents.find({"case_id": case_id}, {"_id": 0}).to_list(500)
-    results = []
-    for doc in documents:
-        if not doc.get('file_data'):
-            results.append({"document_id": doc['document_id'], "success": False, "error": "No file data"})
-            continue
-        file_content = base64.b64decode(doc['file_data'])
-        filename_lower = doc.get('filename', '').lower()
-        file_type = doc.get('file_type', '')
-        content_text = ""
-        error = None
-        try:
-            if "text" in file_type or filename_lower.endswith('.txt'):
-                content_text = file_content.decode('utf-8', errors='ignore')
-            elif "pdf" in file_type or filename_lower.endswith('.pdf'):
-                try:
-                    import io
-                    from pypdf import PdfReader
-                    pdf_reader = PdfReader(io.BytesIO(file_content))
-                    text_parts = [page.extract_text() for page in pdf_reader.pages[:30] if page.extract_text()]
-                    content_text = "\n".join(text_parts)
-                except Exception as e:
-                    error = str(e)
-            elif filename_lower.endswith('.docx') or "word" in file_type:
-                try:
-                    import io
-                    from docx import Document as DocxDocument
-                    docx_doc = DocxDocument(io.BytesIO(file_content))
-                    text_parts = [para.text for para in docx_doc.paragraphs if para.text.strip()]
-                    content_text = "\n".join(text_parts)
-                except Exception as e:
-                    error = str(e)
-        except Exception as e:
-            error = str(e)
-        if content_text:
-            await db.documents.update_one(
-                {"document_id": doc['document_id']},
-                {"$set": {"content_text": content_text, "text_extracted_at": datetime.now(timezone.utc).isoformat()}}
-            )
-        results.append({"document_id": doc['document_id'], "filename": doc.get('filename'), "success": bool(content_text), "content_length": len(content_text) if content_text else 0, "error": error})
-    successful = sum(1 for r in results if r['success'])
-    # AI auto-detect case metadata from extracted text
-    detected_metadata = {}
-    if successful > 0:
-        try:
-            combined_text = ""
-            for doc in documents:
-                ct = doc.get("content_text") or ""
-                if not ct:
-                    for r in results:
-                        if r.get("document_id") == doc["document_id"] and r.get("success"):
-                            fresh = await db.documents.find_one({"document_id": doc["document_id"]}, {"_id": 0, "content_text": 1})
-                            ct = (fresh or {}).get("content_text", "")
-                if ct:
-                    combined_text += f"\n--- DOCUMENT: {doc.get('filename','')} ---\n{ct[:6000]}\n"
-            if len(combined_text) > 200:
-                detect_prompt = f"""Analyse the following case documents and extract these metadata fields.
+
+    task_id = f"extract_{case_id}_{uuid.uuid4().hex[:8]}"
+    _extract_tasks[task_id] = {"status": "started", "progress": "Starting text extraction..."}
+
+    import asyncio
+    asyncio.create_task(_run_extract_all_text(task_id, case_id, user.user_id))
+
+    return {"status": "started", "task_id": task_id}
+
+
+@router.get("/cases/{case_id}/extract-all-text/status", response_model=dict)
+async def extract_all_text_status(case_id: str, task_id: str, request: Request):
+    """Poll the status of a background text-extraction task."""
+    await get_current_user(request)
+
+    task = _extract_tasks.get(task_id)
+    if not task:
+        return {"status": "not_found"}
+
+    if task["status"] == "completed":
+        result = task.get("result", {})
+        _extract_tasks.pop(task_id, None)
+        return {"status": "completed", "result": result}
+
+    if task["status"] == "failed":
+        error = task.get("error", "Unknown error")
+        _extract_tasks.pop(task_id, None)
+        return {"status": "failed", "error": error}
+
+    return {"status": "running", "progress": task.get("progress", "Processing...")}
+
+
+# In-memory task registry for background extract-all-text jobs
+_extract_tasks: dict = {}
+
+
+async def _run_extract_all_text(task_id: str, case_id: str, user_id: str):
+    """Background worker: extract text from every document in the case, then run LLM metadata auto-detect."""
+    try:
+        _extract_tasks[task_id] = {"status": "running", "progress": "Loading documents..."}
+        case = await db.cases.find_one({"case_id": case_id, "user_id": user_id})
+        if not case:
+            _extract_tasks[task_id] = {"status": "failed", "error": "Case not found"}
+            return
+
+        documents = await db.documents.find({"case_id": case_id}, {"_id": 0}).to_list(500)
+        results = []
+        for idx, doc in enumerate(documents):
+            _extract_tasks[task_id]["progress"] = f"Extracting text ({idx + 1}/{len(documents)})..."
+            if not doc.get('file_data'):
+                results.append({"document_id": doc['document_id'], "success": False, "error": "No file data"})
+                continue
+            file_content = base64.b64decode(doc['file_data'])
+            filename_lower = doc.get('filename', '').lower()
+            file_type = doc.get('file_type', '')
+            content_text = ""
+            error = None
+            try:
+                if "text" in file_type or filename_lower.endswith('.txt'):
+                    content_text = file_content.decode('utf-8', errors='ignore')
+                elif "pdf" in file_type or filename_lower.endswith('.pdf'):
+                    try:
+                        import io
+                        from pypdf import PdfReader
+                        pdf_reader = PdfReader(io.BytesIO(file_content))
+                        text_parts = [page.extract_text() for page in pdf_reader.pages[:30] if page.extract_text()]
+                        content_text = "\n".join(text_parts)
+                    except Exception as e:
+                        error = str(e)
+                elif filename_lower.endswith('.docx') or "word" in file_type:
+                    try:
+                        import io
+                        from docx import Document as DocxDocument
+                        docx_doc = DocxDocument(io.BytesIO(file_content))
+                        text_parts = [para.text for para in docx_doc.paragraphs if para.text.strip()]
+                        content_text = "\n".join(text_parts)
+                    except Exception as e:
+                        error = str(e)
+            except Exception as e:
+                error = str(e)
+            if content_text:
+                await db.documents.update_one(
+                    {"document_id": doc['document_id']},
+                    {"$set": {"content_text": content_text, "text_extracted_at": datetime.now(timezone.utc).isoformat()}}
+                )
+            results.append({"document_id": doc['document_id'], "filename": doc.get('filename'), "success": bool(content_text), "content_length": len(content_text) if content_text else 0, "error": error})
+        successful = sum(1 for r in results if r['success'])
+
+        # AI auto-detect case metadata from extracted text
+        detected_metadata = {}
+        if successful > 0:
+            _extract_tasks[task_id]["progress"] = "Analysing documents for case metadata..."
+            try:
+                combined_text = ""
+                for doc in documents:
+                    ct = doc.get("content_text") or ""
+                    if not ct:
+                        for r in results:
+                            if r.get("document_id") == doc["document_id"] and r.get("success"):
+                                fresh = await db.documents.find_one({"document_id": doc["document_id"]}, {"_id": 0, "content_text": 1})
+                                ct = (fresh or {}).get("content_text", "")
+                    if ct:
+                        combined_text += f"\n--- DOCUMENT: {doc.get('filename','')} ---\n{ct[:6000]}\n"
+                if len(combined_text) > 200:
+                    detect_prompt = f"""Analyse the following case documents and extract these metadata fields.
 Return ONLY valid JSON with these exact keys (no markdown, no explanation):
 {{
   "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
@@ -558,32 +606,44 @@ Rules: offence_category MUST be from the provided list. Read ACTUAL content. If 
 
 DOCUMENTS:
 {combined_text[:30000]}"""
-                system_msg = "You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. Use Australian English spelling. Return only valid JSON."
-                meta = await call_llm_for_json(system_msg, detect_prompt, f"detect_{case_id}", max_tokens=2000, timeout_seconds=60)
-                if not isinstance(meta, dict):
-                    meta = {}
-                update_fields = {}
-                valid_categories = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
-                valid_states = ["nsw","vic","qld","sa","wa","tas","nt","act"]
-                if meta.get("offence_category") in valid_categories:
-                    update_fields["offence_category"] = meta["offence_category"]
-                if meta.get("offence_type"):
-                    update_fields["offence_type"] = meta["offence_type"]
-                if meta.get("sentence"):
-                    update_fields["sentence"] = meta["sentence"]
-                if meta.get("state") and meta["state"].lower() in valid_states:
-                    update_fields["state"] = meta["state"].lower()
-                if meta.get("court"):
-                    update_fields["court"] = meta["court"]
-                if meta.get("case_number"):
-                    update_fields["case_number"] = meta["case_number"]
-                if meta.get("defendant_name") and not case.get("defendant_name"):
-                    update_fields["defendant_name"] = meta["defendant_name"]
-                if update_fields:
-                    update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
-                    await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
-                    detected_metadata = update_fields
-                    logger.info(f"Auto-detected case metadata for {case_id}: {update_fields}")
-        except Exception as e:
-            logger.warning(f"Auto-detect metadata failed for {case_id}: {e}")
-    return {"total_documents": len(documents), "successful_extractions": successful, "results": results, "detected_metadata": detected_metadata}
+                    system_msg = "You are a legal document analyst. Extract factual metadata from Australian criminal case documents. Do NOT invent facts. Do NOT default to NSW or homicide if the document does not explicitly state the jurisdiction or offence type. Use Australian English spelling. Return only valid JSON."
+                    meta = await call_llm_for_json(system_msg, detect_prompt, f"detect_{case_id}", max_tokens=2000, timeout_seconds=90)
+                    if not isinstance(meta, dict):
+                        meta = {}
+                    update_fields = {}
+                    valid_categories = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
+                    valid_states = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+                    if meta.get("offence_category") in valid_categories:
+                        update_fields["offence_category"] = meta["offence_category"]
+                    if meta.get("offence_type"):
+                        update_fields["offence_type"] = meta["offence_type"]
+                    if meta.get("sentence"):
+                        update_fields["sentence"] = meta["sentence"]
+                    if meta.get("state") and meta["state"].lower() in valid_states:
+                        update_fields["state"] = meta["state"].lower()
+                    if meta.get("court"):
+                        update_fields["court"] = meta["court"]
+                    if meta.get("case_number"):
+                        update_fields["case_number"] = meta["case_number"]
+                    if meta.get("defendant_name") and not case.get("defendant_name"):
+                        update_fields["defendant_name"] = meta["defendant_name"]
+                    if update_fields:
+                        update_fields["updated_at"] = datetime.now(timezone.utc).isoformat()
+                        await db.cases.update_one({"case_id": case_id}, {"$set": update_fields})
+                        detected_metadata = update_fields
+                        logger.info(f"Auto-detected case metadata for {case_id}: {update_fields}")
+            except Exception as e:
+                logger.warning(f"Auto-detect metadata failed for {case_id}: {e}")
+
+        _extract_tasks[task_id] = {
+            "status": "completed",
+            "result": {
+                "total_documents": len(documents),
+                "successful_extractions": successful,
+                "results": results,
+                "detected_metadata": detected_metadata,
+            },
+        }
+    except Exception as e:
+        logger.error(f"extract-all-text task {task_id} failed: {e}")
+        _extract_tasks[task_id] = {"status": "failed", "error": str(e)}

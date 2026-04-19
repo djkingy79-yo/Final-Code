@@ -61,7 +61,7 @@ export const API = `${BACKEND_URL}/api`;
 // NOTE: Do NOT use withCredentials=true — the Kubernetes/Cloudflare proxy overwrites
 // Access-Control-Allow-Origin to "*" which conflicts with credentials mode.
 // Auth is handled via Bearer token from localStorage instead of cookies.
-axios.defaults.timeout = 30000; // 30 second timeout for most requests
+axios.defaults.timeout = 60000; // 60s default — absorbs transient backend load; LLM endpoints use background polling
 
 // Add request interceptor to include session token from localStorage as fallback
 axios.interceptors.request.use((config) => {

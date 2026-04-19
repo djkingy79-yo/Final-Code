@@ -245,20 +245,20 @@ const CaseDetail = ({ user }) => {
     setLoadError(null);
     setLoading(true);
     try {
-      // Fetch case data first to verify access
-      const caseRes = await axios.get(`${API}/cases/${caseId}`);
+      // Fetch case data first to verify access (generous timeout — case docs/grounds can grow)
+      const caseRes = await axios.get(`${API}/cases/${caseId}`, { timeout: 90000 });
       if (requestId !== caseRequestRef.current) return;
       setCaseData(caseRes.data);
       
-      // Then fetch related data - use Promise.allSettled for resilience
+      // Then fetch related data - use Promise.allSettled for resilience (generous timeouts)
       const [docsRes, timelineRes, reportsRes, notesRes, groundsRes, paymentsRes, barristerRes] = await Promise.allSettled([
-        axios.get(`${API}/cases/${caseId}/documents`),
-        axios.get(`${API}/cases/${caseId}/timeline`),
-        axios.get(`${API}/cases/${caseId}/reports`),
-        axios.get(`${API}/cases/${caseId}/notes`),
-        axios.get(`${API}/cases/${caseId}/grounds`),
-        axios.get(`${API}/cases/${caseId}/payments`),
-        axios.get(`${API}/cases/${caseId}/reports/barrister-view`)
+        axios.get(`${API}/cases/${caseId}/documents`, { timeout: 90000 }),
+        axios.get(`${API}/cases/${caseId}/timeline`, { timeout: 60000 }),
+        axios.get(`${API}/cases/${caseId}/reports`, { timeout: 60000 }),
+        axios.get(`${API}/cases/${caseId}/notes`, { timeout: 60000 }),
+        axios.get(`${API}/cases/${caseId}/grounds`, { timeout: 60000 }),
+        axios.get(`${API}/cases/${caseId}/payments`, { timeout: 60000 }),
+        axios.get(`${API}/cases/${caseId}/reports/barrister-view`, { timeout: 60000 })
       ]);
       if (requestId !== caseRequestRef.current) return;
       
