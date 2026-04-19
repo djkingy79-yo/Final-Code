@@ -1,6 +1,16 @@
 # Appeal Case Manager — Changelog
 
 
+## 19 Apr 2026 — Direct Google OAuth Wired (replaces Emergent-managed auth)
+- **Backend (`routers/auth.py` + `config.py` + `.env`):** New `POST /api/auth/google/callback` endpoint. Exchanges Google `code` at `https://oauth2.googleapis.com/token`, verifies `id_token` with `google.oauth2.id_token.verify_oauth2_token` against `GOOGLE_CLIENT_ID`, upserts user by verified email, issues session_token + sets secure httponly cookie. Returns 400 on missing fields, 401 on invalid code, 503 if OAuth env not configured, 504 on Google unreachable, 403 if email not verified.
+- **Frontend (`AuthModal.jsx` + `App.js`):** `buildGoogleLoginUrl()` now builds direct Google authorize URL (`https://accounts.google.com/o/oauth2/v2/auth`) with OpenID scopes + CSRF `state` param stored in `sessionStorage`. `AuthCallback` component reads `code` from query, verifies `state` match, POSTs to new backend endpoint. Legacy `session_id` path kept briefly for users mid-redirect.
+- **Env vars added:** backend `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; frontend `REACT_APP_GOOGLE_CLIENT_ID`.
+- **Last Emergent auth touchpoint removed from app** — `auth.emergentagent.com` no longer referenced anywhere in frontend source. Users matched by verified email preserve all existing accounts.
+- **Tests (iteration_204):** 15/15 passed (missing code → 400, invalid code → 401, config loaded, id_token verification correct, Emergent fallback works, all regression tests pass for `/login`, `/register`, `/me`, `/logout`).
+- **⚠️ Deb must rotate the client secret** — the secret `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` was pasted in chat. Reset it via Google Cloud Console → Credentials → OAuth client → Reset Secret, then update `/app/backend/.env` `GOOGLE_CLIENT_SECRET`.
+- **⚠️ Deb must fix Google Console JavaScript origin** from `http://criminallawappealmanagement.com.au` to `https://...` or mobile login will fail.
+
+
 ## 19 Apr 2026 — Mobile CTA + Emergent Reference Cleanup (Partial)
 - **Mobile CTA added** to `HelpPage.jsx` → new "Get the iOS & Android App" section between "What is Criminal Appeal AI?" and "Step 1: Sign In". App Store + Google Play buttons are greyed-out placeholders showing "Coming soon" by default, and **auto-activate** when `REACT_APP_IOS_APP_STORE_URL` and/or `REACT_APP_GOOGLE_PLAY_URL` env vars are set (will open in new tab once live). Uses inline Apple/Google logo SVGs (no external CDN). `data-testid`s: `help-mobile-cta-section`, `help-app-store-cta`, `help-google-play-cta`.
 - **Emergent CDN image purged.** Landing page hero image (`static.prod-images.emergentagent.com/...png`) downloaded to `/app/frontend/public/images/court-custody-hero.png` (1.28 MB). `LandingPage.jsx` now references the local asset via `${PUBLIC_URL}/images/court-custody-hero.png`.
