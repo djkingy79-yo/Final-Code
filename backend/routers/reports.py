@@ -100,7 +100,7 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "content.analysis": backup_analysis,
                     "content.partial": False,
                 },
-                "$unset": {"content.backup_analysis": 1}}
+                "$unset": {"content.backup_analysis": 1, "generation_progress": 1}}
             )
             logger.info(f"Report {report_id}: restored backup instead of thin regeneration")
             return
@@ -142,7 +142,8 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                 },
                 "source_mode": "ai_generated",
                 "verification_status": "draft",
-            }}
+            },
+            "$unset": {"generation_progress": 1}}
         )
         logger.info(f"Report {report_id} generated successfully")
         # Clear backup after successful generation
@@ -168,13 +169,14 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
                     "error": None,
                     "content.analysis": backup,
                 },
-                "$unset": {"content.backup_analysis": 1}}
+                "$unset": {"content.backup_analysis": 1, "generation_progress": 1}}
             )
             logger.info(f"Report {report_id} generation failed but restored from backup ({len(backup)} chars)")
         else:
             await db.reports.update_one(
                 {"report_id": report_id},
-                {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)}}
+                {"$set": {"status": "failed", "error": friendly_error, "technical_error": str(exc)},
+                 "$unset": {"generation_progress": 1}}
             )
 
 
@@ -343,15 +345,26 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
 
 @router.get("/cases/{case_id}/reports/{report_id}/status")
 async def get_report_status(case_id: str, report_id: str, request: Request):
-    """Poll endpoint for report generation status"""
+    """Poll endpoint for report generation status + pass-level progress."""
     user = await get_current_user(request)
     report = await db.reports.find_one(
         {"report_id": report_id, "case_id": case_id, "user_id": user.user_id},
-        {"_id": 0, "report_id": 1, "status": 1, "error": 1}
+        {"_id": 0, "report_id": 1, "status": 1, "error": 1, "generation_progress": 1, "content.passes_completed": 1}
     )
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    return {"report_id": report_id, "status": report.get("status", "completed")}
+    payload = {"report_id": report_id, "status": report.get("status", "completed")}
+    if report.get("error"):
+        payload["error"] = report["error"]
+    progress = report.get("generation_progress") or {}
+    if progress and payload["status"] == "generating":
+        payload["progress"] = {
+            "current_pass": progress.get("current_pass"),
+            "total_passes": progress.get("total_passes"),
+            "pass_label": progress.get("pass_label"),
+            "pass_title": progress.get("pass_title"),
+        }
+    return payload
 
 @router.get("/cases/{case_id}/reports", response_model=List[dict])
 async def get_reports(case_id: str, request: Request):

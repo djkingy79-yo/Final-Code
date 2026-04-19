@@ -142,6 +142,7 @@ const ReportsSection = ({
   const [selectedReportType, setSelectedReportType] = useState(null);
   const [generatingReport, setGeneratingReport] = useState(false);
   const [genElapsed, setGenElapsed] = useState(0);
+  const [genProgress, setGenProgress] = useState(null); // {current_pass, total_passes, pass_label, pass_title}
   const [expandedReports, setExpandedReports] = useState({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pendingReportType, setPendingReportType] = useState(null);
@@ -440,6 +441,7 @@ const ReportsSection = ({
     if (elapsedRef.current) { clearInterval(elapsedRef.current); elapsedRef.current = null; }
     setGeneratingReport(false);
     setGenElapsed(0);
+    setGenProgress(null);
   };
 
   const pollForCompletion = (reportId) => {
@@ -452,6 +454,9 @@ const ReportsSection = ({
       try {
         const res = await axios.get(`${API}/cases/${caseId}/reports/${reportId}/status`);
         const status = res.data?.status;
+        if (res.data?.progress) {
+          setGenProgress(res.data.progress);
+        }
         if (status === "completed") {
           toast.success("Report generated successfully!");
           if (onReportsChange) onReportsChange();
@@ -610,8 +615,10 @@ const ReportsSection = ({
                   <Loader2 className="w-5 h-5 animate-spin text-white" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-white">
-                    {genElapsed < 30
+                  <p className="text-lg font-bold text-white" data-testid="report-pass-heading">
+                    {genProgress?.pass_label
+                      ? `${genProgress.pass_label} — ${genProgress.pass_title}`
+                      : genElapsed < 30
                       ? "Analysing Case Materials"
                       : genElapsed < 120
                       ? "Writing Legal Analysis"
@@ -620,7 +627,9 @@ const ReportsSection = ({
                       : "Finalising Report"}
                   </p>
                   <p className="text-sm text-white/80">
-                    {genElapsed < 30
+                    {genProgress?.current_pass && genProgress?.total_passes
+                      ? `Pass ${genProgress.current_pass} of ${genProgress.total_passes} — drafting this section now. Each pass typically takes 45-90 seconds.`
+                      : genElapsed < 30
                       ? "Reading documents, timeline events, and grounds..."
                       : genElapsed < 120
                       ? "AI is constructing detailed legal analysis sections..."
@@ -639,23 +648,41 @@ const ReportsSection = ({
             </div>
           </div>
           <div className="bg-blue-50 px-6 py-3">
-            <div className="flex items-center gap-3 mb-2">
-              {[
-                { label: "Reading", active: genElapsed >= 0 },
-                { label: "Analysing", active: genElapsed >= 15 },
-                { label: "Writing", active: genElapsed >= 60 },
-                { label: "Finalising", active: genElapsed >= 300 },
-              ].map((step, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
-                  <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
-                </div>
-              ))}
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
+              {genProgress?.current_pass && genProgress?.total_passes ? (
+                Array.from({ length: genProgress.total_passes }, (_, i) => {
+                  const passNum = i + 1;
+                  const done = passNum < genProgress.current_pass;
+                  const active = passNum === genProgress.current_pass;
+                  return (
+                    <div key={i} className="flex items-center gap-1.5" data-testid={`report-pass-pill-${passNum}`}>
+                      <div className={`w-2 h-2 rounded-full ${done ? 'bg-blue-700' : active ? 'bg-blue-600 animate-pulse' : 'bg-slate-300'}`} />
+                      <span className={`text-xs font-medium ${done || active ? 'text-blue-700' : 'text-slate-400'}`}>{passNum}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                [
+                  { label: "Reading", active: genElapsed >= 0 },
+                  { label: "Analysing", active: genElapsed >= 15 },
+                  { label: "Writing", active: genElapsed >= 60 },
+                  { label: "Finalising", active: genElapsed >= 300 },
+                ].map((step, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <div className={`w-2 h-2 rounded-full ${step.active ? 'bg-blue-600' : 'bg-slate-300'}`} />
+                    <span className={`text-xs font-medium ${step.active ? 'text-blue-700' : 'text-slate-400'}`}>{step.label}</span>
+                  </div>
+                ))
+              )}
             </div>
             <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-blue-600 rounded-full transition-all duration-1000"
-                style={{ width: `${Math.min(98, (genElapsed / 900) * 100)}%` }}
+                style={{
+                  width: genProgress?.current_pass && genProgress?.total_passes
+                    ? `${Math.min(98, ((genProgress.current_pass - 0.5) / genProgress.total_passes) * 100)}%`
+                    : `${Math.min(98, (genElapsed / 900) * 100)}%`
+                }}
               />
             </div>
           </div>

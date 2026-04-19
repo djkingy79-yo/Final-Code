@@ -30,6 +30,54 @@ from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 from models import ReportMetadata
 
 
+# Human-readable titles shown in the UI progress ticker for each pass.
+# Keys match the first element of each pass tuple (e.g. "PASS 3/8").
+PASS_TITLES = {
+    # Full Detailed Legal Analysis — 8 passes, 15 sections
+    "PASS 1/8": "Executive Brief + Forensic Chronology",
+    "PASS 2/8": "Document Digest & Evidence Inventory",
+    "PASS 3/8": "Grounds of Merit — Part 1",
+    "PASS 4/8": "Grounds of Merit — Part 2 + Legal Framework",
+    "PASS 5/8": "Sentencing Review & Comparative Analysis",
+    "PASS 6/8": "Procedural History & Trial Conduct",
+    "PASS 7/8": "Appellate Strategy & Authorities",
+    "PASS 8/8": "Plain English Guide & Action Plan",
+    # Extensive Log & Analysis — 10 passes, 24 sections
+    "PASS 1/10": "Executive Brief + Forensic Chronology + Document Digest",
+    "PASS 2/10": "Grounds of Merit — Full Analysis",
+    "PASS 3/10": "Legal Framework & Statutory Interpretation",
+    "PASS 4/10": "Sentencing Analysis & Comparative Jurisprudence",
+    "PASS 5/10": "Expanded Grounds — Deep Argumentation",
+    "PASS 6/10": "Case Authorities & Precedent Mapping",
+    "PASS 7/10": "Appellate Court Considerations",
+    "PASS 8/10": "Risk Register & Counter-Arguments",
+    "PASS 9/10": "Strategic Operations & Submission Drafting",
+    "PASS 10/10": "Client Brief & Plain English Guide",
+}
+
+
+async def _update_report_pass_progress(report_id: str, pass_index: int, total_passes: int, label: str):
+    """Persist the current-pass progress to the report doc so the frontend can surface it."""
+    if not report_id:
+        return
+    try:
+        pass_title = PASS_TITLES.get(label, label)
+        await db.reports.update_one(
+            {"report_id": report_id},
+            {"$set": {
+                "generation_progress": {
+                    "current_pass": pass_index,
+                    "total_passes": total_passes,
+                    "pass_label": label,
+                    "pass_title": pass_title,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }
+            }}
+        )
+    except Exception as e:
+        logger.debug(f"pass-progress update failed for {report_id}: {e}")
+
+
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
     
@@ -1263,6 +1311,7 @@ Do NOT truncate. Write ALL content."""),
             # Pass 1 (Exec Brief + Chronology) and Pass 2 (Document Digest) get full context.
             # Passes 3-8 (Grounds analysis, Sentencing, Strategy) get condensed context.
             for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
+                await _update_report_pass_progress(report_id, pass_index, len(passes), label)
                 base_prompt = user_prompt if pass_index <= 2 else condensed_prompt
                 pass_prompt = base_prompt + instruction
                 logger.info(f"Full detailed {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
@@ -1566,6 +1615,7 @@ Do NOT truncate. Write ALL content for both sections."""),
                     logger.info(f"Resuming extensive_log report {report_id} from pass {resume_from + 1}")
 
             for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
+                await _update_report_pass_progress(report_id, pass_index, len(passes), label)
                 # Pass 1 gets full document context; passes 2-8 get condensed context
                 base_prompt = user_prompt if pass_index == 1 else condensed_prompt
                 pass_prompt = base_prompt + instruction
