@@ -10,13 +10,14 @@
 - [x] Pipeline Progress widget integration in CaseDetail
 
 ## P1 - High Priority
-- [ ] **Backend Refactoring** - Decompose server.py (~4,884 lines)
-  - [x] cases.py router extracted
-  - [ ] Extract notes.py router
-  - [ ] Extract documents.py router
-  - [ ] Extract timeline.py router
-  - [ ] Extract reports.py router
-  - [ ] Extract grounds.py router
+- [x] **Backend Refactoring** - Decompose server.py (verified 19 Apr 2026, server.py = 183 lines thin app factory)
+  - [x] cases.py router (145 lines)
+  - [x] notes.py router (287 lines)
+  - [x] documents.py router (649 lines)
+  - [x] timeline.py router (762 lines)
+  - [x] reports.py router (850 lines)
+  - [x] grounds.py router (1277 lines)
+  - [x] 23 other domain routers extracted (auth, admin, payments, collaboration, exports, pipeline, translate, etc.)
 
 - [ ] **Native Mobile App** - Capacitor configured, needs build and test
 
