@@ -66,7 +66,7 @@ jobs:
           pytest tests/test_offence_framework_integrity.py \
             tests/test_ground_dedup.py \
             tests/test_legislation_framework.py \
-            -v --tb=short -q 2>&1 || true
+            -v --tb=short -q
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
         working-directory: frontend
         run: >-
           npx eslint src/ --ext .js,.jsx
-          --max-warnings 0 || true
+          --max-warnings 0
       - name: Build
         working-directory: frontend
         env:
