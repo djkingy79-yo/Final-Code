@@ -48,6 +48,11 @@ logger = logging.getLogger(__name__)
 # Environment variables
 EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 
+# Google OAuth (direct — replaces Emergent-managed auth)
+# REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+
 
 def get_frontend_url() -> str:
     return os.environ['FRONTEND_URL'].replace('/api', '')

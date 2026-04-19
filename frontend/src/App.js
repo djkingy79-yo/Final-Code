@@ -72,12 +72,10 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-// Auth Callback Component
-// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-// DO_NOT_UNDO — This component handles the Google OAuth redirect.
-// It extracts session_id from the URL hash/query, exchanges it for a session_token,
-// stores it in localStorage, and navigates to /dashboard with user data.
-// Backend handles retry logic for Emergent API propagation delays.
+// Auth Callback Component — Direct Google OAuth flow.
+// Google redirects back with ?code=... (and optional ?state=...).
+// We POST {code, redirect_uri} to backend /api/auth/google/callback which exchanges it,
+// verifies the id_token, upserts the user, and returns a session_token.
 const AuthCallback = () => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
@@ -100,15 +98,30 @@ const AuthCallback = () => {
       return;
     }
 
-    const sessionId = new URLSearchParams(hash.substring(1)).get("session_id") || new URLSearchParams(query).get("session_id");
+    // Verify CSRF state parameter
+    const returnedState = queryParams.get("state") || hashParams.get("state");
+    const expectedState = sessionStorage.getItem("google_oauth_state");
+    if (expectedState && returnedState && returnedState !== expectedState) {
+      console.warn("OAuth state mismatch — possible CSRF");
+      setErrorDetail("Security check failed (state mismatch). Please sign in again.");
+      setAuthError(true);
+      return;
+    }
+    sessionStorage.removeItem("google_oauth_state");
 
-    // Clean the URL immediately after extracting session_id
-    if (hash.includes("session_id") || query.includes("session_id")) {
+    // Direct Google OAuth: read `code` from query params
+    const code = queryParams.get("code") || hashParams.get("code");
+
+    // Clean the URL immediately
+    if (code || query.includes("code=") || hash.includes("code=") || query.includes("session_id=") || hash.includes("session_id=")) {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    if (!sessionId || sessionId.length < 32) {
-      setErrorDetail(`No valid session_id found (hash=${hash ? "yes" : "no"}, query=${query ? "yes" : "no"}, sid_len=${sessionId?.length || 0})`);
+    // Fallback: legacy Emergent-flow session_id (kept briefly during rollout — can be removed later)
+    const legacySessionId = hashParams.get("session_id") || queryParams.get("session_id");
+
+    if (!code && !legacySessionId) {
+      setErrorDetail(`No authorization code found (hash=${hash ? "yes" : "no"}, query=${query ? "yes" : "no"})`);
       // Check existing localStorage token as fallback
       const existingToken = localStorage.getItem("session_token");
       if (existingToken) {
@@ -128,8 +141,29 @@ const AuthCallback = () => {
       return;
     }
 
-    if (sessionId && sessionId.length >= 32) {
-      // Retry the session exchange — Emergent session_id can take a moment to propagate
+    if (code) {
+      // Direct Google OAuth token exchange via backend
+      const redirectUri = `${window.location.origin}/auth/callback`;
+      try {
+        const response = await axios.post(
+          `${API}/auth/google/callback`,
+          { code, redirect_uri: redirectUri },
+          { timeout: 30000 }
+        );
+        if (response.data?.session_token) {
+          localStorage.setItem("session_token", response.data.session_token);
+          localStorage.setItem("auth_user", JSON.stringify(response.data));
+          sessionStorage.removeItem("auth_retry_count");
+          navigate("/dashboard", { replace: true, state: { user: response.data } });
+          return;
+        }
+        setErrorDetail(`No token in response (status=${response.status})`);
+      } catch (error) {
+        const errMsg = error?.response?.data?.detail || error?.message || "Unknown error";
+        setErrorDetail(`Google OAuth failed: ${errMsg}`);
+      }
+    } else if (legacySessionId && legacySessionId.length >= 32) {
+      // Legacy Emergent-flow fallback — kept only for users mid-redirect during the cutover.
       const retryDelays = [0, 1500, 3000, 5000];
       let lastErr = "";
       for (const delay of retryDelays) {
@@ -137,7 +171,7 @@ const AuthCallback = () => {
         try {
           const response = await axios.post(
             `${API}/auth/session`,
-            { session_id: sessionId },
+            { session_id: legacySessionId },
             { timeout: 30000 }
           );
           if (response.data?.session_token) {
@@ -150,10 +184,9 @@ const AuthCallback = () => {
           lastErr = `No token in response (status=${response.status})`;
         } catch (error) {
           lastErr = `${error?.response?.status || error.message}`;
-          console.error(`Auth attempt (delay=${delay}ms): ${lastErr}`);
         }
       }
-      setErrorDetail(`Session exchange failed after ${retryDelays.length} attempts. Last error: ${lastErr}. API: ${API}`);
+      setErrorDetail(`Session exchange failed. Last error: ${lastErr}`);
     }
 
     // Check existing localStorage token as fallback
@@ -196,9 +229,21 @@ const AuthCallback = () => {
             <button
               data-testid="auth-retry-google-btn"
               onClick={() => {
-                // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-                const redirectUrl = window.location.origin + "/auth/callback";
-                window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+                // Direct Google OAuth — redirect to Google's authorize endpoint
+                const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+                const redirectUri = `${window.location.origin}/auth/callback`;
+                const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
+                sessionStorage.setItem("google_oauth_state", state);
+                const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
+                  client_id: clientId,
+                  redirect_uri: redirectUri,
+                  response_type: "code",
+                  scope: "openid email profile",
+                  access_type: "online",
+                  prompt: "select_account",
+                  state,
+                }).toString()}`;
+                window.location.href = authUrl;
               }}
               className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
             >
@@ -351,7 +396,7 @@ function AppRouter() {
   if (location.search?.includes("error_description=") || location.search?.includes("error=invalid")) {
     return <AuthCallback />;
   }
-  if (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id=")) {
+  if (location.pathname === "/auth/callback" || location.hash?.includes("session_id=") || location.search?.includes("session_id=") || location.hash?.includes("code=") || location.search?.includes("code=")) {
     return <AuthCallback />;
   }
 

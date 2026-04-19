@@ -30,8 +30,23 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   });
   const [errors, setErrors] = useState({});
 
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  const googleLoginUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(`${window.location.origin}/auth/callback`)}`;
+  // Direct Google OAuth — redirect to Google's authorize URL with CSRF state
+  const buildGoogleLoginUrl = () => {
+    const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const redirectUri = `${window.location.origin}/auth/callback`;
+    const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    sessionStorage.setItem("google_oauth_state", state);
+    return `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      scope: "openid email profile",
+      access_type: "online",
+      prompt: "select_account",
+      state,
+    }).toString()}`;
+  };
+  const googleLoginUrl = buildGoogleLoginUrl();
 
   const validateForm = () => {
     const newErrors = {};

@@ -168,6 +168,136 @@ async def login_user(request: Request, response: Response):
         "session_token": session_token
     }
 
+@router.post("/google/callback")
+async def google_oauth_callback(request: Request, response: Response):
+    """Direct Google OAuth callback — exchanges `code` from Google for user profile, issues session_token.
+    
+    Flow:
+      1. Frontend redirects user to https://accounts.google.com/o/oauth2/v2/auth with client_id, redirect_uri, scope=openid email profile.
+      2. Google redirects back to /auth/callback?code=... on the frontend.
+      3. Frontend POSTs {code, redirect_uri} to this endpoint.
+      4. This endpoint exchanges code for id_token + access_token at Google's token endpoint.
+      5. Verifies id_token signature + audience against GOOGLE_CLIENT_ID.
+      6. Upserts user record (matched by verified email) and issues session_token.
+    """
+    from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+    from google.oauth2 import id_token as google_id_token
+    from google.auth.transport import requests as google_requests
+
+    if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        raise HTTPException(status_code=503, detail="Google OAuth not configured on this server")
+
+    body = await request.json()
+    code = body.get("code")
+    redirect_uri = body.get("redirect_uri")
+    if not code or not redirect_uri:
+        raise HTTPException(status_code=400, detail="code and redirect_uri required")
+
+    # 1) Exchange code for tokens at Google's token endpoint
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            token_response = await client.post(
+                "https://oauth2.googleapis.com/token",
+                data={
+                    "code": code,
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "redirect_uri": redirect_uri,
+                    "grant_type": "authorization_code",
+                },
+            )
+    except httpx.RequestError as e:
+        logger.error(f"Google token exchange failed: {e}")
+        raise HTTPException(status_code=504, detail="Google authentication server unreachable. Please try again.")
+
+    if token_response.status_code != 200:
+        logger.warning(f"Google token exchange rejected: {token_response.status_code} {token_response.text[:200]}")
+        raise HTTPException(status_code=401, detail="Invalid or expired authorization code. Please sign in again.")
+
+    tokens = token_response.json()
+    google_id_token_str = tokens.get("id_token")
+    if not google_id_token_str:
+        raise HTTPException(status_code=502, detail="Google did not return an id_token")
+
+    # 2) Verify id_token signature + audience
+    try:
+        user_data = google_id_token.verify_oauth2_token(
+            google_id_token_str,
+            google_requests.Request(),
+            GOOGLE_CLIENT_ID,
+        )
+    except ValueError as e:
+        logger.warning(f"Google id_token verification failed: {e}")
+        raise HTTPException(status_code=401, detail="Invalid id_token from Google")
+
+    email = user_data.get("email")
+    if not email or not user_data.get("email_verified", False):
+        raise HTTPException(status_code=403, detail="Google account email is not verified")
+
+    name = user_data.get("name") or user_data.get("given_name") or email.split("@")[0]
+    picture = user_data.get("picture")
+
+    logger.info(f"Google OAuth direct: verified email={email}")
+
+    # 3) Upsert user
+    existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+    if existing_user:
+        user_id = existing_user["user_id"]
+        await db.users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "name": name,
+                "picture": picture,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }}
+        )
+        logger.info(f"Google OAuth direct: updated existing user {user_id}")
+    else:
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        await db.users.insert_one({
+            "user_id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "auth_type": "google",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        logger.info(f"Google OAuth direct: created new user {user_id}")
+
+    # 4) Issue session_token
+    session_token = uuid.uuid4().hex
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    await db.user_sessions.insert_one({
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=7 * 24 * 60 * 60,
+    )
+
+    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    safe_response = {
+        "user_id": user_doc.get("user_id"),
+        "email": user_doc.get("email"),
+        "name": user_doc.get("name"),
+        "picture": user_doc.get("picture"),
+        "session_token": session_token,
+        "terms_accepted": user_doc.get("terms_accepted", False),
+        "created_at": user_doc.get("created_at"),
+    }
+    logger.info(f"Google OAuth direct: SUCCESS — issuing session for {email}, token={session_token[:8]}...")
+    return safe_response
+
+
 @router.post("/session")
 async def create_session(request: Request, response: Response):
     """DO_NOT_UNDO — Exchange session_id for session_token (Google OAuth via Emergent)"""
