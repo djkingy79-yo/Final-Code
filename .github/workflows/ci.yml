@@ -28,6 +28,9 @@ jobs:
         run: >-
           ruff check backend/
           --exclude="backend/tests/,backend/scripts/"
+          --fix
+          --exit-non-zero-on-fix
+          --output-format=github
       - name: Check config syntax
         run: |
           python -c "
