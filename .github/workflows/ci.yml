@@ -11,6 +11,12 @@ on:  # yamllint disable-line rule:truthy
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# Cancel older runs on the same ref as soon as a newer one starts.
+# Saves GitHub Actions minutes and surfaces the latest result faster.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backend-lint:
     runs-on: ubuntu-latest
@@ -67,6 +73,52 @@ jobs:
             tests/test_ground_dedup.py \
             tests/test_legislation_framework.py \
             -v --tb=short -q
+
+  backend-integration-tests:
+    runs-on: ubuntu-latest
+    # Real MongoDB container — tests tagged @requires_mongo actually run here
+    # instead of skipping as they do in backend-tests.
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep -q 1"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-asyncio httpx
+          pip install -r backend/requirements.txt \
+            --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
+      - name: Wait for MongoDB to be ready
+        run: |
+          for i in {1..30}; do
+            if nc -z localhost 27017; then echo "Mongo is up"; exit 0; fi
+            echo "Waiting for Mongo ($i/30)..."; sleep 1
+          done
+          echo "Mongo failed to come up"; exit 1
+      - name: Run integration tests (requires MongoDB)
+        working-directory: backend
+        env:
+          MONGO_URL: mongodb://localhost:27017
+          DB_NAME: test_ci_db
+          FRONTEND_URL: http://localhost:3000
+          ADMIN_EMAILS: test@test.com
+          CONTACT_EMAIL: test@test.com
+          EMERGENT_LLM_KEY: sk-test-key
+          PYTHONPATH: ${{ github.workspace }}/backend
+        run: |
+          pytest tests/test_ground_dedup.py::test_cleanup_function \
+            tests/test_ground_dedup.py::test_idempotent_sync \
+            -v --tb=short
 
   frontend-build:
     runs-on: ubuntu-latest
