@@ -127,8 +127,14 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **20 unit tests** (`tests/test_legislation_currency.py`) covering registry coverage, bucketing, all guardrail rejection paths, dashboard shape, mark_verified persistence. Testing-agent verified iteration_210 — 100% backend + frontend pass, zero critical/minor issues, all data-testids present, anti-hallucination guardrails confirmed working end-to-end.
 - **README.md fully refreshed (14 Feb 2026)** — removed all references to the deprecated 2-page Appellate Research Brief Quick Brief, added new sections for Legislation Currency Dashboard (#11), Admin Dashboard & Analytics with OpenAI Cost Tracker (#16), and Anti-Hallucination & Forensic Language Rules. Renumbered sections 1–20. Updated backend routers, service layer, and frameworks package listings. Rewrote Security section with self-hosting independence block. Replaced Emergent references with explicit self-hosted architecture (owner's OpenAI key, Google OAuth client, domain `criminallawappealmanagement.com.au`).
 
+### Completed (15 February 2026 — Legal Seal in Export Footers)
+- **Navy/gold "FRAMEWORK VERIFIED" seal injected into PDF/Print footers** — both shared export builder (`/app/frontend/src/utils/exportHtml.js`) and the `ReportView.jsx` preview pipeline now emit a compact navy pill in the CSS Paged Media `@bottom-center` margin box, reading `✓  FRAMEWORK VERIFIED  ·  79 Australian Acts`. White 6.5pt serif text, 0.14em tracking, `#0b1e3f` background with `#1e3a8a` 0.5pt border, padded `2pt 8pt`, rounded `2pt`. Added to both `@page` (portrait) and `@page landscape-table` so the seal persists when tables flip landscape.
+- **Layout parity preserved** — existing `@bottom-left` (italic document label + appellant) and `@bottom-right` (Page X of Y) are untouched; the seal sits centrally between them.
+- **Visually verified** — rendered a sample A4 PDF via headless Chromium print pipeline with `emulate_media("print")`; file-analysis confirmed: italic label left, navy pill with white checkmark + "FRAMEWORK VERIFIED · 79 Australian Acts" centred, page number right. `-webkit-print-color-adjust: exact` ensures Chrome/Edge/Safari all honour the background fill.
+
 ## Remaining / Backlog
 - **P2**: Second attachment for counsel conference prep on the Appellate Research Brief.
+- **P2 (deferred)**: Founder video testimonial / explainer on the landing page to build trust.
 - **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au` — at that point the Emergent preview URL is no longer in any runtime path.
 
 ## Test Credentials

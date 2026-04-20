@@ -745,6 +745,14 @@ const ReportView = () => {
         font-family: 'Times New Roman', Times, serif;
         font-size: 7pt; font-style: italic; color: #475569;
       }
+      @bottom-center {
+        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
+        color: #ffffff; background: #0b1e3f;
+        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
@@ -758,6 +766,14 @@ const ReportView = () => {
         content: "${previewFooterLabel}";
         font-family: 'Times New Roman', Times, serif;
         font-size: 7pt; font-style: italic; color: #475569;
+      }
+      @bottom-center {
+        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
+        color: #ffffff; background: #0b1e3f;
+        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);

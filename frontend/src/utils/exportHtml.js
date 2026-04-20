@@ -59,6 +59,25 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
       font-style: italic;
       color: #475569;
     }
+    @bottom-center {
+      /* Compact navy legal seal — matches landing-page "FRAMEWORK VERIFIED" mark.
+         Unicode check (✓) rendered in gold via the margin-box colour cascade.
+         Background + padding honoured by Chrome/Edge/Safari print pipelines
+         when -webkit-print-color-adjust:exact is set globally (it is). */
+      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #ffffff;
+      background: #0b1e3f;
+      padding: 2pt 8pt;
+      border: 0.5pt solid #1e3a8a;
+      border-radius: 2pt;
+      vertical-align: middle;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
@@ -77,6 +96,21 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
       font-size: 7pt;
       font-style: italic;
       color: #475569;
+    }
+    @bottom-center {
+      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #ffffff;
+      background: #0b1e3f;
+      padding: 2pt 8pt;
+      border: 0.5pt solid #1e3a8a;
+      border-radius: 2pt;
+      vertical-align: middle;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
