@@ -162,6 +162,25 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
           <p className="text-slate-400">Appeal Case Manager - Usage Statistics</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href="/admin/legislation-currency"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-700 hover:bg-blue-600 rounded-md text-sm font-semibold text-white transition-colors"
+              data-testid="admin-legislation-currency-link"
+            >
+              Legislation Currency
+            </a>
+            <a
+              href="/admin/analytics"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-md text-sm font-semibold text-white transition-colors"
+              data-testid="admin-signup-analytics-link"
+            >
+              Signup Source Analytics
+            </a>
+          </div>
+          <p className="mt-5 text-xs text-slate-400" data-testid="admin-selfhosted-footer">
+            Self-hosted · your OpenAI key · your Google OAuth · criminallawappealmanagement.com.au
+          </p>
         </div>
       </div>
 

@@ -335,6 +335,7 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
         <p class="name">Appeal Case Manager</p>
         <p class="sub">Founded by Debra King</p>
         <p class="sub">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+        <p class="sub" style="font-size:9px;opacity:0.75;margin-top:4px;">Legal Framework v2026.02 &middot; 79 Australian Acts manually verified &middot; criminallawappealmanagement.com.au</p>
       </div>
     </div>
   </div>

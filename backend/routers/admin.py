@@ -615,3 +615,82 @@ async def get_openai_costs(request: Request, period: str = "month"):
         "daily": daily,
         "pricing_note": "Costs are estimated locally using tiktoken (o200k_base) token counts and OpenAI's Feb 2026 published rates (gpt-4o $2.50/$10 per 1M input/output; gpt-4o-mini $0.15/$0.60 per 1M). Actual billing appears on the OpenAI dashboard.",
     }
+
+
+# ---------------------------------------------------------------------------
+# Legislation Currency Dashboard
+# ---------------------------------------------------------------------------
+
+@router.get("/admin/legislation-currency")
+async def get_legislation_currency(request: Request, jurisdiction: str | None = None):
+    """Admin-only. Return the per-Act currency dashboard."""
+    from services.legislation_currency import build_dashboard
+
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return await build_dashboard(jurisdiction=jurisdiction)
+
+
+class MarkVerifiedRequest(BaseModel):
+    act_name: str
+    notes: str | None = None
+
+
+@router.post("/admin/legislation-currency/mark-verified")
+async def mark_legislation_verified(request: Request, payload: MarkVerifiedRequest):
+    """Admin-only. Record that the named Act has been manually re-verified today."""
+    from services.legislation_currency import mark_verified
+
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    try:
+        row = await mark_verified(
+            act_name=payload.act_name,
+            verified_by=user.email,
+            notes=payload.notes or "",
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return {"ok": True, "row": row}
+
+
+class AICheckRequest(BaseModel):
+    act_name: str
+
+
+@router.post("/admin/legislation-currency/ai-check")
+async def run_ai_currency_check(request: Request, payload: AICheckRequest):
+    """Admin-only. Run the heavily guardrailed AI cross-check for one Act.
+
+    The AI output is STRICTLY a prompt for manual verification. This endpoint
+    does NOT mark anything verified — only the /mark-verified endpoint does.
+    """
+    from services.legislation_currency import ai_currency_check
+    from frameworks.legislation_registry import LEGISLATION_REGISTRY
+
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    entry = next((e for e in LEGISLATION_REGISTRY if e["act_name"] == payload.act_name), None)
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Act not in registry: {payload.act_name}")
+
+    import uuid
+    session_id = f"legcheck_{entry['jurisdiction']}_{uuid.uuid4().hex[:10]}"
+
+    # Look up the current last_verified from the dashboard (respects audit log)
+    from services.legislation_currency import build_dashboard
+    dash = await build_dashboard(jurisdiction=entry["jurisdiction"])
+    row = next((r for r in dash["rows"] if r["act_name"] == payload.act_name), None)
+    last_verified = (row or entry).get("last_verified", entry["last_verified"])
+
+    return await ai_currency_check(
+        act_name=entry["act_name"],
+        jurisdiction=entry["jurisdiction"],
+        last_verified=last_verified,
+        session_id=session_id,
+    )
