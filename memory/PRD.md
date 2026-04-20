@@ -94,6 +94,19 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Regression tests** — `tests/test_translate_parallel_recovery.py` (3 tests) + expanded `tests/test_ai_usage_tracker.py` (now 31 parametrised cases).
 - **Testing-agent verified** — iteration_208.json confirms 400/400 key tests pass, zero critical/minor bugs, all data-testids present.
 
+### Completed (14 February 2026 — Section-only Translate + Third-party Independence Cleanup)
+- **Translate a single section** — new `POST /api/cases/{case_id}/translate-section` endpoint (synchronous, cached). Body: `{report_id, language, section_heading, section_text}`. Validates: unsupported language (400), empty text (400), >30k chars (400), report-not-in-case (404), LLM failure (502). English no-op short-circuits. Cache collection: `report_section_translations`.
+- **SectionTranslatableReport component** — splits markdown on H2 headings and adds a "Translate section" dropdown next to each heading with 20 languages. Translated text renders in a blue-bordered callout below the original with a "Hide" link. Coexists with the existing full-report `<ReportTranslator>`.
+- **8 unit tests** (`tests/test_translate_section.py`) covering every error path and the cache short-circuit. Testing-agent verified iteration_209 — 18/18 backend tests + full frontend data-testid verification.
+- **Emergent-independence cleanup** (user runs on their own domain `criminallawappealmanagement.com.au`, own Google OAuth client, own OpenAI billing):
+  - Removed legacy `/api/auth/session` endpoint body that called `demobackend.emergentagent.com` — endpoint now returns 410 Gone cleanly.
+  - Removed the `legacySessionId` fallback branch from `frontend/src/App.js` OAuth callback handler.
+  - Replaced `EMERGENT_LLM_KEY` fallback in `services/llm_service.py` and `config.py` with a hard requirement on `OPENAI_API_KEY` — missing key aborts startup.
+  - Updated `server.py` deep-health endpoint + `services/report_generator.py` to read `OPENAI_API_KEY` directly.
+  - Deleted legacy integration test scripts (`tests/legacy/*`) that still referenced the old preview URL.
+  - All remaining comments explicitly describe the self-hosted architecture on the owner's domain.
+- **Result**: grep for "Emergent" across `/app/backend` and `/app/frontend/src` returns ZERO hits outside the `emergentintegrations` Python SDK import (just a library wrapper around the OpenAI SDK — no proxy, no shared key).
+
 ## Remaining / Backlog
 - **P2**: Backend self-hosting migration guide (Railway/Render/AWS) to remove final Emergent dependency (`REACT_APP_BACKEND_URL`)
 - **P2**: Second attachment for counsel conference prep on Appellate Research Brief

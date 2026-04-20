@@ -15,7 +15,8 @@ load_dotenv(ROOT_DIR / '.env')
 
 # ── Startup Validation ──
 # TIER 1: Fatal — app cannot function without these
-_REQUIRED_ENV = ['MONGO_URL', 'DB_NAME', 'FRONTEND_URL', 'ADMIN_EMAILS', 'CONTACT_EMAIL', 'EMERGENT_LLM_KEY']
+# Self-hosted: requires OPENAI_API_KEY (the owner's personal OpenAI billing key).
+_REQUIRED_ENV = ['MONGO_URL', 'DB_NAME', 'FRONTEND_URL', 'ADMIN_EMAILS', 'CONTACT_EMAIL', 'OPENAI_API_KEY']
 _missing = [k for k in _REQUIRED_ENV if not os.environ.get(k)]
 if _missing:
     print(f"FATAL: Missing required environment variables: {', '.join(_missing)}", file=sys.stderr)
@@ -45,13 +46,12 @@ _handler.setFormatter(JSONFormatter())
 logging.basicConfig(level=logging.INFO, handlers=[_handler])
 logger = logging.getLogger(__name__)
 
-# LLM API Keys — prefer user-owned OpenAI key; Emergent Universal Key kept as optional fallback.
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
-if not OPENAI_API_KEY and not EMERGENT_LLM_KEY:
-    raise KeyError("OPENAI_API_KEY (or EMERGENT_LLM_KEY) must be set in environment")
+# LLM API Key — self-hosted app runs on the owner's personal OpenAI billing
+# (key stored in .env as OPENAI_API_KEY). Missing key aborts startup above.
+OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
-# Google OAuth (direct — replaces Emergent-managed auth)
+# Google OAuth — direct integration with Google, using the owner's own
+# Google Cloud Console OAuth client for criminallawappealmanagement.com.au.
 # REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
@@ -91,10 +91,9 @@ _email_missing = [k for k in _EMAIL_ENV if not os.environ.get(k)]
 if _email_missing:
     logger.warning(f"Optional env vars missing (email features will not work): {', '.join(_email_missing)}")
 
-# TIER 4: Security — warn if CORS is wildcard in production
+# TIER 4: Security — warn if CORS is wildcard
 _cors_raw = os.environ.get('CORS_ORIGINS', '')
-_frontend = os.environ.get('FRONTEND_URL', '')
-if _cors_raw.strip() == '*' and 'preview.emergentagent.com' not in _frontend:
+if _cors_raw.strip() == '*':
     logger.warning("SECURITY: CORS_ORIGINS is set to '*' — restrict to specific origins for production")
 
 # TIER 5: Optional with sensible defaults — log if missing so operator knows
@@ -112,7 +111,7 @@ def validate_env_status() -> dict:
         val = os.environ.get(key, '')
         if not val:
             return 'missing'
-        if val.startswith('sk_test_') or val == 'sk_test_emergent':
+        if val.startswith('sk_test_'):
             return 'test_key'
         if len(val) < 5:
             return 'suspicious'

@@ -187,18 +187,17 @@ Thanks.`;
     }
     clearOAuthState();
 
-    // Direct Google OAuth: read `code` from query params
+    // Direct Google OAuth: read `code` from query params (self-hosted auth
+    // running on the owner's Google Cloud OAuth client for criminallawappealmanagement.com.au).
+    // If no `code` returned the login failed.
     const code = queryParams.get("code") || hashParams.get("code");
 
     // Clean the URL immediately
-    if (code || query.includes("code=") || hash.includes("code=") || query.includes("session_id=") || hash.includes("session_id=")) {
+    if (code || query.includes("code=") || hash.includes("code=")) {
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    // Fallback: legacy Emergent-flow session_id (kept briefly during rollout — can be removed later)
-    const legacySessionId = hashParams.get("session_id") || queryParams.get("session_id");
-
-    if (!code && !legacySessionId) {
+    if (!code) {
       setErrorDetail(`No authorization code found (hash=${hash ? "yes" : "no"}, query=${query ? "yes" : "no"})`);
       // Check existing localStorage token as fallback
       const existingToken = localStorage.getItem("session_token");
@@ -219,55 +218,28 @@ Thanks.`;
       return;
     }
 
-    if (code) {
-      // Direct Google OAuth token exchange via backend
-      const redirectUri = `${window.location.origin}/auth/callback`;
-      const signupSource = consumeSignupSource();
-      try {
-        const response = await axios.post(
-          `${API}/auth/google/callback`,
-          { code, redirect_uri: redirectUri, signup_source: signupSource },
-          { timeout: 30000 }
-        );
-        if (response.data?.session_token) {
-          localStorage.setItem("session_token", response.data.session_token);
-          localStorage.setItem("auth_user", JSON.stringify(response.data));
-          sessionStorage.removeItem("auth_retry_count");
-          const firstName = (response.data.name || response.data.email || "").split(" ")[0] || "there";
-          toast.success(`Welcome back, ${firstName} — redirecting to your dashboard…`, { duration: 1500 });
-          navigate("/dashboard", { replace: true, state: { user: response.data } });
-          return;
-        }
-        setErrorDetail(`No token in response (status=${response.status})`);
-      } catch (error) {
-        const errMsg = error?.response?.data?.detail || error?.message || "Unknown error";
-        setErrorDetail(`Google OAuth failed: ${errMsg}`);
+    // Direct Google OAuth token exchange via backend
+    const redirectUri = `${window.location.origin}/auth/callback`;
+    const signupSource = consumeSignupSource();
+    try {
+      const response = await axios.post(
+        `${API}/auth/google/callback`,
+        { code, redirect_uri: redirectUri, signup_source: signupSource },
+        { timeout: 30000 }
+      );
+      if (response.data?.session_token) {
+        localStorage.setItem("session_token", response.data.session_token);
+        localStorage.setItem("auth_user", JSON.stringify(response.data));
+        sessionStorage.removeItem("auth_retry_count");
+        const firstName = (response.data.name || response.data.email || "").split(" ")[0] || "there";
+        toast.success(`Welcome back, ${firstName} — redirecting to your dashboard…`, { duration: 1500 });
+        navigate("/dashboard", { replace: true, state: { user: response.data } });
+        return;
       }
-    } else if (legacySessionId && legacySessionId.length >= 32) {
-      // Legacy Emergent-flow fallback — kept only for users mid-redirect during the cutover.
-      const retryDelays = [0, 1500, 3000, 5000];
-      let lastErr = "";
-      for (const delay of retryDelays) {
-        if (delay > 0) await new Promise(r => setTimeout(r, delay));
-        try {
-          const response = await axios.post(
-            `${API}/auth/session`,
-            { session_id: legacySessionId },
-            { timeout: 30000 }
-          );
-          if (response.data?.session_token) {
-            localStorage.setItem("session_token", response.data.session_token);
-            localStorage.setItem("auth_user", JSON.stringify(response.data));
-            sessionStorage.removeItem("auth_retry_count");
-            navigate("/dashboard", { replace: true, state: { user: response.data } });
-            return;
-          }
-          lastErr = `No token in response (status=${response.status})`;
-        } catch (error) {
-          lastErr = `${error?.response?.status || error.message}`;
-        }
-      }
-      setErrorDetail(`Session exchange failed. Last error: ${lastErr}`);
+      setErrorDetail(`No token in response (status=${response.status})`);
+    } catch (error) {
+      const errMsg = error?.response?.data?.detail || error?.message || "Unknown error";
+      setErrorDetail(`Google OAuth failed: ${errMsg}`);
     }
 
     // Check existing localStorage token as fallback

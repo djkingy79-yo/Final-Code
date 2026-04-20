@@ -288,15 +288,13 @@ async def call_llm_structured(
     require_json: Optional[bool] = None,
     validation_fn: Optional[Callable[[Any], bool]] = None,
 ) -> Dict[str, Any]:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    from emergentintegrations.llm.chat import LlmChat, UserMessage  # SDK wrapper — calls route directly to OpenAI using the owner's personal API key.
 
-    # Prefer the user's own OPENAI_API_KEY when present; fall back to the
-    # Emergent Universal Key only if OPENAI_API_KEY is not configured. This
-    # makes the app self-hosted (no Emergent key dependency) while preserving
-    # an automatic rollback path if billing ever fails.
-    api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("EMERGENT_LLM_KEY")
+    # Self-hosted: the app runs entirely on the owner's personal OPENAI_API_KEY
+    # (billing goes straight to the user's OpenAI account).
+    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        raise Exception("AI service not configured — OPENAI_API_KEY (or EMERGENT_LLM_KEY) missing")
+        raise Exception("AI service not configured — OPENAI_API_KEY is missing")
 
     config = TASK_CONFIGS.get(task_type, TASK_CONFIGS["general"])
     resolved_max_tokens = max_tokens if max_tokens is not None else config["max_tokens"]
@@ -322,7 +320,8 @@ async def call_llm_structured(
             )
 
             # DO_NOT_UNDO — Run LLM call in thread pool to prevent event loop blocking.
-            # emergentintegrations uses sync litellm.completion() internally.
+            # The SDK uses sync litellm.completion() internally; calls route directly
+            # to OpenAI via the owner's personal API key.
             loop = asyncio.get_running_loop()
             result = await asyncio.wait_for(
                 loop.run_in_executor(

@@ -1,7 +1,9 @@
 # DO NOT UNDO — auth router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Complete Auth Router
-Handles all authentication: Email/Password + Google OAuth via Emergent
+Handles all authentication: Email/Password + Direct Google OAuth
+(self-hosted, running on the owner's own Google Cloud OAuth client
+and domain — criminallawappealmanagement.com.au).
 """
 from fastapi import APIRouter, HTTPException, Response, Request
 from pydantic import BaseModel
@@ -307,114 +309,16 @@ async def google_oauth_callback(request: Request, response: Response):
 
 @router.post("/session")
 async def create_session(request: Request, response: Response):
-    """DO_NOT_UNDO — Exchange session_id for session_token (Google OAuth via Emergent)"""
-    # REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    import asyncio
-    body = await request.json()
-    session_id = body.get("session_id")
-    
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id required")
-    
-    # DO_NOT_UNDO — Call Emergent Auth to get user data with server-side retry.
-    # Session data may take a moment to propagate on the Emergent side after redirect.
-    logger.info(f"Google auth: exchanging session_id (len={len(session_id)})")
-    
-    retry_delays = [0, 1.0, 2.0, 3.0, 5.0]
-    auth_response = None
-    last_error = None
-    
-    for attempt, delay in enumerate(retry_delays):
-        if delay > 0:
-            await asyncio.sleep(delay)
-        try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                auth_response = await client.get(
-                    "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                    headers={"X-Session-ID": session_id}
-                )
-            logger.info(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent status={auth_response.status_code}")
-            if auth_response.status_code == 200:
-                break
-        except httpx.ConnectTimeout:
-            last_error = "timeout"
-            logger.warning(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent timed out")
-        except httpx.RequestError as e:
-            last_error = str(e)
-            logger.warning(f"Google auth attempt {attempt+1}/{len(retry_delays)}: Emergent error: {e}")
-    
-    if auth_response is None:
-        logger.error(f"Google auth: all {len(retry_delays)} attempts failed (last_error={last_error})")
-        raise HTTPException(status_code=504, detail="Authentication server unreachable. Please try again.")
-    
-    if auth_response.status_code != 200:
-        logger.warning(f"Google auth: session_id exchange failed after {len(retry_delays)} attempts. Last status={auth_response.status_code}: {auth_response.text[:200]}")
-        raise HTTPException(status_code=401, detail="Invalid or expired session. Please try logging in again.")
-    
-    user_data = auth_response.json()
-    logger.info(f"Google auth: Emergent returned user email={user_data.get('email')}")
-    
-    # Create or update user
-    user_id = f"user_{uuid.uuid4().hex[:12]}"
-    existing_user = await db.users.find_one({"email": user_data["email"]}, {"_id": 0})
-    
-    if existing_user:
-        user_id = existing_user["user_id"]
-        await db.users.update_one(
-            {"user_id": user_id},
-            {"$set": {
-                "name": user_data["name"],
-                "picture": user_data.get("picture"),
-                "updated_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        logger.info(f"Google auth: updated existing user {user_id}")
-    else:
-        await db.users.insert_one({
-            "user_id": user_id,
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "picture": user_data.get("picture"),
-            "auth_type": "google",
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-        logger.info(f"Google auth: created new user {user_id}")
-    
-    # Create session
-    session_token = uuid.uuid4().hex
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
-    await db.user_sessions.insert_one({
-        "user_id": user_id,
-        "session_token": session_token,
-        "expires_at": expires_at.isoformat(),
-        "created_at": datetime.now(timezone.utc).isoformat()
-    })
-    
-    # Set cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/",
-        max_age=7 * 24 * 60 * 60
+    """DEPRECATED — legacy session-exchange endpoint.
+
+    Retained as a 410 Gone so any bookmarked mid-flow URL fails loudly
+    rather than silently succeeding. The live Google OAuth flow is
+    POST /api/auth/google/callback (see above).
+    """
+    raise HTTPException(
+        status_code=410,
+        detail="This session-exchange flow has been retired. Please sign in again via Google OAuth.",
     )
-    
-    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
-    # Return ONLY safe fields — never leak password_hash, password_salt, or internal fields
-    safe_response = {
-        "user_id": user_doc.get("user_id"),
-        "email": user_doc.get("email"),
-        "name": user_doc.get("name"),
-        "picture": user_doc.get("picture"),
-        "session_token": session_token,
-        "terms_accepted": user_doc.get("terms_accepted", False),
-        "created_at": user_doc.get("created_at"),
-    }
-    logger.info(f"Google auth: SUCCESS — returning session for {user_data.get('email')}, token={session_token[:8]}...")
-    return safe_response
 
 @router.get("/me")
 async def get_me(request: Request):

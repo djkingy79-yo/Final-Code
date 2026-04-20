@@ -989,9 +989,9 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
 - Write the opening line you would use to address the Court of Appeal for each key argument."""
 
     # Call AI — HARDENED via call_llm_structured with enhanced report-generation timeouts
-    api_key = os.environ.get('EMERGENT_LLM_KEY')
+    api_key = os.environ.get('OPENAI_API_KEY')
     if not api_key:
-        raise HTTPException(status_code=500, detail="AI service not configured — EMERGENT_LLM_KEY missing")
+        raise HTTPException(status_code=500, detail="AI service not configured — OPENAI_API_KEY missing")
 
     _report_generation_metadata = {"models_used": [], "fallback_used": False}
 

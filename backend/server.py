@@ -113,8 +113,8 @@ async def env_health_check(request: Request):
 
 @app.get("/api/health/deep")
 async def deep_health_check():
-    """Deep health check — verifies MongoDB, LLM key, and email service."""
-    from config import EMERGENT_LLM_KEY
+    """Deep health check — verifies MongoDB, OpenAI key, and email service."""
+    from config import OPENAI_API_KEY
     checks = {}
     try:
         await db.command("ping")
@@ -122,7 +122,7 @@ async def deep_health_check():
         checks["mongodb"] = {"status": "ok", "users": user_count}
     except Exception as e:
         checks["mongodb"] = {"status": "error", "detail": str(e)}
-    checks["llm_key"] = {"status": "ok" if EMERGENT_LLM_KEY else "missing"}
+    checks["llm_key"] = {"status": "ok" if OPENAI_API_KEY else "missing"}
     resend_key = os.environ.get("RESEND_API_KEY", "")
     checks["email"] = {"status": "ok" if resend_key else "not_configured"}
     all_ok = all(c.get("status") == "ok" for c in checks.values())
