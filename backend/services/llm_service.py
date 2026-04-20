@@ -135,14 +135,16 @@ TASK_CONFIGS: dict[str, dict] = {
 # ============================================================================
 
 def _default_models_for_task(task_type: str):
-    # DO_NOT_UNDO — Model diversity for resilience. Each slot uses a DIFFERENT
-    # model so retries actually try something new instead of repeating the same failing endpoint.
-    # When GPT-4o is down, slots 2 and 4 use different providers/models.
+    # DO_NOT_UNDO — Model diversity for resilience. Previously used Anthropic as
+    # one of the fallbacks, but since moving to the user's OWN OpenAI API key
+    # (no Anthropic key available), all slots must be OpenAI models. GPT-4o is
+    # the primary; gpt-4o-mini is the cheaper fallback if gpt-4o is rate-limited
+    # or momentarily unavailable. Multiple gpt-4o slots provide natural retry.
     return [
         ("openai", "gpt-4o"),
-        ("anthropic", "claude-sonnet-4-20250514"),
+        ("openai", "gpt-4o"),
         ("openai", "gpt-4o-mini"),
-        ("anthropic", "claude-sonnet-4-20250514"),
+        ("openai", "gpt-4o"),
         ("openai", "gpt-4o-mini"),
         ("openai", "gpt-4o"),
     ]
@@ -288,9 +290,13 @@ async def call_llm_structured(
 ) -> Dict[str, Any]:
     from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-    api_key = os.environ.get("EMERGENT_LLM_KEY")
+    # Prefer the user's own OPENAI_API_KEY when present; fall back to the
+    # Emergent Universal Key only if OPENAI_API_KEY is not configured. This
+    # makes the app self-hosted (no Emergent key dependency) while preserving
+    # an automatic rollback path if billing ever fails.
+    api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("EMERGENT_LLM_KEY")
     if not api_key:
-        raise Exception("AI service not configured — EMERGENT_LLM_KEY missing")
+        raise Exception("AI service not configured — OPENAI_API_KEY (or EMERGENT_LLM_KEY) missing")
 
     config = TASK_CONFIGS.get(task_type, TASK_CONFIGS["general"])
     resolved_max_tokens = max_tokens if max_tokens is not None else config["max_tokens"]

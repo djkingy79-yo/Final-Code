@@ -45,8 +45,11 @@ _handler.setFormatter(JSONFormatter())
 logging.basicConfig(level=logging.INFO, handlers=[_handler])
 logger = logging.getLogger(__name__)
 
-# Environment variables
-EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
+# LLM API Keys — prefer user-owned OpenAI key; Emergent Universal Key kept as optional fallback.
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+if not OPENAI_API_KEY and not EMERGENT_LLM_KEY:
+    raise KeyError("OPENAI_API_KEY (or EMERGENT_LLM_KEY) must be set in environment")
 
 # Google OAuth (direct — replaces Emergent-managed auth)
 # REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
