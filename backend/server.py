@@ -57,8 +57,24 @@ app.add_middleware(
     allow_credentials=True,
     # SECURITY: never use "*" with allow_credentials=True — browsers reject it and
     # it removes origin protection. CORS_ORIGINS must be an explicit comma-separated
-    # list of trusted origins. Defaults to an empty list (fail-closed) if misconfigured.
-    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip() and o.strip() != "*"],
+    # list of trusted origins. The owner's production domains are ALWAYS allowed
+    # as a hardcoded safety net so a missing/misconfigured CORS_ORIGINS env var
+    # on a deploy panel can never take Google Sign-In offline again. These two
+    # domains are public and not secret.
+    allow_origins=list({
+        o.strip()
+        for o in (
+            os.getenv("CORS_ORIGINS", "").split(",")
+            + [
+                "https://criminallawappealmanagement.com.au",
+                "https://www.criminallawappealmanagement.com.au",
+                "https://criminal-appeals-au-2.emergent.host",
+                "https://criminal-appeals-au-2.preview.emergentagent.com",
+                "http://localhost:3000",
+            ]
+        )
+        if o.strip() and o.strip() != "*"
+    }),
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"],
