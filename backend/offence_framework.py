@@ -11,8 +11,180 @@
 
 LEGISLATION_CURRENCY = {
     "last_full_review": "2026-02",
+    "last_verified": "2026-02-14",
     "known_outdated": [],
-    "review_notes": "All section references verified against current legislation as of February 2026. WA road traffic legislation updated from 1974 Act to 2008 Acts. VIC Crimes Act assault sections updated to post-2014 numbering.",
+    "review_notes": "All section references verified against current legislation as of February 2026. WA road traffic legislation updated from 1974 Act to 2008 Acts. VIC Crimes Act assault sections updated to post-2014 numbering. Coverage matrix regenerated 14 Feb 2026 — terrorism state stubs added for all 8 states; organised_crime completed for TAS/NT/ACT; Commonwealth references added for extortion, arson, DV, public order, robbery_theft; procedural flow and mens rea considerations injected into every offence category.",
+}
+
+# ---------------------------------------------------------------------------
+# CRIMINAL PROCEDURE FLOW — forensic 12-stage pipeline used across offence
+# categories. The indictable flow mirrors the appellate pathway the user
+# relies upon (Incident -> Arrest -> Charge -> Bail -> Committal -> Indictment
+# -> Trial prep -> Trial -> Verdict -> Sentencing -> Intermediate Appeal ->
+# High Court special leave). Summary and hybrid variants are compressed
+# where committal / indictment stages are not engaged.
+# ---------------------------------------------------------------------------
+
+INDICTABLE_PROCEDURE_FLOW = [
+    {
+        "stage": 1, "name": "Incident",
+        "description": "Date, time, location, witnesses, physical and digital evidence. Forensic focus: preservation of scene integrity, CCTV, telemetry, medical records.",
+        "forensic_considerations": ["Continuity of exhibit chain", "Contemporaneity of notes", "Identification of all potential witnesses"],
+    },
+    {
+        "stage": 2, "name": "Police Contact / Arrest / Caution",
+        "description": "Lawfulness of arrest, right to silence, right to legal representation, caution administered.",
+        "forensic_considerations": ["Evidence Act (jurisdiction) ss.138-139 (improperly obtained evidence)", "LEPRA (NSW) / Criminal Investigation Act (WA) compliance", "ERISP recording integrity", "Voluntariness of admissions"],
+    },
+    {
+        "stage": 3, "name": "Charge",
+        "description": "Laying of charge on Court Attendance Notice / charge sheet; particulars of offence; jurisdictional election for hybrid offences.",
+        "forensic_considerations": ["Adequacy of particulars", "Duplicity", "Statute of limitations where applicable"],
+    },
+    {
+        "stage": 4, "name": "Bail Application",
+        "description": "Bail Act tests — unacceptable risk / show cause / exceptional circumstances (where applicable).",
+        "forensic_considerations": ["Bail Act 2013 (NSW) s.17 unacceptable risk / s.16B show cause offences", "Bail Act 1977 (Vic) s.4AA exceptional circumstances", "Bail Act 1980 (Qld) s.16 refusal criteria", "Bail Act 1985 (SA) s.10A prescribed applicants", "Bail Act 1982 (WA) sched 1 schedule conditions", "Bail Act 1994 (Tas) s.4", "Bail Act 1982 (NT) s.7A", "Bail Act 1992 (ACT) s.9C"],
+    },
+    {
+        "stage": 5, "name": "First Mention / Plea",
+        "description": "First appearance; plea entered; summary vs indictable election where offence is hybrid.",
+        "forensic_considerations": ["Election rights", "Case conferencing obligations (NSW Criminal Procedure Act Div 2A)", "Early guilty plea discount schemes"],
+    },
+    {
+        "stage": 6, "name": "Committal Proceedings",
+        "description": "Magistrates Court committal — prima facie test; committal for trial or sentence.",
+        "forensic_considerations": ["Criminal Procedure Act 1986 (NSW) Ch 3 Pt 2", "Criminal Procedure Act 2009 (Vic) Ch 4", "Justices Act 1886 (Qld) Pt 5", "Magistrates Court Act 1991 (SA) s.103", "Criminal Procedure Act 2004 (WA)", "Justices Act 1959 (Tas) Pt VII", "Justices Act 1928 (NT) Pt V", "Magistrates Court Act 1930 (ACT) Pt 3.5", "Cross-examination of prosecution witnesses — leave and scope"],
+    },
+    {
+        "stage": 7, "name": "Indictment / Presentment",
+        "description": "DPP files indictment in superior court; arraignment; plea on indictment.",
+        "forensic_considerations": ["Directions of DPP", "Joinder / severance of charges", "Application to quash indictment"],
+    },
+    {
+        "stage": 8, "name": "Trial Preparation",
+        "description": "Disclosure, expert reports, notices of alibi, voir dire applications, admissibility arguments.",
+        "forensic_considerations": ["Prosecution disclosure obligations (Mallard v The Queen (2005) 224 CLR 125)", "Expert evidence (Makita (Australia) Pty Ltd v Sprowles (2001) 52 NSWLR 705)", "Tendency / coincidence notices", "Pre-trial rulings on s.137 Evidence Act balancing"],
+    },
+    {
+        "stage": 9, "name": "Trial (Supreme / District Court)",
+        "description": "Jury empanelment (or judge-alone), opening addresses, evidence-in-chief, cross-examination, closing addresses, judicial directions.",
+        "forensic_considerations": ["Mens rea proof beyond reasonable doubt", "Longman / Robinson / Murray / Zoneff / Pemble / Liberato directions where engaged", "Jury Act empanelment challenges", "Compliance with s.165 Evidence Act warnings (unreliable evidence)", "No case to answer submissions"],
+    },
+    {
+        "stage": 10, "name": "Verdict",
+        "description": "Jury verdict or judicial finding. Unanimous vs majority verdict rules per jurisdiction.",
+        "forensic_considerations": ["Majority verdict thresholds (e.g., Jury Act 1977 (NSW) s.55F)", "Perverse verdict analysis", "Inconsistent verdict authority (MacKenzie v The Queen (1996) 190 CLR 348)"],
+    },
+    {
+        "stage": 11, "name": "Sentencing",
+        "description": "Sentencing hearing; pre-sentence and psychological reports; victim impact statements; submissions on aggravating/mitigating factors.",
+        "forensic_considerations": ["Crimes (Sentencing Procedure) Act 1999 (NSW) Pt 3", "Sentencing Act 1991 (Vic)", "Penalties and Sentences Act 1992 (Qld)", "Criminal Law (Sentencing) Act 1988 (SA) — superseded by Sentencing Act 2017 (SA)", "Sentencing Act 1995 (WA)", "Sentencing Act 1997 (Tas)", "Sentencing Act 1995 (NT)", "Crimes (Sentencing) Act 2005 (ACT)", "Totality principle (Mill v The Queen (1988) 166 CLR 59)", "Parity principle (Lowe v The Queen (1984) 154 CLR 606)", "Bugmy v The Queen (2013) 249 CLR 571 considerations where engaged"],
+    },
+    {
+        "stage": 12, "name": "Appeal — Intermediate Appellate Court",
+        "description": "Notice of Appeal / Application for Leave to Appeal to the state/territory Court of Criminal Appeal or Court of Appeal. Grounds: error of law, miscarriage of justice, unreasonable/unsafe verdict, manifestly excessive sentence.",
+        "forensic_considerations": ["Criminal Appeal Act 1912 (NSW) ss.5-6", "Criminal Procedure Act 2009 (Vic) Ch 6", "Criminal Code Act 1899 (Qld) s.668E", "Criminal Law Consolidation Act 1935 (SA) s.352", "Criminal Appeals Act 2004 (WA)", "Criminal Code Act 1924 (Tas) s.401-402", "Criminal Code Act 1983 (NT) s.410-411", "Supreme Court Act 1933 (ACT) Pt 7", "Leave requirements, extension of time (the House v The King principles for sentence appeals)", "Fresh evidence applications (Ratten; Gallagher; Mickelberg)"],
+    },
+    {
+        "stage": 13, "name": "High Court of Australia — Special Leave",
+        "description": "Application for special leave under s.35A Judiciary Act 1903 (Cth). Public importance test, question of law of general application, interests of administration of justice.",
+        "forensic_considerations": ["s.35A Judiciary Act 1903 (Cth)", "High Court Rules 2004 — Form 23 application", "Rules on constitutional writs under s.75(v) Constitution", "Public interest test (Smith v NSW Bar Association (1992) 176 CLR 256)"],
+    },
+]
+
+HYBRID_PROCEDURE_FLOW = [s for s in INDICTABLE_PROCEDURE_FLOW if s["stage"] not in (6, 7)] + []
+# Hybrid = indictable minus committal and indictment (election point handled at stage 5).
+
+SUMMARY_PROCEDURE_FLOW = [
+    {
+        "stage": 1, "name": "Incident", "description": INDICTABLE_PROCEDURE_FLOW[0]["description"],
+        "forensic_considerations": INDICTABLE_PROCEDURE_FLOW[0]["forensic_considerations"],
+    },
+    {
+        "stage": 2, "name": "Police Contact / Infringement / Caution",
+        "description": "Issuance of Penalty Infringement Notice or Court Attendance Notice; right to elect court hearing.",
+        "forensic_considerations": ["Fines Act / Infringements Act review rights", "Statutory declarations for nomination of driver", "Election of court hearing within prescribed time"],
+    },
+    {
+        "stage": 3, "name": "Charge / Court Attendance Notice",
+        "description": "Summary charge laid in Local / Magistrates Court.",
+        "forensic_considerations": ["Adequacy of particulars", "Time limits — typically 6 months for summary offences unless extended"],
+    },
+    {
+        "stage": 4, "name": "Bail / Summons",
+        "description": "Usually bail or summons; custody bail only where prescribed.",
+        "forensic_considerations": ["Bail Act applications where custody bail sought"],
+    },
+    {
+        "stage": 5, "name": "First Mention / Plea",
+        "description": "Plea entered in Local / Magistrates Court.",
+        "forensic_considerations": ["Early guilty plea discount", "Diversion programs (e.g., MERIT, CISP)"],
+    },
+    {
+        "stage": 6, "name": "Summary Hearing",
+        "description": "Hearing before Magistrate. No jury. Evidence, submissions, magistrate's decision.",
+        "forensic_considerations": ["Prima facie test on no-case submission", "Judicial directions not applicable — magistrate sits as tribunal of fact"],
+    },
+    {
+        "stage": 7, "name": "Verdict & Sentencing",
+        "description": "Magistrate delivers verdict and sentences in the same proceeding (usually).",
+        "forensic_considerations": ["Section 10 dismissals / conditional release orders", "Fines Act enforcement", "Community corrections orders"],
+    },
+    {
+        "stage": 8, "name": "Appeal — District / Supreme Court (all grounds)",
+        "description": "De novo appeal to District / County / Supreme Court on conviction and/or sentence.",
+        "forensic_considerations": ["Crimes (Appeal and Review) Act 2001 (NSW)", "Criminal Procedure Act 2009 (Vic) Ch 6 Pt 6.1", "Justices Act 1886 (Qld) Pt 9", "Magistrates Court Act 1991 (SA) Pt 4", "Criminal Appeals Act 2004 (WA)", "Justices Act 1959 (Tas) s.107-109", "Justices Act 1928 (NT) s.163", "Magistrates Court Act 1930 (ACT) Pt 3.10"],
+    },
+    {
+        "stage": 9, "name": "Further Appeal — Court of Appeal / CCA (question of law only)",
+        "description": "Case stated or question of law reserved to the superior appellate court.",
+        "forensic_considerations": ["Leave requirements", "Restricted to questions of law in most summary pathways"],
+    },
+    {
+        "stage": 10, "name": "High Court — Special Leave",
+        "description": INDICTABLE_PROCEDURE_FLOW[12]["description"],
+        "forensic_considerations": INDICTABLE_PROCEDURE_FLOW[12]["forensic_considerations"],
+    },
+]
+
+# ---------------------------------------------------------------------------
+# MENS REA FRAMEWORK — core fault elements used across indictable offences.
+# Referenced from homicide / assault / sexual_offences / fraud_dishonesty /
+# firearms_weapons / drug_offences / terrorism / arson_property_damage.
+# ---------------------------------------------------------------------------
+
+MENS_REA_FRAMEWORK = {
+    "intention": {
+        "definition": "Conscious desire to bring about the proscribed consequence. Strictest fault element.",
+        "authorities": ["He Kaw Teh v The Queen (1985) 157 CLR 523", "Cutter v The Queen (1997) 143 ALR 498", "Criminal Code Act 1995 (Cth) s.5.2"],
+        "application": ["Murder (specific intent to kill or cause GBH)", "Wounding with intent (serious indictable offences across all jurisdictions)", "Attempts (requires intent to complete the full offence)"],
+    },
+    "knowledge": {
+        "definition": "Awareness that a circumstance exists or a result will occur in the ordinary course of events.",
+        "authorities": ["Pereira v DPP (1988) 82 ALR 217", "Criminal Code Act 1995 (Cth) s.5.3"],
+        "application": ["Dealing with proceeds of crime", "Handling stolen goods", "Membership of terrorist organisation"],
+    },
+    "recklessness": {
+        "definition": "Foresight of the possibility of the proscribed consequence and proceeding despite that foresight.",
+        "authorities": ["R v Crabbe (1985) 156 CLR 464", "Aubrey v The Queen (2017) 260 CLR 305 (reckless wounding foreseeability)", "Criminal Code Act 1995 (Cth) s.5.4"],
+        "application": ["Reckless GBH / wounding", "Reckless murder (where recognised, e.g., NSW — foresight of death)", "Sexual assault recklessness as to consent"],
+    },
+    "negligence": {
+        "definition": "Gross departure from the standard of care of a reasonable person. Objective standard.",
+        "authorities": ["Nydam v The Queen [1977] VR 430", "The Queen v Lavender (2005) 222 CLR 67", "Criminal Code Act 1995 (Cth) s.5.5"],
+        "application": ["Manslaughter by criminal negligence", "Culpable driving causing death (Vic)", "Industrial manslaughter"],
+    },
+    "strict_liability": {
+        "definition": "No fault element required for one or more physical elements; honest and reasonable mistake of fact defence available.",
+        "authorities": ["He Kaw Teh v The Queen (1985) 157 CLR 523", "Criminal Code Act 1995 (Cth) s.6.1"],
+        "application": ["Many drug possession offences", "Most driving and regulatory offences"],
+    },
+    "absolute_liability": {
+        "definition": "No fault element required; no mistake of fact defence available.",
+        "authorities": ["Criminal Code Act 1995 (Cth) s.6.2"],
+        "application": ["Some jurisdictional / status elements (age of complainant in limited contexts)"],
+    },
 }
 
 AUSTRALIAN_STATES = {
@@ -183,7 +355,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Self-defence", "Provocation", "Diminished responsibility", "Duress", "Necessity", "Mental illness", "Intoxication", "Automatism"],
-        "key_elements": ["Actus reus (the act)", "Mens rea (intent)", "Causation", "No lawful excuse"]
+        "key_elements": ["Actus reus (the act)", "Mens rea (intent)", "Causation", "No lawful excuse"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness", "negligence"]
     },
     
     "assault": {
@@ -272,7 +446,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Self-defence", "Defence of another", "Consent", "Lawful correction", "Duress", "Necessity"],
-        "key_elements": ["Application of force", "Without consent", "Intent or recklessness", "Degree of harm caused"]
+        "key_elements": ["Application of force", "Without consent", "Intent or recklessness", "Degree of harm caused"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness", "negligence"]
     },
     
     "sexual_offences": {
@@ -362,7 +538,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Consent (where applicable)", "Honest and reasonable mistake of fact", "Mental illness"],
-        "key_elements": ["Sexual intercourse/touching", "Without consent", "Knowledge of no consent", "Age of complainant"]
+        "key_elements": ["Sexual intercourse/touching", "Without consent", "Knowledge of no consent", "Age of complainant"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness", "knowledge"]
     },
     
     "robbery_theft": {
@@ -450,9 +628,18 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.314", "title": "Receiving stolen property"},
             ]
         },
-        "cth_legislation": {},
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.132.1", "title": "Theft of Commonwealth property"},
+                {"section": "s.132.2", "title": "Theft of property belonging to a Commonwealth entity"},
+                {"section": "Ch 7 Pt 7.2 Div 131", "title": "General theft offences (Cth property)"},
+                {"section": "Ch 7 Pt 7.2 Div 134", "title": "Obtaining property / financial advantage by deception"},
+            ]
+        },
         "defences": ["Claim of right", "Duress", "Necessity", "Mistake of fact"],
-        "key_elements": ["Taking property", "Intent to permanently deprive", "Use or threat of force (robbery)", "Breaking and entering (burglary)", "Dishonesty"]
+        "key_elements": ["Taking property", "Intent to permanently deprive", "Use or threat of force (robbery)", "Breaking and entering (burglary)", "Dishonesty"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     },
     
     "drug_offences": {
@@ -537,7 +724,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lawful authority", "Lack of knowledge", "Duress", "Medical use (limited)"],
-        "key_elements": ["Possession/supply/manufacture", "Knowledge of drug", "Quantity (trafficable/commercial)", "Intent"]
+        "key_elements": ["Possession/supply/manufacture", "Knowledge of drug", "Quantity (trafficable/commercial)", "Intent"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge", "strict_liability"]
     },
     
     "fraud_dishonesty": {
@@ -614,7 +803,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Claim of right", "Lack of dishonesty", "Mistake of fact", "No intent to deceive"],
-        "key_elements": ["Deception/false representation", "Dishonesty", "Obtaining benefit/causing detriment", "Intent"]
+        "key_elements": ["Deception/false representation", "Dishonesty", "Obtaining benefit/causing detriment", "Intent"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge", "recklessness"]
     },
     
     "firearms_weapons": {
@@ -687,7 +878,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lawful authority/licence", "Exemption", "Reasonable excuse"],
-        "key_elements": ["Possession/use", "Type of weapon", "Licence status", "Intent"]
+        "key_elements": ["Possession/use", "Type of weapon", "Licence status", "Intent"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge", "strict_liability"]
     },
     
     "domestic_violence": {
@@ -765,9 +958,23 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.43", "title": "Contravention of family violence order"},
             ]
         },
-        "cth_legislation": {},
+        "cth_legislation": {
+            "Family Law Act 1975 (Cth)": [
+                {"section": "Pt VII Div 11", "title": "Family violence orders — personal protection injunctions"},
+                {"section": "s.4AB", "title": "Definition of family violence"},
+                {"section": "s.68R", "title": "Power to revive, vary, discharge or suspend inconsistent state/territory orders"},
+                {"section": "s.114", "title": "Injunctions for personal protection in marriage/de facto"},
+            ],
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.474.17", "title": "Using a carriage service to menace, harass or cause offence (often charged alongside DV conduct involving phone/internet)"},
+                {"section": "s.474.15", "title": "Using a carriage service to make a threat"},
+                {"section": "s.474.17A", "title": "Aggravated offence involving private sexual material (image-based abuse)"},
+            ]
+        },
         "defences": ["Self-defence", "Lack of intent", "Duress", "Reasonable excuse for breach"],
-        "key_elements": ["Domestic relationship", "Pattern of behaviour", "Intent to cause fear", "Breach of order", "Knowledge of order"]
+        "key_elements": ["Domestic relationship", "Pattern of behaviour", "Intent to cause fear", "Breach of order", "Knowledge of order"],
+        "procedural_flow": HYBRID_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness", "knowledge"]
     },
     
     "public_order": {
@@ -835,23 +1042,94 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.392", "title": "Riot"},
             ]
         },
-        "cth_legislation": {},
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.474.17", "title": "Using a carriage service to menace, harass or cause offence"},
+                {"section": "s.474.15", "title": "Using a carriage service to make a threat"},
+                {"section": "Pt 9.1", "title": "Serious drug offences and public order through carriage services"},
+            ],
+            "Crimes Act 1914 (Cth)": [
+                {"section": "s.76", "title": "Hindering/resisting Commonwealth officers"},
+                {"section": "s.89", "title": "Trespass on Commonwealth land"},
+            ]
+        },
         "defences": ["Reasonable excuse", "Lack of intent", "Lawful activity", "Free speech (limited)"],
-        "key_elements": ["Public place", "Conduct", "Intent or recklessness", "Effect on public"]
+        "key_elements": ["Public place", "Conduct", "Intent or recklessness", "Effect on public"],
+        "procedural_flow": SUMMARY_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness"]
     },
     
     "terrorism": {
         "name": "Terrorism Offences",
         "description": "Terrorism and national security offences",
         "offences": ["Terrorist Act", "Membership of Terrorist Organisation", "Financing Terrorism", "Foreign Incursion", "Advocating Terrorism", "Possessing Things Connected with Terrorism"],
-        "nsw_legislation": {},
-        "vic_legislation": {},
-        "qld_legislation": {},
-        "sa_legislation": {},
-        "wa_legislation": {},
-        "tas_legislation": {},
-        "nt_legislation": {},
-        "act_legislation": {},
+        "nsw_legislation": {
+            "Terrorism (Police Powers) Act 2002 (NSW)": [
+                {"section": "Part 2", "title": "Special powers to prevent or respond to terrorist acts"},
+                {"section": "Part 2A", "title": "Preventative detention orders"},
+                {"section": "Part 3", "title": "Covert search warrants for terrorism offences"},
+                {"section": "Cross-reference", "title": "Substantive terrorism offences prosecuted under Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ],
+            "Terrorism (High Risk Offenders) Act 2017 (NSW)": [
+                {"section": "s.5", "title": "Extended supervision orders for high risk terrorism offenders"},
+                {"section": "s.6", "title": "Continuing detention orders"},
+            ],
+        },
+        "vic_legislation": {
+            "Terrorism (Community Protection) Act 2003 (Vic)": [
+                {"section": "Part 2", "title": "Special police powers for terrorism incidents"},
+                {"section": "Part 2A", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ]
+        },
+        "qld_legislation": {
+            "Terrorism (Preventative Detention) Act 2005 (Qld)": [
+                {"section": "s.8", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ],
+            "Police Powers and Responsibilities Act 2000 (Qld)": [
+                {"section": "Ch 2 Pt 2 Div 2", "title": "Emergency powers for terrorist acts"},
+            ]
+        },
+        "sa_legislation": {
+            "Terrorism (Preventative Detention) Act 2005 (SA)": [
+                {"section": "s.7", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ],
+            "Terrorism (Police Powers) Act 2005 (SA)": [
+                {"section": "Part 2", "title": "Special powers for terrorism-related investigations"},
+            ]
+        },
+        "wa_legislation": {
+            "Terrorism (Preventative Detention) Act 2006 (WA)": [
+                {"section": "s.9", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ],
+            "Terrorism (Extraordinary Powers) Act 2005 (WA)": [
+                {"section": "Part 2", "title": "Covert search and special stop-and-search powers"},
+            ]
+        },
+        "tas_legislation": {
+            "Police Powers (Public Safety) Act 2005 (Tas)": [
+                {"section": "Part 2", "title": "Special powers to prevent terrorist acts"},
+                {"section": "Part 3", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ]
+        },
+        "nt_legislation": {
+            "Terrorism (Emergency Powers) Act 2003 (NT)": [
+                {"section": "Part 2", "title": "Emergency police powers for terrorism incidents"},
+                {"section": "Part 2B", "title": "Preventative detention orders"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ]
+        },
+        "act_legislation": {
+            "Terrorism (Extraordinary Temporary Powers) Act 2006 (ACT)": [
+                {"section": "Part 2", "title": "Preventative detention orders"},
+                {"section": "Part 3", "title": "Special powers authorisations"},
+                {"section": "Cross-reference", "title": "Substantive offences — Criminal Code Act 1995 (Cth) Chapter 5.3"},
+            ]
+        },
         "cth_legislation": {
             "Criminal Code Act 1995 (Cth)": [
                 {"section": "Div 101", "title": "Terrorism"},
@@ -880,7 +1158,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lack of knowledge", "Humanitarian purpose (limited)", "Journalistic activity (limited)"],
-        "key_elements": ["Terrorist act definition", "Intent to advance cause", "Membership/support", "Funding"]
+        "key_elements": ["Terrorist act definition", "Intent to advance cause", "Membership/support", "Funding"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge", "recklessness"]
     },
     
     "driving_offences": {
@@ -965,7 +1245,9 @@ OFFENCE_CATEGORIES = {
         },
         "cth_legislation": {},
         "defences": ["Honest and reasonable mistake", "Duress", "Necessity", "Emergency", "Involuntary intoxication"],
-        "key_elements": ["Manner of driving", "Blood alcohol/drug content", "Licence status", "Consequences"]
+        "key_elements": ["Manner of driving", "Blood alcohol/drug content", "Licence status", "Consequences"],
+        "procedural_flow": HYBRID_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["negligence", "recklessness", "strict_liability"]
     },
 
     "arson_property_damage": {
@@ -1025,9 +1307,20 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.406", "title": "Damaging property"},
             ]
         },
-        "cth_legislation": {},
+        "cth_legislation": {
+            "Crimes Act 1914 (Cth)": [
+                {"section": "s.29", "title": "Destroying or damaging Commonwealth property"},
+                {"section": "s.29A", "title": "Threats to destroy/damage Commonwealth property"},
+            ],
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.147.2", "title": "Threatening to cause serious harm to a Commonwealth public official"},
+                {"section": "Pt 7.8", "title": "Causing harm to, and impersonation of, Commonwealth public officials"},
+            ]
+        },
         "defences": ["Consent of owner", "Lawful authority", "Accident", "Duress"],
-        "key_elements": ["Intent or recklessness", "Property destroyed or damaged", "Fire or explosion", "Ownership of property"]
+        "key_elements": ["Intent or recklessness", "Property destroyed or damaged", "Fire or explosion", "Ownership of property"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "recklessness"]
     },
 
     "cybercrime": {
@@ -1094,7 +1387,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lawful authority", "Consent of owner", "Honest and reasonable mistake"],
-        "key_elements": ["Unauthorised access", "Data modification or impairment", "Intent to commit offence", "Use of carriage service/computer"]
+        "key_elements": ["Unauthorised access", "Data modification or impairment", "Intent to commit offence", "Use of carriage service/computer"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     },
 
     "perjury_justice_offences": {
@@ -1164,7 +1459,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Honest mistake", "Immateriality of false statement", "Duress"],
-        "key_elements": ["False statement under oath/affirmation", "Knowledge of falsity", "Materiality to proceedings", "Intent to mislead"]
+        "key_elements": ["False statement under oath/affirmation", "Knowledge of falsity", "Materiality to proceedings", "Intent to mislead"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     },
 
     "extortion_blackmail": {
@@ -1214,9 +1511,19 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.332", "title": "Blackmail"},
             ]
         },
-        "cth_legislation": {},
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "s.138.1", "title": "Unwarranted demand with menaces of Commonwealth public official"},
+                {"section": "s.138.2", "title": "Unwarranted demand of Commonwealth public official"},
+                {"section": "s.139.1", "title": "Unwarranted demand made by Commonwealth public official"},
+                {"section": "s.474.17", "title": "Using a carriage service to menace, harass or cause offence (often used in online extortion cases)"},
+                {"section": "s.474.14", "title": "Using a telecommunications network with intention to commit a serious offence"},
+            ]
+        },
         "defences": ["Claim of right", "Lawful demand", "Duress"],
-        "key_elements": ["Unwarranted demand", "Menaces or threats", "Intent to gain or cause loss", "Absence of reasonable grounds"]
+        "key_elements": ["Unwarranted demand", "Menaces or threats", "Intent to gain or cause loss", "Absence of reasonable grounds"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     },
 
     "organised_crime": {
@@ -1257,12 +1564,42 @@ OFFENCE_CATEGORIES = {
                 {"section": "s.221B", "title": "Instructing commission of offence for criminal organisation"},
             ]
         },
-        "tas_legislation": {},
-        "nt_legislation": {},
-        "act_legislation": {},
-        "cth_legislation": {},
+        "tas_legislation": {
+            "Police Offences Act 1935 (Tas)": [
+                {"section": "s.6", "title": "Consorting with reputed thieves or known offenders"},
+            ],
+            "Criminal Code Act 1924 (Tas)": [
+                {"section": "s.298", "title": "Conspiracy"},
+            ]
+        },
+        "nt_legislation": {
+            "Serious Crime Control Act 2009 (NT)": [
+                {"section": "s.34", "title": "Control order offence — association with declared organisation"},
+                {"section": "s.37", "title": "Public safety orders"},
+            ],
+            "Criminal Code Act 1983 (NT)": [
+                {"section": "s.54", "title": "Conspiracy"},
+            ]
+        },
+        "act_legislation": {
+            "Crimes (Criminal Organisations Control) Act 2012 (ACT)": [
+                {"section": "s.22", "title": "Contravention of control order"},
+                {"section": "s.26", "title": "Associating with members of declared organisation"},
+            ]
+        },
+        "cth_legislation": {
+            "Criminal Code Act 1995 (Cth)": [
+                {"section": "Div 390", "title": "Criminal associations and organisations (Cth)"},
+                {"section": "s.390.3", "title": "Associating in support of serious organised criminal activity"},
+                {"section": "s.390.4", "title": "Supporting a criminal organisation"},
+                {"section": "s.390.5", "title": "Committing an offence for the benefit of, or at the direction of, a criminal organisation"},
+                {"section": "s.390.6", "title": "Directing activities of a criminal organisation"},
+            ]
+        },
         "defences": ["Lawful association", "Employment/professional relationship", "Family relationship"],
-        "key_elements": ["Association with convicted offenders", "Pattern of consorting", "Membership of declared organisation", "Facilitation of criminal activity"]
+        "key_elements": ["Association with convicted offenders", "Pattern of consorting", "Membership of declared organisation", "Facilitation of criminal activity"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     },
 
     "child_exploitation_material": {
@@ -1339,7 +1676,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lawful authority (law enforcement)", "Legitimate research (with ethics approval)", "Unsolicited receipt with immediate deletion"],
-        "key_elements": ["Material depicts person under 18", "Sexual or exploitative nature", "Production/distribution/possession", "Use of carriage service"]
+        "key_elements": ["Material depicts person under 18", "Sexual or exploitative nature", "Production/distribution/possession", "Use of carriage service"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge", "strict_liability", "absolute_liability"]
     },
 
     "corruption_public_officials": {
@@ -1407,7 +1746,9 @@ OFFENCE_CATEGORIES = {
             ]
         },
         "defences": ["Lawful authority", "No corrupt intent", "Duress"],
-        "key_elements": ["Public official or agent", "Corrupt benefit or inducement", "Intent to influence official conduct", "Knowledge of impropriety"]
+        "key_elements": ["Public official or agent", "Corrupt benefit or inducement", "Intent to influence official conduct", "Knowledge of impropriety"],
+        "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
+        "relevant_mens_rea": ["intention", "knowledge"]
     }
 }
 

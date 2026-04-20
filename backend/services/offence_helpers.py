@@ -18,7 +18,41 @@ from offence_framework import (
     APPEAL_FRAMEWORK, PROCEEDS_OF_CRIME_FRAMEWORK,  # noqa: F401 — re-exported for pipeline modules
     LANDMARK_CASES,
     APPEAL_GROUNDS_ACCESSIBILITY,  # noqa: F401 — re-exported for pipeline modules
+    MENS_REA_FRAMEWORK,
 )
+
+
+def _build_mens_rea_context(mens_rea_keys):
+    """Render a concise mens rea reference block for the forensic context."""
+    if not mens_rea_keys:
+        return "- No specific fault-element guidance attached to this category."
+    blocks = []
+    for key in mens_rea_keys:
+        entry = MENS_REA_FRAMEWORK.get(key)
+        if not entry:
+            continue
+        auths = "; ".join(entry.get("authorities", [])[:3])
+        app = "; ".join(entry.get("application", [])[:3])
+        blocks.append(
+            f"- {key.replace('_', ' ').title()}: {entry.get('definition', '')}\n"
+            f"    Authority: {auths}\n"
+            f"    Application: {app}"
+        )
+    return "\n".join(blocks) if blocks else "- No specific fault-element guidance attached to this category."
+
+
+def _build_procedural_flow_context(flow_stages):
+    """Render a compact procedural pipeline the LLM can rely on."""
+    if not flow_stages:
+        return "- No procedural pipeline attached."
+    rows = []
+    for stage in flow_stages:
+        considerations = "; ".join(stage.get("forensic_considerations", [])[:2])
+        rows.append(
+            f"  Stage {stage.get('stage')}: {stage.get('name')} — {stage.get('description', '')}"
+            + (f"\n    Forensic focus: {considerations}" if considerations else "")
+        )
+    return "\n".join(rows)
 
 # Map state keys to their criminal framework dictionaries
 STATE_FRAMEWORKS = {
@@ -105,6 +139,12 @@ KEY ELEMENTS TO PROVE:
 
 AVAILABLE DEFENCES:
 {chr(10).join(f"- {defence}" for defence in category_data.get('defences', []))}
+
+RELEVANT MENS REA (fault elements engaged by this category):
+{_build_mens_rea_context(category_data.get('relevant_mens_rea', []))}
+
+FORENSIC PROCEDURAL PIPELINE (stages applicable to this offence category):
+{_build_procedural_flow_context(category_data.get('procedural_flow', []))}
 
 RELEVANT {abbreviation} LEGISLATION:
 """

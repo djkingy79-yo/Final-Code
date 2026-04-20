@@ -9,78 +9,64 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Branding:** Forced light mode globally. High contrast only. No amber/brown (blue/slate/navy). Bright blue action buttons with white text.
 - **Print/Export:** Exacting standards for footer, TOC, paragraph numbering, layout parity between on-screen and exported (PDF/Word/Print).
 - **Australian English:** analyse, organise, judgement, offence throughout.
+- **Independence:** All Emergent branding / auth / LLM proxy dependencies removed — app runs on user's personal OpenAI key and direct Google OAuth.
 
 ## Architecture
 - Frontend: React + Tailwind + Shadcn/UI
 - Backend: FastAPI + MongoDB
-- AI: OpenAI GPT-4o via Emergent LLM Key
-- Auth: Emergent Google Auth
+- AI: OpenAI GPT-4o directly via user's personal API key (no Emergent proxy)
+- Auth: Direct Google OAuth (state+localStorage+cookie CSRF protection)
 - Email: Resend
-- Payments: PayID (Stripe removed)
+- Payments: PayID
 - Mobile: Capacitor (native app build finalised)
 
 ## Key Files
+- `/app/backend/offence_framework.py` — 3,950+ line forensic legal dictionary (all 8 states + Cth, 18 offence categories, mens rea + 13-stage procedural flow)
+- `/app/backend/services/offence_helpers.py` — LLM context builder
 - `/app/frontend/src/utils/exportHtml.js` — Shared export CSS/HTML wrapper
 - `/app/frontend/src/pages/BarristerView.jsx` — Appellate Research Brief view + custom export builder
 - `/app/frontend/src/pages/ReportView.jsx` — Standard report view + custom export builder
 - `/app/frontend/src/pages/CaseDetail.jsx` — Case detail with Print All/PDF All/Word All + Progress export
+- `/app/frontend/src/components/ExportOptionsModal.jsx` — section picker for exports
+- `/app/frontend/src/pages/SignupSourceAnalytics.jsx` — conversion tracking dashboard
 
 ## What's Been Implemented
 
 ### Completed (Previous Sessions)
 - Full multi-tier report generation pipeline (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief)
-- Document upload & management
-- Timeline generation & analysis
-- Grounds of Merit identification & investigation
-- Case metadata & jurisdiction warnings
-- Google Auth via Emergent
-- PayID payment system
-- Report translation
-- Case sharing
-- Native Mobile App (Capacitor) build
-- Print footer overlap fixed
-- Word exports use preview mode for iOS compatibility
-- Pipeline Progress tab overhaul
-- TOC formats synchronised to 2-column grid
-- Case Metadata warning styling updated
-- Translation API DuplicateKeyError fixed
-- Appellate Research Brief PDF export rewritten with inline Tailwind CSS
-- Quick Brief blank page fixed
+- Document upload, timeline generation, grounds of merit investigation
+- Case metadata, jurisdiction warnings
+- PayID payment system, case sharing, translation, native mobile build
+- All print-export formatting parity fixes (11 Apr 2026)
+- Grounds Appellate Pathway restoration (14 Apr 2026)
+- Legal Framework v1 hardening (14 Apr 2026)
+- Blank pipeline button / metadata banner fixes
 
-### Completed (11 April 2026)
-- **FORENSIC AUDIT OF ALL EXPORTS**: Ensured 100% formatting parity across all 4 export code paths
-  - Added `.section`, `.section-header`, `.section-number`, `.section-title`, `.section-body` CSS to `exportHtml.js`
-  - Rewrote `buildPrintAllHtml` in CaseDetail.jsx: replaced plain `<h2>` tags with section-header pattern (numbered badge + left border + uppercase title + bordered body container)
-  - Rewrote `buildProgressHtml` in CaseDetail.jsx: same section-header pattern replacement
-  - Updated Print All metadata header: now uses coloured case info grid with DEFENDANT, OFFENCE, SENTENCE, DOCUMENTS, TIMELINE EVENTS (matching individual report exports)
-  - Verified BarristerView and ReportView exports already use correct section pattern
-  - All exports now produce consistent structure: Coloured Header -> TOC (2-col grid) -> Numbered Sections -> Disclaimer -> Branding -> Footer
+### Completed (Current Session — handoff + new work)
+- **Google OAuth CSRF state mismatch** — resolved via click-time state + localStorage + domain-scoped cookie
+- **Direct OpenAI key integration** — replaces Emergent proxy; runs on user's personal `OPENAI_API_KEY` with GPT-4o
+- **Print / PDF / Word export overhaul** — CSS Paged Media, dynamic footers, landscape tables, correct colours
+- **Export Options Modal** — user can pick sections to include per export type
+- **Conversion tracking + `/admin/analytics` dashboard** — signup source + CTA conversion rates
+- **Security audit & hardening** — CORS fix + global Axios 401 interceptor
+- **Emergent branding purge + "Founded by Deb King" byline** across 14 public pages
+- **UI bug fixes** — 5 broken Google-login CTA buttons + CaseChat UI overlap
 
-- **TRANSLATOR FIX (502 Timeout)**: Root cause — Kubernetes proxy kills requests after 60s, large report translations take 2-3 minutes
-  - Converted translation to background task pattern (same as grounds auto-identify)
-  - POST `/api/cases/{case_id}/translate` now returns immediately with task_id
-  - GET `/api/cases/{case_id}/translate/status?report_id=...&language=...` polls for completion
-  - Frontend ReportTranslator.jsx updated to poll with progress updates ("3/10 sections complete")
-  - Cached translations still return instantly
-
-### Completed (14 April 2026)
-- **BACK TO REPORTS NAVIGATION FIX**: "Back to Case" buttons in ReportView.jsx and BarristerView.jsx now navigate to `/cases/${caseId}?tab=reports` (landing on Reports tab instead of default Documents tab). Button text updated to "Back to Reports". CaseDetail.jsx correctly parses the `?tab=reports` query parameter. Verified working.
-- **DEPLOYMENT INDEX CRASH FIX**: Wrapped all `create_index` calls in `startup_tasks.py` with a safe helper (`_safe_create_index`) that catches `OperationFailure`, drops the conflicting index by name, then recreates it. Fixes crash on line 39 where a non-unique `document_extracts` index conflicted with the new unique version.
-- **QUICK NAVIGATE BETWEEN REPORTS**: Added a "Jump to:" navigation bar below the sticky header in both ReportView.jsx and BarristerView.jsx. Shows all completed reports as clickable buttons (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief). Current report is highlighted (blue for standard, teal for Appellate Research Brief). Clicking navigates directly to that report without returning to the Reports tab.
-- **SERVER-SIDE LLM SYNTHESIS VERIFICATION**: Confirmed the existing Appellate Research Brief generation is 100% server-side LLM synthesis via `barrister_generator.py`. Multi-pass GPT-4o synthesis fetches all 3 completed reports, runs 4 section groups + expansion passes + tables + attachments. No frontend JS/regex merging. Requires all 3 reports completed and paid before unlocking.
-- **GROUNDS: APPELLATE PATHWAY RESTORED**: Moved the blue Appellate Pathway box to appear after Supporting Evidence and before Legal Framework. Fixed the investigate endpoint to generate `appellate_pathway` via LLM when missing. Created backfill endpoint (`POST /api/cases/{id}/grounds/backfill-pathways`) and ran it on the Homann case — all 9 grounds now show correct NSW appellate pathway provisions.
-- **GROUNDS: DISCLAIMER MESSAGE RESTORED**: Added the disclaimer at the bottom of every ground card: "This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner."
-- **LEGAL FRAMEWORK HARDENING (14 Apr 2026)**:
-  - Added Federal Criminal Code s.4.4 (absolute liability), s.4.1, s.5.2, s.5.4, s.5.6 (fault elements), s.9.1/9.2/9.3 (mistake of fact), s.10.1 (insanity), s.10.2 (intoxication) to FEDERAL_CRIMINAL_FRAMEWORK
-  - Fixed appeal time limit extraction to support both `time_limit` string and `time_limits` dict formats — NSW and WA now correctly report their time limits in system prompts
-  - Added `last_verified: "2026-04-14"` to all 9 state/federal criminal frameworks for currency tracking
-  - Created comprehensive self-test suite (`tests/test_legal_framework.py`) — 202 tests covering all frameworks, offence categories, anti-hallucination, forensic language, citation validation, jurisdiction completeness
-- **PIPELINE 500 FIX (14 Apr 2026)**: Added missing `extract_id`, `status` fields to `DocumentExtract` model and `case_extract_id`, `status`, `metadata`, `document_extract_ids` to `CaseExtract` model — fixes AttributeError crash on Extract All Documents, Refresh Case Extract, and Refresh Pipeline.
-- **BLANK PIPELINE BUTTONS FIX**: Changed "Refresh Pipeline Now", "Refresh + Verify Top 3", "Refresh + Verify Top 6" buttons from invisible `bg-slate-700` to bright blue `bg-blue-700`.
-- **METADATA BANNER FIX**: Red "Case Metadata — Action Required" banner no longer shows when the only warning is an appeal time limit (which is informational, not an action item).
+### Completed (14 February 2026 — Legal Framework Gap Fill)
+- **Terrorism state coverage** — added NSW/VIC/QLD/SA/WA/TAS/NT/ACT terrorism police-powers & preventative-detention Acts with Cth cross-reference stubs
+- **Organised_crime completeness** — filled TAS (Police Offences Act 1935), NT (Serious Crime Control Act 2009), ACT (Crimes (Criminal Organisations Control) Act 2012); added Cth Criminal Code Div 390
+- **Cth gap fills** — added Commonwealth entries for `extortion_blackmail` (Criminal Code s.138-139), `arson_property_damage` (Crimes Act 1914 s.29, Criminal Code Pt 7.8), `domestic_violence` (Family Law Act 1975 Pt VII Div 11, Criminal Code s.474.17), `public_order` (Criminal Code Pt 9.1, Crimes Act 1914 s.76/89), `robbery_theft` (Criminal Code Ch 7 Pt 7.2 Div 131-134)
+- **13-stage forensic procedural flow** (`INDICTABLE_PROCEDURE_FLOW`, `HYBRID_PROCEDURE_FLOW`, `SUMMARY_PROCEDURE_FLOW`) — Incident → Arrest → Charge → Bail → First Mention → Committal → Indictment → Trial Prep → Trial → Verdict → Sentencing → Intermediate Appeal → High Court s.35A special leave. Every category now carries the pipeline tailored to its offence class.
+- **Mens rea framework** (`MENS_REA_FRAMEWORK`) — intention/knowledge/recklessness/negligence/strict/absolute with authorities (He Kaw Teh, Crabbe, Aubrey, Nydam, Lavender) and application examples. Each of 18 offence categories references its relevant fault elements.
+- **Context builder upgrade** — `offence_helpers.py` now surfaces `RELEVANT MENS REA` and `FORENSIC PROCEDURAL PIPELINE` sections into LLM prompts per case.
+- **Currency tracker** — `LEGISLATION_CURRENCY.last_verified = "2026-02-14"`.
+- **Regression tests** — `tests/test_framework_gap_fill_20260214.py` (12 new tests) + full framework suite green (409 passed).
 
 ## Remaining / Backlog
-- **P2**: Add second attachment for counsel conference prep (key questions, weak points, likely prosecution answers, document references) to Appellate Research Brief
+- **P1** (next): OpenAI cost tracking dashboard — log token usage per call, show USD-spent-this-month + projection on `/admin/analytics`
+- **P2**: Backend self-hosting migration guide (Railway/Render/AWS) to remove final Emergent dependency (`REACT_APP_BACKEND_URL`)
+- **P2**: Second attachment for counsel conference prep on Appellate Research Brief
+- **P2**: Refactor `offence_framework.py` (now ~3,970 lines) into `/app/backend/frameworks/` split files (APPROVED by user — schedule after P1 cost tracker lands)
 
 ## Test Credentials
 - Email: djkingy79@gmail.com
