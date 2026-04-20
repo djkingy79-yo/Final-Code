@@ -1,6 +1,11 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Sign-in Diagnostics Panel + Mobile Bundle Resync
+- **Diagnostics panel** on the OAuth failure card (`App.js`). New collapsible "Show sign-in diagnostics" link reveals a JSON dump of: timestamp, hostname, protocol, referrer, `navigator.cookieEnabled`, whether state exists in localStorage, whether state exists in cookie, whether a returned `state`/`code` is in the URL, the `errorDetail`, and userAgent. A "Copy diagnostics to clipboard" button lets any user forward the payload to Deb in one click. Test IDs: `auth-toggle-diagnostics-btn`, `auth-diagnostics-panel`, `auth-copy-diagnostics-btn`. Verified via screenshot on preview — panel renders correctly with real values.
+- **Mobile bundle resynced** to include both the OAuth state fix and the diagnostics feature. `yarn build` ✔ (24 s, build OK), `npx cap sync` ✔ for both iOS + Android (12 Capacitor plugins in sync). CocoaPods/xcodebuild steps deferred to Deb's Mac as documented in `MOBILE_BUILD.md`.
+
+
 ## 20 Apr 2026 — OAuth CSRF State — Belt-and-Braces Fix (GoDaddy DNS hop resilience)
 - **Bug:** Google sign-in on `criminallawappealmanagement.com.au` failed with "Security check failed (state mismatch)". Root cause: GoDaddy's DNS-level forwarding between `www.` and the bare domain changes the storage origin mid-OAuth-flow, wiping `sessionStorage`. The previous agent had partially moved the state to `localStorage` in `AuthModal.jsx` but left `App.js` still reading from `sessionStorage`, so storage and read never matched.
 - **Fix:** New helper `/app/frontend/src/lib/oauthState.js` exposing `generateState`, `saveOAuthState`, `readOAuthState`, `clearOAuthState`. State is now written to **BOTH** `localStorage` **AND** a parent-domain-scoped cookie (`Domain=.criminallawappealmanagement.com.au` in prod, host-only in preview/localhost). Read falls back from localStorage → cookie, so either storage layer alone is sufficient to survive the `www.` ↔ bare-domain hop.

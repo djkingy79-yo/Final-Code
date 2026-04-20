@@ -82,6 +82,39 @@ const AuthCallback = () => {
   const hasProcessed = useRef(false);
   const [authError, setAuthError] = useState(false);
   const [errorDetail, setErrorDetail] = useState("");
+  const [showDiag, setShowDiag] = useState(false);
+  const [diagCopied, setDiagCopied] = useState(false);
+
+  const buildDiagnostics = () => {
+    const lsState = (() => { try { return localStorage.getItem("google_oauth_state"); } catch { return "(blocked)"; } })();
+    const cookieHasState = typeof document !== "undefined"
+      && document.cookie.split("; ").some((c) => c.startsWith("google_oauth_state="));
+    const qp = new URLSearchParams(window.location.search);
+    const hp = new URLSearchParams(window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "");
+    return {
+      time: new Date().toISOString(),
+      hostname: window.location.hostname,
+      protocol: window.location.protocol,
+      referrer: document.referrer || "(none)",
+      cookiesEnabled: typeof navigator !== "undefined" ? navigator.cookieEnabled : "unknown",
+      localStorage_has_state: !!lsState,
+      cookie_has_state: cookieHasState,
+      returned_state_present: !!(qp.get("state") || hp.get("state")),
+      code_present: !!(qp.get("code") || hp.get("code")),
+      errorDetail,
+      userAgent: (navigator && navigator.userAgent) || "(unknown)",
+    };
+  };
+
+  const copyDiag = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(buildDiagnostics(), null, 2));
+      setDiagCopied(true);
+      setTimeout(() => setDiagCopied(false), 2000);
+    } catch (_) {
+      setDiagCopied(false);
+    }
+  };
 
   const attemptAuth = async () => {
     const hash = window.location.hash;
@@ -261,6 +294,27 @@ const AuthCallback = () => {
             >
               Back to Home
             </button>
+            <button
+              data-testid="auth-toggle-diagnostics-btn"
+              onClick={() => setShowDiag((v) => !v)}
+              className="text-xs text-slate-500 hover:text-slate-700 underline mt-1"
+            >
+              {showDiag ? "Hide sign-in diagnostics" : "Show sign-in diagnostics"}
+            </button>
+            {showDiag && (
+              <div data-testid="auth-diagnostics-panel" className="text-left bg-slate-50 border border-slate-200 rounded p-3 mt-1">
+                <pre className="text-[10px] text-slate-700 font-mono whitespace-pre-wrap break-all max-h-48 overflow-auto">
+{JSON.stringify(buildDiagnostics(), null, 2)}
+                </pre>
+                <button
+                  data-testid="auth-copy-diagnostics-btn"
+                  onClick={copyDiag}
+                  className="w-full mt-2 px-3 py-2 text-xs bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors"
+                >
+                  {diagCopied ? "Copied — please email this to support" : "Copy diagnostics to clipboard"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
