@@ -23,7 +23,8 @@ const PageCTA = ({
       navigate('/cases');
     } else {
       // Directly kick off Google OAuth — no intermediate landing-page hop.
-      startGoogleLogin();
+      // Source = PageCTA variant so we know which banner / inline CTA converted.
+      startGoogleLogin(`pagecta-${variant}`);
     }
   };
 

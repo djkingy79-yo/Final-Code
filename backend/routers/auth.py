@@ -190,6 +190,7 @@ async def google_oauth_callback(request: Request, response: Response):
     body = await request.json()
     code = body.get("code")
     redirect_uri = body.get("redirect_uri")
+    signup_source = body.get("signup_source")  # optional — tracks which CTA / page triggered the sign-up
     if not code or not redirect_uri:
         raise HTTPException(status_code=400, detail="code and redirect_uri required")
 
@@ -254,15 +255,21 @@ async def google_oauth_callback(request: Request, response: Response):
         logger.info(f"Google OAuth direct: updated existing user {user_id}")
     else:
         user_id = f"user_{uuid.uuid4().hex[:12]}"
-        await db.users.insert_one({
+        new_user_doc = {
             "user_id": user_id,
             "email": email,
             "name": name,
             "picture": picture,
             "auth_type": "google",
             "created_at": datetime.now(timezone.utc).isoformat(),
-        })
-        logger.info(f"Google OAuth direct: created new user {user_id}")
+        }
+        if signup_source and isinstance(signup_source, str):
+            # Truncate to keep pathnames tidy (e.g. "/success-stories") and skip obvious noise.
+            src = signup_source.strip()[:128]
+            if src:
+                new_user_doc["signup_source"] = src
+        await db.users.insert_one(new_user_doc)
+        logger.info(f"Google OAuth direct: created new user {user_id} (source={new_user_doc.get('signup_source')})")
 
     # 4) Issue session_token
     session_token = uuid.uuid4().hex

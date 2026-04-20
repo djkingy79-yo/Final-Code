@@ -421,7 +421,7 @@ const SuccessStories = () => {
           </p>
           <Button
             className="landing-cta-primary text-xs"
-            onClick={startGoogleLogin}
+            onClick={() => startGoogleLogin("success-stories-get-started")}
           >
             Get Started Free
           </Button>

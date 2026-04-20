@@ -1,6 +1,38 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — CTA Conversion Source Tracking
+- **What's new:** Every Google sign-in CTA across the app now tags itself with a unique source label. When a new user first signs up, that label is written to the user document as `signup_source` — giving Deb visibility into which pages/buttons actually convert visitors into registered users.
+- **Frontend:**
+  - `startGoogleLogin(source)` in `/app/frontend/src/lib/oauthState.js` now accepts an optional source string. Defaults to `window.location.pathname`. Stored in `localStorage` under key `signup_source` before the redirect to Google.
+  - `consumeSignupSource()` helper reads + clears the value.
+  - `App.js` AuthCallback consumes the source and includes it in the `POST /api/auth/google/callback` body.
+  - Explicit source labels applied to the 5 page CTAs: `about-get-started`, `how-to-use-get-started`, `success-stories-get-started`, `statistics-get-started`, `appeal-stats-signin`. `PageCTA` variants self-tag as `pagecta-{variant}`. AuthModal's Google button tags `modal-{pathname}` (e.g. `modal-landing`).
+- **Backend:**
+  - `/api/auth/google/callback` (`routers/auth.py`) now accepts optional `signup_source` in the request body. Persisted on **NEW user documents only** (never overwrites existing users). Truncated to 128 chars, stripped, skipped if empty.
+  - New admin endpoint `GET /api/admin/signup-sources` (`routers/admin.py`) returns aggregated counts grouped by source: `{total_users, users_with_source, sources: [{source, count, first, last}]}` sorted by count desc. Admin-gated via `ADMIN_EMAILS`.
+- **Tests:** 4 new pytest regression tests in `backend/tests/test_signup_source_tracking.py` — all passed (callback accepts new field, callback backwards-compatible without it, admin endpoint requires auth, admin endpoint rejects non-admin). Live endpoint verified returning `{total_users: 553, users_with_source: 0, sources: []}` as expected (no post-deploy sign-ups yet).
+- **Frontend smoke:** Playwright-verified `about-get-started` label correctly written to localStorage on CTA click.
+- **Mobile bundle resynced** (yarn build ✔ + cap sync ✔ for both iOS + Android).
+
+### How to read the analytics later
+Once users start signing up, Deb can curl:
+```
+GET /api/admin/signup-sources
+Authorization: Bearer <her session token>
+```
+And see something like:
+```
+{ "total_users": 612, "users_with_source": 59,
+  "sources": [
+    {"source": "success-stories-get-started", "count": 23, "first": "...", "last": "..."},
+    {"source": "modal-landing",               "count": 18, ...},
+    {"source": "pagecta-default",             "count": 11, ...},
+    ...
+  ] }
+```
+
+
 ## 20 Apr 2026 — Clarification: Preview OAuth 403 / Fix: Appeal Stats Edge-to-Edge Hero
 - **Preview Google OAuth 403 is NOT a bug** — user clicked CTAs from the Emergent preview URL (`*.preview.emergentagent.com`), which is correctly rejected by Google Cloud Console because only `criminallawappealmanagement.com.au` is registered as an authorised origin. This is Google's security working as designed. Buttons will work perfectly once deployed to production.
 - **Fixed edge-to-edge blue hero banner** on AppealStatisticsPage. The "Australian Appeal Statistics" section was spilling full viewport width (`py-12 px-6 bg-blue-800`) while the logo above (contained `max-w-4xl`) and content below (contained `max-w-5xl`) were properly boxed. Visually jarring after the logo was added. Wrapped it in `max-w-5xl mx-auto rounded-2xl` so it's now a contained rounded card matching the rest of the page (1024 px wide, 448 px margin each side on 1920 viewport). All other added-logo pages use `bg-white` heroes which blend with page background — no further changes needed.

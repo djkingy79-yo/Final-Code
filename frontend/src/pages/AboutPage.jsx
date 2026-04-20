@@ -527,7 +527,7 @@ const AboutPage = () => {
             <Button
               className="landing-cta-primary"
               data-testid="about-cta-get-started-btn"
-              onClick={startGoogleLogin}
+              onClick={() => startGoogleLogin("about-get-started")}
             >
               Get Started Free
             </Button>

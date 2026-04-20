@@ -60,12 +60,21 @@ export const clearOAuthState = () => {
 // URL, and navigates — all synchronously in the same event handler so there
 // is zero opportunity for a React re-render to overwrite the stored state
 // before the browser actually navigates away.
-export const startGoogleLogin = () => {
+//
+// The optional `source` argument captures which CTA / page triggered the login
+// so we can attribute new sign-ups to the page that converted them. Default
+// is the current pathname (e.g. "/success-stories"). Source is stashed in
+// localStorage and consumed + cleared by the /auth/callback handler.
+export const startGoogleLogin = (source) => {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   if (!clientId) {
     console.error("REACT_APP_GOOGLE_CLIENT_ID not configured");
     return;
   }
+  try {
+    const src = source || (typeof window !== "undefined" ? window.location.pathname : "/");
+    localStorage.setItem("signup_source", src);
+  } catch (_) { /* ignore quota / private-mode */ }
   const redirectUri = `${window.location.origin}/auth/callback`;
   const state = generateState();
   saveOAuthState(state);
@@ -79,4 +88,12 @@ export const startGoogleLogin = () => {
     state,
   }).toString()}`;
   window.location.href = url;
+};
+
+export const consumeSignupSource = () => {
+  try {
+    const v = localStorage.getItem("signup_source");
+    localStorage.removeItem("signup_source");
+    return v || null;
+  } catch (_) { return null; }
 };

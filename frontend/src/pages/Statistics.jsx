@@ -409,7 +409,7 @@ const Statistics = () => {
           </p>
           <Button
             className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20"
-            onClick={startGoogleLogin}
+            onClick={() => startGoogleLogin("statistics-get-started")}
           >
             Get Started Free
           </Button>

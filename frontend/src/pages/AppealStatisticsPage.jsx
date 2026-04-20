@@ -178,7 +178,7 @@ const AppealStatisticsPage = () => {
                 <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">About</Link>
               </div>
             </div>
-            <Button onClick={startGoogleLogin} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-base font-semibold" data-testid="appeal-stats-signin-btn">
+            <Button onClick={() => startGoogleLogin("appeal-stats-signin")} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-base font-semibold" data-testid="appeal-stats-signin-btn">
               Sign In
             </Button>
           </div>

@@ -351,3 +351,49 @@ async def admin_unlock_feature(request: Request):
         "message": f"Unlocked {feature_type} for {target_email} on case {case_id}",
         "reference": payment["reference"],
     }
+
+
+# ============ SIGNUP SOURCE ANALYTICS ============
+
+@router.get("/admin/signup-sources")
+async def get_signup_sources(request: Request):
+    """Admin-only: aggregated count of new user sign-ups grouped by source CTA/page.
+
+    `signup_source` is captured on the user doc at Google OAuth sign-up time
+    (see routers/auth.py google_oauth_callback), value comes from the page
+    path that triggered startGoogleLogin(). This endpoint returns:
+      {
+        "total_users": 42,
+        "users_with_source": 37,
+        "sources": [
+          {"source": "/success-stories", "count": 18, "first": "2026-02-14T...", "last": "2026-04-20T..."},
+          {"source": "/",               "count": 12, ...},
+          ...
+        ]
+      }
+    """
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    total_users = await db.users.count_documents({})
+    users_with_source = await db.users.count_documents({"signup_source": {"$exists": True, "$ne": None}})
+
+    pipeline = [
+        {"$match": {"signup_source": {"$exists": True, "$ne": None}}},
+        {"$group": {
+            "_id": "$signup_source",
+            "count": {"$sum": 1},
+            "first": {"$min": "$created_at"},
+            "last": {"$max": "$created_at"},
+        }},
+        {"$sort": {"count": -1}},
+        {"$project": {"_id": 0, "source": "$_id", "count": 1, "first": 1, "last": 1}},
+    ]
+    sources = await db.users.aggregate(pipeline).to_list(100)
+
+    return {
+        "total_users": total_users,
+        "users_with_source": users_with_source,
+        "sources": sources,
+    }

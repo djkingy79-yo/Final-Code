@@ -446,7 +446,7 @@ const HowToUsePage = () => {
           <Button
             className="landing-cta-primary text-lg px-8 py-4"
             data-testid="how-to-use-start-cta"
-            onClick={startGoogleLogin}
+            onClick={() => startGoogleLogin("how-to-use-get-started")}
           >
             Get Started Now
             <ChevronRight className="w-5 h-5 ml-2" />

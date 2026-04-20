@@ -168,6 +168,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               // Generate state + save + build URL atomically in the click handler.
               // This guarantees the state in storage matches the state sent to Google,
               // with zero chance of a subsequent re-render overwriting storage before redirect.
+              // Tag the source so admin analytics can separate landing-modal sign-ups
+              // from page-specific CTA sign-ups.
+              try {
+                const p = typeof window !== "undefined" ? window.location.pathname : "/";
+                localStorage.setItem("signup_source", `modal-${p === "/" ? "landing" : p.replace(/^\//, "")}`);
+              } catch (_) { /* ignore */ }
               const googleLoginUrl = buildGoogleLoginUrl();
               onClose(); // Release Dialog focus trap FIRST
               setTimeout(() => {

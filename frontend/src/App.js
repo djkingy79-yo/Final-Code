@@ -15,7 +15,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import AppFooter from "./components/AppFooter";
 import OfflineBanner from "./components/OfflineBanner";
 import { initNativeApp } from "./native/appLifecycle";
-import { generateState, saveOAuthState, readOAuthState, clearOAuthState } from "./lib/oauthState";
+import { generateState, saveOAuthState, readOAuthState, clearOAuthState, consumeSignupSource } from "./lib/oauthState";
 
 // Critical pages — eagerly loaded
 import LandingPage from "./pages/LandingPage";
@@ -195,10 +195,11 @@ Thanks.`;
     if (code) {
       // Direct Google OAuth token exchange via backend
       const redirectUri = `${window.location.origin}/auth/callback`;
+      const signupSource = consumeSignupSource();
       try {
         const response = await axios.post(
           `${API}/auth/google/callback`,
-          { code, redirect_uri: redirectUri },
+          { code, redirect_uri: redirectUri, signup_source: signupSource },
           { timeout: 30000 }
         );
         if (response.data?.session_token) {
