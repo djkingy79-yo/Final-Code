@@ -107,10 +107,28 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - All remaining comments explicitly describe the self-hosted architecture on the owner's domain.
 - **Result**: grep for "Emergent" across `/app/backend` and `/app/frontend/src` returns ZERO hits outside the `emergentintegrations` Python SDK import (just a library wrapper around the OpenAI SDK — no proxy, no shared key).
 
+### Completed (14 February 2026 — Legislation Currency Monitoring + Friendly Nudges)
+- **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
+- **Currency dashboard service** (`/app/backend/services/legislation_currency.py`) — age bucketing (🟢 <90d current, 🟡 90–180d review soon, 🔴 >180d overdue), Mongo `framework_audit_log` collection mirrors manual ticks, dashboard prefers the later of registry date or audit-log date.
+- **Three new admin endpoints** (`/app/backend/routers/admin.py`):
+  - `GET /api/admin/legislation-currency` — returns full dashboard with per-Act rows, totals, and a forensic notice card
+  - `POST /api/admin/legislation-currency/mark-verified` — user-initiated tick after manual AustLII review
+  - `POST /api/admin/legislation-currency/ai-check` — heavily-guardrailed GPT-4o cross-check
+- **HEAVY ANTI-HALLUCINATION guardrails** on the AI check:
+  - Strict JSON schema enforcement: `status` ∈ {appears_current, possible_change, cannot_verify, outside_knowledge_cutoff}; `confidence` ∈ {low, medium, high}; `knowledge_cutoff`, `forensic_summary`, `suggested_review_focus[]`, `flagged_amendments[]`, `forensic_caveat` all required
+  - Validator (`_validate_ai_response`) rejects: missing keys, invalid enums, non-list fields, generic filler ("as an AI", "I'm sorry", "Lorem ipsum"), first-person pronouns (i/we/you/us/our), short summaries (<15 chars)
+  - On any validation failure, the AI content is SUPPRESSED and the response becomes `{ok:false, guardrail:"schema_violation"|"llm_failure", error, forensic_caveat}` — potentially-fabricated text NEVER reaches the UI
+  - On validation pass, the service OVERWRITES the model's `forensic_caveat` with authoritative wording that explicitly states this is a prompt for manual review, not verification
+  - The dashboard NEVER updates `last_verified` from AI output — only manual `/mark-verified` ticks count, by design
+- **Admin dashboard page** (`/app/frontend/src/pages/LegislationCurrency.jsx`) — forensic notice card at top, jurisdiction filter, per-Act rows with AustLII links, "Mark verified" (prompts for forensic note), "AI check" (opens dialog with amber "PROMPT FOR MANUAL REVIEW — NOT VERIFICATION" banner; shows red "Guardrail tripped — output suppressed" when anti-hallucination tripwire fires)
+- **Admin dashboard header** — new "Legislation Currency" + "Signup Source Analytics" links + friendly-nudge self-hosted footer ("Self-hosted · your OpenAI key · your Google OAuth · criminallawappealmanagement.com.au")
+- **Framework version badge on exports** (`/app/frontend/src/utils/exportHtml.js`) — every PDF/Word/Print export now includes "Legal Framework v2026.02 · 79 Australian Acts manually verified · criminallawappealmanagement.com.au" in the footer branding block
+- **Self-hosting deployment guide** (`/app/memory/SELF_HOSTING_GUIDE.md`) — step-by-step Railway walk-through for retiring the Emergent preview URL dependency
+- **20 unit tests** (`tests/test_legislation_currency.py`) covering registry coverage, bucketing, all guardrail rejection paths, dashboard shape, mark_verified persistence. Testing-agent verified iteration_210 — 100% backend + frontend pass, zero critical/minor issues, all data-testids present, anti-hallucination guardrails confirmed working end-to-end.
+
 ## Remaining / Backlog
-- **P2**: Backend self-hosting migration guide (Railway/Render/AWS) to remove final Emergent dependency (`REACT_APP_BACKEND_URL`)
-- **P2**: Second attachment for counsel conference prep on Appellate Research Brief
-- **P3**: Expose a small "Legal Framework Version" badge on each exported report (e.g., "Framework v2026.02 · 8 jurisdictions verified") — turn invisible heavy lifting into a visible quality signal
+- **P2**: Second attachment for counsel conference prep on the Appellate Research Brief.
+- **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au` — at that point the Emergent preview URL is no longer in any runtime path.
 
 ## Test Credentials
 - Email: djkingy79@gmail.com
