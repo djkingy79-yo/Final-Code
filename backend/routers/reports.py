@@ -619,7 +619,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     state = (case.get("state") or "UNSPECIFIED").upper()
     sentence = case.get("sentence", "")
 
-    story.append(Paragraph("BARRISTER QUICK BRIEF", styles['QBTitle']))
+    story.append(Paragraph("APPELLATE RESEARCH BRIEF — QUICK BRIEF", styles['QBTitle']))
     story.append(Paragraph(f"Appellant: {safe_text(defendant)} | Jurisdiction: {state}", styles['QBSubtitle']))
     if sentence:
         story.append(Paragraph(f"Sentence: {safe_text(sentence)}", styles['QBSubtitle']))

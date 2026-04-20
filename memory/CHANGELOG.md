@@ -1,6 +1,19 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — "4th Report" Rename + Email-to-Support + README Overhaul
+- **Renamed all remaining user-visible "Barrister Brief / View / Quick Brief" strings** to the canonical **"Appellate Research Brief"**. Code touchpoints:
+  - `backend/routers/reports.py` — 2-page PDF title `"BARRISTER QUICK BRIEF"` → `"APPELLATE RESEARCH BRIEF — QUICK BRIEF"`.
+  - `backend/services/barrister_generator.py` — output heading `## Final Barrister Briefing Note` → `## Final Appellate Research Briefing Note` (6 occurrences across required_headings, prompt instructions, and section budgets).
+  - `backend/models/__init__.py` — checklist title `"Generate Barrister View report"` → `"Generate Appellate Research Brief report"`.
+  - `README.md` — Tier 4 table row, Section 7 ("Appellate Research Brief — Counsel-Ready Synthesis"), Section 8 ("Appellate Research Brief — Quick Brief (2-Page PDF)"), Section 14 bullet, service layer doc, and frontend markdown table reference.
+  - Left untouched (intentional): internal DB key `barrister_view`, endpoint URLs (`/reports/barrister-quick-brief`), service filename `barrister_generator.py`, page component `BarristerView.jsx`, generic references to the *profession* (Bar Associations, Find a Barrister, lawyer-directory firm names).
+- **Email-to-support button** added to the sign-in diagnostics panel (`App.js`). Opens `mailto:` with pre-filled subject and body (full diagnostics JSON) to `REACT_APP_SUPPORT_EMAIL`. Button only renders when the env var is set — graceful fallback for self-hosted forks. `data-testid="auth-email-diagnostics-btn"`. Verified live on preview.
+- **Env vars added:** `REACT_APP_SUPPORT_EMAIL` in `frontend/.env` (defaults to `djkingy79@gmail.com`).
+- **README overhauled end-to-end** — zero Emergent references remain (grep-verified), all recent features documented (direct Google OAuth, belt-and-braces CSRF state, background polling for bulk extract, live pass-by-pass progress, 27 recent Acts, 5-gate CI pipeline with MongoDB service container, Capacitor 7 mobile, sign-in diagnostics panel). `EMERGENT_LLM_KEY` removed from env table; `OPENAI_API_KEY`, `GOOGLE_CLIENT_ID/SECRET`, `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_SUPPORT_EMAIL`, mobile App Store/Play URLs added.
+- **Mobile bundle resynced** (`yarn build` + `npx cap sync` — iOS + Android, 12 plugins synced).
+
+
 ## 20 Apr 2026 — Sign-in Diagnostics Panel + Mobile Bundle Resync
 - **Diagnostics panel** on the OAuth failure card (`App.js`). New collapsible "Show sign-in diagnostics" link reveals a JSON dump of: timestamp, hostname, protocol, referrer, `navigator.cookieEnabled`, whether state exists in localStorage, whether state exists in cookie, whether a returned `state`/`code` is in the URL, the `errorDetail`, and userAgent. A "Copy diagnostics to clipboard" button lets any user forward the payload to Deb in one click. Test IDs: `auth-toggle-diagnostics-btn`, `auth-diagnostics-panel`, `auth-copy-diagnostics-btn`. Verified via screenshot on preview — panel renders correctly with real values.
 - **Mobile bundle resynced** to include both the OAuth state fix and the diagnostics feature. `yarn build` ✔ (24 s, build OK), `npx cap sync` ✔ for both iOS + Android (12 Capacitor plugins in sync). CocoaPods/xcodebuild steps deferred to Deb's Mac as documented in `MOBILE_BUILD.md`.

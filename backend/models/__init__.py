@@ -583,7 +583,7 @@ DEFAULT_CHECKLIST = [
     {"phase": "lodgement", "title": "File Leave application (if required)", "description": "Lodge application for leave to appeal if needed", "order": 19},
     {"phase": "lodgement", "title": "Confirm lodgement receipt", "description": "Obtain confirmation that appeal has been filed", "order": 20},
     {"phase": "hearing", "title": "Prepare for hearing", "description": "Review all materials before appeal hearing", "order": 21},
-    {"phase": "hearing", "title": "Generate Barrister View report", "description": "Create professional presentation for court", "order": 22},
+    {"phase": "hearing", "title": "Generate Appellate Research Brief report", "description": "Create professional presentation for court", "order": 22},
 ]
 
 

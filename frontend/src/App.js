@@ -116,6 +116,22 @@ const AuthCallback = () => {
     }
   };
 
+  const emailDiag = () => {
+    const supportEmail = process.env.REACT_APP_SUPPORT_EMAIL || "";
+    const subject = "Sign-in issue — Appeal Case Manager";
+    const body = `Hi,
+
+I'm unable to sign in. Here are the diagnostics from the sign-in screen:
+
+${JSON.stringify(buildDiagnostics(), null, 2)}
+
+Any help appreciated.
+
+Thanks.`;
+    const href = `mailto:${encodeURIComponent(supportEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+  };
+
   const attemptAuth = async () => {
     const hash = window.location.hash;
     const query = window.location.search;
@@ -313,6 +329,15 @@ const AuthCallback = () => {
                 >
                   {diagCopied ? "Copied — please email this to support" : "Copy diagnostics to clipboard"}
                 </button>
+                {process.env.REACT_APP_SUPPORT_EMAIL && (
+                  <button
+                    data-testid="auth-email-diagnostics-btn"
+                    onClick={emailDiag}
+                    className="w-full mt-2 px-3 py-2 text-xs bg-slate-700 text-white font-semibold rounded hover:bg-slate-800 transition-colors"
+                  >
+                    Email diagnostics to support
+                  </button>
+                )}
               </div>
             )}
           </div>

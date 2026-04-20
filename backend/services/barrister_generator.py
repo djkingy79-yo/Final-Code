@@ -386,9 +386,9 @@ There are {len(grounds)} grounds identified for this case.""",
                 "## Sentencing Comparison and Relief Pathways",
                 "## Proposed Submissions and Hearing Strategy",
                 "## Conference Questions, Filing Priorities and Risks",
-                "## Final Barrister Briefing Note",
+                "## Final Appellate Research Briefing Note",
             ],
-            "instructions": "Write these sections as an authoritative counsel-facing strategy brief that a barrister would use to prepare for conference and hearing. Under ## Sentencing Comparison and Relief Pathways, analyse specific comparator cases with their sentence outcomes, consider parity, manifest excess, and other sentencing principles, and set out each available relief pathway with its legal basis and likelihood of success. Under ## Proposed Submissions and Hearing Strategy, provide detailed proposed submission themes for each ground, recommended ground ordering, estimated hearing time per ground, oral submission structure, written submission priorities, key documents to include in the appeal book, and how to handle judicial questions. Under ## Conference Questions, Filing Priorities and Risks, list specific questions counsel should address with the instructing solicitor, identify filing deadlines and priority ordering, analyse litigation risk for each ground and the appeal overall, and identify what further material or instructions would strengthen the case. Under ## Final Barrister Briefing Note, provide a comprehensive closing analysis that is still detailed rather than compressed — covering the overall assessment, recommended course of action, fallback strategies, costs considerations, and any urgent steps.",
+            "instructions": "Write these sections as an authoritative counsel-facing strategy brief that a barrister would use to prepare for conference and hearing. Under ## Sentencing Comparison and Relief Pathways, analyse specific comparator cases with their sentence outcomes, consider parity, manifest excess, and other sentencing principles, and set out each available relief pathway with its legal basis and likelihood of success. Under ## Proposed Submissions and Hearing Strategy, provide detailed proposed submission themes for each ground, recommended ground ordering, estimated hearing time per ground, oral submission structure, written submission priorities, key documents to include in the appeal book, and how to handle judicial questions. Under ## Conference Questions, Filing Priorities and Risks, list specific questions counsel should address with the instructing solicitor, identify filing deadlines and priority ordering, analyse litigation risk for each ground and the appeal overall, and identify what further material or instructions would strengthen the case. Under ## Final Appellate Research Briefing Note, provide a comprehensive closing analysis that is still detailed rather than compressed — covering the overall assessment, recommended course of action, fallback strategies, costs considerations, and any urgent steps.",
         },
     ]
 
@@ -475,7 +475,7 @@ SOURCE REPORTS
         "## Sentencing Comparison and Relief Pathways": 5000,
         "## Proposed Submissions and Hearing Strategy": 5000,
         "## Conference Questions, Filing Priorities and Risks": 4000,
-        "## Final Barrister Briefing Note": 4000,
+        "## Final Appellate Research Briefing Note": 4000,
     }
     section_expansion_source = _build_barrister_group_source_text(
         source_reports,
@@ -682,7 +682,7 @@ CURRENT BARRISTER BRIEF
 
 ## Proposed Submissions and Hearing Strategy
 ## Conference Questions, Filing Priorities and Risks
-## Final Barrister Briefing Note
+## Final Appellate Research Briefing Note
 
 Requirements:
 - Minimum target length for this rewritten block alone: 30000 characters.
@@ -924,7 +924,7 @@ CURRENT BARRISTER BRIEF
         "## Sentencing Comparison and Relief Pathways": 5000,
         "## Proposed Submissions and Hearing Strategy": 4000,
         "## Conference Questions, Filing Priorities and Risks": 3000,
-        "## Final Barrister Briefing Note": 3000,
+        "## Final Appellate Research Briefing Note": 3000,
     }
     final_source = _build_barrister_group_source_text(
         source_reports,
@@ -985,7 +985,7 @@ SOURCE REPORTS
         "## Proposed Submissions and Hearing Strategy",
         "## Conference Questions, Filing Priorities and Risks",
         "## Conference Questions, Filing Priorities, and Risks",
-        "## Final Barrister Briefing Note",
+        "## Final Appellate Research Briefing Note",
         "## Attachment A — Barrister Issue Matrix",
         "## Attachment A - Barrister Issue Matrix",
         "## Attachment B — Counsel Conference Preparation",

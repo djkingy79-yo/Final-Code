@@ -98,12 +98,12 @@ The platform produces four tiers of progressively detailed analytical reports, e
 | 1 | **Quick Summary** | FREE | Issue identification — identifies and lists potential grounds of appeal with appellate pathways |
 | 2 | **Full Detailed Report** | $150 AUD | Appellate pathway analysis — 8-pass generation, 15 sections, comprehensive ground-by-ground assessment with legal reasoning, forensic framing, and precedent references |
 | 3 | **Extensive Log Report** | $200 AUD | Operations engine — 10-pass generation, 24 sections, exhaustive deep-dive with checklists, evidence deployment strategy, Crown response anticipation, and defence rebuttals |
-| 4 | **Barrister Brief** | Unlocked after Tiers 1-3 | Pure counsel-ready synthesis — no repetition from lower tiers. Includes Counsel Synthesis header, Priority Order, Barrister Issue Matrix, and Counsel Conference Prep (Attachment B) |
+| 4 | **Appellate Research Brief** | Unlocked after Tiers 1-3 | Pure counsel-ready synthesis — no repetition from lower tiers. Includes Counsel Synthesis header, Priority Order, Issue Matrix, and Counsel Conference Prep (Attachment B) |
 
 **Report Generation Architecture:**
 - Each report is generated through multiple sequential AI passes to ensure depth and accuracy
 - **Live pass-by-pass progress** — the UI surfaces the current pass label and section title in real time (`PASS 3/8 — Grounds of Merit — Part 1`) with a pill per pass (completed / active-pulsing / pending) and a real progress bar driven by `current_pass / total_passes`
-- The Barrister Brief specifically retrieves and synthesises the content of all three lower-tier reports
+- The Appellate Research Brief specifically retrieves and synthesises the content of all three lower-tier reports
 - **Condensed prompt approach** for 8-pass and 10-pass engines — after Pass 1, subsequent passes receive ~20k tokens instead of 134k to fit within context limits and reduce 502 proxy errors
 - **Pass-level retry with exponential backoff** for transient 502 proxy timeouts
 - All reports use **strict forensic appellate language** — "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — never bare declarations or weak hedging
@@ -112,8 +112,8 @@ The platform produces four tiers of progressively detailed analytical reports, e
 - Every report includes the mandatory **"NOT LEGAL ADVICE"** disclaimer
 - Australian English spelling enforced throughout (analyse, organise, defence, offence, behaviour)
 
-### 7. Barrister View — Counsel-Ready Brief
-The Barrister Brief is designed to tell a barrister "where do I attack?" in minutes, not hours:
+### 7. Appellate Research Brief — Counsel-Ready Synthesis
+The Appellate Research Brief is designed to tell a barrister "where do I attack?" in minutes, not hours:
 
 **Counsel Synthesis (header):**
 - **Primary Issue:** The single most important attack vector for the appeal
@@ -122,7 +122,7 @@ The Barrister Brief is designed to tell a barrister "where do I attack?" in minu
 - **Priority Order:** All grounds numbered by priority with one-line assessments
 - **Overall Appellate Position:** Calibrated assessment using viability language
 
-**Barrister Issue Matrix (attachment):**
+**Issue Matrix (attachment):**
 - Tabulated issue matrix cross-referencing each ground to supporting documents, witnesses, and legal authorities
 
 **Counsel Conference Prep — Attachment B** (full section):
@@ -134,8 +134,8 @@ The Barrister Brief is designed to tell a barrister "where do I attack?" in minu
 
 Tables are parsed by `parseBarristerSections` in `BarristerView.jsx` and rendered via ReactMarkdown + remark-gfm for clean on-screen display.
 
-### 8. Barrister Quick Brief (2-Page PDF)
-A concise, downloadable **2-page PDF** designed for a barrister to review in under 5 minutes before a conference:
+### 8. Appellate Research Brief — Quick Brief (2-Page PDF)
+A concise, downloadable **2-page PDF summary of the Appellate Research Brief**, designed for a barrister to review in under 5 minutes before a conference:
 - Counsel Synthesis with Primary/Secondary/Tertiary issues
 - Priority ordering of all grounds
 - Top 3 grounds with viability ratings, appellate pathways, and contingent warnings
@@ -185,7 +185,7 @@ A single, professionally formatted PDF containing ALL generated reports for a ca
 - **Word Export (.docx):** iOS-compatible Word documents with proper XML envelope and BOM encoding
 - **Print Preview:** Dedicated `/document-preview` route with automatic print dialogue and clean A4-optimised layout
 - **Bulk Export:** "Print All", "PDF All", and "Word All" functions export the complete case bundle (summary, timeline, grounds, notes, progress) in a single document
-- **Barrister Quick Brief:** 2-page PDF with Counsel Synthesis + Top 3 Grounds
+- **Appellate Research Brief — Quick Brief:** 2-page PDF with Counsel Synthesis + Top 3 Grounds
 - **Case Export Pack:** Single formatted PDF with all paid reports, grounds, timeline, and legal framework
 - **Parity across on-screen, print, PDF and DOCX:** Body 11pt, H1 16pt, H2 15pt, H3 13pt, tables 9pt, cover meta 10pt, cover disclaimer 9pt, body disclaimer 8pt — identical across every format
 - Exact footer on every exported page: *Criminal Law Appeal Management / {Document Name} — {Defendant} — {Date} — Page X of Y* (Times Italic, 7pt)
@@ -280,7 +280,7 @@ The backend is built on **FastAPI** (v0.135.2), a high-performance async Python 
 ├── llm_service.py         # OpenAI GPT-4o integration
 ├── ai_service.py          # AI analysis and extraction services
 ├── report_generator.py    # Multi-pass report engine with live progress tracking (PASS_TITLES)
-├── barrister_generator.py # Counsel Synthesis + Issue Matrix + Counsel Conference Prep (Attachment B)
+├── barrister_generator.py # Counsel Synthesis + Issue Matrix + Counsel Conference Prep (Attachment B) for the Appellate Research Brief
 ├── offence_helpers.py     # Jurisdiction-specific offence context builders
 ├── email_service.py       # Transactional emails via Resend API (v2.23)
 ├── document_helpers.py    # Text extraction pipeline (PDF → OCR → DOCX → plaintext)
@@ -342,7 +342,7 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 - Embla Carousel for image carousels
 - html2canvas for client-side screenshot generation
 - date-fns for date formatting and manipulation
-- ReactMarkdown + remark-gfm for rendering Barrister View markdown tables
+- ReactMarkdown + remark-gfm for rendering Appellate Research Brief markdown tables
 - Capacitor 7 for native iOS and Android builds (12 plugins)
 
 **Component Architecture:**
