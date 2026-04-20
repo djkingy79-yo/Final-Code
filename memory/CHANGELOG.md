@@ -1,6 +1,11 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Clarification: Preview OAuth 403 / Fix: Appeal Stats Edge-to-Edge Hero
+- **Preview Google OAuth 403 is NOT a bug** — user clicked CTAs from the Emergent preview URL (`*.preview.emergentagent.com`), which is correctly rejected by Google Cloud Console because only `criminallawappealmanagement.com.au` is registered as an authorised origin. This is Google's security working as designed. Buttons will work perfectly once deployed to production.
+- **Fixed edge-to-edge blue hero banner** on AppealStatisticsPage. The "Australian Appeal Statistics" section was spilling full viewport width (`py-12 px-6 bg-blue-800`) while the logo above (contained `max-w-4xl`) and content below (contained `max-w-5xl`) were properly boxed. Visually jarring after the logo was added. Wrapped it in `max-w-5xl mx-auto rounded-2xl` so it's now a contained rounded card matching the rest of the page (1024 px wide, 448 px margin each side on 1920 viewport). All other added-logo pages use `bg-white` heroes which blend with page background — no further changes needed.
+
+
 ## 20 Apr 2026 — "Founded by Deb King" Caption + Broken CTA Buttons Fixed
 - **"Founded by Deb King"** small-caps red caption added under the page logo on all 14 info/stats pages (inside the reusable `<PageLogo />` component). Consistent authorship visibility + SEO signal on every page. Test IDs: `page-logo-top`, `page-logo-founder-caption`.
 - **Broken CTA buttons fixed.** Deb reported via screenshots that several "Get Started" / "Sign In" / "Contact Us" buttons incorrectly bounced to the landing page instead of performing their intended action. Root cause: these CTAs used `<Link to="/">` or `navigate('/', { state: { openAuth: true } })` — but the landing page never honoured the `openAuth` state flag, so users just ended up stranded on the home page.
