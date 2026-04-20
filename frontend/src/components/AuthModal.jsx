@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { API } from "../App";
+import { generateState, saveOAuthState } from "../lib/oauthState";
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [mode, setMode] = useState("login"); // login or register
@@ -30,14 +31,15 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   });
   const [errors, setErrors] = useState({});
 
-  // Direct Google OAuth — redirect to Google's authorize URL with CSRF state
+  // Direct Google OAuth — redirect to Google's authorize URL with CSRF state.
+  // State is stored in BOTH localStorage AND a domain-scoped cookie so it survives
+  // DNS-level redirects (e.g. GoDaddy's www ↔ bare-domain forwarding) that would
+  // otherwise wipe sessionStorage / change the storage origin mid-flow.
   const buildGoogleLoginUrl = () => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.origin}/auth/callback`;
-    const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    // Use localStorage (not sessionStorage) — more resilient when DNS-level redirects
-    // (e.g. GoDaddy's www/non-www forwarding) change the origin mid-OAuth-flow.
-    localStorage.setItem("google_oauth_state", state);
+    const state = generateState();
+    saveOAuthState(state);
     return `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,

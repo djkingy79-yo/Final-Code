@@ -14,6 +14,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import AppFooter from "./components/AppFooter";
 import OfflineBanner from "./components/OfflineBanner";
 import { initNativeApp } from "./native/appLifecycle";
+import { generateState, saveOAuthState, readOAuthState, clearOAuthState } from "./lib/oauthState";
 
 // Critical pages — eagerly loaded
 import LandingPage from "./pages/LandingPage";
@@ -100,14 +101,14 @@ const AuthCallback = () => {
 
     // Verify CSRF state parameter
     const returnedState = queryParams.get("state") || hashParams.get("state");
-    const expectedState = sessionStorage.getItem("google_oauth_state");
+    const expectedState = readOAuthState();
     if (expectedState && returnedState && returnedState !== expectedState) {
       console.warn("OAuth state mismatch — possible CSRF");
       setErrorDetail("Security check failed (state mismatch). Please sign in again.");
       setAuthError(true);
       return;
     }
-    sessionStorage.removeItem("google_oauth_state");
+    clearOAuthState();
 
     // Direct Google OAuth: read `code` from query params
     const code = queryParams.get("code") || hashParams.get("code");
@@ -232,8 +233,8 @@ const AuthCallback = () => {
                 // Direct Google OAuth — redirect to Google's authorize endpoint
                 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
                 const redirectUri = `${window.location.origin}/auth/callback`;
-                const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
-                sessionStorage.setItem("google_oauth_state", state);
+                const state = generateState();
+                saveOAuthState(state);
                 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
                   client_id: clientId,
                   redirect_uri: redirectUri,
