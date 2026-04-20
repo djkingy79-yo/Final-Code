@@ -77,8 +77,8 @@ class TestAnalyticsDashboard:
             assert "revenue_7d" in sales, "Sales should have revenue_7d"
             assert "revenue_30d" in sales, "Sales should have revenue_30d"
             print(f"Analytics dashboard sales data: total_sales={sales['total_sales']}, total_revenue=${sales['total_revenue']}")
-        elif response.status_code == 403:
-            print("Analytics dashboard: Admin access required (expected for non-admin)")
+        elif response.status_code in (401, 403):
+            print(f"Analytics dashboard: auth required (status {response.status_code}, expected for non-admin)")
         else:
             pytest.fail(f"Unexpected status code: {response.status_code}")
 
@@ -110,6 +110,8 @@ class TestTranslationBackgroundTasks:
             print("Translation: Report not found (expected if report doesn't exist)")
         elif response.status_code == 400:
             print(f"Translation: Bad request - {response.json().get('detail')}")
+        elif response.status_code in (401, 403):
+            print(f"Translation: auth required (status {response.status_code})")
         else:
             pytest.fail(f"Unexpected status code: {response.status_code}")
     

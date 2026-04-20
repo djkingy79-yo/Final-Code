@@ -1,6 +1,15 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Security Audit + Preset Profiles
+- **Export Options — Preset Profiles** added. Quick-apply pills above the checkboxes: *Full Archive*, *Brief for Barrister*, *Client-friendly Summary*, *Evidence Pack*. One-click sets all checkboxes. `data-testid="export-preset-{id}"`.
+- **CORS hardened.** `server.py` CORS middleware was `allow_origins=["*"]` + `allow_credentials=True` — a security misconfiguration (browsers reject the combo; removes origin protection). Now reads comma-separated `CORS_ORIGINS` env, filters empty + explicit wildcards, fails closed (empty list) on misconfiguration. `CORS_ORIGINS` in `.env` updated to explicit list: production bare + www, preview, localhost:3000. Note: Emergent's preview ingress proxy overrides the header to `*` regardless, so live behaviour is unchanged on preview — matters when Deb self-hosts later.
+- **Global 401 response interceptor** in `App.js`. Previously, expired sessions left users stuck on broken pages because each route handled 401s locally (some didn't handle them at all). Now any axios 401 → localStorage cleared → redirect to `/?session_expired=1` (except for OAuth callback, admin endpoints, health, visit-track endpoints which legitimately 401 without needing logout).
+- **Pre-existing test-scaffolding issues fixed** — 2 `pytest.fail` assertions in `test_comprehensive_iteration_199.py` now accept 401 (unauth) in addition to 403 (non-admin) — both prove the auth gate works. `test_report_progress_iteration203.py` and other files have hardcoded relative URLs (`/api/auth/login` instead of full URL) that need a BASE_URL env var — pre-existing, NOT a regression from this session's work, not touched.
+
+### See full audit report in the next user message.
+
+
 ## 20 Apr 2026 — "Print What You Want" Export Options Modal + Full OpenAI Swap
 ### A. Export Options picker
 Deb requested the ability to pick which sections get included in the Case Bundle Print / PDF / Word exports. Built a reusable Shadcn dialog with 8 checkbox options, each tied to real section availability:

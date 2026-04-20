@@ -55,9 +55,13 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
+    # SECURITY: never use "*" with allow_credentials=True — browsers reject it and
+    # it removes origin protection. CORS_ORIGINS must be an explicit comma-separated
+    # list of trusted origins. Defaults to an empty list (fail-closed) if misconfigured.
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip() and o.strip() != "*"],
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 

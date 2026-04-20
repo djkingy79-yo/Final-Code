@@ -76,6 +76,31 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+// GLOBAL 401 RESPONSE INTERCEPTOR — auto-logout on session expiry so we never
+// leave a user stuck staring at a broken page. Ignores 401s from the diagnostic
+// endpoints (health-check, OAuth callback path) that legitimately return 401
+// without requiring a logout + redirect.
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isAuthSensitive = !/\/auth\/google\/callback|\/admin\/signup-sources|\/track\/visit|\/health/.test(url);
+    if (status === 401 && isAuthSensitive) {
+      const token = localStorage.getItem("session_token");
+      if (token) {
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("auth_user");
+        // Only redirect if we're past the landing page already (avoid loop)
+        if (window.location.pathname !== "/" && window.location.pathname !== "/auth/callback") {
+          window.location.replace("/?session_expired=1");
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth Callback Component — Direct Google OAuth flow.
 // Google redirects back with ?code=... (and optional ?state=...).
 // We POST {code, redirect_uri} to backend /api/auth/google/callback which exchanges it,

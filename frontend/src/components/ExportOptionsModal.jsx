@@ -32,6 +32,34 @@ export const defaultSectionOptions = {
   progress: true,
 };
 
+// Pre-built profiles — one-click combinations. Keys match defaultSectionOptions.
+const PRESETS = [
+  {
+    id: "full",
+    label: "Full Archive",
+    desc: "Everything — cover, TOC, summary, documents, timeline, grounds, notes, progress",
+    sections: { cover: true, toc: true, summary: true, documents: true, timeline: true, grounds: true, notes: true, progress: true },
+  },
+  {
+    id: "barrister",
+    label: "Brief for Barrister",
+    desc: "Cover + grounds + timeline + summary — the counsel-ready essentials",
+    sections: { cover: true, toc: true, summary: true, documents: false, timeline: true, grounds: true, notes: false, progress: false },
+  },
+  {
+    id: "client",
+    label: "Client-friendly Summary",
+    desc: "Cover + summary + progress analysis — readable overview without legal detail",
+    sections: { cover: true, toc: false, summary: true, documents: false, timeline: false, grounds: false, notes: false, progress: true },
+  },
+  {
+    id: "evidence",
+    label: "Evidence Pack",
+    desc: "Cover + documents list + timeline — just the facts",
+    sections: { cover: true, toc: true, summary: false, documents: true, timeline: true, grounds: false, notes: false, progress: false },
+  },
+];
+
 const SECTION_LABELS = [
   { key: "cover",     label: "Cover page & case metadata", desc: "Header, defendant, offence, sentence, document counts" },
   { key: "toc",       label: "Table of contents",          desc: "Auto-generated contents list for the included sections" },
@@ -68,6 +96,24 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
             Untick anything you don't need.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="space-y-2 pb-1">
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick presets</p>
+          <div className="flex flex-wrap gap-1.5">
+            {PRESETS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSections(p.sections)}
+                title={p.desc}
+                className="text-xs px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 font-medium hover:bg-blue-100 hover:border-blue-400"
+                data-testid={`export-preset-${p.id}`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="space-y-3 py-2">
           {SECTION_LABELS.map(({ key, label, desc }) => {
