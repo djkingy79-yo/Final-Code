@@ -35,7 +35,9 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.origin}/auth/callback`;
     const state = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    sessionStorage.setItem("google_oauth_state", state);
+    // Use localStorage (not sessionStorage) — more resilient when DNS-level redirects
+    // (e.g. GoDaddy's www/non-www forwarding) change the origin mid-OAuth-flow.
+    localStorage.setItem("google_oauth_state", state);
     return `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
