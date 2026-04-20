@@ -457,3 +457,161 @@ async def get_signup_sources(request: Request):
         "total_visits_tracked": total_visits_tracked,
         "sources": sources,
     }
+
+
+@router.get("/admin/openai-costs")
+async def get_openai_costs(request: Request, period: str = "month"):
+    """Admin-only: aggregated OpenAI usage + estimated USD cost.
+
+    Query params:
+      period = "month" (default — current calendar month) | "week" | "all"
+
+    Returns:
+      {
+        "period": "month",
+        "window": {"start": "2026-02-01T...", "end": "2026-02-14T..."},
+        "totals": {
+          "calls": 1234,
+          "successful_calls": 1200,
+          "failed_calls": 34,
+          "input_tokens": 5_400_000,
+          "output_tokens": 1_800_000,
+          "total_tokens": 7_200_000,
+          "cost_usd": 22.45,
+          "projected_month_end_usd": 48.12
+        },
+        "by_model": [{"model": "gpt-4o", "calls": 1100, "cost_usd": 21.10}, ...],
+        "by_task_type": [{"task_type": "report_generation", "calls": 420, "cost_usd": 14.03}, ...],
+        "by_report_type": [{"report_type": "appellate_research_brief", "calls": 180, "cost_usd": 8.41}, ...],
+        "by_user": [{"user_id": "...", "email": "...", "cases": 3, "calls": 150, "cost_usd": 4.22}, ...],
+        "daily": [{"date": "2026-02-14", "cost_usd": 1.22, "calls": 84}, ...]
+      }
+    """
+    user = await get_current_user(request)
+    if user.email not in ADMIN_EMAILS:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    now = datetime.now(timezone.utc)
+    if period == "week":
+        window_start = now - timedelta(days=7)
+    elif period == "all":
+        window_start = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    else:  # default month
+        window_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    window_end = now
+
+    match = {"created_at": {"$gte": window_start, "$lte": window_end}}
+
+    # --- totals ---
+    totals_pipeline = [
+        {"$match": match},
+        {"$group": {
+            "_id": None,
+            "calls": {"$sum": 1},
+            "successful_calls": {"$sum": {"$cond": ["$ok", 1, 0]}},
+            "failed_calls": {"$sum": {"$cond": ["$ok", 0, 1]}},
+            "input_tokens": {"$sum": "$input_tokens_est"},
+            "output_tokens": {"$sum": "$output_tokens_est"},
+            "cost_usd": {"$sum": "$cost_usd_est"},
+        }},
+    ]
+    totals_rows = await db.ai_usage.aggregate(totals_pipeline).to_list(1)
+    totals = totals_rows[0] if totals_rows else {
+        "calls": 0, "successful_calls": 0, "failed_calls": 0,
+        "input_tokens": 0, "output_tokens": 0, "cost_usd": 0.0,
+    }
+    totals.pop("_id", None)
+    totals["total_tokens"] = totals["input_tokens"] + totals["output_tokens"]
+    totals["cost_usd"] = round(totals["cost_usd"], 4)
+
+    # Project month-end cost linearly from current month spend
+    projected = None
+    if period == "month" and totals["cost_usd"] > 0:
+        days_elapsed = max(1, (now - window_start).days + 1)
+        days_in_month = 30  # sufficient rough denominator for projection card
+        projected = round(totals["cost_usd"] / days_elapsed * days_in_month, 2)
+    totals["projected_month_end_usd"] = projected
+
+    # --- by model ---
+    by_model = await db.ai_usage.aggregate([
+        {"$match": match},
+        {"$group": {"_id": "$model", "calls": {"$sum": 1}, "cost_usd": {"$sum": "$cost_usd_est"}, "tokens": {"$sum": "$total_tokens_est"}}},
+        {"$project": {"_id": 0, "model": "$_id", "calls": 1, "cost_usd": {"$round": ["$cost_usd", 4]}, "tokens": 1}},
+        {"$sort": {"cost_usd": -1}},
+    ]).to_list(20)
+
+    # --- by task_type ---
+    by_task = await db.ai_usage.aggregate([
+        {"$match": match},
+        {"$group": {"_id": "$task_type", "calls": {"$sum": 1}, "cost_usd": {"$sum": "$cost_usd_est"}}},
+        {"$project": {"_id": 0, "task_type": "$_id", "calls": 1, "cost_usd": {"$round": ["$cost_usd", 4]}}},
+        {"$sort": {"cost_usd": -1}},
+    ]).to_list(20)
+
+    # --- by report_type ---
+    by_report = await db.ai_usage.aggregate([
+        {"$match": {**match, "report_type": {"$ne": None}}},
+        {"$group": {"_id": "$report_type", "calls": {"$sum": 1}, "cost_usd": {"$sum": "$cost_usd_est"}}},
+        {"$project": {"_id": 0, "report_type": "$_id", "calls": 1, "cost_usd": {"$round": ["$cost_usd", 4]}}},
+        {"$sort": {"cost_usd": -1}},
+    ]).to_list(20)
+
+    # --- by user (join via case_id → user_id) ---
+    by_case = await db.ai_usage.aggregate([
+        {"$match": {**match, "case_id": {"$ne": None}}},
+        {"$group": {"_id": "$case_id", "calls": {"$sum": 1}, "cost_usd": {"$sum": "$cost_usd_est"}}},
+    ]).to_list(2000)
+
+    user_agg = {}
+    if by_case:
+        case_ids = [row["_id"] for row in by_case]
+        cases = await db.cases.find({"case_id": {"$in": case_ids}}, {"_id": 0, "case_id": 1, "user_id": 1}).to_list(len(case_ids))
+        case_to_user = {c["case_id"]: c.get("user_id") for c in cases}
+        for row in by_case:
+            uid = case_to_user.get(row["_id"])
+            if not uid:
+                continue
+            bucket = user_agg.setdefault(uid, {"calls": 0, "cost_usd": 0.0, "cases": set()})
+            bucket["calls"] += row["calls"]
+            bucket["cost_usd"] += row["cost_usd"]
+            bucket["cases"].add(row["_id"])
+
+    users_rows = []
+    if user_agg:
+        users_docs = await db.users.find({"user_id": {"$in": list(user_agg.keys())}}, {"_id": 0, "user_id": 1, "email": 1, "name": 1}).to_list(len(user_agg))
+        user_meta = {u["user_id"]: u for u in users_docs}
+        for uid, b in user_agg.items():
+            users_rows.append({
+                "user_id": uid,
+                "email": user_meta.get(uid, {}).get("email"),
+                "name": user_meta.get(uid, {}).get("name"),
+                "cases": len(b["cases"]),
+                "calls": b["calls"],
+                "cost_usd": round(b["cost_usd"], 4),
+            })
+        users_rows.sort(key=lambda r: r["cost_usd"], reverse=True)
+        users_rows = users_rows[:30]
+
+    # --- daily series (for sparkline) ---
+    daily = await db.ai_usage.aggregate([
+        {"$match": match},
+        {"$group": {
+            "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$created_at"}},
+            "calls": {"$sum": 1},
+            "cost_usd": {"$sum": "$cost_usd_est"},
+        }},
+        {"$project": {"_id": 0, "date": "$_id", "calls": 1, "cost_usd": {"$round": ["$cost_usd", 4]}}},
+        {"$sort": {"date": 1}},
+    ]).to_list(62)
+
+    return {
+        "period": period,
+        "window": {"start": window_start.isoformat(), "end": window_end.isoformat()},
+        "totals": totals,
+        "by_model": by_model,
+        "by_task_type": by_task,
+        "by_report_type": by_report,
+        "by_user": users_rows,
+        "daily": daily,
+        "pricing_note": "Costs are estimated locally using tiktoken (o200k_base) token counts and OpenAI's Feb 2026 published rates (gpt-4o $2.50/$10 per 1M input/output; gpt-4o-mini $0.15/$0.60 per 1M). Actual billing appears on the OpenAI dashboard.",
+    }

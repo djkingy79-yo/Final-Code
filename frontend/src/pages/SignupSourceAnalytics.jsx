@@ -6,6 +6,7 @@ import { TrendingUp, ArrowLeft, Users, Target, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import OpenAICostsPanel from "../components/OpenAICostsPanel";
 
 /**
  * /admin/analytics — Signup Source Conversion Dashboard
@@ -103,6 +104,9 @@ const SignupSourceAnalytics = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+        {/* OpenAI cost tracker */}
+        <OpenAICostsPanel />
+
         {/* Summary stat cards */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <Card data-testid="analytics-stat-total">

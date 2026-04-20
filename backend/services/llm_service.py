@@ -363,6 +363,22 @@ async def call_llm_structured(
                 continue
 
             logger.info(f"LLM success ({session_id}) with {provider}/{model_name} on attempt {idx+1}")
+            # Record token usage for admin cost dashboard (fire-and-forget).
+            try:
+                from services.ai_usage_tracker import record_usage
+                await record_usage(
+                    session_id=session_id,
+                    provider=provider,
+                    model=model_name,
+                    system_prompt=effective_system_prompt,
+                    user_prompt=effective_user_prompt,
+                    response_text=result,
+                    task_type=task_type,
+                    ok=True,
+                    attempt=idx + 1,
+                )
+            except Exception:
+                pass
             return {
                 "ok": True,
                 "content": result,
