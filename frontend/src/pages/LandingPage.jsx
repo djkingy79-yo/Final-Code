@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles } from "lucide-react";
+import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -178,6 +178,25 @@ const LandingPage = () => {
         </h1>
       </div>
 
+      {/* Mission quote — "Only 1 in 80" — sets forensic / advocacy tone above the fold */}
+      <div className="max-w-3xl mx-auto px-6 pt-3 pb-1">
+        <blockquote
+          className="relative rounded-xl border-l-4 border-blue-700 bg-blue-50/70 px-5 py-4 shadow-sm"
+          data-testid="landing-mission-quote"
+        >
+          <p
+            className="text-base sm:text-lg md:text-xl font-semibold text-slate-800 leading-snug"
+            style={{ fontFamily: "'Times New Roman', Times, serif" }}
+          >
+            &ldquo;Only 1 in 80 convicted Australians ever lodge an appeal.
+            This tool was built to change that.&rdquo;
+          </p>
+          <footer className="mt-2 text-xs sm:text-sm text-blue-800/90 font-medium tracking-wide">
+            &mdash; Debra King, Founder
+          </footer>
+        </blockquote>
+      </div>
+
       {/* Logo */}
       <div className="max-w-4xl mx-auto px-6 pt-1 pb-1 flex justify-center">
         <img src="/logo.png" alt="Appeal Case Manager" className="w-auto h-[320px] sm:h-[400px] object-contain" data-testid="landing-logo-top" />
@@ -192,6 +211,17 @@ const LandingPage = () => {
             <Link to="/terms" className="landing-notice-link underline ml-2 notice-white">Read full terms</Link>
           </p>
         </div>
+      </div>
+
+      {/* Framework currency pill — visible trust signal under the NOT LEGAL ADVICE banner */}
+      <div className="max-w-4xl mx-auto px-6 pt-2 pb-1 flex justify-center">
+        <span
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold shadow-sm"
+          data-testid="landing-framework-badge"
+        >
+          <Shield className="w-3.5 h-3.5" />
+          Legal Framework v2026.02 &middot; 79 Australian Acts manually verified
+        </span>
       </div>
 
       {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
