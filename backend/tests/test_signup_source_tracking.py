@@ -60,3 +60,23 @@ async def test_signup_sources_endpoint_rejects_non_admin():
         )
     # Either 401 (invalid token) or 403 (valid non-admin) — both prove the gate works.
     assert resp.status_code in (401, 403)
+
+
+@pytest.mark.asyncio
+async def test_track_visit_accepts_path_body():
+    """POST /api/track/visit should accept an optional {path} body without
+    crashing — even if DB insert fails, it must degrade gracefully with 200.
+    The `tracked` bool is True on success, False on graceful DB fallback."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
+        resp = await client.post("/api/track/visit", json={"path": "/success-stories"})
+    assert resp.status_code == 200
+    assert "tracked" in resp.json()
+
+
+@pytest.mark.asyncio
+async def test_track_visit_works_without_body():
+    """POST /api/track/visit should still work with no body (backwards compatible)."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
+        resp = await client.post("/api/track/visit")
+    assert resp.status_code == 200
+    assert "tracked" in resp.json()

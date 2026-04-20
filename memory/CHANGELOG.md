@@ -1,6 +1,17 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Conversion Rate Per Page (Efficiency Insight)
+- **New feature:** Analytics dashboard now shows **conversion rate** (signups ÷ page visits) alongside raw signup counts, colour-coded green ≥ 5% / amber 1–5% / red < 1%. Reveals which pages convert most *efficiently*, not just most raw signups. E.g. "Success Stories 12.5% green" vs "Landing modal 0.48% red" tells a very different story from raw counts alone.
+- **Backend:** `GET /api/admin/signup-sources` now joins signups with `visits.page` aggregation and returns `visits` + `conversion_rate` per source. A `SOURCE_TO_PATH` map translates CTA labels → originating page paths. Multi-page sources (PageCTA variants) use total-tracked-visits as denominator. Also returns `total_visits_tracked` top-level.
+- **`POST /api/track/visit` upgraded** to accept optional `{path}` body (backwards compatible — still works without body). Normalises `/success-stories` → `success-stories` for consistent aggregation with the SOURCE_TO_PATH map. Content-length guarded so empty-body calls don't crash.
+- **New `<PageViewTracker />` component** mounted at app root in `App.js`. Fires `POST /api/track/visit` with the current path on every route change. Debounced (per-path per-session) to prevent double-counting on React StrictMode / re-renders. Fire-and-forget — silently swallows errors.
+- **Dashboard UI upgrades:** 4th stat card "Page Visits (tracked)" with overall conversion %. Conversion rate badge on each source row with colour-coded tier. Updated legend/explainer describing the green/amber/red bands.
+- **Tests:** +2 pytest tests for `/api/track/visit` (with path body, without body). 6/6 tests passing in `backend/tests/test_signup_source_tracking.py`.
+- **Verified live:** Seeded test data produced expected conversion rates — Success Stories 12.5% (green), How To Use 5% (green boundary), About 1% (amber), Appeal Stats 0.67% (red), Modal/Landing 0.48% (red). Test data purged.
+- **Mobile bundle resynced** (yarn build ✔ + cap sync ✔).
+
+
 ## 20 Apr 2026 — Analytics Dashboard + CaseChat Bubble Fix + Gemini Key Stored
 - **New admin page `/admin/analytics`** (`/app/frontend/src/pages/SignupSourceAnalytics.jsx`). Admin-only. Shows a ranked bar chart of all signup conversion sources with prettified labels ("Modal / Landing" instead of raw `modal-landing`), 3 summary stat cards (Total Users, Tracked Sign-ups with % of total, Unique Sources), gradient blue bars proportional to the max, hover tooltip with first/last seen dates, empty state when no data, and an explainer card. New tile added to Admin Dashboard (`/admin/dashboard`) linking to it. Verified live — 5 bars rendered correctly with seeded test data, then seeds cleaned up.
 - **CaseChat bubble disappearance fixed** (`/app/frontend/src/components/CaseChat.jsx`). Root cause: the chat button was at `z-40 bottom-6 left-6` but `InstallPrompt` (globally rendered from `App.js`) uses `z-50 bottom-20 left-4 right-4` on mobile, completely covering the chat toggle. Raised CaseChat to `z-[60]` (both the toggle button and the expanded panel) so it sits above InstallPrompt.

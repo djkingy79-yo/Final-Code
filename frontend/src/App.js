@@ -9,6 +9,7 @@ import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import InstallPrompt from "./components/InstallPrompt";
+import PageViewTracker from "./components/PageViewTracker";
 import TermsAcceptance from "./components/TermsAcceptance";
 import { FastScrollTop, ScrollToTopOnNav } from "./components/FastScrollTop";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -713,6 +714,7 @@ function App() {
         <BrowserRouter>
           <OfflineBanner />
           <ScrollToTopOnNav />
+          <PageViewTracker />
           <AppRouter />
           <FooterWrapper />
           <FastScrollTop />

@@ -50,21 +50,39 @@ class SuccessStorySubmission(BaseModel):
 
 @router.post("/track/visit")
 async def track_visit(request: Request):
-    """Track a site visit"""
+    """Track a site visit. Optionally accepts {page, path} in body to attribute
+    the visit to a specific page for conversion-rate analytics."""
     try:
         # Get visitor info
         forwarded_for = request.headers.get("X-Forwarded-For", "")
         ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.client.host if request.client else "unknown"
         user_agent = request.headers.get("User-Agent", "unknown")
         referer = request.headers.get("Referer", "direct")
-        
+
+        # Optional body with page/path attribution
+        page = "landing"
+        path = None
+        try:
+            if request.headers.get("content-length") and int(request.headers.get("content-length", "0")) > 0:
+                body = await request.json()
+                if isinstance(body, dict):
+                    raw_path = body.get("path") or body.get("page") or ""
+                    if isinstance(raw_path, str):
+                        path = raw_path.strip()[:128] or None
+                    if path:
+                        # Normalise to a friendly page label (e.g. "/success-stories" → "success-stories")
+                        page = path.lstrip("/").split("?")[0].split("#")[0] or "landing"
+        except Exception:
+            pass  # Missing or malformed body — fall through with defaults
+
         # Store visit
         visit = {
             "ip_hash": hash(ip) % 10000000,  # Hash IP for privacy
             "user_agent": user_agent[:200],  # Truncate
             "referer": referer[:500],
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "page": "landing"
+            "page": page,
+            "path": path,
         }
         await db.visits.insert_one(visit)
         
@@ -392,8 +410,50 @@ async def get_signup_sources(request: Request):
     ]
     sources = await db.users.aggregate(pipeline).to_list(100)
 
+    # Map CTA source labels → the page path where that CTA lives.
+    # Used to compute visits-to-signup conversion rate per originating page.
+    SOURCE_TO_PATH = {
+        "about-get-started": "about",
+        "how-to-use-get-started": "how-to-use",
+        "success-stories-get-started": "success-stories",
+        "statistics-get-started": "statistics",
+        "appeal-stats-signin": "appeal-statistics",
+        "modal-landing": "landing",
+        "pagecta-default": "*",       # PageCTA is used on multiple pages
+        "pagecta-sticky": "*",
+        "pagecta-floating": "*",
+        "pagecta-inline": "*",
+    }
+
+    # Fetch total visits per page (single aggregation, indexed-friendly for small sets)
+    visit_pipeline = [
+        {"$match": {"page": {"$exists": True, "$ne": None}}},
+        {"$group": {"_id": "$page", "count": {"$sum": 1}}},
+    ]
+    visit_rows = await db.visits.aggregate(visit_pipeline).to_list(500)
+    visits_by_page = {v["_id"]: v["count"] for v in visit_rows if v.get("_id")}
+    total_visits_tracked = sum(visits_by_page.values())
+
+    # Enrich each source with visits + conversion rate
+    for s in sources:
+        src = s["source"]
+        page = SOURCE_TO_PATH.get(src, "unknown")
+        if page == "*":
+            # Multi-page CTA — use the total across all pages as the denominator
+            visits = total_visits_tracked or None
+        elif page == "unknown":
+            visits = None
+        else:
+            visits = visits_by_page.get(page)
+        s["page"] = page
+        s["visits"] = visits
+        s["conversion_rate"] = (
+            round(s["count"] / visits * 100, 2) if visits and visits > 0 else None
+        )
+
     return {
         "total_users": total_users,
         "users_with_source": users_with_source,
+        "total_visits_tracked": total_visits_tracked,
         "sources": sources,
     }

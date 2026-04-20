@@ -73,6 +73,7 @@ const SignupSourceAnalytics = () => {
   const sources = data?.sources || [];
   const totalUsers = data?.total_users || 0;
   const usersWithSource = data?.users_with_source || 0;
+  const totalVisits = data?.total_visits_tracked || 0;
   const maxCount = sources.length > 0 ? Math.max(...sources.map((s) => s.count)) : 1;
 
   return (
@@ -103,7 +104,7 @@ const SignupSourceAnalytics = () => {
 
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
         {/* Summary stat cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <Card data-testid="analytics-stat-total">
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs">
@@ -123,6 +124,19 @@ const SignupSourceAnalytics = () => {
               </p>
             </CardHeader>
           </Card>
+          <Card data-testid="analytics-stat-visits">
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-1 text-xs">
+                <TrendingUp className="w-3.5 h-3.5" /> Page Visits (tracked)
+              </CardDescription>
+              <CardTitle className="text-3xl font-bold">{totalVisits.toLocaleString()}</CardTitle>
+              <p className="text-xs text-slate-500 mt-1">
+                {totalVisits > 0
+                  ? `overall ${((usersWithSource / totalVisits) * 100).toFixed(2)}% convert`
+                  : "tracking starts on deploy"}
+              </p>
+            </CardHeader>
+          </Card>
           <Card data-testid="analytics-stat-unique-sources">
             <CardHeader className="pb-2">
               <CardDescription className="flex items-center gap-1 text-xs">
@@ -138,7 +152,10 @@ const SignupSourceAnalytics = () => {
           <CardHeader>
             <CardTitle className="text-lg">Top Converting Pages / CTAs</CardTitle>
             <CardDescription>
-              Ranked by number of new sign-ups attributed. Hover over a bar for first/last seen dates.
+              Ranked by number of new sign-ups attributed. Each row shows the conversion rate
+              (signups ÷ page visits) — <span className="text-emerald-600 font-semibold">green ≥ 5%</span>,
+              <span className="text-amber-600 font-semibold"> amber 1–5%</span>,
+              <span className="text-red-600 font-semibold"> red &lt; 1%</span>. Hover a row for raw counts + dates.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -154,11 +171,17 @@ const SignupSourceAnalytics = () => {
               <div className="space-y-3">
                 {sources.map((s, idx) => {
                   const pct = maxCount > 0 ? (s.count / maxCount) * 100 : 0;
+                  const conv = s.conversion_rate;
+                  const convColor =
+                    conv == null ? "text-slate-400"
+                    : conv >= 5 ? "text-emerald-600"
+                    : conv >= 1 ? "text-amber-600"
+                    : "text-red-600";
                   return (
                     <div
                       key={s.source}
                       className="group"
-                      title={`First: ${s.first?.slice(0, 10) || "?"} · Last: ${s.last?.slice(0, 10) || "?"}`}
+                      title={`First: ${s.first?.slice(0, 10) || "?"} · Last: ${s.last?.slice(0, 10) || "?"}${s.visits != null ? ` · ${s.visits} visits` : ""}`}
                       data-testid={`analytics-bar-${idx}`}
                     >
                       <div className="flex items-center justify-between mb-1">
@@ -173,9 +196,20 @@ const SignupSourceAnalytics = () => {
                             {s.source}
                           </span>
                         </div>
-                        <span className="text-sm font-bold text-blue-700 tabular-nums shrink-0">
-                          {s.count}
-                        </span>
+                        <div className="flex items-center gap-3 shrink-0 tabular-nums">
+                          {conv != null && (
+                            <span
+                              className={`text-xs font-semibold ${convColor}`}
+                              data-testid={`analytics-conv-${idx}`}
+                              title={`${s.count} signups / ${s.visits} visits`}
+                            >
+                              {conv}%
+                            </span>
+                          )}
+                          <span className="text-sm font-bold text-blue-700">
+                            {s.count}
+                          </span>
+                        </div>
                       </div>
                       <div className="h-7 bg-slate-100 rounded overflow-hidden">
                         <div
