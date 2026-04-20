@@ -62,6 +62,12 @@ def test_token_estimation_empty_returns_zero():
     ("barrister-9f87a1b2c3d4-strategy", "9f87a1b2c3d4"),
     ("classify_deadbeef1234", "deadbeef1234"),
     ("draft_cafebabe1234_full_detailed", "cafebabe1234"),
+    # Current case_<hex> format (production case_ids)
+    ("rpt_gen_case_ec9b7141be1b_quick_summary", "case_ec9b7141be1b"),
+    ("rpt_gen_case_ec9b7141be1b", "case_ec9b7141be1b"),
+    ("barrister-case_ec9b7141be1b-strategy", "case_ec9b7141be1b"),
+    ("classify_case_ec9b7141be1b", "case_ec9b7141be1b"),
+    ("draft_case_ec9b7141be1b_full_detailed", "case_ec9b7141be1b"),
     ("", None),
     ("random-session", None),
 ])
@@ -73,6 +79,9 @@ def test_case_id_extraction(sid, expected):
     ("barrister-abc-strategy", "appellate_research_brief"),
     ("draft_cafebabe1234_full_detailed", "full_detailed"),
     ("rpt_gen_9f87a1b2-c3d4-4abc-8ef0-123456789abc_quick_summary", "quick_summary"),
+    # case_<hex> format
+    ("rpt_gen_case_ec9b7141be1b_quick_summary", "quick_summary"),
+    ("draft_case_ec9b7141be1b_extensive_log", "extensive_log"),
     ("rpt_detect_abc", "detection"),
     ("classify_xyz", "grounds_classification"),
     ("extract_abc", "document_extract"),

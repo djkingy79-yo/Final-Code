@@ -203,8 +203,30 @@ async def translate_report(case_id: str, req: TranslateRequest, request: Request
     return {"status": "started", "task_id": task_id, "language_name": target_lang}
 
 
+async def _persist_task(task_key: str, state: dict) -> None:
+    """Mirror the in-memory translation task snapshot into Mongo so the
+    status endpoint can recover after a backend restart wipes memory."""
+    try:
+        await db.translation_tasks.replace_one(
+            {"task_key": task_key},
+            {
+                "task_key": task_key,
+                "updated_at": datetime.now(timezone.utc),
+                **state,
+            },
+            upsert=True,
+        )
+    except Exception as e:
+        logger.warning(f"translation_tasks persist failed for {task_key}: {e}")
+
+
 async def _run_translation_background(*, task_key, task_id, report_id, case_id, user_id, language, target_lang, analysis):
-    """Background coroutine that translates all chunks and caches the result."""
+    """Background coroutine that translates all chunks and caches the result.
+
+    Chunks are translated with bounded concurrency (semaphore=3) so a 10-chunk
+    report completes in ~1/3 the wall time of the previous sequential loop
+    without exceeding the user's OpenAI per-minute rate limits.
+    """
     try:
         system_prompt = (
             f"You are a professional legal document translator. Translate the following Australian criminal law appeal report "
@@ -233,27 +255,58 @@ async def _run_translation_background(*, task_key, task_id, report_id, case_id, 
             if current:
                 chunks.append(current)
 
-        _translate_tasks[task_key]["total_chunks"] = len(chunks)
+        total_chunks = len(chunks)
+        _translate_tasks[task_key]["total_chunks"] = total_chunks
+        await _persist_task(task_key, {
+            "task_id": task_id, "status": "running", "progress": 0,
+            "total_chunks": total_chunks, "report_id": report_id,
+            "case_id": case_id, "user_id": user_id, "language": language,
+            "language_name": target_lang,
+        })
 
-        translated_parts = []
-        for i, chunk in enumerate(chunks):
-            user_prompt = f"Translate the following into {target_lang}:\n\n{chunk}"
-            result = await call_llm_structured(
-                system_prompt=system_prompt,
-                user_prompt=user_prompt,
-                session_id=f"translate_{report_id}_{language}_{i}",
-                task_type="general",
-                max_tokens=16384,
-                timeout_seconds=180,
-                require_json=False,
-            )
-            if not result["ok"]:
-                _translate_tasks[task_key] = {"task_id": task_id, "status": "failed", "error": result.get("error", "LLM call failed")}
-                return
-            translated_parts.append(result["content"])
-            _translate_tasks[task_key]["progress"] = i + 1
+        translated_parts: list = [None] * total_chunks
+        progress_counter = {"done": 0}
+        # Concurrency limit — 3 parallel chunks is a sweet spot: ~3x wall-time
+        # reduction without tripping OpenAI per-minute token rate limits.
+        sem = asyncio.Semaphore(3)
 
-        translated_content = "\n\n".join(translated_parts)
+        async def translate_chunk(index: int, chunk: str):
+            async with sem:
+                user_prompt = f"Translate the following into {target_lang}:\n\n{chunk}"
+                result = await call_llm_structured(
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    session_id=f"translate_{report_id}_{language}_{index}",
+                    task_type="general",
+                    max_tokens=16384,
+                    timeout_seconds=180,
+                    require_json=False,
+                )
+                if not result["ok"]:
+                    raise RuntimeError(result.get("error", "LLM call failed"))
+                translated_parts[index] = result["content"]
+                progress_counter["done"] += 1
+                _translate_tasks[task_key]["progress"] = progress_counter["done"]
+                await _persist_task(task_key, {
+                    "task_id": task_id, "status": "running",
+                    "progress": progress_counter["done"],
+                    "total_chunks": total_chunks, "report_id": report_id,
+                    "case_id": case_id, "user_id": user_id, "language": language,
+                    "language_name": target_lang,
+                })
+
+        try:
+            await asyncio.gather(*(translate_chunk(i, c) for i, c in enumerate(chunks)))
+        except Exception as chunk_err:
+            _translate_tasks[task_key] = {"task_id": task_id, "status": "failed", "error": str(chunk_err)[:200]}
+            await _persist_task(task_key, {
+                "task_id": task_id, "status": "failed", "error": str(chunk_err)[:200],
+                "report_id": report_id, "case_id": case_id, "user_id": user_id,
+                "language": language, "language_name": target_lang,
+            })
+            return
+
+        translated_content = "\n\n".join(p or "" for p in translated_parts)
 
         # Cache translation
         await db.report_translations.replace_one(
@@ -271,11 +324,22 @@ async def _run_translation_background(*, task_key, task_id, report_id, case_id, 
         )
 
         _translate_tasks[task_key] = {"task_id": task_id, "status": "completed", "language": language, "language_name": target_lang}
-        logger.info(f"Translation completed: {report_id} -> {target_lang} ({len(chunks)} chunks)")
+        await _persist_task(task_key, {
+            "task_id": task_id, "status": "completed",
+            "language": language, "language_name": target_lang,
+            "report_id": report_id, "case_id": case_id, "user_id": user_id,
+            "progress": total_chunks, "total_chunks": total_chunks,
+        })
+        logger.info(f"Translation completed: {report_id} -> {target_lang} ({total_chunks} chunks)")
 
     except Exception as e:
         logger.error(f"Background translation failed: {e}")
         _translate_tasks[task_key] = {"task_id": task_id, "status": "failed", "error": str(e)[:200]}
+        await _persist_task(task_key, {
+            "task_id": task_id, "status": "failed", "error": str(e)[:200],
+            "report_id": report_id, "case_id": case_id, "user_id": user_id,
+            "language": language, "language_name": target_lang,
+        })
 
 
 @translate_router.get("/cases/{case_id}/translate/status")
@@ -300,6 +364,24 @@ async def translate_status(case_id: str, report_id: str, language: str, request:
     # Check in-memory task status
     task = _translate_tasks.get(task_key)
     if not task:
+        # In-memory state lost (e.g. backend was restarted mid-translation).
+        # Fall back to the persisted snapshot so the UI can keep polling.
+        persisted = await db.translation_tasks.find_one({"task_key": task_key}, {"_id": 0})
+        if persisted:
+            status = persisted.get("status")
+            if status == "failed":
+                return {"status": "failed", "error": persisted.get("error", "Unknown error")}
+            if status == "completed":
+                # Cached translation missing but task marked complete — shouldn't happen,
+                # but treat as completed-without-cache so the user sees a clean failure.
+                return {"status": "failed", "error": "Translation completed but cache is missing. Please retry."}
+            # Still running — surface last persisted progress
+            return {
+                "status": "running",
+                "progress": persisted.get("progress", 0),
+                "total_chunks": persisted.get("total_chunks", 0),
+                "recovered": True,
+            }
         return {"status": "not_found"}
 
     if task["status"] == "failed":

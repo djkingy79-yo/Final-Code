@@ -69,8 +69,11 @@ const ReportTranslator = ({ caseId, reportId }) => {
         toast.info(`Translating to ${response.data.language_name}... This runs in the background.`);
         const langName = response.data.language_name;
         let attempts = 0;
-        const maxAttempts = 120;
-        const pollInterval = 4000;
+        // 25-minute ceiling: 300 × 5s. Large Appellate Research Briefs can
+        // have 15–25 chunks; with 3-way concurrency on the backend, 25 min is
+        // a comfortable upper bound even for the longest report.
+        const maxAttempts = 300;
+        const pollInterval = 5000;
 
         const poll = async () => {
           attempts++;

@@ -57,6 +57,7 @@ import LegalFrameworkViewer from "../components/LegalFrameworkViewer";
 import DocumentsSection from "../components/DocumentsSection";
 import NotesSection from "../components/NotesSection";
 import ReportsSection from "../components/ReportsSection";
+import AiCostBadge from "../components/AiCostBadge";
 import QuickExport from "../components/QuickExport";
 import DocumentBundler from "../components/DocumentBundler";
 import ShareCaseModal from "../components/ShareCaseModal";
@@ -1665,6 +1666,7 @@ const CaseDetail = ({ user }) => {
 
           {/* Reports Tab */}
           <TabsContent value="reports" className="space-y-4 legal-content" data-tab-content>
+            <AiCostBadge caseId={caseId} />
             <ReportsSection
               caseId={caseId}
               reports={reports}

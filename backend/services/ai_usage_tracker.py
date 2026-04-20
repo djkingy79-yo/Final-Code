@@ -80,10 +80,18 @@ def _estimate_tokens(text: str) -> int:
 # across the codebase. Patterns: `rpt_gen_{case_id}`, `barrister-{case_id}-*`,
 # `classify_{case_id}`, `draft_{case_id}_{report_type}` etc.
 # ---------------------------------------------------------------------------
+# Case IDs in this codebase take two shapes:
+#   (a) Legacy UUID-style: `9f87a1b2-c3d4-4abc-8ef0-123456789abc`
+#   (b) Current app format: `case_` + 12 hex chars (e.g. `case_ec9b7141be1b`)
+# Session IDs embed the case_id directly after the task prefix.
 _CASE_ID_PATTERNS = [
-    # UUID-style: 8-4-4-4-12
+    # UUID-style legacy case_ids
     re.compile(r"^(?:rpt_gen|rpt_detect|classify|verify|extract|submit|draft)_([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})", re.I),
     re.compile(r"^barrister-([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})", re.I),
+    # Current `case_<12hex>` format
+    re.compile(r"^(?:rpt_gen|rpt_detect|classify|verify|extract|submit)_(case_[a-f0-9]{6,})(?:_|$)", re.I),
+    re.compile(r"^barrister-(case_[a-f0-9]{6,})-[a-z]", re.I),
+    re.compile(r"^draft_(case_[a-f0-9]{6,})_", re.I),
     # Compact hex IDs (>=8 chars) followed by an underscore or end-of-section hyphen
     re.compile(r"^(?:rpt_gen|rpt_detect|classify|verify|extract|submit)_([a-f0-9]{8,})(?:_|$)", re.I),
     re.compile(r"^barrister-([a-f0-9]{8,})-[a-z]", re.I),
@@ -113,6 +121,11 @@ def _extract_report_type(session_id: str) -> Optional[str]:
         return None
     if session_id.startswith("barrister-"):
         return "appellate_research_brief"
+    # Current `case_<hex>` format
+    m = re.match(r"^(?:draft|rpt_gen)_case_[a-f0-9]+_(.+)$", session_id, re.I)
+    if m:
+        return m.group(1)
+    # Legacy UUID / compact hex format
     m = re.match(r"^(?:draft|rpt_gen)_[a-f0-9\-]{8,}_(.+)$", session_id)
     if m:
         return m.group(1)

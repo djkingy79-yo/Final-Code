@@ -143,3 +143,46 @@ async def delete_case(case_id: str, request: Request):
         raise HTTPException(status_code=404, detail="Case not found")
     
     return {"message": "Case deleted"}
+
+
+@router.get("/{case_id}/ai-cost")
+async def get_case_ai_cost(case_id: str, request: Request):
+    """Return the estimated AI cost for this case, broken down by report_type.
+
+    Uses the `ai_usage` collection populated by services.ai_usage_tracker.
+    Owner-only: non-owners of the case get 404 to avoid leaking data.
+    """
+    user = await get_current_user(request)
+
+    # Authorise
+    case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0, "case_id": 1})
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    totals_rows = await db.ai_usage.aggregate([
+        {"$match": {"case_id": case_id}},
+        {"$group": {
+            "_id": None,
+            "calls": {"$sum": 1},
+            "cost_usd": {"$sum": "$cost_usd_est"},
+            "input_tokens": {"$sum": "$input_tokens_est"},
+            "output_tokens": {"$sum": "$output_tokens_est"},
+        }},
+    ]).to_list(1)
+    totals = totals_rows[0] if totals_rows else {"calls": 0, "cost_usd": 0.0, "input_tokens": 0, "output_tokens": 0}
+    totals.pop("_id", None)
+    totals["cost_usd"] = round(totals["cost_usd"], 4)
+
+    by_report = await db.ai_usage.aggregate([
+        {"$match": {"case_id": case_id, "report_type": {"$ne": None}}},
+        {"$group": {"_id": "$report_type", "calls": {"$sum": 1}, "cost_usd": {"$sum": "$cost_usd_est"}}},
+        {"$project": {"_id": 0, "report_type": "$_id", "calls": 1, "cost_usd": {"$round": ["$cost_usd", 4]}}},
+        {"$sort": {"cost_usd": -1}},
+    ]).to_list(20)
+
+    return {
+        "case_id": case_id,
+        "totals": totals,
+        "by_report_type": by_report,
+        "note": "Estimated cost based on locally counted tokens and OpenAI's Feb 2026 rate card. Actual billing on your OpenAI dashboard.",
+    }

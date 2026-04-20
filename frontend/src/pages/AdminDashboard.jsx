@@ -166,7 +166,99 @@ const AdminDashboard = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        
+
+        {/* Pending PayID Payments Section — moved to top so admin sees new transfers first */}
+        <Card className="mb-8" data-testid="pending-payments-section">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-emerald-600" />
+                  Pending PayID Payments
+                </CardTitle>
+                <CardDescription>Bank transfers awaiting verification</CardDescription>
+              </div>
+              <Button
+                size="sm"
+                onClick={fetchPendingPayments}
+                disabled={refreshingPayments}
+                className="shrink-0 bg-blue-700 text-white hover:bg-blue-600"
+                data-testid="refresh-payments-btn"
+              >
+                {refreshingPayments ? (
+                  <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Refreshing...</>
+                ) : (
+                  "Refresh"
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {pendingPayments.length === 0 ? (
+              <div className="text-center py-8 text-slate-600">
+                <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-600 opacity-50" />
+                <p>No pending payments to verify</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {pendingPayments.map((payment) => (
+                  <div
+                    key={payment.reference}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="font-mono font-bold text-slate-900">{payment.reference}</span>
+                        <Badge variant={payment.status === "pending_verification" ? "default" : "secondary"}>
+                          {payment.status === "pending_verification" ? (
+                            <><Clock className="w-3 h-3 mr-1" /> Awaiting Verification</>
+                          ) : (
+                            <><Clock className="w-3 h-3 mr-1" /> Pending</>
+                          )}
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-slate-600">
+                        <div>
+                          <span className="text-xs opacity-75">Amount:</span>
+                          <p className="font-semibold text-slate-900">${payment.amount} AUD</p>
+                        </div>
+                        <div>
+                          <span className="text-xs opacity-75">Feature:</span>
+                          <p className="text-slate-900">{payment.feature_type?.replace(/_/g, ' ')}</p>
+                        </div>
+                        <div>
+                          <span className="text-xs opacity-75">Case:</span>
+                          <p className="text-slate-900 truncate">{payment.case_id?.slice(0, 8)}...</p>
+                        </div>
+                        <div>
+                          <span className="text-xs opacity-75">Created:</span>
+                          <p className="text-slate-900">{new Date(payment.created_at).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => confirmPayment(payment.reference)}
+                      disabled={confirmingRef === payment.reference}
+                      className="bg-blue-700 hover:bg-blue-600 text-white shrink-0"
+                      data-testid={`confirm-payment-${payment.reference}`}
+                    >
+                      {confirmingRef === payment.reference ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Confirming...</>
+                      ) : (
+                        <><CheckCircle className="w-4 h-4 mr-2" /> Confirm Payment</>
+                      )}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="mt-4 p-4 bg-blue-600 rounded-lg text-sm text-white font-bold" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+              <strong>How to verify:</strong> Check your bank statement for incoming transfers with the reference code shown.
+              Once you confirm receipt, click "Confirm Payment" to unlock the feature for the user.
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Live Visitor Stats - Prominent Section */}
         <Card className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
           <CardHeader>
@@ -485,98 +577,6 @@ const AdminDashboard = () => {
               </div>
             </div>
             <p className="text-xs text-slate-600 mt-4 text-center">Last 14 days</p>
-          </CardContent>
-        </Card>
-
-        {/* Pending PayID Payments Section */}
-        <Card className="mt-8" data-testid="pending-payments-section">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-emerald-600" />
-                  Pending PayID Payments
-                </CardTitle>
-                <CardDescription>Bank transfers awaiting verification</CardDescription>
-              </div>
-              <Button 
-                size="sm" 
-                onClick={fetchPendingPayments}
-                disabled={refreshingPayments}
-                className="shrink-0 bg-blue-700 text-white hover:bg-blue-600"
-                data-testid="refresh-payments-btn"
-              >
-                {refreshingPayments ? (
-                  <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" />Refreshing...</>
-                ) : (
-                  "Refresh"
-                )}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {pendingPayments.length === 0 ? (
-              <div className="text-center py-8 text-slate-600">
-                <CheckCircle className="w-12 h-12 mx-auto mb-3 text-emerald-600 opacity-50" />
-                <p>No pending payments to verify</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {pendingPayments.map((payment) => (
-                  <div 
-                    key={payment.reference} 
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className="font-mono font-bold text-slate-900">{payment.reference}</span>
-                        <Badge variant={payment.status === "pending_verification" ? "default" : "secondary"}>
-                          {payment.status === "pending_verification" ? (
-                            <><Clock className="w-3 h-3 mr-1" /> Awaiting Verification</>
-                          ) : (
-                            <><Clock className="w-3 h-3 mr-1" /> Pending</>
-                          )}
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-slate-600">
-                        <div>
-                          <span className="text-xs opacity-75">Amount:</span>
-                          <p className="font-semibold text-slate-900">${payment.amount} AUD</p>
-                        </div>
-                        <div>
-                          <span className="text-xs opacity-75">Feature:</span>
-                          <p className="text-slate-900">{payment.feature_type?.replace(/_/g, ' ')}</p>
-                        </div>
-                        <div>
-                          <span className="text-xs opacity-75">Case:</span>
-                          <p className="text-slate-900 truncate">{payment.case_id?.slice(0, 8)}...</p>
-                        </div>
-                        <div>
-                          <span className="text-xs opacity-75">Created:</span>
-                          <p className="text-slate-900">{new Date(payment.created_at).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => confirmPayment(payment.reference)}
-                      disabled={confirmingRef === payment.reference}
-                      className="bg-blue-700 hover:bg-blue-600 text-white shrink-0"
-                      data-testid={`confirm-payment-${payment.reference}`}
-                    >
-                      {confirmingRef === payment.reference ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Confirming...</>
-                      ) : (
-                        <><CheckCircle className="w-4 h-4 mr-2" /> Confirm Payment</>
-                      )}
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className="mt-4 p-4 bg-blue-600 rounded-lg text-sm text-white font-bold" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
-              <strong>How to verify:</strong> Check your bank statement for incoming transfers with the reference code shown. 
-              Once you confirm receipt, click "Confirm Payment" to unlock the feature for the user.
-            </div>
           </CardContent>
         </Card>
 
