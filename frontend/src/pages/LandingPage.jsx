@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles, Shield } from "lucide-react";
+import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles, BadgeCheck } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -213,15 +213,75 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Framework currency pill — visible trust signal under the NOT LEGAL ADVICE banner */}
-      <div className="max-w-4xl mx-auto px-6 pt-2 pb-1 flex justify-center">
-        <span
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-semibold shadow-sm"
+      {/* Framework currency seal — two-tone legal-verification mark under the NOT LEGAL ADVICE banner */}
+      <div className="max-w-4xl mx-auto px-6 pt-3 pb-1 flex justify-center">
+        <div
+          className="inline-flex items-stretch rounded-xl overflow-hidden shadow-lg"
           data-testid="landing-framework-badge"
+          role="img"
+          aria-label="Legal Framework v2026.02 — 79 Australian Acts manually verified"
+          style={{
+            border: "1px solid rgba(15, 23, 42, 0.12)",
+            WebkitPrintColorAdjust: "exact",
+            printColorAdjust: "exact",
+          }}
         >
-          <Shield className="w-3.5 h-3.5" />
-          Legal Framework v2026.02 &middot; 79 Australian Acts manually verified
-        </span>
+          {/* Left tag — navy seal with checkmark (inline styles defeat forced-light-mode) */}
+          <div
+            className="flex items-center gap-3 px-4 sm:px-5 py-3"
+            style={{
+              background: "linear-gradient(135deg, #0b1e3f 0%, #132a5a 60%, #1e3a8a 100%)",
+              color: "#ffffff",
+              WebkitPrintColorAdjust: "exact",
+              printColorAdjust: "exact",
+            }}
+          >
+            <BadgeCheck
+              className="w-7 h-7 sm:w-8 sm:h-8 shrink-0"
+              strokeWidth={2.2}
+              style={{ color: "#fbbf24" }}
+            />
+            <div className="flex flex-col leading-none">
+              <span
+                className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] font-semibold"
+                style={{ color: "#fde68a" }}
+              >
+                Framework
+              </span>
+              <span
+                className="text-sm sm:text-base font-bold tracking-wide mt-1"
+                style={{ fontFamily: "'Times New Roman', Times, serif", color: "#ffffff", letterSpacing: "0.08em" }}
+              >
+                VERIFIED
+              </span>
+            </div>
+          </div>
+          {/* Divider notch */}
+          <div
+            aria-hidden="true"
+            style={{
+              width: "1px",
+              background: "linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.18), transparent)",
+            }}
+          />
+          {/* Right tag — headline count + version + provenance */}
+          <div
+            className="flex items-center gap-3 px-4 sm:px-5 py-3"
+            style={{ backgroundColor: "#ffffff", WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+          >
+            <div className="flex flex-col leading-tight">
+              <span
+                className="text-base sm:text-lg font-bold"
+                style={{ color: "#0f172a", fontFamily: "'Times New Roman', Times, serif" }}
+              >
+                79 Australian Acts
+              </span>
+              <span className="text-[11px] sm:text-xs font-medium mt-0.5" style={{ color: "#475569" }}>
+                v2026.02 &middot; 9 jurisdictions &middot; manually verified
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
