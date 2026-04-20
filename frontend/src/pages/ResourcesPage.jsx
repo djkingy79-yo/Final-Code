@@ -14,6 +14,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
+import PageLogo from "../components/PageLogo";
 
 const ResourcesPage = () => {
   const navigate = useNavigate();
@@ -68,6 +69,8 @@ const ResourcesPage = () => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         {/* Intro */}

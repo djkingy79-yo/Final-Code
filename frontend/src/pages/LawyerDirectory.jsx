@@ -9,6 +9,7 @@ import { Badge } from "../components/ui/badge";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
+import PageLogo from "../components/PageLogo";
 
 const lawyerResources = [
   {
@@ -290,6 +291,8 @@ const LawyerDirectory = () => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">

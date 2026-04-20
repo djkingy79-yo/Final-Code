@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API } from "../App";
 import { toast } from "sonner";
+import PageLogo from "../components/PageLogo";
 
 const successStories = [
   {
@@ -276,6 +277,8 @@ const SuccessStories = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero */}
       <section className="py-8 px-6 bg-white border-b border-slate-100">

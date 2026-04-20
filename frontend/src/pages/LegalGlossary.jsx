@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import PageLogo from "../components/PageLogo";
 
 // Categorised glossary with more comprehensive terms
 const glossaryCategories = [
@@ -661,6 +662,8 @@ const LegalGlossary = () => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Hero Section with Image */}
       <section className="relative py-8 px-6 overflow-hidden">

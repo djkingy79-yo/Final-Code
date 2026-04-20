@@ -7,6 +7,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
 import InstallPrompt from "./components/InstallPrompt";
 import TermsAcceptance from "./components/TermsAcceptance";
 import { FastScrollTop, ScrollToTopOnNav } from "./components/FastScrollTop";
@@ -204,6 +205,8 @@ Thanks.`;
           localStorage.setItem("session_token", response.data.session_token);
           localStorage.setItem("auth_user", JSON.stringify(response.data));
           sessionStorage.removeItem("auth_retry_count");
+          const firstName = (response.data.name || response.data.email || "").split(" ")[0] || "there";
+          toast.success(`Welcome back, ${firstName} — redirecting to your dashboard…`, { duration: 1500 });
           navigate("/dashboard", { replace: true, state: { user: response.data } });
           return;
         }

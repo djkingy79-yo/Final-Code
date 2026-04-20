@@ -20,6 +20,7 @@ import { API } from "../App";
 import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 import AssessmentNote from "../components/AssessmentNote";
+import PageLogo from "../components/PageLogo";
 
 const CompareCasesPage = ({ user }) => {
   const navigate = useNavigate();
@@ -218,6 +219,8 @@ const CompareCasesPage = ({ user }) => {
           </button>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Hero Section */}
       <section className="relative py-12 px-6 overflow-hidden">

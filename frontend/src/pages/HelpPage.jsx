@@ -15,6 +15,7 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
+import PageLogo from "../components/PageLogo";
 
 const HelpPage = ({ user }) => {
   const navigate = useNavigate();
@@ -675,6 +676,8 @@ const HelpPage = ({ user }) => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Tab Navigation */}
       <div className="bg-white border-b border-slate-200">

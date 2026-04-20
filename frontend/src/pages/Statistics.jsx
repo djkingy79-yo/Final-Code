@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
+import PageLogo from "../components/PageLogo";
 
 const Statistics = () => {
 
@@ -124,6 +125,8 @@ const Statistics = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero Section */}
       <section className="relative py-8 px-6 overflow-hidden">

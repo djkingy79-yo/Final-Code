@@ -41,6 +41,7 @@ import {
   Zap,
   MessageSquare,
 } from "lucide-react";
+import PageLogo from "../components/PageLogo";
 
 const HowItWorksPage = () => {
 
@@ -436,6 +437,8 @@ const HowItWorksPage = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero */}
       <section className="py-6 sm:py-8 px-4 sm:px-6 bg-white">

@@ -9,6 +9,7 @@ import { Scale, ArrowLeft, Building, Users, Phone, Globe, ExternalLink, MapPin, 
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import PageLogo from "../components/PageLogo";
 
 const DirectoryFilterContext = createContext({ stateFilter: "all" });
 
@@ -70,6 +71,8 @@ const LegalResourcesPage = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero */}
       <section className="py-6 px-6 bg-white">

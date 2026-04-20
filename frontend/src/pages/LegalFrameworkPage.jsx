@@ -8,6 +8,7 @@ import { Scale, ArrowLeft, Menu, X, BookOpen, Shield, Gavel, ChevronDown, Extern
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import PageLogo from "../components/PageLogo";
 
 const LegalFrameworkPage = () => {
 
@@ -351,6 +352,8 @@ const LegalFrameworkPage = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero */}
       <section className="py-12 px-6 bg-white">

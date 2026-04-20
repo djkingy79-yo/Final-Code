@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb, MessageSquare } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
+import PageLogo from "../components/PageLogo";
 
 const HowToUsePage = () => {
 
@@ -246,6 +247,8 @@ const HowToUsePage = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       {/* Hero */}
       <section className="py-12 px-6 bg-white">

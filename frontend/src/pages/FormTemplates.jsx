@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import PageLogo from "../components/PageLogo";
 
 const STATES = [
   { code: "nsw", name: "New South Wales", color: "bg-blue-600" },
@@ -769,6 +770,8 @@ const FormTemplates = () => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">

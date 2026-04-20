@@ -10,6 +10,7 @@ import { Input } from "../components/ui/input";
 import { Card } from "../components/ui/card";
 import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import PageLogo from "../components/PageLogo";
 
 const faqs = [
   {
@@ -320,6 +321,8 @@ const FAQPage = () => {
           </div>
         </div>
       </header>
+
+      <PageLogo />
 
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">

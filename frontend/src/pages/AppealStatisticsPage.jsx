@@ -8,6 +8,7 @@ import { Scale, Menu, X, BarChart3, TrendingUp, TrendingDown, AlertTriangle, Che
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import PageCTA from "../components/PageCTA";
+import PageLogo from "../components/PageLogo";
 
 const AppealStatisticsPage = () => {
   const navigate = useNavigate();
@@ -197,6 +198,8 @@ const AppealStatisticsPage = () => {
           </div>
         )}
       </header>
+
+      <PageLogo />
 
       <div className="bg-white">
       {/* Hero */}

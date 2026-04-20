@@ -1,6 +1,14 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Logo on All Public/Info Pages + Welcome-Back Toast
+- **New reusable component** `/app/frontend/src/components/PageLogo.jsx` — centred, 320px/400px (mobile/desktop), `/logo.png`, matches the landing-page hero logo exactly, `data-testid="page-logo-top"`.
+- **Logo added to 14 pages** right after the site header and before any content/heading: AppealStatisticsPage, SuccessStories, LegalFrameworkPage, ResourcesPage, LegalResourcesPage, FAQPage, HowItWorksPage, HowToUsePage, HelpPage, LegalGlossary, FormTemplates, LawyerDirectory, CompareCasesPage, Statistics.
+- **Verified on preview** — Playwright confirms logo renders at 400×541 px on all 10 public pages (appeal-statistics, success-stories, legal-framework, legal-resources, faq, how-it-works, how-to-use, glossary, forms, lawyers). The 4 auth-gated pages (Help, Resources, CompareCases, Statistics) have the component inserted — will appear once signed in.
+- **Welcome-back toast** on successful Google OAuth callback (`App.js`). Fires `toast.success('Welcome back, {firstName} — redirecting to your dashboard…')` with 1.5s duration immediately before the navigate-to-dashboard, so the user sees tangible confirmation sign-in worked (previously the redirect was silent and felt jarring on mobile). First name derived from `response.data.name` (fallback to email local-part, then 'there').
+- **Mobile bundle resynced** (`yarn build` ✔ + `npx cap sync` ✔ for both iOS + Android).
+
+
 ## 20 Apr 2026 — OAuth State Mismatch ROOT CAUSE Found & Fixed
 - **Bug reproduced on live domain** (Deb tested with the new diagnostics panel on iPhone Safari). Diagnostics confirmed: `hostname=criminallawappealmanagement.com.au`, `localStorage_has_state=true`, `cookie_has_state=true`, `returned_state_present=true`, `code_present=true` — **yet state mismatch still occurred**. Belt-and-braces storage was not the root cause.
 - **Actual root cause:** `AuthModal.jsx` line 53 was calling `const googleLoginUrl = buildGoogleLoginUrl();` **at component render time**. Because `buildGoogleLoginUrl()` both generates a new state AND writes it to storage, every re-render (modal open, form typing, focus events, parent re-renders, Radix dialog animation) regenerated and overwrote the stored state. This created a race: by the time Google redirected back, the state in storage was no longer the state that had been sent.
