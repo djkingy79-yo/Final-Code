@@ -108,7 +108,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Result**: grep for "Emergent" across `/app/backend` and `/app/frontend/src` returns ZERO hits outside the `emergentintegrations` Python SDK import (just a library wrapper around the OpenAI SDK — no proxy, no shared key).
 
 ### Completed (14 February 2026 — Legislation Currency Monitoring + Friendly Nudges)
-- **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
+- **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date. (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
 - **Currency dashboard service** (`/app/backend/services/legislation_currency.py`) — age bucketing (🟢 <90d current, 🟡 90–180d review soon, 🔴 >180d overdue), Mongo `framework_audit_log` collection mirrors manual ticks, dashboard prefers the later of registry date or audit-log date.
 - **Three new admin endpoints** (`/app/backend/routers/admin.py`):
   - `GET /api/admin/legislation-currency` — returns full dashboard with per-Act rows, totals, and a forensic notice card
@@ -125,6 +125,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Framework version badge on exports** (`/app/frontend/src/utils/exportHtml.js`) — every PDF/Word/Print export now includes "Legal Framework v2026.02 · 79 Australian Acts manually verified · criminallawappealmanagement.com.au" in the footer branding block
 - **Self-hosting deployment guide** (`/app/memory/SELF_HOSTING_GUIDE.md`) — step-by-step Railway walk-through for retiring the Emergent preview URL dependency
 - **20 unit tests** (`tests/test_legislation_currency.py`) covering registry coverage, bucketing, all guardrail rejection paths, dashboard shape, mark_verified persistence. Testing-agent verified iteration_210 — 100% backend + frontend pass, zero critical/minor issues, all data-testids present, anti-hallucination guardrails confirmed working end-to-end.
+- **README.md fully refreshed (14 Feb 2026)** — removed all references to the deprecated 2-page Appellate Research Brief Quick Brief, added new sections for Legislation Currency Dashboard (#11), Admin Dashboard & Analytics with OpenAI Cost Tracker (#16), and Anti-Hallucination & Forensic Language Rules. Renumbered sections 1–20. Updated backend routers, service layer, and frameworks package listings. Rewrote Security section with self-hosting independence block. Replaced Emergent references with explicit self-hosted architecture (owner's OpenAI key, Google OAuth client, domain `criminallawappealmanagement.com.au`).
 
 ## Remaining / Backlog
 - **P2**: Second attachment for counsel conference prep on the Appellate Research Brief.
