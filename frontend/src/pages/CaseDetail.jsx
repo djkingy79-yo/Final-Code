@@ -68,6 +68,7 @@ import PipelineStalenessAlert from "../components/PipelineStalenessAlert";
 import PipelineProgress from "../components/PipelineProgress";
 import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
+import ExportOptionsModal from "../components/ExportOptionsModal";
 import auSpelling from "../utils/auSpelling";
 
 const EVENT_TYPES = [
@@ -150,6 +151,9 @@ const CaseDetail = ({ user }) => {
   const [timeline, setTimeline] = useState([]);
   const [reports, setReports] = useState([]);
   const [notes, setNotes] = useState([]);
+  // Export Options picker — fires before Print/PDF/Word All
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportMode, setExportMode] = useState("print"); // "print" | "pdf" | "word"
   const [grounds, setGrounds] = useState([]);
   const [groundsCount, setGroundsCount] = useState(0);
   const [groundsUnlocked, setGroundsUnlocked] = useState(false);
@@ -1005,7 +1009,10 @@ const CaseDetail = ({ user }) => {
     return buildExportHtml({ title: "Case Progress", sectionTitle: "Progress", defendantName: defendant, accentColor: "#2563eb", bodyHtml: body });
   };
 
-  const buildPrintAllHtml = () => {
+  const buildPrintAllHtml = (opts = null) => {
+    // opts is an ExportOptionsModal selection: { cover, toc, summary, documents,
+    // timeline, grounds, notes, progress }. If null → include everything (legacy).
+    const o = opts || { cover: true, toc: true, summary: true, documents: true, timeline: true, grounds: true, notes: true, progress: true };
     const defendant = caseData?.defendant_name || "Unknown";
     const title = caseData?.title || "Case";
     const offence = (caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "N/A");
@@ -1034,8 +1041,10 @@ const CaseDetail = ({ user }) => {
       return auSpelling(text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
     };
 
-    let body = `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-    body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
+    let body = "";
+    if (o.cover) {
+      body += `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
+      body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:10pt;color:#0f172a;">${escAu(defendant)}</strong></div>
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:10pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
@@ -1045,17 +1054,19 @@ const CaseDetail = ({ user }) => {
       </div>
       ${caseData?.court ? `<div style="margin-top:6px;padding-top:6px;border-top:1px solid #bfdbfe;font-size:10pt;color:#1d4ed8;font-weight:600;">${escAu(caseData.court)}${caseData?.case_number ? ' — ' + escAu(caseData.case_number) : ''} — ${(caseData?.state || "NSW").toUpperCase()}</div>` : ''}
     </div>`;
+    }
 
     // ── TABLE OF CONTENTS ──
     const tocSections = [];
-    if (caseData?.summary) tocSections.push("Case Summary");
-    if (documents.length > 0) tocSections.push("Uploaded Documents");
-    tocSections.push("Timeline Events");
-    tocSections.push("Grounds of Merit");
-    tocSections.push("Notes");
-    if (progressAnalysis) tocSections.push("Progress Analysis");
+    if (o.summary && caseData?.summary) tocSections.push("Case Summary");
+    if (o.documents && documents.length > 0) tocSections.push("Uploaded Documents");
+    if (o.timeline) tocSections.push("Timeline Events");
+    if (o.grounds) tocSections.push("Grounds of Merit");
+    if (o.notes) tocSections.push("Notes");
+    if (o.progress && progressAnalysis) tocSections.push("Progress Analysis");
 
-    body += `<div class="export-body" style="page-break-after:always;">
+    if (o.toc && tocSections.length > 0) {
+      body += `<div class="export-body" style="page-break-after:always;">
       <div class="toc-container" style="padding:10px 24px;">
         <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
         <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
@@ -1063,11 +1074,12 @@ const CaseDetail = ({ user }) => {
         </div>
       </div>
     </div>`;
+    }
 
     let sn = 0;
     body += `<div class="sections">`;
-    if (caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body"><p>${escAu(caseData.summary)}</p></div></div>`; }
-    if (documents.length > 0) {
+    if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body"><p>${escAu(caseData.summary)}</p></div></div>`; }
+    if (o.documents && documents.length > 0) {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Uploaded Documents</span></div><div class="section-body">`;
       body += `<table><thead><tr><th>#</th><th>Filename</th><th>Type</th><th>Uploaded</th></tr></thead><tbody>`;
@@ -1077,16 +1089,19 @@ const CaseDetail = ({ user }) => {
       });
       body += `</tbody></table></div></div>`;
     }
-    sn++;
-    body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Timeline Events</span></div><div class="section-body">`;
-    if (timeline.length > 0) {
-      body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
-      timeline.forEach(e => {
-        body += `<tr><td>${e.event_date || ""}</td><td>${escAu(e.title || "")}</td><td>${escAu(e.description || "")}</td></tr>`;
-      });
-      body += `</tbody></table>`;
-    } else { body += `<p>No timeline events.</p>`; }
-    body += `</div></div>`;
+    if (o.timeline) {
+      sn++;
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Timeline Events</span></div><div class="section-body">`;
+      if (timeline.length > 0) {
+        body += `<table><thead><tr><th>Date</th><th>Event</th><th>Description</th></tr></thead><tbody>`;
+        timeline.forEach(e => {
+          body += `<tr><td>${e.event_date || ""}</td><td>${escAu(e.title || "")}</td><td>${escAu(e.description || "")}</td></tr>`;
+        });
+        body += `</tbody></table>`;
+      } else { body += `<p>No timeline events.</p>`; }
+      body += `</div></div>`;
+    }
+    if (o.grounds) {
     sn++;
     body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Grounds of Merit</span></div><div class="section-body">`;
     if (grounds.length > 0) {
@@ -1150,6 +1165,8 @@ const CaseDetail = ({ user }) => {
       });
     } else { body += `<p>${groundsCount > 0 ? groundsCount + " grounds identified (locked)." : "No grounds identified."}</p>`; }
     body += `</div></div>`;
+    }
+    if (o.notes) {
     sn++;
     body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Notes</span></div><div class="section-body">`;
     if (notes.length > 0) {
@@ -1159,7 +1176,8 @@ const CaseDetail = ({ user }) => {
       });
     } else { body += `<p>No notes.</p>`; }
     body += `</div></div>`;
-    if (progressAnalysis) {
+    }
+    if (o.progress && progressAnalysis) {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
     }
@@ -1252,27 +1270,13 @@ const CaseDetail = ({ user }) => {
                 <Share2 className="w-4 h-4 mr-1" />
                 Share
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {
-                const html = buildPrintAllHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle", mode: "print", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
-                window.location.assign(`${window.location.origin}/document-preview?mode=print`);
-              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-print-btn">
+              <Button variant="outline" size="sm" onClick={() => { setExportMode("print"); setExportOpen(true); }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-print-btn">
                 <Printer className="w-4 h-4 mr-1" />Print All
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {
-                const html = buildPrintAllHtml();
-                localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle", mode: "pdf", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
-                window.location.assign(`${window.location.origin}/document-preview?mode=pdf`);
-              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-pdf-btn">
+              <Button variant="outline" size="sm" onClick={() => { setExportMode("pdf"); setExportOpen(true); }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-pdf-btn">
                 <Download className="w-4 h-4 mr-1" />PDF All
               </Button>
-              <Button variant="outline" size="sm" onClick={() => {
-                try {
-                  const html = buildPrintAllHtml();
-                  localStorage.setItem("document-preview-payload", JSON.stringify({ html, title: "Complete Case Bundle — Word View", mode: "word", returnTo: `/cases/${caseId}`, createdAt: Date.now() }));
-                  window.location.assign(`${window.location.origin}/document-preview?mode=word`);
-                } catch { toast.error("Failed to open Word preview"); }
-              }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
+              <Button variant="outline" size="sm" onClick={() => { setExportMode("word"); setExportOpen(true); }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
               <Button 
@@ -2373,6 +2377,36 @@ const CaseDetail = ({ user }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Export Options picker — lets user choose which sections to include */}
+      <ExportOptionsModal
+        open={exportOpen}
+        mode={exportMode}
+        availability={{
+          cover: true,
+          toc: true,
+          summary: !!caseData?.summary,
+          documents: documents.length > 0,
+          timeline: timeline.length > 0,
+          grounds: true,
+          notes: notes.length > 0,
+          progress: !!progressAnalysis,
+        }}
+        onCancel={() => setExportOpen(false)}
+        onConfirm={(chosenOpts) => {
+          setExportOpen(false);
+          try {
+            const html = buildPrintAllHtml(chosenOpts);
+            const title = exportMode === "word" ? "Complete Case Bundle — Word View" : "Complete Case Bundle";
+            localStorage.setItem("document-preview-payload", JSON.stringify({
+              html, title, mode: exportMode, returnTo: `/cases/${caseId}`, createdAt: Date.now(),
+            }));
+            window.location.assign(`${window.location.origin}/document-preview?mode=${exportMode}`);
+          } catch {
+            toast.error(`Failed to open ${exportMode} preview`);
+          }
+        }}
+      />
     </div>
   );
 };

@@ -1,6 +1,25 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — "Print What You Want" Export Options Modal + Full OpenAI Swap
+### A. Export Options picker
+Deb requested the ability to pick which sections get included in the Case Bundle Print / PDF / Word exports. Built a reusable Shadcn dialog with 8 checkbox options, each tied to real section availability:
+- **New component** `/app/frontend/src/components/ExportOptionsModal.jsx` — 8 toggles (Cover, TOC, Summary, Documents, Timeline, Grounds, Notes, Progress Analysis). Greys out + disables checkboxes for sections that have no content (e.g. no notes → notes checkbox disabled). Select-all / Select-none quick links.
+- **Modified** `CaseDetail.jsx` — `buildPrintAllHtml(opts)` now accepts a sections dict and skips excluded sections; all 3 "All" buttons (Print All / PDF All / Word All) first open the modal, then on confirm run the export with only chosen sections. `data-testid`s: `export-options-modal`, `export-opt-{key}`, `export-options-confirm`, `export-options-cancel`, `export-select-all`, `export-select-none`.
+- Backwards-compatible: `buildPrintAllHtml(null)` still produces the legacy "everything-on" output.
+
+### B. Full OpenAI Swap — no more EMERGENT_LLM_KEY dependency
+- `backend/.env` → added `OPENAI_API_KEY=sk-proj-...` (Deb's own key with billing live).
+- `backend/config.py` → key loading now prefers `OPENAI_API_KEY`, falls back to `EMERGENT_LLM_KEY` only if the OpenAI key is absent (safety fallback, not runtime path).
+- `backend/services/llm_service.py`:
+  - `_default_models_for_task()` stripped of Anthropic slots (Deb has no Claude key). Chain is now 4× gpt-4o + 2× gpt-4o-mini for retry + price-saver fallback.
+  - `call_llm_with_fallback()` resolves `api_key = OPENAI_API_KEY or EMERGENT_LLM_KEY`.
+- **End-to-end verified:** Live test through the actual production code path returned a forensically-styled response using the "It is arguable that..." opener — proving guardrails, banned-phrases, 27-Acts context, and ground-type framing all intact. Reports will read identically.
+- **Billing live and confirmed** on Deb's OpenAI account (smoke test "BILLING_OK" returned on first call). Both keys pasted in chat have been rotated to a third key (`sk-proj-S0C5jh...`) — earlier exposed keys still need to be deleted by Deb on platform.openai.com.
+- **Cost expectations:** ~$0.90 USD per complete case (all 4 tiers). Deb's $150-$200 pricing has massive margin.
+- **Mobile bundle resynced.**
+
+
 ## 20 Apr 2026 — Print / PDF Export Overhaul (all 4 report tiers)
 Deb reported 10 screenshots of print-preview issues across the Extensive Log report; symptoms apply across all 4 report tiers (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief). Complete overhaul of the print CSS using CSS Paged Media.
 
