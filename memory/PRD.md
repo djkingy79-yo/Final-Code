@@ -62,11 +62,32 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Currency tracker** — `LEGISLATION_CURRENCY.last_verified = "2026-02-14"`.
 - **Regression tests** — `tests/test_framework_gap_fill_20260214.py` (12 new tests) + full framework suite green (409 passed).
 
+### Completed (14 February 2026 — P1 OpenAI Cost Tracking Dashboard)
+- **AI Usage Tracker** (`/app/backend/services/ai_usage_tracker.py`) — estimates tokens via `tiktoken` o200k_base; applies OpenAI Feb 2026 rate card (gpt-4o $2.50/$10 per 1M in/out; gpt-4o-mini $0.15/$0.60 per 1M); extracts case_id + report_type from session_id conventions; writes fire-and-forget to `ai_usage` Mongo collection.
+- **LLM instrumentation** — `call_llm_structured` in `services/llm_service.py` records usage on success (swallow-on-error; LLM flow never blocked).
+- **Admin endpoint** — `GET /api/admin/openai-costs?period=month|week|all` returns totals (cost_usd, tokens, calls, success/fail), projected month-end USD, per-model / per-task / per-report-type / per-user breakdowns, and a daily series.
+- **Frontend panel** (`/app/frontend/src/components/OpenAICostsPanel.jsx`) — mounted at top of `/admin/analytics`. Four stat cards (USD spent, projection, tokens, success rate), period selector (7-day / month / all), daily sparkline, three breakdown cards, top-users table, pricing note.
+- **Regression tests** — `tests/test_ai_usage_tracker.py` (24 tests) covering pricing, token estimation, session-id extractors, DB write, and error-swallow contract.
+- **Testing-agent verified** — iteration_207.json confirms 100% pass on backend (433/433 + 13 new endpoint tests) and 100% on frontend (panel + preserved signup-source analytics). Zero critical/minor bugs.
+
+### Completed (14 February 2026 — P2 Refactor: Frameworks Package)
+- **Split `offence_framework.py` (3,970 lines) into `/app/backend/frameworks/` package** (13 themed modules):
+  - `jurisdictions.py`: `LEGISLATION_CURRENCY`, `AUSTRALIAN_STATES`
+  - `procedure.py`: `INDICTABLE/HYBRID/SUMMARY_PROCEDURE_FLOW`, `MENS_REA_FRAMEWORK`
+  - `offences.py`: `OFFENCE_CATEGORIES` (all 18)
+  - `states.py`: NSW/VIC/QLD/SA/WA/TAS/NT/ACT `_CRIMINAL_FRAMEWORK`
+  - `federal.py`: `FEDERAL_CRIMINAL_FRAMEWORK`, `FEDERAL_FAULT_ELEMENTS`, `PROCEEDS_OF_CRIME_FRAMEWORK`
+  - `appeal.py`: `APPEAL_FRAMEWORK`, `APPEAL_GROUNDS_ACCESSIBILITY`
+  - Plus `common_grounds.py`, `human_rights.py`, `recent_updates.py`, `sentencing.py`, `evidence.py`, `mental_impairment.py`, `landmark_cases.py`
+- **Back-compat shim** — `offence_framework.py` reduced from 3,970 → 10 lines; re-exports everything via `from frameworks import *`. All existing imports (`from offence_framework import OFFENCE_CATEGORIES` etc.) continue to work unchanged across routers/services/tests.
+- **Identity-preserving** — all 27 public symbols are the SAME object via both import paths.
+- **Regression tests** — `tests/test_frameworks_refactor.py` (5 tests) lock in import parity, star-import behaviour, and data integrity.
+- **Full suite green** — 446 passed / 2 skipped across all framework + AI usage + refactor tests.
+
 ## Remaining / Backlog
-- **P1** (next): OpenAI cost tracking dashboard — log token usage per call, show USD-spent-this-month + projection on `/admin/analytics`
 - **P2**: Backend self-hosting migration guide (Railway/Render/AWS) to remove final Emergent dependency (`REACT_APP_BACKEND_URL`)
 - **P2**: Second attachment for counsel conference prep on Appellate Research Brief
-- **P2**: Refactor `offence_framework.py` (now ~3,970 lines) into `/app/backend/frameworks/` split files (APPROVED by user — schedule after P1 cost tracker lands)
+- **P3**: Expose a small "Legal Framework Version" badge on each exported report (e.g., "Framework v2026.02 · 8 jurisdictions verified") — turn invisible heavy lifting into a visible quality signal
 
 ## Test Credentials
 - Email: djkingy79@gmail.com
