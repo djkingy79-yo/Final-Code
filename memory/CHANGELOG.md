@@ -1,6 +1,14 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — OAuth CSRF State — Belt-and-Braces Fix (GoDaddy DNS hop resilience)
+- **Bug:** Google sign-in on `criminallawappealmanagement.com.au` failed with "Security check failed (state mismatch)". Root cause: GoDaddy's DNS-level forwarding between `www.` and the bare domain changes the storage origin mid-OAuth-flow, wiping `sessionStorage`. The previous agent had partially moved the state to `localStorage` in `AuthModal.jsx` but left `App.js` still reading from `sessionStorage`, so storage and read never matched.
+- **Fix:** New helper `/app/frontend/src/lib/oauthState.js` exposing `generateState`, `saveOAuthState`, `readOAuthState`, `clearOAuthState`. State is now written to **BOTH** `localStorage` **AND** a parent-domain-scoped cookie (`Domain=.criminallawappealmanagement.com.au` in prod, host-only in preview/localhost). Read falls back from localStorage → cookie, so either storage layer alone is sufficient to survive the `www.` ↔ bare-domain hop.
+- **Files touched:** new `frontend/src/lib/oauthState.js`; `frontend/src/App.js` (AuthCallback state verification + retry-button state regeneration now use the helper); `frontend/src/components/AuthModal.jsx` (buildGoogleLoginUrl uses the helper).
+- **Tests (iteration_205):** 11/11 passed. Verified: OAuth URL construction, dual-location storage, matching-state passes, wrong-state fails, cookie-only fallback works (simulates localStorage wipe by DNS hop), post-check cleanup of both stores, retry-button regenerates state, email/password regression intact, backend `/api/auth/google/callback` returns clean 400/401 on bad input.
+- **Deb's real-world test still required:** Sign in from `criminallawappealmanagement.com.au` (bare domain preferred). The CSRF mismatch screen should no longer appear.
+
+
 ## 19 Apr 2026 — Direct Google OAuth Wired (replaces Emergent-managed auth)
 - **Backend (`routers/auth.py` + `config.py` + `.env`):** New `POST /api/auth/google/callback` endpoint. Exchanges Google `code` at `https://oauth2.googleapis.com/token`, verifies `id_token` with `google.oauth2.id_token.verify_oauth2_token` against `GOOGLE_CLIENT_ID`, upserts user by verified email, issues session_token + sets secure httponly cookie. Returns 400 on missing fields, 401 on invalid code, 503 if OAuth env not configured, 504 on Google unreachable, 403 if email not verified.
 - **Frontend (`AuthModal.jsx` + `App.js`):** `buildGoogleLoginUrl()` now builds direct Google authorize URL (`https://accounts.google.com/o/oauth2/v2/auth`) with OpenID scopes + CSRF `state` param stored in `sessionStorage`. `AuthCallback` component reads `code` from query, verifies `state` match, POSTs to new backend endpoint. Legacy `session_id` path kept briefly for users mid-redirect.
