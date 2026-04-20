@@ -1,6 +1,26 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Print / PDF Export Overhaul (all 4 report tiers)
+Deb reported 10 screenshots of print-preview issues across the Extensive Log report; symptoms apply across all 4 report tiers (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief). Complete overhaul of the print CSS using CSS Paged Media.
+
+**Files touched:**
+- `frontend/src/utils/exportHtml.js` — shared export HTML builder used by CaseDetail, NotesSection, LegalFrameworkViewer, etc.
+- `frontend/src/pages/ReportView.jsx` — in-report print HTML builder for the 4 report tiers.
+
+**Fixes delivered:**
+1. **Cover heading BLACK on purple → WHITE.** Added `.report-header, .report-header * { color: #fff !important; }` override — was being stripped by Safari's iOS print engine despite the explicit `color:#fff`.
+2. **Paragraph spacing overhaul.** Line-height inside paragraphs tightened `1.5 → 1.35` (easier to read). Gap BETWEEN paragraphs increased to `12pt` (noticeably more than a line, so reader clearly sees paragraph boundaries). Applied to body, `.export-body p/ul/ol/li`, `.section-body p/ul/ol/li`.
+3. **Browser's URL/date headers suppressed.** Used CSS Paged Media `@page { @bottom-left / @bottom-right }` rules — when these are defined, Chrome / Safari / Edge print-to-PDF stop injecting their own URL + date headers automatically.
+4. **Footer outside page → NOW on every page, correctly.** Dropped the brittle `position: fixed` footer div. Replaced with `@page { @bottom-left: "{DocType} — {Appellant}"; @bottom-right: "Page X of Y"; }` — uses CSS `counter(page)` / `counter(pages)` for real per-page pagination. Label format: `"Extensive Case Log & Analysis — Joshua Scott HOMANN"` (no more "Criminal Law Appeal Management / ...").
+5. **Landscape for tables only.** New `@page landscape-table { size: A4 landscape; ... }` rule. All `<table>` elements in `.export-body` and `.section-body` get `page: landscape-table; break-before: page; break-after: page;` so each table renders on its own landscape page, then portrait resumes for the next paragraph. Works in Chrome, Safari print-to-PDF, and Edge.
+6. **Tables cut off on the right → fixed.** Added `table-layout: fixed` + `word-wrap: break-word` + `overflow-wrap: break-word` + `hyphens: auto`. Combined with landscape orientation, all columns now fit.
+7. **BLACK "terminal" tables made readable.** Unparsed markdown pipe-tables (rendered as `<pre>` blocks) were coming out black-on-white monospace. Restyled `pre` to light-grey background, dark text, wrapping, small monospace, `break-inside: avoid`. Not ideal (real `<table>` is still preferred) but no longer unreadable.
+8. **Blank / half pages.** Removed the broken `page-break-before: always` on bare `<table>` rules (was adding unnecessary breaks). Kept `break-inside: avoid` on tables, disclaimers, branding, section blocks. Added `orphans: 3; widows: 3;` on paragraphs.
+9. **H2/H3 kept with following content.** Added `page-break-after: avoid` on headings so they don't get orphaned at the bottom of a page.
+10. **Mobile bundle resynced** (yarn build ✔ + cap sync ✔).
+
+
 ## 20 Apr 2026 — Conversion Rate Per Page (Efficiency Insight)
 - **New feature:** Analytics dashboard now shows **conversion rate** (signups ÷ page visits) alongside raw signup counts, colour-coded green ≥ 5% / amber 1–5% / red < 1%. Reveals which pages convert most *efficiently*, not just most raw signups. E.g. "Success Stories 12.5% green" vs "Landing modal 0.48% red" tells a very different story from raw counts alone.
 - **Backend:** `GET /api/admin/signup-sources` now joins signups with `visits.page` aggregation and returns `visits` + `conversion_rate` per source. A `SOURCE_TO_PATH` map translates CTA labels → originating page paths. Multi-page sources (PageCTA variants) use total-tracked-visits as denominator. Also returns `total_visits_tracked` top-level.

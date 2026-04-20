@@ -727,7 +727,7 @@ const ReportView = () => {
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
     const appellantForFooter = defendantName || caseData?.defendant_name || caseData?.title || "Appellant";
-    const previewFooterLabel = `Criminal Law Appeal Management / ${title} — ${appellantForFooter} — ${previewDate}`;
+    const previewFooterLabel = `${title} — ${appellantForFooter}`;
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -737,9 +737,36 @@ const ReportView = () => {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page { size: A4; margin: 18mm 18mm 26mm; }
+    @page {
+      size: A4 portrait;
+      margin: 18mm 18mm 22mm 18mm;
+      @bottom-left {
+        content: "${previewFooterLabel}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+    }
+    @page landscape-table {
+      size: A4 landscape;
+      margin: 14mm 14mm 20mm 14mm;
+      @bottom-left {
+        content: "${previewFooterLabel}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Times New Roman', Times, serif; padding: 0 0 60px; color: #0f172a; line-height: 1.5; font-size: 11pt; background: #fff; }
+    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.35; font-size: 11pt; background: #fff; }
     th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 20px 0 10px; }
@@ -753,8 +780,9 @@ const ReportView = () => {
     .cover-page-card-value { font-size: 10pt; font-weight: 700; color: #0f172a; }
     .cover-page-note { margin-top: 8px; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 10px; font-size: 8pt; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .page-break { page-break-after: always; break-after: page; }
-    .report-header { background: ${theme.previewColor}; color: #fff; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
-    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; margin-bottom: 3px; color: #fff; }
+    .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
+    .report-header, .report-header * { color: #fff !important; }
+    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; margin-bottom: 3px; color: #fff !important; }
     .report-header .meta-line { font-size: 10pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 18pt; font-weight: 700; color: #fff; text-align: right; }
     .report-header .grounds-label { font-size: 8pt; color: rgba(255,255,255,0.8); text-align: right; }
@@ -809,18 +837,32 @@ const ReportView = () => {
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
     .section-body h2 { font-size: 15pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 3px; margin: 10px 0 5px; }
-    .section-body h3 { font-size: 13pt; color: #1e293b; margin: 8px 0 4px; }
-    .section-body h4 { font-size: 11pt; color: #334155; margin: 6px 0 3px; }
-    .section-body p { margin-bottom: 5px; font-size: 11pt; line-height: 1.5; }
+    .section-body h3 { font-size: 13pt; color: #1e293b; margin: 14px 0 5px; page-break-after: avoid; break-after: avoid; }
+    .section-body h4 { font-size: 11pt; color: #334155; margin: 12px 0 4px; page-break-after: avoid; break-after: avoid; }
+    .section-body p { margin: 0 0 12pt 0; font-size: 11pt; line-height: 1.35; orphans: 3; widows: 3; }
     .section-body strong { color: #0f172a; font-weight: 700; }
-    .section-body ul, .section-body ol { padding-left: 2rem; margin: 4px 0; }
-    .section-body li { margin-bottom: 2px; font-size: 11pt; line-height: 1.5; }
+    .section-body ul, .section-body ol { padding-left: 2rem; margin: 6px 0 12pt; }
+    .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.35; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt !important; table-layout: fixed; page-break-before: always; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 4px 6px; text-align: left; border: 1px solid #cbd5e1; font-size: 8pt !important; word-wrap: break-word; overflow-wrap: break-word; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 4px 6px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 9pt !important; }
+    .section-body table {
+      page: landscape-table;
+      break-before: page; break-after: page;
+      page-break-before: always; page-break-after: always;
+      width: 100%; border-collapse: collapse; margin: 8px 0;
+      font-size: 9pt !important; table-layout: fixed;
+    }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 5px 6px; text-align: left; border: 1px solid #cbd5e1; font-size: 8.5pt !important; word-wrap: break-word; overflow-wrap: break-word; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 5px 6px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; hyphens: auto; font-size: 9pt !important; }
     .section-body blockquote { border-left: 3px solid #1e3a8a; padding: 6px 10px; margin: 6px 0; background: #eff6ff; color: #1e3a8a; font-size: 10pt; }
+    /* Fallback styling for pipe-delimited <pre> tables — keep readable (not black). */
+    .section-body pre, .report-container pre {
+      background: #f8fafc !important; color: #1e293b !important;
+      font-family: 'Courier New', monospace; font-size: 8pt;
+      padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 4px;
+      white-space: pre-wrap; word-wrap: break-word; overflow-wrap: anywhere;
+      break-inside: avoid; page-break-inside: avoid; margin: 6px 0;
+    }
     .disclaimer { padding: 10px 24px; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: flex-start; }
     .disclaimer-icon { color: #ef4444; font-size: 16px; flex-shrink: 0; }
     .disclaimer-text { font-size: 8pt; color: #334155; }
@@ -954,12 +996,7 @@ const ReportView = () => {
       </div>
     </div>
   </div>
-  <div class="print-footer">
-    <div class="print-footer-row">
-      <span class="print-footer-label">${previewFooterLabel}</span>
-      <span class="print-footer-page"></span>
-    </div>
-  </div>
+  <!-- Page-level footer handled by @page @bottom-left / @bottom-right -->
 </body>
 </html>`;
 

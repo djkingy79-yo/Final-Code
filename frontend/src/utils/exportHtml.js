@@ -13,10 +13,13 @@ const SCALES_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" 
 const formatDate = () =>
   new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
 
-export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, accentColor = "#1e40af" }) {
+export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, accentColor = "#1e40af", docLabel }) {
   const previewDate = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
-  const timeStr = new Date().toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" });
-  const footerLabel = `Criminal Law Appeal Management / ${sectionTitle || title} — ${defendantName || "Appellant"} — ${previewDate}`;
+  // Footer document label: prefer explicit docLabel (e.g. "Extensive Case Log & Analysis"),
+  // else sectionTitle, else title. Appended with " — {Appellant}" for identification on every page.
+  const label = (docLabel || sectionTitle || title || "Document").replace(/"/g, '\\"');
+  const appellant = (defendantName || "Appellant").replace(/"/g, '\\"');
+  const footerLeft = `${label} — ${appellant}`;
 
   return `<!DOCTYPE html>
 <html>
@@ -25,57 +28,217 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
 <style>
+  /* ==========================================================================
+     PRINT-READY EXPORT STYLES — CSS Paged Media
+     - @page rules suppress the browser's auto URL/date headers (Chrome, Edge,
+       Safari Print-to-PDF all honour @bottom-* blocks and stop injecting their
+       own when we define content there).
+     - Landscape tables: every <table> is wrapped (via CSS named page) in a
+       landscape page break, portrait resumes after.
+     - Footer shows: "{DocumentType} — {Appellant}"  (left) and
+                     "Page X of Y"                   (right), 7pt Times-Italic.
+     ========================================================================== */
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; color: #1e293b; background: #fff; padding-bottom: 60px; line-height: 1.5; }
-  th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  @page { size: A4; margin: 18mm 18mm 26mm; }
-  @page landscape-table { size: A4 landscape; margin: 14mm 14mm 22mm; }
+  html, body { background: #fff; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    color: #1e293b;
+    line-height: 1.35;             /* tighter inside paragraphs */
+  }
+
+  /* ---------- PORTRAIT (default) ---------- */
+  @page {
+    size: A4 portrait;
+    margin: 18mm 18mm 22mm 18mm;
+    @bottom-left {
+      content: "${footerLeft}";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 7pt;
+      font-style: italic;
+      color: #475569;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 7pt;
+      font-style: italic;
+      color: #475569;
+    }
+  }
+  /* ---------- LANDSCAPE (tables only) ---------- */
+  @page landscape-table {
+    size: A4 landscape;
+    margin: 14mm 14mm 20mm 14mm;
+    @bottom-left {
+      content: "${footerLeft}";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 7pt;
+      font-style: italic;
+      color: #475569;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 7pt;
+      font-style: italic;
+      color: #475569;
+    }
+  }
+  /* Every table flips to landscape for its duration, then the next content
+     resumes portrait. break-before:page + page:landscape-table
+     + break-after:page = "landscape page just for this table". */
+  .export-body table,
+  .section-body table {
+    page: landscape-table;
+    break-before: page;
+    break-after: page;
+    page-break-before: always;
+    page-break-after: always;
+    break-inside: auto;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 9pt;
+    table-layout: fixed;
+  }
+  .export-body th,
+  .section-body th {
+    background: #1d4ed8 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    padding: 5px 6px;
+    text-align: left;
+    border: 1px solid #cbd5e1;
+    font-size: 8.5pt;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .export-body td,
+  .section-body td {
+    padding: 5px 6px;
+    border: 1px solid #e2e8f0;
+    font-size: 9pt;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    vertical-align: top;
+  }
+  .export-body tr:nth-child(even) td,
+  .section-body tr:nth-child(even) td { background: #f8fafc; }
+
+  /* Pipe-delimited <pre> tables (from unparsed markdown): white, readable,
+     wrapping. This keeps them legible until the generator is upgraded to
+     emit real HTML tables. */
+  .export-body pre,
+  .section-body pre,
+  .export-container pre {
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    font-family: 'Courier New', monospace;
+    font-size: 8pt;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin: 6px 0;
+  }
+
   .export-container { max-width: 900px; margin: 0 auto; }
-  .export-header { background: ${accentColor}; color: #fff; padding: 20px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; }
-  .export-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; margin-bottom: 3px; }
-  .export-header p { font-size: 10pt; opacity: 0.85; }
-  .export-meta { display: flex; flex-wrap: wrap; gap: 12px; padding: 10px 24px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 10pt; }
+
+  /* Cover header: WHITE heading on coloured background (was black before) */
+  .export-header {
+    background: ${accentColor};
+    color: #fff !important;
+    padding: 20px 24px;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .export-header h1,
+  .export-header h2,
+  .export-header p,
+  .export-header * {
+    color: #fff !important;
+  }
+  .export-header h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16pt;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .export-header p { font-size: 10pt; opacity: 0.92; }
+
+  .export-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 24px;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 10pt;
+  }
   .export-meta-item { display: flex; flex-direction: column; }
   .export-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-size: 8pt; }
   .export-meta-value { font-weight: 600; color: #0f172a; }
+
   .export-body { padding: 16px 24px; }
-  .export-body h2 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; color: #0f172a; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 2px solid ${accentColor}; }
-  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #1e293b; margin: 12px 0 5px; }
-  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; color: #1e293b; margin: 10px 0 4px; }
-  .export-body p { margin-bottom: 6px; font-size: 11pt; line-height: 1.5; }
-  .export-body ul, .export-body ol { margin: 4px 0 8px; padding-left: 2rem; }
-  .export-body li { margin-bottom: 2px; font-size: 11pt; line-height: 1.5; }
-  .export-body table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt; page-break-before: always; }
-  .export-body th { background: #1d4ed8; color: #fff; padding: 4px 6px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-size: 8pt; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; word-wrap: break-word; overflow-wrap: break-word; }
-  .export-body td { padding: 4px 6px; border: 1px solid #e2e8f0; word-wrap: break-word; overflow-wrap: break-word; font-size: 9pt; }
-  .export-body tr:nth-child(even) td { background: #f8fafc; }
-  .export-body .note-card { background: #ffffff; border: 2px solid #1e3a5f; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; }
+  .export-body h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 18px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid ${accentColor};
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #1e293b; margin: 14px 0 5px; page-break-after: avoid; break-after: avoid; }
+  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; color: #1e293b; margin: 12px 0 4px; page-break-after: avoid; break-after: avoid; }
+
+  /* PARAGRAPH SPACING:
+     - Line-height INSIDE a paragraph: 1.35 (tight, easy to read)
+     - Gap BETWEEN paragraphs: 12pt (noticeably more than a line — so the
+       reader clearly sees where one para ends and another begins) */
+  .export-body p,
+  .section-body p { margin: 0 0 12pt 0; font-size: 11pt; line-height: 1.35; orphans: 3; widows: 3; }
+  .export-body ul, .export-body ol,
+  .section-body ul, .section-body ol { margin: 6px 0 12pt; padding-left: 2rem; }
+  .export-body li,
+  .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.35; }
+
+  .export-body .note-card { background: #ffffff; border: 2px solid #1e3a5f; border-radius: 6px; padding: 10px 12px; margin-bottom: 10pt; break-inside: avoid; }
   .export-body .note-title { font-weight: 700; font-size: 11pt; color: #0f172a; margin-bottom: 2px; }
   .export-body .note-date { font-size: 9pt; color: #64748b; margin-bottom: 4px; font-style: italic; }
-  .export-body .note-content { font-size: 11pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; }
-  .export-body .section-block { margin-bottom: 12px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid; }
+  .export-body .note-content { font-size: 11pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; line-height: 1.35; }
+  .export-body .section-block { margin-bottom: 14pt; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid; break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
-  .toc-container { background: #ffffff; padding: 10px 24px; }
+
+  .toc-container { background: #ffffff; padding: 10px 24px; break-after: page; page-break-after: always; }
   .toc-heading { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 700; margin: 0 0 6px; }
   .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
   .toc-item { font-size: 8pt; color: #334155; padding: 1px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
   .sections { padding: 16px 24px; }
-  .section { margin-bottom: 14px; }
-  .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${accentColor}; padding-left: 10px; margin-bottom: 6px; }
+  .section { margin-bottom: 18pt; break-inside: auto; }
+  .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${accentColor}; padding-left: 10px; margin-bottom: 6px; break-after: avoid; page-break-after: avoid; }
   .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .section-title { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
-  .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.5; }
-  .section-body h3 { font-size: 13pt; font-weight: 700; color: #1e293b; margin: 12px 0 5px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
+  .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.35; }
+  .section-body h3 { font-size: 13pt; font-weight: 700; color: #1e293b; margin: 14px 0 5px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
   .section-body h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
-  .section-body h4 { font-size: 11pt; font-weight: 700; color: #1e293b; margin: 10px 0 4px; }
-  .section-body p { margin-bottom: 6px; font-size: 11pt; line-height: 1.5; }
-  .section-body ul, .section-body ol { padding-left: 2rem; margin: 4px 0 8px; }
-  .section-body li { margin-bottom: 2px; font-size: 11pt; line-height: 1.5; }
+  .section-body h4 { font-size: 11pt; font-weight: 700; color: #1e293b; margin: 12px 0 4px; }
   .section-body strong { color: #0f172a; font-weight: 700; }
-  .section-body table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt; page-break-before: always; }
-  .section-body th { background: #1d4ed8; color: #fff; padding: 4px 6px; text-align: left; font-weight: 700; border: 1px solid #cbd5e1; font-size: 8pt; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; word-wrap: break-word; }
-  .section-body td { padding: 4px 6px; border: 1px solid #e2e8f0; word-wrap: break-word; overflow-wrap: break-word; font-size: 9pt; }
-  .section-body tr:nth-child(even) td { background: #f8fafc; }
 
   .flex { display: flex; }
   .items-center { align-items: center; }
@@ -116,10 +279,12 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .break-words { overflow-wrap: break-word; }
   .bg-slate-50 { background-color: #f8fafc; }
   .inline-flex { display: inline-flex; }
+
   .disclaimer { margin: 16px 24px; padding: 10px 14px; background: #dc2626; border: 2px solid #b91c1c; border-radius: 6px; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; display: flex; gap: 10px; align-items: flex-start; }
   .disclaimer .disc-hazard { font-size: 22px; color: #facc15; flex-shrink: 0; }
   .disclaimer strong { display: block; font-size: 10pt; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
   .disclaimer p { font-size: 8pt; color: #ffffff; line-height: 1.4; margin: 0; font-weight: 700; }
+
   .branding { text-align: center; margin: 16px 24px; padding: 10px 0; page-break-inside: avoid; break-inside: avoid; }
   .branding .by-line { font-size: 10pt; font-weight: 700; color: #334155; margin: 0 0 6px; }
   .branding-inner { display: inline-flex; align-items: center; gap: 8px; }
@@ -127,22 +292,15 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .branding-text { text-align: left; }
   .branding-text .name { margin: 0; font-weight: 700; font-size: 10pt; color: #0f172a; }
   .branding-text .sub { margin: 0; font-size: 8pt; color: #64748b; }
-  .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
-  .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
-  .print-footer-page::after { content: ''; }
-  .page-break { page-break-before: always; }
+
+  .page-break { page-break-before: always; break-before: page; }
+
   @media print {
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-    body { background: #fff; padding-bottom: 40px; }
+    body { background: #fff; padding: 0; }
     .export-container { max-width: none; }
-    .print-footer { display: block; }
-    .print-footer-page::after { content: "Page " counter(page) " of " counter(pages); }
-    .disclaimer { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; }
-    .branding { page-break-inside: avoid; }
-    .disclaimer + .branding { page-break-before: avoid; }
-    .export-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; }
-    .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .section-body th, .export-body th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .disclaimer, .branding, .export-header, .export-meta, .section-block, .note-card { break-inside: avoid; page-break-inside: avoid; }
+    .disclaimer + .branding { break-before: avoid; page-break-before: avoid; }
   }
   @media (max-width: 768px) {
     body { font-size: 9pt; }
@@ -179,13 +337,6 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
         <p class="sub">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
       </div>
     </div>
-  </div>
-</div>
-<div class="print-footer">
-  <div class="print-footer-row">
-    <span>${footerLabel}</span>
-    <span>${timeStr}</span>
-    <span class="print-footer-page"></span>
   </div>
 </div>
 </body>
