@@ -1,6 +1,14 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — OAuth State Mismatch ROOT CAUSE Found & Fixed
+- **Bug reproduced on live domain** (Deb tested with the new diagnostics panel on iPhone Safari). Diagnostics confirmed: `hostname=criminallawappealmanagement.com.au`, `localStorage_has_state=true`, `cookie_has_state=true`, `returned_state_present=true`, `code_present=true` — **yet state mismatch still occurred**. Belt-and-braces storage was not the root cause.
+- **Actual root cause:** `AuthModal.jsx` line 53 was calling `const googleLoginUrl = buildGoogleLoginUrl();` **at component render time**. Because `buildGoogleLoginUrl()` both generates a new state AND writes it to storage, every re-render (modal open, form typing, focus events, parent re-renders, Radix dialog animation) regenerated and overwrote the stored state. This created a race: by the time Google redirected back, the state in storage was no longer the state that had been sent.
+- **Fix:** Moved `buildGoogleLoginUrl()` invocation from render time into the onClick handler of the `google-signin-btn` button. State is now generated + stored + embedded in the URL atomically inside a single synchronous event handler, with zero opportunity for intermediate re-renders to overwrite storage.
+- **Tests (iteration_206):** 13/13 passed. Verified state is NOT written on page load, modal open, typing, or modal toggle — only on button click. Storage value matches URL state parameter. Multiple rapid clicks always end with matching state (no race). Retry button, diagnostics panel, email-to-support button, email/password login all intact.
+- **Mobile bundle resynced** with the fix.
+
+
 ## 20 Apr 2026 — "4th Report" Rename + Email-to-Support + README Overhaul
 - **Renamed all remaining user-visible "Barrister Brief / View / Quick Brief" strings** to the canonical **"Appellate Research Brief"**. Code touchpoints:
   - `backend/routers/reports.py` — 2-page PDF title `"BARRISTER QUICK BRIEF"` → `"APPELLATE RESEARCH BRIEF — QUICK BRIEF"`.
