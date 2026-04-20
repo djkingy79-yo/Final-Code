@@ -54,3 +54,29 @@ export const clearOAuthState = () => {
   document.cookie = base;
   if (domain) document.cookie = `${base}; Domain=${domain}`;
 };
+
+// Atomic one-call helper for "Sign in with Google" CTAs anywhere in the app.
+// Generates state, saves it to localStorage + cookie, builds the Google OAuth
+// URL, and navigates — all synchronously in the same event handler so there
+// is zero opportunity for a React re-render to overwrite the stored state
+// before the browser actually navigates away.
+export const startGoogleLogin = () => {
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  if (!clientId) {
+    console.error("REACT_APP_GOOGLE_CLIENT_ID not configured");
+    return;
+  }
+  const redirectUri = `${window.location.origin}/auth/callback`;
+  const state = generateState();
+  saveOAuthState(state);
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: "code",
+    scope: "openid email profile",
+    access_type: "online",
+    prompt: "select_account",
+    state,
+  }).toString()}`;
+  window.location.href = url;
+};

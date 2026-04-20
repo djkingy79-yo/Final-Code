@@ -1,6 +1,17 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — "Founded by Deb King" Caption + Broken CTA Buttons Fixed
+- **"Founded by Deb King"** small-caps red caption added under the page logo on all 14 info/stats pages (inside the reusable `<PageLogo />` component). Consistent authorship visibility + SEO signal on every page. Test IDs: `page-logo-top`, `page-logo-founder-caption`.
+- **Broken CTA buttons fixed.** Deb reported via screenshots that several "Get Started" / "Sign In" / "Contact Us" buttons incorrectly bounced to the landing page instead of performing their intended action. Root cause: these CTAs used `<Link to="/">` or `navigate('/', { state: { openAuth: true } })` — but the landing page never honoured the `openAuth` state flag, so users just ended up stranded on the home page.
+- **New atomic helper** `startGoogleLogin()` in `/app/frontend/src/lib/oauthState.js` — generates OAuth state, saves to localStorage + cookie, builds URL, navigates to `https://accounts.google.com/o/oauth2/v2/auth` — all in a single synchronous event handler (same proven pattern that fixed the AuthModal render-time bug).
+- **CTAs now wired via `startGoogleLogin()`:** `AboutPage` "Get Started Free", `HowToUsePage` "Get Started Now", `SuccessStories` "Get Started Free", `Statistics` "Get Started Free", `AppealStatisticsPage` header "Sign In", and `PageCTA` component (which powers the "Ready to Build Your Case?" banner, the sticky bottom CTA, the inline CTA, and the default banner — appearing on multiple pages).
+- **`FAQPage` "Contact Us"** now opens a `mailto:` to `REACT_APP_SUPPORT_EMAIL` (fallback `djkingy79@gmail.com`) with subject "Question from FAQ page" — was previously linking to `/contact` which redirected to `/legal-resources` (wrong target).
+- **"Back" buttons on all pages** (LegalGlossary, HowItWorksPage, Statistics, FormTemplates, TermsOfService, SuccessStories) intentionally left pointing to `/` — they genuinely should return to landing.
+- **Verified live on preview:** all 5 fixed CTAs hit `accounts.google.com` on click; FAQ Contact Us href = `mailto:djkingy79@gmail.com?subject=Question%20from%20FAQ%20page` ✓.
+- **Mobile bundle resynced** (yarn build ✔ + cap sync ✔ for both iOS and Android).
+
+
 ## 20 Apr 2026 — Logo on All Public/Info Pages + Welcome-Back Toast
 - **New reusable component** `/app/frontend/src/components/PageLogo.jsx` — centred, 320px/400px (mobile/desktop), `/logo.png`, matches the landing-page hero logo exactly, `data-testid="page-logo-top"`.
 - **Logo added to 14 pages** right after the site header and before any content/heading: AppealStatisticsPage, SuccessStories, LegalFrameworkPage, ResourcesPage, LegalResourcesPage, FAQPage, HowItWorksPage, HowToUsePage, HelpPage, LegalGlossary, FormTemplates, LawyerDirectory, CompareCasesPage, Statistics.

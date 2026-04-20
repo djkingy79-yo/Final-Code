@@ -6,6 +6,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ArrowRight, Upload, FileText, Briefcase } from "lucide-react";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const PageCTA = ({ 
   variant = "default", 
@@ -21,8 +22,8 @@ const PageCTA = ({
       // Navigate to cases page if logged in
       navigate('/cases');
     } else {
-      // Navigate to landing page to sign in if not logged in
-      navigate('/', { state: { openAuth: true } });
+      // Directly kick off Google OAuth — no intermediate landing-page hop.
+      startGoogleLogin();
     }
   };
 

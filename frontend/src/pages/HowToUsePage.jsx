@@ -8,6 +8,7 @@ import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCir
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import PageLogo from "../components/PageLogo";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const HowToUsePage = () => {
 
@@ -442,12 +443,14 @@ const HowToUsePage = () => {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <Link to="/">
-            <Button className="landing-cta-primary text-lg px-8 py-4" data-testid="how-to-use-start-cta">
-              Get Started Now
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
+          <Button
+            className="landing-cta-primary text-lg px-8 py-4"
+            data-testid="how-to-use-start-cta"
+            onClick={startGoogleLogin}
+          >
+            Get Started Now
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </Button>
         </div>
       </main>
     </div>

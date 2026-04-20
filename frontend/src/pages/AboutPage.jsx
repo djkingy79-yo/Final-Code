@@ -13,6 +13,7 @@ import axios from "axios";
 import { API } from "../App";
 import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const AboutPage = () => {
 
@@ -523,11 +524,13 @@ const AboutPage = () => {
             Whether you're helping yourself, a family member, or a client — this tool is here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/" data-testid="about-cta-get-started-link">
-              <Button className="landing-cta-primary" data-testid="about-cta-get-started-btn">
-                Get Started Free
-              </Button>
-            </Link>
+            <Button
+              className="landing-cta-primary"
+              data-testid="about-cta-get-started-btn"
+              onClick={startGoogleLogin}
+            >
+              Get Started Free
+            </Button>
             <Link to="/success-stories" data-testid="about-cta-success-stories-link">
               <Button variant="outline" className="landing-cta-secondary" data-testid="about-cta-success-stories-btn">
                 Read Success Stories

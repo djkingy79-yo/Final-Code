@@ -13,6 +13,7 @@ import axios from "axios";
 import { API } from "../App";
 import { toast } from "sonner";
 import PageLogo from "../components/PageLogo";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const successStories = [
   {
@@ -418,11 +419,12 @@ const SuccessStories = () => {
           <p className="text-xs text-slate-700 mb-4">
             No one has to do this alone. The tool can help identify what may have been missed.
           </p>
-          <Link to="/">
-            <Button className="landing-cta-primary text-xs">
-              Get Started Free
-            </Button>
-          </Link>
+          <Button
+            className="landing-cta-primary text-xs"
+            onClick={startGoogleLogin}
+          >
+            Get Started Free
+          </Button>
         </div>
       </section>
 

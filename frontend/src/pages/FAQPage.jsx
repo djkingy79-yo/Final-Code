@@ -496,11 +496,14 @@ const FAQPage = () => {
             Can't find what you're looking for? The Legal Glossary may help.
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
-            <Link to="/contact" data-testid="faq-contact-link">
+            <a
+              href={`mailto:${process.env.REACT_APP_SUPPORT_EMAIL || "djkingy79@gmail.com"}?subject=${encodeURIComponent("Question from FAQ page")}`}
+              data-testid="faq-contact-link"
+            >
               <Button className="bg-blue-700 text-white hover:bg-blue-800 text-xs px-4 py-2" data-testid="faq-contact-btn">
                 Contact Us
               </Button>
-            </Link>
+            </a>
             <Link to="/glossary" data-testid="faq-glossary-link">
               <Button variant="outline" className="text-xs px-4 py-2 border-blue-300 text-blue-700 hover:bg-blue-100" data-testid="faq-glossary-btn">
                 Legal Glossary

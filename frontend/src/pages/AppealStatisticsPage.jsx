@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import PageCTA from "../components/PageCTA";
 import PageLogo from "../components/PageLogo";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const AppealStatisticsPage = () => {
   const navigate = useNavigate();
@@ -177,7 +178,7 @@ const AppealStatisticsPage = () => {
                 <Link to="/about" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100">About</Link>
               </div>
             </div>
-            <Button onClick={() => navigate('/')} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-base font-semibold">
+            <Button onClick={startGoogleLogin} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-base font-semibold" data-testid="appeal-stats-signin-btn">
               Sign In
             </Button>
           </div>

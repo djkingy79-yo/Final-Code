@@ -12,6 +12,7 @@ import axios from "axios";
 import { API } from "../App";
 import { useTheme } from "../contexts/ThemeContext";
 import PageLogo from "../components/PageLogo";
+import { startGoogleLogin } from "../lib/oauthState";
 
 const Statistics = () => {
 
@@ -406,11 +407,12 @@ const Statistics = () => {
           <p className="text-slate-400 mb-8">
             Let the AI help identify potential grounds for appeal in this case.
           </p>
-          <Link to="/">
-            <Button className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20">
-              Get Started Free
-            </Button>
-          </Link>
+          <Button
+            className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20"
+            onClick={startGoogleLogin}
+          >
+            Get Started Free
+          </Button>
         </div>
       </section>
     </div>
