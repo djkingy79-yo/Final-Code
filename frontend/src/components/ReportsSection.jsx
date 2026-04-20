@@ -8,6 +8,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import SectionTranslatableReport from "./SectionTranslatableReport";
 import { isIOSDevice } from "../utils/isIOS";
 import {
   FileText, Loader2, Clock, ChevronDown, ChevronRight, Trash2, Download, Eye, Printer, AlertCircle, Lock, Scale, BookOpen, CheckCircle2, Crown
@@ -967,21 +968,11 @@ const ReportsSection = ({
 
                       {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
-                        <div className="legal-report">
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800 break-words font-medium">{children}</a>,
-                              table: ({ children }) => (
-                                <div className="legal-report-table-wrap">
-                                  <table>{children}</table>
-                                </div>
-                              ),
-                            }}
-                          >
-                            {reportText}
-                          </ReactMarkdown>
-                        </div>
+                        <SectionTranslatableReport
+                          reportText={reportText}
+                          reportId={report.report_id}
+                          caseId={caseId}
+                        />
 
                         {/* AI-analysis warning */}
                         <div className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100" data-testid={`report-ai-warning-${report.report_id}`}>

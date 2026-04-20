@@ -628,3 +628,114 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ---------------------------------------------------------------------------
+# Section-only translation — fast path for barristers who just want to
+# translate a single section (e.g. "Grounds of Appeal") for a client.
+# Synchronous because a single section typically fits in one LLM call
+# (<=12k chars), so there's no need for the background task + polling dance.
+# ---------------------------------------------------------------------------
+
+class SectionTranslateRequest(BaseModel):
+    report_id: str
+    language: str
+    section_heading: str
+    section_text: str
+
+
+@translate_router.post("/cases/{case_id}/translate-section")
+async def translate_section(case_id: str, payload: SectionTranslateRequest, request: Request):
+    """Translate a single report section on-demand.
+
+    Cached under `report_section_translations` keyed by
+    (report_id, language, section_slug) so repeat requests are instant.
+    """
+    user = await get_current_user(request)
+    await verify_case_ownership(case_id, user.user_id)
+
+    if payload.language not in SUPPORTED_LANGUAGES:
+        raise HTTPException(status_code=400, detail=f"Unsupported language: {payload.language}")
+    if payload.language == "en":
+        return {"status": "completed", "translated_content": payload.section_text, "cached": False}
+
+    target_lang = SUPPORTED_LANGUAGES[payload.language]
+    section_slug = re.sub(r"[^a-z0-9]+", "-", payload.section_heading.lower()).strip("-")[:80] or "section"
+    # Validate input size — protect against abuse / runaway prompts
+    section_text = payload.section_text.strip()
+    if not section_text:
+        raise HTTPException(status_code=400, detail="section_text cannot be empty")
+    if len(section_text) > 30000:
+        raise HTTPException(status_code=400, detail="Section too long — use the full report translator instead")
+
+    # Cache hit?
+    cache = await db.report_section_translations.find_one(
+        {"report_id": payload.report_id, "language": payload.language, "section_slug": section_slug},
+        {"_id": 0, "translated_content": 1, "language_name": 1},
+    )
+    if cache:
+        return {
+            "status": "completed",
+            "language": payload.language,
+            "language_name": cache.get("language_name", target_lang),
+            "translated_content": cache["translated_content"],
+            "cached": True,
+        }
+
+    # Verify the report belongs to this case (defense in depth)
+    report = await db.reports.find_one({"report_id": payload.report_id, "case_id": case_id}, {"_id": 0, "report_id": 1})
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found for this case")
+
+    system_prompt = (
+        f"You are a professional legal document translator. Translate the following section of an Australian criminal law appeal report "
+        f"from English into {target_lang}. Preserve ALL legal terminology, case citations, section references, markdown formatting "
+        f"(headings, bullet points, numbered lists, tables), and the section's structure. "
+        f"Do NOT add commentary, opinions, or new content. Do NOT invent or fabricate any citations, section numbers, or facts. "
+        f"Do NOT default to NSW legislation references — preserve the original jurisdiction references exactly as they appear. "
+        f"Preserve forensic appellate hedging (e.g. 'it is arguable that') in the target language. "
+        f"Use Australian English spelling for any untranslated English terms."
+    )
+    user_prompt = f"Translate the following section titled \"{payload.section_heading}\" into {target_lang}:\n\n{section_text}"
+
+    result = await call_llm_structured(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        session_id=f"translate_section_{payload.report_id}_{payload.language}_{section_slug}",
+        task_type="general",
+        max_tokens=16384,
+        timeout_seconds=120,
+        require_json=False,
+    )
+    if not result["ok"]:
+        raise HTTPException(status_code=502, detail=result.get("error", "Translation failed"))
+
+    translated = result["content"]
+
+    # Cache result (fire-and-forget style — don't fail the response if write errors)
+    try:
+        await db.report_section_translations.replace_one(
+            {"report_id": payload.report_id, "language": payload.language, "section_slug": section_slug},
+            {
+                "report_id": payload.report_id,
+                "case_id": case_id,
+                "user_id": user.user_id,
+                "language": payload.language,
+                "language_name": target_lang,
+                "section_slug": section_slug,
+                "section_heading": payload.section_heading,
+                "translated_content": translated,
+                "translated_at": datetime.now(timezone.utc),
+            },
+            upsert=True,
+        )
+    except Exception as e:
+        logger.warning(f"Section translation cache write failed: {e}")
+
+    return {
+        "status": "completed",
+        "language": payload.language,
+        "language_name": target_lang,
+        "translated_content": translated,
+        "cached": False,
+    }
