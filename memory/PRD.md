@@ -84,6 +84,16 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Regression tests** — `tests/test_frameworks_refactor.py` (5 tests) lock in import parity, star-import behaviour, and data integrity.
 - **Full suite green** — 446 passed / 2 skipped across all framework + AI usage + refactor tests.
 
+### Completed (14 February 2026 — Translate reliability + Admin UX + Cost per Brief)
+- **Translate concurrency** — `routers/translate.py` `_run_translation_background` now uses `asyncio.Semaphore(3)` so chunks translate in parallel. Regression test proves 6 chunks complete in <0.9s (vs 1.2s sequential) — meaningful 3× wall-time reduction without tripping OpenAI rate limits.
+- **Translate restart-recovery** — new `_persist_task()` mirrors task state to Mongo `translation_tasks` collection; `/translate/status` falls back to Mongo when in-memory `_translate_tasks` is empty (simulates backend restart). Returns `recovered: true` flag so the UI knows state was recovered.
+- **Translate frontend polling** — `ReportTranslator.jsx` bumped `maxAttempts` from 120 → 300 and `pollInterval` from 4s → 5s (25-minute ceiling instead of 8 minutes). Handles Appellate Research Briefs with 15–25 chunks comfortably.
+- **Admin Dashboard reorder** — PayID Pending Payments section moved to the TOP of `/admin` (above Live Visitor Statistics) so new transfers are the first thing seen.
+- **AI Cost Badge (friendly nudge)** — new `GET /api/cases/{case_id}/ai-cost` endpoint (owner-only) + `<AiCostBadge>` component mounted above the Reports tab on `/cases/:id`. Shows "Estimated AI cost: $X.XX across N AI calls" + per-report-type pills. Silent when no usage has been recorded yet (intentional — older cases show nothing until new AI calls run).
+- **Cost tracker regex fix** — `_extract_case_id` / `_extract_report_type` in `ai_usage_tracker.py` now support the production `case_<12hex>` case_id format (e.g. `case_ec9b7141be1b`) alongside legacy UUIDs.
+- **Regression tests** — `tests/test_translate_parallel_recovery.py` (3 tests) + expanded `tests/test_ai_usage_tracker.py` (now 31 parametrised cases).
+- **Testing-agent verified** — iteration_208.json confirms 400/400 key tests pass, zero critical/minor bugs, all data-testids present.
+
 ## Remaining / Backlog
 - **P2**: Backend self-hosting migration guide (Railway/Render/AWS) to remove final Emergent dependency (`REACT_APP_BACKEND_URL`)
 - **P2**: Second attachment for counsel conference prep on Appellate Research Brief
