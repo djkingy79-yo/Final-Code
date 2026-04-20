@@ -33,8 +33,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   // Direct Google OAuth — redirect to Google's authorize URL with CSRF state.
   // State is stored in BOTH localStorage AND a domain-scoped cookie so it survives
-  // DNS-level redirects (e.g. GoDaddy's www ↔ bare-domain forwarding) that would
-  // otherwise wipe sessionStorage / change the storage origin mid-flow.
+  // DNS-level redirects (e.g. GoDaddy's www ↔ bare-domain forwarding).
+  //
+  // CRITICAL: state is generated LAZILY on click, NOT at render time. A render-time
+  // call would overwrite stored state on every re-render (typing, modal open/close,
+  // focus events, parent re-renders), creating a race where the state sent to Google
+  // no longer matches the state in storage by the time Google redirects back.
   const buildGoogleLoginUrl = () => {
     const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.origin}/auth/callback`;
@@ -50,7 +54,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       state,
     }).toString()}`;
   };
-  const googleLoginUrl = buildGoogleLoginUrl();
 
   const validateForm = () => {
     const newErrors = {};
@@ -157,11 +160,15 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
         
         <div className="p-6">
-          {/* Google Sign-in Button — closes dialog first, then navigates to prevent Radix focus trap from blocking */}
+          {/* Google Sign-in Button — generates state AT CLICK TIME (atomic), closes dialog, then navigates */}
           <button
             type="button"
             onClick={() => {
               // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+              // Generate state + save + build URL atomically in the click handler.
+              // This guarantees the state in storage matches the state sent to Google,
+              // with zero chance of a subsequent re-render overwriting storage before redirect.
+              const googleLoginUrl = buildGoogleLoginUrl();
               onClose(); // Release Dialog focus trap FIRST
               setTimeout(() => {
                 window.location.href = googleLoginUrl;
