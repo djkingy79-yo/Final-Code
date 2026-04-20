@@ -47,6 +47,7 @@ const LegalFrameworkPage = lazy(() => import("./pages/LegalFrameworkPage"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const SignupSourceAnalytics = lazy(() => import("./pages/SignupSourceAnalytics"));
 const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
@@ -669,6 +670,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             {({ user }) => <AdminDashboard user={user} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <ProtectedRoute>
+            {() => <SignupSourceAnalytics />}
           </ProtectedRoute>
         }
       />

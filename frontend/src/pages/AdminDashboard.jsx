@@ -385,6 +385,17 @@ const AdminDashboard = () => {
               <p className="text-xs text-slate-600">Users (30d)</p>
             </CardContent>
           </Card>
+          <Card
+            className="cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
+            onClick={() => navigate("/admin/analytics")}
+            data-testid="admin-analytics-tile"
+          >
+            <CardContent className="pt-6 text-center">
+              <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <p className="text-sm font-bold">Conversion Analytics</p>
+              <p className="text-xs text-slate-600">Which CTAs convert</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* User Breakdown */}

@@ -1,6 +1,13 @@
 # Appeal Case Manager — Changelog
 
 
+## 20 Apr 2026 — Analytics Dashboard + CaseChat Bubble Fix + Gemini Key Stored
+- **New admin page `/admin/analytics`** (`/app/frontend/src/pages/SignupSourceAnalytics.jsx`). Admin-only. Shows a ranked bar chart of all signup conversion sources with prettified labels ("Modal / Landing" instead of raw `modal-landing`), 3 summary stat cards (Total Users, Tracked Sign-ups with % of total, Unique Sources), gradient blue bars proportional to the max, hover tooltip with first/last seen dates, empty state when no data, and an explainer card. New tile added to Admin Dashboard (`/admin/dashboard`) linking to it. Verified live — 5 bars rendered correctly with seeded test data, then seeds cleaned up.
+- **CaseChat bubble disappearance fixed** (`/app/frontend/src/components/CaseChat.jsx`). Root cause: the chat button was at `z-40 bottom-6 left-6` but `InstallPrompt` (globally rendered from `App.js`) uses `z-50 bottom-20 left-4 right-4` on mobile, completely covering the chat toggle. Raised CaseChat to `z-[60]` (both the toggle button and the expanded panel) so it sits above InstallPrompt.
+- **Gemini API key stored safely** in `backend/.env` as `GEMINI_API_KEY` — ready for future LLM swap. **Not yet swapping the LLM backend** because (a) it would conflate with the OAuth production deploy, and (b) swapping model providers requires a controlled regression test across all 4 report tiers (Quick Summary, Full Detailed, Extensive Log, Appellate Research Brief) to avoid quality drift. Full Gemini integration playbook retrieved from the integration expert and filed for the next session. Deb has been advised to rotate the key (regenerate in Google AI Studio) since it was pasted in chat and is now recoverable from conversation history.
+- **Mobile bundle resynced** (yarn build ✔ + cap sync ✔ for both iOS + Android).
+
+
 ## 20 Apr 2026 — CTA Conversion Source Tracking
 - **What's new:** Every Google sign-in CTA across the app now tags itself with a unique source label. When a new user first signs up, that label is written to the user document as `signup_source` — giving Deb visibility into which pages/buttons actually convert visitors into registered users.
 - **Frontend:**
