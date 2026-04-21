@@ -64,7 +64,7 @@ const CaselawSearchPage = () => {
       courts: [
         {
           name: "Supreme Court Library Queensland",
-          url: "https://www.sclqld.org.au/caselaw",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/qld/",
           description: "Queensland's official legal information service providing access to court decisions and legal resources.",
           whatYouFind: [
             "Supreme Court and Court of Appeal judgments",
@@ -85,7 +85,7 @@ const CaselawSearchPage = () => {
       courts: [
         {
           name: "Courts SA - Judgments",
-          url: "https://www.courts.sa.gov.au/judgments",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/sa/",
           description: "South Australian courts judgement database with decisions from all court levels.",
           whatYouFind: [
             "Supreme Court full judgments",
@@ -106,7 +106,7 @@ const CaselawSearchPage = () => {
       courts: [
         {
           name: "eCourts Portal WA",
-          url: "https://ecourts.justice.wa.gov.au/eCourtsPortal/Decisions",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/wa/",
           description: "Western Australia's electronic courts portal providing access to published court decisions.",
           whatYouFind: [
             "Supreme Court judgments",
@@ -169,7 +169,7 @@ const CaselawSearchPage = () => {
       courts: [
         {
           name: "ACT Courts - Judgments",
-          url: "https://www.courts.act.gov.au/supreme/judgments",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/act/",
           description: "ACT Supreme Court and Magistrates Court published judgments and decisions.",
           whatYouFind: [
             "Supreme Court judgments",
@@ -190,7 +190,7 @@ const CaselawSearchPage = () => {
       courts: [
         {
           name: "High Court of Australia",
-          url: "https://www.hcourt.gov.au/cases/cases-heard",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/HCA/",
           description: "Australia's highest court. Hears constitutional matters and appeals of national importance. Sets binding precedent for all Australian courts.",
           whatYouFind: [
             "Constitutional law decisions",
@@ -204,7 +204,7 @@ const CaselawSearchPage = () => {
         },
         {
           name: "Federal Court of Australia",
-          url: "https://www.fedcourt.gov.au/judgments",
+          url: "https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/FCA/",
           description: "Handles matters arising under Commonwealth law including some criminal appeals and migration matters.",
           whatYouFind: [
             "Federal criminal matters",

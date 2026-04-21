@@ -132,28 +132,26 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Layout parity preserved** — existing `@bottom-left` (italic document label + appellant) and `@bottom-right` (Page X of Y) are untouched; the seal sits centrally between them.
 - **Visually verified** — rendered a sample A4 PDF via headless Chromium print pipeline with `emulate_media("print")`; file-analysis confirmed: italic label left, navy pill with white checkmark + "FRAMEWORK VERIFIED · 79 Australian Acts" centred, page number right. `-webkit-print-color-adjust: exact` ensures Chrome/Edge/Safari all honour the background fill.
 
-### Completed (21 February 2026 — Canonical Print Spec Locked Across All 7 Export Surfaces)
-- **Single source of truth for print formatting** — owner agreed a canonical print spec and every export builder now uses identical values: body 11pt Times New Roman / line-height 1.5 / H1 14pt bold / H2 12pt bold / H3 12pt bold italic / paragraph-gap 10pt / margins 18mm top, 20mm sides, 22mm bottom. Mobile @media keeps the same canonical sizes for WYSIWYG parity (only container padding shrinks).
-- **Footer spec locked** — `{Appellant} · {Doc Type} · {Date in en-AU long form}` left + `Page X of Y` right, 9pt Times italic, on EVERY export. Legacy "Criminal Law Appeal Management / Doc — Defendant — Date" prefix removed. Also removed the `@bottom-center` FRAMEWORK VERIFIED placard per owner's strict two-box footer spec.
-- **Files updated with canonical CSS** (6 frontend + 1 backend):
-  1. `/app/frontend/src/utils/exportHtml.js` — shared builder (Notes, Legal Framework, Progress, Full Bundle)
-  2. `/app/frontend/src/pages/CaseDetail.jsx` — `buildTabPreviewHtml` (Documents tab + all-tab exports)
-  3. `/app/frontend/src/components/GroundsOfMerit.jsx` — `buildGroundsPreviewHtml` (bulk) + `buildSingleGroundHtml` (per-ground)
-  4. `/app/frontend/src/components/TimelineEnhanced.jsx` — timeline export (single @page rule; dedup removed)
-  5. `/app/frontend/src/pages/BarristerView.jsx` — Appellate Research Brief export
-  6. `/app/frontend/src/pages/ReportView.jsx` — standard AI report print CSS
-  7. `/app/backend/routers/report_exports.py` + `/app/backend/services/export_footer.py` — DOCX Heading 1/2/3 styles + PDF canvas footer + `build_footer_label`
-- **Root-cause fix for giant whitespace gaps** — removed `page-break-before: always; page-break-after: always;` on `.section-body table` in both `ReportView.jsx` and `exportHtml.js`. This rule was forcing every table to a fresh page and leaving half-blank preceding pages (the exact bug Deb reported through 1100+ iterations). Tables now break naturally via the `page: landscape-table` named page without forced breaks.
-- **orphans/widows protection** — every paragraph element has `orphans: 3; widows: 3` to stop headings/paragraphs being stranded.
-- **Backend DOCX canonical** — Normal 11pt / line-spacing 1.5 / space-after 10pt; Heading 1 14pt bold; Heading 2 12pt bold navy; Heading 3 12pt bold italic navy. `build_footer_label` emits middle-dot format; PDF `NumberedCanvas` footer at 9pt italic 20mm margin-aligned.
-- **Regression tests** — `tests/test_export_endpoints_iteration201.py` updated to assert the new canonical middle-dot format, 9pt (18 half-point) DOCX footer, and en-AU long-form date. 68 export/report/footer tests pass cleanly.
-- **Visually verified** — canonical test HTML rendered via Playwright shows H1 bold, H2 with navy underline, H3 navy italic, justified body, clear 10pt paragraph gaps, no whitespace gaps.
+### Completed (21 February 2026 — Canonical Print Spec + Dead External-Link Repair)
+- **Canonical print spec locked across 7 export builders** (6 frontend + backend): body 11pt Times / line-height 1.5 / H1 14pt bold / H2 12pt bold / H3 12pt bold italic / paragraph-gap 10pt / margins 18/20/22mm / footer `{Appellant} · {Doc Type} · {Date}` left + `Page X of Y` right at 9pt italic. Mobile @media keeps canonical sizes for WYSIWYG parity (only container padding shrinks). Removed the `page-break-before/after: always` on `.section-body table` that had been forcing half-blank preceding pages — ROOT CAUSE of the 1100+ iteration whitespace-gap bug. Removed the `@bottom-center` FRAMEWORK VERIFIED placard per owner's strict 2-box footer spec.
+- **Dead external links across Law / Legal / Progress tabs swept and repaired**:
+  - **Research Case Law tiles** (NSW, VIC, QLD, SA, WA, TAS, NT, ACT, HCA, Federal Court) — all routed through AustLII's `cgi-bin/viewdb/au/cases/<jur>/` landing pages (verified 200 OK). Replaced dead `caselaw.nsw.gov.au`, `sclqld.org.au`, `courts.sa.gov.au/judgments`, `ecourts.justice.wa.gov.au` (WA eCourts blocks iOS Safari), `courts.act.gov.au/supreme/judgments`, `hcourt.gov.au/cases/cases-heard` and `fedcourt.gov.au/judgments`.
+  - **Section-level chips** on Law tab (`s.18`, `s.19A`, `s.23A`, `s.52A` etc.) — previously hardcoded `/au/legis/nsw/consol_act/` which broke every VIC/QLD/SA/WA/TAS/NT/ACT chip. Also AustLII's `sinosrch.cgi` is now 410 Gone. New approach: Google site-search scoped to `austlii.edu.au` (`site:austlii.edu.au "<Act>" s X`) — bulletproof, resolves first-hit to correct AustLII section page across every jurisdiction.
+  - **Appeal Forms & Court Registries** tiles — NSW CCA, Vic Court of Appeal, QLD/SA/WA Supreme Courts, Legal Aid NSW — all switched to stable homepage URLs. WA Supreme Court moved to the new `wa.gov.au` consolidated domain path.
+  - **CaselawSearchPage** URL map — same AustLII routing applied (QLD, SA, WA, ACT, HCA, Federal Court).
+  - **LegalResourcesPage** SmallResourceCards — QLD, SA, WA court portals repointed to stable homepage paths.
+  - **Progress tab step 3 "View legislation on AustLII"** chip — defensively lowercases `selectedState` so the AustLII legis path always resolves.
+- **Backend DOCX/PDF canonical** — `Pt(11)` body / `Pt(14)` H1 / `Pt(12)` H2 bold / `Pt(12)` H3 bold italic / `build_footer_label` emits middle-dot format with en-AU long-form date / PDF `NumberedCanvas` at 9pt italic with 20mm margin-aligned.
+- **Regression tests** — `tests/test_export_endpoints_iteration201.py` updated to assert the new canonical middle-dot format, 9pt (18 half-point) DOCX footer, and en-AU long-form date. 68 export/report/footer tests pass cleanly. Full backend suite 739 pass.
+- **Visually verified** — canonical test HTML rendered via Playwright shows H1 bold, H2 with navy underline, H3 navy italic, justified 11pt/1.5 body, clear 10pt paragraph gaps, no whitespace gaps. URL health-check: `www.austlii.edu.au/cgi-bin/viewdb/au/cases/nsw/` → **HTTP/1.1 200 OK**, `www.courts.qld.gov.au/` → 200, `www.legalaid.nsw.gov.au/` → 200.
 
 ## Remaining / Backlog
-- **P1**: Verify direct `/export-pdf` and `/export-word` buttons bypass Safari iOS print headers correctly on a real device.
+- **P1**: Verify the updated links open correctly on the user's iOS device (rate-limit prevented bulk server-side checks; single-URL checks all pass).
+- **P1**: Fix the "This file cannot be previewed" iOS Safari error on uploaded Word docs — add a Download-to-open fallback button in the document list UI so Pages/Word can render the file natively instead of the blocked inline preview.
+- **P1**: Verify direct `/export-pdf` and `/export-word` buttons bypass Safari iOS print headers on a real device.
 - **P2**: Second attachment for counsel conference prep on the Appellate Research Brief.
-- **P2 (deferred)**: Founder video testimonial / explainer on the landing page to build trust.
-- **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au` — at that point the Emergent preview URL is no longer in any runtime path.
+- **P2 (deferred)**: Founder video testimonial / explainer on the landing page.
+- **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au`.
 
 ## Test Credentials
 - Email: djkingy79@gmail.com

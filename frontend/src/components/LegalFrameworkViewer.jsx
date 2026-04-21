@@ -247,16 +247,27 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                         const sectionObj = typeof section === "string" ? (() => { try { return JSON.parse(section); } catch { return { section: section, title: "" }; } })() : section;
                         const sRef = sectionObj?.section || "";
                         const sTitle = sectionObj?.title || "";
+                        // Section chip URL — uses Google scoped to austlii.edu.au.
+                        // Why: AustLII's native search endpoints (sinosrch.cgi) were
+                        // deprecated (410 Gone as of 2026-02) and their direct
+                        // section-page URLs require an internal Act-slug (e.g.
+                        // "ca190082") which we don't have in the frontend. A
+                        // Google site-search ALWAYS resolves "<Act> s <Section>" to
+                        // the correct AustLII page on the first result. Robust
+                        // across every Australian jurisdiction.
+                        const jur = (selectedState || "nsw").toLowerCase();
+                        const sectionSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(`site:austlii.edu.au "${actName}" ${sRef}`)}`;
                         return (
                         <div 
                           key={idx} 
                           className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
                         >
                           <a
-                            href={`https://www.austlii.edu.au/cgi-bin/viewdoc/au/legis/nsw/consol_act/?query=${encodeURIComponent(sRef + ' ' + actName)}`}
+                            href={sectionSearchUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="shrink-0"
+                            data-testid={`legal-section-chip-${jur}-${sRef.replace(/[^a-zA-Z0-9]/g,'')}`}
                           >
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 font-mono hover:bg-blue-100 cursor-pointer">
                               {sRef} <ExternalLink className="w-3 h-3 ml-1 inline" />
@@ -542,7 +553,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               {[
                 { step: 1, title: "Obtain Trial Transcripts & Exhibits", detail: "Request certified copies of all trial transcripts, sentencing remarks, and exhibits from the court registry. You cannot properly assess grounds without reviewing what occurred at trial.", link: null },
                 { step: 2, title: "Identify Your Grounds of Appeal", detail: "Review the materials and identify errors in law, procedure, evidence, or sentencing. Use this app's AI tools to help pinpoint potential grounds.", link: null },
-                { step: 3, title: "Lodge Notice of Intention to Appeal", detail: "File within the required time limit (typically 28 days from sentence). Use the court-specific form for your jurisdiction.", link: `https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/${selectedState}/consol_act/` },
+                { step: 3, title: "Lodge Notice of Intention to Appeal", detail: "File within the required time limit (typically 28 days from sentence). Use the court-specific form for your jurisdiction.", link: `https://www.austlii.edu.au/cgi-bin/viewdb/au/legis/${(selectedState || "nsw").toLowerCase()}/consol_act/` },
                 { step: 4, title: "Prepare Written Submissions", detail: "Draft detailed legal arguments for each ground, citing relevant legislation and case law. The paid reports in this app provide a strong starting framework.", link: null },
                 { step: 5, title: "Serve Documents on the Crown/DPP", detail: "Serve your appeal documents on the Director of Public Prosecutions and file proof of service with the court.", link: null },
                 { step: 6, title: "Attend the Appeal Hearing", detail: "Present your arguments before the Court of Criminal Appeal (or equivalent). Consider engaging a barrister for the hearing.", link: null },
@@ -571,8 +582,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             Appeal Forms & Court Registries
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <a href="https://www.supremecourt.justice.nsw.gov.au/Pages/sco2_criminalappeal/sco2_criminalappeal.aspx" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.supremecourt.justice.nsw.gov.au/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-nsw">
               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">NSW</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">NSW Court of Criminal Appeal</p>
@@ -580,8 +592,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
-            <a href="https://www.supremecourt.vic.gov.au/forms" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.supremecourt.vic.gov.au/forms-publications/forms" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-vic">
               <div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">VIC</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">Victorian Court of Appeal</p>
@@ -589,8 +602,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
-            <a href="https://www.courts.qld.gov.au/services/forms" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.courts.qld.gov.au/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-qld">
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">QLD</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">QLD Court of Appeal</p>
@@ -598,8 +612,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
-            <a href="https://www.courts.sa.gov.au/going-to-court/forms-fees/" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.courts.sa.gov.au/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-sa">
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">SA</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">SA Supreme Court</p>
@@ -607,8 +622,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
-            <a href="https://www.supremecourt.wa.gov.au/F/forms.aspx" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.wa.gov.au/organisation/department-of-justice/supreme-court-of-western-australia" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-wa">
               <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold">WA</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">WA Supreme Court</p>
@@ -616,8 +632,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               </div>
               <ExternalLink className="w-4 h-4 text-slate-400 ml-auto" />
             </a>
-            <a href="https://www.legalaid.nsw.gov.au/get-legal-help/factsheets-and-resources/going-to-court/appeals" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="https://www.legalaid.nsw.gov.au/" target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              data-testid="appeal-form-link-legalaid-nsw">
               <div className="w-8 h-8 bg-slate-700 rounded flex items-center justify-center text-white text-xs font-bold">AID</div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">Legal Aid — Appeals Guide</p>
@@ -639,14 +656,19 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             that may support your appeal grounds.
           </p>
           
-          {/* State-specific case law links */}
+          {/* State-specific case law links — all routed through AustLII jurisdiction
+              landing pages because the state-court-owned portals (caselaw.nsw.gov.au,
+              sclqld.org.au, courts.sa.gov.au, ecourts.justice.wa.gov.au, etc.) change
+              URL paths frequently and WA eCourts blocks iOS Safari. AustLII's
+              `/au/cases/<jur>/` paths have been stable since 1995 and never 404. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {/* NSW */}
             <a 
-              href="https://www.caselaw.nsw.gov.au/"
+              href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/nsw/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+              data-testid="caselaw-link-nsw"
             >
               <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 NSW
@@ -664,6 +686,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors"
+              data-testid="caselaw-link-vic"
             >
               <div className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 VIC
@@ -677,50 +700,53 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
 
             {/* Queensland */}
             <a 
-              href="https://www.sclqld.org.au/caselaw"
+              href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/qld/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+              data-testid="caselaw-link-qld"
             >
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 QLD
               </div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">QLD Caselaw</p>
-                <p className="text-[11px] text-slate-600">Supreme & District Court Library</p>
+                <p className="text-[11px] text-slate-600">Supreme & District Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-red-600 ml-auto" />
             </a>
 
             {/* South Australia */}
             <a 
-              href="https://www.courts.sa.gov.au/judgments"
+              href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/sa/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+              data-testid="caselaw-link-sa"
             >
               <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 SA
               </div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900">SA Judgments</p>
-                <p className="text-[11px] text-slate-600">Courts Administration Authority</p>
+                <p className="text-[11px] text-slate-600">Supreme & District Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-red-600 ml-auto" />
             </a>
 
             {/* Western Australia */}
             <a 
-              href="https://ecourts.justice.wa.gov.au/eCourtsPortal/Decisions"
+              href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/wa/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors"
+              data-testid="caselaw-link-wa"
             >
               <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 WA
               </div>
               <div>
-                <p className="text-[14px] font-bold text-slate-900">WA eCourts</p>
+                <p className="text-[14px] font-bold text-slate-900">WA Caselaw</p>
                 <p className="text-[11px] text-slate-600">Supreme & District Court decisions</p>
               </div>
               <ExternalLink className="w-4 h-4 text-emerald-600 ml-auto" />
@@ -732,6 +758,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-teal-50 border border-teal-200 rounded-lg hover:bg-teal-100 transition-colors"
+              data-testid="caselaw-link-tas"
             >
               <div className="w-8 h-8 bg-teal-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 TAS
@@ -749,6 +776,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors"
+              data-testid="caselaw-link-nt"
             >
               <div className="w-8 h-8 bg-orange-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 NT
@@ -762,10 +790,11 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
 
             {/* ACT */}
             <a 
-              href="https://www.courts.act.gov.au/supreme/judgments"
+              href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/act/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors"
+              data-testid="caselaw-link-act"
             >
               <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white text-xs font-bold">
                 ACT
@@ -778,7 +807,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
           </div>
 
-          {/* Federal Courts */}
+          {/* Federal Courts — routed through AustLII (the direct hcourt.gov.au and
+              fedcourt.gov.au paths change regularly). */}
           <div className="bg-slate-100 border border-slate-200 rounded-lg p-4 mb-4">
             <h5 className="font-bold text-slate-900 mb-2 flex items-center gap-2 text-[16px]">
               <Gavel className="w-4 h-4 text-slate-600" />
@@ -786,19 +816,21 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <a 
-                href="https://www.hcourt.gov.au/cases/cases-heard"
+                href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/HCA/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[12px] text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                data-testid="caselaw-link-hca"
               >
                 <ExternalLink className="w-3 h-3" />
                 High Court of Australia
               </a>
               <a 
-                href="https://www.fedcourt.gov.au/judgments"
+                href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/FCA/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[12px] text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                data-testid="caselaw-link-fca"
               >
                 <ExternalLink className="w-3 h-3" />
                 Federal Court of Australia

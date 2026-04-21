@@ -599,10 +599,10 @@ const LegalResourcesPage = () => {
                   Queensland
                 </h4>
                 <div className="grid md:grid-cols-3 gap-3">
-                  <SmallResourceCard title="Supreme Court QLD" website="https://www.courts.qld.gov.au/courts/supreme-court" />
-                  <SmallResourceCard title="Court of Appeal QLD" website="https://www.courts.qld.gov.au/courts/court-of-appeal" />
-                  <SmallResourceCard title="District Court QLD" website="https://www.courts.qld.gov.au/courts/district-court" />
-                  <SmallResourceCard title="Magistrates Courts QLD" website="https://www.courts.qld.gov.au/courts/magistrates-court" />
+                  <SmallResourceCard title="Supreme Court QLD" website="https://www.courts.qld.gov.au/" />
+                  <SmallResourceCard title="Court of Appeal QLD" website="https://www.courts.qld.gov.au/" />
+                  <SmallResourceCard title="District Court QLD" website="https://www.courts.qld.gov.au/" />
+                  <SmallResourceCard title="Magistrates Courts QLD" website="https://www.courts.qld.gov.au/" />
                 </div>
               </div>
 
@@ -613,9 +613,9 @@ const LegalResourcesPage = () => {
                   South Australia
                 </h4>
                 <div className="grid md:grid-cols-3 gap-3">
-                  <SmallResourceCard title="Supreme Court SA" website="https://www.courts.sa.gov.au/courts/supreme-court" />
-                  <SmallResourceCard title="District Court SA" website="https://www.courts.sa.gov.au/courts/district-court" />
-                  <SmallResourceCard title="Magistrates Court SA" website="https://www.courts.sa.gov.au/courts/magistrates-court" />
+                  <SmallResourceCard title="Supreme Court SA" website="https://www.courts.sa.gov.au/" />
+                  <SmallResourceCard title="District Court SA" website="https://www.courts.sa.gov.au/" />
+                  <SmallResourceCard title="Magistrates Court SA" website="https://www.courts.sa.gov.au/" />
                 </div>
               </div>
 
@@ -626,8 +626,8 @@ const LegalResourcesPage = () => {
                   Western Australia
                 </h4>
                 <div className="grid md:grid-cols-3 gap-3">
-                  <SmallResourceCard title="Supreme Court WA" website="https://www.supremecourt.wa.gov.au" />
-                  <SmallResourceCard title="Court of Appeal WA" website="https://www.supremecourt.wa.gov.au/C/court_of_appeal.aspx" />
+                  <SmallResourceCard title="Supreme Court WA" website="https://www.wa.gov.au/organisation/department-of-justice/supreme-court-of-western-australia" />
+                  <SmallResourceCard title="Court of Appeal WA" website="https://www.wa.gov.au/organisation/department-of-justice/supreme-court-of-western-australia" />
                   <SmallResourceCard title="District Court WA" website="https://www.districtcourt.wa.gov.au" />
                   <SmallResourceCard title="Magistrates Court WA" website="https://www.magistratescourt.wa.gov.au" />
                 </div>
