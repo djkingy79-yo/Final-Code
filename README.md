@@ -195,8 +195,8 @@ Keeps the legal framework anchored to current law:
 - **Print Preview:** Dedicated `/document-preview` route with automatic print dialogue and clean A4-optimised layout
 - **Bulk Export with section picker:** "Print All", "PDF All", and "Word All" open an Export Options Modal that lets the user include or exclude individual sections (Cover Page, Notes, Grounds, Timeline, Reports, etc.) per export.
 - **Case Export Pack:** Single formatted PDF with all paid reports, grounds, timeline, and legal framework
-- **Parity across on-screen, print, PDF and DOCX:** Body 11pt, H1 16pt, H2 15pt, H3 13pt, tables 9pt, cover meta 10pt, cover disclaimer 9pt, body disclaimer 8pt — identical across every format
-- Exact footer on every exported page: *Criminal Law Appeal Management / {Document Name} — {Defendant} — {Date} — Page X of Y* (Times Italic, 7pt)
+- **Parity across on-screen, print, PDF and DOCX (canonical spec locked Feb 2026):** Body 11pt / H1 14pt / H2 12pt bold / H3 12pt bold italic / line-height 1.5 / 10pt paragraph gap / margins 18mm top, 20mm sides, 22mm bottom — identical across every format
+- Exact footer on every exported page: *{Appellant} · {Document Type} · {Date in en-AU long form}* left + *Page X of Y* right, Times Italic 9pt
 - **Framework version badge** on every export: *"Legal Framework v2026.02 · 79 Australian Acts manually verified · criminallawappealmanagement.com.au"*
 - All exports include the **"NOT LEGAL ADVICE"** legal disclaimers
 
@@ -236,6 +236,41 @@ Keeps the legal framework anchored to current law:
 - Collapsible "Show sign-in diagnostics" link on the OAuth failure card
 - JSON dump of timestamp, hostname, protocol, referrer, `navigator.cookieEnabled`, whether state exists in localStorage, whether state exists in cookie, whether a returned `state`/`code` is in the URL, the error detail, and userAgent
 - One-click "Copy diagnostics to clipboard" so users can forward the payload to support without screenshots or guesswork
+
+### 21. Barrister Tools Suite
+Practitioner-grade analysis features mounted on the Progress tab of every case. Each tool returns output in forensic third-person Australian English and all generated paragraphs follow the canonical print spec (Times 11pt / H1 14pt / H2 12pt bold / H3 12pt bold italic / line-height 1.5 / 10pt paragraph gap / margins 18·20·22mm).
+
+- **Appeal Deadline Tracker** — enter the sentence date, tap *Compute Statutory Deadlines*, and the system auto-generates four calendar entries using the governing statute for the case jurisdiction:
+  - NSW — 28 days (*Criminal Appeal Act 1912* (NSW) s 10)
+  - VIC — 28 days (*Criminal Procedure Act 2009* (Vic) s 275)
+  - QLD — 30 days (*Criminal Code 1899* (Qld) s 671)
+  - SA / WA / TAS — 21 days
+  - NT / ACT / Cth — 28 days
+- **Calendar export** — one-tap `.ics` download imports straight into Apple Calendar, Google Calendar, or Outlook, with `VALARM` reminders at T-14, T-7, T-3, T-1 days
+- **Crown Response Simulator** — select any ground, tap *Generate Crown Response* and the app drafts the DPP's strongest written reply with:
+  - 3–6 paragraph forensic rebuttal ending each paragraph with an AGLC4 pinpoint
+  - Weakness score 1–10 (colour-coded: red ≥7, amber 4–6, emerald ≤3)
+  - Weakness-reasons list the Crown will exploit
+  - Crown's counter-authorities (AGLC4 chips)
+  - Strategic response paragraph suggesting how the appellant should pre-emptively address each weakness
+- **Fresh Evidence Wizard (R v Gallagher)** — five-field flow that applies *R v Gallagher* (1986) 160 CLR 392, *Mickelberg v The Queen* (1989) 167 CLR 259, *R v Lawless* [1974] VR 398, and *Ratten v The Queen* (1974) 131 CLR 510. Returns:
+  - Per-factor assessment (new / reasonable diligence / credible / material — satisfied | not_satisfied | uncertain, each with reasoning)
+  - Admissibility likelihood (low | moderate | high)
+  - 250–450 word submission paragraph with AGLC4 citations, ready to paste into written submissions
+  - Recommended authorities + practical next-step checklist
+- **AGLC4 Citation Insert in Notes editor** — Act name + jurisdiction + section inputs, one-tap inserts a properly formatted AGLC4 citation at the cursor (e.g. *Crimes Act 1900* (NSW) s 18)
+- **Section-chip Copy-Cite on Law tab** — every legislation section chip exposes a copy icon that places an AGLC4 citation on the clipboard
+- **Document Download fallback** — Download icon on every uploaded document streams the original binary so iOS Safari users can open Word/PDF in Pages / Word / Files app natively (bypasses Safari's "This file cannot be previewed" block)
+
+### 22. Live Legislative Change Alerts
+A case-aware amendment feed across all 9 Australian jurisdictions. Designed for zero hallucination risk: the admin publishes confirmed amendments sourced from AustLII / legislation.gov.au; users never see anything the admin has not manually verified.
+
+- **Admin publish workflow** (`/admin/legislation-currency`) — `Publish Legislative Amendment` card with 9-field dialog (jurisdiction, Act, section, effective date, amending Act, change type, severity, summary, source URL). Each entry writes to `legislation_amendments` with `verification_status="confirmed"` and surfaces immediately to every user whose case sits in the matching jurisdiction (plus every user for Commonwealth amendments).
+- **AI scan shortlist** — `Run AI Scan` button runs the existing guardrailed `ai_currency_check` across the top 12 REGISTRY Acts and writes candidate amendments with `verification_status="ai_flagged"` for manual admin confirmation. Never auto-publishes.
+- **Weekly scheduled scan** — long-lived asyncio task in `services/weekly_legislation_scan.py` runs every Monday at 09:00 AEST (Sun 23:00 UTC), same shortlist logic, no admin intervention required. Task survives any individual failure (catches and retries in 1 hour).
+- **Per-case alert feed** — `GET /api/cases/{id}/legislation-alerts` returns all confirmed amendments for the case's jurisdiction + all Commonwealth amendments, with per-user `acknowledged` flag. Red unread count badge on the panel header.
+- **Per-user acknowledgement** — `POST /api/cases/{id}/legislation-alerts/{aid}/acknowledge` clears the badge for that user/case/amendment combination. Stored in `legislation_alert_reads` collection.
+- **UI** — colour-coded severity pills (red critical, amber high, blue medium, slate low) + jurisdiction chips (NSW blue, VIC purple, QLD red, SA red, WA emerald, TAS teal, NT orange, ACT indigo, CTH navy) + *Mark as read* link per alert + source-register external link.
 
 ---
 

@@ -4,7 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
-import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb, MessageSquare } from "lucide-react";
+import { Scale, ArrowLeft, Menu, X, Upload, FileText, Clock, BarChart3, CheckCircle, ChevronRight, Search, FileCheck, Download, AlertTriangle, Lightbulb, MessageSquare, ShieldAlert, Gavel, Bell, CalendarClock, ScrollText } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link } from "react-router-dom";
 import PageLogo from "../components/PageLogo";
@@ -192,6 +192,22 @@ const HowToUsePage = () => {
         "Coordinate with lawyers, barristers, support persons, or family members"
       ],
       tip: "Keeping all communication within the app ensures nothing gets lost across emails and text messages. Everything stays linked to the case."
+    },
+    {
+      num: 11,
+      title: "Use the Barrister Tools Suite",
+      icon: ShieldAlert,
+      color: "blue",
+      image: "/images/howto/live-notes.png",
+      description: "On the Progress tab, open the Barrister Tools panel to run practitioner-grade analysis on any case — deadlines, Crown-response stress tests, Gallagher fresh-evidence evaluation, and live legislative alerts.",
+      instructions: [
+        "Appeal Deadline Tracker — enter the sentence date, tap Compute Statutory Deadlines, then Export .ics to drop the dates into Apple / Google / Outlook Calendar",
+        "Crown Response Simulator — pick any ground, tap Generate Crown Response, and read the DPP's strongest reply with a weakness score 1-10 and counter-authorities",
+        "Fresh Evidence Wizard — tap New Fresh-Evidence Evaluation, complete the five Gallagher fields, and receive a submission-ready paragraph with AGLC4 citations",
+        "Legislative Change Alerts — review the red-bell feed for confirmed amendments to any Act referenced in the case's jurisdiction, then Mark as Read to clear the badge",
+        "Every output uses forensic third-person Australian English so paragraphs can be pasted straight into submissions"
+      ],
+      tip: "Run the Crown Response Simulator BEFORE filing the Notice of Appeal. The weakness score flags arguments the DPP will exploit, giving time to refine grounds instead of learning the weakness in court."
     }
   ];
 

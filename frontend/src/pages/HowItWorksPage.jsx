@@ -40,6 +40,10 @@ import {
   Download,
   Zap,
   MessageSquare,
+  ShieldAlert,
+  Bell,
+  CalendarClock,
+  ScrollText,
 } from "lucide-react";
 import PageLogo from "../components/PageLogo";
 
@@ -335,6 +339,44 @@ const HowItWorksPage = () => {
         text: "Open a case and click the Collaboration tab to share and chat",
         link: "/dashboard",
         btnText: "Go to Dashboard",
+      },
+    },
+    {
+      num: 10,
+      icon: ShieldAlert,
+      title: "Barrister Tools — Deadlines, Crown Response, Fresh Evidence",
+      subtitle: "Practitioner-grade analysis on every case: never miss a deadline; stress-test every ground; apply Gallagher factors to fresh evidence",
+      color: "bg-blue-700",
+      lightColor: "bg-blue-50",
+      borderColor: "border-blue-200",
+      textColor: "text-blue-700",
+      description: "The Barrister Tools panel on the Progress tab mirrors what a senior criminal appellate barrister actually does. Auto-computed statutory deadlines with calendar export; AI-drafted Crown reply with a weakness score so grounds can be refined before filing; structured Gallagher-factor evaluation for any proposed fresh evidence with a submission-ready paragraph.",
+      visual: {
+        alt: "Barrister Tools panel with deadlines, Crown response, and fresh evidence wizards",
+        caption: "Three barrister-grade tools on every case — all in forensic third-person language."
+      },
+      whatYouSee: [
+        "Appeal Deadline Tracker — Notice of Intention, Notice of Appeal, Submissions target, Legal Aid merit — auto-calculated from the sentence date and jurisdiction rules",
+        "Export .ics file — imports straight into Apple / Google / Outlook Calendar with reminders at T-14, T-7, T-3, T-1 days",
+        "Crown Response Simulator — generates the DPP's strongest reply to any ground, with weakness score 1-10 and counter-authorities",
+        "Fresh Evidence Wizard — applies R v Gallagher (1986) 160 CLR 392 factors (new / diligence / credible / material) and drafts the submission paragraph with AGLC4 citations",
+        "Live Legislative Change Alerts — confirmed amendments affecting this case's jurisdiction and federal law, with Mark as Read",
+      ],
+      proTips: [
+        "Compute the deadlines immediately after creating a case — missing the Notice of Intention is the #1 cause of appeal dismissal",
+        "Stress-test every ground with the Crown Response Simulator before filing — it surfaces the weakness the Crown will exploit",
+        "Use the Fresh Evidence Wizard even if the evidence seems unimpeachable — it highlights any factor the appeal court will scrutinise",
+        "Check the Legislative Alerts each week so sentencing arguments stay current with the latest amendments",
+      ],
+      interactive: {
+        label: "Critical deadlines by jurisdiction",
+        items: [
+          "NSW — 28 days (Criminal Appeal Act 1912 s 10)",
+          "VIC — 28 days (Criminal Procedure Act 2009 s 275)",
+          "QLD — 30 days (Criminal Code 1899 s 671)",
+          "WA / SA / TAS — 21 days",
+          "NT / ACT / Cth — 28 days",
+        ],
       },
     },
   ];

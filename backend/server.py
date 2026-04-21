@@ -186,6 +186,12 @@ async def on_startup():
 
     asyncio.create_task(_background_startup())
 
+    # Weekly scheduled AI scan for legislation amendments — runs every Monday
+    # at 09:00 AEST (Sun 23:00 UTC). Produces ai_flagged candidates for admin
+    # manual confirmation. Never auto-publishes (zero hallucination risk).
+    from services.weekly_legislation_scan import weekly_legislation_scan_loop
+    asyncio.create_task(weekly_legislation_scan_loop())
+
 
 @app.on_event("shutdown")
 async def on_shutdown():

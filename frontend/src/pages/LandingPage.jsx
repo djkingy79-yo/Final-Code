@@ -3,7 +3,7 @@
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles, BadgeCheck } from "lucide-react";
+import { Scale, FileText, Upload, BarChart3, FileCheck, ChevronRight, AlertTriangle, Presentation, Users, Menu, X, Briefcase, BookOpen, Heart, MessageCircle, Download, Book, HelpCircle, TrendingUp, ArrowUp, Sparkles, BadgeCheck, Gavel } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -743,26 +743,42 @@ const LandingPage = () => {
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>Translate reports into 41 languages</span>
                   </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Live legislative alerts — amendments affecting your case</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Auto-computed appeal deadlines with calendar export</span>
+                  </li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Free to Get Started</h4>
+                <h4 className="font-bold text-slate-900 mb-4" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Built Like a Barrister Would</h4>
                 <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Crown Response Simulator — stress-test grounds before filing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Fresh Evidence Wizard (<em>R v Gallagher</em>)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>AGLC4 citation chips — one-tap insert into any note</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <span>Forensic appellate third-person language throughout</span>
+                  </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                     <span>No credit card required to begin</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Upload unlimited documents for free</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>Pay only for detailed AI analysis reports</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ChevronRight className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <span>A fraction of what lawyers charge</span>
+                    <span>A fraction of what barristers charge</span>
                   </li>
                 </ul>
               </div>
@@ -791,7 +807,7 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-5 gap-6">
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Upload className="w-7 h-7 text-blue-400" />
@@ -814,10 +830,17 @@ const LandingPage = () => {
               <p className="text-slate-600">Generate the $150 Detailed Report and the $200 Extensive Report for deep legal analysis.</p>
             </div>
             <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
+              <div className="w-14 h-14 bg-amber-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Gavel className="w-7 h-7 text-amber-500" />
+              </div>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 4 — Barrister Tools</h3>
+              <p className="text-slate-600">Auto-compute appeal deadlines, stress-test grounds against the Crown's reply, apply Gallagher factors to fresh evidence.</p>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center shadow-lg">
               <div className="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Presentation className="w-7 h-7 text-indigo-300" />
               </div>
-              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 4 — Appellate Research Brief</h3>
+              <h3 className="font-bold text-slate-900 text-lg mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Step 5 — Appellate Research Brief</h3>
               <p className="text-slate-600">Unlocked after all three reports. A consolidated, hearing‑ready brief.</p>
             </div>
           </div>
