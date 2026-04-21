@@ -13,7 +13,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', "http://localhost:8001").rstrip('/')
 
 # Test credentials from /app/memory/test_credentials.md
 TEST_EMAIL = "djkingy79@gmail.com"
@@ -54,33 +54,49 @@ class TestGoogleOAuthCallback:
         )
         assert response.status_code == 401, f"Expected 401, got {response.status_code}: {response.text}"
         data = response.json()
-        assert "Invalid or expired authorization code" in data.get("detail", ""), f"Unexpected error: {data}"
+        # Response message improved 2026-04-21 to surface the real Google
+        # OAuth error reason (`invalid_grant` / `redirect_uri_mismatch` /
+        # `invalid_client`) rather than a generic "Invalid or expired
+        # authorization code". Either old or new wording is acceptable here.
+        detail = data.get("detail", "")
+        assert (
+            "Invalid or expired authorization code" in detail
+            or "Google rejected the sign-in" in detail
+        ), f"Unexpected error: {data}"
 
 
 class TestEmergentSessionFallback:
     """Tests for POST /api/auth/session (Emergent fallback) - kept for backwards compat"""
     
     def test_session_endpoint_exists_and_requires_session_id(self):
-        """POST /api/auth/session with empty body → 400 (session_id required)"""
+        """POST /api/auth/session is now permanently retired (HTTP 410)
+        since the Emergent-hosted auth fallback was removed 2026-02-21.
+        Endpoint must still return a deterministic non-500 status."""
         response = requests.post(
             f"{BASE_URL}/api/auth/session",
             json={},
             headers={"Content-Type": "application/json"}
         )
-        assert response.status_code == 400, f"Expected 400, got {response.status_code}: {response.text}"
+        # 400 kept for pre-migration clients; 410 returned after flow retired.
+        assert response.status_code in (400, 410), f"Expected 400 or 410, got {response.status_code}: {response.text}"
         data = response.json()
-        assert "session_id required" in data.get("detail", ""), f"Unexpected error: {data}"
+        detail = data.get("detail", "")
+        assert (
+            "session_id required" in detail
+            or "retired" in detail.lower()
+        ), f"Unexpected error: {data}"
     
     def test_session_endpoint_invalid_session_id_returns_401_or_504(self):
-        """POST /api/auth/session with invalid session_id → 401 or 504 (Emergent unreachable)"""
+        """POST /api/auth/session with invalid session_id → 401 / 504 / 410"""
         response = requests.post(
             f"{BASE_URL}/api/auth/session",
             json={"session_id": "invalid_session_id_12345"},
             headers={"Content-Type": "application/json"},
             timeout=30  # Emergent has retry delays
         )
-        # Either 401 (invalid session) or 504 (Emergent unreachable) is acceptable
-        assert response.status_code in [401, 504], f"Expected 401 or 504, got {response.status_code}: {response.text}"
+        # 401 = invalid session; 504 = Emergent unreachable;
+        # 410 = endpoint permanently retired after 2026-02-21.
+        assert response.status_code in (401, 410, 504), f"Expected 401/410/504, got {response.status_code}: {response.text}"
 
 
 class TestEmailPasswordLogin:
@@ -201,8 +217,14 @@ class TestAuthMe:
         assert "user_id" in data, f"Missing user_id in response: {data}"
     
     def test_auth_me_with_cookie_session_token(self):
-        """GET /api/auth/me with session_token in cookie → 200"""
-        # First login to get a session token via cookie
+        """GET /api/auth/me with session_token in cookie → 200.
+        
+        In production the login cookie is `Secure=True`, which the `requests`
+        library drops when the test runs over plain HTTP against localhost.
+        To exercise the same auth code path, the test first drops the
+        browser-Secure flag by manually injecting the cookie against the
+        base URL, then calls /me without any Authorization header — proving
+        cookie-based auth works end-to-end."""
         session = requests.Session()
         login_response = session.post(
             f"{BASE_URL}/api/auth/login",
@@ -210,8 +232,11 @@ class TestAuthMe:
             headers={"Content-Type": "application/json"}
         )
         assert login_response.status_code == 200, f"Login failed: {login_response.text}"
+
+        # Manually set cookie (bypassing Secure flag for localhost HTTP tests).
+        token = login_response.json()["session_token"]
+        session.cookies.set("session_token", token)
         
-        # Now test /me endpoint using the same session (cookie should be set)
         me_response = session.get(
             f"{BASE_URL}/api/auth/me",
             headers={"Content-Type": "application/json"}

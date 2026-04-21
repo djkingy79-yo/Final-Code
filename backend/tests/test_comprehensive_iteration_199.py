@@ -17,20 +17,29 @@ import requests
 import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001').rstrip('/')
-SESSION_TOKEN = "b23b07fbf4b44749a4d228d0feba92e2"
 CASE_ID = "case_ba08d8e0ad0d"
 REPORT_ID = "rpt_1d3ddfc9c595"
 ADMIN_EMAIL = "djkingy79@gmail.com"
+ADMIN_PASSWORD = os.environ.get("TEST_PASSWORD", "Grubbygrub88")
 
 
 @pytest.fixture
 def api_client():
-    """Shared requests session with auth"""
+    """Shared requests session authenticated with a freshly-issued Bearer
+    token. The previous hardcoded SESSION_TOKEN expired whenever admin
+    logged in elsewhere, breaking every test using this fixture with a 401.
+    Now we login once per session and attach the returned token as a Bearer
+    header — works regardless of Secure cookie behaviour on HTTP."""
     session = requests.Session()
-    session.headers.update({
-        "Content-Type": "application/json",
-        "Cookie": f"session_token={SESSION_TOKEN}"
-    })
+    session.headers.update({"Content-Type": "application/json"})
+    login_resp = session.post(
+        f"{BASE_URL}/api/auth/login",
+        json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD},
+    )
+    if login_resp.status_code == 200:
+        token = login_resp.json().get("session_token")
+        if token:
+            session.headers["Authorization"] = f"Bearer {token}"
     return session
 
 

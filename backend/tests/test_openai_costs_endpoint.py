@@ -9,7 +9,7 @@ import requests
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8001").rstrip("/")
 if not BASE_URL:
     BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com"
 
@@ -36,6 +36,8 @@ class TestOpenAICostsAuth:
         })
         assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
         
+        session.headers["Authorization"] = "Bearer " + login_resp.json()["session_token"]
+        
         # Access admin endpoint
         response = session.get(f"{BASE_URL}/api/admin/openai-costs")
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
@@ -52,6 +54,7 @@ class TestOpenAICostsPeriods:
             "password": ADMIN_PASSWORD
         })
         assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
+        session.headers["Authorization"] = "Bearer " + login_resp.json()["session_token"]
         return session
 
     def test_period_month_default(self, admin_session):
@@ -122,6 +125,7 @@ class TestOpenAICostsResponseShape:
             "password": ADMIN_PASSWORD
         })
         assert login_resp.status_code == 200
+        session.headers["Authorization"] = "Bearer " + login_resp.json()["session_token"]
         return session
 
     def test_totals_numeric_types(self, admin_session):
@@ -219,6 +223,7 @@ class TestOpenAICostsEmptyData:
             "password": ADMIN_PASSWORD
         })
         assert login_resp.status_code == 200
+        session.headers["Authorization"] = "Bearer " + login_resp.json()["session_token"]
         return session
 
     def test_empty_data_returns_zero_totals(self, admin_session):

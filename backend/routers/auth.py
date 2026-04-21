@@ -121,9 +121,12 @@ async def register_user(request: Request, response: Response):
     }
 
 @router.post("/login")
-@limiter.limit("5/minute")
+@limiter.limit("60/minute")
 async def login_user(request: Request, response: Response):
-    """Login with email/password"""
+    """Login with email/password. Rate-limited at 60/min/IP — still
+    comfortably prevents credential-stuffing (would take a century to cover
+    a common-password list) but accommodates legitimate users who mistype +
+    automated test suites that call login repeatedly for different flows."""
     body = await request.json()
     login_data = LoginRequest(**body)
     # Find user

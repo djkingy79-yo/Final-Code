@@ -17,13 +17,13 @@ import os
 import time
 import io
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', "http://localhost:8001").rstrip('/')
 if not BASE_URL:
     BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com"
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"
-TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "change-me-local-only")
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD", "Grubbygrub88")
 TEST_CASE_ID = "case_0885e6d0cba8"  # Tasmania v Scott - known case with documents
 
 
