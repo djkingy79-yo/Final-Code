@@ -11,7 +11,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import {
   CalendarClock, Download, Loader2, Gavel, ShieldAlert, ScrollText,
-  AlertTriangle, CheckCircle2, XCircle, HelpCircle, Copy
+  AlertTriangle, CheckCircle2, XCircle, HelpCircle, Copy,
+  Bell, ExternalLink
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -578,6 +579,140 @@ function FreshEvidenceWizard({ caseId }) {
 }
 
 // ===========================================================================
+// LEGISLATION ALERTS PANEL — real-time amendment feed for this case
+// ===========================================================================
+function LegislationAlertsPanel({ caseId }) {
+  const [data, setData] = useState({ alerts: [], total: 0, unread_count: 0, jurisdiction: "" });
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${API}/cases/${caseId}/legislation-alerts`);
+      setData(res.data || { alerts: [], total: 0, unread_count: 0 });
+    } catch {
+      /* silent — endpoint may be empty on a brand-new case */
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (caseId) load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseId]);
+
+  const handleAcknowledge = async (amendmentId) => {
+    try {
+      await axios.post(`${API}/cases/${caseId}/legislation-alerts/${amendmentId}/acknowledge`);
+      setData((prev) => ({
+        ...prev,
+        unread_count: Math.max(0, (prev.unread_count || 0) - 1),
+        alerts: prev.alerts.map((a) => a.amendment_id === amendmentId ? { ...a, acknowledged: true } : a),
+      }));
+    } catch {
+      toast.error("Failed to mark as read");
+    }
+  };
+
+  const sevStyles = {
+    critical: "bg-red-600 text-white border-red-700",
+    high: "bg-amber-500 text-white border-amber-600",
+    medium: "bg-blue-500 text-white border-blue-600",
+    low: "bg-slate-400 text-white border-slate-500",
+  };
+  const jurStyles = {
+    NSW: "bg-blue-100 text-blue-800 border-blue-300",
+    VIC: "bg-purple-100 text-purple-800 border-purple-300",
+    QLD: "bg-red-100 text-red-800 border-red-300",
+    SA: "bg-red-100 text-red-800 border-red-300",
+    WA: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    TAS: "bg-teal-100 text-teal-800 border-teal-300",
+    NT: "bg-orange-100 text-orange-800 border-orange-300",
+    ACT: "bg-indigo-100 text-indigo-800 border-indigo-300",
+    CTH: "bg-slate-800 text-white border-slate-900",
+  };
+
+  return (
+    <Card data-testid="legislation-alerts-panel">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-[16px] font-bold" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
+          <Bell className="w-5 h-5 text-blue-700" />
+          Legislative Change Alerts
+          {data.unread_count > 0 && (
+            <Badge className="bg-red-600 text-white ml-1" data-testid="legislation-unread-badge">
+              {data.unread_count} new
+            </Badge>
+          )}
+        </CardTitle>
+        <p className="text-[12px] text-slate-600 mt-1">
+          Confirmed amendments affecting this case's jurisdiction ({data.jurisdiction || "—"}) and federal law.
+          Acts amended since last visit are flagged here so sentencing and procedural arguments remain current.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {loading ? (
+          <div className="text-[12px] text-slate-500 italic py-2">Loading alerts...</div>
+        ) : data.alerts.length === 0 ? (
+          <div className="text-[12px] text-slate-500 italic py-2">
+            No confirmed amendments affecting {data.jurisdiction || "this jurisdiction"} at this time.
+          </div>
+        ) : (
+          data.alerts.map((a) => (
+            <div
+              key={a.amendment_id}
+              className={`p-3 rounded-lg border ${a.acknowledged ? "border-slate-200 bg-slate-50 opacity-70" : "border-blue-200 bg-white"}`}
+              data-testid={`legislation-alert-${a.amendment_id}`}
+            >
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <Badge variant="outline" className={`text-[10px] ${jurStyles[a.jurisdiction] || ""}`}>
+                  {a.jurisdiction}
+                </Badge>
+                <Badge className={`text-[10px] ${sevStyles[a.severity] || sevStyles.medium}`}>
+                  {a.severity}
+                </Badge>
+                <span className="text-[11px] text-slate-500">
+                  Effective {new Date(a.effective_date).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
+                </span>
+                {!a.acknowledged && (
+                  <button
+                    type="button"
+                    onClick={() => handleAcknowledge(a.amendment_id)}
+                    className="ml-auto text-[11px] text-blue-700 hover:underline"
+                    data-testid={`legislation-alert-ack-${a.amendment_id}`}
+                  >
+                    Mark as read
+                  </button>
+                )}
+              </div>
+              <div className="font-semibold text-[13px] text-slate-900">
+                {a.act_name}{a.section ? ` — ${a.section}` : ""}
+              </div>
+              {a.amending_act && (
+                <div className="text-[11px] text-slate-500 italic mb-1">by {a.amending_act}</div>
+              )}
+              <p className="text-[12px] text-slate-700 leading-relaxed">{a.summary}</p>
+              {a.source_url && (
+                <a
+                  href={a.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-blue-700 hover:underline mt-1 inline-flex items-center gap-1"
+                  data-testid={`legislation-alert-source-${a.amendment_id}`}
+                >
+                  <ExternalLink className="w-3 h-3" /> View on source register
+                </a>
+              )}
+            </div>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+
+// ===========================================================================
 // MAIN EXPORT
 // ===========================================================================
 export default function BarristerToolsPanel({ caseId, caseData, grounds = [] }) {
@@ -590,6 +725,7 @@ export default function BarristerToolsPanel({ caseId, caseData, grounds = [] }) 
           Barrister Tools
         </h2>
       </div>
+      <LegislationAlertsPanel caseId={caseId} />
       <DeadlineTracker caseId={caseId} initialSentenceDate={initialDate} />
       <CrownResponseSimulator caseId={caseId} grounds={grounds} />
       <FreshEvidenceWizard caseId={caseId} />

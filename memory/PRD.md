@@ -143,7 +143,22 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - **Progress tab step 3 "View legislation on AustLII"** chip — defensively lowercases `selectedState` so the AustLII legis path always resolves.
 - **Backend DOCX/PDF canonical** — `Pt(11)` body / `Pt(14)` H1 / `Pt(12)` H2 bold / `Pt(12)` H3 bold italic / `build_footer_label` emits middle-dot format with en-AU long-form date / PDF `NumberedCanvas` at 9pt italic with 20mm margin-aligned.
 
-### Completed (21 February 2026 — Barrister Tools Suite)
+### Completed (21 February 2026 — Real-Time Legislative Alerts)
+- **New `legislation_alerts` router** with 5 endpoints providing case-aware amendment tracking across all 9 Australian jurisdictions (NSW, VIC, QLD, SA, WA, TAS, NT, ACT, CTH):
+  - `POST /api/admin/legislation/amendments` — admin records a confirmed amendment (jurisdiction + Act + section + effective_date + amending_act + summary + source_url + severity low|medium|high|critical)
+  - `PATCH /api/admin/legislation/amendments/{id}` — correct / edit published amendments
+  - `DELETE /api/admin/legislation/amendments/{id}` — retract mistaken amendments
+  - `POST /api/admin/legislation/ai-scan` — runs the existing guardrailed `ai_currency_check` across the top 12 REGISTRY Acts, shortlists candidates with `verification_status="ai_flagged"` for manual review (never auto-published — zero hallucination risk)
+  - `GET /api/legislation/amendments?jurisdiction=&since=&limit=` — public confirmed feed
+  - `GET /api/cases/{case_id}/legislation-alerts` — case-aware feed combining jurisdiction-matched amendments + all CTH amendments with per-user `acknowledged` flags
+  - `POST /api/cases/{case_id}/legislation-alerts/{amendment_id}/acknowledge` — clears the bell badge for that user/case/amendment
+- **Two new Mongo collections**: `legislation_amendments` (confirmed feed) and `legislation_alert_reads` (per-user ack tracking)
+- **Admin UI** — `Publish Legislative Amendment` card added to `LegislationCurrency.jsx` page with 9-field dialog (jurisdiction, Act, section, effective date, amending Act, change type, severity, summary, source URL) + `Run AI scan` button for the LLM shortlist workflow
+- **User UI** — `LegislationAlertsPanel` inside `BarristerToolsPanel` shows jurisdiction-filtered alerts with colour-coded severity pills (red critical, amber high, blue medium, slate low) + jurisdiction chips (NSW blue, VIC purple, QLD red, SA red, WA emerald, TAS teal, NT orange, ACT indigo, CTH navy) + `Mark as read` per alert. Red count badge next to the section header on the Progress tab.
+- **Strategy decision**: We deliberately do NOT scrape 9 state parliamentary registers. Scraping is brittle, breaks on any redesign, and hallucination risk is unacceptable in a legal product. Instead: (a) admin publishes confirmed amendments sourced from AustLII / legislation.gov.au → guaranteed accurate; (b) AI scan produces a shortlist of candidate amendments the admin then confirms → cheap, fast, safe.
+- **Testing** — end-to-end curl verified: 4 seed amendments published (200 each), NSW case retrieves 3 matched alerts (2 NSW + 1 CTH; correctly excludes VIC), acknowledge flips unread 3→2. Frontend compiles cleanly, 0 lint issues.
+
+
 Three senior-barrister-grade features added, mounted on the Progress tab via new `BarristerToolsPanel` component:
 
 1. **Deadline Tracker with ICS export** — new `POST /api/cases/{case_id}/deadlines/compute` auto-computes the four critical appeal deadlines (Notice of Intention, Notice of Appeal, Submissions draft target, Legal Aid merit application) from `sentence_date + jurisdiction`. Rules hardcoded for NSW 28d, VIC 28d, QLD 30d, SA 21d, WA 21d, TAS 21d, NT 28d, ACT 28d, Cth 28d, each referencing the governing statute/rule. New `GET /api/cases/{case_id}/deadlines.ics` streams an iCalendar file with VALARM reminders at T-14, T-7, T-3, T-1 so the user can import to Apple / Google / Outlook. Frontend: colour-coded countdown chips (emerald ≥14d → amber 7-13d → red <7d → red-bold overdue).

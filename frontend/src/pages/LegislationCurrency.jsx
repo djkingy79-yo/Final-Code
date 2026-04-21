@@ -13,6 +13,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "../components/ui/select";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "../components/ui/dialog";
@@ -28,6 +34,171 @@ const STATUS_META = {
   review_soon: { label: "Review soon", colour: "amber", Icon: Clock },
   overdue: { label: "Overdue", colour: "red", Icon: AlertTriangle },
 };
+
+// ---------------------------------------------------------------------------
+// Publish-amendment card — admin records a confirmed legislative change that
+// immediately surfaces as a case-linked alert (red bell badge) on every user's
+// Progress tab whose case sits in the matching jurisdiction or references
+// federal law. Added 2026-02-21 at owner's request.
+// ---------------------------------------------------------------------------
+function PublishAmendmentCard({ onPublished }) {
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [form, setForm] = useState({
+    jurisdiction: "NSW",
+    act_name: "",
+    section: "",
+    effective_date: "",
+    amending_act: "",
+    change_type: "amended",
+    summary: "",
+    source_url: "",
+    severity: "high",
+  });
+
+  const setField = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handlePublish = async () => {
+    if (!form.act_name || form.act_name.length < 5) {
+      toast.error("Act name required (min 5 chars)"); return;
+    }
+    if (!form.effective_date) {
+      toast.error("Effective date required (YYYY-MM-DD)"); return;
+    }
+    if (!form.summary || form.summary.length < 20) {
+      toast.error("Summary needs at least 20 characters"); return;
+    }
+    try {
+      setSaving(true);
+      await axios.post(`${API}/admin/legislation/amendments`, form);
+      toast.success("Amendment published — users with matching cases will see it");
+      setOpen(false);
+      setForm({ ...form, act_name: "", section: "", effective_date: "", amending_act: "", summary: "", source_url: "" });
+      if (onPublished) onPublished();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || "Publish failed");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAiScan = async () => {
+    try {
+      setScanning(true);
+      const { data } = await axios.post(`${API}/admin/legislation/ai-scan`, {});
+      toast.success(`AI scan: ${data.flagged_count} candidate(s) flagged for manual review`);
+      if (onPublished) onPublished();
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || "AI scan failed");
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  return (
+    <Card className="border-blue-200" data-testid="publish-amendment-card">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-[16px]">
+          <Sparkles className="w-4 h-4 text-blue-700" />
+          Publish Legislative Amendment
+        </CardTitle>
+        <CardDescription className="text-[12px]">
+          Record a confirmed amendment. Once published, users with cases in the matching jurisdiction (plus all users for federal amendments) see a red alert badge on their Progress tab with the change summary and source link.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-wrap gap-2">
+        <Button onClick={() => setOpen(true)} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="open-publish-dialog">
+          Publish confirmed amendment
+        </Button>
+        <Button variant="outline" onClick={handleAiScan} disabled={scanning} data-testid="run-ai-scan-btn">
+          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Scanning...</> : <>Run AI scan (shortlist candidates)</>}
+        </Button>
+      </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Publish confirmed amendment</DialogTitle>
+            <DialogDescription className="text-[11px]">
+              Verify against AustLII / legislation.gov.au before publishing. Entries sit in the <code>legislation_amendments</code> collection with <code>verification_status="confirmed"</code> and are immediately visible to users.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div>
+                <Label className="text-[12px]">Jurisdiction</Label>
+                <Select value={form.jurisdiction} onValueChange={(v) => setField("jurisdiction", v)}>
+                  <SelectTrigger data-testid="pub-amnd-jur"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["NSW","VIC","QLD","SA","WA","TAS","NT","ACT","CTH"].map(j => <SelectItem key={j} value={j}>{j}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[12px]">Change type</Label>
+                <Select value={form.change_type} onValueChange={(v) => setField("change_type", v)}>
+                  <SelectTrigger data-testid="pub-amnd-type"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="amended">Amended</SelectItem>
+                    <SelectItem value="repealed">Repealed</SelectItem>
+                    <SelectItem value="renumbered">Renumbered</SelectItem>
+                    <SelectItem value="new_section">New section</SelectItem>
+                    <SelectItem value="consolidation">Consolidation</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[12px]">Severity</Label>
+                <Select value={form.severity} onValueChange={(v) => setField("severity", v)}>
+                  <SelectTrigger data-testid="pub-amnd-sev"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="critical">Critical (re-ground live appeals)</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <Label className="text-[12px]">Act name (no jurisdiction suffix — e.g. "Crimes Act 1900")</Label>
+              <Input value={form.act_name} onChange={(e) => setField("act_name", e.target.value)} data-testid="pub-amnd-act" placeholder="Crimes Act 1900" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div>
+                <Label className="text-[12px]">Section(s) affected</Label>
+                <Input value={form.section} onChange={(e) => setField("section", e.target.value)} data-testid="pub-amnd-section" placeholder="s 18 or ss 19A-19B" />
+              </div>
+              <div>
+                <Label className="text-[12px]">Effective date</Label>
+                <Input type="date" value={form.effective_date} onChange={(e) => setField("effective_date", e.target.value)} data-testid="pub-amnd-date" />
+              </div>
+            </div>
+            <div>
+              <Label className="text-[12px]">Amending Act (optional)</Label>
+              <Input value={form.amending_act} onChange={(e) => setField("amending_act", e.target.value)} data-testid="pub-amnd-amending" placeholder="Crimes Amendment Act 2025 (NSW)" />
+            </div>
+            <div>
+              <Label className="text-[12px]">Summary — plain English, ≥ 20 chars</Label>
+              <Textarea rows={3} value={form.summary} onChange={(e) => setField("summary", e.target.value)} data-testid="pub-amnd-summary" placeholder="Describe the change and its practical effect on criminal appeals..." />
+            </div>
+            <div>
+              <Label className="text-[12px]">Source URL (AustLII / legislation.gov.au)</Label>
+              <Input value={form.source_url} onChange={(e) => setField("source_url", e.target.value)} data-testid="pub-amnd-url" placeholder="https://www.austlii.edu.au/..." />
+            </div>
+          </div>
+          <DialogFooter className="mt-3">
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handlePublish} disabled={saving} className="bg-blue-700 text-white hover:bg-blue-600" data-testid="pub-amnd-submit">
+              {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Publishing...</> : "Publish"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
+  );
+}
 
 const StatusBadge = ({ status }) => {
   const meta = STATUS_META[status] || STATUS_META.current;
@@ -161,6 +332,8 @@ const LegislationCurrency = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        <PublishAmendmentCard onPublished={() => load(jurisdictionFilter)} />
+
         {error && (
           <Card className="border-red-200 bg-red-50">
             <CardContent className="py-6 text-red-700 font-medium" data-testid="legcur-error">{error}</CardContent>
