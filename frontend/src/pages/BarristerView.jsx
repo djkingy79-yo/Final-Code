@@ -408,8 +408,9 @@ export default function BarristerView() {
     const notice = mode === "pdf"
       ? '<div class="preview-notice">PDF preview — use Print / Save as PDF to download.</div>'
       : "";
-    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "2-digit", month: "2-digit", year: "numeric" });
-    const previewFooterLabel = `Criminal Law Appeal Management / Appellate Research Brief — ${caseData?.defendant_name || caseData?.title || "Appellant"} — ${previewDate}`;
+    const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+    const defendantForFooter = caseData?.defendant_name || caseData?.title || "Appellant";
+    const previewFooterLabel = `${defendantForFooter}  \\00B7  Appellate Research Brief  \\00B7  ${previewDate}`;
     const defendantName = caseData?.defendant_name || "Appellant";
     const meta = `${caseData?.court || "Court"} — ${(caseData?.state || "NSW").toUpperCase()}`;
     const documentsCount = documents.length;
@@ -486,13 +487,24 @@ export default function BarristerView() {
     .disclaimer-bold .disc-icon { color: #facc15; font-size: 22px; flex-shrink: 0; }
     .disclaimer-bold .disc-text { font-size: 8pt; color: #ffffff; font-weight: 700; }
     .disclaimer-bold .disc-text strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
-    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 7pt; font-style: italic; color: #475569; }
-    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .print-footer-page::after { content: ''; }
+    .print-footer { display: none; }
+    @page {
+      size: A4 portrait;
+      margin: 16mm 16mm 20mm 16mm;
+      @bottom-left {
+        content: "${previewFooterLabel}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+    }
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; padding-bottom: 40px; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .report-container { max-width: none; }
       .cover-page { page-break-after: always; break-after: page; }
       .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
@@ -505,8 +517,6 @@ export default function BarristerView() {
       .section-body .legal-report-table-wrap { overflow: visible; }
       .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
       .preview-notice { display: none; }
-      .print-footer { display: block; }
-      .print-footer-page::after { content: "Page " counter(page) " of " counter(pages); }
     }
     @media (max-width: 768px) {
       .cover-page-grid { grid-template-columns: 1fr; }
@@ -635,12 +645,6 @@ export default function BarristerView() {
         </div>
       </div>
     </div>
-  <div class="print-footer">
-    <div class="print-footer-row">
-      <span class="print-footer-label">${previewFooterLabel}</span>
-      <span class="print-footer-page"></span>
-    </div>
-  </div>
 </body>
 </html>`;
 

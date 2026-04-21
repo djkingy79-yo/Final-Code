@@ -26,6 +26,45 @@ async def verify_issue(case: dict, issue: dict, supporting_context: dict) -> Iss
     if state_key:
         legislation_reference = _build_state_framework_context(state_key)
 
+    # DO NOT UNDO — inject landmark authorities so the LLM has REAL, verified
+    # citations to draw from. Previously the prompt told the LLM to omit when
+    # "unsure", which made every investigation return 0 comparable cases even
+    # though landmark High Court authorities are directly on point. Now the
+    # LLM is seeded with the registered landmark cases for the ground_type
+    # (plus closely related categories) and instructed to use them.
+    from frameworks import LANDMARK_CASES
+    ground_type = (issue.get("ground_type") or "other").lower()
+    # Map ground_type to the closest framework category. Multiple categories
+    # can be relevant (e.g. an unsafe verdict case might also engage the
+    # proviso). Supply all that plausibly apply so the model has options.
+    category_aliases = {
+        "unsafe_verdict": ["unsafe_verdict", "proviso"],
+        "proviso": ["proviso", "unsafe_verdict"],
+        "sentencing_error": ["sentencing_manifest_excess", "sentencing_totality"],
+        "sentencing_manifest_excess": ["sentencing_manifest_excess", "sentencing_totality"],
+        "sentencing_totality": ["sentencing_totality", "sentencing_manifest_excess"],
+        "fresh_evidence": ["fresh_evidence", "unsafe_verdict"],
+        "ineffective_counsel": ["ineffective_counsel", "misdirection"],
+        "misdirection": ["misdirection", "unsafe_verdict"],
+        "jury_irregularity": ["misdirection", "unsafe_verdict"],
+        "prosecution_misconduct": ["prosecution_misconduct", "misdirection"],
+        "procedural_fairness": ["misdirection", "unsafe_verdict"],
+    }
+    picked = category_aliases.get(ground_type, ["unsafe_verdict", "misdirection", "proviso"])
+    landmark_lines = []
+    seen_cases = set()
+    for cat in picked:
+        for entry in LANDMARK_CASES.get(cat, []):
+            key = entry.get("case")
+            if key and key not in seen_cases:
+                seen_cases.add(key)
+                landmark_lines.append(f"- {entry['case']} — {entry['principle']}")
+    landmark_reference = (
+        "\n\nLANDMARK AUSTRALIAN AUTHORITIES for this ground type (use these in "
+        "similar_cases where genuinely on point — they are verified High Court / "
+        "intermediate appellate decisions):\n" + "\n".join(landmark_lines)
+    ) if landmark_lines else ""
+
     system_prompt = f"""You are a senior Australian appellate lawyer verifying a candidate ground of appeal.
 Assess the identified issue against the extracted record.
 Return supporting, undermining, and missing material.
@@ -52,9 +91,9 @@ ANTI-HALLUCINATION — ABSOLUTE:
   * For an ineffective counsel ground: the law_section should be the specific substantive provision the counsel failed to raise or misapplied — NOT the appellate pathway act
 - Do NOT include entries with "Act name" or "section" as placeholders. If the exact section number is NOT known with high confidence, use the most relevant general section (e.g. "Part VI" or "Division 3") rather than omitting entirely. Every ground MUST have at least one law_sections entry.
 
-{legislation_reference}
+{legislation_reference}{landmark_reference}
 
-- For similar_cases: ONLY include cases with REAL, complete citations (e.g. "R v Falconer [1990] HCA 49"). Do NOT use "[Surname]", "[Year]", or "citation verification needed". If no verified case citation is known, return an empty similar_cases array. Unverified cases damage professional credibility.
+- For similar_cases: Include AT LEAST TWO real authorities drawn from the LANDMARK list above where genuinely applicable to this ground type, PLUS any additional well-known Australian appellate decisions you can cite with confidence (full case name + neutral citation e.g. "R v Falconer [1990] HCA 49", or law-report cite e.g. "M v The Queen (1994) 181 CLR 487"). Each entry MUST have both case_name and citation populated with real data — NEVER "[Surname]", "[Year]", or "citation verification needed". If a landmark from the list above is on point, USE it; its citation is already verified. An empty similar_cases array is UNACCEPTABLE unless the ground type has no analogous authorities in Australian appellate jurisprudence.
 - Use AUSTRALIAN ENGLISH ONLY (analyse, organise, defence, offence, behaviour, favour, honour, centre, specialise, recognise, authorise, emphasise, summarise, counselling). Do NOT use American spellings.
 - GROUND FRAMING RULES:
   * If this issue involves psychiatric/mental state evidence undermining intent → frame the verification around whether mens rea was properly determined (this is a CONVICTION SAFETY argument, not merely evidentiary criticism).
@@ -126,7 +165,7 @@ Return ONLY valid JSON:
 STRICT RULES:
 - law_sections must contain legislation relevant to the ground — preferably SUBSTANTIVE legislation (Crimes Act, Evidence Act, Sentencing Act, Criminal Procedure Act, etc.). If no substantive section is applicable, include the relevant appellate act section, procedural act section, or the constitutional/common law principle engaged. Every ground MUST have at least one law_section entry.
 - Include entries where you can identify a relevant act and section (even if the section is general, e.g. "Part X" or "Division 3"). Only omit if you truly cannot identify ANY relevant legislation.
-- similar_cases: ONLY include cases where you can provide a REAL case name and citation. If unsure, OMIT. An empty array is acceptable. Never use placeholder names like "[Surname]".
+- similar_cases: MUST contain AT LEAST TWO entries. Draw from the LANDMARK AUSTRALIAN AUTHORITIES list in the system prompt — those citations are verified and ready to use. Add any further well-known authorities you are confident in. Use real case_name and real citation for every entry. Empty arrays are only acceptable if this ground_type has no analogous appellate authority, which is extremely rare — think about the appellate test and the principle engaged, and cite the authority that established that test.
 - supporting_items quotes must be actual text from the case material, not generalised statements.
 - All analysis must use Australian English spelling."""
 

@@ -45,6 +45,22 @@ export default function DocumentPreviewPage() {
     return () => window.clearTimeout(timer);
   }, [loaded, mode, isIOS]);
 
+  // iOS-only: when the user presses Print/Save as PDF, rewrite document.title
+  // to just the clean filename FIRST so Safari's auto-injected print header
+  // shows "Grounds of Merit — Appellant" instead of the full URL. Safari uses
+  // document.title as the header text when the "Headers and Footers" option
+  // is on; this makes the default output readable without the user touching
+  // Share → Print → Options.
+  const handleIOSPrint = () => {
+    try {
+      const cleanTitle = (payload?.title || "Document")
+        .replace(/\s*—\s*(Print|PDF|Word)\s*View$/i, "")
+        .trim();
+      document.title = cleanTitle;
+    } catch (_) { /* ignore */ }
+    window.print();
+  };
+
   if (!payload?.html) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4" data-testid="document-preview-missing">
@@ -70,7 +86,7 @@ export default function DocumentPreviewPage() {
             <h1 className="text-2xl font-bold text-slate-900">{payload.title || "Preview"}</h1>
             <p className="text-sm text-slate-600 mt-1">
               {isIOS
-                ? "Use Safari Share button to Print or Save as PDF."
+                ? "For a clean PDF without the URL at the top: tap Print → tap the preview → Options → turn OFF Headers and Footers."
                 : mode === "print"
                 ? "Print dialogue opens automatically from this clean preview page."
                 : "Use browser Print / Save as PDF from this clean preview page."}
@@ -93,7 +109,7 @@ export default function DocumentPreviewPage() {
             {isIOS && (
               <Button
                 className="bg-blue-700 text-white hover:bg-blue-600"
-                onClick={() => window.print()}
+                onClick={handleIOSPrint}
                 data-testid="document-preview-print-button"
               >
                 <Printer className="w-4 h-4 mr-2" /> Print / Save as PDF

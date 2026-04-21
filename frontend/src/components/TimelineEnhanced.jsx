@@ -259,15 +259,26 @@ const Timeline = ({
     .timeline-print-block ul { margin: 0; padding-left: 2rem; }
     .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; }
     .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 6px 10px; }
-    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
-    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
-    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .print-footer-page-print::after { content: ''; }
+    /* Footer: CSS Paged Media margin boxes — rendered ONLY in paginated print
+       output. In the on-screen preview (continuous scroll) they are inert,
+       which prevents the old "Page 0 of 0" label from floating mid-page. */
+    @page {
+      size: A4;
+      margin: 16mm 16mm 18mm 16mm;
+      @bottom-left {
+        content: "${escapeHtml(caseInfo?.defendant_name || 'Appellant')} \\00B7  Timeline of Events \\00B7  ${previewDate}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+    }
     @media print {
-      body { background: #ffffff; padding-bottom: 40px; }
+      body { background: #ffffff; }
       .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
-      .print-footer { display: block; }
-      .print-footer-page-print::after { content: 'Page ' counter(page) ' of ' counter(pages); }
     }
   </style>
 </head>
@@ -299,12 +310,6 @@ const Timeline = ({
           <p style="margin:0;font-size:8pt;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="print-footer">
-    <div class="print-footer-row">
-      <span class="print-footer-label">Criminal Law Appeal Management / Timeline — ${escapeHtml(caseInfo?.defendant_name || "Appellant")} — ${previewDate}</span>
-      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
     </div>
   </div>
 </body>

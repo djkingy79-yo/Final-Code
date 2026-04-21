@@ -492,47 +492,60 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
-    @page { size: A4; margin: 18mm 18mm 26mm; }
-    body { font-family: 'Times New Roman', Times, serif; padding: 24px; color: #0f172a; line-height: 1.5; font-size: 11pt; }
-    h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; margin-bottom: 4px; color: #0f172a; }
-    h2 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; margin-top: 14px; border-bottom: 2px solid #1e3a8a; padding-bottom: 3px; color: #0f172a; }
-    h3 { font-size: 11pt; margin-top: 10px; color: #1e40af; }
-    p { font-size: 11pt; line-height: 1.5; margin-bottom: 5px; }
-    .meta { font-size: 10pt; color: #475569; margin-bottom: 8px; }
-    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 6px 10px; border-radius: 6px; color: #1e3a8a; margin-bottom: 10px; font-size: 10pt; }
-    table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 9pt; page-break-before: always; }
-    td, th { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: left; font-size: 9pt; word-wrap: break-word; overflow-wrap: break-word; }
-    th { background: #1d4ed8; color: #fff; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    ul, ol { padding-left: 2rem; }
-    li { margin-bottom: 2px; font-size: 11pt; line-height: 1.5; }
-    .disclaimer-box { background: #dc2626; border: 2px solid #b91c1c; padding: 10px 14px; border-radius: 6px; margin-top: 16px; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 10px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .disclaimer-box .disc-hazard { font-size: 22px; color: #facc15; flex-shrink: 0; }
-    .disclaimer-box strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .disclaimer-box p { font-size: 8pt; color: #ffffff; margin: 0; line-height: 1.4; font-weight: 700; }
+    @page {
+      size: A4;
+      margin: 16mm 16mm 20mm 16mm;
+      @bottom-left {
+        content: "${(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  ${tabLabel.replace(/"/g,'\\"')} \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 8pt; font-style: italic; color: #334155;
+      }
+    }
+    body { font-family: 'Times New Roman', Times, serif; padding: 12px 18px; color: #0f172a; line-height: 1.35; font-size: 10.5pt; margin: 0; }
+    h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; margin: 0 0 2px; color: #0f172a; line-height: 1.2; }
+    h2 { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; margin: 10px 0 3px; border-bottom: 1pt solid #1e3a8a; padding-bottom: 2px; color: #0f172a; }
+    h3 { font-size: 10.5pt; margin: 6px 0 2px; color: #1e3a8a; }
+    p { font-size: 10.5pt; line-height: 1.35; margin: 0 0 3px; }
+    .meta { font-size: 9pt; color: #475569; margin-bottom: 8px; font-style: italic; }
+    .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 4px 8px; border-radius: 4px; color: #1e3a8a; margin-bottom: 6px; font-size: 9pt; }
+    table { border-collapse: collapse; width: 100%; margin: 4px 0 8px; font-size: 9.5pt; page-break-inside: auto; }
+    td, th { border: 0.5pt solid #94a3b8; padding: 3px 5px; text-align: left; font-size: 9.5pt; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
+    th { background: #1e3a8a; color: #fff; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    ul, ol { padding-left: 1.1rem; margin: 2px 0 4px; }
+    li { margin-bottom: 0; font-size: 10.5pt; line-height: 1.35; }
+    .disclaimer-box { background: #dc2626; border: 1pt solid #b91c1c; padding: 6px 9px; border-radius: 4px; margin-top: 10px; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 6px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .disclaimer-box .disc-hazard { font-size: 16px; color: #facc15; flex-shrink: 0; }
+    .disclaimer-box strong { font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 2px; }
+    .disclaimer-box p { font-size: 8.5pt; color: #ffffff; margin: 0; line-height: 1.3; font-weight: 700; }
     .no-print { display: none !important; }
-    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
-    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #475569; font-family: 'Times New Roman', Times, serif; }
-    .print-footer-page::after { content: ''; }
-    @media print { * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } .disclaimer-box { page-break-inside: avoid; break-inside: avoid; } .print-footer { display: block; } .print-footer-page::after { content: "Page " counter(page) " of " counter(pages); } }
+    /* Quick Case Summary 2-column card */
+    .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 6px 10px; margin: 4px 0 10px; background: #eff6ff; }
+    .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 3px; }
+    .case-summary-card .case-grid > div { font-size: 10pt; line-height: 1.3; }
+    .case-summary-card .case-grid .k { font-size: 7pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
+    .case-summary-card .case-grid .v { font-weight: 700; }
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .disclaimer-box { page-break-inside: avoid; break-inside: avoid; }
+    }
   </style>
 </head>
 <body>
   ${noticeHtml}
   <h1>${caseData?.title || ''} — ${tabLabel}</h1>
-  <div class="meta">${caseData?.defendant_name || ''} | ${caseData?.case_number || ''} | ${caseData?.court || ''}</div>
-  <hr />
+  <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
   ${contentHtml}
   <div class="disclaimer-box">
     <span class="disc-hazard">&#9888;</span>
     <div>
     <strong>NOT LEGAL ADVICE</strong>
     <p>This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
-    </div>
-  </div>
-  <div class="print-footer">
-    <div class="print-footer-row">
-      <span>Criminal Law Appeal Management / ${tabLabel} — ${caseData?.defendant_name || 'Appellant'} — ${new Date().toLocaleDateString('en-AU')}</span>
-      <span class="print-footer-page"></span>
     </div>
   </div>
 </body>
@@ -553,7 +566,22 @@ const CaseDetail = ({ user }) => {
     const noticeHtml = mode === "pdf"
       ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
-    const html = buildTabPreviewHtml(contentHtml, tabLabel, noticeHtml);
+    // For the Summary tab, prepend a clean 2-column case identity card so the
+    // export doesn't just dump unstyled card text. The innerHTML dump still
+    // follows for any additional summary content below.
+    const summaryCard = activeTab === "summary" ? `
+      <div class="case-summary-card">
+        <div class="case-grid">
+          <div><span class="k">Defendant</span><span class="v">${caseData?.defendant_name || "—"}</span></div>
+          <div><span class="k">Offence</span><span class="v" style="text-transform:capitalize">${caseData?.offence_type || caseData?.offence_category?.replace(/_/g, " ") || "—"}</span></div>
+          <div><span class="k">State</span><span class="v" style="text-transform:uppercase">${caseData?.state || "—"}</span></div>
+          <div><span class="k">Sentence</span><span class="v">${caseData?.sentence || "—"}</span></div>
+          <div><span class="k">Case Number</span><span class="v">${caseData?.case_number || "—"}</span></div>
+          <div><span class="k">Court</span><span class="v">${caseData?.court || "—"}</span></div>
+        </div>
+      </div>
+    ` : "";
+    const html = buildTabPreviewHtml(summaryCard + contentHtml, tabLabel, noticeHtml);
 
     // Always use document-preview route for iOS compatibility
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
