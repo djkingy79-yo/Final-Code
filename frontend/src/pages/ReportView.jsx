@@ -858,8 +858,13 @@ const ReportView = () => {
     .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
     .section-body h2 { font-size: 15pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 3px; margin: 10px 0 5px; }
-    .section-body h3 { font-size: 13pt; color: #1e293b; margin: 14px 0 5px; page-break-after: avoid; break-after: avoid; }
-    .section-body h4 { font-size: 11pt; color: #334155; margin: 12px 0 4px; page-break-after: avoid; break-after: avoid; }
+    /* Subheading break rules removed 2026-04-21. Previously page-break-after:
+       avoid was forcing multi-paragraph subsections to the next page,
+       producing the giant whitespace gaps the owner reported. Browser
+       default orphan/widow handling + the per-paragraph rules below keep
+       readability without half-blank pages. */
+    .section-body h3 { font-size: 13pt; color: #1e293b; margin: 14px 0 5px; }
+    .section-body h4 { font-size: 11pt; color: #334155; margin: 12px 0 4px; }
     .section-body p { margin: 0 0 12pt 0; font-size: 11pt; line-height: 1.35; orphans: 3; widows: 3; }
     .section-body strong { color: #0f172a; font-weight: 700; }
     .section-body ul, .section-body ol { padding-left: 2rem; margin: 6px 0 12pt; }

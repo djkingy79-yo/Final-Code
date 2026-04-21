@@ -203,11 +203,17 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     margin: 18px 0 8px;
     padding-bottom: 4px;
     border-bottom: 2px solid ${accentColor};
+    /* H2 keeps page-break-after:avoid so section titles don't orphan
+       alone at page bottom with no body text below. */
     page-break-after: avoid;
     break-after: avoid;
   }
-  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #1e293b; margin: 14px 0 5px; page-break-after: avoid; break-after: avoid; }
-  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; color: #1e293b; margin: 12px 0 4px; page-break-after: avoid; break-after: avoid; }
+  /* H3 / H4 intentionally do NOT force break-after. Previously this was
+     causing whole subsections (heading + 20 paragraphs) to push to the next
+     page, leaving half-blank pages. Browser default orphans:3 widows:3
+     gives correct pagination. */
+  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #1e293b; margin: 14px 0 5px; }
+  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; color: #1e293b; margin: 12px 0 4px; }
 
   /* PARAGRAPH SPACING:
      - Line-height INSIDE a paragraph: 1.35 (tight, easy to read)

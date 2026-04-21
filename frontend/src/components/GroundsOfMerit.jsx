@@ -556,22 +556,33 @@ const GroundsOfMerit = ({
     .grounds-export-header { border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 6px; margin-bottom: 10px; }
     .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.16em; color: #1e3a8a; font-weight: 800; font-size: 8pt; margin: 0 0 2px; }
     .grounds-export-header h1 { margin: 0 0 2px; font-size: 14pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; line-height: 1.2; }
-    /* No forced page break between grounds. page-break-inside:avoid keeps a
-       single short ground together but lets long ones flow naturally. */
-    .grounds-export-section { padding: 6px 0 2px; page-break-inside: auto; break-inside: auto; }
+    /* Let content flow naturally across pages. The browser's orphans:3
+       and widows:3 defaults keep headings from being orphaned. Forcing
+       page-break-after:avoid on long-body H3s caused the whole section
+       (heading + 20 paragraphs) to push to the next page, leaving the
+       previous page half-empty — that's what produced the giant whitespace
+       gaps the owner reported on 2026-04-21. */
+    .grounds-export-section { padding: 6px 0 2px; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
     .grounds-export-section + .grounds-export-section { border-top: 0.5pt solid #cbd5e1; margin-top: 4px; padding-top: 8px; }
+    /* H2 (ground title) — stay with at least 2 lines of body so titles don't
+       orphan alone at page bottom. */
     .grounds-export-title-wrap h2 { margin: 0 0 2px; font-size: 12pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; line-height: 1.25; page-break-after: avoid; break-after: avoid; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
     .grounds-export-meta span { background: #dbeafe; color: #1e3a8a; padding: 0 5px; border-radius: 10pt; font-size: 7pt; font-weight: 700; }
     .grounds-export-description { margin: 0 0 4px; line-height: 1.3; font-size: 10.5pt; text-align: justify; }
     .grounds-export-block { margin-bottom: 4px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 4px 0 1px; font-size: 10.5pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; color: #0f172a; page-break-after: avoid; break-after: avoid; }
+    /* H3 subheadings inside a ground — no page-break-after:avoid. Let them
+       flow with their body; if a subheading ends up at the bottom of a page
+       with only a line or two of body below, that's far better than a giant
+       half-blank page. */
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 4px 0 1px; font-size: 10.5pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; color: #0f172a; }
     .grounds-export-block ul { margin: 0 0 3px; padding-left: 1.1rem; line-height: 1.3; }
     .grounds-export-block ul li { font-size: 10.5pt !important; line-height: 1.3; margin-bottom: 0; }
     .grounds-export-analysis { margin-top: 4px; }
     .grounds-export-disclaimer { margin-top: 10px; background: #dc2626; border: 1pt solid #b91c1c; padding: 6px 9px; font-weight: 700; line-height: 1.3; font-size: 9pt; color: #ffffff; border-radius: 4px; display: flex; gap: 6px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .legal-report p { line-height: 1.3; margin: 0 0 3px; font-size: 10.5pt; font-family: 'Times New Roman', Times, serif; text-align: justify; }
-    .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #0f172a; font-family: 'Times New Roman', Times, serif; page-break-after: avoid; break-after: avoid; }
+    /* legal-report headings — same rationale: no forced break-after */
+    .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #0f172a; font-family: 'Times New Roman', Times, serif; }
     .legal-report h2 { font-size: 11pt; font-weight: 700; margin: 4px 0 1px; }
     .legal-report h3 { font-size: 10.5pt; font-weight: 700; margin: 3px 0 1px; }
     .legal-report h4 { font-size: 10pt; font-weight: 700; margin: 2px 0 1px; }
