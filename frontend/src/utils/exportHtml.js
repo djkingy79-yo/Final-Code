@@ -58,35 +58,16 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 7pt;
+      font-size: 8pt;
       font-style: italic;
-      color: #475569;
-    }
-    @bottom-center {
-      /* Compact navy legal seal — matches landing-page "FRAMEWORK VERIFIED" mark.
-         Unicode check (✓) rendered in gold via the margin-box colour cascade.
-         Background + padding honoured by Chrome/Edge/Safari print pipelines
-         when -webkit-print-color-adjust:exact is set globally (it is). */
-      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 6.5pt;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: #ffffff;
-      background: #0b1e3f;
-      padding: 2pt 8pt;
-      border: 0.5pt solid #1e3a8a;
-      border-radius: 2pt;
-      vertical-align: middle;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      color: #334155;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 7pt;
+      font-size: 8pt;
       font-style: italic;
-      color: #475569;
+      color: #334155;
     }
   }
   /* ---------- LANDSCAPE (tables only) ---------- */
@@ -96,31 +77,16 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 7pt;
+      font-size: 8pt;
       font-style: italic;
-      color: #475569;
-    }
-    @bottom-center {
-      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 6.5pt;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: #ffffff;
-      background: #0b1e3f;
-      padding: 2pt 8pt;
-      border: 0.5pt solid #1e3a8a;
-      border-radius: 2pt;
-      vertical-align: middle;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      color: #334155;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 7pt;
+      font-size: 8pt;
       font-style: italic;
-      color: #475569;
+      color: #334155;
     }
   }
   /* Every table flips to landscape for its duration, then the next content
@@ -269,8 +235,13 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .sections { padding: 16px 24px; }
   .section { margin-bottom: 18pt; break-inside: auto; }
   .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${accentColor}; padding-left: 10px; margin-bottom: 6px; break-after: avoid; page-break-after: avoid; }
-  .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; margin-right: 2px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  /* belt-and-braces separator between number and title — works even if the
+     flex gap collapses (older Safari / print engines) or the circle doesn't
+     render, preventing "1Case Summary" concat seen on some mobile previews. */
+  .section-number::after { content: ""; }
   .section-title { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+  .section-title::before { content: none; }
   .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.35; }
   .section-body h3 { font-size: 13pt; font-weight: 700; color: #1e293b; margin: 14px 0 5px; padding-top: 8px; border-top: 1px solid #e2e8f0; }
   .section-body h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
@@ -340,17 +311,28 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     .disclaimer + .branding { break-before: avoid; page-break-before: avoid; }
   }
   @media (max-width: 768px) {
-    body { font-size: 9pt; }
-    .export-header { padding: 14px 12px; }
-    .export-header h1 { font-size: 14pt; }
-    .export-meta { padding: 8px 12px; gap: 8px; }
-    .export-body, .sections { padding: 10px 12px; }
-    .export-body h2 { font-size: 13pt; }
-    .export-body h3 { font-size: 11pt; }
+    body { font-size: 10pt; }
+    .export-container { padding: 8px; }
+    .export-header { padding: 10px 12px; }
+    .export-header h1 { font-size: 13pt; }
+    .export-header p { font-size: 9pt; }
+    .export-meta { padding: 6px 12px; gap: 6px; font-size: 9pt; }
+    .export-body, .sections { padding: 8px 12px; }
+    .export-body h2 { font-size: 12pt; margin: 10px 0 5px; }
+    .export-body h3 { font-size: 11pt; margin: 8px 0 3px; }
+    .export-body p, .section-body p { font-size: 10pt; margin: 0 0 8pt 0; }
     .export-body table, .section-body table { font-size: 8pt; }
     .export-body th, .export-body td, .section-body th, .section-body td { padding: 3px 4px; }
-    .disclaimer { margin: 10px 12px; padding: 8px 10px; }
-    .branding { margin: 10px 12px; }
+    .disclaimer { margin: 8px 12px; padding: 6px 8px; }
+    .disclaimer strong { font-size: 9pt; }
+    .disclaimer p { font-size: 7.5pt; line-height: 1.35; }
+    .disclaimer .disc-hazard { font-size: 16px; }
+    .branding { margin: 8px 12px; padding: 6px 0; }
+    .branding .by-line { font-size: 9pt; }
+    .branding-text .name { font-size: 9pt; }
+    .branding-text .sub { font-size: 7.5pt; }
+    .section-title { font-size: 11pt; }
+    .section-body { padding: 8px 10px; font-size: 10pt; }
   }
 </style>
 </head>
