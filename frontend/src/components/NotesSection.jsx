@@ -43,6 +43,7 @@ import {
 import { Label } from "./ui/label";
 import { API } from "../App";
 import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
+import { renderMarkdownToHtml } from "../utils/mdRender";
 import { Printer, Download, FileText as FileTextIcon } from "lucide-react";
 
 const NOTE_CATEGORIES = [
@@ -362,7 +363,7 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
     const notesHtml = sortedNotes.map(n => {
       const cat = NOTE_CATEGORIES.find(c => c.value === n.category)?.label || "General";
       const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
-      return `<div class="note-card"><div class="note-title">${n.is_pinned || n.pinned ? "📌 " : ""}${n.title || "Untitled"} <span style="font-size:10px;font-weight:400;color:#64748b;">[${cat}]</span></div><div class="note-date">${date}</div><div class="note-content">${(n.content || "").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div></div>`;
+      return `<div class="note-card"><div class="note-title">${n.is_pinned || n.pinned ? "📌 " : ""}${n.title || "Untitled"} <span style="font-size:10px;font-weight:400;color:#64748b;">[${cat}]</span></div><div class="note-date">${date}</div><div class="note-content">${renderMarkdownToHtml(n.content || "")}</div></div>`;
     }).join("");
     return buildExportHtml({
       title: "Case Notes",

@@ -30,6 +30,7 @@ import LegitimacyPanel from "../components/LegitimacyPanel";
 import EvidenceSummary from "../components/EvidenceSummary";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
 import auSpelling from "../utils/auSpelling";
+import { normaliseMarkdown } from "../utils/mdRender";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "N/A";
@@ -179,7 +180,7 @@ const MarkdownBlock = ({ text, testId }) => (
         ),
       }}
     >
-      {auSpelling(text)}
+      {normaliseMarkdown(auSpelling(text))}
     </ReactMarkdown>
   </div>
 );

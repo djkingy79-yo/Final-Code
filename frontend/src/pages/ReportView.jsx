@@ -394,7 +394,11 @@ const cleanAIContent = (text) => {
 };
 
 const parseAnalysisSections = (analysis = "") => {
-  const text = cleanAIContent(analysis.replace(/\r\n/g, "\n").trim());
+  // Normalise the markdown FIRST so sections with single-newline separators,
+  // trailing two-space hard breaks, or missing blank lines around ## headings
+  // are all detected correctly.
+  const normalised = normaliseMarkdown(analysis.replace(/\r\n/g, "\n").trim());
+  const text = cleanAIContent(normalised);
   if (!text) return [];
   const lines = text.split("\n");
   const sections = [];
@@ -408,14 +412,23 @@ const parseAnalysisSections = (analysis = "") => {
 
   const pushSection = () => {
     const content = cleanAIContent(currentLines.join("\n").trim());
-    if (!content || content.length < 20) return;
+    // Push sections even when content is short — a heading with little body
+    // is still a navigable landmark for the reader. Only skip truly empty ones.
+    if (!content) return;
     sections.push({ id: `report-section-${sections.length + 1}`, title: currentTitle, content });
   };
 
   lines.forEach((line) => {
     const trimmed = line.trim();
-    // Match both numbered (## 1. Title) and unnumbered (## Title) section headers
-    const mainSectionHeader = trimmed.match(/^##\s+(\d+\.\s+.+)$/) || trimmed.match(/^##\s+([A-Z][A-Z\s\-&+:]+)$/);
+    // Accept three heading shapes (in priority order):
+    //   1. ## 1. TITLE            (numbered, LLM's default)
+    //   2. ## TITLE IN ALL CAPS   (all-caps fallback)
+    //   3. ## Any Section Title   (mixed-case fallback — covers barrister
+    //      synthesis sections like "## Executive Overview for Counsel")
+    const mainSectionHeader =
+      trimmed.match(/^##\s+(\d+\.?\s+.+)$/) ||
+      trimmed.match(/^##\s+([A-Z][A-Z\s\-&+:]+)$/) ||
+      trimmed.match(/^##\s+([A-Z][A-Za-z][^\n]*?)$/);
     if (mainSectionHeader) {
       pushSection();
       currentTitle = cleanSectionTitle(mainSectionHeader[1]);

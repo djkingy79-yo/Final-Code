@@ -9,6 +9,7 @@ import {
   Filter, Search, Download, ChevronDown, ChevronUp, Printer, ArrowUp, ArrowDown
 } from "lucide-react";
 import auSpelling from "../utils/auSpelling";
+import { renderMarkdownToHtml } from "../utils/mdRender";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
@@ -219,13 +220,13 @@ const Timeline = ({
               <p class="timeline-print-subtitle">${escapeHtml(EVENT_TYPE_LABELS[event.event_type] || event.event_type || "Event")} • ${escapeHtml(formatDate(event.event_date))}</p>
             </div>
           </div>
-          ${event.description ? `<div class="timeline-print-block"><h3>Description</h3><p>${escapeHtml(event.description).replace(/\n/g, "<br />")}</p></div>` : ""}
-          ${event.is_contested && event.contested_details ? `<div class="timeline-print-block timeline-print-alert"><h3>Contested Details</h3><p>${escapeHtml(event.contested_details).replace(/\n/g, "<br />")}</p></div>` : ""}
+          ${event.description ? `<div class="timeline-print-block"><h3>Description</h3>${renderMarkdownToHtml(event.description)}</div>` : ""}
+          ${event.is_contested && event.contested_details ? `<div class="timeline-print-block timeline-print-alert"><h3>Contested Details</h3>${renderMarkdownToHtml(event.contested_details)}</div>` : ""}
           ${event.source_citation ? `<div class="timeline-print-block"><h3>Source</h3><p>${escapeHtml(event.source_citation)}</p></div>` : ""}
           ${participants.length ? `<div class="timeline-print-block"><h3>Participants</h3><ul>${participants.map((participant) => `<li>${escapeHtml(participant.name || "Unnamed participant")}${participant.role ? ` (${escapeHtml(participant.role)})` : ""}</li>`).join("")}</ul></div>` : ""}
           ${linkedDocs.length ? `<div class="timeline-print-block"><h3>Linked Documents</h3><ul>${linkedDocs.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>` : ""}
           ${linkedGrounds.length ? `<div class="timeline-print-block"><h3>Related Grounds of Appeal</h3><ul>${linkedGrounds.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>` : ""}
-          ${event.inconsistency_notes ? `<div class="timeline-print-block timeline-print-warn"><h3>Inconsistency Notes</h3><p>${escapeHtml(event.inconsistency_notes).replace(/\n/g, "<br />")}</p></div>` : ""}
+          ${event.inconsistency_notes ? `<div class="timeline-print-block timeline-print-warn"><h3>Inconsistency Notes</h3>${renderMarkdownToHtml(event.inconsistency_notes)}</div>` : ""}
         </section>
       `;
     }).join("");

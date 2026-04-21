@@ -1094,14 +1094,46 @@ const CaseDetail = ({ user }) => {
     </div>`;
     }
 
+    // Helpers: pull each AI report by type (all four are loaded into `reports`)
+    const reportByType = (t) => reports.find(r => r.report_type === t && r.status === "completed");
+    const quickReport = reportByType("quick_summary");
+    const fullReport = reportByType("full_detailed");
+    const extensiveReport = reportByType("extensive_log");
+    const barristerReport = reportByType("barrister_view");
+
+    // Consolidated legislation + case-law list from all grounds
+    const legislationItems = [];
+    const caseLawItems = [];
+    const seen = new Set();
+    grounds.forEach(g => {
+      (g.legal_basis || g.legislation || []).forEach(l => {
+        let section, act, jur;
+        if (typeof l === "string") { try { const p = JSON.parse(l); section = p.section; act = p.act || p.title; jur = p.jurisdiction; } catch { section = l; act = ""; jur = ""; } }
+        else if (typeof l === "object" && l) { section = l.section; act = l.act || l.title; jur = l.jurisdiction; }
+        const key = `${act}|${section}|${jur}`.toLowerCase();
+        if (!seen.has(key) && (act || section)) { seen.add(key); legislationItems.push({ section, act, jurisdiction: jur }); }
+      });
+      (g.similar_cases || []).forEach(c => {
+        if (!c?.case_name || c.case_name === "Case name" || c.case_name === "None") return;
+        const key = `${c.case_name}|${c.citation || ""}`.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); caseLawItems.push(c); }
+      });
+    });
+    const hasLegislation = legislationItems.length > 0 || caseLawItems.length > 0;
+
     // ── TABLE OF CONTENTS ──
     const tocSections = [];
     if (o.summary && caseData?.summary) tocSections.push("Case Summary");
     if (o.documents && documents.length > 0) tocSections.push("Uploaded Documents");
     if (o.timeline) tocSections.push("Timeline Events");
     if (o.grounds) tocSections.push("Grounds of Merit");
+    if (o.legislation && hasLegislation) tocSections.push("Legislation & Case Law");
     if (o.notes) tocSections.push("Notes");
     if (o.progress && progressAnalysis) tocSections.push("Progress Analysis");
+    if (o.quick_summary && quickReport) tocSections.push("Quick Summary Report");
+    if (o.full_detailed && fullReport) tocSections.push("Full Detailed Legal Analysis");
+    if (o.extensive_log && extensiveReport) tocSections.push("Extensive Case Log & Analysis");
+    if (o.barrister_view && barristerReport) tocSections.push("Appellate Research Brief");
 
     if (o.toc && tocSections.length > 0) {
       body += `<div class="export-body" style="page-break-after:always;">
@@ -1116,7 +1148,7 @@ const CaseDetail = ({ user }) => {
 
     let sn = 0;
     body += `<div class="sections">`;
-    if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body"><p>${escAu(caseData.summary)}</p></div></div>`; }
+    if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`; }
     if (o.documents && documents.length > 0) {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Uploaded Documents</span></div><div class="section-body">`;
@@ -1221,7 +1253,7 @@ const CaseDetail = ({ user }) => {
     if (notes.length > 0) {
       notes.forEach(n => {
         const date = new Date(n.created_at).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
-        body += `<div class="note-card"><div class="note-title">${escAu(n.title || "Untitled")}</div><div class="note-date">${date}</div><div class="note-content">${escAu(n.content || "")}</div></div>`;
+        body += `<div class="note-card"><div class="note-title">${escAu(n.title || "Untitled")}</div><div class="note-date">${date}</div><div class="note-content">${mdToHtml(n.content || "")}</div></div>`;
       });
     } else { body += `<p>No notes.</p>`; }
     body += `</div></div>`;
@@ -1230,6 +1262,46 @@ const CaseDetail = ({ user }) => {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
     }
+
+    // ── Legislation & Case Law consolidated section ──
+    if (o.legislation && hasLegislation) {
+      sn++;
+      const fmtLawStr = (item) => {
+        const section = (item.section || "").trim();
+        const act = (item.act || "").trim();
+        const jur = (item.jurisdiction || "").toUpperCase();
+        const hasJurInAct = act.toUpperCase().includes(`(${jur})`);
+        const structural = /^(chapter|part|division|schedule|subpart)\s/i.test(section);
+        const prefixed = /^s\s|^s\.|^ss\s|^ss\./i.test(section);
+        const secDisp = structural || prefixed || !section ? section : `s ${section}`;
+        return `${secDisp} ${act}${jur && !hasJurInAct ? ` (${jur})` : ""}`.trim();
+      };
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Legislation &amp; Case Law</span></div><div class="section-body">`;
+      if (legislationItems.length > 0) {
+        body += `<h4 style="margin:4pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Legislation</h4><ul>`;
+        legislationItems.forEach(l => { body += `<li>${escAu(fmtLawStr(l))}</li>`; });
+        body += `</ul>`;
+      }
+      if (caseLawItems.length > 0) {
+        body += `<h4 style="margin:10pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Case Law</h4><ul>`;
+        caseLawItems.forEach(c => { body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`; });
+        body += `</ul>`;
+      }
+      body += `</div></div>`;
+    }
+
+    // ── The four AI reports ──
+    const renderReportSection = (title, rep) => {
+      if (!rep) return "";
+      sn++;
+      const analysis = rep.content?.analysis || rep.analysis || "";
+      return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div style="font-size:11pt;line-height:1.5;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div></div></div>`;
+    };
+    if (o.quick_summary)   body += renderReportSection("Quick Summary Report", quickReport);
+    if (o.full_detailed)   body += renderReportSection("Full Detailed Legal Analysis", fullReport);
+    if (o.extensive_log)   body += renderReportSection("Extensive Case Log & Analysis", extensiveReport);
+    if (o.barrister_view)  body += renderReportSection("Appellate Research Brief", barristerReport);
+
     body += `</div>`;
     return buildExportHtml({ title: "Complete Case Bundle", sectionTitle: "Complete Bundle", defendantName: defendant, accentColor: "#0f172a", bodyHtml: body });
   };
@@ -2449,8 +2521,13 @@ const CaseDetail = ({ user }) => {
           documents: documents.length > 0,
           timeline: timeline.length > 0,
           grounds: true,
+          legislation: true,
           notes: notes.length > 0,
           progress: !!progressAnalysis,
+          quick_summary: !!reports.find(r => r.report_type === "quick_summary" && r.status === "completed"),
+          full_detailed: !!reports.find(r => r.report_type === "full_detailed" && r.status === "completed"),
+          extensive_log: !!reports.find(r => r.report_type === "extensive_log" && r.status === "completed"),
+          barrister_view: !!reports.find(r => r.report_type === "barrister_view" && r.status === "completed"),
         }}
         onCancel={() => setExportOpen(false)}
         onConfirm={(chosenOpts) => {
