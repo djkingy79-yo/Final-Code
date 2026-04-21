@@ -54,13 +54,12 @@ const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
-// DO_NOT_UNDO — Always use REACT_APP_BACKEND_URL (preview URL) for API calls.
-// Custom domains (e.g. criminallawappealmanagement.com.au) proxy HTML only — their
-// Cloudflare proxy returns 520 for /api/* routes. Cross-origin CORS works via
-// Access-Control-Allow-Origin: * on the preview URL, and auth uses Bearer tokens
-// from localStorage (not cookies), so withCredentials is not needed.
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
-export const API = `${BACKEND_URL}/api`;
+// Backend and frontend are always served from the same origin (both in preview
+// via the k8s ingress that routes /api/* to port 8001, and in production via
+// the user's domain). Using a relative /api path means no hostname is ever
+// baked into the JS bundle — which (a) fixes Safari Private Mode's cross-site
+// block, and (b) lets the app run on any domain without a rebuild.
+export const API = "/api";
 
 // Configure axios with timeout
 // NOTE: Do NOT use withCredentials=true — the Kubernetes/Cloudflare proxy overwrites

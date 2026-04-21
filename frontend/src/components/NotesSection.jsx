@@ -45,12 +45,6 @@ import { API } from "../App";
 import { buildExportHtml, openExportPreview } from "../utils/exportHtml";
 import { Printer, Download, FileText as FileTextIcon } from "lucide-react";
 
-const BACKEND_URL = (() => {
-  const envUrl = process.env.REACT_APP_BACKEND_URL || "";
-  if (envUrl && window.location.origin !== envUrl) return window.location.origin;
-  return envUrl || window.location.origin;
-})();
-
 const NOTE_CATEGORIES = [
   { value: "general", label: "General Note" },
   { value: "legal_issue", label: "Legal Issue" },
@@ -126,9 +120,12 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
   useEffect(() => {
     const connectWs = () => {
       const sessionToken = getSessionTokenFromCookie();
-      if (!sessionToken || !BACKEND_URL) return;
+      if (!sessionToken) return;
 
-      const wsUrl = `${BACKEND_URL.replace(/^http/, "ws")}/api/cases/${caseId}/notes/ws?session_token=${encodeURIComponent(sessionToken)}`;
+      // Build the WS URL from the current page origin so it works on any
+      // domain without a rebuild. wss:// on https, ws:// on http.
+      const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+      const wsUrl = `${wsScheme}://${window.location.host}/api/cases/${caseId}/notes/ws?session_token=${encodeURIComponent(sessionToken)}`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 

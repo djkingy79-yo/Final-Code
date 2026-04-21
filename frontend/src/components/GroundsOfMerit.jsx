@@ -32,11 +32,7 @@ import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
 import auSpelling from "../utils/auSpelling";
 
-const API = (() => {
-  const envUrl = process.env.REACT_APP_BACKEND_URL;
-  if (envUrl && window.location.origin !== envUrl) return window.location.origin;
-  return envUrl || window.location.origin;
-})();
+const API = "/api";
 
 /* DO NOT UNDO — Australian spelling normaliser imported from utils/auSpelling.js
    The shared utility is now used across all components. */
