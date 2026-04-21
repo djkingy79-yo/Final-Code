@@ -15,23 +15,29 @@ from datetime import datetime, timezone
 
 
 def format_export_date(dt=None):
-    """Format date as DD/MM/YYYY."""
+    """Format date as en-AU long form (e.g. '21 April 2026') to match frontend."""
     if dt is None:
         dt = datetime.now(timezone.utc)
     if isinstance(dt, str):
         try:
             dt = datetime.fromisoformat(dt.replace('Z', '+00:00'))
         except Exception:
-            return datetime.now(timezone.utc).strftime('%d/%m/%Y')
-    return dt.strftime('%d/%m/%Y')
+            dt = datetime.now(timezone.utc)
+    # Manual long-form format (locale-independent so CI on minimal images works).
+    _months = ["January","February","March","April","May","June",
+               "July","August","September","October","November","December"]
+    return f"{dt.day} {_months[dt.month - 1]} {dt.year}"
 
 
 def build_footer_label(case: dict, doc_type: str, generated_at=None) -> str:
-    """Build the standardised footer label string (matches frontend exportHtml.js)."""
+    """Canonical footer label (locked 2026-02 by owner — matches frontend exportHtml.js).
+    Format: '{Appellant} · {Doc Type} · {Date}' — paired with 'Page X of Y' by the
+    caller. Uses the middle-dot (·, U+00B7) separator for consistency across PDF,
+    DOCX and browser print output."""
     defendant = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
     doc_type = (doc_type or "Legal Report").strip()
     date_str = format_export_date(generated_at)
-    return f"Criminal Law Appeal Management / {doc_type} — {defendant} — {date_str}"
+    return f"{defendant} \u00B7 {doc_type} \u00B7 {date_str}"
 
 
 # ============ ReportLab PDF "Page X of Y" Canvas ============
@@ -75,17 +81,18 @@ class NumberedCanvas:
                 line_y = 14 * mm
                 self.setStrokeColor(colors.HexColor('#1d4ed8'))
                 self.setLineWidth(0.6)
-                self.line(18 * mm, line_y, A4[0] - 18 * mm, line_y)
-                self.setFillColor(colors.HexColor('#475569'))
-                self.setFont('Times-Italic', 7)
+                self.line(20 * mm, line_y, A4[0] - 20 * mm, line_y)
+                self.setFillColor(colors.HexColor('#334155'))
+                # Canonical print spec — 9pt italic Times (matches frontend)
+                self.setFont('Times-Italic', 9)
                 label = outer._footer_label
                 page_str = f"Page {page_num} of {total_pages}"
                 # Truncate label if too long to fit
-                max_w = A4[0] - 36 * mm - self.stringWidth(page_str, 'Times-Italic', 7) - 8 * mm
-                while self.stringWidth(label, 'Times-Italic', 7) > max_w and len(label) > 30:
+                max_w = A4[0] - 40 * mm - self.stringWidth(page_str, 'Times-Italic', 9) - 8 * mm
+                while self.stringWidth(label, 'Times-Italic', 9) > max_w and len(label) > 30:
                     label = label[:-4] + "..."
-                self.drawString(18 * mm, footer_y, label)
-                self.drawRightString(A4[0] - 18 * mm, footer_y, page_str)
+                self.drawString(20 * mm, footer_y, label)
+                self.drawRightString(A4[0] - 20 * mm, footer_y, page_str)
                 self.restoreState()
 
         return _Numbered(filename, **kwargs)
@@ -120,17 +127,18 @@ def apply_docx_footer(doc, footer_label):
 
     def style_run(run):
         run.font.name = 'Times New Roman'
-        run.font.size = Pt(7)
+        # Canonical print spec — 9pt italic (matches frontend)
+        run.font.size = Pt(9)
         run.font.italic = True
-        run.font.color.rgb = RGBColor(71, 85, 105)
+        run.font.color.rgb = RGBColor(51, 65, 85)
 
     for section in doc.sections:
-        section.footer_distance = Inches(0.35)
+        section.footer_distance = Inches(0.4)
         footer = section.footer
         footer_line = footer.paragraphs[0]
         footer_line.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
-        label_run = footer_line.add_run(f"{footer_label} Page ")
+        label_run = footer_line.add_run(f"{footer_label}  |  Page ")
         style_run(label_run)
         add_field(footer_line, 'PAGE')
         of_run = footer_line.add_run(" of ")

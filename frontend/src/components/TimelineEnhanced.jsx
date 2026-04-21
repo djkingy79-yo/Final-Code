@@ -237,48 +237,58 @@ const Timeline = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeHtml(caseInfo?.title || "Case")} — Timeline</title>
   <style>
-    @page { size: A4; margin: 18mm 18mm 26mm; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0 0 60px; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; }
-    .timeline-print-shell { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 24px; }
-    .timeline-print-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 14px; }
-    .timeline-print-kicker { margin: 0 0 4px; font-size: 8pt; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #1d4ed8; }
-    .timeline-print-header h1 { margin: 0 0 4px; font-size: 16pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-header p { margin: 0 0 3px; line-height: 1.4; font-size: 10pt; color: #475569; }
-    .timeline-print-event { padding: 10px 0; border-bottom: 1px solid #e2e8f0; page-break-inside: avoid; }
-    .timeline-print-heading h2 { margin: 0 0 3px; font-size: 13pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-subtitle { margin: 0; color: #475569; font-size: 10pt; }
-    .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
-    .timeline-pill { display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 8pt; font-weight: 700; }
-    .timeline-pill-alt { background: #eff6ff; color: #1d4ed8; }
-    .timeline-pill-neutral { background: #f1f5f9; color: #334155; }
-    .timeline-pill-contested { background: #fee2e2; color: #b91c1c; }
-    .timeline-print-block { margin-top: 6px; }
-    .timeline-print-block h3 { margin: 0 0 3px; font-size: 11pt; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Times New Roman', Times, serif; }
-    .timeline-print-block p, .timeline-print-block li { margin: 0; line-height: 1.5; font-size: 11pt; }
-    .timeline-print-block ul { margin: 0; padding-left: 2rem; }
-    .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 10px; }
-    .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 6px 10px; }
-    /* Footer: CSS Paged Media margin boxes — rendered ONLY in paginated print
-       output. In the on-screen preview (continuous scroll) they are inert,
-       which prevents the old "Page 0 of 0" label from floating mid-page. */
+    /* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
+       Body 11pt / H1 14pt / H2 12pt / H3 12pt italic / line-height 1.5 / para-gap 10pt
+       Margins 18/20/22mm / Footer 9pt italic.
+       Single @page rule (removed the duplicate that was overriding footer box). */
     @page {
       size: A4;
-      margin: 16mm 16mm 18mm 16mm;
+      margin: 18mm 20mm 22mm 20mm;
       @bottom-left {
         content: "${escapeHtml(caseInfo?.defendant_name || 'Appellant')} \\00B7  Timeline of Events \\00B7  ${previewDate}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
     }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #ffffff; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; }
+    .timeline-print-shell { max-width: 820px; margin: 0 auto; background: #ffffff; padding: 16px 22px; }
+    .timeline-print-header { border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 8pt; margin-bottom: 12pt; }
+    .timeline-print-kicker { margin: 0 0 3px; font-size: 9pt; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #1d4ed8; }
+    .timeline-print-header h1 { margin: 0 0 4px; font-size: 14pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; line-height: 1.3; }
+    .timeline-print-header p { margin: 0 0 3px; line-height: 1.5; font-size: 11pt; color: #475569; }
+    .timeline-print-event { padding: 10pt 0; border-bottom: 0.5pt solid #cbd5e1; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
+    .timeline-print-heading h2 { margin: 0 0 4px; font-size: 12pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; page-break-after: avoid; break-after: avoid; }
+    .timeline-print-subtitle { margin: 0 0 6pt; color: #475569; font-size: 11pt; }
+    .timeline-print-meta-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6pt; }
+    .timeline-pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 9pt; font-weight: 700; }
+    .timeline-pill-alt { background: #eff6ff; color: #1d4ed8; }
+    .timeline-pill-neutral { background: #f1f5f9; color: #334155; }
+    .timeline-pill-contested { background: #fee2e2; color: #b91c1c; }
+    .timeline-print-block { margin-top: 8pt; }
+    .timeline-print-block h3 { margin: 0 0 4pt; font-size: 12pt; font-weight: 700; font-style: italic; color: #1e3a8a; font-family: 'Times New Roman', Times, serif; }
+    .timeline-print-block p, .timeline-print-block li { margin: 0 0 6pt; line-height: 1.5; font-size: 11pt; }
+    .timeline-print-block ul { margin: 0 0 10pt; padding-left: 1.5rem; }
+    .timeline-print-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 12px; }
+    .timeline-print-warn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 8px 12px; }
     @media print {
       body { background: #ffffff; }
       .timeline-print-shell { max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
+    }
+    @media (max-width: 768px) {
+      .timeline-print-shell { padding: 10px 12px; max-width: 100%; }
+      .timeline-print-header h1 { font-size: 14pt; }
+      .timeline-print-heading h2 { font-size: 12pt; }
+      .timeline-print-block h3 { font-size: 12pt; }
+      .timeline-print-header p,
+      .timeline-print-subtitle,
+      .timeline-print-block p,
+      .timeline-print-block li { font-size: 11pt; line-height: 1.5; }
     }
   </style>
 </head>

@@ -492,51 +492,67 @@ const CaseDetail = ({ user }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
   <style>
+    /* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
+       Body 11pt / H1 14pt / H2 12pt / H3 12pt italic / line-height 1.5 / para-gap 10pt
+       Margins 18/20/22mm / Footer 9pt italic */
     @page {
       size: A4;
-      margin: 16mm 16mm 20mm 16mm;
+      margin: 18mm 20mm 22mm 20mm;
       @bottom-left {
         content: "${(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  ${tabLabel.replace(/"/g,'\\"')} \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
     }
-    body { font-family: 'Times New Roman', Times, serif; padding: 12px 18px; color: #0f172a; line-height: 1.35; font-size: 10.5pt; margin: 0; }
-    h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; margin: 0 0 2px; color: #0f172a; line-height: 1.2; }
-    h2 { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; margin: 10px 0 3px; border-bottom: 1pt solid #1e3a8a; padding-bottom: 2px; color: #0f172a; }
-    h3 { font-size: 10.5pt; margin: 6px 0 2px; color: #1e3a8a; }
-    p { font-size: 10.5pt; line-height: 1.35; margin: 0 0 3px; }
-    .meta { font-size: 9pt; color: #475569; margin-bottom: 8px; font-style: italic; }
-    .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 4px 8px; border-radius: 4px; color: #1e3a8a; margin-bottom: 6px; font-size: 9pt; }
-    table { border-collapse: collapse; width: 100%; margin: 4px 0 8px; font-size: 9.5pt; page-break-inside: auto; }
-    td, th { border: 0.5pt solid #94a3b8; padding: 3px 5px; text-align: left; font-size: 9.5pt; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.5; font-size: 11pt; margin: 0; }
+    .tab-shell { padding: 12px 18px; }
+    h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; margin: 0 0 4px; color: #0f172a; line-height: 1.3; font-weight: 700; }
+    h2 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin: 14px 0 6px; border-bottom: 1pt solid #1e3a8a; padding-bottom: 3px; color: #0f172a; font-weight: 700; page-break-after: avoid; break-after: avoid; }
+    h3 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; font-style: italic; margin: 12px 0 4px; color: #1e3a8a; }
+    h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; margin: 10px 0 3px; color: #334155; }
+    p { font-size: 11pt; line-height: 1.5; margin: 0 0 10pt 0; orphans: 3; widows: 3; }
+    .meta { font-size: 10pt; color: #475569; margin-bottom: 10pt; font-style: italic; }
+    .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 6px 10px; border-radius: 4px; color: #1e3a8a; margin-bottom: 10pt; font-size: 10pt; }
+    table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 10pt; page-break-inside: auto; }
+    td, th { border: 0.5pt solid #94a3b8; padding: 4px 6px; text-align: left; font-size: 10pt; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
     th { background: #1e3a8a; color: #fff; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    ul, ol { padding-left: 1.1rem; margin: 2px 0 4px; }
-    li { margin-bottom: 0; font-size: 10.5pt; line-height: 1.35; }
-    .disclaimer-box { background: #dc2626; border: 1pt solid #b91c1c; padding: 6px 9px; border-radius: 4px; margin-top: 10px; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 6px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .disclaimer-box .disc-hazard { font-size: 16px; color: #facc15; flex-shrink: 0; }
-    .disclaimer-box strong { font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 2px; }
-    .disclaimer-box p { font-size: 8.5pt; color: #ffffff; margin: 0; line-height: 1.3; font-weight: 700; }
+    ul, ol { padding-left: 1.4rem; margin: 4px 0 10pt; }
+    li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.5; }
+    .disclaimer-box { background: #dc2626; border: 1pt solid #b91c1c; padding: 8px 10px; border-radius: 4px; margin-top: 14pt; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 8px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .disclaimer-box .disc-hazard { font-size: 18px; color: #facc15; flex-shrink: 0; }
+    .disclaimer-box strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 3px; }
+    .disclaimer-box p { font-size: 9pt; color: #ffffff; margin: 0; line-height: 1.45; font-weight: 700; }
     .no-print { display: none !important; }
-    /* Quick Case Summary 2-column card */
-    .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 6px 10px; margin: 4px 0 10px; background: #eff6ff; }
-    .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 3px; }
-    .case-summary-card .case-grid > div { font-size: 10pt; line-height: 1.3; }
-    .case-summary-card .case-grid .k { font-size: 7pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
+    /* Quick Case Summary card */
+    .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 8px 12px; margin: 6pt 0 10pt; background: #eff6ff; }
+    .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 4px; }
+    .case-summary-card .case-grid > div { font-size: 11pt; line-height: 1.4; }
+    .case-summary-card .case-grid .k { font-size: 8pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
     .case-summary-card .case-grid .v { font-weight: 700; }
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .disclaimer-box { page-break-inside: avoid; break-inside: avoid; }
     }
+    @media (max-width: 768px) {
+      .tab-shell { padding: 10px 12px; }
+      h1 { font-size: 14pt; }
+      h2 { font-size: 12pt; }
+      h3, h4 { font-size: 12pt; }
+      p, li { font-size: 11pt; line-height: 1.5; }
+      table { font-size: 9.5pt; }
+      td, th { padding: 3px 5px; font-size: 9.5pt; }
+    }
   </style>
 </head>
 <body>
+  <div class="tab-shell">
   ${noticeHtml}
   <h1>${caseData?.title || ''} — ${tabLabel}</h1>
   <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
@@ -547,6 +563,7 @@ const CaseDetail = ({ user }) => {
     <strong>NOT LEGAL ADVICE</strong>
     <p>This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
     </div>
+  </div>
   </div>
 </body>
 </html>`;

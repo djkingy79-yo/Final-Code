@@ -742,57 +742,41 @@ const ReportView = () => {
   <style>
     @page {
       size: A4 portrait;
-      margin: 18mm 18mm 22mm 18mm;
+      margin: 18mm 20mm 22mm 20mm;
       @bottom-left {
         content: "${previewFooterLabel}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 7pt; font-style: italic; color: #475569;
-      }
-      @bottom-center {
-        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
-        color: #ffffff; background: #0b1e3f;
-        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 7pt; font-style: italic; color: #475569;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
     }
     @page landscape-table {
       size: A4 landscape;
-      margin: 14mm 14mm 20mm 14mm;
+      margin: 14mm 18mm 20mm 18mm;
       @bottom-left {
         content: "${previewFooterLabel}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 7pt; font-style: italic; color: #475569;
-      }
-      @bottom-center {
-        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
-        color: #ffffff; background: #0b1e3f;
-        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
-        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 7pt; font-style: italic; color: #475569;
+        font-size: 9pt; font-style: italic; color: #334155;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.35; font-size: 11pt; background: #fff; }
+    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.5; font-size: 11pt; background: #fff; }
     th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 20px 0 10px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
     .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 8pt; font-weight: 800; color: #1d4ed8; }
-    .cover-page h1 { margin: 0 0 6px; font-family: 'Times New Roman', Times, serif; font-size: 16pt; color: #0f172a; font-weight: 700; }
-    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 10pt; }
+    .cover-page h1 { margin: 0 0 6px; font-family: 'Times New Roman', Times, serif; font-size: 14pt; color: #0f172a; font-weight: 700; line-height: 1.3; }
+    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 11pt; }
     .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; text-align: left; }
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
     .cover-page-card-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }
@@ -801,8 +785,8 @@ const ReportView = () => {
     .page-break { page-break-after: always; break-after: page; }
     .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
     .report-header, .report-header * { color: #fff !important; }
-    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; margin-bottom: 3px; color: #fff !important; }
-    .report-header .meta-line { font-size: 10pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
+    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; margin-bottom: 3px; color: #fff !important; line-height: 1.3; }
+    .report-header .meta-line { font-size: 11pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
     .report-header .grounds-count { font-size: 18pt; font-weight: 700; color: #fff; text-align: right; }
     .report-header .grounds-label { font-size: 8pt; color: rgba(255,255,255,0.8); text-align: right; }
     .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -854,32 +838,35 @@ const ReportView = () => {
     .section { margin-bottom: 14px; }
     .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${theme.previewColor}; padding-left: 10px; margin-bottom: 6px; }
     .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; color: #0f172a; }
-    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; }
+    .section-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.5; }
     .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
-    .section-body h2 { font-size: 15pt; border-bottom: 2px solid #1e3a8a; padding-bottom: 3px; margin: 10px 0 5px; }
+    .section-body h2 { font-size: 12pt; border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 3px; margin: 12pt 0 6pt; page-break-after: avoid; break-after: avoid; }
     /* Subheading break rules removed 2026-04-21. Previously page-break-after:
        avoid was forcing multi-paragraph subsections to the next page,
        producing the giant whitespace gaps the owner reported. Browser
        default orphan/widow handling + the per-paragraph rules below keep
        readability without half-blank pages. */
-    .section-body h3 { font-size: 13pt; color: #1e293b; margin: 14px 0 5px; }
-    .section-body h4 { font-size: 11pt; color: #334155; margin: 12px 0 4px; }
-    .section-body p { margin: 0 0 12pt 0; font-size: 11pt; line-height: 1.35; orphans: 3; widows: 3; }
+    .section-body h3 { font-size: 12pt; font-style: italic; color: #1e3a8a; margin: 10pt 0 4pt; }
+    .section-body h4 { font-size: 11pt; color: #334155; margin: 8pt 0 3pt; }
+    .section-body p { margin: 0 0 10pt 0; font-size: 11pt; line-height: 1.5; orphans: 3; widows: 3; }
     .section-body strong { color: #0f172a; font-weight: 700; }
-    .section-body ul, .section-body ol { padding-left: 2rem; margin: 6px 0 12pt; }
-    .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.35; }
+    .section-body ul, .section-body ol { padding-left: 1.6rem; margin: 4pt 0 10pt; }
+    .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.5; }
     .section-body a { color: #1d4ed8; text-decoration: underline; }
     .section-body .legal-report-table-wrap { overflow-x: auto; }
     .section-body table {
+      /* Landscape page for tables — but NO forced break-before/after because
+         that pushes the table to a fresh page and leaves huge whitespace
+         before it on the preceding portrait page. Let the browser break
+         naturally based on table height. */
       page: landscape-table;
-      break-before: page; break-after: page;
-      page-break-before: always; page-break-after: always;
-      width: 100%; border-collapse: collapse; margin: 8px 0;
-      font-size: 9pt !important; table-layout: fixed;
+      width: 100%; border-collapse: collapse; margin: 8pt 0;
+      font-size: 10pt !important; table-layout: fixed;
+      page-break-inside: auto; break-inside: auto;
     }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 800; padding: 5px 6px; text-align: left; border: 1px solid #cbd5e1; font-size: 8.5pt !important; word-wrap: break-word; overflow-wrap: break-word; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 5px 6px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; hyphens: auto; font-size: 9pt !important; }
+    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 700; padding: 5px 7px; text-align: left; border: 1px solid #cbd5e1; font-size: 9.5pt !important; word-wrap: break-word; overflow-wrap: break-word; }
+    .section-body td { border: 1px solid #cbd5e1; padding: 5px 7px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; hyphens: auto; font-size: 10pt !important; }
     .section-body blockquote { border-left: 3px solid #1e3a8a; padding: 6px 10px; margin: 6px 0; background: #eff6ff; color: #1e3a8a; font-size: 10pt; }
     /* Fallback styling for pipe-delimited <pre> tables — keep readable (not black). */
     .section-body pre, .report-container pre {

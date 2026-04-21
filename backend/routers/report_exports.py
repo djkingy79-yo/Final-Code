@@ -640,12 +640,12 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Create DOCX document
     doc = DocxDocument()
     
-    # Set default font to Times New Roman 11pt (matches frontend print CSS)
+    # Set default font to Times New Roman 11pt (canonical print spec — locked 2026-02)
     style = doc.styles['Normal']
     style.font.name = 'Times New Roman'
     style.font.size = Pt(11)
-    style.paragraph_format.space_after = Pt(4)
-    style.paragraph_format.line_spacing = 1.3
+    style.paragraph_format.space_after = Pt(10)
+    style.paragraph_format.line_spacing = 1.5
     
     # Set up styles
     styles = doc.styles
@@ -653,43 +653,45 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     # Title style
     title_style = styles['Title']
     title_style.font.name = 'Times New Roman'
-    title_style.font.size = Pt(16)
+    title_style.font.size = Pt(14)
     title_style.font.bold = True
     title_style.font.color.rgb = RGBColor(15, 23, 42)
     
-    # Heading 1 style — 15pt bold section headers
+    # Heading 1 style — 14pt bold section headers (canonical)
     h1_style = styles['Heading 1']
     h1_style.font.name = 'Times New Roman'
-    h1_style.font.size = Pt(15)
+    h1_style.font.size = Pt(14)
     h1_style.font.bold = True
     h1_style.font.color.rgb = RGBColor(15, 23, 42)
     h1_style.paragraph_format.space_before = Pt(14)
     h1_style.paragraph_format.space_after = Pt(6)
     h1_style.paragraph_format.page_break_before = True
     
-    # Heading 2 style — 13pt bold sub-headers
+    # Heading 2 style — 12pt bold sub-headers (canonical)
     h2_style = styles['Heading 2']
     h2_style.font.name = 'Times New Roman'
-    h2_style.font.size = Pt(13)
+    h2_style.font.size = Pt(12)
     h2_style.font.bold = True
     h2_style.font.color.rgb = RGBColor(30, 58, 138)
-    h2_style.paragraph_format.space_before = Pt(10)
-    h2_style.paragraph_format.space_after = Pt(4)
+    h2_style.paragraph_format.space_before = Pt(12)
+    h2_style.paragraph_format.space_after = Pt(6)
     h2_style.paragraph_format.page_break_before = False
     
-    # Heading 3 style — 11pt bold sub-sub-headers
+    # Heading 3 style — 12pt bold italic sub-sub-headers (canonical)
     h3_style = styles['Heading 3']
     h3_style.font.name = 'Times New Roman'
-    h3_style.font.size = Pt(11)
+    h3_style.font.size = Pt(12)
     h3_style.font.bold = True
-    h3_style.font.color.rgb = RGBColor(30, 41, 59)
-    h3_style.paragraph_format.space_before = Pt(8)
-    h3_style.paragraph_format.space_after = Pt(3)
+    h3_style.font.italic = True
+    h3_style.font.color.rgb = RGBColor(30, 58, 138)
+    h3_style.paragraph_format.space_before = Pt(10)
+    h3_style.paragraph_format.space_after = Pt(4)
     
     # List Bullet style
     list_style = styles['List Bullet']
     list_style.font.name = 'Times New Roman'
     list_style.font.size = Pt(11)
+    list_style.paragraph_format.line_spacing = 1.5
     list_style.paragraph_format.left_indent = Pt(20)
     
     # Header

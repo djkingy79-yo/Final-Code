@@ -180,7 +180,8 @@ class TestReportPDFExport:
             print("INFO: Could not extract exact page count, but PDF is valid")
     
     def test_pdf_footer_format(self, auth_session):
-        """Verify PDF footer contains correct format: 'Criminal Law Appeal Management / {Doc} — {Defendant} — {Date}'."""
+        """Verify PDF footer contains canonical format: '{Appellant} · {Doc Type} · {Date}'
+        (locked 2026-02 by owner). Middle-dot separator, no 'Criminal Law Appeal Management' prefix."""
         response = auth_session.get(
             f"{BASE_URL}/api/cases/{TEST_CASE_ID}/reports/{TEST_REPORT_ID}/export-pdf"
         )
@@ -191,10 +192,10 @@ class TestReportPDFExport:
         # Decode PDF streams to extract text content
         decoded_text = decode_pdf_streams(content)
         
-        # Check for footer text pattern in decoded PDF content
-        assert 'Criminal Law Appeal Management' in decoded_text, \
-            "Footer label 'Criminal Law Appeal Management' not found in PDF streams"
-        print("PASS: PDF contains 'Criminal Law Appeal Management' footer label")
+        # Canonical footer: middle dot separator between appellant / doc type / date
+        assert '\u00B7' in decoded_text or '·' in decoded_text, \
+            "Middle-dot separator (·) not found in PDF footer streams"
+        print("PASS: PDF footer contains canonical middle-dot separator")
         
         # Check for "Page X of Y" pattern
         assert 'Page' in decoded_text and 'of' in decoded_text, "Page numbering not found in PDF"
@@ -257,14 +258,14 @@ class TestReportDOCXExport:
                 # Check for footer in document
                 if 'word/footer1.xml' in zf.namelist():
                     footer_xml = zf.read('word/footer1.xml')
-                    assert b'Criminal Law Appeal Management' in footer_xml, "Footer label not in DOCX footer"
-                    print("PASS: DOCX footer contains correct label")
+                    # Canonical footer: middle-dot separator. UTF-8 encoded · is b'\xc2\xb7'
+                    assert b'\xc2\xb7' in footer_xml, "Middle-dot separator not in DOCX footer"
+                    print("PASS: DOCX footer contains canonical middle-dot separator")
                     
-                    # Check footer font size is 7pt (14 half-points)
-                    # The footer should have 7pt italic Times New Roman
-                    assert b'14' in footer_xml or b'w:val="14"' in footer_xml, \
-                        "7pt footer font size (14 half-points) not found"
-                    print("PASS: DOCX footer has 7pt font size")
+                    # Canonical footer font size is 9pt (18 half-points)
+                    assert b'18' in footer_xml or b'w:val="18"' in footer_xml, \
+                        "9pt footer font size (18 half-points) not found"
+                    print("PASS: DOCX footer has canonical 9pt font size")
                 else:
                     print("INFO: No separate footer file found, footer may be inline")
                     
@@ -294,10 +295,10 @@ class TestTimelinePDFExport:
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
         print("PASS: Timeline PDF export returns 200 with valid PDF")
         
-        # Decode PDF streams to check for footer
+        # Decode PDF streams to check for canonical footer (middle-dot separator)
         decoded_text = decode_pdf_streams(content)
-        assert 'Criminal Law Appeal Management' in decoded_text, "Footer label not in timeline PDF"
-        print("PASS: Timeline PDF contains correct footer label")
+        assert '\u00B7' in decoded_text or '·' in decoded_text, "Canonical middle-dot separator not in timeline PDF footer"
+        print("PASS: Timeline PDF contains canonical footer separator")
 
 
 class TestBarristerQuickBrief:
@@ -320,9 +321,9 @@ class TestBarristerQuickBrief:
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
         print("PASS: Quick brief export returns 200 with valid PDF")
         
-        # Check for footer
-        assert b'Criminal Law Appeal Management' in content or b'Quick Research Brief' in content, \
-            "Footer/title not in quick brief PDF"
+        # Check for canonical footer content (middle-dot) or title
+        assert b'\xc2\xb7' in content or b'Quick Research Brief' in content, \
+            "Canonical footer separator or title not in quick brief PDF"
         print("PASS: Quick brief PDF contains expected content")
 
 
@@ -341,10 +342,10 @@ class TestBarristerPackExport:
         assert content[:4] == b'%PDF', f"Invalid PDF: magic bytes are {content[:4]}"
         print("PASS: Barrister pack export returns 200 with valid PDF")
         
-        # Decode PDF streams to check for footer
+        # Decode PDF streams to check for canonical footer (middle-dot separator)
         decoded_text = decode_pdf_streams(content)
-        assert 'Criminal Law Appeal Management' in decoded_text, "Footer label not in barrister pack PDF"
-        print("PASS: Barrister pack PDF contains correct footer label")
+        assert '\u00B7' in decoded_text or '·' in decoded_text, "Canonical middle-dot separator not in barrister pack PDF footer"
+        print("PASS: Barrister pack PDF contains canonical footer separator")
 
 
 class TestBarristerViewExports:
@@ -389,7 +390,8 @@ class TestFooterLabelFormat:
     """Test that footer label format is correct across all exports."""
     
     def test_footer_label_format_in_code(self):
-        """Verify build_footer_label produces correct format."""
+        """Verify build_footer_label produces canonical format:
+        '{Appellant} · {Doc Type} · {Date in en-AU long form}' — locked 2026-02 by owner."""
         # Import the function directly
         import sys
         sys.path.insert(0, '/app/backend')
@@ -403,14 +405,17 @@ class TestFooterLabelFormat:
         
         result = build_footer_label(test_case, "Case Summary Report (Free)", "2026-01-15T10:00:00Z")
         
-        # Expected format: "Criminal Law Appeal Management / {Doc} — {Defendant} — {Date}"
-        assert "Criminal Law Appeal Management" in result, f"Missing 'Criminal Law Appeal Management' in: {result}"
-        assert "Case Summary Report (Free)" in result, f"Missing doc type in: {result}"
+        # Canonical format: "{Appellant} · {Doc Type} · {Date}"
         assert "John Smith" in result, f"Missing defendant name in: {result}"
-        assert "/" in result, f"Missing '/' separator in: {result}"
-        assert "—" in result or "-" in result, f"Missing em-dash separator in: {result}"
+        assert "Case Summary Report (Free)" in result, f"Missing doc type in: {result}"
+        assert "\u00B7" in result, f"Missing middle-dot separator (·) in: {result}"
+        # Date in en-AU long form (e.g. "15 January 2026")
+        assert "2026" in result and "January" in result, f"Missing long-form date in: {result}"
+        # No legacy 'Criminal Law Appeal Management' prefix
+        assert "Criminal Law Appeal Management" not in result, \
+            f"Legacy prefix should be removed, got: {result}"
         
-        print(f"PASS: Footer label format is correct: {result}")
+        print(f"PASS: Footer label format is canonical: {result}")
 
 
 if __name__ == "__main__":

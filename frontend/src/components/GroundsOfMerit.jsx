@@ -524,78 +524,80 @@ const GroundsOfMerit = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grounds of Merit Export</title>
   <style>
-    /* CSS Paged Media — @bottom-* margin boxes are the ONLY reliable way to
-       get a repeating footer on every page across Chrome/Safari print pipelines.
-       position:fixed drops out on Safari iOS sometimes.
-       Browser default header (URL/date/page) comes from Safari itself and can
-       only be toggled in the iOS Share → Print → Options panel; ours is
-       independent and will ALWAYS appear in the saved PDF / printed output. */
+    /* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
+       Body 11pt / H1 14pt / H2 12pt / H3 12pt italic / line-height 1.5 / para-gap 10pt
+       Margins 18/20/22mm / Footer 9pt italic.
+       CSS Paged Media — @bottom-* margin boxes are the ONLY reliable way to
+       get a repeating footer on every page across Chrome/Safari print pipelines. */
     @page {
       size: A4;
-      margin: 16mm 16mm 18mm 16mm;
+      margin: 18mm 20mm 22mm 20mm;
       @bottom-left {
         content: "${(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  Grounds of Merit \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt;
+        font-size: 9pt;
         font-style: italic;
         color: #334155;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt;
+        font-size: 9pt;
         font-style: italic;
         color: #334155;
       }
     }
     * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; box-sizing: border-box; }
-    /* Professional legal document typography — tight, compact, serif.
-       All sizes tuned so a 6-ground investigation fits in ~8–12 pages, not 32. */
-    body { margin: 0; background: #fff; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-height: 1.3; }
-    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 14px 18px; }
-    .grounds-export-header { border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 6px; margin-bottom: 10px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.16em; color: #1e3a8a; font-weight: 800; font-size: 8pt; margin: 0 0 2px; }
-    .grounds-export-header h1 { margin: 0 0 2px; font-size: 14pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; line-height: 1.2; }
-    /* Let content flow naturally across pages. The browser's orphans:3
-       and widows:3 defaults keep headings from being orphaned. Forcing
-       page-break-after:avoid on long-body H3s caused the whole section
-       (heading + 20 paragraphs) to push to the next page, leaving the
-       previous page half-empty — that's what produced the giant whitespace
-       gaps the owner reported on 2026-04-21. */
-    .grounds-export-section { padding: 6px 0 2px; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
-    .grounds-export-section + .grounds-export-section { border-top: 0.5pt solid #cbd5e1; margin-top: 4px; padding-top: 8px; }
-    /* H2 (ground title) — stay with at least 2 lines of body so titles don't
-       orphan alone at page bottom. */
-    .grounds-export-title-wrap h2 { margin: 0 0 2px; font-size: 12pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; line-height: 1.25; page-break-after: avoid; break-after: avoid; }
-    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1e3a8a; padding: 0 5px; border-radius: 10pt; font-size: 7pt; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 4px; line-height: 1.3; font-size: 10.5pt; text-align: justify; }
-    .grounds-export-block { margin-bottom: 4px; }
-    /* H3 subheadings inside a ground — no page-break-after:avoid. Let them
-       flow with their body; if a subheading ends up at the bottom of a page
-       with only a line or two of body below, that's far better than a giant
-       half-blank page. */
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 4px 0 1px; font-size: 10.5pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; color: #0f172a; }
-    .grounds-export-block ul { margin: 0 0 3px; padding-left: 1.1rem; line-height: 1.3; }
-    .grounds-export-block ul li { font-size: 10.5pt !important; line-height: 1.3; margin-bottom: 0; }
-    .grounds-export-analysis { margin-top: 4px; }
-    .grounds-export-disclaimer { margin-top: 10px; background: #dc2626; border: 1pt solid #b91c1c; padding: 6px 9px; font-weight: 700; line-height: 1.3; font-size: 9pt; color: #ffffff; border-radius: 4px; display: flex; gap: 6px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.3; margin: 0 0 3px; font-size: 10.5pt; font-family: 'Times New Roman', Times, serif; text-align: justify; }
-    /* legal-report headings — same rationale: no forced break-after */
+    body { margin: 0; background: #fff; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; }
+    .grounds-export-shell { max-width: 820px; margin: 0 auto; background: #ffffff; padding: 16px 22px; }
+    .grounds-export-header { border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 8pt; margin-bottom: 10pt; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.14em; color: #1e3a8a; font-weight: 800; font-size: 9pt; margin: 0 0 3px; }
+    .grounds-export-header h1 { margin: 0 0 3px; font-size: 14pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; line-height: 1.3; }
+    /* Let content flow naturally across pages. orphans:3 widows:3 keeps
+       headings from being orphaned. No forced breaks — prevents half-empty
+       pages the owner reported. */
+    .grounds-export-section { padding: 8pt 0 4pt; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
+    .grounds-export-section + .grounds-export-section { border-top: 0.5pt solid #cbd5e1; margin-top: 6pt; padding-top: 10pt; }
+    /* H2 (ground title) — keep with body */
+    .grounds-export-title-wrap h2 { margin: 0 0 4px; font-size: 12pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; line-height: 1.4; page-break-after: avoid; break-after: avoid; }
+    .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6pt; }
+    .grounds-export-meta span { background: #dbeafe; color: #1e3a8a; padding: 1px 8px; border-radius: 10pt; font-size: 9pt; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 10pt 0; line-height: 1.5; font-size: 11pt; text-align: justify; orphans: 3; widows: 3; }
+    .grounds-export-block { margin-bottom: 8pt; }
+    /* H3 subheadings — italic, no forced break-after */
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 8pt 0 4pt; font-size: 12pt; font-weight: 700; font-style: italic; font-family: 'Times New Roman', Times, serif; color: #1e3a8a; }
+    .grounds-export-block ul { margin: 0 0 10pt; padding-left: 1.5rem; line-height: 1.5; }
+    .grounds-export-block ul li { font-size: 11pt !important; line-height: 1.5; margin-bottom: 4pt; }
+    .grounds-export-analysis { margin-top: 10pt; }
+    .grounds-export-disclaimer { margin-top: 14pt; background: #dc2626; border: 1pt solid #b91c1c; padding: 8px 10px; font-weight: 700; line-height: 1.45; font-size: 10pt; color: #ffffff; border-radius: 4px; display: flex; gap: 8px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.5; margin: 0 0 10pt; font-size: 11pt; font-family: 'Times New Roman', Times, serif; text-align: justify; orphans: 3; widows: 3; }
+    /* legal-report headings — no forced break-after */
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #0f172a; font-family: 'Times New Roman', Times, serif; }
-    .legal-report h2 { font-size: 11pt; font-weight: 700; margin: 4px 0 1px; }
-    .legal-report h3 { font-size: 10.5pt; font-weight: 700; margin: 3px 0 1px; }
-    .legal-report h4 { font-size: 10pt; font-weight: 700; margin: 2px 0 1px; }
+    .legal-report h2 { font-size: 12pt; font-weight: 700; margin: 10pt 0 4pt; }
+    .legal-report h3 { font-size: 12pt; font-weight: 700; font-style: italic; margin: 8pt 0 4pt; }
+    .legal-report h4 { font-size: 11pt; font-weight: 700; margin: 6pt 0 3pt; }
     .legal-report-table-wrap { overflow-x: auto; }
-    .legal-report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9.5pt; margin: 4px 0; }
-    .legal-report th, .legal-report td { border: 0.5pt solid #94a3b8; padding: 3px 5px; vertical-align: top; }
+    .legal-report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10pt; margin: 6pt 0 10pt; }
+    .legal-report th, .legal-report td { border: 0.5pt solid #94a3b8; padding: 4px 6px; vertical-align: top; }
     .legal-report th { background: #1e3a8a; color: #fff; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
-    .legal-report ul, .legal-report ol { padding-left: 1.1rem; margin: 2px 0 3px; }
-    .legal-report li { font-size: 10.5pt; line-height: 1.3; margin-bottom: 0; }
+    .legal-report ul, .legal-report ol { padding-left: 1.4rem; margin: 4pt 0 10pt; }
+    .legal-report li { font-size: 11pt; line-height: 1.5; margin-bottom: 3pt; }
     @media print {
       body { background: #fff; }
       .grounds-export-shell { max-width: none; padding: 0; }
+    }
+    @media (max-width: 768px) {
+      /* WYSIWYG parity — same canonical sizes as print; only padding shrinks. */
+      .grounds-export-shell { padding: 10px 12px; max-width: 100%; }
+      .grounds-export-header h1 { font-size: 14pt; }
+      .grounds-export-title-wrap h2 { font-size: 12pt; }
+      .grounds-export-block h3, .grounds-export-analysis h3,
+      .legal-report h3 { font-size: 12pt; }
+      .grounds-export-description,
+      .grounds-export-block ul li,
+      .legal-report p, .legal-report li { font-size: 11pt; line-height: 1.5; }
+      .legal-report table { font-size: 9.5pt; }
     }
   </style>
 </head>
@@ -646,8 +648,11 @@ const GroundsOfMerit = ({
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
+/* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
+   Body 11pt / H1 14pt / H2 12pt / H3 12pt italic / line-height 1.5 / para-gap 10pt
+   Margins 18/20/22mm / Footer 9pt italic */
 @page{
-  size:A4;margin:22mm 22mm 26mm 22mm;
+  size:A4;margin:18mm 20mm 22mm 20mm;
   @bottom-left{
     content:"${escHtml(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  Grounds of Merit \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
     font-family:'Times New Roman',Times,serif;font-size:9pt;font-style:italic;color:#334155;
@@ -658,20 +663,31 @@ const GroundsOfMerit = ({
   }
 }
 *{-webkit-text-size-adjust:100%;text-size-adjust:100%;box-sizing:border-box}
-body{font-family:'Times New Roman',Times,serif;font-size:12pt;color:#0f172a;padding:20px;line-height:1.55;max-width:800px;margin:0 auto}
-h1{font-size:15pt;margin:0 0 8px;font-weight:700;font-family:'Times New Roman',Times,serif}
-h2{font-size:13pt;margin:14px 0 6px;border-bottom:2px solid #1d4ed8;padding-bottom:3px;font-weight:700;font-family:'Times New Roman',Times,serif}
-h3{font-size:13pt;margin:12px 0 5px;font-weight:700;font-family:'Times New Roman',Times,serif}
-.meta{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:999px;font-size:9pt;font-weight:700}
-.desc{margin:0 0 12px;font-size:12pt;line-height:1.55}ul{padding-left:1.6rem;margin:0 0 10px}li{margin-bottom:3px;font-size:12pt !important;line-height:1.55;-webkit-text-size-adjust:100%}
-.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12pt}
-.analysis{margin-top:10px;white-space:pre-wrap;font-size:12pt;line-height:1.55}
-table{border-collapse:collapse;width:100%;margin:10px 0;font-family:'Times New Roman',Times,serif}th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left;font-size:11pt}th{background:#dbeafe;font-weight:700}
-.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:20px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Times New Roman',Times,serif;font-size:11pt;color:#0f172a;padding:16px 20px;line-height:1.5;max-width:820px;margin:0 auto}
+h1{font-size:14pt;margin:0 0 8pt;font-weight:700;font-family:'Times New Roman',Times,serif;line-height:1.3}
+h2{font-size:12pt;margin:14pt 0 6pt;border-bottom:1.5pt solid #1d4ed8;padding-bottom:3px;font-weight:700;font-family:'Times New Roman',Times,serif;page-break-after:avoid;break-after:avoid}
+h3{font-size:12pt;margin:12pt 0 4pt;font-weight:700;font-style:italic;font-family:'Times New Roman',Times,serif;color:#1e3a8a}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin:6pt 0 10pt}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:999px;font-size:10pt;font-weight:700}
+.desc{margin:0 0 10pt;font-size:11pt;line-height:1.5;orphans:3;widows:3}
+ul,ol{padding-left:1.5rem;margin:4pt 0 10pt}
+li{margin-bottom:3pt;font-size:11pt !important;line-height:1.5;-webkit-text-size-adjust:100%}
+p{margin:0 0 10pt;font-size:11pt;line-height:1.5;orphans:3;widows:3}
+.case-box{background:#eff6ff;border:1px solid #93c5fd;padding:8px 12px;border-radius:6px;margin-bottom:8pt;font-size:11pt}
+.analysis{margin-top:10pt;white-space:pre-wrap;font-size:11pt;line-height:1.5}
+table{border-collapse:collapse;width:100%;margin:6pt 0 10pt;font-family:'Times New Roman',Times,serif}
+th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left;font-size:10pt;vertical-align:top}
+th{background:#dbeafe;font-weight:700}
+.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:16pt;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .disclaimer .disc-hazard{font-size:22px;color:#facc15;flex-shrink:0}
-.disclaimer strong{font-size:12pt;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
-.disclaimer p{font-size:10pt;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
-@media print{body{padding:0}}
+.disclaimer strong{font-size:11pt;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
+.disclaimer p{font-size:10pt;color:#ffffff;margin:0;line-height:1.45;font-weight:700}
+@media print{body{padding:0;max-width:none}}
+@media (max-width:768px){
+  body{padding:12px 14px;max-width:100%}
+  h1{font-size:14pt}h2{font-size:12pt}h3{font-size:12pt}
+  .desc,li,p,.analysis,.case-box{font-size:11pt;line-height:1.5}
+  table{font-size:9.5pt}
+}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
