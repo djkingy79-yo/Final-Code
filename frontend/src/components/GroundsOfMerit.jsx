@@ -519,54 +519,71 @@ const GroundsOfMerit = ({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grounds of Merit Export</title>
   <style>
-    @page { size: A4; margin: 20mm 20mm 30mm 20mm; }
-    * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 10pt; line-height: 1.6; }
-    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 24px 28px; padding-bottom: 60px; }
-    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 10px; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 8pt; margin: 0 0 4px; }
-    .grounds-export-header h1 { margin: 0 0 4px; font-size: 16pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; }
-    .grounds-export-section { padding: 8px 0 4px; }
-    .grounds-export-section:not(:first-of-type) { page-break-before: always; }
+    /* CSS Paged Media — @bottom-* margin boxes are the ONLY reliable way to
+       get a repeating footer on every page across Chrome/Safari print pipelines.
+       position:fixed drops out on Safari iOS sometimes.
+       Browser default header (URL/date/page) comes from Safari itself and can
+       only be toggled in the iOS Share → Print → Options panel; ours is
+       independent and will ALWAYS appear in the saved PDF / printed output. */
+    @page {
+      size: A4;
+      margin: 22mm 22mm 26mm 22mm;
+      @bottom-left {
+        content: "${(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  Grounds of Merit \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 9pt;
+        font-style: italic;
+        color: #334155;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 9pt;
+        font-style: italic;
+        color: #334155;
+      }
+    }
+    * { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; box-sizing: border-box; }
+    body { margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.55; }
+    .grounds-export-shell { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 24px 28px; }
+    .grounds-export-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 14px; }
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.18em; color: #1d4ed8; font-weight: 800; font-size: 9pt; margin: 0 0 4px; }
+    .grounds-export-header h1 { margin: 0 0 4px; font-size: 15pt; font-family: 'Times New Roman', Times, serif; font-weight: 700; }
+    /* DO NOT force a page break between grounds — just ask the browser to
+       avoid splitting a single ground across pages if possible. Dropped the
+       page-break-before:always rule that was making the report 32 pages with
+       huge gaps. */
+    .grounds-export-section { padding: 10px 0 6px; page-break-inside: avoid; break-inside: avoid; }
+    .grounds-export-section + .grounds-export-section { border-top: 1px solid #e2e8f0; margin-top: 8px; padding-top: 14px; }
     .grounds-export-title-wrap h2 { margin: 0 0 4px; font-size: 13pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
-    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 1px 6px; border-radius: 999px; font-size: 7pt; font-weight: 700; }
-    .grounds-export-description { margin: 0 0 6px; line-height: 1.5; font-size: 10pt; }
-    .grounds-export-block { margin-bottom: 6px; }
-    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 3px; font-size: 11pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
-    .grounds-export-block ul { margin: 0 0 6px; padding-left: 2rem; line-height: 1.5; }
-    .grounds-export-block ul li { font-size: 10pt !important; line-height: 1.5; margin-bottom: 2px; }
-    .grounds-export-analysis { margin-top: 6px; }
-    .grounds-export-disclaimer { margin-top: 12px; background: #dc2626; border: 2px solid #b91c1c; padding: 8px 12px; font-weight: 700; line-height: 1.4; font-size: 8pt; color: #ffffff; border-radius: 6px; display: flex; gap: 8px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .legal-report p { line-height: 1.5; margin: 0 0 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; }
+    .grounds-export-meta span { background: #dbeafe; color: #1d4ed8; padding: 1px 6px; border-radius: 999px; font-size: 8pt; font-weight: 700; }
+    .grounds-export-description { margin: 0 0 8px; line-height: 1.55; font-size: 12pt; }
+    .grounds-export-block { margin-bottom: 8px; }
+    .grounds-export-block h3, .grounds-export-analysis h3 { margin: 0 0 4px; font-size: 13pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; }
+    .grounds-export-block ul { margin: 0 0 6px; padding-left: 1.5rem; line-height: 1.55; }
+    .grounds-export-block ul li { font-size: 12pt !important; line-height: 1.55; margin-bottom: 2px; }
+    .grounds-export-analysis { margin-top: 8px; }
+    .grounds-export-disclaimer { margin-top: 16px; background: #dc2626; border: 2px solid #b91c1c; padding: 10px 12px; font-weight: 700; line-height: 1.45; font-size: 10pt; color: #ffffff; border-radius: 6px; display: flex; gap: 8px; align-items: flex-start; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legal-report p { line-height: 1.55; margin: 0 0 6px; font-size: 12pt; font-family: 'Times New Roman', Times, serif; }
     .legal-report h1, .legal-report h2, .legal-report h3, .legal-report h4 { color: #1d4ed8; font-family: 'Times New Roman', Times, serif; }
-    .legal-report h2 { font-size: 13pt; font-weight: 700; margin: 6px 0 3px; }
-    .legal-report h3 { font-size: 11pt; font-weight: 700; margin: 5px 0 2px; }
-    .legal-report h4 { font-size: 10pt; font-weight: 700; margin: 4px 0 2px; }
+    .legal-report h2 { font-size: 13pt; font-weight: 700; margin: 8px 0 4px; }
+    .legal-report h3 { font-size: 13pt; font-weight: 700; margin: 6px 0 3px; }
+    .legal-report h4 { font-size: 12pt; font-weight: 700; margin: 5px 0 3px; }
     .legal-report-table-wrap { overflow-x: auto; }
-    .legal-report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9pt; }
-    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 3px 5px; vertical-align: top; }
+    .legal-report table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11pt; }
+    .legal-report th, .legal-report td { border: 1px solid #cbd5e1; padding: 4px 6px; vertical-align: top; }
     .legal-report th { background: #1d4ed8; color: #fff; font-weight: 800; }
     .legal-report td { overflow-wrap: anywhere; word-break: break-word; }
-    .legal-report ul, .legal-report ol { padding-left: 2rem; margin: 4px 0 6px; }
-    .legal-report li { font-size: 10pt; line-height: 1.5; margin-bottom: 2px; }
-    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 4px 20mm 6px; }
-    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; font-style: italic; color: #334155; font-family: 'Times New Roman', Times, serif; }
+    .legal-report ul, .legal-report ol { padding-left: 1.5rem; margin: 4px 0 6px; }
+    .legal-report li { font-size: 12pt; line-height: 1.55; margin-bottom: 2px; }
     @media print {
       body { background: #fff; }
-      .grounds-export-shell { max-width: none; padding: 0; padding-bottom: 40px; }
-      .print-footer { display: block; }
-      .print-footer-page-print::after { content: "Page " counter(page) " of " counter(pages); }
+      .grounds-export-shell { max-width: none; padding: 0; }
     }
   </style>
 </head>
 <body>${contentMarkup}
-  <div class="print-footer">
-    <div class="print-footer-row">
-      <span class="print-footer-label">Criminal Law Appeal Management / Grounds of Merit — ${caseData?.defendant_name || 'Appellant'} — ${new Date().toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})}</span>
-      <span class="print-footer-page"><span class="print-footer-page-print"></span></span>
-    </div>
-  </div>
 </body>
 </html>`;
   };
@@ -613,22 +630,32 @@ const GroundsOfMerit = ({
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
 <style>
-@page{size:A4;margin:15mm 15mm 28mm 15mm}*{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:'Times New Roman',Times,serif;font-size:12pt;color:#0f172a;padding:20px;padding-bottom:60px;line-height:1.8;max-width:800px;margin:0 auto;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-h1{font-size:22pt;margin:0 0 8px;font-weight:700;font-family:'Times New Roman',Times,serif}h2{font-size:18pt;margin:16px 0 8px;border-bottom:2px solid #1d4ed8;padding-bottom:4px;font-weight:700;font-family:'Times New Roman',Times,serif}
-h3{font-size:14pt;margin:14px 0 6px;font-weight:700;font-family:'Times New Roman',Times,serif}
+@page{
+  size:A4;margin:22mm 22mm 26mm 22mm;
+  @bottom-left{
+    content:"${escHtml(caseData?.defendant_name || 'Appellant').replace(/"/g,'\\"')} \\00B7  Grounds of Merit \\00B7  ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}";
+    font-family:'Times New Roman',Times,serif;font-size:9pt;font-style:italic;color:#334155;
+  }
+  @bottom-right{
+    content:"Page " counter(page) " of " counter(pages);
+    font-family:'Times New Roman',Times,serif;font-size:9pt;font-style:italic;color:#334155;
+  }
+}
+*{-webkit-text-size-adjust:100%;text-size-adjust:100%;box-sizing:border-box}
+body{font-family:'Times New Roman',Times,serif;font-size:12pt;color:#0f172a;padding:20px;line-height:1.55;max-width:800px;margin:0 auto}
+h1{font-size:15pt;margin:0 0 8px;font-weight:700;font-family:'Times New Roman',Times,serif}
+h2{font-size:13pt;margin:14px 0 6px;border-bottom:2px solid #1d4ed8;padding-bottom:3px;font-weight:700;font-family:'Times New Roman',Times,serif}
+h3{font-size:13pt;margin:12px 0 5px;font-weight:700;font-family:'Times New Roman',Times,serif}
 .meta{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}.meta span{background:#dbeafe;color:#1d4ed8;padding:2px 7px;border-radius:999px;font-size:9pt;font-weight:700}
-.desc{margin:0 0 12px;font-size:12pt;line-height:1.8}ul{padding-left:2.5rem;margin:0 0 10px}li{margin-bottom:4px;font-size:12pt !important;line-height:1.75;-webkit-text-size-adjust:100%}
+.desc{margin:0 0 12px;font-size:12pt;line-height:1.55}ul{padding-left:1.6rem;margin:0 0 10px}li{margin-bottom:3px;font-size:12pt !important;line-height:1.55;-webkit-text-size-adjust:100%}
 .case-box{background:#eff6ff;border:1px solid #93c5fd;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12pt}
-.analysis{margin-top:14px;white-space:pre-wrap;font-size:12pt;line-height:1.8}
+.analysis{margin-top:10px;white-space:pre-wrap;font-size:12pt;line-height:1.55}
 table{border-collapse:collapse;width:100%;margin:10px 0;font-family:'Times New Roman',Times,serif}th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left;font-size:11pt}th{background:#dbeafe;font-weight:700}
-.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:24px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.disclaimer{background:#dc2626;border:3px solid #b91c1c;padding:10px 14px;border-radius:8px;margin-top:20px;page-break-inside:avoid;display:flex;gap:10px;align-items:flex-start;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .disclaimer .disc-hazard{font-size:22px;color:#facc15;flex-shrink:0}
 .disclaimer strong{font-size:12pt;text-transform:uppercase;color:#ffffff;display:block;margin-bottom:3px}
 .disclaimer p{font-size:10pt;color:#ffffff;margin:0;line-height:1.5;font-weight:700}
-.ground-footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1.5px solid #1d4ed8;padding:5px 15mm 7px;font-size:10pt;font-style:italic;color:#334155;display:flex;justify-content:space-between;align-items:center;font-family:'Times New Roman',Times,serif}
-.ground-footer .gf-label{font-weight:700}
-.ground-footer .gf-page::after{content:''}
-@media print{body{padding:0;padding-bottom:50px}.ground-footer .gf-page::after{content:"Page " counter(page) " of " counter(pages)}}
+@media print{body{padding:0}}
 </style></head><body>
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
@@ -645,20 +672,6 @@ ${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().in
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).length ? '<h2>Comparable Authority</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p></div></div>
-<div style="text-align:center;margin:24px 0;padding:16px 0;">
-  <p style="font-size:11px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
-  <div style="display:inline-flex;align-items:center;gap:10px;">
-    <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-    </div>
-    <div style="text-align:left;">
-      <p style="margin:0;font-weight:700;font-size:12px;color:#0f172a;">Appeal Case Manager</p>
-      <p style="margin:0;font-size:10px;color:#64748b;">Founded by Debra King</p>
-      <p style="margin:0;font-size:10px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
-    </div>
-  </div>
-</div>
-<div class="ground-footer"><span class="gf-label">Ground of Merit Report &mdash; ${escHtml(caseData?.defendant_name || 'Appellant')} &mdash; ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}</span><span class="gf-page"></span></div>
 </body></html>`;
   };
 
