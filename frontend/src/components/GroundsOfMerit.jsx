@@ -31,6 +31,7 @@ import VerificationBadge from "./VerificationBadge";
 import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
 import auSpelling from "../utils/auSpelling";
+import { normaliseMarkdown, renderMarkdownToHtml } from "../utils/mdRender";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -362,7 +363,7 @@ const GroundsOfMerit = ({
   /* DO NOT UNDO — formatAnalysis renders investigation results with clickable links */
   const formatAnalysis = (analysis) => {
     if (!analysis) return null;
-    const auText = auSpelling(analysis);
+    const auText = normaliseMarkdown(auSpelling(analysis));
     return (
       <div className="legal-report prose prose-sm max-w-none">
         <ReactMarkdown 
@@ -481,7 +482,7 @@ const GroundsOfMerit = ({
                       )
                     }}
                   >
-                    {auSpelling(ground.deep_analysis?.full_analysis || ground.analysis || "")}
+                    {normaliseMarkdown(auSpelling(ground.deep_analysis?.full_analysis || ground.analysis || ""))}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -673,7 +674,16 @@ ul,ol{padding-left:1.5rem;margin:4pt 0 10pt}
 li{margin-bottom:3pt;font-size:11pt !important;line-height:1.5;-webkit-text-size-adjust:100%}
 p{margin:0 0 10pt;font-size:11pt;line-height:1.5;orphans:3;widows:3}
 .case-box{background:#eff6ff;border:1px solid #93c5fd;padding:8px 12px;border-radius:6px;margin-bottom:8pt;font-size:11pt}
-.analysis{margin-top:10pt;white-space:pre-wrap;font-size:11pt;line-height:1.5}
+.analysis{margin-top:10pt;font-size:11pt;line-height:1.5}
+.analysis h1,.analysis h2,.analysis h3,.analysis h4{font-family:'Times New Roman',Times,serif;color:#0f172a;font-weight:700;page-break-after:avoid;break-after:avoid}
+.analysis h2{font-size:12pt;margin:14pt 0 6pt;border-bottom:1.5pt solid #1d4ed8;padding-bottom:3px}
+.analysis h3{font-size:12pt;margin:12pt 0 4pt;font-style:italic;color:#1e3a8a;border:0;padding:0}
+.analysis h4{font-size:11pt;margin:10pt 0 4pt}
+.analysis p{margin:0 0 10pt;orphans:3;widows:3}
+.analysis ul,.analysis ol{padding-left:1.3rem;margin:4pt 0 10pt}
+.analysis li{margin-bottom:3pt;font-size:11pt;line-height:1.5}
+.analysis strong{font-weight:700}
+.analysis em{font-style:italic}
 table{border-collapse:collapse;width:100%;margin:6pt 0 10pt;font-family:'Times New Roman',Times,serif}
 th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left;font-size:10pt;vertical-align:top}
 th{background:#dbeafe;font-weight:700}
@@ -712,7 +722,7 @@ ${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().in
   return '<li>'+escHtml(`${secDisplay} ${actText}${jurInAct ? '' : ` (${jur})`}`.trim())+'</li>';
 }).join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).length ? '<h2>Comparable Authority</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
-${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
+${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + renderMarkdownToHtml(analysis) + '</div>' : ''}
 <div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p></div></div>
 </body></html>`;
   };

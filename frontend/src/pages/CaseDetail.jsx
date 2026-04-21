@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
+import { renderMarkdownToHtml } from "../utils/mdRender";
 import { 
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
@@ -995,14 +996,7 @@ const CaseDetail = ({ user }) => {
   };
   const mdToHtml = (text) => {
     if (!text) return '';
-    let html = escHtml(text);
-    html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
-    html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:14px 0 6px;">$1</h4>');
-    html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:14pt;font-weight:700;color:#1e293b;margin:18px 0 8px;">$1</h3>');
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\n\n/g, '</p><p style="margin-bottom:10px;">');
-    html = html.replace(/\n/g, '<br/>');
-    return auSpelling('<p style="margin-bottom:10px;">' + html + '</p>');
+    return renderMarkdownToHtml(text);
   };
 
   const buildProgressHtml = () => {
@@ -1073,21 +1067,10 @@ const CaseDetail = ({ user }) => {
     const offence = (caseData?.offence_type || caseData?.offence_category?.replace(/_/g, ' ') || "N/A");
     const offenceCapitalised = offence.charAt(0).toUpperCase() + offence.slice(1);
 
-    // Helper: convert markdown headings + bold to HTML and apply AU spelling
+    // Helper: convert markdown headings + bold + lists to HTML and apply AU spelling
     const mdToHtml = (text) => {
       if (!text) return '';
-      let html = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      // Convert markdown headings
-      html = html.replace(/^####\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:11pt;font-weight:700;color:#1e293b;margin:8px 0 4px;">$1</h4>');
-      html = html.replace(/^###\s+(.+)$/gm, '<h4 style="font-family:\'Times New Roman\',Times,serif;font-size:11pt;font-weight:700;color:#1e293b;margin:8px 0 4px;">$1</h4>');
-      html = html.replace(/^##\s+(.+)$/gm, '<h3 style="font-family:\'Times New Roman\',Times,serif;font-size:13pt;font-weight:700;color:#1e293b;margin:10px 0 5px;">$1</h3>');
-      // Bold
-      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      // Double newlines → paragraph breaks
-      html = html.replace(/\n\n/g, '</p><p style="margin-bottom:5px;">');
-      // Single newlines → <br>
-      html = html.replace(/\n/g, '<br/>');
-      return auSpelling('<p style="margin-bottom:5px;">' + html + '</p>');
+      return renderMarkdownToHtml(text);
     };
 
     // Escape HTML and apply AU spelling
