@@ -1685,9 +1685,18 @@ Do NOT truncate. Write ALL content for both sections."""),
     # DO_NOT_UNDO — Missing section repair. The resume logic can produce reports with
     # missing sections if a pass's LLM output truncated. This step detects missing
     # sections and generates them in-place BEFORE the expansion step runs.
-    if report_type in ("full_detailed", "extensive_log"):
+    if report_type in ("quick_summary", "full_detailed", "extensive_log"):
         # Define expected main sections for each report type
         expected_sections_map = {
+            "quick_summary": {
+                "## 1.": "CASE SNAPSHOT",
+                "## 2.": "PRIMARY ISSUES IDENTIFIED",
+                "## 3.": "ALL GROUNDS IDENTIFIED (PREVIEW)",
+                "## 4.": "KEY LEGISLATION (PREVIEW)",
+                "## 5.": "SENTENCING OVERVIEW",
+                "## 6.": "APPEAL OUTLOOK",
+                "## 7.": "PLAIN ENGLISH GUIDE",
+            },
             "full_detailed": {
                 "## 1.": "EXECUTIVE BRIEF",
                 "## 2.": "FORENSIC CASE CHRONOLOGY",
@@ -1722,6 +1731,14 @@ Do NOT truncate. Write ALL content for both sections."""),
                 logger.warning(f"Missing section detected: {prefix} {name}. Generating repair.")
                 try:
                     doc_list = "\n".join([f"- {d.get('original_filename', d.get('filename', 'Unknown'))}" for d in documents[:20]])
+                    # Size targets scale to report depth — quick_summary sections are
+                    # concise (issue identification only); paid reports need heavy prose.
+                    if report_type == "quick_summary":
+                        target_chars = "1500-3000 characters"
+                        min_repaired = 300
+                    else:
+                        target_chars = "4000-6000 characters"
+                        min_repaired = 500
                     repair_prompt = f"""Generate the MISSING section for a legal appeal report.
 
 CASE: {case.get('title', 'Unknown')} ({case.get('state') or 'Unspecified'})
@@ -1736,7 +1753,7 @@ WRITE THIS SECTION:
 {prefix} {name}
 
 INSTRUCTIONS:
-- Write 4000-6000 characters of substantive, case-specific content
+- Write {target_chars} of substantive, case-specific content
 - Reference specific case facts, dates, documents, and legal authorities
 - Use flowing paragraphs, NOT bullet points
 - Australian English, strict third-person only (NEVER "you", "your", "we", "us")
@@ -1744,7 +1761,7 @@ INSTRUCTIONS:
 - Do NOT include any other section headings
 """
                     repaired = await _subprocess_llm(repair_prompt)
-                    if repaired and len(repaired.strip()) > 500:
+                    if repaired and len(repaired.strip()) > min_repaired:
                         # Find the insertion point — insert before the NEXT numbered section
                         section_num = int(prefix.replace("##", "").replace(".", "").strip())
                         insert_point = len(response)

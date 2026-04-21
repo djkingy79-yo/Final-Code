@@ -1,7 +1,56 @@
 # Appeal Case Manager — Changelog
 
 
+## 21 Apr 2026 (evening) — "All 4 Reports + All Sections in One Bundle"
+
+### Added to Print All / PDF All / Word All
+- **Appellate Research Brief (the 4th AI report)** now included as a toggleable section in the Complete Case Bundle.
+- **Quick Summary, Full Detailed, Extensive Log** reports also selectable individually so the bundle can carry one, some, or all four.
+- **Legislation & Case Law** — new consolidated section that merges every statute + comparable case cited across all grounds, deduped.
+- Timeline, Notes, Progress, Grounds, Case Summary — all now pass through the markdown renderer so any LLM-produced `##`, `- **...**`, or pipe tables render correctly rather than as literal text.
+
+### Export Options picker — 5 new checkboxes
+`legislation`, `quick_summary`, `full_detailed`, `extensive_log`, `barrister_view`. Presets updated:
+- **Full Archive** now bundles all 13 sections in one click.
+- **Brief for Barrister** adds the Appellate Research Brief.
+- **Client-friendly Summary** adds the Quick Summary report.
+Each new checkbox is greyed out when the underlying report/data is absent.
+
+### Backend safety net — missing-section auto-repair for Quick Summary
+The existing resume-and-repair logic for `full_detailed` and `extensive_log` now also covers `quick_summary`. If the LLM ever truncates and returns a Quick Summary with only 2-3 of the 7 expected sections, the backend detects the gap, regenerates just the missing section(s) with a focused 1500-3000-char repair prompt, and splices them in at the correct position before persistence. Ends the "my Case Summary only has 2 sections" regression class permanently.
+
+### Parser tolerance
+`parseAnalysisSections` in ReportView:
+- Now normalises markdown (blank lines around headings/lists/tables) BEFORE detecting section headers, so one-newline LLM output doesn't eat the heading.
+- Accepts three heading shapes (`## 1. TITLE`, `## ALL CAPS TITLE`, `## Mixed Case Title`) so barrister_view's synthesis headings get detected alongside numbered legal headings.
+- No longer drops sections with short content (previous 20-char floor could hide legit sections).
+
+
 ## 21 Apr 2026 — Markdown Rendering Overhaul + iOS PDF Preview Fix
+Deb reported that all exports (Print / PDF / Word) on iPhone were rendering raw markdown as literal text — `## Error Identified`, `## Materiality`, `## Appellate Viability`, and `- **Legal Alignment**:` were appearing inline inside paragraphs. Pipe-delimited comparative-sentencing tables were showing as raw `|` characters. PDF preview summary boxes were collapsing each label and value onto its own line on mobile.
+
+### Root causes
+1. **Grounds single-ground exporter** (`buildSingleGroundHtml` in `GroundsOfMerit.jsx` line 715) concatenated raw markdown straight into HTML with no parser — `white-space: pre-wrap` on the `.analysis` div preserved the `##` and `-` as literal glyphs.
+2. **CaseDetail `mdToHtml` helpers** (both in `buildPrintAllHtml` and progress-pack export) handled headings + bold + line-breaks but NOT lists, NOT tables, NOT blank-line detection — so any LLM output using two-space hard breaks collapsed.
+3. **`ReportView`'s `MarkdownBlock`** passed raw text to `ReactMarkdown` without normalising. When the LLM omitted blank lines before headings, lists, or pipe tables, `remark-gfm` treated them as literal paragraph text.
+4. **`DocumentPreviewPage` iOS path** injected a full HTML document (with `<html>`, `<head><style>`, `<body>`) into a `<div>` via `dangerouslySetInnerHTML` + DOMPurify. Safari parsed the markup but stripped `@page` rules and collapsed the grid layout to single-column block flow — producing the one-line-per-field stacked output.
+
+### Fixes
+- **New util** `/app/frontend/src/utils/mdRender.js` — exports `normaliseMarkdown(text)` and `renderMarkdownToHtml(text)`.
+  - Normalisation: collapses trailing two-space hard breaks; inserts blank lines before ATX headings, bullet/numbered lists, and GFM pipe tables; tightens consecutive bullet items back together; caps triple-newlines.
+  - Renderer: runs `marked@18` with GFM on, then applies Australian spelling.
+- **Added** `marked` 18.0.2 to `package.json`.
+- **`GroundsOfMerit.jsx`** — `formatAnalysis`, the multi-ground `ReactMarkdown` call, and the single-ground print/PDF all now push through `normaliseMarkdown` / `renderMarkdownToHtml`. Replaced `.analysis { white-space: pre-wrap }` with full typographic rules for `<h2>/<h3>/<h4>/<p>/<ul>/<li>/<strong>/<em>`.
+- **`CaseDetail.jsx`** — both `mdToHtml` local helpers (on-screen + bundle export) delegate to `renderMarkdownToHtml`, gaining list and table support without any other layout change.
+- **`ReportView.jsx`** — `MarkdownBlock` wraps its text in `normaliseMarkdown` so every live-report section, TOC-jump target, and preview builder picks up the heading/list/table spacing fix.
+- **`DocumentPreviewPage.jsx`** — iOS path deleted. ALL devices now render through a single `<iframe srcDoc>` so `@page`, grid, and `@media print` rules apply identically. iOS print button focuses the iframe's contentWindow first before calling `.print()`.
+
+### Verified
+- `marked.parse` locally produces correct `<table>/<ul>/<h2>` structures on the problem strings Deb flagged.
+- Frontend webpack compiles clean; ESLint passes on all touched files.
+
+
+## 20 Apr 2026 — Security Audit + Preset Profiles
 Deb reported that all exports (Print / PDF / Word) on iPhone were rendering raw markdown as literal text — `## Error Identified`, `## Materiality`, `## Appellate Viability`, and `- **Legal Alignment**:` were appearing inline inside paragraphs. Pipe-delimited comparative-sentencing tables were showing as raw `|` characters. PDF preview summary boxes were collapsing each label and value onto its own line on mobile.
 
 ### Root causes
