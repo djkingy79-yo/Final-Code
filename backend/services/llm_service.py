@@ -10,26 +10,29 @@ import asyncio
 import logging
 import json
 from typing import Optional, Callable, Any, Dict, Literal
-from concurrent.futures import ThreadPoolExecutor
+
+# DO_NOT_UNDO — Direct OpenAI SDK is fully async (AsyncOpenAI.chat.completions.create
+# is a coroutine). No ThreadPoolExecutor is required — the event loop is NOT
+# blocked, unlike the previous emergentintegrations → litellm (sync) wrapper.
+# Swapped 2026-04-21 per owner requirement to drop google-generativeai /
+# google-genai / litellm / emergentintegrations transitive deps.
+from openai import AsyncOpenAI
 
 logger = logging.getLogger(__name__)
 
-# DO_NOT_UNDO — Thread pool for LLM calls. The emergentintegrations library
-# uses litellm.completion() (SYNCHRONOUS) inside an async wrapper, which blocks
-# the FastAPI event loop for 30-60+ seconds per call. Running LLM calls in a
-# thread pool keeps the API responsive during report generation.
-_llm_thread_pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix="llm_worker")
+# Module-level lazy singleton. Instantiated on first call (not at import time)
+# so pytest / uvicorn reload don't fail when OPENAI_API_KEY isn't yet loaded.
+_openai_client: Optional[AsyncOpenAI] = None
 
 
-def _sync_llm_send(chat, message):
-    """Run the async chat.send_message in a dedicated thread with its own event loop.
-    This prevents the sync litellm.completion() inside emergentintegrations from
-    blocking the main FastAPI event loop."""
-    loop = asyncio.new_event_loop()
-    try:
-        return loop.run_until_complete(chat.send_message(message))
-    finally:
-        loop.close()
+def _get_openai_client() -> AsyncOpenAI:
+    global _openai_client
+    if _openai_client is None:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise Exception("AI service not configured — OPENAI_API_KEY is missing")
+        _openai_client = AsyncOpenAI(api_key=api_key)
+    return _openai_client
 
 
 # ============================================================================
@@ -288,12 +291,10 @@ async def call_llm_structured(
     require_json: Optional[bool] = None,
     validation_fn: Optional[Callable[[Any], bool]] = None,
 ) -> Dict[str, Any]:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage  # SDK wrapper — calls route directly to OpenAI using the owner's personal API key.
-
     # Self-hosted: the app runs entirely on the owner's personal OPENAI_API_KEY
-    # (billing goes straight to the user's OpenAI account).
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
+    # (billing goes straight to the user's OpenAI account). Validated here so
+    # a missing key surfaces as a clean 500 rather than a cryptic SDK stack.
+    if not os.environ.get("OPENAI_API_KEY"):
         raise Exception("AI service not configured — OPENAI_API_KEY is missing")
 
     config = TASK_CONFIGS.get(task_type, TASK_CONFIGS["general"])
@@ -307,31 +308,28 @@ async def call_llm_structured(
     effective_system_prompt = _apply_task_guardrails(system_prompt, task_type, resolved_require_json)
     effective_user_prompt = user_prompt + (_json_instruction_suffix() if resolved_require_json else "")
 
+    client = _get_openai_client()
+
     for idx, (provider, model_name) in enumerate(models):
         try:
-            chat = (
-                LlmChat(
-                    api_key=api_key,
-                    session_id=session_id,
-                    system_message=effective_system_prompt
-                )
-                .with_model(provider, model_name)
-                .with_params(max_tokens=resolved_max_tokens)
+            # DO_NOT_UNDO — Direct AsyncOpenAI call. Swapped from emergentintegrations
+            # LlmChat on 2026-04-21 per owner requirement. Natively async — no
+            # thread-pool shim needed. `provider` is retained in the loop tuple
+            # for schema compatibility with _default_models_for_task; all slots
+            # are OpenAI (see that function for rationale).
+            completion = await asyncio.wait_for(
+                client.chat.completions.create(
+                    model=model_name,
+                    messages=[
+                        {"role": "system", "content": effective_system_prompt},
+                        {"role": "user", "content": effective_user_prompt},
+                    ],
+                    max_tokens=resolved_max_tokens,
+                ),
+                timeout=resolved_timeout,
             )
 
-            # DO_NOT_UNDO — Run LLM call in thread pool to prevent event loop blocking.
-            # The SDK uses sync litellm.completion() internally; calls route directly
-            # to OpenAI via the owner's personal API key.
-            loop = asyncio.get_running_loop()
-            result = await asyncio.wait_for(
-                loop.run_in_executor(
-                    _llm_thread_pool,
-                    _sync_llm_send,
-                    chat,
-                    UserMessage(text=effective_user_prompt)
-                ),
-                timeout=resolved_timeout
-            )
+            result = (completion.choices[0].message.content or "") if completion.choices else ""
 
             if not _basic_text_validation(result):
                 last_err = f"Short/refused response from {provider}/{model_name}"

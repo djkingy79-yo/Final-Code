@@ -8,7 +8,6 @@ if no jurisdiction marker is found in the Act name. Do NOT invent citations.
 FORENSIC LANGUAGE: It is arguable that — all analysis uses forensic appellate framing.
 AUSTRALIAN ENGLISH: All output uses Australian English spelling (analyse, defence, offence).
 """
-import uuid
 import re
 import asyncio
 from typing import Optional
@@ -24,28 +23,34 @@ async def call_llm_with_retry(
     session_prefix: str,
     max_retries: int = 4
 ) -> Optional[str]:
-    """Call LLM with exponential backoff retry logic"""
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
-    
-    response = None
+    """Call LLM with exponential backoff retry logic (direct AsyncOpenAI).
+
+    DO_NOT_UNDO — Swapped from emergentintegrations to AsyncOpenAI on 2026-04-21
+    per owner requirement to drop google-generativeai / litellm / emergentintegrations
+    transitive deps. Natively async, no thread-pool shim required. The `api_key`
+    and `session_prefix` arguments are retained for call-site compatibility.
+    """
+    from openai import AsyncOpenAI
+
+    client = AsyncOpenAI(api_key=api_key)
     last_error = None
-    
+
     for attempt in range(max_retries):
         try:
-            chat = LlmChat(
-                api_key=api_key,
-                session_id=f"{session_prefix}_{uuid.uuid4().hex[:8]}",
-                system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
-            
-            response = await chat.send_message(UserMessage(text=user_prompt))
-            return response
+            completion = await client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+            return (completion.choices[0].message.content or "") if completion.choices else ""
         except Exception as e:
             last_error = e
             logger.warning(f"LLM call attempt {attempt + 1} failed: {e}")
             if attempt < max_retries - 1:
                 await asyncio.sleep(3 * (2 ** attempt))
-    
+
     logger.error(f"All LLM call attempts failed: {last_error}")
     raise Exception(f"AI service failed after {max_retries} retries: {str(last_error)}")
 
