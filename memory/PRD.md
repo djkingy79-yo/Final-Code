@@ -143,7 +143,17 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - **Progress tab step 3 "View legislation on AustLII"** chip — defensively lowercases `selectedState` so the AustLII legis path always resolves.
 - **Backend DOCX/PDF canonical** — `Pt(11)` body / `Pt(14)` H1 / `Pt(12)` H2 bold / `Pt(12)` H3 bold italic / `build_footer_label` emits middle-dot format with en-AU long-form date / PDF `NumberedCanvas` at 9pt italic with 20mm margin-aligned.
 
-### Completed (21 February 2026 — Weekly Admin Email Digest + Forensic Anti-Blame Guards)
+### Completed (21 February 2026 — Forensic Language Rotation)
+- **Problem**: LLM reports had "It is arguable that..." opening almost every second sentence — robotic, tedious, unprofessional for a paid legal product.
+- **Fix**:
+  1. New module-level constant `FORENSIC_LANGUAGE_RULE` in `services/report_generator.py` with **12 varied forensic forms** (it is arguable that / it is contended that / it is submitted that / it is open to argument that / there is a tenable argument that / there is a reasonably arguable case that / a question arises as to whether / it warrants consideration whether / the material gives rise to an arguable basis that / the proper course, it is submitted, would have been / with respect, the [direction/finding/approach] is open to question / it may be contended that). Every system prompt across the 4 report generators now references this single constant and explicitly instructs the LLM to **rotate across ≥8 forms, never repeating the same opening stem within 3 consecutive sentences**.
+  2. `services/llm_service.py` forensic-voice instruction updated the same way (12 approved forms, rotate, no repeat within 3 sentences).
+  3. `services/offence_helpers.py` rewrite instruction (drives per-offence LLM calls) updated the same way.
+  4. `enforce_forensic_language()` rotation pool extended from 9 → **12 prefixes**.
+  5. **Anti-repetition post-processor** added: after all accusation-blocking rewrites, scans sentences and if any stem reappears within a 3-sentence window, swaps the duplicate for the next pool prefix NOT seen in the window. Guarantees variety even when the LLM ignores instructions.
+- **Verified**: 6 consecutive "It is arguable that..." sentences → rotated to 5 distinct forensic stems in output. Regression tests: 42/42 forensic + offence + barrister tests pass.
+
+
 - **Weekly legislation digest email** — every Monday at 09:00 AEST (Sun 23:00 UTC) the scheduled scanner now emails all admin addresses a styled HTML digest listing every AI-flagged candidate amendment from the week (jurisdiction, Act name, AI summary, approx effective date, AI confidence). Digest links back to the Legislation Currency admin panel for one-click confirmation. If zero candidates flagged, no email is sent. Skipped when Resend isn't configured. Added to `services/email_service.py::send_admin_legislation_digest`.
 - **Anti-hallucination guards strengthened** on all forensic LLM prompts:
   - `routers/barrister_tools.py::_CROWN_SYSTEM_PROMPT` and `_FRESH_EV_SYSTEM_PROMPT` now include explicit "ANTI-HALLUCINATION" sections: do not invent case citations/volumes/years/sections; use "[citation required]" when unsure.

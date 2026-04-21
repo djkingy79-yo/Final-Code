@@ -371,7 +371,7 @@ MANDATORY ANALYTICAL CONTROLS:
    - Legal inference (reasoning applied to facts)
    - Missing material (what is absent from the analysis)
 4. Where evidence is incomplete or jurisdiction is uncertain, say so expressly.
-5. Use conditional language: "It is arguable that..." / "The material suggests..." / "This may constitute..." — NOT "The court failed..." / "This clearly shows..."
+5. Use conditional forensic language and VARY your phrasing (rotate across at least 8 grammatical forms — never repeat the same opening stem within three consecutive sentences): "It is arguable that...", "It is contended that...", "It is submitted that...", "There is a tenable argument that...", "There is a reasonably arguable case that...", "A question arises as to whether...", "It is open to argument that...", "The material gives rise to an arguable basis that...", "The proper course, it is submitted, would have been...". NEVER use bare declarations like "The court failed..." / "This clearly shows..." / "The judge erred...". NEVER use weak hedging ("may have", "could potentially").
 6. Mark confidence levels conservatively. If documentary support is thin, say so.
 7. Every assertion about the case must be traceable to supplied documents or clearly flagged as inference.
 8. LEGISLATION ACCURACY: Always cite legislation with the FULL Act name and year (e.g. "Crimes Act 1900 (NSW)", NOT "Crimes Act (NSW)"). Where an Act has been recently amended, cite the CURRENT version. Do NOT cite provisions that have been repealed, renamed, or superseded. If uncertain whether a provision is current, flag this explicitly rather than guessing.
@@ -405,6 +405,11 @@ def enforce_forensic_language(text: str) -> str:
         'It warrants consideration whether',
         'It is respectfully submitted that',
         'A question arises as to whether',
+        # Added 2026-02-21 — owner requested more variety (more than 8 forms,
+        # rotated, to avoid every-second-sentence "It is arguable" fatigue).
+        'There is a reasonably arguable case that',
+        'The material gives rise to an arguable basis that',
+        'The proper course, it is respectfully submitted, would have been that',
     ]
     _idx = [0]
     def _next():
@@ -616,6 +621,44 @@ def enforce_forensic_language(text: str) -> str:
         lp = prefix.lower()
         text = re.sub(re.escape(lp) + r'\s+' + re.escape(lp), lp, text, flags=re.IGNORECASE)
     text = re.sub(r'arguably arguably', 'arguably', text, flags=re.IGNORECASE)
+
+    # ANTI-REPETITION — (added 2026-02-21 at owner's request) scan sentences
+    # and if the same forensic stem appears within a 3-sentence window, swap
+    # the duplicate for the next prefix in the rotation pool. This stops
+    # "It is arguable that..." appearing every second sentence which reads
+    # like a robot, not a barrister.
+    _STEMS = [p.lower() for p in _PREFIXES]
+    # Rough sentence split on . ! ? followed by space/newline. Keeps the
+    # trailing delimiter so re-joining preserves punctuation.
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    last_stem_idx = {}  # stem_index -> sentence_index it was last used in
+    rotation_ptr = 0
+    for i, sent in enumerate(sentences):
+        sent_lower = sent.lower().lstrip()
+        for stem_idx, stem in enumerate(_STEMS):
+            if sent_lower.startswith(stem):
+                prev = last_stem_idx.get(stem_idx, -10)
+                if i - prev < 3:
+                    # Same stem used within the last 3 sentences — swap to
+                    # a different rotation pool entry that is NOT any stem
+                    # already seen in the last 3 sentences.
+                    forbidden = {sidx for sidx, pidx in last_stem_idx.items() if i - pidx < 3}
+                    forbidden.add(stem_idx)
+                    # Find the next allowed stem from the rotation pool
+                    for step in range(1, len(_STEMS) + 1):
+                        cand = (rotation_ptr + step) % len(_STEMS)
+                        if cand not in forbidden:
+                            new_stem = _PREFIXES[cand]
+                            # Reconstruct the sentence with the new stem (preserve leading whitespace)
+                            leading_ws = sent[: len(sent) - len(sent.lstrip())]
+                            remainder = sent.lstrip()[len(stem):]
+                            sentences[i] = f"{leading_ws}{new_stem}{remainder}"
+                            rotation_ptr = cand
+                            stem_idx = cand
+                            break
+                last_stem_idx[stem_idx] = i
+                break
+    text = " ".join(sentences)
 
     return text
 

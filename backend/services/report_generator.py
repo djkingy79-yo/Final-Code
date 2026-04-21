@@ -30,6 +30,35 @@ from offence_framework import OFFENCE_CATEGORIES, AUSTRALIAN_STATES
 from models import ReportMetadata
 
 
+# ---------------------------------------------------------------------------
+# FORENSIC LANGUAGE ROTATION (locked 2026-02-21 at owner's request)
+# The LLM previously over-used "It is arguable that..." opening almost every
+# sentence. Forensic appellate advocacy varies register constantly. This
+# single constant is referenced by every system prompt below so a single
+# update propagates everywhere, and the LLM is instructed to ROTATE across
+# at least eight forms, never repeating the same stem within three
+# consecutive sentences.
+# ---------------------------------------------------------------------------
+FORENSIC_LANGUAGE_RULE = (
+    "Use forensic appellate language and VARY your phrasing — never repeat "
+    "the same opening stem within three consecutive sentences. Rotate across "
+    "these approved forms (use all, in rotation): \"it is arguable that\", "
+    "\"it is contended that\", \"it is submitted that\", \"it is open to "
+    "argument that\", \"there is a tenable argument that\", \"there is a "
+    "reasonably arguable case that\", \"a question arises as to whether\", "
+    "\"it warrants consideration whether\", \"the material gives rise to an "
+    "arguable basis that\", \"the proper course, it is submitted, would have "
+    "been\", \"with respect, the [direction/finding/approach] is open to "
+    "question\", \"it may be contended that\". NEVER use bare declarations "
+    "like \"The judge erred\", \"This proves\", \"This clearly shows\", "
+    "\"The sentence is manifestly excessive\". NEVER use weak hedging "
+    "like \"may have\" or \"could potentially\". NEVER impute dishonesty, "
+    "bias, or incompetence to any judicial officer, party, or representative. "
+    "NEVER use inflammatory adjectives (outrageous, shocking, disgraceful, "
+    "grossly, absurd)."
+)
+
+
 # Human-readable titles shown in the UI progress ticker for each pass.
 # Keys match the first element of each pass tuple (e.g. "PASS 3/8").
 PASS_TITLES = {
@@ -474,7 +503,9 @@ FORMATTING RULES — STRICTLY ENFORCED:
     if report_type == "quick_summary":
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Narrative sections (Case Snapshot, Sentencing Overview, Value Statement) must have 3-5 substantive paragraphs. Structured sections (Issues, Grounds, Legislation) use the specified format (numbered items, lists, or tables). Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" or hedging like "may have" or "could potentially"."""
+You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Narrative sections (Case Snapshot, Sentencing Overview, Value Statement) must have 3-5 substantive paragraphs. Structured sections (Issues, Grounds, Legislation) use the specified format (numbered items, lists, or tables).
+
+""" + FORENSIC_LANGUAGE_RULE + """"""
         user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT (Issue Identification).
 
 {case_context}
@@ -1124,7 +1155,9 @@ Think: "what does counsel need to know in 5 minutes?"
 - Paragraph 5: Recommended immediate actions with specific deadlines and who to contact.
 - Paragraph 6: Overall appellate position summary — "There are arguable grounds capable of attracting appellate consideration, subject to refinement and evidentiary development" or equivalent honest assessment.
 
-CRITICAL: Do NOT repeat content from the 3 underlying reports. This must be SYNTHESIS only. Use forensic appellate language: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" and NOT hedging like "may have" or "could potentially".
+CRITICAL: Do NOT repeat content from the 3 underlying reports. This must be SYNTHESIS only.
+
+""" + FORENSIC_LANGUAGE_RULE + """
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 15+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:
@@ -1347,7 +1380,9 @@ Write 6-8 FULL paragraphs (NOT bullet points):
 - Paragraph 7: Immediate actions required with specific deadlines
 - Paragraph 8: Summary of 8+ primary issues identified with document references
 
-CRITICAL: Do NOT use percentage probabilities or success rates anywhere in this report. Use appellate viability language only (arguable, moderate, strong, requires development). Use forensic appellate language throughout: "It is arguable that...", "It is contended that...", "There is a tenable argument that..." — NOT bare declarations like "The judge erred" and NOT hedging like "may have" or "could potentially".
+CRITICAL: Do NOT use percentage probabilities or success rates anywhere in this report. Use appellate viability language only (arguable, moderate, strong, requires development).
+
+""" + FORENSIC_LANGUAGE_RULE + """
 
 ## 2. FORENSIC CASE CHRONOLOGY (1500+ words)
 Write 18+ dated events as FULL PARAGRAPHS (4-5 sentences each). NOT bullet points. Each event:

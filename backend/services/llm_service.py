@@ -263,7 +263,7 @@ def _apply_task_guardrails(system_prompt: str, task_type: str, require_json: boo
     else:
         guardrails = (
             universal_guardrails
-            + "- Use cautious, conditional language for legal analysis (\"it is arguable\", \"it is contended\", \"there is a tenable argument\").\n"
+            + "- Use cautious, conditional forensic appellate language. ROTATE across at least 8 grammatically-varied phrases — never repeat the same stem within three consecutive sentences. Approved variations (use all, in rotation): \"it is arguable that\", \"it is contended that\", \"it is submitted that\", \"it is open to argument that\", \"there is a tenable argument that\", \"a question arises as to whether\", \"with respect, the [direction / finding / approach] is open to question\", \"the proper course, it is submitted, would have been\", \"it warrants consideration whether\", \"the material gives rise to an arguable basis that\", \"there is a reasonably arguable case that\", \"it may be contended that\".\n"
             + "- Do NOT state that an appeal will succeed or is likely to succeed.\n"
             + "- Do NOT use declarative framing: \"The judge erred\", \"This proves\", \"The sentence is excessive\". The Court makes findings; the brief identifies arguable errors.\n"
         )
