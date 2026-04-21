@@ -122,10 +122,11 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
       const sessionToken = getSessionTokenFromCookie();
       if (!sessionToken) return;
 
-      // Build the WS URL from the current page origin so it works on any
-      // domain without a rebuild. wss:// on https, ws:// on http.
-      const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
-      const wsUrl = `${wsScheme}://${window.location.host}/api/cases/${caseId}/notes/ws?session_token=${encodeURIComponent(sessionToken)}`;
+      // Build WS URL from the configured backend URL (not same-origin), so
+      // live notes keep working alongside the REST endpoints.
+      const backendHost = (process.env.REACT_APP_BACKEND_URL || window.location.origin)
+        .replace(/^http/, "ws");
+      const wsUrl = `${backendHost}/api/cases/${caseId}/notes/ws?session_token=${encodeURIComponent(sessionToken)}`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 

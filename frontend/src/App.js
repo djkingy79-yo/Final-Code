@@ -54,12 +54,12 @@ const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
-// Backend and frontend are always served from the same origin (both in preview
-// via the k8s ingress that routes /api/* to port 8001, and in production via
-// the user's domain). Using a relative /api path means no hostname is ever
-// baked into the JS bundle — which (a) fixes Safari Private Mode's cross-site
-// block, and (b) lets the app run on any domain without a rebuild.
-export const API = "/api";
+// DO_NOT_UNDO — Use REACT_APP_BACKEND_URL. Earlier attempt to switch to
+// relative `/api` paths (routing via Cloudflare → custom domain) caused 520
+// errors on PATCH/reorder + extract-text endpoints in production. Direct
+// calls to the backend URL work reliably for ALL verbs / payload sizes.
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
+export const API = `${BACKEND_URL}/api`;
 
 // Configure axios with timeout
 // NOTE: Do NOT use withCredentials=true — the Kubernetes/Cloudflare proxy overwrites
