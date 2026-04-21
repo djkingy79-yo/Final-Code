@@ -446,7 +446,12 @@ const GroundsOfMerit = ({
                     const jur = (section.jurisdiction || "NSW").toUpperCase();
                     const actText = section.act || "";
                     const jurInAct = actText.toUpperCase().includes(`(${jur})`);
-                    return <li key={idx}>{`s ${section.section.replace(/^s\s+/i, "")} ${actText}${jurInAct ? "" : ` (${jur})`}`}</li>;
+                    const secRaw = section.section.trim();
+                    const secLower = secRaw.toLowerCase();
+                    const structural = /^(chapter|part|division|schedule|subpart)\s/.test(secLower);
+                    const alreadyPrefixed = /^s\s|^s\.|^ss\s|^ss\./.test(secLower);
+                    const secDisplay = structural || alreadyPrefixed ? secRaw : `s ${secRaw}`;
+                    return <li key={idx}>{`${secDisplay} ${actText}${jurInAct ? "" : ` (${jur})`}`.trim()}</li>;
                   })}
                 </ul>
               </div>
@@ -668,7 +673,17 @@ ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' +
   } else { t = e?.quote || e?.text || ''; }
   return t ? '<li>'+escHtml(t)+'</li>' : '';
 }).join('') + '</ul>' : ''}
-${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map(s=>'<li>s '+escHtml(s.section)+' '+escHtml(s.act)+' ('+escHtml((s.jurisdiction||'NSW').toUpperCase())+')</li>').join('') + '</ul>' : ''}
+${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length ? '<h2>Relevant Law Sections</h2><ul>' + ground.law_sections.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').map(s=>{
+  const jur = (s.jurisdiction||'NSW').toUpperCase();
+  const actText = s.act||'';
+  const jurInAct = actText.toUpperCase().includes(`(${jur})`);
+  const secRaw = (s.section||'').trim();
+  const secLower = secRaw.toLowerCase();
+  const structural = /^(chapter|part|division|schedule|subpart)\s/.test(secLower);
+  const alreadyPrefixed = /^s\s|^s\.|^ss\s|^ss\./.test(secLower);
+  const secDisplay = structural || alreadyPrefixed ? secRaw : `s ${secRaw}`;
+  return '<li>'+escHtml(`${secDisplay} ${actText}${jurInAct ? '' : ` (${jur})`}`.trim())+'</li>';
+}).join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).length ? '<h2>Comparable Authority</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
 ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + analysis + '</div>' : ''}
 <div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p></div></div>
@@ -1340,16 +1355,23 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + anal
                       Relevant Law Sections
                     </h4>
                     <div className="space-y-2">
-                      {detailGround.law_sections.map((section, idx) => (
-                        <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                          <div className="font-mono text-sm text-blue-800">
-                            s.{section.section} {section.act}
+                      {detailGround.law_sections.map((section, idx) => {
+                        const secRaw = (section.section || "").trim();
+                        const secLower = secRaw.toLowerCase();
+                        const structural = /^(chapter|part|division|schedule|subpart)\s/.test(secLower);
+                        const alreadyPrefixed = /^s\s|^s\.|^ss\s|^ss\./.test(secLower);
+                        const secDisplay = structural || alreadyPrefixed || !secRaw ? secRaw : `s ${secRaw}`;
+                        return (
+                          <div key={idx} className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div className="font-mono text-sm text-blue-800">
+                              {secDisplay} {section.act}
+                            </div>
+                            <div className="text-xs text-blue-600 mt-1">
+                              Jurisdiction: {section.jurisdiction}
+                            </div>
                           </div>
-                          <div className="text-xs text-blue-600 mt-1">
-                            Jurisdiction: {section.jurisdiction}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}

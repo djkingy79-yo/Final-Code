@@ -1172,13 +1172,24 @@ const CaseDetail = ({ user }) => {
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
           body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
-          laws.forEach(s => {
+          const fmtLaw = (sec, actOrTitle, juris) => {
             const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            const j = esc((juris || "NSW").toUpperCase());
+            const act = esc(actOrTitle);
+            const jurInAct = act.toUpperCase().includes(`(${j})`);
+            const secRaw = esc(sec).trim();
+            const secLower = secRaw.toLowerCase();
+            const structural = /^(chapter|part|division|schedule|subpart)\s/.test(secLower);
+            const alreadyPrefixed = /^s\s|^s\.|^ss\s|^ss\./.test(secLower);
+            const secDisplay = structural || alreadyPrefixed || !secRaw ? secRaw : `s ${secRaw}`;
+            return `${secDisplay} ${act}${jurInAct ? "" : ` (${j})`}`.trim();
+          };
+          laws.forEach(s => {
             if (typeof s === "string") {
-              try { const parsed = JSON.parse(s); body += `<li>s ${esc(parsed.section)} ${esc(parsed.act || parsed.title)} (${esc((parsed.jurisdiction || "NSW").toUpperCase())})</li>`; }
+              try { const parsed = JSON.parse(s); body += `<li>${fmtLaw(parsed.section, parsed.act || parsed.title, parsed.jurisdiction)}</li>`; }
               catch { body += `<li>${escAu(s)}</li>`; }
             } else if (typeof s === "object" && s) {
-              body += `<li>s ${esc(s.section)} ${esc(s.act || s.title)} (${esc((s.jurisdiction || "NSW").toUpperCase())})</li>`;
+              body += `<li>${fmtLaw(s.section, s.act || s.title, s.jurisdiction)}</li>`;
             }
           });
           body += `</ul>`;
