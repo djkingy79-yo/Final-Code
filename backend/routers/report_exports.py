@@ -22,6 +22,50 @@ from services.barrister_generator import _coerce_utc_datetime
 router = APIRouter(prefix="/api")
 
 
+# ============ SHARED HELPERS ============
+def _format_law_section(section: dict) -> str:
+    """Render a law_sections[] entry as a single clean line.
+    Handles: (a) Chapter/Part/Division/Schedule prefixes (no 's.' prefix),
+    (b) duplicated jurisdiction (act already ends with '(NSW)') to avoid '(NSW) (NSW)'."""
+    sec = (section.get("section") or "").strip()
+    act = (section.get("act") or "").strip()
+    juris = (section.get("jurisdiction") or "").strip().upper()
+
+    # Decide section prefix
+    sec_lower = sec.lower()
+    structural = any(sec_lower.startswith(p) for p in ("chapter ", "part ", "division ", "schedule ", "subpart "))
+    if structural or not sec:
+        sec_display = sec
+    else:
+        sec_display = f"s {sec}" if not sec_lower.startswith(("s ", "s.", "ss ", "ss.")) else sec
+
+    # Avoid duplicated jurisdiction
+    act_tail = act[-len(f"({juris})"):].upper() if juris else ""
+    has_juris = bool(juris) and act_tail == f"({juris})"
+    juris_display = "" if has_juris else (f" ({juris})" if juris else "")
+
+    return f"{sec_display} {act}{juris_display}".strip()
+
+
+def _format_evidence_item(evidence) -> str:
+    """Extract clean text from a supporting_evidence entry. Handles:
+    (a) dict with quote/text/description, (b) Python-dict-looking string
+    (legacy LLM output like \"{'document_id': 'optional', 'quote': 'real text'}\"),
+    (c) plain string."""
+    if isinstance(evidence, dict):
+        for key in ("quote", "text", "description", "detail"):
+            val = evidence.get(key)
+            if val and isinstance(val, str) and val.strip() and val.strip().lower() != "optional":
+                return val.strip()
+        return ""
+    if isinstance(evidence, str):
+        if evidence.startswith("{") and "'optional'" in evidence:
+            m = re.search(r"['\"]quote['\"]\s*:\s*['\"](.+?)['\"]\s*[,}]", evidence)
+            return m.group(1) if m else ""
+        return evidence.strip()
+    return str(evidence).strip()
+
+
 # ============ PDF EXPORT ============
 
 def _format_export_display_date(value=None) -> str:
@@ -494,21 +538,23 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             if ground.get('law_sections'):
                 story.append(Paragraph("<b>Relevant Law Sections:</b>", styles['ReportBodyText']))
                 for section in ground.get('law_sections', []):
-                    section_text = f"• s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', '')})"
-                    story.append(Paragraph(section_text.replace('•', '-'), styles['LawSection']))
+                    section_text = f"- {_format_law_section(section)}"
+                    story.append(Paragraph(section_text, styles['LawSection']))
             
             # Similar Cases
             if ground.get('similar_cases'):
                 story.append(Paragraph("<b>Similar Cases:</b>", styles['ReportBodyText']))
                 for case_ref in ground.get('similar_cases', []):
-                    case_text = f"• {case_ref.get('case_name', '')} {case_ref.get('citation', '')}"
-                    story.append(Paragraph(case_text.replace('•', '-'), styles['LawSection']))
+                    case_text = f"- {(case_ref.get('case_name') or '').strip()} {(case_ref.get('citation') or '').strip()}".strip()
+                    story.append(Paragraph(case_text, styles['LawSection']))
             
             # Supporting Evidence
             if ground.get('supporting_evidence'):
                 story.append(Paragraph("<b>Supporting Evidence:</b>", styles['ReportBodyText']))
                 for evidence in ground.get('supporting_evidence', []):
-                    story.append(Paragraph(f"- {evidence}", styles['LawSection']))
+                    clean = _format_evidence_item(evidence)
+                    if clean:
+                        story.append(Paragraph(f"- {clean}", styles['LawSection']))
             
             story.append(Spacer(1, 3*mm))
     
@@ -809,7 +855,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 law_run.font.color.rgb = RGBColor(30, 64, 175)
                 
                 for section in ground.get('law_sections', []):
-                    section_text = f"s.{section.get('section', '')} {section.get('act', '')} ({section.get('jurisdiction', '')})"
+                    section_text = _format_law_section(section)
                     bullet = doc.add_paragraph(section_text, style='List Bullet')
                     for run in bullet.runs:
                         run.font.color.rgb = RGBColor(30, 64, 175)
@@ -822,8 +868,9 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 cases_run.font.color.rgb = RGBColor(30, 58, 138)
                 
                 for case_ref in ground.get('similar_cases', []):
-                    case_text = f"{case_ref.get('case_name', '')} {case_ref.get('citation', '')}"
-                    doc.add_paragraph(case_text, style='List Bullet')
+                    case_text = f"{(case_ref.get('case_name') or '').strip()} {(case_ref.get('citation') or '').strip()}".strip()
+                    if case_text:
+                        doc.add_paragraph(case_text, style='List Bullet')
             
             # Supporting Evidence
             if ground.get('supporting_evidence'):
@@ -833,7 +880,9 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
                 evidence_run.font.color.rgb = RGBColor(5, 150, 105)
                 
                 for evidence in ground.get('supporting_evidence', []):
-                    doc.add_paragraph(evidence, style='List Bullet')
+                    clean = _format_evidence_item(evidence)
+                    if clean:
+                        doc.add_paragraph(clean, style='List Bullet')
             
             doc.add_paragraph()
     

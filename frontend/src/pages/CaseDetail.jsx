@@ -557,8 +557,8 @@ const CaseDetail = ({ user }) => {
       toast.error("Nothing to export on this tab.");
       return;
     }
-    const contentHtml = (contentEl.innerHTML || "").trim();
-    if (!contentHtml) {
+    const rawInnerHtml = (contentEl.innerHTML || "").trim();
+    if (!rawInnerHtml) {
       toast.error("Nothing to export on this tab.");
       return;
     }
@@ -566,22 +566,30 @@ const CaseDetail = ({ user }) => {
     const noticeHtml = mode === "pdf"
       ? '<div class="notice no-print">PDF preview — use Print / Save as PDF to download.</div>'
       : '';
-    // For the Summary tab, prepend a clean 2-column case identity card so the
-    // export doesn't just dump unstyled card text. The innerHTML dump still
-    // follows for any additional summary content below.
-    const summaryCard = activeTab === "summary" ? `
-      <div class="case-summary-card">
-        <div class="case-grid">
-          <div><span class="k">Defendant</span><span class="v">${caseData?.defendant_name || "—"}</span></div>
-          <div><span class="k">Offence</span><span class="v" style="text-transform:capitalize">${caseData?.offence_type || caseData?.offence_category?.replace(/_/g, " ") || "—"}</span></div>
-          <div><span class="k">State</span><span class="v" style="text-transform:uppercase">${caseData?.state || "—"}</span></div>
-          <div><span class="k">Sentence</span><span class="v">${caseData?.sentence || "—"}</span></div>
-          <div><span class="k">Case Number</span><span class="v">${caseData?.case_number || "—"}</span></div>
-          <div><span class="k">Court</span><span class="v">${caseData?.court || "—"}</span></div>
+    // For the Summary tab the innerHTML dump is a mess of Tailwind card markup
+    // stripped of styles. Replace it entirely with a clean 6-cell identity card
+    // plus the user's own written summary (if any). NO raw innerHTML scrape.
+    let contentHtml;
+    if (activeTab === "summary") {
+      const esc = (s) => (s || "").toString().replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+      contentHtml = `
+        <div class="case-summary-card">
+          <div class="case-grid">
+            <div><span class="k">Defendant</span><span class="v">${esc(caseData?.defendant_name) || "—"}</span></div>
+            <div><span class="k">Offence</span><span class="v" style="text-transform:capitalize">${esc(caseData?.offence_type || caseData?.offence_category?.replace(/_/g, " ")) || "—"}</span></div>
+            <div><span class="k">State</span><span class="v" style="text-transform:uppercase">${esc(caseData?.state) || "—"}</span></div>
+            <div><span class="k">Sentence</span><span class="v">${esc(caseData?.sentence) || "—"}</span></div>
+            <div><span class="k">Case Number</span><span class="v">${esc(caseData?.case_number) || "—"}</span></div>
+            <div><span class="k">Court</span><span class="v">${esc(caseData?.court) || "—"}</span></div>
+          </div>
         </div>
-      </div>
-    ` : "";
-    const html = buildTabPreviewHtml(summaryCard + contentHtml, tabLabel, noticeHtml);
+        ${caseData?.summary ? `<h2>Case Summary</h2><p>${esc(caseData.summary).replace(/\n/g, "<br>")}</p>` : ""}
+        ${caseData?.key_issues ? `<h2>Key Issues</h2><p>${esc(caseData.key_issues).replace(/\n/g, "<br>")}</p>` : ""}
+      `;
+    } else {
+      contentHtml = rawInnerHtml;
+    }
+    const html = buildTabPreviewHtml(contentHtml, tabLabel, noticeHtml);
 
     // Always use document-preview route for iOS compatibility
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
