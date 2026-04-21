@@ -7,7 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { 
-  FileText, Upload, Loader2, Search, X, ScanLine, FileUp, Trash2
+  FileText, Upload, Loader2, Search, X, ScanLine, FileUp, Trash2, Download
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -258,6 +258,36 @@ const DocumentsSection = ({
     }
   };
 
+  // Download the original file so the user's OS can open it in Pages / Word /
+  // Preview natively. This is the iOS Safari fallback for "This file cannot
+  // be previewed" (reported 2026-02-21 by owner).
+  const handleDownloadDocument = async (docId, filename) => {
+    try {
+      const response = await axios.get(
+        `${API}/cases/${caseId}/documents/${docId}/download`,
+        { responseType: "blob", timeout: 60000 }
+      );
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"] || "application/octet-stream",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename || `document-${docId}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast.success("Downloaded — open in Pages / Word / Files app");
+    } catch (error) {
+      toast.error(
+        error?.response?.status === 404
+          ? "Document file no longer available"
+          : "Download failed — please try again"
+      );
+    }
+  };
+
   const handleSearchDocuments = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -491,6 +521,7 @@ const DocumentsSection = ({
                       size="sm"
                       onClick={() => handleOcrDocument(doc.document_id)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity bg-blue-700 text-white hover:bg-blue-600"
+                      data-testid={`doc-ocr-btn-${doc.document_id}`}
                     >
                       <ScanLine className="w-4 h-4 mr-1" />
                       OCR
@@ -499,8 +530,21 @@ const DocumentsSection = ({
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => handleDownloadDocument(doc.document_id, doc.filename)}
+                    className="text-slate-500 hover:text-blue-700 hover:bg-blue-50"
+                    data-testid={`doc-download-btn-${doc.document_id}`}
+                    aria-label={`Download ${doc.filename}`}
+                    title="Download — opens in Pages / Word / Files"
+                  >
+                    <Download className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDeleteDocument(doc.document_id)}
                     className="text-slate-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    data-testid={`doc-delete-btn-${doc.document_id}`}
+                    aria-label={`Delete ${doc.filename}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

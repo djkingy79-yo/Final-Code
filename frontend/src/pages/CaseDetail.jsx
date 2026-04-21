@@ -1805,10 +1805,10 @@ const CaseDetail = ({ user }) => {
             {/* Analysis Pipeline */}
             <PipelineProgress
               caseId={caseId}
-              sessionToken={localStorage.getItem("session_token")}
-              onRunStage={(stage) => {
-                if (stage === "project") fetchCaseData();
-              }}
+              documents={documents}
+              onRefreshCase={fetchCaseData}
+              onRefreshGrounds={fetchCaseData}
+              onRefreshReports={fetchCaseData}
             />
 
             {/* Appeal Preparation Readiness + Pipeline Summary */}

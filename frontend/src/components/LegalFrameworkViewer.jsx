@@ -8,7 +8,7 @@ import axios from "axios";
 import { 
   Scale, BookOpen, Shield, AlertTriangle, ChevronDown, ChevronRight,
   FileText, Gavel, ExternalLink, Loader2, MapPin, Clock, Search,
-  Printer, Download
+  Printer, Download, Copy
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -257,10 +257,40 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                         // across every Australian jurisdiction.
                         const jur = (selectedState || "nsw").toLowerCase();
                         const sectionSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(`site:austlii.edu.au "${actName}" ${sRef}`)}`;
+                        // AGLC4 citation builder — "Act Name (Jur) s X"
+                        const jurSuffix = jur.toUpperCase() === "CTH" ? "Cth" : jur.toUpperCase();
+                        const cleanSection = sRef.replace(/^s\.?\s*/i, "").trim();
+                        // Strip jurisdiction suffix from act name if already present
+                        // (e.g. "Crimes Act 1900 (NSW)" → "Crimes Act 1900") so the
+                        // AGLC form "Crimes Act 1900 (NSW) s 18" doesn't double up.
+                        const actBase = actName.replace(/\s*\([A-Za-z]+\)\s*$/i, "").trim();
+                        const aglcCitation = `${actBase} (${jurSuffix}) s ${cleanSection}${sTitle ? ` (‘${sTitle.replace(/\.$/,"")}’)` : ""}`;
+                        const handleCopyCitation = async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          try {
+                            if (navigator.clipboard && window.isSecureContext) {
+                              await navigator.clipboard.writeText(aglcCitation);
+                            } else {
+                              // Fallback for iOS Safari private mode / older contexts
+                              const ta = document.createElement("textarea");
+                              ta.value = aglcCitation;
+                              ta.style.position = "fixed";
+                              ta.style.opacity = "0";
+                              document.body.appendChild(ta);
+                              ta.select();
+                              document.execCommand("copy");
+                              ta.remove();
+                            }
+                            toast.success("Citation copied (AGLC4)");
+                          } catch (err) {
+                            toast.error("Copy failed — long-press to select text");
+                          }
+                        };
                         return (
                         <div 
                           key={idx} 
-                          className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
+                          className="flex items-start gap-2 py-2 border-b border-slate-100 last:border-0"
                         >
                           <a
                             href={sectionSearchUrl}
@@ -273,6 +303,16 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                               {sRef} <ExternalLink className="w-3 h-3 ml-1 inline" />
                             </Badge>
                           </a>
+                          <button
+                            type="button"
+                            onClick={handleCopyCitation}
+                            className="shrink-0 text-slate-400 hover:text-blue-700 transition-colors p-0.5 rounded"
+                            data-testid={`legal-section-cite-${jur}-${sRef.replace(/[^a-zA-Z0-9]/g,'')}`}
+                            aria-label={`Copy AGLC citation for ${actBase} section ${cleanSection}`}
+                            title={`Copy AGLC: ${aglcCitation}`}
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
                           <span className="text-slate-700 text-[12px]">{sTitle}</span>
                         </div>
                         );

@@ -326,6 +326,40 @@ async def get_document(case_id: str, document_id: str, request: Request):
     return doc
 
 
+@router.get("/cases/{case_id}/documents/{document_id}/download")
+async def download_document(case_id: str, document_id: str, request: Request):
+    """Stream the stored binary of a document so the browser/OS can hand it to
+    Pages/Word/Preview natively. Added 2026-02-21 to give iOS Safari users a
+    reliable fallback when the inline preview path ('This file cannot be
+    previewed') blocks .docx / .pdf rendering."""
+    from fastapi.responses import Response
+    from urllib.parse import quote
+    user = await get_current_user(request)
+    doc = await db.documents.find_one(
+        {"document_id": document_id, "case_id": case_id, "user_id": user.user_id}
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if not doc.get("file_data"):
+        raise HTTPException(status_code=404, detail="Document file binary not available")
+    try:
+        binary = base64.b64decode(doc["file_data"])
+    except Exception:
+        raise HTTPException(status_code=500, detail="Document binary is corrupted")
+    filename = doc.get("filename") or f"document-{document_id}"
+    media_type = doc.get("file_type") or "application/octet-stream"
+    # RFC 5987 filename* handles non-ASCII (Deb's app is en-AU but defensive).
+    safe_name = quote(filename, safe="")
+    return Response(
+        content=binary,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": f"attachment; filename=\"{filename}\"; filename*=UTF-8''{safe_name}",
+            "Cache-Control": "private, max-age=0, no-store",
+        },
+    )
+
+
 @router.delete("/cases/{case_id}/documents/{document_id}")
 async def delete_document(case_id: str, document_id: str, request: Request):
     """Delete a document"""
