@@ -214,8 +214,32 @@ async def google_oauth_callback(request: Request, response: Response):
         raise HTTPException(status_code=504, detail="Google authentication server unreachable. Please try again.")
 
     if token_response.status_code != 200:
-        logger.warning(f"Google token exchange rejected: {token_response.status_code} {token_response.text[:200]}")
-        raise HTTPException(status_code=401, detail="Invalid or expired authorization code. Please sign in again.")
+        # Surface Google's exact error to the frontend so the user + operator
+        # can see WHICH failure mode it is — the three Google-returned values
+        # `redirect_uri_mismatch`, `invalid_grant`, `invalid_client` each need
+        # different fixes and debugging them blind is not viable.
+        raw = token_response.text[:500]
+        google_err = ""
+        google_err_desc = ""
+        try:
+            gj = token_response.json()
+            google_err = str(gj.get("error", ""))[:80]
+            google_err_desc = str(gj.get("error_description", ""))[:200]
+        except Exception:
+            pass
+        logger.warning(
+            f"Google token exchange rejected: status={token_response.status_code} "
+            f"google_error={google_err!r} google_error_description={google_err_desc!r} "
+            f"redirect_uri_sent={redirect_uri!r} raw={raw!r}"
+        )
+        # Build a detail string the UI can display verbatim. Still a 401 so
+        # the frontend's existing handling works; the detail now names the
+        # specific Google failure.
+        detail = f"Google rejected the sign-in: {google_err or 'unknown'}"
+        if google_err_desc:
+            detail += f" ({google_err_desc})"
+        detail += ". Please sign in again."
+        raise HTTPException(status_code=401, detail=detail)
 
     tokens = token_response.json()
     google_id_token_str = tokens.get("id_token")
