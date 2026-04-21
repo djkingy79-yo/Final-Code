@@ -60,6 +60,28 @@ STRICT LANGUAGE RULES (these are NON-NEGOTIABLE):
   required]" — never leave an unsupported assertion.
 • Do NOT hallucinate authorities. If uncertain, use "[citation required]".
 
+ANTI-HALLUCINATION (violation rejects the output):
+• Do NOT invent case names, citation volumes, years, or statute section numbers.
+  If you cannot recall an authority with certainty, write "[citation required]".
+• Do NOT reference amendments or statutory provisions that were not in force
+  at the time of the offence / trial.
+
+FORENSIC TONE RULES — NEVER BLAME, ACCUSE, OR EDITORIALISE:
+• Do NOT say "the judge erred", "the judge was biased", "the judge failed",
+  "the Crown was misleading", "the defence was incompetent", or equivalent
+  bare declarations. The Court of Criminal Appeal makes findings; submissions
+  identify ARGUABLE error only.
+• Instead, use measured forensic forms: "with respect, the direction was
+  insufficient", "the approach taken at first instance does not sit easily
+  with", "the proper course, it is submitted, would have been".
+• Do NOT impute dishonesty, bias, incompetence, or bad faith to any judicial
+  officer, party, or legal representative.
+• Do NOT use inflammatory adjectives ("outrageous", "absurd", "grossly",
+  "shocking", "disgraceful"). Forensic advocacy persuades through measured
+  analysis, never through heat.
+• Even when arguing for dismissal, treat the appellant's arguments with
+  professional courtesy. The Crown's role is to assist the Court.
+
 You return ONE JSON object only (no markdown, no preamble)."""
 
 
@@ -98,6 +120,26 @@ def _validate_crown_json(obj: dict) -> bool:
     joined = (obj["crown_rebuttal"] + " " + obj["strategic_response"]).lower()
     for banned in (" we ", " us ", " our ", " you ", " your ", " i ", " my "):
         if banned in f" {joined} ":
+            return False
+    # Reject blame / accusation language that never belongs in forensic advocacy.
+    # These phrases editorialise rather than argue arguable error.
+    banned_blame = (
+        "the judge erred",
+        "the judge was wrong",
+        "the judge was biased",
+        "the judge clearly",
+        "the judge failed",
+        "the crown misled",
+        "the crown was dishonest",
+        "the defence was incompetent",
+        "outrageous",
+        "shocking",
+        "disgraceful",
+        "grossly",
+        "absurd",
+    )
+    for bp in banned_blame:
+        if bp in joined:
             return False
     return True
 
@@ -227,9 +269,26 @@ submissions.
 STRICT LANGUAGE RULES:
 • Third person only — NEVER "we", "us", "our", "you", "your", "I", "my".
   Refer to parties as "the appellant", "the Crown", "this Honourable Court".
-• Australian forensic appellate English.
+• Australian forensic appellate English (analyse, judgement, offence).
 • AGLC4 citations throughout.
 • Do NOT hallucinate authorities. If unsure, say "[authority required]".
+
+ANTI-HALLUCINATION (violation rejects the output):
+• Do NOT invent case citations, years, or volumes. If unsure, write
+  "[authority required]".
+• Do NOT assert that evidence has been verified, sworn, or filed unless the
+  user's input expressly says so.
+
+FORENSIC TONE RULES — NEVER BLAME, ACCUSE, OR EDITORIALISE:
+• Do NOT say "the judge erred", "the judge was biased", "the defence was
+  incompetent", "the Crown withheld evidence", or any other bare accusation.
+• Use measured forms: "it is submitted that the evidence was not reasonably
+  discoverable at trial", "the evidence, if received, would give rise to a
+  significant possibility of a different verdict".
+• Do NOT impute dishonesty, bias, or bad faith to the trial judge, Crown,
+  defence representatives, or any witness.
+• Do NOT use inflammatory adjectives ("outrageous", "shocking", "absurd",
+  "disgraceful"). Forensic argument persuades through analysis, not adjectives.
 
 Return ONE JSON object only (no markdown)."""
 
@@ -266,6 +325,26 @@ def _validate_fresh_evidence_json(obj: dict) -> bool:
     text = (obj["submission_paragraph"]).lower()
     for banned in (" we ", " us ", " our ", " you ", " your ", " i ", " my "):
         if banned in f" {text} ":
+            return False
+    # Reject blame / accusation language.
+    banned_blame = (
+        "the judge erred",
+        "the judge was wrong",
+        "the judge was biased",
+        "the judge clearly",
+        "the judge failed",
+        "the crown misled",
+        "the crown was dishonest",
+        "the defence was incompetent",
+        "withheld evidence",
+        "outrageous",
+        "shocking",
+        "disgraceful",
+        "grossly",
+        "absurd",
+    )
+    for bp in banned_blame:
+        if bp in text:
             return False
     return True
 

@@ -44,12 +44,15 @@ def _seconds_until_next_run() -> float:
 
 
 async def _run_weekly_scan_once():
-    """One full pass through the top Acts. Writes ai_flagged candidates."""
-    from config import db
+    """One full pass through the top Acts. Writes ai_flagged candidates and
+    emails a digest to the configured admin emails so the admin can confirm
+    each candidate in one sweep."""
+    from config import db, get_admin_emails
     from frameworks.legislation_registry import LEGISLATION_REGISTRY
     from services.legislation_currency import ai_currency_check
+    from services.email_service import send_admin_legislation_digest
 
-    flagged_count = 0
+    flagged_docs = []
     errors = 0
     acts = LEGISLATION_REGISTRY[:_MAX_ACTS_PER_SCAN]
     for entry in acts:
@@ -83,14 +86,28 @@ async def _run_weekly_scan_once():
                         "published_by": "system_weekly_scan",
                         "published_at": datetime.now(timezone.utc).isoformat(),
                     }
-                    await db.legislation_amendments.insert_one(flag_doc)
-                    flagged_count += 1
+                    await db.legislation_amendments.insert_one(flag_doc.copy())
+                    flag_doc.pop("_id", None)
+                    flagged_docs.append(flag_doc)
         except Exception as exc:
             logger.warning("weekly_scan: %s failed — %s", act_name, exc)
             errors += 1
     logger.info("weekly_scan complete: %s Acts scanned, %s flagged, %s errors",
-                len(acts), flagged_count, errors)
-    return flagged_count
+                len(acts), len(flagged_docs), errors)
+
+    # Email the admin digest so they can confirm candidates in one sweep.
+    try:
+        admin_emails = get_admin_emails()
+        if admin_emails:
+            await send_admin_legislation_digest(
+                admin_emails=admin_emails,
+                flagged=flagged_docs,
+                run_at_iso=datetime.now(timezone.utc).isoformat(),
+            )
+    except Exception as exc:
+        logger.error("weekly_scan: digest email failed — %s", exc)
+
+    return len(flagged_docs)
 
 
 async def weekly_legislation_scan_loop():

@@ -143,7 +143,16 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
   - **Progress tab step 3 "View legislation on AustLII"** chip — defensively lowercases `selectedState` so the AustLII legis path always resolves.
 - **Backend DOCX/PDF canonical** — `Pt(11)` body / `Pt(14)` H1 / `Pt(12)` H2 bold / `Pt(12)` H3 bold italic / `build_footer_label` emits middle-dot format with en-AU long-form date / PDF `NumberedCanvas` at 9pt italic with 20mm margin-aligned.
 
-### Completed (21 February 2026 — Real-Time Legislative Alerts)
+### Completed (21 February 2026 — Weekly Admin Email Digest + Forensic Anti-Blame Guards)
+- **Weekly legislation digest email** — every Monday at 09:00 AEST (Sun 23:00 UTC) the scheduled scanner now emails all admin addresses a styled HTML digest listing every AI-flagged candidate amendment from the week (jurisdiction, Act name, AI summary, approx effective date, AI confidence). Digest links back to the Legislation Currency admin panel for one-click confirmation. If zero candidates flagged, no email is sent. Skipped when Resend isn't configured. Added to `services/email_service.py::send_admin_legislation_digest`.
+- **Anti-hallucination guards strengthened** on all forensic LLM prompts:
+  - `routers/barrister_tools.py::_CROWN_SYSTEM_PROMPT` and `_FRESH_EV_SYSTEM_PROMPT` now include explicit "ANTI-HALLUCINATION" sections: do not invent case citations/volumes/years/sections; use "[citation required]" when unsure.
+  - Validators (`_validate_crown_json`, `_validate_fresh_evidence_json`) now reject output containing banned blame/accusation language: "the judge erred", "the judge was biased", "the judge failed", "the Crown misled", "the defence was incompetent", "withheld evidence", "outrageous", "shocking", "disgraceful", "grossly", "absurd". If any banned phrase appears, the LLM call retries until clean output is produced.
+  - Forensic-tone rules added to both system prompts: "NEVER BLAME, ACCUSE, OR EDITORIALISE — use measured forms such as 'with respect, the direction was insufficient', 'the proper course, it is submitted, would have been', 'the approach taken at first instance does not sit easily with'". No imputation of dishonesty / bias / incompetence to any judicial officer, party, or representative. No inflammatory adjectives.
+  - Existing report-generator prompts in `services/llm_service.py` and `services/offence_helpers.py` already enforce "do NOT use declarative/blaming language" — left unchanged (already correct).
+- **Verified end-to-end** — Fresh Evidence wizard reran with stricter guards returned HTTP 200 with 1413-char submission paragraph; automated scan for banned phrases showed **zero hits**. Crown Response Simulator also validated. Backend tests 207/207 pass.
+
+
 - **New `legislation_alerts` router** with 5 endpoints providing case-aware amendment tracking across all 9 Australian jurisdictions (NSW, VIC, QLD, SA, WA, TAS, NT, ACT, CTH):
   - `POST /api/admin/legislation/amendments` — admin records a confirmed amendment (jurisdiction + Act + section + effective_date + amending_act + summary + source_url + severity low|medium|high|critical)
   - `PATCH /api/admin/legislation/amendments/{id}` — correct / edit published amendments
