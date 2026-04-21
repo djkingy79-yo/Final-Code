@@ -1,6 +1,30 @@
 # Appeal Case Manager — Changelog
 
 
+## 21 Apr 2026 — Markdown Rendering Overhaul + iOS PDF Preview Fix
+Deb reported that all exports (Print / PDF / Word) on iPhone were rendering raw markdown as literal text — `## Error Identified`, `## Materiality`, `## Appellate Viability`, and `- **Legal Alignment**:` were appearing inline inside paragraphs. Pipe-delimited comparative-sentencing tables were showing as raw `|` characters. PDF preview summary boxes were collapsing each label and value onto its own line on mobile.
+
+### Root causes
+1. **Grounds single-ground exporter** (`buildSingleGroundHtml` in `GroundsOfMerit.jsx` line 715) concatenated raw markdown straight into HTML with no parser — `white-space: pre-wrap` on the `.analysis` div preserved the `##` and `-` as literal glyphs.
+2. **CaseDetail `mdToHtml` helpers** (both in `buildPrintAllHtml` and progress-pack export) handled headings + bold + line-breaks but NOT lists, NOT tables, NOT blank-line detection — so any LLM output using two-space hard breaks collapsed.
+3. **`ReportView`'s `MarkdownBlock`** passed raw text to `ReactMarkdown` without normalising. When the LLM omitted blank lines before headings, lists, or pipe tables, `remark-gfm` treated them as literal paragraph text.
+4. **`DocumentPreviewPage` iOS path** injected a full HTML document (with `<html>`, `<head><style>`, `<body>`) into a `<div>` via `dangerouslySetInnerHTML` + DOMPurify. Safari parsed the markup but stripped `@page` rules and collapsed the grid layout to single-column block flow — producing the one-line-per-field stacked output.
+
+### Fixes
+- **New util** `/app/frontend/src/utils/mdRender.js` — exports `normaliseMarkdown(text)` and `renderMarkdownToHtml(text)`.
+  - Normalisation: collapses trailing two-space hard breaks; inserts blank lines before ATX headings, bullet/numbered lists, and GFM pipe tables; tightens consecutive bullet items back together; caps triple-newlines.
+  - Renderer: runs `marked@18` with GFM on, then applies Australian spelling.
+- **Added** `marked` 18.0.2 to `package.json`.
+- **`GroundsOfMerit.jsx`** — `formatAnalysis`, the multi-ground `ReactMarkdown` call, and the single-ground print/PDF all now push through `normaliseMarkdown` / `renderMarkdownToHtml`. Replaced `.analysis { white-space: pre-wrap }` with full typographic rules for `<h2>/<h3>/<h4>/<p>/<ul>/<li>/<strong>/<em>`.
+- **`CaseDetail.jsx`** — both `mdToHtml` local helpers (on-screen + bundle export) delegate to `renderMarkdownToHtml`, gaining list and table support without any other layout change.
+- **`ReportView.jsx`** — `MarkdownBlock` wraps its text in `normaliseMarkdown` so every live-report section, TOC-jump target, and preview builder picks up the heading/list/table spacing fix.
+- **`DocumentPreviewPage.jsx`** — iOS path deleted. ALL devices now render through a single `<iframe srcDoc>` so `@page`, grid, and `@media print` rules apply identically. iOS print button focuses the iframe's contentWindow first before calling `.print()`.
+
+### Verified
+- `marked.parse` locally produces correct `<table>/<ul>/<h2>` structures on the problem strings Deb flagged.
+- Frontend webpack compiles clean; ESLint passes on all touched files.
+
+
 ## 20 Apr 2026 — Security Audit + Preset Profiles
 - **Export Options — Preset Profiles** added. Quick-apply pills above the checkboxes: *Full Archive*, *Brief for Barrister*, *Client-friendly Summary*, *Evidence Pack*. One-click sets all checkboxes. `data-testid="export-preset-{id}"`.
 - **CORS hardened.** `server.py` CORS middleware was `allow_origins=["*"]` + `allow_credentials=True` — a security misconfiguration (browsers reject the combo; removes origin protection). Now reads comma-separated `CORS_ORIGINS` env, filters empty + explicit wildcards, fails closed (empty list) on misconfiguration. `CORS_ORIGINS` in `.env` updated to explicit list: production bare + www, preview, localhost:3000. Note: Emergent's preview ingress proxy overrides the header to `*` regardless, so live behaviour is unchanged on preview — matters when Deb self-hosts later.

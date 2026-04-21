@@ -33,6 +33,7 @@ import { API } from "../App";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
 import VerificationBadge from "../components/VerificationBadge";
 import auSpelling from "../utils/auSpelling";
+import { normaliseMarkdown } from "../utils/mdRender";
 
 const titleFromSnake = (value) => {
   if (!value) return "Not specified";
@@ -488,7 +489,7 @@ const MarkdownBlock = ({ text, testId }) => (
         },
       }}
     >
-      {text}
+      {normaliseMarkdown(text)}
     </ReactMarkdown>
   </div>
 );

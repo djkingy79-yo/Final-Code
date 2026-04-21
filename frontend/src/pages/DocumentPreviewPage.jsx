@@ -58,6 +58,10 @@ export default function DocumentPreviewPage() {
         .trim();
       document.title = cleanTitle;
     } catch (_) { /* ignore */ }
+    const win = iframeRef.current?.contentWindow;
+    if (win) {
+      try { win.focus(); win.print(); return; } catch (_) { /* fall through */ }
+    }
     window.print();
   };
 
@@ -121,37 +125,30 @@ export default function DocumentPreviewPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8" data-testid="document-preview-frame-wrap">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
-          {isIOS ? (
-            /* DO_NOT_UNDO — iOS HTML render. DOMPurify MUST keep <style> tags
-               (WHOLE_DOCUMENT + ADD_TAGS) or ALL print formatting is stripped.
-               This has broken 10+ times — DO NOT remove ADD_TAGS or WHOLE_DOCUMENT. */
-            <div
-              className="w-full bg-white"
-              style={{ minHeight: "90vh" }}
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(payload.html, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] }) }}
-              data-testid="document-preview-ios-render"
-            />
-          ) : (
-            /* Desktop/Android: use iframe for proper print isolation */
-            <iframe
-              ref={iframeRef}
-              title={payload.title || "Document preview"}
-              srcDoc={payload.html}
-              className="w-full bg-white border-0"
-              style={{ minHeight: "90vh", height: iframeHeight }}
-              onLoad={() => {
-                setLoaded(true);
-                try {
-                  const doc = iframeRef.current?.contentDocument || iframeRef.current?.contentWindow?.document;
-                  if (doc) {
-                    const h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
-                    setIframeHeight(h + 40 + "px");
-                  }
-                } catch (e) { /* cross-origin fallback */ }
-              }}
-              data-testid="document-preview-iframe"
-            />
-          )}
+          {/* Use iframe with srcDoc on ALL devices (including iOS) so the full
+              HTML document — including @media print rules, @page, CSS grids and
+              background colours — renders EXACTLY as it will print. The older
+              iOS path rendered via dangerouslySetInnerHTML into a <div>, which
+              Safari parses as HTML but fails to apply head-level @page rules
+              and collapses grid layouts. DO_NOT_UNDO. */}
+          <iframe
+            ref={iframeRef}
+            title={payload.title || "Document preview"}
+            srcDoc={DOMPurify.sanitize(payload.html, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] })}
+            className="w-full bg-white border-0"
+            style={{ minHeight: "90vh", height: iframeHeight }}
+            onLoad={() => {
+              setLoaded(true);
+              try {
+                const doc = iframeRef.current?.contentDocument || iframeRef.current?.contentWindow?.document;
+                if (doc) {
+                  const h = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+                  setIframeHeight(h + 40 + "px");
+                }
+              } catch (e) { /* cross-origin fallback */ }
+            }}
+            data-testid="document-preview-iframe"
+          />
         </div>
       </div>
     </div>

@@ -13,14 +13,22 @@ export const normaliseMarkdown = (raw = "") => {
   // Collapse trailing "two-space hard breaks" into single newlines; we add
   // proper paragraph breaks below.
   text = text.replace(/[ \t]{2,}\n/g, "\n");
-  // Ensure a blank line BEFORE any ATX heading ( ## , ### , #### )
+  // Ensure a blank line BEFORE ATX heading ( ## , ### , #### )
   text = text.replace(/([^\n])\n(#{1,6})\s/g, "$1\n\n$2 ");
   // Ensure a blank line BEFORE bullet / numbered lists when the preceding
   // line is regular prose (not already blank and not another list item).
   text = text.replace(/([^\n\-\*\d])\n([\-\*]\s+)/g, "$1\n\n$2");
   text = text.replace(/([^\n\-\*\d])\n(\d+\.\s+)/g, "$1\n\n$2");
+  // Ensure a blank line BEFORE GFM tables (line starting with | or ending |).
+  // A pipe-table without a preceding blank line is treated as a paragraph by
+  // most markdown parsers and rendered as literal "| header |" text.
+  text = text.replace(/([^\n|])\n(\|)/g, "$1\n\n$2");
   // Collapse 3+ newlines to exactly 2
   text = text.replace(/\n{3,}/g, "\n\n");
+  // Tighten consecutive bullet list items (we may have added spurious blank
+  // lines between them during the heading/list normalisation pass).
+  text = text.replace(/([\-\*][^\n]+)\n\n(?=[\-\*]\s)/g, "$1\n");
+  text = text.replace(/(\d+\.[^\n]+)\n\n(?=\d+\.\s)/g, "$1\n");
   return text.trim();
 };
 
