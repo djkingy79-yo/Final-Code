@@ -799,7 +799,7 @@ const ReportView = () => {
     .cover-page-card-value { font-size: 10pt; font-weight: 700; color: #0f172a; }
     .cover-page-note { margin-top: 8px; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 10px; font-size: 8pt; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .page-break { page-break-after: always; break-after: page; }
-    .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; page-break-before: always; break-before: page; }
+    .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
     .report-header, .report-header * { color: #fff !important; }
     .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 15pt; font-weight: 700; margin-bottom: 3px; color: #fff !important; }
     .report-header .meta-line { font-size: 10pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
@@ -808,7 +808,9 @@ const ReportView = () => {
     .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
     .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 999px; font-size: 9pt; font-weight: 700; margin-top: 4px; }
     .report-header .gen-date { font-size: 8pt; color: rgba(255,255,255,0.85); margin-top: 3px; }
-    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    /* 5-cell grid on auto-fit so no empty placeholder cell on row 2 when the
+       grid would otherwise leave a blank slot (was: repeat(3, 1fr) → 2-empty). */
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-header .case-info-grid .ci-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 1px; }
     .report-header .case-info-grid .ci-value { font-size: 10pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
     .toc { padding: 10px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
