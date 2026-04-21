@@ -15,6 +15,11 @@ export const normaliseMarkdown = (raw = "") => {
   text = text.replace(/[ \t]{2,}\n/g, "\n");
   // Ensure a blank line BEFORE ATX heading ( ## , ### , #### )
   text = text.replace(/([^\n])\n(#{1,6})\s/g, "$1\n\n$2 ");
+  // SAME for ATX headings appearing mid-line (e.g. after a sentence-ending
+  // period where the LLM forgot the newline): "...sentence. ## Heading" →
+  // "...sentence.\n\n## Heading\n\n". Requires at least one space or
+  // punctuation before the "##" so we don't eat literal "#" inside words.
+  text = text.replace(/([.!?:;])\s+(#{2,6})\s+([A-Z][^\n#]{2,80})(?=\s|$)/g, "$1\n\n$2 $3\n\n");
   // Ensure a blank line BEFORE bullet / numbered lists when the preceding
   // line is regular prose (not already blank and not another list item).
   text = text.replace(/([^\n\-\*\d])\n([\-\*]\s+)/g, "$1\n\n$2");
@@ -29,6 +34,12 @@ export const normaliseMarkdown = (raw = "") => {
   // lines between them during the heading/list normalisation pass).
   text = text.replace(/([\-\*][^\n]+)\n\n(?=[\-\*]\s)/g, "$1\n");
   text = text.replace(/(\d+\.[^\n]+)\n\n(?=\d+\.\s)/g, "$1\n");
+  // Handle inline bullets joined mid-line by the LLM:
+  //   "considered:- **Outcome impact**: ... sentence. - **Legal alignment**: ..."
+  // Split each " - **Foo**" / " - **Foo:**" back onto its own line so the
+  // renderer treats them as a bullet list.
+  text = text.replace(/([:.!?])\s*-\s\*\*/g, "$1\n- **");
+  text = text.replace(/([a-z.]\.)\s+-\s\*\*/g, "$1\n- **");
   return text.trim();
 };
 
