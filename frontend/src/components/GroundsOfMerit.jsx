@@ -473,18 +473,12 @@ const GroundsOfMerit = ({
             {(ground.deep_analysis?.full_analysis || ground.analysis) && (
               <div className="grounds-export-analysis">
                 <h3>Deep Investigation Analysis</h3>
-                <div className="legal-report">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      table: ({ children }) => (
-                        <div className="legal-report-table-wrap"><table>{children}</table></div>
-                      )
-                    }}
-                  >
-                    {normaliseMarkdown(auSpelling(ground.deep_analysis?.full_analysis || ground.analysis || ""))}
-                  </ReactMarkdown>
-                </div>
+                <div
+                  className="legal-report"
+                  dangerouslySetInnerHTML={{
+                    __html: renderMarkdownToHtml(ground.deep_analysis?.full_analysis || ground.analysis || ""),
+                  }}
+                />
               </div>
             )}
 
