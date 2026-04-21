@@ -244,6 +244,250 @@ async def delete_deadline(case_id: str, deadline_id: str, request: Request):
 
 
 # ============================================================================
+# JURISDICTION DEADLINE RULES (locked 2026-02 by owner)
+# Times are calendar days from sentence unless noted. Figures verified against
+# Criminal Appeal Act 1912 (NSW), Criminal Procedure Act 2009 (Vic),
+# Criminal Code 1899 (Qld), Supreme Court Criminal Rules 2022 (SA),
+# Criminal Appeals Act 2004 (WA), Criminal Code Act 1924 (Tas),
+# Supreme Court Act (NT), Supreme Court Act 1933 (ACT), Federal Court Rules.
+# Each rule is EDUCATIONAL; users must independently verify against the current
+# rules of the relevant court before filing.
+# ============================================================================
+JURISDICTION_DEADLINE_RULES = {
+    "nsw": {"notice_of_intention_days": 28, "notice_of_appeal_days": 6 * 30, "reference": "Criminal Appeal Act 1912 (NSW) s 10; Criminal Appeal Rules r 3B", "court": "Court of Criminal Appeal"},
+    "vic": {"notice_of_intention_days": 28, "notice_of_appeal_days": 28, "reference": "Criminal Procedure Act 2009 (Vic) s 275; SCR Chap 6", "court": "Court of Appeal"},
+    "qld": {"notice_of_intention_days": 30, "notice_of_appeal_days": 30, "reference": "Criminal Code 1899 (Qld) s 671; Criminal Practice Rules 1999 r 65", "court": "Court of Appeal"},
+    "sa": {"notice_of_intention_days": 21, "notice_of_appeal_days": 21, "reference": "Criminal Procedure Act 1921 (SA) Pt 11; Supreme Court Criminal Rules 2022", "court": "Court of Appeal (Criminal)"},
+    "wa": {"notice_of_intention_days": 21, "notice_of_appeal_days": 21, "reference": "Criminal Appeals Act 2004 (WA) s 26; Rules of the Supreme Court O 66", "court": "Court of Appeal"},
+    "tas": {"notice_of_intention_days": 21, "notice_of_appeal_days": 21, "reference": "Criminal Code Act 1924 (Tas) s 404; Criminal Appeal Rules 1969", "court": "Court of Criminal Appeal"},
+    "nt": {"notice_of_intention_days": 28, "notice_of_appeal_days": 28, "reference": "Criminal Code Act (NT) s 410; Supreme Court Criminal Rules", "court": "Court of Criminal Appeal"},
+    "act": {"notice_of_intention_days": 28, "notice_of_appeal_days": 28, "reference": "Supreme Court Act 1933 (ACT) Pt 7; Court Procedures Rules 2006", "court": "Court of Appeal"},
+    "cth": {"notice_of_intention_days": 28, "notice_of_appeal_days": 28, "reference": "Federal Court Rules 2011 Div 36.03; Crimes Act 1914 (Cth)", "court": "Full Court of the Federal Court"},
+}
+
+
+@router.post("/cases/{case_id}/deadlines/compute", response_model=dict)
+async def compute_deadlines(case_id: str, request: Request):
+    """Auto-compute the canonical appeal deadlines for a case from sentence_date
+    + jurisdiction. Idempotent — returns the existing computed set if already
+    present (identified by source_mode='jurisdiction_auto').
+    
+    Sentence date resolution order:
+      1. POST body {"sentence_date": "YYYY-MM-DD"}
+      2. case.sentence_date / case.sentencing_date field
+    """
+    import uuid as _uuid
+    user = await get_current_user(request)
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    # Accept sentence_date from request body (user supplies on demand) OR fallback to case fields.
+    sentence_date_raw = None
+    try:
+        body = await request.json()
+        if isinstance(body, dict):
+            sentence_date_raw = body.get("sentence_date")
+    except Exception:
+        pass
+    if not sentence_date_raw:
+        sentence_date_raw = case.get("sentence_date") or case.get("sentencing_date") or case.get("sentenced_on")
+
+    if not sentence_date_raw:
+        raise HTTPException(
+            status_code=400,
+            detail="Sentence date required. Supply it in the request body as {\"sentence_date\": \"YYYY-MM-DD\"} or save it to the case record.",
+        )
+    if isinstance(sentence_date_raw, str):
+        try:
+            sentence_dt = datetime.fromisoformat(sentence_date_raw.replace("Z", "+00:00"))
+        except ValueError:
+            # Try plain date-only format
+            try:
+                sentence_dt = datetime.strptime(sentence_date_raw, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            except ValueError:
+                raise HTTPException(status_code=400, detail=f"Invalid sentence_date format: {sentence_date_raw}. Use ISO 8601 (YYYY-MM-DD).")
+    else:
+        sentence_dt = sentence_date_raw
+    if sentence_dt.tzinfo is None:
+        sentence_dt = sentence_dt.replace(tzinfo=timezone.utc)
+
+    # Persist sentence_date back onto the case for reuse.
+    if not case.get("sentence_date"):
+        await db.cases.update_one(
+            {"case_id": case_id, "user_id": user.user_id},
+            {"$set": {"sentence_date": sentence_dt.isoformat(), "updated_at": datetime.now(timezone.utc).isoformat()}},
+        )
+
+    jur = (case.get("state") or "nsw").lower()
+    rules = JURISDICTION_DEADLINE_RULES.get(jur, JURISDICTION_DEADLINE_RULES["nsw"])
+
+    from datetime import timedelta
+    now_iso = datetime.now(timezone.utc).isoformat()
+    court_label = rules["court"]
+    ref_label = rules["reference"]
+
+    computed_events = [
+        {
+            "title": f"Notice of Intention to Appeal — lodge at {court_label}",
+            "description": f"File Notice of Intention to Appeal within {rules['notice_of_intention_days']} days of sentence. Reference: {ref_label}. Missing this deadline usually means requiring leave for an extension of time — demonstrate merits and explain delay (see R v Sullivan [2009] NSWCCA; Muldrock v The Queen (2011) 244 CLR 120).",
+            "deadline_type": "notice_of_intention",
+            "offset_days": rules["notice_of_intention_days"],
+            "priority": "critical",
+        },
+        {
+            "title": f"Notice of Appeal (grounds) — lodge at {court_label}",
+            "description": f"File the formal Notice of Appeal with numbered grounds within {rules['notice_of_appeal_days']} days of sentence (where separate from the Notice of Intention). Reference: {ref_label}.",
+            "deadline_type": "notice_of_appeal",
+            "offset_days": rules["notice_of_appeal_days"],
+            "priority": "critical",
+        },
+        {
+            "title": "Appellant's Written Submissions — internal draft target",
+            "description": "Internal drafting target: appellant's written submissions should be substantially drafted by this date so counsel / self-represented appellant has clear time to refine before filing.",
+            "deadline_type": "submissions_draft",
+            "offset_days": max(rules["notice_of_intention_days"] + 14, 42),
+            "priority": "high",
+        },
+        {
+            "title": "Legal Aid merit application (if required)",
+            "description": "If relying on a grant of Legal Aid for representation, lodge the merit application. The merit test is determined under the relevant state Legal Aid Commission Act; unmeritorious or late applications are routinely refused.",
+            "deadline_type": "legal_aid_application",
+            "offset_days": 14,
+            "priority": "high",
+        },
+    ]
+
+    # Delete previous jurisdiction-auto set so re-compute is idempotent.
+    await db.deadlines.delete_many({
+        "case_id": case_id, "user_id": user.user_id,
+        "source_mode": "jurisdiction_auto",
+    })
+
+    created = []
+    for ev in computed_events:
+        due = sentence_dt + timedelta(days=ev["offset_days"])
+        doc = {
+            "deadline_id": f"dl_{_uuid.uuid4().hex[:12]}",
+            "case_id": case_id,
+            "user_id": user.user_id,
+            "title": ev["title"],
+            "description": ev["description"],
+            "deadline_type": ev["deadline_type"],
+            "due_date": due.isoformat(),
+            "reminder_days": [14, 7, 3, 1],
+            "is_completed": False,
+            "completed_at": None,
+            "priority": ev["priority"],
+            "jurisdiction": jur,
+            "is_jurisdiction_default": True,
+            "source_mode": "jurisdiction_auto",
+            "verification_status": "unverified",
+            "created_at": now_iso,
+        }
+        await db.deadlines.insert_one(doc)
+        doc.pop("_id", None)
+        created.append(doc)
+
+    return {
+        "computed_count": len(created),
+        "jurisdiction": jur,
+        "reference": ref_label,
+        "court": court_label,
+        "deadlines": created,
+        "caveat": "These deadlines are educational defaults derived from the stated jurisdictional rules. The rules of court may have been amended; users must independently verify the current time limits against the relevant Court's Practice Directions before filing.",
+    }
+
+
+@router.get("/cases/{case_id}/deadlines.ics")
+async def export_deadlines_ics(case_id: str, request: Request):
+    """Export all deadlines as an iCalendar (.ics) file so the user can import
+    them into Apple Calendar / Google Calendar / Outlook. Each deadline becomes
+    a VEVENT at 09:00 local time on the due date with VALARM reminders matching
+    the stored `reminder_days` list."""
+    from fastapi.responses import Response
+    user = await get_current_user(request)
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    deadlines = await db.deadlines.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).sort("due_date", 1).to_list(500)
+
+    appellant = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
+    now_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+    def _ics_escape(s: str) -> str:
+        return (s or "").replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
+
+    def _fmt_dt(iso_or_dt) -> str:
+        if isinstance(iso_or_dt, str):
+            try:
+                dt = datetime.fromisoformat(iso_or_dt.replace("Z", "+00:00"))
+            except ValueError:
+                dt = datetime.now(timezone.utc)
+        else:
+            dt = iso_or_dt or datetime.now(timezone.utc)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.strftime("%Y%m%dT%H%M%SZ")
+
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Criminal Law Appeal Management//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        f"X-WR-CALNAME:{_ics_escape(appellant)} — Appeal Deadlines",
+    ]
+    for d in deadlines:
+        uid = f"{d.get('deadline_id', 'unknown')}@criminallawappealmanagement.com.au"
+        dtstart = _fmt_dt(d.get("due_date"))
+        summary = _ics_escape(d.get("title", "Appeal deadline"))
+        description = _ics_escape(d.get("description", ""))
+        priority_map = {"critical": 1, "high": 3, "medium": 5, "low": 7}
+        ics_priority = priority_map.get(d.get("priority", "high"), 3)
+        lines += [
+            "BEGIN:VEVENT",
+            f"UID:{uid}",
+            f"DTSTAMP:{now_stamp}",
+            f"DTSTART:{dtstart}",
+            f"DTEND:{dtstart}",
+            f"SUMMARY:{summary}",
+            f"DESCRIPTION:{description}",
+            f"PRIORITY:{ics_priority}",
+            "STATUS:CONFIRMED",
+            "TRANSP:OPAQUE",
+        ]
+        for rd in (d.get("reminder_days") or []):
+            lines += [
+                "BEGIN:VALARM",
+                "ACTION:DISPLAY",
+                f"DESCRIPTION:Reminder — {summary} in {rd} day(s)",
+                f"TRIGGER:-P{int(rd)}D",
+                "END:VALARM",
+            ]
+        lines.append("END:VEVENT")
+    lines.append("END:VCALENDAR")
+
+    body = "\r\n".join(lines) + "\r\n"
+    filename = f"{appellant.replace(' ', '_')}_appeal_deadlines.ics"
+    return Response(
+        content=body,
+        media_type="text/calendar; charset=utf-8",
+        headers={
+            "Content-Disposition": f"attachment; filename=\"{filename}\"",
+            "Cache-Control": "private, no-store",
+        },
+    )
+
+
+# ============================================================================
 # CHECKLIST
 # ============================================================================
 

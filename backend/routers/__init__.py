@@ -32,6 +32,7 @@ from .reports import router as reports_router
 from .report_exports import router as report_exports_router
 from .payment_history import router as payment_history_router
 from .barrister_pack import router as barrister_pack_router
+from .barrister_tools import router as barrister_tools_router
 
 
 _ALL_ROUTERS = [
@@ -63,6 +64,7 @@ _ALL_ROUTERS = [
     legislation_router,
     payment_history_router,
     barrister_pack_router,
+    barrister_tools_router,
 ]
 
 

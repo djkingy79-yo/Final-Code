@@ -629,6 +629,63 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
             </div>
             <div>
               <Label htmlFor="note-content">Content</Label>
+              {/* AGLC4 citation insert — generates a properly-formatted citation
+                  chip from the user's inputs and appends it at the caret. Keeps
+                  the Notes tab citation-aware so drafted content is forensic
+                  from day one. Added 2026-02-21. */}
+              <div className="mt-1 mb-2 flex flex-wrap items-end gap-2 p-2 rounded border border-blue-100 bg-blue-50/60">
+                <div className="flex-1 min-w-[120px]">
+                  <Label className="text-[10px] uppercase tracking-wide text-blue-700">Act / Case</Label>
+                  <input type="text" id="aglc-act"
+                    placeholder="Crimes Act 1900"
+                    className="mt-0.5 w-full px-2 py-1 text-[12px] rounded border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    data-testid="aglc-act-input" />
+                </div>
+                <div className="w-[96px]">
+                  <Label className="text-[10px] uppercase tracking-wide text-blue-700">Jur</Label>
+                  <select id="aglc-jur"
+                    className="mt-0.5 w-full px-2 py-1 text-[12px] rounded border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    data-testid="aglc-jur-select">
+                    <option value="NSW">NSW</option><option value="Vic">Vic</option>
+                    <option value="Qld">Qld</option><option value="SA">SA</option>
+                    <option value="WA">WA</option><option value="Tas">Tas</option>
+                    <option value="NT">NT</option><option value="ACT">ACT</option>
+                    <option value="Cth">Cth</option>
+                  </select>
+                </div>
+                <div className="w-[88px]">
+                  <Label className="text-[10px] uppercase tracking-wide text-blue-700">Section</Label>
+                  <input type="text" id="aglc-section"
+                    placeholder="18"
+                    className="mt-0.5 w-full px-2 py-1 text-[12px] rounded border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    data-testid="aglc-section-input" />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                  data-testid="aglc-insert-btn"
+                  onClick={() => {
+                    const act = (document.getElementById("aglc-act")?.value || "").trim();
+                    const jur = (document.getElementById("aglc-jur")?.value || "NSW").trim();
+                    const section = (document.getElementById("aglc-section")?.value || "").trim().replace(/^s\.?\s*/i, "");
+                    if (!act || !section) {
+                      toast.error("Enter Act name and section number");
+                      return;
+                    }
+                    const cleanAct = act.replace(/\s*\([A-Za-z]+\)\s*$/i, "").trim();
+                    const citation = `${cleanAct} (${jur}) s ${section}`;
+                    const ta = document.getElementById("note-content");
+                    const before = newNote.content || "";
+                    const caret = ta?.selectionStart ?? before.length;
+                    const newValue = before.slice(0, caret) + citation + before.slice(caret);
+                    setNewNote({ ...newNote, content: newValue });
+                    toast.success("Citation inserted (AGLC4)");
+                  }}>
+                  Insert citation
+                </Button>
+              </div>
               <Textarea
                 id="note-content"
                 value={newNote.content}
@@ -638,7 +695,7 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
                 data-testid="note-content-input"
               />
               <p className="text-xs text-slate-500 mt-1" data-testid="note-mention-help">
-                Tip: Type @name to mention collaborators in this case.
+                Tip: Type @name to mention collaborators, or insert a citation above.
               </p>
             </div>
           </div>

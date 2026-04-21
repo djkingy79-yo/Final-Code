@@ -67,6 +67,7 @@ import CaseStrengthMeter from "../components/CaseStrengthMeter";
 import CasePipelineSummary from "../components/CasePipelineSummary";
 import PipelineStalenessAlert from "../components/PipelineStalenessAlert";
 import PipelineProgress from "../components/PipelineProgress";
+import BarristerToolsPanel from "../components/BarristerToolsPanel";
 import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
 import ExportOptionsModal from "../components/ExportOptionsModal";
@@ -1809,6 +1810,13 @@ const CaseDetail = ({ user }) => {
               onRefreshCase={fetchCaseData}
               onRefreshGrounds={fetchCaseData}
               onRefreshReports={fetchCaseData}
+            />
+
+            {/* Barrister Tools — Deadline Tracker, Crown Response, Fresh Evidence */}
+            <BarristerToolsPanel
+              caseId={caseId}
+              caseData={caseData}
+              grounds={grounds}
             />
 
             {/* Appeal Preparation Readiness + Pipeline Summary */}
