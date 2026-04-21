@@ -282,7 +282,21 @@ Thanks.`;
           <div className="flex flex-col gap-3">
             <button
               data-testid="auth-retry-google-btn"
-              onClick={() => {
+              onClick={async () => {
+                // Before retrying, aggressively clear any stale service-worker
+                // cache that might be serving a bad response on this device.
+                // This is a belt-and-braces recovery for users whose PWA was
+                // installed before the 21 Apr 2026 CORS fix.
+                try {
+                  if ("caches" in window) {
+                    const keys = await caches.keys();
+                    await Promise.all(keys.map((k) => caches.delete(k)));
+                  }
+                  if ("serviceWorker" in navigator) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map((r) => r.unregister()));
+                  }
+                } catch (_) { /* ignore — recovery best-effort */ }
                 // Direct Google OAuth — redirect to Google's authorize endpoint
                 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
                 const redirectUri = `${window.location.origin}/auth/callback`;
