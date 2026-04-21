@@ -360,6 +360,14 @@ async def call_llm_structured(
                 continue
 
             logger.info(f"LLM success ({session_id}) with {provider}/{model_name} on attempt {idx+1}")
+            # Extract real OpenAI usage counts for cent-accurate cost tracking.
+            # If missing (rare — streaming/legacy paths), record_usage falls
+            # back to tiktoken estimates internally.
+            usage = getattr(completion, "usage", None)
+            p_tok = getattr(usage, "prompt_tokens", None) if usage else None
+            c_tok = getattr(usage, "completion_tokens", None) if usage else None
+            t_tok = getattr(usage, "total_tokens", None) if usage else None
+
             # Record token usage for admin cost dashboard (fire-and-forget).
             try:
                 from services.ai_usage_tracker import record_usage
@@ -373,6 +381,9 @@ async def call_llm_structured(
                     task_type=task_type,
                     ok=True,
                     attempt=idx + 1,
+                    prompt_tokens=p_tok,
+                    completion_tokens=c_tok,
+                    total_tokens=t_tok,
                 )
             except Exception:
                 pass

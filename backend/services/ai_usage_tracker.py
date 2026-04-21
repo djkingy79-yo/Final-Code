@@ -1,14 +1,15 @@
 """
-AI Usage Tracker — records every LLM call with estimated token counts and
-USD cost into the `ai_usage` MongoDB collection for the admin cost dashboard.
+AI Usage Tracker — records every LLM call with token counts and USD cost into
+the `ai_usage` MongoDB collection for the admin cost dashboard.
 
-Token counts are estimated locally via tiktoken — the OpenAI API does return
-actual usage in its raw HTTP response, but the emergentintegrations wrapper
-collapses that to a plain string. Local estimation via tiktoken's
-`o200k_base` encoder (used by gpt-4o / gpt-4o-mini) has been measured to be
-within ~2% of the true tokeniser count, which is plenty accurate for a
-monthly cost dashboard. Costs are therefore conservatively presented as
-"estimated".
+PREFERRED token source (since 2026-04-21): the real `response.usage` object
+returned by `AsyncOpenAI.chat.completions.create(...)`. Those counts are the
+exact values OpenAI billed on, so USD costs are accurate to the cent.
+
+FALLBACK: tiktoken's `o200k_base` encoder — used when a caller doesn't (or
+can't) pass real usage (e.g. the path hits `ai_service.call_llm_with_retry`
+before this tracker was wired up, or a fallback retry path). Tiktoken is
+within ~2% of the true tokeniser, still fine for analytics.
 
 Pricing verified against OpenAI's published rate card (Feb 2026):
   gpt-4o        : $2.50 / 1M input tokens,  $10.00 / 1M output tokens
@@ -167,15 +168,31 @@ async def record_usage(
     task_type: str,
     ok: bool,
     attempt: int,
+    # Optional exact counts from `response.usage` (preferred — cent-accurate).
+    # When None, fall back to tiktoken estimate on the prompt/response text.
+    prompt_tokens: Optional[int] = None,
+    completion_tokens: Optional[int] = None,
+    total_tokens: Optional[int] = None,
 ) -> None:
     """Record a single LLM call. Never raises.
 
     Writes one document per call to `ai_usage` — aggregation is done at
     read time by the admin dashboard endpoint.
+
+    When `prompt_tokens` / `completion_tokens` are supplied (from the OpenAI
+    response's `usage` field), the recorded cost is exact — identical to what
+    OpenAI actually bills. When absent, falls back to tiktoken estimates.
     """
     try:
-        input_tokens = _estimate_tokens(system_prompt) + _estimate_tokens(user_prompt)
-        output_tokens = _estimate_tokens(response_text) if ok else 0
+        if prompt_tokens is not None and completion_tokens is not None:
+            input_tokens = int(prompt_tokens)
+            output_tokens = int(completion_tokens) if ok else 0
+            source = "api_usage"
+        else:
+            input_tokens = _estimate_tokens(system_prompt) + _estimate_tokens(user_prompt)
+            output_tokens = _estimate_tokens(response_text) if ok else 0
+            source = "tiktoken_estimate"
+        total_tok = int(total_tokens) if total_tokens is not None else input_tokens + output_tokens
         cost_usd = _cost_for(model, input_tokens, output_tokens)
 
         case_id = _extract_case_id(session_id)
@@ -190,8 +207,9 @@ async def record_usage(
             "case_id": case_id,
             "input_tokens_est": input_tokens,
             "output_tokens_est": output_tokens,
-            "total_tokens_est": input_tokens + output_tokens,
+            "total_tokens_est": total_tok,
             "cost_usd_est": cost_usd,
+            "token_source": source,
             "ok": ok,
             "attempt": attempt,
             "created_at": datetime.now(timezone.utc),
