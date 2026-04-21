@@ -19,10 +19,9 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   // else sectionTitle, else title. Appended with " — {Appellant}" for identification on every page.
   const label = (docLabel || sectionTitle || title || "Document").replace(/"/g, '\\"');
   const appellant = (defendantName || "Appellant").replace(/"/g, '\\"');
-  // FOOTER SPEC (fixed per owner requirement 21/4/2026):
-  //   LEFT  = {Appellant}  ·  {Doc Type}  ·  {Date-in-en-AU-long-form}
+  // Footer spec locked by owner 21/4/2026:
+  //   LEFT  = {Appellant}  ·  {Document Type}  ·  {Date in en-AU long form}
   //   RIGHT = Page X of Y
-  // Centre seal removed from footer so there is no competition with page info.
   const footerLeft = `${appellant}  \\00B7  ${label}  \\00B7  ${formatDate().replace(/"/g,'\\"')}`;
 
   return `<!DOCTYPE html>
@@ -59,16 +58,35 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 8pt;
+      font-size: 7pt;
       font-style: italic;
-      color: #334155;
+      color: #475569;
+    }
+    @bottom-center {
+      /* Compact navy legal seal — matches landing-page "FRAMEWORK VERIFIED" mark.
+         Unicode check (✓) rendered in gold via the margin-box colour cascade.
+         Background + padding honoured by Chrome/Edge/Safari print pipelines
+         when -webkit-print-color-adjust:exact is set globally (it is). */
+      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #ffffff;
+      background: #0b1e3f;
+      padding: 2pt 8pt;
+      border: 0.5pt solid #1e3a8a;
+      border-radius: 2pt;
+      vertical-align: middle;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 8pt;
+      font-size: 7pt;
       font-style: italic;
-      color: #334155;
+      color: #475569;
     }
   }
   /* ---------- LANDSCAPE (tables only) ---------- */
@@ -78,16 +96,31 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 8pt;
+      font-size: 7pt;
       font-style: italic;
-      color: #334155;
+      color: #475569;
+    }
+    @bottom-center {
+      content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #ffffff;
+      background: #0b1e3f;
+      padding: 2pt 8pt;
+      border: 0.5pt solid #1e3a8a;
+      border-radius: 2pt;
+      vertical-align: middle;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 8pt;
+      font-size: 7pt;
       font-style: italic;
-      color: #334155;
+      color: #475569;
     }
   }
   /* Every table flips to landscape for its duration, then the next content

@@ -1666,7 +1666,10 @@ const CaseDetail = ({ user }) => {
 
           {/* Reports Tab */}
           <TabsContent value="reports" className="space-y-4 legal-content" data-tab-content>
-            <AiCostBadge caseId={caseId} />
+            {/* AiCostBadge removed per owner request — AI spend is tracked in the
+                Admin dashboard; cluttering the Reports tab with a cost estimate
+                undermines the professional feel when the case view is being
+                printed/shared. */}
             <ReportsSection
               caseId={caseId}
               reports={reports}

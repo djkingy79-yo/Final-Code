@@ -727,7 +727,9 @@ const ReportView = () => {
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
     const appellantForFooter = defendantName || caseData?.defendant_name || caseData?.title || "Appellant";
-    // FOOTER SPEC: {Appellant} · {Document Type} · {Date}  (LEFT)  |  Page X of Y (RIGHT)
+    // Footer spec locked by owner 21/4/2026:
+    //   LEFT  = {Appellant}  ·  {Document Type}  ·  {Date in en-AU long form}
+    //   RIGHT = Page X of Y
     const previewFooterLabel = `${appellantForFooter}  \\00B7  ${title}  \\00B7  ${previewDate}`;
 
     const html = `<!DOCTYPE html>
@@ -744,12 +746,20 @@ const ReportView = () => {
       @bottom-left {
         content: "${previewFooterLabel}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+      @bottom-center {
+        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
+        color: #ffffff; background: #0b1e3f;
+        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 7pt; font-style: italic; color: #475569;
       }
     }
     @page landscape-table {
@@ -758,12 +768,20 @@ const ReportView = () => {
       @bottom-left {
         content: "${previewFooterLabel}";
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 7pt; font-style: italic; color: #475569;
+      }
+      @bottom-center {
+        content: "\\2713  FRAMEWORK VERIFIED  \\00B7  79 Australian Acts";
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 6.5pt; font-weight: 700; letter-spacing: 0.14em;
+        color: #ffffff; background: #0b1e3f;
+        padding: 2pt 8pt; border: 0.5pt solid #1e3a8a; border-radius: 2pt;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
       }
       @bottom-right {
         content: "Page " counter(page) " of " counter(pages);
         font-family: 'Times New Roman', Times, serif;
-        font-size: 8pt; font-style: italic; color: #334155;
+        font-size: 7pt; font-style: italic; color: #475569;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
