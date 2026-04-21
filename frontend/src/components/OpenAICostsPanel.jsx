@@ -234,6 +234,40 @@ const OpenAICostsPanel = () => {
         </Card>
       )}
 
+      {/* Top cases — admin-only per-case spend (replaces AiCostBadge that
+          was previously visible on the user-facing Reports tab). */}
+      {data?.by_case?.length > 0 && (
+        <Card data-testid="openai-costs-by-case">
+          <CardHeader>
+            <CardTitle className="text-sm">Top cases by spend</CardTitle>
+            <CardDescription className="text-xs">Per-case AI spend. Visible only to admins.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <table className="w-full text-sm">
+              <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                <tr>
+                  <th className="text-left py-2 px-4">Case</th>
+                  <th className="text-right py-2 px-4">Calls</th>
+                  <th className="text-right py-2 px-4">USD</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.by_case.map((c, i) => (
+                  <tr key={c.case_id} className="border-t border-slate-100" data-testid={`openai-costs-case-row-${i}`}>
+                    <td className="py-2 px-4">
+                      <div className="font-medium text-slate-800">{c.title || "—"}</div>
+                      <div className="text-xs text-slate-500 font-mono">{c.case_id}</div>
+                    </td>
+                    <td className="py-2 px-4 text-right tabular-nums">{c.calls}</td>
+                    <td className="py-2 px-4 text-right tabular-nums font-semibold text-emerald-700">{fmtUSD(c.cost_usd)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Pricing note */}
       <p className="text-xs text-slate-500 italic px-1" data-testid="openai-costs-pricing-note">
         {data?.pricing_note}

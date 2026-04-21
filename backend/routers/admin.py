@@ -577,6 +577,7 @@ async def get_openai_costs(request: Request, period: str = "month"):
             bucket["cases"].add(row["_id"])
 
     users_rows = []
+    cases_rows = []
     if user_agg:
         users_docs = await db.users.find({"user_id": {"$in": list(user_agg.keys())}}, {"_id": 0, "user_id": 1, "email": 1, "name": 1}).to_list(len(user_agg))
         user_meta = {u["user_id"]: u for u in users_docs}
@@ -591,6 +592,27 @@ async def get_openai_costs(request: Request, period: str = "month"):
             })
         users_rows.sort(key=lambda r: r["cost_usd"], reverse=True)
         users_rows = users_rows[:30]
+
+    # --- by case (admin-visible per-case spend — replaces the per-case badge
+    # that used to appear on the Reports tab; owner wants cost data admin-only)
+    if by_case:
+        case_ids = [row["_id"] for row in by_case]
+        case_docs = await db.cases.find(
+            {"case_id": {"$in": case_ids}},
+            {"_id": 0, "case_id": 1, "title": 1, "defendant_name": 1, "user_id": 1}
+        ).to_list(len(case_ids))
+        case_meta = {c["case_id"]: c for c in case_docs}
+        for row in by_case:
+            meta = case_meta.get(row["_id"]) or {}
+            cases_rows.append({
+                "case_id": row["_id"],
+                "title": meta.get("title") or meta.get("defendant_name") or "(unknown case)",
+                "defendant_name": meta.get("defendant_name"),
+                "calls": row["calls"],
+                "cost_usd": round(row["cost_usd"], 4),
+            })
+        cases_rows.sort(key=lambda r: r["cost_usd"], reverse=True)
+        cases_rows = cases_rows[:50]
 
     # --- daily series (for sparkline) ---
     daily = await db.ai_usage.aggregate([
@@ -612,6 +634,7 @@ async def get_openai_costs(request: Request, period: str = "month"):
         "by_task_type": by_task,
         "by_report_type": by_report,
         "by_user": users_rows,
+        "by_case": cases_rows,
         "daily": daily,
         "pricing_note": "Costs are estimated locally using tiktoken (o200k_base) token counts and OpenAI's Feb 2026 published rates (gpt-4o $2.50/$10 per 1M input/output; gpt-4o-mini $0.15/$0.60 per 1M). Actual billing appears on the OpenAI dashboard.",
     }
