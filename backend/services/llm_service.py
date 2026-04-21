@@ -410,7 +410,69 @@ async def call_llm_structured(
         # DO_NOT_UNDO — Exponential backoff for 502/service errors on large report prompts.
         # Increased backoff ceiling (was 14s, now 25s) to survive sustained proxy outages.
         is_server_error = "502" in str(last_err) or "503" in str(last_err) or "ServiceUnavailable" in str(last_err) or "BadGateway" in str(last_err)
-        if is_server_error and task_type == "report_generation":
+        # Detect OpenAI 429 Tokens-Per-Minute rate-limit errors so we can wait
+        # 60s on gpt-4o rather than silently downgrading to gpt-4o-mini. This
+        # is critical for $150 paid reports — the owner pays for quality on
+        # gpt-4o and should NOT quietly fall back to the cheap model just
+        # because the TPM bucket needs a minute to refill. Only applies while
+        # the current slot is gpt-4o (not when already on mini).
+        err_str = str(last_err or "")
+        is_tpm_limit = (
+            "429" in err_str
+            and ("tokens per min" in err_str.lower() or "tpm" in err_str.lower() or "rate_limit" in err_str.lower())
+        )
+        if is_tpm_limit and model_name == "gpt-4o":
+            # Wait long enough for a full TPM window to refill (OpenAI TPM is
+            # a rolling minute) — and then RETRY THE SAME gpt-4o slot instead
+            # of advancing to the next one (which could be gpt-4o-mini).
+            logger.warning(
+                f"gpt-4o TPM limit hit — waiting 65s to refill bucket before retrying on gpt-4o (session={session_id})"
+            )
+            await asyncio.sleep(65)
+            # Re-attempt this same slot by rolling the loop counter back one step.
+            # A dirty-but-effective way: just retry the same (provider, model) inline.
+            try:
+                completion = await asyncio.wait_for(
+                    client.chat.completions.create(
+                        model=model_name,
+                        messages=[
+                            {"role": "system", "content": effective_system_prompt},
+                            {"role": "user", "content": effective_user_prompt},
+                        ],
+                        max_tokens=resolved_max_tokens,
+                    ),
+                    timeout=resolved_timeout,
+                )
+                retry_result = (completion.choices[0].message.content or "") if completion.choices else ""
+                if _basic_text_validation(retry_result):
+                    parsed_json = _extract_json_object(retry_result) if resolved_require_json else None
+                    if not resolved_require_json or parsed_json is not None:
+                        logger.info(f"LLM TPM-retry success ({session_id}) with {provider}/{model_name}")
+                        usage = getattr(completion, "usage", None)
+                        p_tok = getattr(usage, "prompt_tokens", None) if usage else None
+                        c_tok = getattr(usage, "completion_tokens", None) if usage else None
+                        t_tok = getattr(usage, "total_tokens", None) if usage else None
+                        try:
+                            from services.ai_usage_tracker import record_usage
+                            await record_usage(
+                                session_id=session_id, provider=provider, model=model_name,
+                                system_prompt=effective_system_prompt, user_prompt=effective_user_prompt,
+                                response_text=retry_result, task_type=task_type, ok=True,
+                                attempt=idx + 1, prompt_tokens=p_tok, completion_tokens=c_tok, total_tokens=t_tok,
+                            )
+                        except Exception:
+                            pass
+                        return {
+                            "ok": True, "content": retry_result, "parsed_json": parsed_json,
+                            "provider": provider, "model": model_name, "attempt": idx + 1,
+                            "fallback_used": idx > 0, "task_type": task_type,
+                            "require_json": resolved_require_json, "validation_passed": True,
+                            "error": None,
+                        }
+            except Exception as retry_err:
+                logger.warning(f"TPM retry on gpt-4o failed ({session_id}): {str(retry_err)[:200]}")
+            # If retry also fails, continue to the normal loop so we can try the next slot.
+        elif is_server_error and task_type == "report_generation":
             backoff = min(8 + idx * 5, 25)
             logger.info(f"Report generation 502 backoff: waiting {backoff}s before retry")
             await asyncio.sleep(backoff)

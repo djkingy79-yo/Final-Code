@@ -1347,6 +1347,31 @@ Do NOT truncate. Write ALL content."""),
                 await _update_report_pass_progress(report_id, pass_index, len(passes), label)
                 base_prompt = user_prompt if pass_index <= 2 else condensed_prompt
                 pass_prompt = base_prompt + instruction
+                # DO_NOT_UNDO — TPM safety cap. OpenAI Tier 1 gives gpt-4o only
+                # 30,000 tokens per minute. If system (~17k chars ≈ 4.3k tokens)
+                # plus user exceed ~25,000 tokens of input, the request is
+                # rejected with 429 before it even starts and we silently
+                # fall back to gpt-4o-mini (quality loss on a $150 product).
+                # 1 token ≈ 4 chars for English text, so 90,000 chars ≈ 22,500
+                # tokens user input; plus ~4,300 token system ≈ 26,800 total
+                # input; plus max_tokens output ≈ fits inside 30,000 TPM.
+                # If a case is so large the prompt exceeds the cap, we truncate
+                # from the MIDDLE (preserving instructions at the top and the
+                # pass-specific instruction at the bottom).
+                TPM_SAFE_CAP = 90000
+                if len(pass_prompt) > TPM_SAFE_CAP:
+                    head_keep = int(TPM_SAFE_CAP * 0.55)
+                    tail_keep = TPM_SAFE_CAP - head_keep - 200
+                    truncated = (
+                        pass_prompt[:head_keep]
+                        + "\n\n[... middle context truncated for API token limits; see remaining context below ...]\n\n"
+                        + pass_prompt[-tail_keep:]
+                    )
+                    logger.warning(
+                        f"Full detailed {label} prompt exceeded TPM-safe cap: "
+                        f"{len(pass_prompt)} → {len(truncated)} chars"
+                    )
+                    pass_prompt = truncated
                 logger.info(f"Full detailed {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
@@ -1654,6 +1679,17 @@ Do NOT truncate. Write ALL content for both sections."""),
                 # Pass 1 gets full document context; passes 2-8 get condensed context
                 base_prompt = user_prompt if pass_index == 1 else condensed_prompt
                 pass_prompt = base_prompt + instruction
+                # TPM safety cap — see full_detailed loop above for rationale.
+                TPM_SAFE_CAP = 90000
+                if len(pass_prompt) > TPM_SAFE_CAP:
+                    head_keep = int(TPM_SAFE_CAP * 0.55)
+                    tail_keep = TPM_SAFE_CAP - head_keep - 200
+                    pass_prompt = (
+                        pass_prompt[:head_keep]
+                        + "\n\n[... middle context truncated for API token limits; see remaining context below ...]\n\n"
+                        + pass_prompt[-tail_keep:]
+                    )
+                    logger.warning(f"Extensive log {label} prompt truncated to {len(pass_prompt)} chars for TPM-safe cap")
                 logger.info(f"Extensive log {label} prompt size: system={len(system_prompt)}, user={len(pass_prompt)}")
                 part = await _subprocess_llm(pass_prompt)
                 parts.append(part)
