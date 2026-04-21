@@ -50,8 +50,8 @@ const ForgotPasswordPage = () => {
               <p className="text-sm text-slate-600 mb-6">
                 The link will expire in 1 hour. Check your spam folder if you don't see it.
               </p>
-              <Button onClick={() => navigate("/login")} className="w-full">
-                Back to Login
+              <Button onClick={() => navigate("/?login=true")} className="w-full">
+                Back to Sign In
               </Button>
             </div>
           </CardContent>
@@ -64,9 +64,9 @@ const ForgotPasswordPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <Link to="/login" className="text-slate-400 hover:text-white flex items-center gap-2 mb-4 text-sm">
+          <Link to="/?login=true" className="text-slate-400 hover:text-white flex items-center gap-2 mb-4 text-sm">
             <ArrowLeft className="w-4 h-4" />
-            Back to Login
+            Back to Sign In
           </Link>
           <CardTitle className="text-2xl">Reset Your Password</CardTitle>
           <CardDescription>
@@ -105,7 +105,7 @@ const ForgotPasswordPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
               Remember your password?{" "}
-              <Link to="/login" className="text-red-600 hover:text-blue-700 font-medium">
+              <Link to="/?login=true" className="text-red-600 hover:text-blue-700 font-medium">
                 Sign in
               </Link>
             </p>

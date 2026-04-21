@@ -44,7 +44,9 @@ const LandingPage = () => {
   }, [navigate]);
 
   const handleAuthSuccess = (userData) => {
-    window.location.replace("/dashboard");
+    // Client-side nav — no full reload (keeps the snappy experience consistent
+    // with the rest of the auth flow).
+    navigate("/dashboard", { replace: true, state: { user: userData } });
   };
 
   const scrollToTop = () => {

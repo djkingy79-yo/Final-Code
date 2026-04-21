@@ -707,7 +707,7 @@ function AppRouter() {
       />
       <Route
         path="/login"
-        element={<Navigate to="/" replace />}
+        element={<Navigate to="/?login=true" replace />}
       />
     </Routes>
     </Suspense>

@@ -79,9 +79,11 @@ const ResetPasswordPage = () => {
       });
       setSuccess(true);
       
-      // Redirect to login after 3 seconds
+      // Redirect to sign-in modal on landing after 3 seconds.
+      // "/?login=true" makes LandingPage auto-open the AuthModal — the user
+      // never sees the raw landing page in between.
       setTimeout(() => {
-        navigate("/login");
+        navigate("/?login=true");
       }, 3000);
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to reset password. Please try again.");
@@ -120,7 +122,7 @@ const ResetPasswordPage = () => {
               <p className="text-slate-600 mb-4">
                 Your password has been updated. You can now login with your new password.
               </p>
-              <p className="text-sm text-slate-400">Redirecting to login...</p>
+              <p className="text-sm text-slate-400">Redirecting to sign-in...</p>
             </div>
           </CardContent>
         </Card>
@@ -157,9 +159,9 @@ const ResetPasswordPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <Link to="/login" className="text-slate-400 hover:text-white flex items-center gap-2 mb-4 text-sm">
+          <Link to="/?login=true" className="text-slate-400 hover:text-white flex items-center gap-2 mb-4 text-sm">
             <ArrowLeft className="w-4 h-4" />
-            Back to Login
+            Back to Sign In
           </Link>
           <CardTitle className="text-2xl">Create New Password</CardTitle>
           <CardDescription>

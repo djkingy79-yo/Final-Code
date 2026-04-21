@@ -4,6 +4,7 @@
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, User, Eye, EyeOff, Scale, Shield } from "lucide-react";
@@ -20,6 +21,7 @@ import { API } from "../App";
 import { generateState, saveOAuthState } from "../lib/oauthState";
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
+  const navigate = useNavigate();
   const [mode, setMode] = useState("login"); // login or register
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -274,7 +276,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                     href="/forgot-password"
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline"
                     data-testid="forgot-password-link"
-                    onClick={(e) => { e.preventDefault(); onClose(); window.location.href = "/forgot-password"; }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onClose();
+                      // Client-side navigation — NO full page reload, so the
+                      // landing page never flashes in between.
+                      navigate("/forgot-password");
+                    }}
                   >
                     Forgot password?
                   </a>
