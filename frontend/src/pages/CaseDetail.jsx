@@ -51,6 +51,7 @@ import { API } from "../App";
 import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
+import EvidenceProfilePanel from "../components/EvidenceProfilePanel";
 import DeadlineTracker from "../components/DeadlineTracker";
 import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
@@ -1739,20 +1740,30 @@ const CaseDetail = ({ user }) => {
                 </div>
               </Card>
             ) : (
-              <GroundsOfMerit 
-                grounds={grounds}
-                groundsCount={groundsCount}
-                isUnlocked={groundsUnlocked}
-                unlockPrice={groundsUnlockPrice}
-                caseId={caseId}
-                caseData={caseData}
-                onInvestigate={handleInvestigateGround}
-                onDelete={handleDeleteGround}
-                investigating={investigatingGround}
-                selectedGround={selectedGround}
-                setSelectedGround={setSelectedGround}
-                onPaymentSuccess={() => fetchCaseData()}
-              />
+              <>
+                {groundsUnlocked && (
+                  <div className="mb-4">
+                    <EvidenceProfilePanel
+                      caseId={caseId}
+                      onSaved={() => fetchCaseData()}
+                    />
+                  </div>
+                )}
+                <GroundsOfMerit 
+                  grounds={grounds}
+                  groundsCount={groundsCount}
+                  isUnlocked={groundsUnlocked}
+                  unlockPrice={groundsUnlockPrice}
+                  caseId={caseId}
+                  caseData={caseData}
+                  onInvestigate={handleInvestigateGround}
+                  onDelete={handleDeleteGround}
+                  investigating={investigatingGround}
+                  selectedGround={selectedGround}
+                  setSelectedGround={setSelectedGround}
+                  onPaymentSuccess={() => fetchCaseData()}
+                />
+              </>
             )}
 
             {/* Deb King Statement & Branding Footer */}

@@ -66,44 +66,46 @@ def normalise_markdown(raw: str | None) -> str:
     text = str(raw).replace("\r\n", "\n")
     text = _DOUBLE_SPACE_NL.sub("\n", text)
 
-    # Headings
-    text = _ATX_NO_BLANK_BEFORE.sub(r"\1\n\n\2 ", text)
-    text = _ATX_INLINE_AFTER_PUNCT.sub(r"\1\n\n\2 \3\n\n", text)
-    text = _ATX_INLINE_AFTER_WORD.sub(r"\1\n\n\2 \3\n\n", text)
-    text = _ATX_HEADING_BODY_SPLIT.sub(r"\1 \2\n\n", text)
+    # Headings — use lambda replacements so any backslash-digit sequences
+    # inside captured content (e.g. "see \3 authority") aren't re-interpreted
+    # as regex backreferences during substitution.
+    text = _ATX_NO_BLANK_BEFORE.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)} ", text)
+    text = _ATX_INLINE_AFTER_PUNCT.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)} {m.group(3)}\n\n", text)
+    text = _ATX_INLINE_AFTER_WORD.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)} {m.group(3)}\n\n", text)
+    text = _ATX_HEADING_BODY_SPLIT.sub(lambda m: f"{m.group(1)} {m.group(2)}\n\n", text)
 
-    # Lists + tables
-    text = _BULLETS_NO_BLANK_BEFORE.sub(r"\1\n\n\2", text)
-    text = _NUMLIST_NO_BLANK_BEFORE.sub(r"\1\n\n\2", text)
-    text = _TABLE_NO_BLANK_BEFORE.sub(r"\1\n\n\2", text)
+    # Lists + tables (same lambda-safe substitutions)
+    text = _BULLETS_NO_BLANK_BEFORE.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)}", text)
+    text = _NUMLIST_NO_BLANK_BEFORE.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)}", text)
+    text = _TABLE_NO_BLANK_BEFORE.sub(lambda m: f"{m.group(1)}\n\n{m.group(2)}", text)
 
-    # Collapse triple+ newlines
+    # Collapse triple+ newlines (no captures — safe to use raw replacement)
     text = _TRIPLE_NEWLINES.sub("\n\n", text)
 
     # Tighten consecutive bullets that were over-separated by earlier passes
-    text = _BULLET_TIGHTEN.sub(r"\1\n", text)
-    text = _NUMLIST_TIGHTEN.sub(r"\1\n", text)
-
-    # Inline bullets glued to prose by punctuation
-    text = _INLINE_BULLET_AFTER_PUNCT.sub(r"\1\n- **", text)
-    text = _INLINE_BULLET_AFTER_WORD.sub(r"\1\n- **", text)
+    text = _BULLET_TIGHTEN.sub(lambda m: f"{m.group(1)}\n", text)
+    text = _NUMLIST_TIGHTEN.sub(lambda m: f"{m.group(1)}\n", text)
 
     # Split "1. **Label:** ..." mid-paragraph sequences onto their own lines.
-    # Strips the "N." number — the bold label IS the heading. Run twice in case
-    # two numbered labels appeared back-to-back.
+    # Run twice in case two numbered labels appeared back-to-back.
     for _ in range(2):
-        text = _NUMBERED_BOLD_LABEL_INLINE.sub(r"\1\n\n**\2** ", text)
+        text = _NUMBERED_BOLD_LABEL_INLINE.sub(lambda m: f"{m.group(1)}\n\n**{m.group(2)}** ", text)
 
-    # Split un-numbered bold-label paragraphs ("Materiality:", "Consequence:",
-    # "Appellate Viability:") that sit inline after a sentence-ending period.
-    # Common pattern in Deep Investigation Analysis output.
+    # Split un-numbered bold-label paragraphs inline after a sentence-ending
+    # period. Common in Deep Investigation Analysis output.
     for _ in range(2):
-        text = _BOLD_LABEL_INLINE.sub(r"\1\n\n**\2** ", text)
+        text = _BOLD_LABEL_INLINE.sub(lambda m: f"{m.group(1)}\n\n**{m.group(2)}** ", text)
+
+    # Inline bullets glued to prose by punctuation
+    text = _INLINE_BULLET_AFTER_PUNCT.sub(lambda m: f"{m.group(1)}\n- **", text)
+    text = _INLINE_BULLET_AFTER_WORD.sub(lambda m: f"{m.group(1)}\n- **", text)
 
     # Wall-of-text repair: any paragraph > 800 chars with no internal \n\n
     # and at least 6 sentence boundaries gets split after every 3rd sentence.
     # Preserves semantics; only acts on LLM paragraphs that are unambiguously
-    # too long to read.
+    # too long to read. Uses literal replacement (no regex substitution) so
+    # backslash-digit sequences inside content can never be mis-interpreted
+    # as backreferences (e.g. "see \3" citations blew up before).
     paragraphs = text.split("\n\n")
     repaired_paras = []
     for p in paragraphs:
@@ -112,14 +114,11 @@ def normalise_markdown(raw: str | None) -> str:
             and "\n" not in p
             and p.count(". ") >= 6
         ):
-            # Split on sentence boundary (period + space + capital letter) but
-            # keep the period attached to the preceding sentence.
             sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z])", p)
             chunks = []
             current = []
             for s in sentences:
                 current.append(s)
-                # Flush every 3 sentences OR every ~400 chars — whichever first.
                 joined_len = sum(len(x) for x in current) + len(current) - 1
                 if len(current) >= 3 and joined_len >= 300:
                     chunks.append(" ".join(current))

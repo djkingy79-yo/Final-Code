@@ -186,3 +186,81 @@ async def get_case_ai_cost(case_id: str, request: Request):
         "by_report_type": by_report,
         "note": "Estimated cost based on locally counted tokens and OpenAI's Feb 2026 rate card. Actual billing on your OpenAI dashboard.",
     }
+
+
+
+# ── Evidence Profile — feeds services/appeal_strength.py realism scoring ──
+# The 19 booleans below describe what corroborating material is actually on
+# the case record. Used to (a) cap or adjust ground viability post-generation,
+# (b) compute verdict-robustness / Crown-strength / record-support and (c)
+# produce a forensic "why this may fail" explanation for each ground.
+
+EVIDENCE_PROFILE_FIELDS = [
+    # Record anchors
+    "has_trial_transcript",
+    "has_sentencing_remarks",
+    "has_psychiatric_reports",
+    "has_counsel_affidavit",
+    "has_juror_affidavit",
+    "has_expert_reports",
+    "has_judge_alone_material",
+    "has_pretrial_publicity_material",
+    # Crown case strength indicators
+    "has_forensic_evidence",
+    "has_direct_evidence",
+    "has_strong_circumstantial_evidence",
+    "multiple_consistent_witnesses",
+    "confession_or_admission",
+    "cctv_or_audio",
+    "post_offence_conduct_supports_guilt",
+    # Defence / weakness indicators
+    "disputed_identity",
+    "disputed_intent",
+    "competing_psychiatric_opinions",
+    "no_eyewitnesses",
+]
+
+
+@router.get("/{case_id}/evidence-profile")
+async def get_evidence_profile(case_id: str, request: Request):
+    """Return the evidence profile flags for a case. All False if never saved."""
+    user = await get_current_user(request)
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"_id": 0, **{f: 1 for f in EVIDENCE_PROFILE_FIELDS}},
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    return {f: bool(case.get(f, False)) for f in EVIDENCE_PROFILE_FIELDS}
+
+
+@router.put("/{case_id}/evidence-profile")
+async def set_evidence_profile(case_id: str, request: Request):
+    """Save the evidence profile. Re-syncs grounds so realism scoring updates
+    immediately without waiting for the next pipeline run."""
+    user = await get_current_user(request)
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    updates = {f: bool(payload.get(f, False)) for f in EVIDENCE_PROFILE_FIELDS}
+    updates["evidence_profile_updated_at"] = datetime.now(timezone.utc).isoformat()
+
+    result = await db.cases.update_one(
+        {"case_id": case_id, "user_id": user.user_id},
+        {"$set": updates},
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    # Kick grounds re-sync so realism scoring reflects the new profile right
+    # away. Fire-and-forget — UI will show updated badges on next /grounds fetch.
+    try:
+        from routers.grounds import _sync_pipeline_issues_to_grounds
+        await _sync_pipeline_issues_to_grounds(case_id, user.user_id)
+    except Exception:
+        # Non-fatal — save still succeeds; realism will update on next sync.
+        pass
+
+    return {"ok": True, "profile": {f: updates[f] for f in EVIDENCE_PROFILE_FIELDS}}
