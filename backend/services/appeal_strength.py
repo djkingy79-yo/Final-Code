@@ -275,28 +275,41 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
     ground.verdict_robustness = verdict_robustness
     ground.crown_strength = crown_strength
 
+    # Helper to log trail entries for realism decisions.
+    def _log(msg: str) -> None:
+        if ground.reasoning_trail is None:
+            ground.reasoning_trail = []
+        ground.reasoning_trail.append(msg)
+
     if record_support == "none":
+        prior = ground.viability
         ground.viability = cap_viability(ground.viability, "weak")
+        if ground.viability != prior:
+            _log(f"Realism cap: no record anchor detected → viability '{prior}' → 'weak'.")
         ground.failure_risk = build_failure_risk(
             ground, record_support, verdict_robustness, crown_strength, profile
         )
         return ground
 
     if record_support == "limited":
+        prior = ground.viability
         ground.viability = cap_viability(ground.viability, "requires_development")
+        if ground.viability != prior:
+            _log(f"Realism cap: limited record support → viability '{prior}' → 'requires_development'.")
 
     if ground.type == "conviction":
         if verdict_robustness == "overwhelming":
+            prior = ground.viability
             ground.viability = cap_viability(ground.viability, "arguable_moderate")
+            if ground.viability != prior:
+                _log(f"Proviso risk (overwhelming Crown case): viability '{prior}' → 'arguable_moderate'.")
         elif verdict_robustness == "strong":
+            prior = ground.viability
             ground.viability = cap_viability(ground.viability, "arguable_moderate")
+            if ground.viability != prior:
+                _log(f"Strong Crown case: viability '{prior}' → 'arguable_moderate'.")
 
-    # Jury integrity post-verdict overstatement cap — counsel feedback:
-    # post-verdict juror conduct (e.g. waving at victim's family AFTER verdict)
-    # has minimal probative value on deliberative bias and cannot, without
-    # contemporaneous trial record + juror affidavit, sustain a jury-integrity
-    # ground at anything above weak. If content mentions "post-verdict" or
-    # "after verdict" in a jury context, cap at weak.
+    # Post-verdict juror conduct cap.
     if ground.type == "procedure":
         text = _text_blob(ground)
         if any(x in text for x in ("juror", "jury")):
@@ -308,10 +321,14 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
                 profile.has_trial_transcript and profile.has_juror_affidavit
             )
             if is_post_verdict_only and no_contemporaneous_record:
+                prior = ground.viability
                 ground.viability = cap_viability(ground.viability, "weak")
+                if ground.viability != prior:
+                    _log(f"Post-verdict juror-conduct rule: minimal probative value on deliberative bias without contemporaneous record + juror affidavit → viability '{prior}' → 'weak'.")
 
     if crown_strength == "strong" and ground.viability == "arguable_strong":
         ground.viability = "arguable_moderate"
+        _log("Strong Crown response: viability 'arguable_strong' → 'arguable_moderate'.")
 
     ground.failure_risk = build_failure_risk(
         ground, record_support, verdict_robustness, crown_strength, profile

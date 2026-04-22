@@ -73,13 +73,28 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_pathway="Procedural unfairness under s 6(1) Criminal Appeal Act 1912 (NSW)",
         evidence_pathway="Evidentiary miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)",
         ineffective_counsel_pathway="Miscarriage of justice arising from conduct of trial under s 6(1) Criminal Appeal Act 1912 (NSW)",
-        conviction_terms=COMMON_CONVICTION_TERMS | {"s 18", "section 18", "s 23a", "section 23a", "substantial impairment", "abnormality of mind"},
-        sentence_terms=COMMON_SENTENCE_TERMS | {"s 21a", "section 21a", "s 3a", "section 3a", "sentencing procedure"},
+        conviction_terms=COMMON_CONVICTION_TERMS | {
+            "s 18", "section 18", "s 23a", "section 23a",
+            "substantial impairment", "abnormality of mind",
+            "mental illness defence", "beyond reasonable doubt",
+        },
+        sentence_terms=COMMON_SENTENCE_TERMS | {
+            "s 21a", "section 21a", "s 3a", "section 3a",
+            "sentencing procedure", "house v the king", "house v king",
+        },
         procedure_terms=COMMON_PROCEDURE_TERMS | {"s 132", "section 132", "jury act"},
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"s 23a", "section 23a", "substantial impairment", "abnormality of mind"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation", "s 21a", "section 21a", "s 3a", "section 3a"},
+        hard_conviction_terms={
+            "s 23a", "section 23a", "substantial impairment", "abnormality of mind",
+            "unsafe verdict", "mens rea", "mental illness defence",
+            "beyond reasonable doubt",
+        },
+        hard_sentence_terms={
+            "manifestly excessive", "manifest excess", "rehabilitation",
+            "s 21a", "section 21a", "s 3a", "section 3a",
+            "house v the king", "house v king",
+        },
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "VIC": JurisdictionRuleSet(

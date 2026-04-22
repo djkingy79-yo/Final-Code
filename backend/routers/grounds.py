@@ -420,14 +420,12 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 new_issue = dict(issue)
                 new_issue["ground_type"] = match.type or issue.get("ground_type", "other")
                 new_issue["appellate_pathway"] = match.pathway or issue.get("appellate_pathway", "")
-                # Keep normalised title if the normaliser rewrote it
                 new_issue["title"] = match.title or original_title
-                # Realism fields (from appeal_strength.py). Visible on the frontend
-                # ground card and in all print/PDF/Word exports.
                 new_issue["record_support"] = match.record_support
                 new_issue["verdict_robustness"] = match.verdict_robustness
                 new_issue["crown_strength"] = match.crown_strength
                 new_issue["failure_risk"] = match.failure_risk
+                new_issue["reasoning_trail"] = match.reasoning_trail or []
                 rewritten_issues.append(new_issue)
         issues = rewritten_issues
     except Exception as norm_err:
@@ -478,6 +476,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "verdict_robustness": issue.get("verdict_robustness"),
             "crown_strength": issue.get("crown_strength"),
             "failure_risk": issue.get("failure_risk"),
+            "reasoning_trail": issue.get("reasoning_trail") or [],
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 

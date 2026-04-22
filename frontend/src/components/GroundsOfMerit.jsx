@@ -129,7 +129,8 @@ const RealismBadges = ({ ground, size = "sm" }) => {
   const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
   const cs = ground?.crown_strength && CROWN_CONFIG[ground.crown_strength];
   const fr = ground?.failure_risk;
-  if (!rs && !vr && !cs && !fr) return null;
+  const trail = Array.isArray(ground?.reasoning_trail) ? ground.reasoning_trail.filter(Boolean) : [];
+  if (!rs && !vr && !cs && !fr && trail.length === 0) return null;
   const textCls = size === "sm" ? "text-[11px]" : "text-xs";
   return (
     <div className="mt-2 space-y-2" data-testid="realism-badges">
@@ -143,6 +144,19 @@ const RealismBadges = ({ ground, size = "sm" }) => {
           <strong className="font-semibold uppercase tracking-wide text-[10px] mr-1">Why this may fail:</strong>
           {fr}
         </div>
+      )}
+      {trail.length > 0 && (
+        <details className="rounded border border-slate-200 bg-slate-50" data-testid="chain-of-reasoning">
+          <summary className="cursor-pointer list-none px-3 py-2 flex items-center justify-between text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
+            <span>Chain of reasoning <span className="text-slate-500 font-normal normal-case ml-1">({trail.length} step{trail.length === 1 ? "" : "s"})</span></span>
+            <span className="text-slate-400 text-lg leading-none">›</span>
+          </summary>
+          <ol className="px-3 pb-3 pt-1 space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
+            {trail.map((entry, idx) => (
+              <li key={idx} className="leading-snug" data-testid={`reasoning-step-${idx + 1}`}>{entry}</li>
+            ))}
+          </ol>
+        </details>
       )}
     </div>
   );
