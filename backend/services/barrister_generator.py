@@ -1049,6 +1049,10 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
 
         # ── Citation post-processing: strip hallucinated citations from Barrister output ──
         clean_analysis = strip_hallucinated_citations(analysis_result.get("analysis", ""))
+        # Normalise markdown BEFORE storing — guarantees every heading, bullet
+        # and table has proper blank-line spacing across all export surfaces.
+        from services.md_normaliser import normalise_markdown
+        clean_analysis = normalise_markdown(clean_analysis)
 
         await db.reports.update_one(
             {"report_id": report_id},

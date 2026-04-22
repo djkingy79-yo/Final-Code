@@ -176,11 +176,13 @@ async def on_startup():
             recover_orphaned_reports,
             flag_undersized_reports,
             dedup_grounds_on_startup,
+            backfill_markdown_normalise_on_startup,
         )
         try:
             await recover_orphaned_reports()
             await flag_undersized_reports()
             await dedup_grounds_on_startup()
+            await backfill_markdown_normalise_on_startup()
         except Exception as e:
             logger.error(f"Background startup task failed: {e}")
 

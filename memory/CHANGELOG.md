@@ -1,6 +1,34 @@
 # Appeal Case Manager — Changelog
 
 
+## 22 Apr 2026 — Permanent Markdown Fix + DB Backfill + Auto-migration
+The end of the multi-week markdown/heading regression. Three-layer defence:
+
+### Layer 1 — Server-side normalisation AT SAVE TIME
+New `/app/backend/services/md_normaliser.py` mirrors the frontend `mdRender.js`. Applied BEFORE every LLM-generated string is written to MongoDB across:
+- `services/report_generator.py` — all four report types (Quick Summary / Full Detailed / Extensive Log / Barrister)
+- `services/barrister_generator.py` — Appellate Research Brief
+- `routers/grounds.py` — `deep_analysis.full_analysis` + `analysis`
+- `routers/analysis.py` — Progress Analysis
+
+### Layer 2 — Strengthened LLM prompt
+Added explicit rule to `FORMATTING RULES`: *"Every heading line MUST appear on its OWN line with a BLANK LINE BEFORE and AFTER. NEVER place a heading at the end of a paragraph. Non-compliant output will be rejected."*
+
+### Layer 3 — Auto-migration on startup
+`services/startup_tasks.py :: backfill_markdown_normalise_on_startup` scans every report + ground on every backend boot, normalises the markdown, and writes only if content changed. Idempotent. Deployed once → on the next prod boot every existing broken report auto-repairs. No admin action required.
+
+### Backfill hit (on the preview DB this session)
+- **145 reports repaired** out of 195 scanned — covers Quick Summary, Full Detailed, Extensive Log, Barrister Brief
+- **48 grounds repaired** out of 139 scanned
+- After repair, the Homann Full Detailed now shows 16 parseable `## N.` section headings (was being treated as 4 inline blocks).
+
+### Tightened ReportView typography (80-page blow-up fix)
+`line-height: 1.75 → 1.5`, heading top-margin `1.2rem → 0.75rem`, print body locked at `11pt / line-height 1.4`, list-item margin halved. Deb's 80-page PDF should now collapse to ~30.
+
+### Frontend coverage (unchanged from 21 Apr but now aligned with backend)
+Every render + export surface routes through the same normaliser: Report View, Grounds (single + multi), Timeline events, Notes, Case Progress, Complete Case Bundle (Print All / PDF All / Word All), and the 4th Appellate Research Brief.
+
+
 ## 21 Apr 2026 (evening) — "All 4 Reports + All Sections in One Bundle"
 
 ### Added to Print All / PDF All / Word All

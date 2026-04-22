@@ -280,6 +280,79 @@ async def dedup_grounds_on_startup():
         logger.error(f"Startup dedup failed (non-fatal): {e}")
 
 
+async def backfill_markdown_normalise_on_startup():
+    """DO_NOT_UNDO — Idempotent markdown normaliser backfill.
+
+    Scans all reports and grounds, normalises LLM markdown that may have been
+    stored with inline `## Heading` or glued bullet lists. Runs once per
+    deploy; documents already clean are skipped in-memory (no DB write).
+
+    This ensures when the app is deployed to production for the first time
+    after the md_normaliser fix, all existing broken reports auto-repair.
+    Safe to re-run on every startup because only CHANGED content triggers
+    a write.
+    """
+    from services.md_normaliser import normalise_markdown
+
+    try:
+        reports_scanned = reports_fixed = 0
+        async for report in db.reports.find({"content.analysis": {"$exists": True}}):
+            reports_scanned += 1
+            content = report.get("content") or {}
+            original = content.get("analysis") or ""
+            if not original:
+                continue
+            normalised = normalise_markdown(original)
+            if normalised != original:
+                await db.reports.update_one(
+                    {"report_id": report["report_id"]},
+                    {"$set": {"content.analysis": normalised}},
+                )
+                reports_fixed += 1
+
+        grounds_scanned = grounds_fixed = 0
+        async for g in db.grounds_of_merit.find(
+            {"$or": [
+                {"deep_analysis.full_analysis": {"$exists": True}},
+                {"analysis": {"$exists": True, "$ne": ""}},
+            ]}
+        ):
+            grounds_scanned += 1
+            updates = {}
+            deep = g.get("deep_analysis") or {}
+            full_orig = deep.get("full_analysis") if isinstance(deep, dict) else None
+            if full_orig:
+                full_norm = normalise_markdown(full_orig)
+                if full_norm != full_orig:
+                    updates["deep_analysis.full_analysis"] = full_norm
+            analysis_orig = g.get("analysis")
+            if analysis_orig:
+                analysis_norm = normalise_markdown(analysis_orig)
+                if analysis_norm != analysis_orig:
+                    updates["analysis"] = analysis_norm
+            if updates:
+                await db.grounds_of_merit.update_one(
+                    {"ground_id": g["ground_id"]},
+                    {"$set": updates},
+                )
+                grounds_fixed += 1
+
+        if reports_fixed or grounds_fixed:
+            logger.info(
+                f"Startup markdown backfill: repaired {reports_fixed}/{reports_scanned} reports, "
+                f"{grounds_fixed}/{grounds_scanned} grounds"
+            )
+        else:
+            logger.info(
+                f"Startup markdown backfill: all clean "
+                f"(scanned {reports_scanned} reports, {grounds_scanned} grounds)"
+            )
+    except Exception as e:
+        logger.error(f"Startup markdown backfill failed (non-fatal): {e}")
+
+
+
+
 def shutdown_db():
     """Close the MongoDB client on shutdown."""
     client.close()

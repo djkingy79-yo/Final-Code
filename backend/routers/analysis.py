@@ -157,6 +157,10 @@ Be specific to the jurisdiction and offence type. Use Australian legal terminolo
     try:
         response = await call_llm_with_fallback(system_prompt, f"Analyse the progress of this criminal appeal case:\n\n{context}", f"progress_{case_id}")
         response = enforce_forensic_language(response)
+        # Normalise markdown so headings/bullets/tables render cleanly on every
+        # export surface. See services/md_normaliser.py
+        from services.md_normaliser import normalise_markdown
+        response = normalise_markdown(response)
         return {"analysis": response, "generated_at": datetime.now(timezone.utc).isoformat()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
