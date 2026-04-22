@@ -35,6 +35,24 @@ _BULLET_TIGHTEN = re.compile(r"([\-\*][^\n]+)\n\n(?=[\-\*]\s)")
 _NUMLIST_TIGHTEN = re.compile(r"(\d+\.[^\n]+)\n\n(?=\d+\.\s)")
 _INLINE_BULLET_AFTER_PUNCT = re.compile(r"([:.!?])\s*-\s\*\*")
 _INLINE_BULLET_AFTER_WORD = re.compile(r"([a-z.]\.)\s+-\s\*\*")
+# LLM often emits numbered bold-label paragraphs INLINE as a single block:
+#   "1. **Appellate Pathway:** text. 2. **Ground:** text. 3. **Error Identified:** ..."
+# which renders as one giant run-on paragraph. Split each "N. **Label:**"
+# onto its own paragraph so every sub-heading becomes a real <h4>-style block.
+_NUMBERED_BOLD_LABEL_INLINE = re.compile(
+    r"(^|[.!?])\s*(?:\d+\.)\s+\*\*([A-Z][A-Za-z][^*\n]{1,60}?:)\*\*\s+",
+    re.MULTILINE,
+)
+# Same for un-numbered inline bold labels mid-paragraph:
+#   "...established. **Materiality:** This error... **Consequence:** ..."
+_BOLD_LABEL_INLINE = re.compile(
+    r"([.!?])\s+\*\*([A-Z][A-Za-z][^*\n]{1,60}?:)\*\*\s+"
+)
+# A paragraph of raw prose with no \n\n internal breaks and > 800 chars is a
+# wall-of-text LLM slip. Insert a paragraph break after sentences that end
+# with a date or legal citation, or after every 3rd sentence (>= 200 chars
+# elapsed since last break). Preserves sentence boundaries.
+_LONG_PARA_SENTENCE_SPLIT_MIN_CHARS = 800
 
 
 def normalise_markdown(raw: str | None) -> str:
@@ -69,5 +87,48 @@ def normalise_markdown(raw: str | None) -> str:
     # Inline bullets glued to prose by punctuation
     text = _INLINE_BULLET_AFTER_PUNCT.sub(r"\1\n- **", text)
     text = _INLINE_BULLET_AFTER_WORD.sub(r"\1\n- **", text)
+
+    # Split "1. **Label:** ..." mid-paragraph sequences onto their own lines.
+    # Strips the "N." number — the bold label IS the heading. Run twice in case
+    # two numbered labels appeared back-to-back.
+    for _ in range(2):
+        text = _NUMBERED_BOLD_LABEL_INLINE.sub(r"\1\n\n**\2** ", text)
+
+    # Split un-numbered bold-label paragraphs ("Materiality:", "Consequence:",
+    # "Appellate Viability:") that sit inline after a sentence-ending period.
+    # Common pattern in Deep Investigation Analysis output.
+    for _ in range(2):
+        text = _BOLD_LABEL_INLINE.sub(r"\1\n\n**\2** ", text)
+
+    # Wall-of-text repair: any paragraph > 800 chars with no internal \n\n
+    # and at least 6 sentence boundaries gets split after every 3rd sentence.
+    # Preserves semantics; only acts on LLM paragraphs that are unambiguously
+    # too long to read.
+    paragraphs = text.split("\n\n")
+    repaired_paras = []
+    for p in paragraphs:
+        if (
+            len(p) >= _LONG_PARA_SENTENCE_SPLIT_MIN_CHARS
+            and "\n" not in p
+            and p.count(". ") >= 6
+        ):
+            # Split on sentence boundary (period + space + capital letter) but
+            # keep the period attached to the preceding sentence.
+            sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z])", p)
+            chunks = []
+            current = []
+            for s in sentences:
+                current.append(s)
+                # Flush every 3 sentences OR every ~400 chars — whichever first.
+                joined_len = sum(len(x) for x in current) + len(current) - 1
+                if len(current) >= 3 and joined_len >= 300:
+                    chunks.append(" ".join(current))
+                    current = []
+            if current:
+                chunks.append(" ".join(current))
+            repaired_paras.append("\n\n".join(chunks))
+        else:
+            repaired_paras.append(p)
+    text = "\n\n".join(repaired_paras)
 
     return text.strip()

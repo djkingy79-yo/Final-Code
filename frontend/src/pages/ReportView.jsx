@@ -1310,8 +1310,9 @@ const ReportView = () => {
           font-weight: 800;
           font-size: 0.8rem;
           white-space: normal;
-          word-break: normal;
+          word-break: keep-all;
           overflow-wrap: normal;
+          hyphens: none;
           vertical-align: top;
         }
         .legal-report th, .legal-report td {
@@ -1320,14 +1321,15 @@ const ReportView = () => {
           font-size: 0.85rem;
           vertical-align: top;
           white-space: normal;
-          word-break: break-word;
+          word-break: keep-all;
+          overflow-wrap: break-word;
+          hyphens: none;
         }
         .legal-report th {
           color: #ffffff !important;
         }
         .legal-report td {
           color: #0f172a;
-          overflow-wrap: anywhere;
         }
         @media (max-width: 768px) {
           .legal-report {
@@ -1369,9 +1371,9 @@ const ReportView = () => {
           .legal-report h4 { font-size: 11pt; margin: 6pt 0 2pt; }
           .legal-report ul, .legal-report ol { margin: 2pt 0 6pt; }
           .legal-report li { margin-bottom: 1pt; font-size: 11pt; line-height: 1.4; }
-          .legal-report table { background: #ffffff; }
-          .legal-report th { background: #1d4ed8; color: #ffffff !important; }
-          .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; }
+          .legal-report table { background: #ffffff; width: 100%; table-layout: fixed; font-size: 9pt; }
+          .legal-report th { background: #1d4ed8; color: #ffffff !important; font-size: 9pt; padding: 4pt 5pt; word-break: keep-all; overflow-wrap: break-word; hyphens: none; }
+          .legal-report th, .legal-report td { color: #0f172a; border-color: #cbd5e1; padding: 4pt 5pt; word-break: keep-all; overflow-wrap: break-word; hyphens: none; font-size: 9pt; line-height: 1.3; }
           .legal-report blockquote { background: #eff6ff; color: #1e3a8a; border-left: 4px solid #1e3a8a; }
         }
       `}</style>

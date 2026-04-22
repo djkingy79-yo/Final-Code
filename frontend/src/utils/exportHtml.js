@@ -123,9 +123,10 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     padding: 5px 7px;
     text-align: left;
     border: 1px solid #cbd5e1;
-    font-size: 9.5pt;
-    word-wrap: break-word;
+    font-size: 9pt;
+    word-break: keep-all;
     overflow-wrap: break-word;
+    hyphens: none;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -133,10 +134,11 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .section-body td {
     padding: 5px 7px;
     border: 1px solid #e2e8f0;
-    font-size: 10pt;
-    word-wrap: break-word;
+    font-size: 9pt;
+    line-height: 1.35;
+    word-break: keep-all;
     overflow-wrap: break-word;
-    hyphens: auto;
+    hyphens: none;
     vertical-align: top;
   }
   .export-body tr:nth-child(even) td,
