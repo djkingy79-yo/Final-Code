@@ -812,6 +812,11 @@ RULES:
         if verification_dict.get("supporting_items"):
             update_fields["supporting_evidence"] = verification_dict["supporting_items"]
         if deep_analysis_text:
+            # Normalise markdown BEFORE storing — prevents inline `##` headings
+            # and glued bullet lists from hitting the DB. See
+            # /app/backend/services/md_normaliser.py for patterns handled.
+            from services.md_normaliser import normalise_markdown
+            deep_analysis_text = normalise_markdown(deep_analysis_text)
             update_fields["deep_analysis"] = {
                 "full_analysis": deep_analysis_text,
                 "generated_at": datetime.now(timezone.utc).isoformat(),

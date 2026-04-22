@@ -17,9 +17,23 @@ export const normaliseMarkdown = (raw = "") => {
   text = text.replace(/([^\n])\n(#{1,6})\s/g, "$1\n\n$2 ");
   // SAME for ATX headings appearing mid-line (e.g. after a sentence-ending
   // period where the LLM forgot the newline): "...sentence. ## Heading" →
-  // "...sentence.\n\n## Heading\n\n". Requires at least one space or
-  // punctuation before the "##" so we don't eat literal "#" inside words.
-  text = text.replace(/([.!?:;])\s+(#{2,6})\s+([A-Z][^\n#]{2,80})(?=\s|$)/g, "$1\n\n$2 $3\n\n");
+  // "...sentence.\n\n## Heading\n\n". Accept both letter-starting and
+  // digit-starting heading text (handles "## 2. FORENSIC CASE CHRONOLOGY",
+  // "## 3. DOCUMENT EVIDENCE DIGEST", etc.).
+  text = text.replace(/([.!?:;])\s+(#{2,6})\s+([A-Z0-9][^\n#]{2,100})(?=\s|$)/g, "$1\n\n$2 $3\n\n");
+  // Also handle the mid-word case where there's NO punctuation separator — the
+  // LLM occasionally glues prose directly to a heading: "...firearms ## Materiality"
+  // or "...possession element of. ## Appellate Viability". We require a space
+  // before the ## so we don't break literal "#" inside code.
+  text = text.replace(/([a-zA-Z0-9)"])\s{1,4}(#{2,6})\s+([A-Z0-9][^\n#]{2,100})(?=\s|$)/g, "$1\n\n$2 $3\n\n");
+  // Split `### Heading Title Body continues` where heading has 1-5 Title-Case
+  // words and body starts with a capital word + common verb/connector. This
+  // catches "### Secondary Issue There is a tenable argument..." and
+  // "### Primary Issue It is arguable that..." patterns.
+  text = text.replace(
+    /(#{3,6})\s+((?:[A-Z][A-Za-z0-9'-]+(?:\s+(?:and|of|in|to|on|for|the|a|an|vs\.?|v\.?))?\s?){1,5})(?=[A-Z][a-z]+\s+(?:is|was|has|have|had|will|would|may|can|might|shall|should|must|appears|indicates))/g,
+    "$1 $2\n\n"
+  );
   // Ensure a blank line BEFORE bullet / numbered lists when the preceding
   // line is regular prose (not already blank and not another list item).
   text = text.replace(/([^\n\-\*\d])\n([\-\*]\s+)/g, "$1\n\n$2");

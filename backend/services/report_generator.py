@@ -497,6 +497,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
 - Every section heading MUST be followed by substantive content (minimum 3-4 detailed paragraphs). If a section cannot be substantiated from the case material, omit it entirely.
 - Include the year in ALL legislation references (e.g. Crimes Act 1900 (NSW), NOT just Crimes Act (NSW)).
 - SECTION HEADINGS: Use ONLY ## for numbered section headings (e.g. ## 1. EXECUTIVE BRIEF). Do NOT create sub-sections with ### headings. Do NOT put bold text on its own line as a sub-heading. Instead, write flowing paragraphs and use bold text inline (e.g. "The **legal threshold** for this ground requires...").
+- CRITICAL MARKDOWN SPACING: Every heading line (##, ###, ####) MUST appear on its OWN line with a BLANK LINE BEFORE IT and a BLANK LINE AFTER IT. NEVER place a heading at the end of a paragraph (e.g. "...appellant. ## 2. CHRONOLOGY"). NEVER place prose on the same line as a heading. Non-compliant output will be rejected.
 - FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (minimum 300 words in Quick Summary, 800+ words in Full Detailed, 1200+ words in Extensive). Do NOT use bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
 """
     
@@ -1919,6 +1920,11 @@ REPORT TO EXPAND:
 
     response = _strip_report_placeholders(response)
     response = _sanitise_suspect_authorities(response)
+    # DO_NOT_UNDO — Normalise markdown BEFORE persisting so bad LLM formatting
+    # (inline `## Heading`, `- **Bullet**` glued to prose, missing blank lines
+    # around tables) can never hit the DB. Applies to all report types.
+    from services.md_normaliser import normalise_markdown
+    response = normalise_markdown(response)
     response = response.strip()
 
     # Preserve the actual grounds linked to the case so reports reflect the real ground count.
