@@ -44,39 +44,39 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { background: #fff; }
-  /* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
+  /* CANONICAL PRINT SPEC (locked 22-Apr-2026 by owner — WYSIWYG tightened)
      Font:  Times New Roman
-     Body:  11pt, line-height 1.5
-     H1:    14pt bold
-     H2:    12pt bold
-     H3:    12pt bold italic
-     Paragraph gap: 10pt
-     Margins: 18mm top, 20mm sides, 22mm bottom
-     Footer: {Appellant} · {Doc Type} · {Date} (left) | Page X of Y (right), 9pt italic
+     Body:  10pt, line-height 1.35
+     H1:    13pt bold
+     H2:    11.5pt bold
+     H3:    11pt bold italic
+     Paragraph gap: 6pt
+     Margins: 14mm top, 15mm sides, 18mm bottom
+     Footer: {Appellant} · {Doc Type} · {Date} (left) | Page X of Y (right), 8.5pt italic
      Every export surface (Notes, Legal, Progress, Bundle, Grounds, Timeline,
-     Tab exports, Barrister) must use these values. */
+     Tab exports, Barrister) must use these values. Matches on-screen view. */
   body {
     font-family: 'Times New Roman', Times, serif;
-    font-size: 11pt;
+    font-size: 10pt;
     color: #1e293b;
-    line-height: 1.5;
+    line-height: 1.35;
   }
 
   /* ---------- PORTRAIT (default) ---------- */
   @page {
     size: A4 portrait;
-    margin: 18mm 20mm 22mm 20mm;
+    margin: 14mm 15mm 18mm 15mm;
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 9pt;
+      font-size: 8.5pt;
       font-style: italic;
       color: #334155;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 9pt;
+      font-size: 8.5pt;
       font-style: italic;
       color: #334155;
     }
@@ -84,18 +84,18 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   /* ---------- LANDSCAPE (tables only) ---------- */
   @page landscape-table {
     size: A4 landscape;
-    margin: 14mm 18mm 20mm 18mm;
+    margin: 12mm 14mm 15mm 14mm;
     @bottom-left {
       content: "${footerLeft}";
       font-family: 'Times New Roman', Times, serif;
-      font-size: 9pt;
+      font-size: 8.5pt;
       font-style: italic;
       color: #334155;
     }
     @bottom-right {
       content: "Page " counter(page) " of " counter(pages);
       font-family: 'Times New Roman', Times, serif;
-      font-size: 9pt;
+      font-size: 8.5pt;
       font-style: italic;
       color: #334155;
     }
@@ -205,63 +205,54 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
   .export-meta-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-size: 8pt; }
   .export-meta-value { font-weight: 600; color: #0f172a; }
 
-  .export-body { padding: 16px 24px; }
+  .export-body { padding: 12px 18px; }
   .export-body h2 {
     font-family: 'Times New Roman', Times, serif;
-    font-size: 12pt;
+    font-size: 11.5pt;
     font-weight: 700;
     color: #0f172a;
-    margin: 14px 0 6px;
-    padding-bottom: 3px;
-    border-bottom: 1.5px solid ${accentColor};
-    /* H2 keeps page-break-after:avoid so section titles don't orphan
-       alone at page bottom with no body text below. */
+    margin: 8px 0 3px;
+    padding-bottom: 2px;
+    border-bottom: 1.2px solid ${accentColor};
     page-break-after: avoid;
     break-after: avoid;
   }
-  /* H3 / H4 intentionally do NOT force break-after. Previously this was
-     causing whole subsections (heading + 20 paragraphs) to push to the next
-     page, leaving half-blank pages. Browser default orphans:3 widows:3
-     gives correct pagination. */
-  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; font-style: italic; color: #1e293b; margin: 12px 0 4px; }
-  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; color: #1e293b; margin: 10px 0 3px; }
+  .export-body h3 { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-weight: 700; font-style: italic; color: #1e293b; margin: 6px 0 2px; }
+  .export-body h4 { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; font-weight: 700; color: #1e293b; margin: 5px 0 2px; }
 
-  /* PARAGRAPH SPACING — locked by owner 2026-02:
-     - Line-height INSIDE a paragraph: 1.5 (comfortable legal reading)
-     - Gap BETWEEN paragraphs: 10pt (clear whitespace, no gaps) */
+  /* PARAGRAPH SPACING (WYSIWYG — locked 22-Apr-2026):
+     - Line-height INSIDE a paragraph: 1.35
+     - Gap BETWEEN paragraphs: 6pt */
   .export-body p,
-  .section-body p { margin: 0 0 10pt 0; font-size: 11pt; line-height: 1.5; orphans: 3; widows: 3; }
+  .section-body p { margin: 0 0 6pt 0; font-size: 10pt; line-height: 1.35; orphans: 3; widows: 3; }
   .export-body ul, .export-body ol,
-  .section-body ul, .section-body ol { margin: 4px 0 10pt; padding-left: 1.6rem; }
+  .section-body ul, .section-body ol { margin: 2px 0 6pt; padding-left: 1.3rem; }
   .export-body li,
-  .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.5; }
+  .section-body li { margin-bottom: 1.5pt; font-size: 10pt; line-height: 1.35; }
 
-  .export-body .note-card { background: #ffffff; border: 2px solid #1e3a5f; border-radius: 6px; padding: 10px 12px; margin-bottom: 10pt; break-inside: avoid; }
-  .export-body .note-title { font-weight: 700; font-size: 12pt; color: #0f172a; margin-bottom: 2px; }
-  .export-body .note-date { font-size: 10pt; color: #64748b; margin-bottom: 4px; font-style: italic; }
-  .export-body .note-content { font-size: 11pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; line-height: 1.5; }
-  .export-body .section-block { margin-bottom: 14pt; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; page-break-inside: avoid; break-inside: avoid; }
+  .export-body .note-card { background: #ffffff; border: 1.5px solid #1e3a5f; border-radius: 5px; padding: 6px 8px; margin-bottom: 6pt; break-inside: avoid; }
+  .export-body .note-title { font-weight: 700; font-size: 11pt; color: #0f172a; margin-bottom: 1px; }
+  .export-body .note-date { font-size: 9pt; color: #64748b; margin-bottom: 3px; font-style: italic; }
+  .export-body .note-content { font-size: 10pt; color: #1e293b; white-space: pre-wrap; font-weight: 600; line-height: 1.35; }
+  .export-body .section-block { margin-bottom: 8pt; padding: 6px; border: 1px solid #e2e8f0; border-radius: 5px; page-break-inside: avoid; break-inside: avoid; }
   .export-body .section-block h3 { margin-top: 0; }
 
-  .toc-container { background: #ffffff; padding: 10px 24px; break-after: page; page-break-after: always; }
-  .toc-heading { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 700; margin: 0 0 6px; }
-  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
+  .toc-container { background: #ffffff; padding: 6px 18px; break-after: page; page-break-after: always; }
+  .toc-heading { font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; font-weight: 700; margin: 0 0 4px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; }
   .toc-item { font-size: 8pt; color: #334155; padding: 1px 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .sections { padding: 16px 24px; }
-  .section { margin-bottom: 18pt; break-inside: auto; }
-  .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${accentColor}; padding-left: 10px; margin-bottom: 6px; break-after: avoid; page-break-after: avoid; }
-  .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; margin-right: 2px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  /* belt-and-braces separator between number and title — works even if the
-     flex gap collapses (older Safari / print engines) or the circle doesn't
-     render, preventing "1Case Summary" concat seen on some mobile previews. */
+  .sections { padding: 12px 18px; }
+  .section { margin-bottom: 10pt; break-inside: auto; }
+  .section-header { display: flex; align-items: center; gap: 6px; border-left: 2.5px solid ${accentColor}; padding-left: 8px; margin-bottom: 4px; break-after: avoid; page-break-after: avoid; }
+  .section-number { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 9.5pt; font-weight: 700; flex-shrink: 0; margin-right: 2px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .section-number::after { content: ""; }
-  .section-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
+  .section-title { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
   .section-title::before { content: none; }
-  .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.5; }
-  .section-body h3 { font-size: 12pt; font-weight: 700; font-style: italic; color: #1e293b; margin: 12px 0 4px; padding-top: 6px; border-top: 1px solid #e2e8f0; }
+  .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 5px; padding: 8px 12px; font-size: 10pt; line-height: 1.35; }
+  .section-body h3 { font-size: 11pt; font-weight: 700; font-style: italic; color: #1e293b; margin: 6px 0 2px; padding-top: 4px; border-top: 1px solid #e2e8f0; }
   .section-body h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
-  .section-body h4 { font-size: 11pt; font-weight: 700; color: #1e293b; margin: 10px 0 3px; }
+  .section-body h4 { font-size: 10.5pt; font-weight: 700; color: #1e293b; margin: 5px 0 2px; }
   .section-body strong { color: #0f172a; font-weight: 700; }
 
   .flex { display: flex; }
@@ -330,18 +321,18 @@ export function buildExportHtml({ title, sectionTitle, defendantName, bodyHtml, 
     /* Mobile / iPad: preserve canonical sizes for WYSIWYG parity with the
        printed PDF. Only the container padding shrinks so text isn't jammed
        against the screen edge. Fonts stay at the locked print spec. */
-    body { font-size: 11pt; line-height: 1.5; }
-    .export-container { padding: 6px; max-width: 100%; }
-    .export-header { padding: 10px 12px; }
-    .export-header h1 { font-size: 14pt; }
-    .export-header p { font-size: 11pt; }
-    .export-meta { padding: 6px 12px; gap: 6px; font-size: 10pt; }
-    .export-body, .sections { padding: 8px 12px; }
-    .export-body h2 { font-size: 12pt; margin: 10px 0 4px; }
-    .export-body h3, .section-body h3 { font-size: 12pt; margin: 8px 0 3px; }
-    .export-body p, .section-body p { font-size: 11pt; margin: 0 0 10pt 0; line-height: 1.5; }
-    .export-body li, .section-body li { font-size: 11pt; line-height: 1.5; }
-    .export-body table, .section-body table { font-size: 9.5pt; }
+    body { font-size: 10pt; line-height: 1.35; }
+    .export-container { padding: 4px; max-width: 100%; }
+    .export-header { padding: 8px 10px; }
+    .export-header h1 { font-size: 13pt; }
+    .export-header p { font-size: 10pt; }
+    .export-meta { padding: 5px 10px; gap: 5px; font-size: 9.5pt; }
+    .export-body, .sections { padding: 6px 10px; }
+    .export-body h2 { font-size: 11.5pt; margin: 8px 0 3px; }
+    .export-body h3, .section-body h3 { font-size: 11pt; margin: 6px 0 2px; }
+    .export-body p, .section-body p { font-size: 10pt; margin: 0 0 6pt 0; line-height: 1.35; }
+    .export-body li, .section-body li { font-size: 10pt; line-height: 1.35; }
+    .export-body table, .section-body table { font-size: 9pt; }
     .export-body th, .export-body td, .section-body th, .section-body td { padding: 3px 5px; }
     .disclaimer { margin: 8px 12px; padding: 8px 10px; }
     .disclaimer strong { font-size: 10pt; }
