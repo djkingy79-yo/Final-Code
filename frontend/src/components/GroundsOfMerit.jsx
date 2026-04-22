@@ -403,7 +403,19 @@ const GroundsOfMerit = ({
           </div>
         </div>
 
-        {grounds.map((ground, index) => (
+        {grounds
+          .filter((ground) => {
+            // Filter out any ground with NO usable content at all — these
+            // render as blank reader cards in print/Word/PDF. A ground must
+            // have at least a description, deep analysis, or law sections
+            // to be included in the export.
+            const hasDesc = (ground.description || "").trim().length > 10;
+            const hasAnalysis = ((ground.deep_analysis?.full_analysis) || ground.analysis || "").trim().length > 50;
+            const hasEvidence = (ground.supporting_evidence || []).length > 0;
+            const hasLaw = (ground.law_sections || []).filter(s => s?.section && s.section.trim() !== "").length > 0;
+            return hasDesc || hasAnalysis || hasEvidence || hasLaw;
+          })
+          .map((ground, index) => (
           <section key={ground.ground_id || index} className="grounds-export-section">
             <div className="grounds-export-title-wrap">
               <h2>{`Ground ${index + 1}: ${auSpelling(ground.title)}`}</h2>
@@ -469,7 +481,7 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {(ground.deep_analysis?.full_analysis || ground.analysis) && (
+            {(ground.deep_analysis?.full_analysis || ground.analysis) ? (
               <div className="grounds-export-analysis">
                 <h3>Deep Investigation Analysis</h3>
                 <div
@@ -478,6 +490,10 @@ const GroundsOfMerit = ({
                     __html: renderMarkdownToHtml(ground.deep_analysis?.full_analysis || ground.analysis || ""),
                   }}
                 />
+              </div>
+            ) : (
+              <div className="grounds-export-block" style={{background:'#fef3c7', border:'1px solid #fbbf24', borderRadius:'4px', padding:'4px 8px', marginTop:'4px'}}>
+                <p style={{margin:0, fontSize:'9pt', fontStyle:'italic', color:'#92400e'}}>Deep Investigation Analysis has not yet been generated for this ground. Run "Generate Analysis" from the ground detail view to populate this section.</p>
               </div>
             )}
 
