@@ -32,8 +32,7 @@ import LegitimacyPanel from "./LegitimacyPanel";
 import EvidenceSummary from "./EvidenceSummary";
 import auSpelling from "../utils/auSpelling";
 import { normaliseMarkdown, renderMarkdownToHtml } from "../utils/mdRender";
-
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { API } from "../App";
 
 /* DO NOT UNDO — Australian spelling normaliser imported from utils/auSpelling.js
    The shared utility is now used across all components. */

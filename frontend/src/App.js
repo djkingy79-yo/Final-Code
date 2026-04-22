@@ -54,11 +54,26 @@ const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
-// DO_NOT_UNDO — Use REACT_APP_BACKEND_URL. Earlier attempt to switch to
-// relative `/api` paths (routing via Cloudflare → custom domain) caused 520
-// errors on PATCH/reorder + extract-text endpoints in production. Direct
-// calls to the backend URL work reliably for ALL verbs / payload sizes.
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || window.location.origin;
+// DO_NOT_UNDO — PERMANENT FIX for Deb's prod deploy.
+//
+// The `REACT_APP_BACKEND_URL` in .env is ALWAYS the Emergent preview URL
+// (e.g. https://criminal-appeals-au-2.preview.emergentagent.com). When the
+// same compiled bundle is served on her custom production domain
+// (criminallawappealmanagement.com.au), using that env var means every API
+// call + Google OAuth redirect routes to the PREVIEW backend, NOT her own
+// domain. Result: CORS fails, OAuth state never gets written to her prod
+// origin, and the prod deploy appears to "never receive updates".
+//
+// Fix: ALWAYS use window.location.origin as the backend URL. Emergent's
+// Kubernetes ingress routes /api/* to the backend on every domain the app
+// is served on (preview AND custom domain), so this works everywhere.
+//
+// The ONLY time we fall back to the env var is during server-side rendering
+// or non-browser contexts where `window` isn't defined.
+const BACKEND_URL =
+  typeof window !== "undefined" && window.location && window.location.origin
+    ? window.location.origin.replace(/\/$/, "")
+    : (process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "");
 export const API = `${BACKEND_URL}/api`;
 
 // Configure axios with timeout
