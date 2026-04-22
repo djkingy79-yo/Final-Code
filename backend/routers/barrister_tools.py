@@ -82,7 +82,23 @@ FORENSIC TONE RULES — NEVER BLAME, ACCUSE, OR EDITORIALISE:
 • Even when arguing for dismissal, treat the appellant's arguments with
   professional courtesy. The Crown's role is to assist the Court.
 
-You return ONE JSON object only (no markdown, no preamble)."""
+You return ONE JSON object only (no markdown, no preamble).
+
+ADVERSARIAL THRESHOLDS — The Court will ask what you attack. Build every rebuttal around THESE Crown weapons where they apply:
+
+1. **CONDUCT EVIDENCE** — What did the appellant physically do at the time of the offence? Purposive, organised, goal-directed conduct tends to exclude reasonable hypothesis of no intent. Identify the most damning conduct and rely on it first.
+
+2. **POST-OFFENCE BEHAVIOUR** — Flight, concealment, lies to police, disposal of evidence, changed appearance, false alibi, attempts to intimidate witnesses. All tend to exclude reasonable hypothesis of lack of intent.
+
+3. **REJECTION OF PSYCHIATRIC EVIDENCE** — Where competing psychiatric opinions exist, the jury is entitled to prefer the Crown's expert. The Court will not disturb that preference unless it is "not open on the evidence" (M v The Queen (1994) 181 CLR 487). Frame the appellant's challenge as an impermissible invitation to re-try the expert evidence.
+
+4. **PROVISO ARGUMENT** — For conviction grounds: even if error is shown, the Court of Criminal Appeal may apply the proviso (Criminal Appeal Act 1912 (NSW) s 6(1) proviso; equivalent in each jurisdiction) where no substantial miscarriage of justice has actually occurred. Deploy this where the Crown case is strong.
+
+5. **FORENSIC CHOICE** — For ineffective counsel grounds: counsel's conduct at trial is presumed to be forensic choice, not incompetence, unless the appellant can show the choice was objectively unreasonable AND operated to deny a fair trial (TKWJ v The Queen (2002) 212 CLR 124).
+
+6. **SENTENCING RANGE** — For sentencing grounds: the sentence must be shown to be "unreasonable or plainly unjust" (House v The King (1936) 55 CLR 499). Mere disagreement is insufficient. Mitigation factors must have been omitted or misapplied, not merely weighed differently.
+
+7. **POST-VERDICT JURY CONDUCT** — For jury grounds: distinguish deliberative bias (probative) from post-verdict conduct (minimal probative value). Absent contemporaneous trial-record complaint or juror affidavit, post-verdict conduct will not disturb the verdict."""
 
 
 class CrownResponseResult(BaseModel):

@@ -291,6 +291,25 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
         elif verdict_robustness == "strong":
             ground.viability = cap_viability(ground.viability, "arguable_moderate")
 
+    # Jury integrity post-verdict overstatement cap — counsel feedback:
+    # post-verdict juror conduct (e.g. waving at victim's family AFTER verdict)
+    # has minimal probative value on deliberative bias and cannot, without
+    # contemporaneous trial record + juror affidavit, sustain a jury-integrity
+    # ground at anything above weak. If content mentions "post-verdict" or
+    # "after verdict" in a jury context, cap at weak.
+    if ground.type == "procedure":
+        text = _text_blob(ground)
+        if any(x in text for x in ("juror", "jury")):
+            is_post_verdict_only = any(x in text for x in (
+                "post-verdict", "post verdict", "after verdict", "after the verdict",
+                "after deliberations", "once the verdict was returned",
+            ))
+            no_contemporaneous_record = not (
+                profile.has_trial_transcript and profile.has_juror_affidavit
+            )
+            if is_post_verdict_only and no_contemporaneous_record:
+                ground.viability = cap_viability(ground.viability, "weak")
+
     if crown_strength == "strong" and ground.viability == "arguable_strong":
         ground.viability = "arguable_moderate"
 

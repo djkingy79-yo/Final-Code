@@ -68,7 +68,7 @@ COMMON_INEFFECTIVE_COUNSEL_TERMS = {
 JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
     "NSW": JurisdictionRuleSet(
         code="NSW",
-        conviction_pathway="Conviction appeal / miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)",
+        conviction_pathway="Conviction appeal / miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW). Where s 23A Crimes Act 1900 (NSW) is engaged, the ground operates as a PARTIAL DEFENCE reducing murder to manslaughter — NOT as sentencing mitigation.",
         sentence_pathway="Sentence appeal under s 6(1) Criminal Appeal Act 1912 (NSW)",
         procedure_pathway="Procedural unfairness under s 6(1) Criminal Appeal Act 1912 (NSW)",
         evidence_pathway="Evidentiary miscarriage of justice under s 6(1) Criminal Appeal Act 1912 (NSW)",

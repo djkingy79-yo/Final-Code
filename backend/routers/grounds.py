@@ -918,7 +918,10 @@ Assess the strength of this ground using:
 State what further material could strengthen or weaken this ground.
 
 GROUND FRAMING RULES:
-- If this ground involves psychiatric/mental state evidence → frame as a CONVICTION SAFETY attack on mens rea determination, not merely evidentiary criticism. Ask: was the requisite mental state (intent to kill, intent to cause GBH, reckless indifference) properly determined given the competing psychiatric evidence?
+- **NEVER MERGE CONVICTION AND SENTENCING ISSUES in one ground.** Conviction attacks the verdict (s 6(1) miscarriage of justice / unsafe verdict). Sentencing attacks the penalty (House v The King error / manifest excess). If both apply, the case has TWO grounds.
+- **Partial defences — s 23A Crimes Act 1900 (NSW), substantial impairment, abnormality of mind, diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS) — operate on LIABILITY (reducing murder to manslaughter). They are NEVER sentencing mitigation. Frame them as mens-rea displacement mechanisms, not as mental-health mitigation.**
+- If this ground involves psychiatric/mental state evidence → frame as a CONVICTION SAFETY attack on mens rea determination. **EXPLICITLY articulate the M v The Queen (1994) 181 CLR 487 formulation**: "Could the jury, acting reasonably, have excluded a reasonable hypothesis consistent with lack of intent given the competing psychiatric evidence?" Omitting this formulation makes the ground structurally defective.
+- If this ground involves jury-integrity conduct → distinguish clearly between (a) deliberative bias during trial (probative) and (b) post-verdict conduct (minimal probative value). Do NOT inflate post-verdict conduct to moderate or strong; require contemporaneous trial-record complaint and juror affidavit before elevating above "weak".
 - If this ground involves ineffective counsel → note clearly that this ground is "Contingent — requires evidentiary support (affidavit from accused, transcript confirmation)" and that the threshold is extremely high.
 - If this ground involves sentencing → tie to proportionality and moral culpability. The question is whether "the sentence reflects true culpability" not merely "the judge got it wrong."
 

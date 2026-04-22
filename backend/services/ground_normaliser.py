@@ -122,6 +122,20 @@ def classify_text(text: str, jurisdiction: str) -> GroundType:
     t = normalise(text)
     rules = get_rules(jurisdiction)
 
+    # HARD PRIORITY: s 23A (NSW), diminished responsibility (QLD), mental
+    # impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS) are
+    # PARTIAL DEFENCES — they operate on liability, reducing murder to
+    # manslaughter. Counsel feedback: these must NEVER be classified as
+    # sentencing mitigation. Check liability partial-defence terms first.
+    _PARTIAL_DEFENCE_TERMS = {
+        "s 23a", "section 23a", "substantial impairment", "abnormality of mind",
+        "diminished responsibility", "mental impairment defence",
+        "defence of mental impairment", "unsoundness of mind", "mental incompetence",
+        "partial defence",
+    }
+    if any(term in t for term in _PARTIAL_DEFENCE_TERMS):
+        return "conviction"
+
     if any(term in t for term in rules.hard_conviction_terms):
         return "conviction"
     if any(term in t for term in rules.hard_sentence_terms):
@@ -200,7 +214,12 @@ def filter_items_by_type(items: list[str], gtype: GroundType, jurisdiction: str)
         item_type = classify_text(item, jurisdiction)
         if item_type == gtype:
             out.append(item)
-    return out if out else list(items or [])
+    # Empty fallback — do NOT fall back to the ORIGINAL list when filtering
+    # for a split. Returning the mixed originals would re-contaminate the
+    # split grounds with off-topic content (e.g. a "Sentencing Error" split
+    # inheriting psychiatric supporting evidence, which then flips the ground
+    # type back to conviction during revalidation).
+    return out
 
 
 def canonical_title(title: str) -> str:
@@ -219,8 +238,56 @@ def canonical_title(title: str) -> str:
 
 
 def split_mixed_ground(ground: Ground, jurisdiction: str) -> list[Ground]:
+    """Split a ground into separate grounds when its content spans multiple
+    appellate pathways. Two triggers:
+
+    1. SUB-PARTICULARS with different detected types (original behaviour).
+    2. HARD RULE: if the parent content contains BOTH hard_conviction AND
+       hard_sentence indicators (or procedure + conviction, etc.), force-
+       split into separate grounds. Counsel feedback: "Do not merge conviction
+       grounds with sentencing grounds under any circumstance."
+    """
     classify_sub_particulars(ground, jurisdiction)
-    parent_type = classify_text(blob_for_ground(ground), jurisdiction)
+    rules = get_rules(jurisdiction)
+    parent_text = blob_for_ground(ground)
+
+    # Hard-split trigger: does the parent content straddle liability + penalty?
+    has_conv = any(term in parent_text for term in rules.hard_conviction_terms)
+    has_sent = any(term in parent_text for term in rules.hard_sentence_terms)
+    has_proc = any(term in parent_text for term in rules.hard_procedure_terms)
+
+    active_types: list[GroundType] = []
+    if has_conv:
+        active_types.append("conviction")
+    if has_sent:
+        active_types.append("sentence")
+    if has_proc and len(active_types) >= 1:  # only split proc off if mixed with another
+        active_types.append("procedure")
+
+    if len(active_types) >= 2:
+        # Build a synthetic ground per active type, routing the relevant
+        # sub-particulars + fields to each.
+        split: list[Ground] = []
+        for gtype in active_types:
+            split.append(
+                Ground(
+                    title=build_title_for_type(ground.title, gtype),
+                    type=gtype,
+                    pathway=infer_pathway(jurisdiction, gtype),
+                    viability=ground.viability,
+                    supporting_evidence=filter_items_by_type(ground.supporting_evidence, gtype, jurisdiction),
+                    relevant_law_sections=filter_items_by_type(ground.relevant_law_sections, gtype, jurisdiction),
+                    authorities=filter_items_by_type(ground.authorities, gtype, jurisdiction),
+                    trial_finding=ground.trial_finding,
+                    error_identified=ground.error_identified if gtype == "conviction" else None,
+                    materiality=ground.materiality if gtype == "conviction" else None,
+                    consequence=ground.consequence if gtype == "conviction" else None,
+                    sub_particulars=[sp for sp in (ground.sub_particulars or []) if sp.detected_type == gtype],
+                )
+            )
+        return split
+
+    parent_type = classify_text(parent_text, jurisdiction)
 
     if not ground.sub_particulars:
         ground.type = parent_type
