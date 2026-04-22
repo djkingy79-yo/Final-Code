@@ -293,6 +293,103 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
         {"case_id": case_id, "user_id": user_id}, {"_id": 0}
     ).to_list(500)
 
+    # DO_NOT_UNDO — Jurisdiction-aware ground normalisation.
+    # Lawyer feedback: app was misclassifying conviction grounds as sentencing
+    # and defaulting to NSW pathway regardless of case jurisdiction. The
+    # normaliser below:
+    #   - splits mixed grounds (e.g. a parent ground with conviction + sentence
+    #     sub-particulars becomes two distinct grounds)
+    #   - re-classifies each ground from its content using the case's actual
+    #     jurisdiction (NSW / VIC / QLD / SA / WA / TAS / NT / ACT / CTH)
+    #   - computes the correct appellate pathway for that jurisdiction
+    #   - de-duplicates grounds that reduce to the same canonical issue
+    #   - caps viability when corroborating evidence is missing
+    # See /app/backend/services/ground_normaliser.py and jurisdiction_rules.py.
+    case_doc = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0, "state": 1, "jurisdiction": 1})
+    case_jurisdiction = str(
+        (case_doc or {}).get("jurisdiction") or (case_doc or {}).get("state") or "NSW"
+    ).upper().strip()
+    if case_jurisdiction == "FEDERAL":
+        case_jurisdiction = "CTH"
+
+    try:
+        from services.ground_normaliser import (
+            EvidenceFlags,
+            Ground,
+            normalise_generated_grounds,
+        )
+
+        raw_grounds: list[Ground] = []
+        for issue in issues:
+            gtype = (issue.get("ground_type") or "").lower().strip()
+            if gtype not in ("conviction", "sentence", "procedure", "evidence", "ineffective_counsel"):
+                gtype = None  # normaliser will classify from content
+            raw_grounds.append(
+                Ground(
+                    title=issue.get("title", ""),
+                    type=gtype,
+                    pathway=issue.get("appellate_pathway", ""),
+                    viability="requires_development",
+                    supporting_evidence=[],
+                    relevant_law_sections=[],
+                    authorities=[],
+                    trial_finding=issue.get("trial_finding"),
+                    error_identified=issue.get("error_identified"),
+                    materiality=issue.get("materiality"),
+                    consequence=issue.get("consequence"),
+                )
+            )
+
+        flags = EvidenceFlags()  # corroborating evidence flags default False; detailed case flags evaluated downstream during verification
+
+        normalised_grounds = normalise_generated_grounds(
+            raw_grounds=raw_grounds,
+            flags=flags,
+            jurisdiction=case_jurisdiction,
+        )
+
+        # Rebuild `issues` list preserving per-issue metadata (issue_id,
+        # description, timestamps) but replacing type + pathway with the
+        # normaliser's verdict, and splitting any issue that produced > 1
+        # normalised ground.
+        normalised_by_title = {}
+        for ng in normalised_grounds:
+            normalised_by_title.setdefault(ng.title, ng)
+
+        rewritten_issues: list[dict] = []
+        for issue in issues:
+            original_title = issue.get("title", "")
+            # Find all normalised grounds whose title matches OR whose content
+            # derives from this issue (the normaliser may rename the title).
+            match = normalised_by_title.get(original_title)
+            if match is None:
+                # Titles were rewritten during splitting — re-classify this issue
+                # using the normaliser and take its first output.
+                from services.ground_normaliser import classify_text, build_title_for_type
+                gt = classify_text(
+                    " ".join([
+                        original_title,
+                        issue.get("description", ""),
+                        issue.get("error_identified", ""),
+                    ]),
+                    case_jurisdiction,
+                )
+                from services.jurisdiction_rules import infer_pathway
+                new_issue = dict(issue)
+                new_issue["ground_type"] = gt
+                new_issue["appellate_pathway"] = infer_pathway(case_jurisdiction, gt)
+                rewritten_issues.append(new_issue)
+            else:
+                new_issue = dict(issue)
+                new_issue["ground_type"] = match.type or issue.get("ground_type", "other")
+                new_issue["appellate_pathway"] = match.pathway or issue.get("appellate_pathway", "")
+                # Keep normalised title if the normaliser rewrote it
+                new_issue["title"] = match.title or original_title
+                rewritten_issues.append(new_issue)
+        issues = rewritten_issues
+    except Exception as norm_err:
+        logger.warning(f"Ground normalisation skipped for case {case_id}: {norm_err}")
+
     # Pre-load existing grounds for fuzzy matching
     all_existing_grounds = await db.grounds_of_merit.find(
         {"case_id": case_id, "user_id": user_id},

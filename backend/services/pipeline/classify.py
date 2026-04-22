@@ -157,6 +157,8 @@ Return ONLY valid JSON:
 }}
 
 STRICT RULES:
+- DO NOT COMBINE CONVICTION GROUNDS AND SENTENCING GROUNDS. If a candidate ground spans multiple appellate pathways, output SEPARATE grounds (one per pathway). Mental impairment / substantial impairment / diminished responsibility issues belong to LIABILITY (conviction safety) unless clearly framed only as sentencing mitigation.
+- ALWAYS preserve the case jurisdiction ({state.upper() if state else 'UNSPECIFIED'}). NEVER default to NSW — use the correct Acts and pathway provisions for the actual case jurisdiction.
 - Identify as many distinct grounds as the evidence supports. Aim for 8-15 grounds if the case material warrants it.
 - However, CLUSTER related factual issues under a single ground with sub-particulars where they share the same underlying legal matrix (e.g. jury-related issues under "Procedural Unfairness (Jury Integrity)"). The Court of Criminal Appeal prefers "one ground, multiple particulars" — this makes the appeal cleaner, stronger, and more persuasive.
 - Each ground MUST include an appellate_pathway field identifying the specific statutory provision engaged.
