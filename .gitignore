@@ -448,3 +448,12 @@ test_reports/
 backend/tests/test_google_oauth_iteration*.py
 backend/tests/test_security_fixes_iteration*.py
 .env.example
+-e 
+# Environment and credential files
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
