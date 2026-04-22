@@ -305,7 +305,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
     #   - de-duplicates grounds that reduce to the same canonical issue
     #   - caps viability when corroborating evidence is missing
     # See /app/backend/services/ground_normaliser.py and jurisdiction_rules.py.
-    case_doc = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0, "state": 1, "jurisdiction": 1})
+    case_doc = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
     case_jurisdiction = str(
         (case_doc or {}).get("jurisdiction") or (case_doc or {}).get("state") or "NSW"
     ).upper().strip()
@@ -348,6 +348,43 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             jurisdiction=case_jurisdiction,
         )
 
+        # Realism scoring — post-normalisation. Attaches record_support,
+        # verdict_robustness, crown_strength, and failure_risk to each ground,
+        # and caps viability where the record or prosecution case is strong.
+        try:
+            from services.appeal_strength import (
+                CaseEvidenceProfile,
+                score_grounds_for_realism,
+            )
+            # Evidence profile — pull from case_doc if the main agent has
+            # populated it on the case record; otherwise safe defaults (all False)
+            # which gives conservative realism assessments.
+            cx = case_doc or {}
+            profile = CaseEvidenceProfile(
+                has_trial_transcript=bool(cx.get("has_trial_transcript")),
+                has_sentencing_remarks=bool(cx.get("has_sentencing_remarks")),
+                has_psychiatric_reports=bool(cx.get("has_psychiatric_reports")),
+                has_counsel_affidavit=bool(cx.get("has_counsel_affidavit")),
+                has_juror_affidavit=bool(cx.get("has_juror_affidavit")),
+                has_expert_reports=bool(cx.get("has_expert_reports")),
+                has_judge_alone_material=bool(cx.get("has_judge_alone_material")),
+                has_pretrial_publicity_material=bool(cx.get("has_pretrial_publicity_material")),
+                has_forensic_evidence=bool(cx.get("has_forensic_evidence")),
+                has_direct_evidence=bool(cx.get("has_direct_evidence")),
+                has_strong_circumstantial_evidence=bool(cx.get("has_strong_circumstantial_evidence")),
+                multiple_consistent_witnesses=bool(cx.get("multiple_consistent_witnesses")),
+                confession_or_admission=bool(cx.get("confession_or_admission")),
+                cctv_or_audio=bool(cx.get("cctv_or_audio")),
+                post_offence_conduct_supports_guilt=bool(cx.get("post_offence_conduct_supports_guilt")),
+                disputed_identity=bool(cx.get("disputed_identity")),
+                disputed_intent=bool(cx.get("disputed_intent")),
+                competing_psychiatric_opinions=bool(cx.get("competing_psychiatric_opinions")),
+                no_eyewitnesses=bool(cx.get("no_eyewitnesses")),
+            )
+            normalised_grounds = score_grounds_for_realism(normalised_grounds, profile)
+        except Exception as realism_err:
+            logger.warning(f"Realism scoring skipped for case {case_id}: {realism_err}")
+
         # Rebuild `issues` list preserving per-issue metadata (issue_id,
         # description, timestamps) but replacing type + pathway with the
         # normaliser's verdict, and splitting any issue that produced > 1
@@ -385,6 +422,12 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 new_issue["appellate_pathway"] = match.pathway or issue.get("appellate_pathway", "")
                 # Keep normalised title if the normaliser rewrote it
                 new_issue["title"] = match.title or original_title
+                # Realism fields (from appeal_strength.py). Visible on the frontend
+                # ground card and in all print/PDF/Word exports.
+                new_issue["record_support"] = match.record_support
+                new_issue["verdict_robustness"] = match.verdict_robustness
+                new_issue["crown_strength"] = match.crown_strength
+                new_issue["failure_risk"] = match.failure_risk
                 rewritten_issues.append(new_issue)
         issues = rewritten_issues
     except Exception as norm_err:
@@ -430,6 +473,11 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "source_mode": "derived",
             "requires_human_review": (verification or {}).get("requires_human_review", True),
             "verification_status": (verification or {}).get("verification_status", "unverified"),
+            # Realism scoring — set by services/appeal_strength.py
+            "record_support": issue.get("record_support"),
+            "verdict_robustness": issue.get("verdict_robustness"),
+            "crown_strength": issue.get("crown_strength"),
+            "failure_risk": issue.get("failure_risk"),
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 

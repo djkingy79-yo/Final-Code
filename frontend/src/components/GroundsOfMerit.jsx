@@ -104,6 +104,50 @@ const STATUS_CONFIG = {
   needs_review: { color: "bg-amber-100 text-amber-700", label: "Needs Review" }
 };
 
+// Realism scoring badges — populated by services/appeal_strength.py.
+// Tone mapping keeps the palette consistent with existing strength badges.
+const RECORD_SUPPORT_CONFIG = {
+  strong:  { label: "Strong record support",  color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+  partial: { label: "Partial record support", color: "bg-blue-100 text-blue-800 border-blue-300" },
+  limited: { label: "Limited record support", color: "bg-amber-100 text-amber-800 border-amber-300" },
+  none:    { label: "No record anchor",       color: "bg-red-100 text-red-800 border-red-300" },
+};
+const VERDICT_CONFIG = {
+  overwhelming: { label: "Verdict robustness: Overwhelming", color: "bg-red-100 text-red-800 border-red-300" },
+  strong:       { label: "Verdict robustness: Strong",       color: "bg-amber-100 text-amber-800 border-amber-300" },
+  balanced:     { label: "Verdict robustness: Balanced",     color: "bg-blue-100 text-blue-800 border-blue-300" },
+  weak:         { label: "Verdict robustness: Weak",         color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+};
+const CROWN_CONFIG = {
+  strong:   { label: "Crown response: Strong",   color: "bg-red-100 text-red-800 border-red-300" },
+  moderate: { label: "Crown response: Moderate", color: "bg-amber-100 text-amber-800 border-amber-300" },
+  weak:     { label: "Crown response: Weak",     color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+};
+
+const RealismBadges = ({ ground, size = "sm" }) => {
+  const rs = ground?.record_support && RECORD_SUPPORT_CONFIG[ground.record_support];
+  const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
+  const cs = ground?.crown_strength && CROWN_CONFIG[ground.crown_strength];
+  const fr = ground?.failure_risk;
+  if (!rs && !vr && !cs && !fr) return null;
+  const textCls = size === "sm" ? "text-[11px]" : "text-xs";
+  return (
+    <div className="mt-2 space-y-2" data-testid="realism-badges">
+      <div className="flex flex-wrap gap-1.5">
+        {rs && <span data-testid="record-support-badge" className={`inline-flex items-center px-2 py-0.5 rounded-full border ${rs.color} ${textCls} font-semibold`}>{rs.label}</span>}
+        {vr && <span data-testid="verdict-robustness-badge" className={`inline-flex items-center px-2 py-0.5 rounded-full border ${vr.color} ${textCls} font-semibold`}>{vr.label}</span>}
+        {cs && <span data-testid="crown-strength-badge" className={`inline-flex items-center px-2 py-0.5 rounded-full border ${cs.color} ${textCls} font-semibold`}>{cs.label}</span>}
+      </div>
+      {fr && (
+        <div data-testid="failure-risk-box" className="bg-amber-50 border-l-4 border-amber-400 px-3 py-2 rounded-r text-xs text-amber-900">
+          <strong className="font-semibold uppercase tracking-wide text-[10px] mr-1">Why this may fail:</strong>
+          {fr}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const LegitimacyBreakdown = ({ scores }) => {
   if (!scores) return null;
   return (
@@ -428,6 +472,25 @@ const GroundsOfMerit = ({
 
             <p className="grounds-export-description">{auSpelling(ground.description)}</p>
 
+            {/* Realism scoring in the export view — appears as text lines (CSS
+                handles typography to match the rest of the print spec). */}
+            {(ground.record_support || ground.verdict_robustness || ground.crown_strength) && (
+              <div className="grounds-export-block grounds-export-realism">
+                <h3>Appeal Realism</h3>
+                <ul>
+                  {ground.record_support && <li><strong>Record support:</strong> {RECORD_SUPPORT_CONFIG[ground.record_support]?.label || ground.record_support}</li>}
+                  {ground.verdict_robustness && <li><strong>Verdict robustness:</strong> {(VERDICT_CONFIG[ground.verdict_robustness]?.label || ground.verdict_robustness).replace(/^Verdict robustness:\s*/, "")}</li>}
+                  {ground.crown_strength && <li><strong>Likely Crown response:</strong> {(CROWN_CONFIG[ground.crown_strength]?.label || ground.crown_strength).replace(/^Crown response:\s*/, "")}</li>}
+                </ul>
+                {ground.failure_risk && (
+                  <p style={{margin: "4pt 0 0", padding: "4pt 6pt", background: "#fef3c7", border: "1px solid #fbbf24", borderRadius: "3px", fontSize: "9.5pt"}}>
+                    <strong style={{textTransform: "uppercase", fontSize: "8.5pt", color: "#92400e"}}>Why this may fail: </strong>
+                    {ground.failure_risk}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Appellate Pathway — DO NOT UNDO */}
             {ground.appellate_pathway && (
               <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'4px', padding:'4px 8px', marginBottom:'6px'}}>
@@ -703,6 +766,7 @@ th{background:#dbeafe;font-weight:700}
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
 <p class="desc">${escHtml(ground.description)}</p>
+${(ground.record_support || ground.verdict_robustness || ground.crown_strength || ground.failure_risk) ? `<h2>Appeal Realism</h2><ul>${ground.record_support ? `<li><strong>Record support:</strong> ${escHtml(ground.record_support.replace(/_/g, ' '))}</li>` : ''}${ground.verdict_robustness ? `<li><strong>Verdict robustness:</strong> ${escHtml(ground.verdict_robustness)}</li>` : ''}${ground.crown_strength ? `<li><strong>Likely Crown response:</strong> ${escHtml(ground.crown_strength)}</li>` : ''}</ul>${ground.failure_risk ? `<p style="margin:4pt 0 6pt;padding:4pt 6pt;background:#fef3c7;border:1px solid #fbbf24;border-radius:3px;font-size:9.5pt;"><strong style="text-transform:uppercase;font-size:8.5pt;color:#92400e;">Why this may fail: </strong>${escHtml(ground.failure_risk)}</p>` : ''}` : ''}
 ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e => {
   let t = '';
   if (typeof e === 'string') {
@@ -1096,6 +1160,11 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                       <GroundProvenancePanel ground={ground} />
                       <GroundConfidenceNote ground={ground} />
 
+                      {/* Realism scoring — record support / verdict robustness /
+                          Crown strength + "why this may fail" notice. Populated
+                          by services/appeal_strength.py. */}
+                      <RealismBadges ground={ground} />
+
                       {ground.source_mode === "derived" && ground.verification_status !== "verified" ? (
                         <div className="mt-2 text-xs text-pink-600 font-bold">
                           This ground has been projected from staged pipeline analysis and should be reviewed before legal reliance.
@@ -1366,6 +1435,9 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                     {auSpelling(detailGround.title)}
                   </h3>
                   <p className="text-sm text-slate-600 mt-2 whitespace-pre-line">{auSpelling(detailGround.description)}</p>
+
+                  {/* Realism assessment — visible in detail drawer. */}
+                  <RealismBadges ground={detailGround} size="md" />
                 </div>
 
                 {/* Supporting Evidence */}

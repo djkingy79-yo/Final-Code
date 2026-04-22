@@ -57,6 +57,11 @@ class Ground:
     materiality: Optional[str] = None
     consequence: Optional[str] = None
     sub_particulars: Optional[list[SubParticular]] = None
+    # Realism scoring (set by services/appeal_strength.py)
+    record_support: Optional[str] = None          # strong | partial | limited | none
+    verdict_robustness: Optional[str] = None      # overwhelming | strong | balanced | weak
+    crown_strength: Optional[str] = None          # strong | moderate | weak
+    failure_risk: Optional[str] = None            # one-sentence explanation
 
 
 @dataclass
@@ -431,6 +436,10 @@ def ground_from_dict(data: dict) -> Ground:
         materiality=data.get("materiality"),
         consequence=data.get("consequence"),
         sub_particulars=subs,
+        record_support=data.get("record_support"),
+        verdict_robustness=data.get("verdict_robustness"),
+        crown_strength=data.get("crown_strength"),
+        failure_risk=data.get("failure_risk"),
     )
 
 
@@ -451,4 +460,8 @@ def ground_to_dict(ground: Ground) -> dict:
             {"label": sp.label, "text": sp.text, "detected_type": sp.detected_type}
             for sp in (ground.sub_particulars or [])
         ],
+        "record_support": getattr(ground, "record_support", None),
+        "verdict_robustness": getattr(ground, "verdict_robustness", None),
+        "crown_strength": getattr(ground, "crown_strength", None),
+        "failure_risk": getattr(ground, "failure_risk", None),
     }
