@@ -402,7 +402,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             if match is None:
                 # Titles were rewritten during splitting — re-classify this issue
                 # using the normaliser and take its first output.
-                from services.ground_normaliser import classify_text, build_title_for_type
+                from services.ground_normaliser import classify_text
                 gt = classify_text(
                     " ".join([
                         original_title,
