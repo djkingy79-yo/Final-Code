@@ -1,4 +1,26 @@
 # DO_NOT_UNDO — .gitignore
+#
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  PERMANENT RULE (verified 22-Apr-2026): DO NOT add `.env`, `*.env`,      ║
+# ║  `backend/.env`, or `frontend/.env` patterns to this file.               ║
+# ║                                                                          ║
+# ║  Why: Emergent native deployment REQUIRES both /app/backend/.env and     ║
+# ║  /app/frontend/.env to be committed to the repository so the deploy      ║
+# ║  pipeline can inject prod values into them. If these files are           ║
+# ║  gitignored, the prod build has no REACT_APP_BACKEND_URL / MONGO_URL /   ║
+# ║  Google OAuth client ID, and Google Sign-In breaks with "Network Error"  ║
+# ║  on the prod domain (this has happened 5+ times — see CHANGELOG 22-Apr). ║
+# ║                                                                          ║
+# ║  Safe alternatives already in place:                                     ║
+# ║   • Emergent's vault stores the actual secret values, not this repo.     ║
+# ║   • Real secrets never appear in source code (all read from os.environ). ║
+# ║   • `.env.example` template files ARE ignored (see bottom of file).      ║
+# ║   • `memory/test_credentials.md` is ignored (see bottom of file).        ║
+# ║                                                                          ║
+# ║  If a secret-scanner blocks a push, fix the leaked secret — do NOT       ║
+# ║  re-ignore the .env files.                                               ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+#
 # Dependencies
 node_modules/
 __pycache__/
