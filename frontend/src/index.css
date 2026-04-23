@@ -240,34 +240,11 @@ code, .mono {
     background: white !important;
     color: black !important;
     font-family: 'Times New Roman', Times, serif !important;
-    font-size: 12pt !important;
   }
 
   .prose {
     max-width: 100% !important;
     color: black !important;
-  }
-
-  .legal-report {
-    font-size: 12pt !important;
-    font-family: 'Times New Roman', Times, serif !important;
-  }
-
-  .legal-report h2 {
-    page-break-before: always !important;
-    font-size: 18pt !important;
-  }
-
-  .legal-report h1 {
-    font-size: 22pt !important;
-  }
-
-  .legal-report h3 {
-    font-size: 14pt !important;
-  }
-
-  .legal-report p, .legal-report li {
-    font-size: 12pt !important;
   }
 
   table {
@@ -287,8 +264,11 @@ code, .mono {
   }
 
   th {
-    background: #e5e7eb !important;
+    background: #1d4ed8 !important;
+    color: white !important;
     font-weight: bold !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .legal-report-table-wrap {
@@ -358,7 +338,6 @@ code, .mono {
   margin: 1.7rem 0 0.6rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid #cbd5e1;
-  page-break-before: always;
 }
 
 .legal-report h3 {
