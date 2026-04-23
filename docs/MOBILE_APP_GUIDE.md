@@ -1,4 +1,4 @@
-# Appeal Case Manager - Mobile App Build Guide
+# Criminal Law Appeal Management - Mobile App Build Guide
 
 ## Progressive Web App (PWA)
 The app is already configured as a PWA. Users can install it from their browser:
@@ -86,11 +86,11 @@ Then rebuild in Xcode/Android Studio and submit update.
 ## App Configuration
 
 ### Bundle IDs
-- iOS: `com.debking.criminalappeals`
-- Android: `com.debking.criminalappeals`
+- iOS: `au.com.criminallawappealmanagement`
+- Android: `au.com.criminallawappealmanagement`
 
 ### App Name
-"Appeal Case Manager"
+"Criminal Law Appeal Management"
 
 ### Version
 Update version in:
@@ -101,7 +101,7 @@ Update version in:
 ---
 
 ## Support
-For issues with mobile builds, refer to:
+For issues with mobile builds, contact Emergent support or refer to:
 - Capacitor docs: https://capacitorjs.com/docs
 - iOS submission: https://developer.apple.com/app-store/submitting/
 - Android submission: https://developer.android.com/distribute/console

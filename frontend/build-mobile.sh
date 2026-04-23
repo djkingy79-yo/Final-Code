@@ -1,24 +1,14 @@
 #!/bin/bash
-# Appeal Case Manager — Mobile App Build Script (iOS + Android via Capacitor)
-# Bundle ID: com.debking.criminalappeals
-# App Name:  Appeal Case Manager
-# ---------------------------------------------------------------------------
-# Usage:  ./build-mobile.sh        — run from anywhere (resolves frontend root
-#                                    from this script's own location; no
-#                                    hardcoded /app paths).
+# Criminal Law Appeal Management - Mobile App Build Script
+# Run this script to build iOS and Android apps
 
-set -e
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-
-echo "🚀 Appeal Case Manager — Mobile Build"
+echo "🚀 Criminal Law Appeal Management - Mobile Build"
 echo "======================================"
-echo "Working dir: $SCRIPT_DIR"
-echo ""
 
 # Step 1: Build the React app
+echo ""
 echo "📦 Step 1: Building React app..."
+cd /app/frontend
 yarn build
 
 if [ $? -ne 0 ]; then
@@ -59,10 +49,6 @@ echo ""
 echo "======================================"
 echo "🎉 BUILD PREPARATION COMPLETE!"
 echo "======================================"
-echo ""
-echo "App identity (must match App Store Connect listing):"
-echo "  Name:      Appeal Case Manager"
-echo "  Bundle ID: com.debking.criminalappeals"
 echo ""
 echo "Next steps:"
 echo ""
