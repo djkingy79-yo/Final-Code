@@ -11,7 +11,7 @@ the native build on a Mac (iOS) and any machine with Android Studio (Android).
 - **Capacitor config**: `frontend/capacitor.config.json`
   - `appId`: `com.debking.criminalappeals`
   - `appName`: Appeal Case Manager
-  - `allowNavigation`: `*.emergentagent.com`, `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au`
+  - `allowNavigation`: `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au`
 - **iOS project**: `frontend/ios/App/App.xcodeproj`
 - **Android project**: `frontend/android/`
 - **Web build**: `frontend/build/` (also copied to `ios/App/App/public/` and `android/app/src/main/assets/public/`)
@@ -31,7 +31,7 @@ REACT_APP_BACKEND_URL=https://api.criminallawappealmanagement.com.au yarn build
 npx cap sync
 ```
 
-If you skip this step the app will call the Emergent preview URL from your
+If you skip this step the app will call the wrong backend URL from your
 customers' phones — don't.
 
 ### Standard Re-Sync (after web code changes)
@@ -97,15 +97,14 @@ network, preferences, push-notifications, share, splash-screen, status-bar.
 - **CORS / backend URL**: The app calls `REACT_APP_BACKEND_URL` bundled at
   build time. Must rebuild + sync if you change that env var. Set it to your
   production API domain BEFORE the release build.
-- **Emergent auth hop**: Google OAuth redirects via `auth.emergentagent.com`
-  (Emergent's managed social login). This is unavoidable unless you swap to
-  a different auth provider — it's just the auth hop, not your backend.
+- **Google OAuth**: Uses the owner's own Google Cloud OAuth client
+  (`REACT_APP_GOOGLE_CLIENT_ID`) — no third-party auth hop, redirects go
+  directly between Google and `criminallawappealmanagement.com.au`.
 - **Cloudflare cookies**: Session token is stored in `Capacitor Preferences`
   (persistent across app launches) — no cookie issues on native.
 - **iOS signing**: Requires an Apple Developer account ($99/yr).
 - **Android permissions**: Camera + notifications are requested at runtime
   via Capacitor prompts. No further config needed.
-- **allowNavigation**: Capacitor config whitelist is already set to
-  `criminallawappealmanagement.com.au` + subdomains. Emergent's preview
-  domain is NOT whitelisted — if you ever need to test against the preview,
-  add it back temporarily or build with the preview URL.
+- **allowNavigation**: Capacitor config whitelist is set to
+  `criminallawappealmanagement.com.au` + subdomains only. Nothing else is
+  permitted — keep it that way for production.

@@ -9,7 +9,7 @@
 │   ├── config.py               # Centralised env vars, DB connection, logger
 │   ├── auth_utils.py           # Token verification, ownership checks
 │   ├── services/
-│   │   └── llm_service.py      # LLM abstraction (Emergent key → GPT-4o)
+│   │   └── llm_service.py      # LLM abstraction (owner's OpenAI key → GPT-4o)
 │   ├── routers/
 │   │   ├── auth.py             # Registration, login, Google OAuth, password change
 │   │   ├── payments.py         # PayID, Stripe, PayPal payment flows
@@ -142,7 +142,7 @@ docker-compose up
 ### Authentication
 - **Password hashing**: PBKDF2-HMAC-SHA256 with 100,000 iterations + random salt
 - **Session tokens**: UUID4, stored in MongoDB with TTL expiry
-- **Google OAuth**: Via Emergent Auth (`auth.emergentagent.com`)
+- **Google OAuth**: Owner's own Google Cloud OAuth client (`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`) — redirects directly between Google and `criminallawappealmanagement.com.au`, no third-party auth hop
 
 ### Rate Limiting
 - Auth endpoints (login, register, forgot-password): 10 requests/minute/IP
@@ -167,7 +167,9 @@ docker-compose up
 | `MONGO_URL` | Yes | MongoDB connection string |
 | `DB_NAME` | Yes | Database name |
 | `CORS_ORIGINS` | Yes | Allowed frontend origins (comma-separated) |
-| `EMERGENT_LLM_KEY` | Yes | Emergent universal key for AI features |
+| `OPENAI_API_KEY` | Yes | Owner's OpenAI API key (drives all LLM features) |
+| `GOOGLE_CLIENT_ID` | Yes | Owner's Google Cloud OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Yes | Owner's Google Cloud OAuth client secret |
 | `RESEND_API_KEY` | Yes | Resend.com API key for transactional emails |
 | `RESEND_FROM_EMAIL` | Yes | Sender email address |
 | `CONTACT_EMAIL` | Yes | Admin contact email |
@@ -204,7 +206,7 @@ curl -s "$API_URL/api/cases" -H "Authorization: Bearer $TOKEN"
 1. **MongoDB**: Ensure indexes are created on startup (handled automatically by `server.py` startup event)
 2. **Static files**: Backend serves `/static/` for uploaded documents
 3. **PDF generation**: Requires `reportlab` and `python-docx` — included in requirements.txt
-4. **File uploads**: Stored via Emergent object storage
+4. **File uploads**: Stored on the backend disk under `/app/backend/uploads/` (persistent volume on the production host)
 5. **Email**: Requires valid Resend API key and verified sender domain
 6. **Payments**: PayID (manual verification), Stripe, and PayPal supported
 
@@ -217,3 +219,4 @@ curl -s "$API_URL/api/cases" -H "Authorization: Bearer $TOKEN"
 | Report stuck in "generating" | Startup cleanup auto-recovers or fails stuck reports |
 | Translation timeout | Large reports are chunked (12KB per chunk). Increase `timeout_seconds` if needed |
 | CORS errors | Check `CORS_ORIGINS` includes the exact frontend origin (with protocol, no trailing slash) |
+, no trailing slash) |

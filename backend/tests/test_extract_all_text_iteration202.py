@@ -19,7 +19,7 @@ import io
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', "http://localhost:8001").rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com"
+    BASE_URL = "https://criminallawappealmanagement.com.au"
 
 # Test credentials
 TEST_EMAIL = "djkingy79@gmail.com"

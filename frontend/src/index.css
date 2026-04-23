@@ -1765,15 +1765,3 @@ select {
     color: black !important;
   }
 }
-
-/* Hide platform badge — matches any deploy-platform injected badge element */
-#emergent-badge,
-a[href*="emergentagent"],
-a[href*="emergent.sh"],
-[class*="emergent-badge"],
-[id*="emergent-badge"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}

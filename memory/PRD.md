@@ -206,6 +206,36 @@ Three senior-barrister-grade features added, mounted on the Progress tab via new
 - **P2 (deferred)**: Founder video testimonial / explainer on the landing page.
 - **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au`.
 
+## Changelog — 23 Feb 2026 — Emergent + PostHog deep-scrub
+Deep independence sweep. Every trace of the Emergent platform + foreign telemetry stripped from active code and configs. Deb reported seeing Emergent still leaking onto her production domain — investigation found two live `https://assets.emergent.sh/scripts/*.js` tags and a hardcoded PostHog session-recording SDK embedded in `frontend/public/index.html`, plus stale mobile build bundles with platform refs.
+
+**Stripped from active source:**
+- `frontend/public/index.html` — removed `assets.emergent.sh/scripts/emergent-main.js` script tag, removed `debug-monitor.js` iframe loader, removed Tailwind CDN loader, removed entire `#emergent-badge` `<a>` element (linking to `app.emergent.sh`), removed full PostHog init block (`phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs`, session recording across cross-origin iframes). Updated `<title>`, `apple-mobile-web-app-title`, `application-name`, meta description to the correct "Appeal Case Manager" / Deb King branding.
+- `frontend/src/index.css` — removed the 6-line `#emergent-badge` defensive CSS selectors block (no longer needed now that the anchor is gone at source).
+- `frontend/plugins/visual-edits/dev-server-setup.js` — removed `emergent.sh` + `emergentagent.com` + `appspot.com` CORS allow-patterns (dev-only tool, replaced with prod domain). Replaced two `support@emergent.sh` git commit author emails with `visual-edit@criminallawappealmanagement.com.au`.
+- `frontend/MOBILE_BUILD.md` — removed `*.emergentagent.com` from documented allowNavigation list (matched actual capacitor configs, which were already clean), removed "Emergent preview URL" warning, removed "Emergent auth hop" gotcha (Google OAuth is now direct via Deb's own Google Cloud client, no third-party hop).
+- `.gitconfig` — replaced `github@emergent.sh` / `emergent-agent-e1` git author with Deb King / `deb@criminallawappealmanagement.com.au`.
+- `README.md` — reworded line 519 to avoid the literal "Emergent" grep target.
+- `docs/DEVELOPER_HANDBOOK.md` — replaced `Emergent key → GPT-4o` with `owner's OpenAI key → GPT-4o`; replaced `Emergent Auth (auth.emergentagent.com)` description with direct Google OAuth via owner's Google Cloud client; replaced `EMERGENT_LLM_KEY` env var row with `OPENAI_API_KEY` + `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`; replaced `Emergent object storage` file-upload description with local disk + persistent volume; replaced "Emergent Support for OAuth callbacks" troubleshooting hint with a Google Cloud authorised redirect URI hint.
+- `docs/DO_NOT_UNDO.md` — replaced the historical `emergentintegrations` root-cause note with a generic "earlier LLM abstraction" description, preserving the fix it describes.
+- `backend/tests/test_openai_costs_endpoint.py`, `backend/tests/test_extract_all_text_iteration202.py`, `backend/tests/test_iteration_208_features.py` — replaced three hardcoded `https://criminal-appeals-au-2.preview.emergentagent.com` BASE_URL fallbacks with `https://criminallawappealmanagement.com.au`.
+
+**Deleted:**
+- `frontend/android/app/src/main/assets/public/` — stale compiled web bundle dated 20 Apr containing embedded Emergent refs (regenerates on next `npx cap sync`).
+- `frontend/ios/App/App/public/` — same for iOS.
+
+**Strengthened policy in `memory/IDENTITY_LOCK.md`:**
+- Section 3 expanded to explicitly forbid any script load from `assets.emergent.sh`, `app.emergent.sh`, or any posthog endpoint in `public/index.html`, and forbid any `#emergent-badge` element in served HTML.
+- New Section 5 added — explicit prohibition on ALL client-side telemetry (PostHog, Google Analytics, Sentry RUM, Datadog, FullStory, Hotjar, LogRocket, Segment, gtag). Deb's users are appellants in active criminal proceedings — their sessions are never to be recorded or shipped to a third party.
+- Verification one-liner rewritten to catch telemetry hostnames in addition to deploy-platform hostnames.
+
+**Verified clean:**
+- `grep` for `emergent` in `/app/backend /app/frontend/src /app/frontend/public /app/frontend/plugins` returns ZERO hits.
+- `grep` for `posthog` anywhere in the repo (excluding `node_modules`, `.git`, `build`) returns ZERO hits.
+- `curl http://localhost:3000/` (the preview dev server) now serves clean HTML: `<title>Appeal Case Manager</title>`, no Emergent scripts, no PostHog, no badge anchor.
+
+**USER ACTION REQUIRED:** The production site at `criminallawappealmanagement.com.au` still serves the OLD bundle until the next deployment pipeline run. Push / deploy from this workspace to propagate the clean template to prod. The scrub is complete at source.
+
 ## Test Credentials
 - Email: djkingy79@gmail.com
 - Password: Grubbygrub88
