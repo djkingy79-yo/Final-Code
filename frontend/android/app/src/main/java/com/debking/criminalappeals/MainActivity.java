@@ -1,4 +1,4 @@
-package com.debking.criminalappeals;
+package au.com.criminallawappealmanagement;
 
 import com.getcapacitor.BridgeActivity;
 

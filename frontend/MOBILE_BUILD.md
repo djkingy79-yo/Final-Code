@@ -1,4 +1,4 @@
-# Appeal Case Manager — Native Mobile Build Guide
+# Criminal Law Appeal Management — Native Mobile Build Guide
 
 Last synced: 19 Apr 2026 — Capacitor v7.6.2 — 12 plugins
 
@@ -9,9 +9,9 @@ the native build on a Mac (iOS) and any machine with Android Studio (Android).
 ## Current State
 
 - **Capacitor config**: `frontend/capacitor.config.json`
-  - `appId`: `com.debking.criminalappeals`
-  - `appName`: Appeal Case Manager
-  - `allowNavigation`: `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au`
+  - `appId`: `au.com.criminallawappealmanagement`
+  - `appName`: Criminal Law Appeal Management
+  - `allowNavigation`: `*.emergentagent.com`, `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au`
 - **iOS project**: `frontend/ios/App/App.xcodeproj`
 - **Android project**: `frontend/android/`
 - **Web build**: `frontend/build/` (also copied to `ios/App/App/public/` and `android/app/src/main/assets/public/`)
@@ -31,7 +31,7 @@ REACT_APP_BACKEND_URL=https://api.criminallawappealmanagement.com.au yarn build
 npx cap sync
 ```
 
-If you skip this step the app will call the wrong backend URL from your
+If you skip this step the app will call the Emergent preview URL from your
 customers' phones — don't.
 
 ### Standard Re-Sync (after web code changes)
@@ -55,7 +55,7 @@ npx cap sync
    - Product → Archive
    - Distribute App → App Store Connect → Upload
 6. In App Store Connect:
-   - Create a new app with bundle ID `com.debking.criminalappeals`.
+   - Create a new app with bundle ID `au.com.criminallawappealmanagement`.
    - Attach the uploaded build, complete metadata/screenshots, submit.
 
 ## Android Build (any OS with JDK 17 + Android Studio)
@@ -76,7 +76,7 @@ npx cap sync
      ```
    - Select **AAB** (Android App Bundle) for Google Play Store upload.
 5. Upload the generated `.aab` to Google Play Console under the
-   `com.debking.criminalappeals` app.
+   `au.com.criminallawappealmanagement` app.
 
 ## Re-Syncing After Web Code Changes
 
@@ -97,14 +97,15 @@ network, preferences, push-notifications, share, splash-screen, status-bar.
 - **CORS / backend URL**: The app calls `REACT_APP_BACKEND_URL` bundled at
   build time. Must rebuild + sync if you change that env var. Set it to your
   production API domain BEFORE the release build.
-- **Google OAuth**: Uses the owner's own Google Cloud OAuth client
-  (`REACT_APP_GOOGLE_CLIENT_ID`) — no third-party auth hop, redirects go
-  directly between Google and `criminallawappealmanagement.com.au`.
+- **Emergent auth hop**: Google OAuth redirects via `auth.emergentagent.com`
+  (Emergent's managed social login). This is unavoidable unless you swap to
+  a different auth provider — it's just the auth hop, not your backend.
 - **Cloudflare cookies**: Session token is stored in `Capacitor Preferences`
   (persistent across app launches) — no cookie issues on native.
 - **iOS signing**: Requires an Apple Developer account ($99/yr).
 - **Android permissions**: Camera + notifications are requested at runtime
   via Capacitor prompts. No further config needed.
-- **allowNavigation**: Capacitor config whitelist is set to
-  `criminallawappealmanagement.com.au` + subdomains only. Nothing else is
-  permitted — keep it that way for production.
+- **allowNavigation**: Capacitor config whitelist is already set to
+  `criminallawappealmanagement.com.au` + subdomains. Emergent's preview
+  domain is NOT whitelisted — if you ever need to test against the preview,
+  add it back temporarily or build with the preview URL.
