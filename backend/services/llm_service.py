@@ -13,9 +13,7 @@ from typing import Optional, Callable, Any, Dict, Literal
 
 # DO_NOT_UNDO — Direct OpenAI SDK is fully async (AsyncOpenAI.chat.completions.create
 # is a coroutine). No ThreadPoolExecutor is required — the event loop is NOT
-# blocked, unlike the previous emergentintegrations → litellm (sync) wrapper.
-# Swapped 2026-04-21 per owner requirement to drop google-generativeai /
-# google-genai / litellm / emergentintegrations transitive deps.
+# blocked.
 from openai import AsyncOpenAI
 
 logger = logging.getLogger(__name__)
@@ -312,8 +310,7 @@ async def call_llm_structured(
 
     for idx, (provider, model_name) in enumerate(models):
         try:
-            # DO_NOT_UNDO — Direct AsyncOpenAI call. Swapped from emergentintegrations
-            # LlmChat on 2026-04-21 per owner requirement. Natively async — no
+            # DO_NOT_UNDO — Direct AsyncOpenAI call. Natively async — no
             # thread-pool shim needed. `provider` is retained in the loop tuple
             # for schema compatibility with _default_models_for_task; all slots
             # are OpenAI (see that function for rationale).
