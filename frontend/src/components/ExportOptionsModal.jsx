@@ -93,6 +93,14 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
 
   const anySelected = Object.values(sections).some(Boolean);
 
+  // Counter — respects availability so "2 of 11" when some sections are greyed
+  // out because there's no content for them (e.g. no uploaded documents).
+  const availableSectionKeys = SECTION_LABELS
+    .filter(({ key }) => availability[key] !== false)
+    .map(({ key }) => key);
+  const selectedCount = availableSectionKeys.filter((k) => sections[k]).length;
+  const totalCount = availableSectionKeys.length;
+
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onCancel(); }}>
       <DialogContent
@@ -108,6 +116,23 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
             Choose which sections to include in the {modeLabel.toLowerCase()}.
             Untick anything you don't need.
           </DialogDescription>
+          <div
+            className="mt-2 flex items-center justify-between text-xs"
+            data-testid="export-selection-counter"
+          >
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 font-semibold text-blue-800">
+              <span
+                className={`inline-block w-1.5 h-1.5 rounded-full ${selectedCount === 0 ? "bg-slate-400" : selectedCount === totalCount ? "bg-emerald-500" : "bg-blue-500"}`}
+                aria-hidden="true"
+              />
+              {selectedCount} of {totalCount} selected
+            </span>
+            <div className="flex items-center gap-2">
+              <button onClick={selectAll}  type="button" className="text-blue-700 hover:underline font-medium" data-testid="export-select-all">Select all</button>
+              <span className="text-slate-300">·</span>
+              <button onClick={selectNone} type="button" className="text-slate-500 hover:underline font-medium" data-testid="export-select-none">None</button>
+            </div>
+          </div>
         </DialogHeader>
 
         {/* Scrollable middle — iOS Safari fix: without this the Confirm button
@@ -158,12 +183,6 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
                 </label>
               );
             })}
-          </div>
-
-          <div className="flex items-center gap-2 text-xs pt-1">
-            <button onClick={selectAll}  type="button" className="text-blue-700 hover:underline" data-testid="export-select-all">Select all</button>
-            <span className="text-slate-300">·</span>
-            <button onClick={selectNone} type="button" className="text-slate-500 hover:underline" data-testid="export-select-none">Select none</button>
           </div>
         </div>
 
