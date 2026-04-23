@@ -14,6 +14,7 @@ from services.llm_service import call_llm_with_fallback
 from services.offence_helpers import (
     _build_recent_legislation_context, _build_state_framework_context,
     _build_federal_framework_context,
+    enforce_forensic_language,
 )
 from services.report_quality import (
     _strip_report_placeholders,
@@ -1010,6 +1011,12 @@ SOURCE REPORTS
     response = "\n".join(cleaned_lines)
 
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
+
+    # DO NOT UNDO — Runtime forensic language enforcement: rewrites any
+    # "determined that / found that / concluded that" characterisation language
+    # that slipped through the prompt, and enforces all other forensic appellate
+    # language rules defined in enforce_forensic_language (offence_helpers.py).
+    response = enforce_forensic_language(response)
 
     return {
         "analysis": response,
