@@ -78,16 +78,16 @@ const GROUND_TYPE_LABELS = {
 };
 
 const GROUND_TYPE_COLORS = {
-  procedural_error: "bg-blue-50 text-blue-700 border-blue-200",
-  fresh_evidence: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  miscarriage_of_justice: "bg-red-50 text-red-700 border-red-200",
-  sentencing_error: "bg-blue-50 text-blue-700 border-blue-200",
-  judicial_error: "bg-purple-50 text-purple-700 border-purple-200",
-  ineffective_counsel: "bg-orange-50 text-orange-700 border-orange-200",
-  prosecution_misconduct: "bg-rose-50 text-rose-700 border-rose-200",
-  jury_irregularity: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  constitutional_violation: "bg-slate-50 text-slate-700 border-slate-200",
-  other: "bg-gray-50 text-gray-700 border-gray-200"
+  procedural_error: "bg-blue-50 text-blue-700 border-blue-300",
+  fresh_evidence: "bg-amber-50 text-amber-800 border-amber-300",
+  miscarriage_of_justice: "bg-red-50 text-red-700 border-red-300",
+  sentencing_error: "bg-green-50 text-green-700 border-green-300",
+  judicial_error: "bg-purple-50 text-purple-700 border-purple-300",
+  ineffective_counsel: "bg-orange-50 text-orange-700 border-orange-300",
+  prosecution_misconduct: "bg-rose-50 text-rose-700 border-rose-300",
+  jury_irregularity: "bg-indigo-50 text-indigo-700 border-indigo-300",
+  constitutional_violation: "bg-slate-50 text-slate-700 border-slate-300",
+  other: "bg-gray-50 text-gray-700 border-gray-300"
 };
 
 const STRENGTH_CONFIG = {
@@ -140,20 +140,20 @@ const RealismBadges = ({ ground, size = "sm" }) => {
         {cs && <span data-testid="crown-strength-badge" className={`inline-flex items-center px-2 py-0.5 rounded-full border ${cs.color} ${textCls} font-semibold`}>{cs.label}</span>}
       </div>
       {fr && (
-        <div data-testid="failure-risk-box" className="bg-amber-50 border-l-4 border-amber-400 px-3 py-2 rounded-r text-xs text-amber-900">
+        <div data-testid="failure-risk-box" className="bg-amber-50 border-l-4 border-amber-400 px-3 py-1.5 rounded-r text-xs text-amber-900 leading-snug">
           <strong className="font-semibold uppercase tracking-wide text-[10px] mr-1">Why this may fail:</strong>
           {fr}
         </div>
       )}
       {trail.length > 0 && (
         <details className="rounded border border-slate-200 bg-slate-50" data-testid="chain-of-reasoning">
-          <summary className="cursor-pointer list-none px-3 py-2 flex items-center justify-between text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
+          <summary className="cursor-pointer list-none px-3 py-1 flex items-center justify-between text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
             <span>Chain of reasoning <span className="text-slate-500 font-normal normal-case ml-1">({trail.length} step{trail.length === 1 ? "" : "s"})</span></span>
             <span className="text-slate-400 text-lg leading-none">›</span>
           </summary>
-          <ol className="px-3 pb-3 pt-1 space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
+          <ol className="px-3 pb-2 pt-0.5 space-y-0.5 text-xs text-slate-700 list-decimal list-inside">
             {trail.map((entry, idx) => (
-              <li key={idx} className="leading-snug" data-testid={`reasoning-step-${idx + 1}`}>{entry}</li>
+              <li key={idx} className="leading-tight" data-testid={`reasoning-step-${idx + 1}`}>{entry}</li>
             ))}
           </ol>
         </details>
@@ -1165,8 +1165,11 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                         <VerificationBadge status={ground.verification_status} />
                         <SourceModeBadge sourceMode={ground.source_mode} />
                         {ground.ground_type ? (
-                          <span className="text-xs opacity-75">
-                            {String(ground.ground_type).replaceAll("_", " ")}
+                          <span
+                            data-testid={`ground-type-label-${ground.ground_id}`}
+                            className={`inline-flex items-center px-2.5 py-1 rounded-md border text-sm font-semibold uppercase tracking-wide ${GROUND_TYPE_COLORS[ground.ground_type] || GROUND_TYPE_COLORS.other}`}
+                          >
+                            {GROUND_TYPE_LABELS[ground.ground_type] || String(ground.ground_type).replaceAll("_", " ")}
                           </span>
                         ) : null}
                       </div>
@@ -1545,8 +1548,11 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                   <VerificationBadge status={detailGround.verification_status} />
                   <SourceModeBadge sourceMode={detailGround.source_mode} />
                   {detailGround.ground_type ? (
-                    <span className="text-xs opacity-75">
-                      {String(detailGround.ground_type).replaceAll("_", " ")}
+                    <span
+                      data-testid={`ground-type-label-detail-${detailGround.ground_id}`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md border text-sm font-semibold uppercase tracking-wide ${GROUND_TYPE_COLORS[detailGround.ground_type] || GROUND_TYPE_COLORS.other}`}
+                    >
+                      {GROUND_TYPE_LABELS[detailGround.ground_type] || String(detailGround.ground_type).replaceAll("_", " ")}
                     </span>
                   ) : null}
                 </div>
