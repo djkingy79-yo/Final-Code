@@ -6,7 +6,7 @@ on:
       prompt:
         description: Prompt passed to codex-exec via stdin
         required: false
-        default: Fix issue
+        default: Review and fix code quality issues in this repository.
       model:
         description: Codex model name
         required: false
@@ -15,6 +15,7 @@ on:
 jobs:
   codex-exec:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Run codex-exec with explicit stdin prompt
         env:
