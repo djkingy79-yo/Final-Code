@@ -382,6 +382,13 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 no_eyewitnesses=bool(cx.get("no_eyewitnesses")),
             )
             normalised_grounds = score_grounds_for_realism(normalised_grounds, profile)
+
+            # Final cleanup — counsel feedback 23 Feb 2026. Runs AFTER realism
+            # scoring so it can use record_support / verdict_robustness /
+            # crown_strength to uplift grounds that were over-downgraded, and
+            # scrub misclassified sub-particulars that survived the splitter.
+            from services.ground_cleanup import apply_cleanup
+            normalised_grounds = apply_cleanup(normalised_grounds, case_jurisdiction)
         except Exception as realism_err:
             logger.warning(f"Realism scoring skipped for case {case_id}: {realism_err}")
 
