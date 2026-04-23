@@ -1,8 +1,8 @@
 #!/bin/bash
-# Criminal Appeal AI - Mobile App Build Script
+# Criminal Law Appeal Management - Mobile App Build Script
 # Run this script to build iOS and Android apps
 
-echo "🚀 Criminal Appeal AI - Mobile Build"
+echo "🚀 Criminal Law Appeal Management - Mobile Build"
 echo "======================================"
 
 # Step 1: Build the React app

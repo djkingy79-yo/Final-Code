@@ -34,17 +34,26 @@ class RefreshPipelineRequest(BaseModel):
 
 
 def _issue_priority_rank(issue: dict) -> tuple:
+    # DO NOT UNDO — Uses the five canonical buckets, not the old 10-type vocabulary.
+    # Priority: conviction first (highest appellate impact), then procedure,
+    # then evidence, then sentence, then ineffective_counsel last (contingent ground).
     preferred_ground_order = {
+        "conviction": 0,
+        "procedure": 1,
+        "evidence": 2,
+        "sentence": 3,
+        "ineffective_counsel": 4,
+        # Legacy labels — kept so old DB records still sort sensibly until
+        # they are re-normalised through the pipeline.
         "judicial_error": 0,
+        "miscarriage_of_justice": 0,
+        "fresh_evidence": 0,
+        "prosecution_misconduct": 0,
         "procedural_error": 1,
-        "miscarriage_of_justice": 2,
-        "fresh_evidence": 3,
-        "sentencing_error": 4,
-        "jury_irregularity": 5,
-        "ineffective_counsel": 6,
-        "prosecution_misconduct": 7,
-        "constitutional_violation": 8,
-        "other": 9,
+        "jury_irregularity": 1,
+        "sentencing_error": 3,
+        "constitutional_violation": 0,
+        "other": 5,
     }
 
     confidence_order = {

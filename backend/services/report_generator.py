@@ -415,6 +415,7 @@ MANDATORY GUARDRAILS:
 - Include sentencing comparisons and precedent outcomes where relevant.
 - DO NOT include cost estimates, fee ranges, funding commentary, or budget analysis.
 - DO NOT include witness contradiction sections or witness credibility scoring sections.
+- **PARTIAL DEFENCES — ABSOLUTE RULE: s 23A Crimes Act 1900 (NSW) (substantial impairment by mental health impairment or cognitive impairment), and equivalent partial defences in other jurisdictions (diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS)), operate on LIABILITY — they reduce murder to manslaughter. They are NOT sentencing mitigation and do NOT "mitigate mental culpability". NEVER describe s 23A or its equivalents as mitigating culpability or as a sentencing consideration. Frame them ONLY as partial defences going to the liability stage: "s 23A operates as a partial defence reducing murder to manslaughter" or "it is arguable that the jury failed to properly consider whether substantial impairment was established, displacing the conviction for murder".**
 
 LANGUAGE RULES — ABSOLUTE AND NON-NEGOTIABLE:
 - This report is an EDUCATIONAL TOOL. It is NOT written by a legal team speaking on behalf of the applicant.
@@ -440,6 +441,7 @@ NO PLACEHOLDER TEXT — ABSOLUTE RULE:
 FORENSIC APPELLATE LANGUAGE — ABSOLUTE AND NON-NEGOTIABLE:
 Appellate work is about ARGUABILITY, not declarations. All conclusions must be framed forensically:
 - BANNED PHRASES (NEVER use these): "The trial judge erred", "The judge clearly erred", "This clearly shows", "This proves", "This demonstrates conclusively", "The conviction is unsafe", "The sentence is excessive", "The error is established".
+- BANNED CHARACTERISATION LANGUAGE: NEVER write "The judge determined that [X]", "The court found that [X]", or "The judge concluded that [X]" when describing a trial-level characterisation of facts, conditions, or mental states. These imply a settled, unchallengeable finding. Use instead: "The judge treated [X] as..." / "The sentencing judge characterised [X] as..." / "The judge approached [X] on the basis that...". CORRECT: "The judge treated the condition as drug-induced and therefore as insufficient to engage the asserted partial defence or materially reduce culpability." WRONG: "The judge determined that the condition was drug-induced and did not mitigate."
 - REQUIRED FORENSIC FRAMING (use these instead):
   * "It is arguable that the trial judge erred in..."
   * "It is contended that..."

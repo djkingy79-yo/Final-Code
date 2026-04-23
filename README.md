@@ -516,7 +516,7 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 ### Self-Hosting Independence
 - No third-party LLM proxy; no shared authentication service; no shared environment.
 - Runtime dependencies: owner's **OpenAI API key**, owner's **Google OAuth client**, owner's **Resend API key**, owner's **MongoDB Atlas** cluster (once migrated per `SELF_HOSTING_GUIDE.md`), and owner's **domain** (`criminallawappealmanagement.com.au`).
-- A grep for "Emergent" across `/app/backend` and `/app/frontend/src` returns zero hits outside the `emergentintegrations` Python library name (just an SDK wrapper around the standard OpenAI client — calls go straight to OpenAI on the owner's billing).
+- A grep across `/app/backend` and `/app/frontend/src` for any deploy-platform hostnames returns zero hits — the app runs exclusively on the owner's OpenAI API key via the direct `openai` SDK, with no third-party proxy.
 - The admin dashboard carries a quiet footer line: *"Self-hosted · your OpenAI key · your Google OAuth · criminallawappealmanagement.com.au"*.
 
 ---

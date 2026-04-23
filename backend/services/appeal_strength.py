@@ -304,10 +304,14 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
             if ground.viability != prior:
                 _log(f"Proviso risk (overwhelming Crown case): viability '{prior}' → 'arguable_moderate'.")
         elif verdict_robustness == "strong":
-            prior = ground.viability
-            ground.viability = cap_viability(ground.viability, "arguable_moderate")
-            if ground.viability != prior:
-                _log(f"Strong Crown case: viability '{prior}' → 'arguable_moderate'.")
+            # Only cap down when the record support is thin. A strong-record
+            # conviction ground should not be over-downgraded just because the
+            # trial verdict was robust — counsel feedback 23 Feb 2026.
+            if record_support in {"limited", "none"}:
+                prior = ground.viability
+                ground.viability = cap_viability(ground.viability, "arguable_moderate")
+                if ground.viability != prior:
+                    _log(f"Strong Crown case (thin record): viability '{prior}' → 'arguable_moderate'.")
 
     # Post-verdict juror conduct cap.
     if ground.type == "procedure":

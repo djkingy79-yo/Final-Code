@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8001").rstrip("/")
 if not BASE_URL:
-    BASE_URL = "https://criminal-appeals-au-2.preview.emergentagent.com"
+    BASE_URL = "https://criminallawappealmanagement.com.au"
 
 # Admin credentials from test_credentials.md
 ADMIN_EMAIL = "djkingy79@gmail.com"
