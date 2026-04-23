@@ -1,4 +1,4 @@
-# Criminal Appeal AI - Mobile App Build Guide
+# Criminal Law Appeal Management - Mobile App Build Guide
 
 ## Progressive Web App (PWA)
 The app is already configured as a PWA. Users can install it from their browser:
@@ -86,11 +86,11 @@ Then rebuild in Xcode/Android Studio and submit update.
 ## App Configuration
 
 ### Bundle IDs
-- iOS: `com.debking.criminalappealai`
-- Android: `com.debking.criminalappealai`
+- iOS: `au.com.criminallawappealmanagement`
+- Android: `au.com.criminallawappealmanagement`
 
 ### App Name
-"Criminal Appeal AI"
+"Criminal Law Appeal Management"
 
 ### Version
 Update version in:

@@ -1,4 +1,4 @@
-# Appeal Case Manager — Native Mobile Build Guide
+# Criminal Law Appeal Management — Native Mobile Build Guide
 
 Last synced: 19 Apr 2026 — Capacitor v7.6.2 — 12 plugins
 
@@ -9,8 +9,8 @@ the native build on a Mac (iOS) and any machine with Android Studio (Android).
 ## Current State
 
 - **Capacitor config**: `frontend/capacitor.config.json`
-  - `appId`: `com.debking.criminalappeals`
-  - `appName`: Appeal Case Manager
+  - `appId`: `au.com.criminallawappealmanagement`
+  - `appName`: Criminal Law Appeal Management
   - `allowNavigation`: `*.emergentagent.com`, `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au`
 - **iOS project**: `frontend/ios/App/App.xcodeproj`
 - **Android project**: `frontend/android/`
@@ -55,7 +55,7 @@ npx cap sync
    - Product → Archive
    - Distribute App → App Store Connect → Upload
 6. In App Store Connect:
-   - Create a new app with bundle ID `com.debking.criminalappeals`.
+   - Create a new app with bundle ID `au.com.criminallawappealmanagement`.
    - Attach the uploaded build, complete metadata/screenshots, submit.
 
 ## Android Build (any OS with JDK 17 + Android Studio)
@@ -76,7 +76,7 @@ npx cap sync
      ```
    - Select **AAB** (Android App Bundle) for Google Play Store upload.
 5. Upload the generated `.aab` to Google Play Console under the
-   `com.debking.criminalappeals` app.
+   `au.com.criminallawappealmanagement` app.
 
 ## Re-Syncing After Web Code Changes
 
