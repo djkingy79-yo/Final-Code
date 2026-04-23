@@ -56,22 +56,23 @@ const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
 // DO_NOT_UNDO — Backend URL resolution for Web + Mobile (Capacitor).
 //
-// Web (Deb's preview URL AND prod domain criminallawappealmanagement.com.au):
-//   Use window.location.origin. Emergent's Kubernetes ingress routes
-//   /api/* to the backend on every served domain. Same bundle works on both.
+// Web (prod domain criminallawappealmanagement.com.au):
+//   Use window.location.origin so the same bundle works on any domain the
+//   app is served from. The ingress in front of the backend routes /api/*
+//   to port 8001 on whatever hostname the user loaded the app from.
 //
 // Mobile (iOS / Android via Capacitor):
 //   In a native shell, window.location.origin is `capacitor://localhost`
 //   (iOS) or `http://localhost` (Android) — which points at the bundled
-//   webview, NOT Deb's backend. We MUST fall back to REACT_APP_BACKEND_URL
-//   (the prod domain) baked into the release build at `yarn build` time.
+//   webview, NOT the prod backend. We MUST fall back to
+//   REACT_APP_BACKEND_URL (the prod domain) baked into the release build
+//   at `yarn build` time. That URL lives in /app/frontend/.env and MUST
+//   point at the user's own prod domain (criminallawappealmanagement.com.au),
+//   NEVER a hosting-platform preview URL.
 //
 // Detection:
 //   - Capacitor sets `window.Capacitor.isNativePlatform()` or protocol
 //     becomes `capacitor:` / `file:`. Either flag → use env var.
-//   - Any origin containing `localhost`/`127.0.0.1` without an http(s)://
-//     prefix would also fail CORS on the user's prod backend, so we cover
-//     that case too.
 const _winOrigin =
   typeof window !== "undefined" && window.location && window.location.origin
     ? window.location.origin.replace(/\/$/, "")

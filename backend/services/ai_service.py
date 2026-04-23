@@ -25,9 +25,7 @@ async def call_llm_with_retry(
 ) -> Optional[str]:
     """Call LLM with exponential backoff retry logic (direct AsyncOpenAI).
 
-    DO_NOT_UNDO — Swapped from emergentintegrations to AsyncOpenAI on 2026-04-21
-    per owner requirement to drop google-generativeai / litellm / emergentintegrations
-    transitive deps. Natively async, no thread-pool shim required. The `api_key`
+    DO_NOT_UNDO — Natively async, no thread-pool shim required. The `api_key`
     and `session_prefix` arguments are retained for call-site compatibility.
     """
     from openai import AsyncOpenAI
