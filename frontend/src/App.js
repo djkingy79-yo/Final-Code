@@ -54,26 +54,39 @@ const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
-// DO_NOT_UNDO — PERMANENT FIX for Deb's prod deploy.
+// DO_NOT_UNDO — Backend URL resolution for Web + Mobile (Capacitor).
 //
-// The `REACT_APP_BACKEND_URL` in .env is ALWAYS the Emergent preview URL
-// (e.g. https://criminal-appeals-au-2.preview.emergentagent.com). When the
-// same compiled bundle is served on her custom production domain
-// (criminallawappealmanagement.com.au), using that env var means every API
-// call + Google OAuth redirect routes to the PREVIEW backend, NOT her own
-// domain. Result: CORS fails, OAuth state never gets written to her prod
-// origin, and the prod deploy appears to "never receive updates".
+// Web (Deb's preview URL AND prod domain criminallawappealmanagement.com.au):
+//   Use window.location.origin. Emergent's Kubernetes ingress routes
+//   /api/* to the backend on every served domain. Same bundle works on both.
 //
-// Fix: ALWAYS use window.location.origin as the backend URL. Emergent's
-// Kubernetes ingress routes /api/* to the backend on every domain the app
-// is served on (preview AND custom domain), so this works everywhere.
+// Mobile (iOS / Android via Capacitor):
+//   In a native shell, window.location.origin is `capacitor://localhost`
+//   (iOS) or `http://localhost` (Android) — which points at the bundled
+//   webview, NOT Deb's backend. We MUST fall back to REACT_APP_BACKEND_URL
+//   (the prod domain) baked into the release build at `yarn build` time.
 //
-// The ONLY time we fall back to the env var is during server-side rendering
-// or non-browser contexts where `window` isn't defined.
-const BACKEND_URL =
+// Detection:
+//   - Capacitor sets `window.Capacitor.isNativePlatform()` or protocol
+//     becomes `capacitor:` / `file:`. Either flag → use env var.
+//   - Any origin containing `localhost`/`127.0.0.1` without an http(s)://
+//     prefix would also fail CORS on the user's prod backend, so we cover
+//     that case too.
+const _winOrigin =
   typeof window !== "undefined" && window.location && window.location.origin
     ? window.location.origin.replace(/\/$/, "")
-    : (process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "");
+    : "";
+const _isNativeShell =
+  (typeof window !== "undefined" &&
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === "function" &&
+    window.Capacitor.isNativePlatform()) ||
+  /^(capacitor|file):/.test(_winOrigin) ||
+  /^(capacitor|file):/.test(
+    (typeof window !== "undefined" && window.location && window.location.protocol) || ""
+  );
+const _envBackend = (process.env.REACT_APP_BACKEND_URL || "").replace(/\/$/, "");
+const BACKEND_URL = _isNativeShell && _envBackend ? _envBackend : (_winOrigin || _envBackend);
 export const API = `${BACKEND_URL}/api`;
 
 // Configure axios with timeout

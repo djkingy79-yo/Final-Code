@@ -1,4 +1,4 @@
-# Criminal Appeal AI - User Guide
+# Appeal Case Manager - User Guide
 
 ## First Time Setup
 
