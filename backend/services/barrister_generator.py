@@ -257,7 +257,8 @@ FORENSIC APPELLATE LANGUAGE — CRITICAL:
 - Use: "It is arguable that...", "It is contended that...", "There is a tenable argument that...", "On one view of the evidence...", "It is open to the appellant to argue that..."
 - Do NOT use bare declarations: "The trial judge erred", "The conviction is unsafe", "The sentence is excessive". These are too definitive at the preparation stage.
 - Do NOT use weak hedging: "may have", "could potentially", "it is possible that". These lack the confidence needed for counsel preparation.
-- Exception: when citing what a court HAS decided in a precedent case, declarative language is appropriate.
+- BANNED CHARACTERISATION LANGUAGE: NEVER write "The judge determined that [X]", "The court found that [X]", or "The judge concluded that [X]" when describing a trial-level characterisation of facts, conditions, or mental states. These imply a settled, unchallengeable finding. Use instead: "The judge treated [X] as..." / "The sentencing judge characterised [X] as..." / "The judge approached [X] on the basis that...". CORRECT: "The judge treated the condition as drug-induced and therefore as insufficient to engage the asserted partial defence or materially reduce culpability." WRONG: "The judge determined that the condition was drug-induced and did not mitigate."
+- Exception: when citing what a court HAS decided in a precedent case, declarative language is appropriate (e.g. "In R v Smith, the Court held that...").
 
 GROUND FRAMING RULES:
 - Where psychiatric/mental state evidence is involved, frame the ground as a CONVICTION SAFETY attack on mens rea — whether the requisite mental state (intent to kill, intent to cause GBH, reckless indifference) was properly determined. This is more powerful than mere evidentiary criticism.

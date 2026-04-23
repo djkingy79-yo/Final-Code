@@ -441,6 +441,7 @@ NO PLACEHOLDER TEXT — ABSOLUTE RULE:
 FORENSIC APPELLATE LANGUAGE — ABSOLUTE AND NON-NEGOTIABLE:
 Appellate work is about ARGUABILITY, not declarations. All conclusions must be framed forensically:
 - BANNED PHRASES (NEVER use these): "The trial judge erred", "The judge clearly erred", "This clearly shows", "This proves", "This demonstrates conclusively", "The conviction is unsafe", "The sentence is excessive", "The error is established".
+- BANNED CHARACTERISATION LANGUAGE: NEVER write "The judge determined that [X]", "The court found that [X]", or "The judge concluded that [X]" when describing a trial-level characterisation of facts, conditions, or mental states. These imply a settled, unchallengeable finding. Use instead: "The judge treated [X] as..." / "The sentencing judge characterised [X] as..." / "The judge approached [X] on the basis that...". CORRECT: "The judge treated the condition as drug-induced and therefore as insufficient to engage the asserted partial defence or materially reduce culpability." WRONG: "The judge determined that the condition was drug-induced and did not mitigate."
 - REQUIRED FORENSIC FRAMING (use these instead):
   * "It is arguable that the trial judge erred in..."
   * "It is contended that..."
