@@ -347,6 +347,6 @@ def test_cth_fault_elements_pipeline():
 
     results = run_pipeline(raw_grounds, flags, profile, "CTH")
     conviction = next(g for g in results if g.type == "conviction")
-    assert "Commonwealth" in conviction.pathway or "federal" in conviction.pathway.lower()
+    assert "(Cth)" in conviction.pathway or "Judiciary Act" in conviction.pathway
     assert all("mitigation" not in sp.text.lower() for sp in (conviction.sub_particulars or []))
     assert conviction.failure_risk is not None
