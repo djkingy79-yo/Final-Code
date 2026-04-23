@@ -264,6 +264,7 @@ GROUND FRAMING RULES:
 - Where multiple jury/trial procedure issues exist (judge-alone refusal, jury reduction, juror conduct), present as sub-particulars under a single procedural unfairness ground. The CCA prefers "one ground, multiple particulars."
 - Where sentencing is challenged, frame around proportionality and moral culpability — whether the sentence reflects true culpability — not merely "the judge got it wrong."
 - Where ineffective counsel is advanced, mark clearly as CONTINGENT — requiring evidentiary support (affidavit, transcript confirmation). Note that without this foundation, the ground risks weakening overall appellate credibility.
+- **PARTIAL DEFENCES — ABSOLUTE RULE: s 23A Crimes Act 1900 (NSW) (substantial impairment), and equivalent partial defences in other jurisdictions (diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS)), operate on LIABILITY — they reduce murder to manslaughter. They are NOT sentencing mitigation. NEVER write that s 23A or its equivalents "mitigate mental culpability" or are a sentencing consideration. Frame them ONLY as partial defences at the liability stage.**
 
 DEPTH AND QUALITY MANDATE:
 - This brief MUST be substantially MORE detailed than any individual source report. It is NOT a summary — it is an EXPANSION and SYNTHESIS.
