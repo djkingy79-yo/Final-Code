@@ -631,6 +631,29 @@ def enforce_forensic_language(text: str) -> str:
         (r'\bno reasonable tribunal\b', 'arguably no reasonable tribunal'),
         (r'\bno reasonable jury\b', 'arguably no reasonable jury'),
         (r'\bno reasonable sentencer\b', 'arguably no reasonable sentencer'),
+        # === "determined/found/concluded that" — characterisation language rule ===
+        # "The judge determined that X was drug-induced" implies a settled,
+        # unchallengeable finding. Appellate framing must preserve contestability.
+        # Safe form: "The judge treated X as" / "The judge characterised X as".
+        (
+            r'\b(The (?:sentencing |trial |appeal )?(?:judge|court|magistrate)) determined that\b',
+            r'\1 characterised the position as'
+        ),
+        (
+            r'\b(The (?:sentencing |trial |appeal )?(?:judge|court|magistrate)) found that\b',
+            r'\1 treated the matter as'
+        ),
+        (
+            r'\b(The (?:sentencing |trial |appeal )?(?:judge|court|magistrate)) concluded that\b',
+            r'\1 characterised the position as'
+        ),
+        # Specific pattern flagged by counsel:
+        # "determined that this condition was drug-induced" must become
+        # "treated the condition as drug-induced".
+        (
+            r'\bdetermined that (?:this |the )?condition was\b',
+            'treated the condition as'
+        ),
     ]
     for pattern, replacement in context_free:
         text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)

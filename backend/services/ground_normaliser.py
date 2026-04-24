@@ -148,7 +148,7 @@ def classify_text_with_reason(text: str, jurisdiction: str) -> tuple[GroundType,
         "s 23a", "section 23a", "substantial impairment", "abnormality of mind",
         "diminished responsibility", "mental impairment defence",
         "defence of mental impairment", "unsoundness of mind", "mental incompetence",
-        "partial defence",
+        "partial defence", "psychosis at time of offence",
         # Commonwealth: Criminal Code (Cth) s 7.3 — mental impairment.
         "s 7.3", "section 7.3",
         "criminal code s 7.3",
@@ -229,6 +229,8 @@ def build_title_for_type(original_title: str, gtype: GroundType) -> str:
     if gtype == "sentence":
         if "rehabilitation" in original:
             return "Sentencing Error: Failure to Properly Consider Rehabilitation"
+        if any(x in original for x in ("moral culpability", "parity", "totality", "sentence severity")):
+            return "Sentencing Error: Failure to Properly Apply Sentencing Principles"
         if "mental" in original or "psychiatric" in original:
             return "Sentencing Error: Failure to Properly Assess Mental Condition and Culpability"
         return "Sentencing Error"
@@ -267,9 +269,9 @@ def filter_items_by_type(items: list[str], gtype: GroundType, jurisdiction: str)
 
 def canonical_title(title: str) -> str:
     t = normalise(title)
-    if any(x in t for x in ("mens rea", "mental state", "unsafe verdict", "substantial impairment", "mental impairment", "psychiatric")):
+    if any(x in t for x in ("mens rea", "mental state", "unsafe verdict", "substantial impairment", "mental impairment", "psychiatric", "mental impairment defence", "psychosis at time of offence")):
         return "mens_rea"
-    if any(x in t for x in ("rehabilitation", "manifestly excessive", "manifest excess", "sentence", "sentencing")):
+    if any(x in t for x in ("rehabilitation", "manifestly excessive", "manifest excess", "sentence", "sentencing", "moral culpability", "totality", "parity", "sentence severity")):
         return "sentence"
     if any(x in t for x in ("jury", "juror", "judge-alone", "judge alone", "mode of trial")):
         return "jury_procedure"

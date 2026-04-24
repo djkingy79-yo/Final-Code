@@ -1,4 +1,4 @@
-# Appeal Case Manager - App Launch Guide
+# Criminal Law Appeal Management - App Launch Guide
 ## Complete Mobile App & Marketing Package
 
 ---
@@ -7,7 +7,7 @@
 
 ### App Store (iOS) - Main Description
 
-**App Name:** Appeal Case Manager  
+**App Name:** Criminal Law Appeal Management  
 **Subtitle:** Research Your Criminal Appeal
 
 ---
@@ -16,7 +16,7 @@
 
 **When the justice system fails, knowledge becomes your greatest weapon.**
 
-Appeal Case Manager is Australia's first AI-powered criminal appeal research tool — built by Deb King, a mother who refused to accept that her loved ones were failed by the system.
+Criminal Law Appeal Management is Australia's first AI-powered criminal appeal research tool — built by Deb King, a mother who refused to accept that her loved ones were failed by the system.
 
 **🔍 WHAT THIS APP DOES**
 
@@ -55,7 +55,7 @@ AI-powered criminal appeal research for Australian families seeking justice.
 
 **Justice shouldn't depend on how much you can afford.**
 
-Appeal Case Manager puts the power of legal research in your hands. Upload your case documents and let artificial intelligence analyse transcripts, judgments, and evidence to identify potential grounds for appeal.
+Criminal Law Appeal Management puts the power of legal research in your hands. Upload your case documents and let artificial intelligence analyse transcripts, judgments, and evidence to identify potential grounds for appeal.
 
 **✓ FEATURES**
 
@@ -245,11 +245,11 @@ how to appeal criminal conviction australia, criminal appeal nsw time limit, gro
 
 **Australian Mother Launches AI-Powered App to Help Families Fight Wrongful Convictions**
 
-*Appeal Case Manager gives everyday Australians access to legal research tools previously only available to expensive lawyers*
+*Criminal Law Appeal Management gives everyday Australians access to legal research tools previously only available to expensive lawyers*
 
 GLENMORE PARK, NSW — Deb King knows the pain of watching loved ones be failed by the justice system. After years of researching criminal appeals for family members, she's turned that hard-won knowledge into an app that could help thousands of Australian families.
 
-Appeal Case Manager uses artificial intelligence to analyse case documents — transcripts, judgments, evidence — and identify potential grounds for appeal that might otherwise go unnoticed.
+Criminal Law Appeal Management uses artificial intelligence to analyse case documents — transcripts, judgments, evidence — and identify potential grounds for appeal that might otherwise go unnoticed.
 
 "I'm not a lawyer," says King. "But I learned that many appeals succeed on technicalities that families never knew existed. This app helps people understand their options."
 
@@ -257,7 +257,7 @@ The app covers all eight Australian jurisdictions and generates professional rep
 
 "If this tool helps even one person discover grounds they didn't know existed, my mission is accomplished," King adds.
 
-Appeal Case Manager is available now on iOS and Android.
+Criminal Law Appeal Management is available now on iOS and Android.
 
 **Media Contact:**
 Deb King
@@ -278,5 +278,5 @@ Glenmore Park, NSW 2745
 
 ---
 
-*Document created for Appeal Case Manager launch preparation*
+*Document created for Criminal Law Appeal Management launch preparation*
 *Last updated: March 2026*

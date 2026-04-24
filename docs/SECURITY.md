@@ -58,7 +58,7 @@ Expected response time: 48 hours.
 | Secret | Purpose | Rotation |
 |--------|---------|----------|
 | `MONGO_URL` | Database connection | On compromise |
-| `EMERGENT_LLM_KEY` | AI report generation | Monthly |
+| `OPENAI_API_KEY` | AI report generation (your OpenAI account) | On compromise |
 | `RESEND_API_KEY` | Transactional email | On compromise |
 
 ### Rotation Procedure
