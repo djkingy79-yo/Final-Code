@@ -184,6 +184,10 @@ async def extract_document(case_id: str, document_id: str, request: Request):
     routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
     yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -350,6 +354,10 @@ async def refresh_case_extract(case_id: str, request: Request):
     routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
     yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -469,6 +477,10 @@ async def classify_issues(case_id: str, request: Request):
     routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
     yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -631,6 +643,10 @@ async def verify_issue(case_id: str, issue_id: str, request: Request):
     routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
     yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -883,6 +899,10 @@ async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Reque
     routers/pipeline_staged.py is the canonical UI path (frontend migrated
     the same day). No deletion scheduled yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
 
     case = await db.cases.find_one(
@@ -1188,6 +1208,10 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
     routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
     yet; pending follow-up caller audit.
     """
+    logger.warning(
+        "[DEPRECATED ROUTE HIT] %s called — use /api/pipeline equivalent",
+        request.url.path,
+    )
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
