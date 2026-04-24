@@ -220,10 +220,11 @@ Keeps the legal framework anchored to current law:
 - Colour-coded state comparison (NSW, VIC, QLD, SA, WA, TAS, NT, ACT)
 - In-depth analysis of why appeal rates are low, systemic barriers, and success factors
 
-### 18. Interactive Tutorial (How It Works)
-- Nine-step guided walkthrough covering every feature of the platform
-- Each step features a coloured header, description, "What You'll See on Screen" checklist, and pro tips
-- Covers: Account Creation, Document Upload, Timeline, Grounds, Notes, Reports, Legal Framework, Deadlines, and Chat & Collaboration
+### 18. Interactive Tutorial (How It Works + How To Use)
+- **How It Works** — 10-step guided walkthrough of the platform's core journey: Create Case, Upload Documents, AI Timeline, Case Notes, Find Grounds (FREE), Generate Premium Reports, Review Legal Framework, Track Progress, Chat & Collaboration, Barrister Tools
+- **How To Use** — 11-step detailed how-to including the additional Export and Share step at the bottom (design parity with all prior steps — open vertical stack, no container card)
+- Each step features a coloured icon box, numbered badge, plain-English description, and instruction bullets
+- Step count on the hero badge is data-bound (`detailedSteps.length`) so future additions automatically update the user-facing count
 
 ### 19. Native Mobile Apps (iOS & Android)
 - **Capacitor 7** configured for native iOS and Android builds from the same React codebase
@@ -271,6 +272,36 @@ A case-aware amendment feed across all 9 Australian jurisdictions. Designed for 
 - **Per-case alert feed** — `GET /api/cases/{id}/legislation-alerts` returns all confirmed amendments for the case's jurisdiction + all Commonwealth amendments, with per-user `acknowledged` flag. Red unread count badge on the panel header.
 - **Per-user acknowledgement** — `POST /api/cases/{id}/legislation-alerts/{aid}/acknowledge` clears the badge for that user/case/amendment combination. Stored in `legislation_alert_reads` collection.
 - **UI** — colour-coded severity pills (red critical, amber high, blue medium, slate low) + jurisdiction chips (NSW blue, VIC purple, QLD red, SA red, WA emerald, TAS teal, NT orange, ACT indigo, CTH navy) + *Mark as read* link per alert + source-register external link.
+
+### 23. Forensic Grounds Pipeline (counsel-specified)
+Post-classification legal engines that run immediately after each ground is generated or edited. Every ground on the Grounds tab carries the outputs of this pipeline and every LLM prompt built for the Detailed / Extensive / Appellate Research Brief reports is driven by the *strategised* list, not the raw database list.
+
+- **`services/ground_cleanup.py`** — jurisdiction-aware scrubber. Strips cross-pathway contamination (e.g. sentencing sub-particulars that survived a conviction ground), uplifts over-downgraded conviction grounds with strong record support, corrects liability-vs-mitigation language for NSW s 23A / QLD s 304A / CTH s 7.3 mental impairment / VIC mental impairment defence / WA unsoundness of mind / TAS insanity, softens timing-sensitive jury language. Emits every decision into the ground's `reasoning_trail`.
+- **`services/appeal_strength.py`** — realism scorer. Computes `record_support`, `verdict_robustness`, `crown_strength`, `failure_risk`, and a `proviso_risk` band (high / moderate / low) against *Weiss v The Queen* (2005) 224 CLR 300. Applies a soft cap that downgrades `arguable_strong` conviction grounds with `proviso_risk=high` to `arguable_moderate`.
+- **`services/proviso_engine.py`** — narrative reasoning layer. Appends plain-language *Weiss*-exposure explanations to each conviction ground's `reasoning_trail` and produces a case-level `proviso_summary` for the cover page.
+- **`services/barrister_mode.py`** — `build_strategy_summary()` slots every ground into primary / secondary / tertiary / abandon buckets, priority-weighted so a conviction challenge of equal viability outranks a procedural or sentencing one.
+- **`services/outcome_predictor.py`** — counsel-supplied outcome engine. Given the primary (and optional secondary) ground, returns one of `quash_conviction_acquittal_possible`, `quash_conviction_retrial_likely`, `retrial_likely`, `retrial_possible`, `appeal_dismissed`, `resentencing_likely`, `sentence_appeal_unlikely`, `appeal_unlikely`, or `uncertain`, with a one-sentence rationale.
+- **`services/attack_plan.py`** — counsel-conference output. Per primary + secondary ground: strategy, evidence gaps, required material, likely Crown response, counter strategy, next steps. Layered LLM refinement (`refine_attack_plan_with_llm`) polishes wording to include defendant surname and jurisdictional framing while a hard validator rejects any attempt to add keys, swap list ↔ string types, or change viability.
+- **`services/evidence_builder.py`** — affidavit + document planner. Per primary + secondary ground: documents required, procedural steps, ready-to-adapt affidavit templates (psychiatric, juror-conduct) with numbered paragraphs and `SWORN:` signature block. Mandatory warning held outside the LLM loop so it is untouchable. Hard validator rejects affidavit drops, type changes, or templates missing the `SWORN:` marker.
+
+### 24. National Jurisdiction-Complete Framework Engine
+`services/national_framework_engine.py` is the bridge between the offence taxonomy (`/app/backend/frameworks/`) and the report generator. It REFUSES to analyse without a jurisdiction — no silent NSW default.
+
+- Hard-refusal: `normalise_jurisdiction(None)` raises `JURISDICTION NOT SET — legal analysis must not proceed and must not default to NSW.`
+- Federal / Commonwealth / CTH aliases all normalise to `cth`.
+- Content-based Commonwealth overlay: `FEDERAL_TRIGGER_TERMS` (terrorism, carriage service, importation, customs, Commonwealth official, Centrelink, Medicare, etc.) scan `title + summary + offence_type + facts + description` to detect when a state matter needs the federal overlay.
+- Homicide-specific mens rea + mental state controls that bar describing partial-defence liability issues as sentencing mitigation.
+- `NO-HALLUCINATION / JURISDICTION FIDELITY RULES` injected into every prompt — forbids NSW citation on non-NSW matters, forbids invented section numbers or judgment dates, requires `"citation requires verification"` when authority is uncertain.
+- `@lru_cache` on the 7 heavy render helpers — per-jurisdiction (max 32 entries) and per-(category × jurisdiction) (max 128 entries) — so multi-prompt reports render the framework block once and reuse it.
+- `NationalFrameworkResult` dataclass surfaces any mapping gaps as `warnings[]` alongside the framework context.
+
+### 25. Why This Viability? Audit Sheet
+Every ground exposes a blue `WHY?` pill next to its strength badge. Tapping it opens a bottom-sheet (mobile) / side-sheet (desktop) with:
+- Current viability rating
+- Realism metrics pills (record support / verdict robustness / Crown response / proviso risk — with a *Weiss v The Queen* tooltip)
+- `failure_risk` warning block
+- Complete numbered `reasoning_trail` showing every classification, uplift, cap, merge, and LLM-refinement decision the pipeline made
+- Footer reminder that the audit is engine reasoning, not legal advice
 
 ---
 

@@ -498,7 +498,7 @@ const HowItWorksPage = () => {
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Clock className="w-4 h-4" /> 9 simple steps
+              <Clock className="w-4 h-4" /> {detailedSteps.length} simple steps
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700">
               <Zap className="w-4 h-4" /> First report in under 10 minutes
