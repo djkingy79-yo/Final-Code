@@ -485,6 +485,21 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 )
             except Exception as refine_err:
                 logger.warning(f"LLM attack-plan refinement skipped for case {case_id}: {refine_err}")
+
+            # Same LLM refinement pattern for the evidence builder — customises
+            # affidavit templates, document requests, and steps to the case.
+            # Hard guardrails preserve list lengths, affidavit types, and the
+            # SWORN: skeleton. Per-ground fallback on any failure.
+            try:
+                from services.evidence_builder import refine_evidence_builder_with_llm
+                evidence_builder = await refine_evidence_builder_with_llm(
+                    builder=evidence_builder,
+                    strategy=strategy,
+                    case_context=case_context,
+                    session_id=f"evidence-builder-{case_id}",
+                )
+            except Exception as refine_err:
+                logger.warning(f"LLM evidence-builder refinement skipped for case {case_id}: {refine_err}")
         except Exception as outcome_err:
             logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
             predicted_outcome = None
@@ -1000,7 +1015,7 @@ State what further material could strengthen or weaken this ground.
 
 GROUND FRAMING RULES:
 - **NEVER MERGE CONVICTION AND SENTENCING ISSUES in one ground.** Conviction attacks the verdict (s 6(1) miscarriage of justice / unsafe verdict). Sentencing attacks the penalty (House v The King error / manifest excess). If both apply, the case has TWO grounds.
-- **Partial defences — s 23A Crimes Act 1900 (NSW), substantial impairment, abnormality of mind, diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS) — operate on LIABILITY (reducing murder to manslaughter). They are NEVER sentencing mitigation. Frame them as mens-rea displacement mechanisms, not as mental-health mitigation.**
+- **Partial defences — s 23A Crimes Act 1900 (NSW), substantial impairment, abnormality of mind, diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA), insanity (TAS), mental impairment / criminal responsibility (NT), mental impairment (ACT), mental impairment under s 7.3 Criminal Code (Cth) — operate on LIABILITY (reducing murder to manslaughter, or negating fault elements). They are NEVER sentencing mitigation. Frame them as mens-rea displacement mechanisms, not as mental-health mitigation.**
 - If this ground involves psychiatric/mental state evidence → frame as a CONVICTION SAFETY attack on mens rea determination. **EXPLICITLY articulate the M v The Queen (1994) 181 CLR 487 formulation**: "Could the jury, acting reasonably, have excluded a reasonable hypothesis consistent with lack of intent given the competing psychiatric evidence?" Omitting this formulation makes the ground structurally defective.
 - If this ground involves jury-integrity conduct → distinguish clearly between (a) deliberative bias during trial (probative) and (b) post-verdict conduct (minimal probative value). Do NOT inflate post-verdict conduct to moderate or strong; require contemporaneous trial-record complaint and juror affidavit before elevating above "weak".
 - If this ground involves ineffective counsel → note clearly that this ground is "Contingent — requires evidentiary support (affidavit from accused, transcript confirmation)" and that the threshold is extremely high.
