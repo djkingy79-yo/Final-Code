@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Appeal Case Manager</string>
+        <string>Criminal Law Appeal Management</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -46,12 +46,12 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Appeal Case Manager needs camera access to scan legal documents for your appeal case.</string>
+	<string>Criminal Law Appeal Management needs camera access to scan legal documents for your appeal case.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Appeal Case Manager needs access to your photo library to upload documents and evidence for your appeal case.</string>
+	<string>Criminal Law Appeal Management needs access to your photo library to upload documents and evidence for your appeal case.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Appeal Case Manager needs permission to save exported documents to your photo library.</string>
+	<string>Criminal Law Appeal Management needs permission to save exported documents to your photo library.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Appeal Case Manager uses Face ID to securely protect your sensitive legal documents.</string>
+	<string>Criminal Law Appeal Management uses Face ID to securely protect your sensitive legal documents.</string>
 </dict>
 </plist>

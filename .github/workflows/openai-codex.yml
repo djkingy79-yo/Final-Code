@@ -1,0 +1,25 @@
+name: OpenAI Codex
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: Prompt passed to codex-exec via stdin
+        required: false
+        default: Review and fix code quality issues in this repository.
+      model:
+        description: Codex model name
+        required: false
+        default: gpt-5.2-codex
+
+jobs:
+  codex-exec:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Run codex-exec with explicit stdin prompt
+        env:
+          CODEX_PROMPT: ${{ github.event.inputs.prompt || 'Fix issue' }}
+          CODEX_MODEL: ${{ github.event.inputs.model || 'gpt-5.2-codex' }}
+        run: |
+          echo "$CODEX_PROMPT" | codex-exec --model "$CODEX_MODEL"
