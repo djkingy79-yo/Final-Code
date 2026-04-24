@@ -14,6 +14,7 @@ from services.llm_service import call_llm_with_fallback
 from services.offence_helpers import (
     _build_recent_legislation_context, _build_state_framework_context,
     _build_federal_framework_context,
+    enforce_forensic_language,
 )
 from services.report_quality import (
     _strip_report_placeholders,
@@ -257,13 +258,15 @@ FORENSIC APPELLATE LANGUAGE — CRITICAL:
 - Use: "It is arguable that...", "It is contended that...", "There is a tenable argument that...", "On one view of the evidence...", "It is open to the appellant to argue that..."
 - Do NOT use bare declarations: "The trial judge erred", "The conviction is unsafe", "The sentence is excessive". These are too definitive at the preparation stage.
 - Do NOT use weak hedging: "may have", "could potentially", "it is possible that". These lack the confidence needed for counsel preparation.
-- Exception: when citing what a court HAS decided in a precedent case, declarative language is appropriate.
+- BANNED CHARACTERISATION LANGUAGE: NEVER write "The judge determined that [X]", "The court found that [X]", or "The judge concluded that [X]" when describing a trial-level characterisation of facts, conditions, or mental states. These imply a settled, unchallengeable finding. Use instead: "The judge treated [X] as..." / "The sentencing judge characterised [X] as..." / "The judge approached [X] on the basis that...". CORRECT: "The judge treated the condition as drug-induced and therefore as insufficient to engage the asserted partial defence or materially reduce culpability." WRONG: "The judge determined that the condition was drug-induced and did not mitigate."
+- Exception: when citing what a court HAS decided in a precedent case, declarative language is appropriate (e.g. "In R v Smith, the Court held that...").
 
 GROUND FRAMING RULES:
 - Where psychiatric/mental state evidence is involved, frame the ground as a CONVICTION SAFETY attack on mens rea — whether the requisite mental state (intent to kill, intent to cause GBH, reckless indifference) was properly determined. This is more powerful than mere evidentiary criticism.
 - Where multiple jury/trial procedure issues exist (judge-alone refusal, jury reduction, juror conduct), present as sub-particulars under a single procedural unfairness ground. The CCA prefers "one ground, multiple particulars."
 - Where sentencing is challenged, frame around proportionality and moral culpability — whether the sentence reflects true culpability — not merely "the judge got it wrong."
 - Where ineffective counsel is advanced, mark clearly as CONTINGENT — requiring evidentiary support (affidavit, transcript confirmation). Note that without this foundation, the ground risks weakening overall appellate credibility.
+- **PARTIAL DEFENCES — ABSOLUTE RULE: s 23A Crimes Act 1900 (NSW) (substantial impairment), and equivalent partial defences in other jurisdictions (diminished responsibility (QLD), mental impairment defence (VIC/SA/ACT), unsoundness of mind (WA/TAS)), operate on LIABILITY — they reduce murder to manslaughter. They are NOT sentencing mitigation. NEVER write that s 23A or its equivalents "mitigate mental culpability" or are a sentencing consideration. Frame them ONLY as partial defences at the liability stage.**
 
 DEPTH AND QUALITY MANDATE:
 - This brief MUST be substantially MORE detailed than any individual source report. It is NOT a summary — it is an EXPANSION and SYNTHESIS.
@@ -1008,6 +1011,12 @@ SOURCE REPORTS
     response = "\n".join(cleaned_lines)
 
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
+
+    # DO NOT UNDO — Runtime forensic language enforcement: rewrites any
+    # "determined that / found that / concluded that" characterisation language
+    # that slipped through the prompt, and enforces all other forensic appellate
+    # language rules defined in enforce_forensic_language (offence_helpers.py).
+    response = enforce_forensic_language(response)
 
     return {
         "analysis": response,

@@ -3,6 +3,24 @@ from services.llm_service import call_llm_for_json
 from services.pipeline_models import IssueClassification
 from services.offence_helpers import _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context
 
+# DO NOT UNDO — Pipeline ground type taxonomy.
+#
+# The AI prompt accepts a broad vocabulary so the LLM can express fine-grained
+# distinctions. After the LLM responds, _remap_to_canonical_bucket() collapses
+# every label into one of the five canonical buckets used throughout the rest
+# of the system (ground_normaliser, grounds router, reports).
+#
+# Canonical five buckets (GroundType in services/ground_normaliser.py):
+#   conviction | sentence | procedure | evidence | ineffective_counsel
+#
+# 7-step pipeline:
+#   1. Raw AI output          (classify_case_issues -> LLM)
+#   2. Extract candidates     (parsed from JSON)
+#   3. Classify / remap       (_remap_to_canonical_bucket — this step)
+#   4. Split mixed grounds    (ground_normaliser.split_mixed_ground)
+#   5. Merge duplicates       (ground_dedup, _merge_overlapping_grounds)
+#   6. Reorder by priority    (_issue_priority_rank / TYPE_PRIORITY)
+#   7. Render report          (report_generator / barrister_generator)
 GROUND_TYPES = {
     "procedural_error",
     "fresh_evidence",
@@ -15,6 +33,97 @@ GROUND_TYPES = {
     "constitutional_violation",
     "other",
 }
+
+# Five canonical buckets — the only values the normaliser, grounds router,
+# and reports understand.
+CANONICAL_BUCKETS = frozenset({"conviction", "sentence", "procedure", "evidence", "ineffective_counsel"})
+
+# Mapping from broad AI label -> canonical bucket.
+_LABEL_TO_BUCKET: dict[str, str] = {
+    "conviction": "conviction",
+    "miscarriage_of_justice": "conviction",
+    "judicial_error": "conviction",
+    "fresh_evidence": "conviction",
+    "prosecution_misconduct": "conviction",
+    "constitutional_violation": "conviction",
+    "sentence": "sentence",
+    "sentencing_error": "sentence",
+    "procedure": "procedure",
+    "procedural_error": "procedure",
+    "jury_irregularity": "procedure",
+    "evidence": "evidence",
+    "evidentiary_error": "evidence",
+    "ineffective_counsel": "ineffective_counsel",
+    "other": "conviction",  # safest default
+}
+
+# Keyword enforcement rules — fired BEFORE label mapping and cannot be
+# overridden.  These implement the mandatory legal rules:
+#   * s 23A / substantial impairment  -> conviction  (partial defence, not mitigation)
+#   * "manifestly excessive" / "House v The King" -> sentence
+#   * post-verdict juror conduct -> procedure (NOT conviction)
+_CONVICTION_KEYWORDS = frozenset({
+    "unsafe verdict", "mens rea", "substantial impairment",
+    "mental illness defence", "beyond reasonable doubt",
+    "s 23a", "section 23a", "abnormality of mind",
+    "diminished responsibility", "mental impairment defence",
+    "unsoundness of mind", "partial defence",
+})
+_SENTENCE_KEYWORDS = frozenset({
+    "manifestly excessive", "manifest excess", "rehabilitation",
+    "s 21a", "section 21a", "s 3a", "section 3a",
+    "house v the king", "house v king",
+    "non-parole", "totality", "moral culpability",
+})
+_PROCEDURE_KEYWORDS = frozenset({
+    "judge-alone", "judge alone", "jury misconduct",
+    "juror bias", "jury integrity", "pretrial publicity",
+    "pre-trial publicity", "mode of trial",
+})
+_EVIDENCE_KEYWORDS = frozenset({
+    "admissibility", "inadmissible", "wrongly admitted",
+    "wrongly excluded", "wrongful admission", "wrongful exclusion",
+    "prejudicial evidence", "probative value",
+})
+_INEFFECTIVE_COUNSEL_KEYWORDS = frozenset({
+    "ineffective counsel", "ineffective assistance",
+    "failed to call", "failed to object", "failure of counsel",
+    "incompetent representation",
+})
+
+
+def _remap_to_canonical_bucket(raw_type: str, title: str = "", description: str = "") -> str:
+    """Step 3 of the 7-step pipeline: map any ground type label to one of the
+    five canonical buckets.
+
+    Priority:
+      1. Hard keyword rules — partial-defence terms force 'conviction';
+         sentencing terms force 'sentence'; etc.  Cannot be overridden.
+      2. Label-to-bucket mapping for anything not caught by keywords.
+
+    Enforces:
+      - s 23A / substantial impairment -> conviction (NOT sentence/mitigation)
+      - "manifestly excessive", "House v The King" -> sentence
+      - A single ground cannot be both conviction and sentence; split
+        grounds are handled downstream by ground_normaliser.split_mixed_ground.
+    """
+    combined = f"{(title or '').lower()} {(description or '').lower()}"
+
+    # Partial-defence / mens rea terms are hard-coded to conviction.
+    if any(kw in combined for kw in _CONVICTION_KEYWORDS):
+        return "conviction"
+    if any(kw in combined for kw in _SENTENCE_KEYWORDS):
+        return "sentence"
+    if any(kw in combined for kw in _INEFFECTIVE_COUNSEL_KEYWORDS):
+        return "ineffective_counsel"
+    if any(kw in combined for kw in _EVIDENCE_KEYWORDS):
+        return "evidence"
+    if any(kw in combined for kw in _PROCEDURE_KEYWORDS):
+        return "procedure"
+
+    # No keyword match — use label mapping.
+    v = str(raw_type or "other").strip().lower()
+    return _LABEL_TO_BUCKET.get(v, "conviction")
 
 
 def _validate_issue_classification(payload: dict) -> bool:
@@ -228,7 +337,17 @@ STRICT RULES:
             case_id=case["case_id"],
             user_id=case["user_id"],
             title=raw.get("title", "Untitled issue"),
-            ground_type=_norm_ground_type(raw.get("ground_type")),
+            # DO NOT UNDO — Step 3 of 7-step pipeline: remap to canonical bucket.
+            # _remap_to_canonical_bucket enforces keyword rules BEFORE label mapping:
+            #   s 23A / substantial impairment -> conviction (NOT mitigation/sentence)
+            #   manifestly excessive / House v The King -> sentence
+            # A single ground cannot be both conviction and sentence; split_mixed_ground
+            # handles downstream splitting (step 4).
+            ground_type=_remap_to_canonical_bucket(
+                raw.get("ground_type", ""),
+                title=raw.get("title", ""),
+                description=raw.get("description", ""),
+            ),
             description=raw.get("description", ""),
             linked_fact_ids=raw.get("linked_fact_ids", []),
             linked_event_ids=raw.get("linked_event_ids", []),
