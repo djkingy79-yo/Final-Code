@@ -315,6 +315,8 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
     # Outcome prediction — computed after normalisation/cleanup runs. Default
     # to None so the persist block still works even if normalisation fails.
     predicted_outcome = None
+    attack_plan = None
+    evidence_builder = None
 
     try:
         from services.ground_normaliser import (
@@ -447,11 +449,22 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
         # the Barrister Brief and cover page show aligned projections.
         try:
             from services.outcome_predictor import select_strategy, predict_outcome
+            from services.attack_plan import generate_attack_plan
+            from services.evidence_builder import generate_evidence_builder
             strategy = select_strategy(normalised_grounds)
             predicted_outcome = predict_outcome(strategy)
+            # Counsel feedback 23 Feb 2026 — attack plan + evidence builder.
+            # Produce deterministic counsel-conference output so the exported
+            # report can show strategy / evidence gaps / required material /
+            # Crown response / counter strategy / next steps for primary +
+            # secondary grounds, plus affidavit templates.
+            attack_plan = generate_attack_plan(strategy)
+            evidence_builder = generate_evidence_builder(strategy)
         except Exception as outcome_err:
             logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
             predicted_outcome = None
+            attack_plan = None
+            evidence_builder = None
     except Exception as norm_err:
         logger.warning(f"Ground normalisation skipped for case {case_id}: {norm_err}")
 
@@ -517,17 +530,25 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             all_existing_grounds.append({"ground_id": ground_doc["ground_id"], "title": issue_title})
 
         count += 1
-    # Persist the predicted outcome at the case level so the Barrister Brief
-    # and cover page can show aligned projections. None means the prediction
-    # didn't run (rare — only on normalisation error).
+    # Persist the predicted outcome + counsel conference outputs at the
+    # case level so the Barrister Brief and cover page can show aligned
+    # projections. None means the prediction didn't run (rare — only on
+    # normalisation error).
     try:
+        persist_doc: dict = {}
         if predicted_outcome is not None:
+            persist_doc["predicted_outcome"] = predicted_outcome
+        if attack_plan is not None:
+            persist_doc["attack_plan"] = attack_plan
+        if evidence_builder is not None:
+            persist_doc["evidence_builder"] = evidence_builder
+        if persist_doc:
             await db.cases.update_one(
                 {"case_id": case_id, "user_id": user_id},
-                {"$set": {"predicted_outcome": predicted_outcome}},
+                {"$set": persist_doc},
             )
     except Exception as persist_err:
-        logger.warning(f"Failed to persist predicted_outcome for case {case_id}: {persist_err}")
+        logger.warning(f"Failed to persist outcome/attack_plan/evidence_builder for case {case_id}: {persist_err}")
     return count
 
 

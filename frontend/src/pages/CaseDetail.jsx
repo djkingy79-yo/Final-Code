@@ -52,6 +52,7 @@ import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
 import EvidenceProfilePanel from "../components/EvidenceProfilePanel";
+import CounselBriefingBlock from "../components/CounselBriefingBlock";
 import DeadlineTracker from "../components/DeadlineTracker";
 import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
@@ -1031,6 +1032,14 @@ const CaseDetail = ({ user }) => {
       body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`;
     }
 
+    // Counsel Briefing — Times New Roman, small, tight spacing per counsel
+    // (23 Feb 2026). The live DOM block is rendered by CounselBriefingBlock.
+    const counselBriefingEl = document.querySelector('[data-testid="counsel-briefing-block"]');
+    if (counselBriefingEl) {
+      psn++;
+      body += `<div class="section"><div class="section-header"><span class="section-number">${psn}</span><span class="section-title">Counsel Briefing</span></div><div class="section-body">${counselBriefingEl.outerHTML}</div></div>`;
+    }
+
     const strengthEl = document.querySelector('[data-testid="case-strength-meter"]');
     if (strengthEl) {
       psn++;
@@ -1150,6 +1159,13 @@ const CaseDetail = ({ user }) => {
     let sn = 0;
     body += `<div class="sections">`;
     if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`; }
+    if (o.summary && (caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder)) {
+      const counselBriefingEl = document.querySelector('[data-testid="counsel-briefing-block"]');
+      if (counselBriefingEl) {
+        sn++;
+        body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Counsel Briefing</span></div><div class="section-body">${counselBriefingEl.outerHTML}</div></div>`;
+      }
+    }
     if (o.documents && documents.length > 0) {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Uploaded Documents</span></div><div class="section-body">`;
@@ -1469,6 +1485,12 @@ const CaseDetail = ({ user }) => {
               <h3 className="font-bold text-slate-500 uppercase tracking-wide mb-1" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '10pt' }} data-testid="case-summary-heading">Case Summary</h3>
               <p className="text-slate-600 leading-relaxed max-w-3xl" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '12pt', lineHeight: '1.8' }} data-testid="case-summary-text">{caseData.summary}</p>
             </div>
+          )}
+
+          {/* Counsel Briefing — Predicted Outcome + Attack Plan + Evidence Builder
+              (Times New Roman, small, tight spacing per counsel 23 Feb 2026) */}
+          {activeTab !== "grounds" && (caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
+            <CounselBriefingBlock caseData={caseData} />
           )}
 
           {/* Review Status — hidden for clarity, the tabs themselves convey status */}
