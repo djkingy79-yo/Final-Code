@@ -406,8 +406,23 @@ async def cleanup_duplicate_grounds(db, case_id: str, user_id: str) -> dict:
 
     # Delete duplicates
     if duplicate_ids:
+        # Archive-before-delete safety layer (added 24 Feb 2026). Matching
+        # and deletion semantics are unchanged; this writes a full copy of
+        # every row into `dedup_archive` before the delete fires so the
+        # records remain recoverable. See services/dedup_archive.py.
+        from services.dedup_archive import archive_records_before_delete, new_dedup_run_id
+        dedup_run_id = new_dedup_run_id()
+        docs_to_archive = [g for g in all_grounds if g.get("ground_id") in set(duplicate_ids)]
+        await archive_records_before_delete(
+            db,
+            source_collection="grounds_of_merit",
+            records=docs_to_archive,
+            id_field="ground_id",
+            reason="cleanup_duplicate_grounds",
+            dedup_run_id=dedup_run_id,
+        )
         result = await db.grounds_of_merit.delete_many({"ground_id": {"$in": duplicate_ids}})
-        logger.info(f"Dedup cleanup for case {case_id}: removed {result.deleted_count} duplicate grounds ({len(all_grounds)} → {len(unique_grounds)})")
+        logger.info(f"Dedup cleanup for case {case_id}: removed {result.deleted_count} duplicate grounds ({len(all_grounds)} → {len(unique_grounds)}); archive run_id={dedup_run_id}")
 
     return {
         "before": len(all_grounds),
@@ -444,8 +459,22 @@ async def cleanup_duplicate_issues(db, case_id: str, user_id: str) -> dict:
             unique_issues.append(issue)
 
     if duplicate_ids:
+        # Archive-before-delete safety layer (added 24 Feb 2026). Matching
+        # and deletion semantics are unchanged; this writes a full copy of
+        # every issue into `dedup_archive` before the delete fires.
+        from services.dedup_archive import archive_records_before_delete, new_dedup_run_id
+        dedup_run_id = new_dedup_run_id()
+        docs_to_archive = [i for i in all_issues if i.get("issue_id") in set(duplicate_ids)]
+        await archive_records_before_delete(
+            db,
+            source_collection="issue_classifications",
+            records=docs_to_archive,
+            id_field="issue_id",
+            reason="cleanup_duplicate_issues",
+            dedup_run_id=dedup_run_id,
+        )
         await db.issue_classifications.delete_many({"issue_id": {"$in": duplicate_ids}})
-        logger.info(f"Issue dedup cleanup for case {case_id}: removed {len(duplicate_ids)} duplicates ({len(all_issues)} → {len(unique_issues)})")
+        logger.info(f"Issue dedup cleanup for case {case_id}: removed {len(duplicate_ids)} duplicates ({len(all_issues)} → {len(unique_issues)}); archive run_id={dedup_run_id}")
 
     return {
         "before": len(all_issues),

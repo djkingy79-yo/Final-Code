@@ -46,14 +46,41 @@ async def _dedup_document_extracts():
         {"$match": {"count": {"$gt": 1}}},
     ]
     duplicates = await db.document_extracts.aggregate(pipeline).to_list(1000)
+    if not duplicates:
+        return
+
+    # Archive-before-delete safety layer (added 24 Feb 2026). One archive
+    # run groups every deletion this startup pass makes.
+    from services.dedup_archive import archive_records_before_delete, new_dedup_run_id
+    dedup_run_id = new_dedup_run_id()
     total_removed = 0
     for group in duplicates:
         ids_to_remove = group["ids"][:-1]  # Keep the last one (newest by insertion order)
-        if ids_to_remove:
-            result = await db.document_extracts.delete_many({"_id": {"$in": ids_to_remove}})
-            total_removed += result.deleted_count
+        if not ids_to_remove:
+            continue
+        # Fetch the full records before deleting so the archive row carries
+        # everything. document_extracts uses Mongo `_id` keys, so we pass
+        # id_field='_id' and stash a stringified copy of _id on each doc.
+        records = await db.document_extracts.find(
+            {"_id": {"$in": ids_to_remove}}
+        ).to_list(len(ids_to_remove))
+        for r in records:
+            r["_id_str"] = str(r.get("_id"))
+        await archive_records_before_delete(
+            db,
+            source_collection="document_extracts",
+            records=records,
+            id_field="_id_str",
+            reason="_dedup_document_extracts",
+            dedup_run_id=dedup_run_id,
+        )
+        result = await db.document_extracts.delete_many({"_id": {"$in": ids_to_remove}})
+        total_removed += result.deleted_count
     if total_removed:
-        logger.info(f"Dedup: removed {total_removed} duplicate document_extracts across {len(duplicates)} groups")
+        logger.info(
+            f"Dedup: removed {total_removed} duplicate document_extracts across "
+            f"{len(duplicates)} groups; archive run_id={dedup_run_id}"
+        )
 
 
 async def create_database_indexes():
