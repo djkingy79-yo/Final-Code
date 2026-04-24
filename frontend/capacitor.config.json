@@ -1,6 +1,6 @@
 {
-  "appId": "com.debking.criminalappeals",
-  "appName": "Appeal Case Manager",
+  "appId": "au.com.criminallawappealmanagement",
+  "appName": "Criminal Law Appeal Management",
   "webDir": "build",
   "bundledWebRuntime": false,
   "server": {
