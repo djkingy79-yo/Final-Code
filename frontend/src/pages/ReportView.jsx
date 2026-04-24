@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
-import { buildCanonicalPrintCss } from "../utils/printStyles";
+import { buildExportHtml } from "../utils/exportHtml";
 import ReportTranslator from "../components/ReportTranslator";
 import {
   Scale,
@@ -742,194 +742,10 @@ const ReportView = () => {
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
     const appellantForFooter = defendantName || caseData?.defendant_name || caseData?.title || "Appellant";
-    // Footer now produced by the canonical printStyles.js engine (locked 24 Feb 2026).
-    // Kept as a reference only — not injected into @page content.
-    const previewFooterLabel = `${appellantForFooter}  \\00B7  ${title}  \\00B7  ${previewDate}`;
-    const canonicalCss = buildCanonicalPrintCss({
-      docLabel: title,
-      appellant: appellantForFooter,
-      caseNumber: caseData?.case_number,
-    });
 
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-    ${canonicalCss}
-    /* ReportView-specific chrome only — NOT typography. */
-    th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-container { max-width: 900px; margin: 0 auto; }
-    .cover-page { padding: 20px 0 10px; }
-    .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
-    .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 8pt; font-weight: 800; color: #1d4ed8; }
-    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 10pt; }
-    .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; text-align: left; }
-    .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
-    .cover-page-card-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }
-    .cover-page-card-value { font-size: 10pt; font-weight: 700; color: #0f172a; }
-    .cover-page-note { margin-top: 8px; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 10px; font-size: 8pt; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .page-break { page-break-after: always; break-after: page; }
-    .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
-    .report-header, .report-header * { color: #fff !important; }
-    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; margin-bottom: 3px; color: #fff !important; line-height: 1.3; }
-    .report-header .meta-line { font-size: 11pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
-    .report-header .grounds-count { font-size: 18pt; font-weight: 700; color: #fff; text-align: right; }
-    .report-header .grounds-label { font-size: 8pt; color: rgba(255,255,255,0.8); text-align: right; }
-    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
-    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 999px; font-size: 9pt; font-weight: 700; margin-top: 4px; }
-    .report-header .gen-date { font-size: 8pt; color: rgba(255,255,255,0.85); margin-top: 3px; }
-    /* 5-cell grid on auto-fit so no empty placeholder cell on row 2 when the
-       grid would otherwise leave a blank slot (was: repeat(3, 1fr) → 2-empty). */
-    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-header .case-info-grid .ci-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 1px; }
-    .report-header .case-info-grid .ci-value { font-size: 10pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
-    .toc { padding: 10px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-    .toc-title { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin-bottom: 4px; }
-    .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px 14px; }
-    .toc-grid a { font-size: 8pt; color: #334155; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-    .toc-grid a:hover { color: #1d4ed8; }
-
-    /* ── Tailwind utilities for captured DOM content ── */
-    .flex { display: flex; }
-    .items-center { align-items: center; }
-    .gap-2 { gap: 8px; }
-    .gap-3 { gap: 12px; }
-    .mb-2 { margin-bottom: 8px; }
-    .mb-4 { margin-bottom: 16px; }
-    .mt-2 { margin-top: 8px; }
-    .mt-3 { margin-top: 12px; }
-    .p-2 { padding: 8px; }
-    .p-4 { padding: 16px; }
-    .border { border: 1px solid #e2e8f0; }
-    .border-slate-200 { border-color: #e2e8f0; }
-    .rounded { border-radius: 4px; }
-    .rounded-lg { border-radius: 8px; }
-    .font-medium { font-weight: 500; }
-    .font-semibold { font-weight: 600; }
-    .font-bold { font-weight: 700; }
-    .text-xs { font-size: 11px; }
-    .text-sm { font-size: 13px; }
-    .text-slate-500 { color: #64748b; }
-    .text-slate-600 { color: #475569; }
-    .text-slate-700 { color: #334155; }
-    .text-slate-900 { color: #0f172a; }
-    .text-white { color: #ffffff; }
-    .uppercase { text-transform: uppercase; }
-    .whitespace-pre-wrap { white-space: pre-wrap; }
-    .flex-wrap { flex-wrap: wrap; }
-    .underline { text-decoration: underline; }
-    .break-words { overflow-wrap: break-word; }
-    .inline-flex { display: inline-flex; }
-    .sections { padding: 16px 24px; }
-    .section { margin-bottom: 14px; }
-    .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${theme.previewColor}; padding-left: 10px; margin-bottom: 6px; }
-    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
-    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.5; }
-    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
-    .section-body h2 { font-size: 12pt; border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 3px; margin: 12pt 0 6pt; page-break-after: avoid; break-after: avoid; }
-    /* Subheading break rules removed 2026-04-21. Previously page-break-after:
-       avoid was forcing multi-paragraph subsections to the next page,
-       producing the giant whitespace gaps the owner reported. Browser
-       default orphan/widow handling + the per-paragraph rules below keep
-       readability without half-blank pages. */
-    .section-body h3 { font-size: 12pt; font-style: italic; color: #1e3a8a; margin: 10pt 0 4pt; }
-    .section-body h4 { font-size: 11pt; color: #334155; margin: 8pt 0 3pt; }
-    .section-body p { margin: 0 0 10pt 0; font-size: 11pt; line-height: 1.5; orphans: 3; widows: 3; }
-    .section-body strong { color: #0f172a; font-weight: 700; }
-    .section-body ul, .section-body ol { padding-left: 1.6rem; margin: 4pt 0 10pt; }
-    .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.5; }
-    .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table {
-      /* Landscape page for tables — but NO forced break-before/after because
-         that pushes the table to a fresh page and leaves huge whitespace
-         before it on the preceding portrait page. Let the browser break
-         naturally based on table height. */
-      page: landscape-table;
-      width: 100%; border-collapse: collapse; margin: 8pt 0;
-      font-size: 10pt !important; table-layout: fixed;
-      page-break-inside: auto; break-inside: auto;
-    }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 700; padding: 5px 7px; text-align: left; border: 1px solid #cbd5e1; font-size: 9.5pt !important; word-wrap: break-word; overflow-wrap: break-word; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 5px 7px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; hyphens: auto; font-size: 10pt !important; }
-    .section-body blockquote { border-left: 3px solid #1e3a8a; padding: 6px 10px; margin: 6px 0; background: #eff6ff; color: #1e3a8a; font-size: 10pt; }
-    /* Fallback styling for pipe-delimited <pre> tables — keep readable (not black). */
-    .section-body pre, .report-container pre {
-      background: #f8fafc !important; color: #1e293b !important;
-      font-family: 'Courier New', monospace; font-size: 8pt;
-      padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 4px;
-      white-space: pre-wrap; word-wrap: break-word; overflow-wrap: anywhere;
-      break-inside: avoid; page-break-inside: avoid; margin: 6px 0;
-    }
-    .disclaimer { padding: 10px 24px; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: flex-start; }
-    .disclaimer-icon { color: #ef4444; font-size: 16px; flex-shrink: 0; }
-    .disclaimer-text { font-size: 8pt; color: #334155; }
-    .disclaimer-text strong { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; display: block; margin-bottom: 1px; }
-    .disclaimer-bold { background: #dc2626; border: 2px solid #b91c1c; padding: 10px 16px; margin: 10px 24px; border-radius: 6px; display: flex; gap: 10px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-bold .disc-icon { color: #facc15; font-size: 22px; flex-shrink: 0; }
-    .disclaimer-bold .disc-text { font-size: 8pt; color: #ffffff; font-weight: 700; }
-    .disclaimer-bold .disc-text strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .notice { background: #eff6ff; border: 1px solid #93c5fd; padding: 6px 12px; border-radius: 6px; color: #1e3a8a; margin: 10px 24px; font-size: 10pt; }
-    .print-footer { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #1d4ed8; padding: 3px 18mm 4px; }
-    .print-footer-row { display: flex; justify-content: space-between; align-items: center; font-family: 'Times New Roman', Times, serif; font-size: 7pt; font-style: italic; color: #475569; }
-    .print-footer-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .print-footer-page::after { content: ''; }
-    .no-print { display: none !important; }
-    @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; padding-bottom: 40px; }
-      .report-container { max-width: none; }
-      .cover-page { page-break-after: always; break-after: page; }
-      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
-      .report-header .case-info-grid { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: inherit; }
-      .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .disclaimer-bold { page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .report-branding { page-break-inside: avoid; break-inside: avoid; }
-      .disclaimer-bold + .report-branding { page-break-before: avoid; break-before: avoid; }
-      .section-body .legal-report-table-wrap { overflow: visible; }
-      .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
-      .print-footer { display: block; }
-      .print-footer-page::after { content: "Page " counter(page) " of " counter(pages); }
-    }
-    @media (max-width: 768px) {
-      .cover-page-grid { grid-template-columns: 1fr; }
-      body { font-size: 13px; padding: 0 0 60px; }
-      .report-container { max-width: 100%; }
-      .cover-page-inner { padding: 18px 16px; }
-      .cover-page h1 { font-size: 22px; }
-      .cover-page-card-value { font-size: 12px; }
-      .cover-page-note { font-size: 10px; padding: 10px 12px; }
-      .report-header { padding: 18px 16px; }
-      .report-header h1 { font-size: 20px; }
-      .report-header .case-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-      .report-header .case-info-grid .ci-value { font-size: 11px; }
-      .toc { padding: 10px 16px; }
-      .toc-grid { grid-template-columns: repeat(2, 1fr); gap: 2px 12px; }
-      .sections { padding: 16px; }
-      .section-title { font-size: 16px; }
-      .section-body { padding: 14px 16px; }
-      .section-body h2 { font-size: 1.1rem; }
-      .section-body h3 { font-size: 1rem; }
-      .section-body table { font-size: 9pt !important; }
-      .section-body th, .section-body td { padding: 5px 6px; font-size: 9pt !important; }
-      .disclaimer-bold { margin: 12px 16px; padding: 14px 16px; }
-      .disclaimer-bold .disc-text { font-size: 11px; }
-      .disclaimer-bold .disc-text strong { font-size: 12px; }
-      .notice { margin: 10px 16px; font-size: 11px; }
-      .print-footer { padding: 6px 12px; }
-      .print-footer-row { font-size: 8px; }
-    }
-  </style>
-</head>
-<body>
+    // CANONICAL-ONLY: report-specific body markup is supplied to the single
+    // buildExportHtml() wrapper. No HTML shell, no @page, no footer CSS here.
+    const beforeBody = `
     ${notice}
     <section class="cover-page page-break">
       <div class="cover-page-inner">
@@ -944,12 +760,14 @@ const ReportView = () => {
         </div>
         <div class="cover-page-note">NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</div>
       </div>
-    </section>
-  <div class="report-container">
+    </section>`;
+
+    const sectionsBody = `
+    <div class="report-container">
     <div class="report-header">
       <div class="header-row">
         <div>
-          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">${theme.label}</div>
+          <div style="font-size:8pt;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">${theme.label}</div>
           <h1>${title}</h1>
           <div class="meta-line">${meta}</div>
           <div class="badge">${theme.price}</div>
@@ -968,7 +786,7 @@ const ReportView = () => {
         <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
       </div>
     </div>
-    ${sections.length > 1 ? `<div class="toc-container" style="padding:14px 32px;"><p class="toc-heading" style="font-size:11pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 8px;font-family:'Times New Roman',Times,serif;">CONTENTS (${sections.length} SECTIONS)</p><div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">${sections.map((s, i) => `<div class="toc-item" style="font-size:9pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i+1}.</strong> ${s.title}</div>`).join('')}</div></div>` : ''}
+    ${sections.length > 1 ? `<div class="toc-container"><p class="toc-heading">CONTENTS (${sections.length} SECTIONS)</p><div class="toc-grid">${sections.map((s, i) => `<div class="toc-item"><strong>${i+1}.</strong> ${s.title}</div>`).join('')}</div></div>` : ''}
     <div class="sections">
       ${sections.map((section, idx) => `
         <div class="section" id="print-section-${idx+1}">
@@ -980,30 +798,54 @@ const ReportView = () => {
         </div>
       `).join('')}
     </div>
-    <div class="disclaimer-bold">
-      <div class="disc-icon">&#9888;</div>
-      <div class="disc-text">
-        <strong>NOT LEGAL ADVICE</strong>
-        This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.
-      </div>
-    </div>
-    <div style="text-align:center;margin:16px 32px;padding:12px 0;page-break-inside:avoid;" class="report-branding">
-      <p style="font-size:10px;font-weight:700;color:#334155;margin:0 0 8px;">Created and Designed by Deb King</p>
-      <div style="display:inline-flex;align-items:center;gap:8px;">
-        <div style="width:28px;height:28px;background:#dc2626;border-radius:5px;display:flex;align-items:center;justify-content:center;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
-        </div>
-        <div style="text-align:left;">
-          <p style="margin:0;font-weight:700;font-size:11px;color:#0f172a;">Appeal Case Manager</p>
-          <p style="margin:0;font-size:9px;color:#64748b;">Founded by Debra King</p>
-          <p style="margin:0;font-size:9px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Page-level footer handled by @page @bottom-left / @bottom-right -->
-</body>
-</html>`;
+    </div>`;
+
+    // Component-only chrome CSS — layout / decoration only, NO typography
+    // (typography comes from the canonical engine via buildExportHtml).
+    const extraStyles = `
+    .report-container { max-width: 900px; margin: 0 auto; }
+    .cover-page { padding: 20px 0 10px; }
+    .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
+    .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 800; color: #1d4ed8; }
+    .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; text-align: left; }
+    .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
+    .cover-page-card-label { text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }
+    .cover-page-card-value { font-weight: 700; color: #0f172a; }
+    .cover-page-note { margin-top: 8px; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 10px; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .report-header { background: ${theme.previewColor}; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
+    .report-header, .report-header * { color: #fff !important; }
+    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 999px; font-weight: 700; margin-top: 4px; }
+    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .report-header .grounds-count { font-weight: 700; color: #fff; text-align: right; }
+    .report-header .grounds-label { color: rgba(255,255,255,0.8); text-align: right; }
+    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .report-header .case-info-grid .ci-label { text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 1px; }
+    .toc-container { padding: 10px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+    .toc-heading { text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 700; margin: 0 0 8px; }
+    .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px 14px; }
+    .toc-item { color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }
+    .sections { padding: 16px 24px; }
+    .section { margin-bottom: 14px; }
+    .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid ${theme.previewColor}; padding-left: 10px; margin-bottom: 6px; }
+    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-weight: 700; flex-shrink: 0; }
+    .section-title { font-weight: 700; color: #0f172a; text-transform: uppercase; }
+    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; }
+    .section-body blockquote { border-left: 3px solid #1e3a8a; padding: 6px 10px; margin: 6px 0; background: #eff6ff; color: #1e3a8a; }
+    @media print {
+      .cover-page { page-break-after: always; break-after: page; }
+      .report-container { max-width: none; }
+    }`;
+
+    const html = buildExportHtml({
+      title,
+      docLabel: title,
+      defendantName: appellantForFooter,
+      caseNumber: caseData?.case_number,
+      accentColor: theme.previewColor,
+      extraStyles,
+      beforeBody,
+      bodyHtml: sectionsBody,
+    });
 
     localStorage.setItem(
       "document-preview-payload",
@@ -1022,6 +864,7 @@ const ReportView = () => {
 
     toast.success(mode === "print" ? "Preview opened — use Print." : "PDF preview opened.");
   };
+
 
   const handleExportPDF = async () => {
     openReportPreview("pdf");

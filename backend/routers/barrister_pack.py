@@ -121,7 +121,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
     if cover_data:
         t = Table(cover_data, colWidths=[45*mm, 110*mm])
         t.setStyle(TableStyle([
-            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+            ("FONTNAME", (0, 0), (0, -1), "Times-Bold"),
             ("FONTSIZE", (0, 0), (-1, -1), 9),
             ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#475569")),
             ("TEXTCOLOR", (1, 0), (1, -1), colors.HexColor("#0f172a")),
@@ -254,7 +254,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
 
         tl_table = Table(tl_data, colWidths=[25*mm, 100*mm, 35*mm])
         tl_table.setStyle(TableStyle([
-            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTNAME", (0, 0), (-1, 0), "Times-Bold"),
             ("FONTSIZE", (0, 0), (-1, -1), 8),
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f4c81")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -343,7 +343,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
     ]
     sum_table = Table(summary_data, colWidths=[80*mm, 40*mm])
     sum_table.setStyle(TableStyle([
-        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("FONTNAME", (0, 0), (0, -1), "Times-Bold"),
         ("FONTSIZE", (0, 0), (-1, -1), 9),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
         ("TOPPADDING", (0, 0), (-1, -1), 5),

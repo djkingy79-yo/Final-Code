@@ -73,7 +73,6 @@ import PipelineProgress from "../components/PipelineProgress";
 import BarristerToolsPanel from "../components/BarristerToolsPanel";
 import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
-import { buildCanonicalPrintCss } from "../utils/printStyles";
 import ExportOptionsModal from "../components/ExportOptionsModal";
 import auSpelling from "../utils/auSpelling";
 
@@ -490,53 +489,37 @@ const CaseDetail = ({ user }) => {
     }
   };
 
-  const buildTabPreviewHtml = (contentHtml, tabLabel, noticeHtml) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
-  <style>
-    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-    ${buildCanonicalPrintCss({
+  const buildTabPreviewHtml = (contentHtml, tabLabel, noticeHtml) => {
+    // CANONICAL-ONLY: routes through buildExportHtml(). No standalone shell.
+    const extraStyles = `
+      .tab-shell { padding: 12px 18px; }
+      .meta { color: #475569; margin-bottom: 10pt; font-style: italic; }
+      .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 6px 10px; border-radius: 4px; color: #1e3a8a; margin-bottom: 10pt;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 8px 12px; margin: 6pt 0 10pt; background: #eff6ff;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 4px; }
+      .case-summary-card .case-grid .k { font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
+      .case-summary-card .case-grid .v { font-weight: 700; }`;
+
+    const bodyHtml = `
+      <div class="tab-shell">
+        ${noticeHtml || ''}
+        <h1>${caseData?.title || ''} — ${tabLabel}</h1>
+        <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
+        ${contentHtml}
+      </div>`;
+
+    return buildExportHtml({
+      title: `${caseData?.title || 'Case'} — ${tabLabel}`,
       docLabel: tabLabel,
-      appellant: caseData?.defendant_name || 'Appellant',
+      defendantName: caseData?.defendant_name,
       caseNumber: caseData?.case_number,
-    })}
-    /* Tab-export chrome only — NOT typography. */
-    .tab-shell { padding: 12px 18px; }
-    .meta { font-size: 9pt; color: #475569; margin-bottom: 10pt; font-style: italic; }
-    .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 6px 10px; border-radius: 4px; color: #1e3a8a; margin-bottom: 10pt; font-size: 10pt;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-box { background: #dc2626; border: 1pt solid #b91c1c; padding: 8px 10px; border-radius: 4px; margin-top: 14pt; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 8px; align-items: flex-start;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-box .disc-hazard { font-size: 18px; color: #facc15; flex-shrink: 0; }
-    .disclaimer-box strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .disclaimer-box p { font-size: 8pt; color: #ffffff; margin: 0; line-height: 1.45; font-weight: 700; }
-    .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 8px 12px; margin: 6pt 0 10pt; background: #eff6ff;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 4px; }
-    .case-summary-card .case-grid > div { font-size: 10pt; line-height: 1.35; }
-    .case-summary-card .case-grid .k { font-size: 8pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
-    .case-summary-card .case-grid .v { font-weight: 700; }
-  </style>
-</head>
-<body>
-  <div class="tab-shell">
-  ${noticeHtml}
-  <h1>${caseData?.title || ''} — ${tabLabel}</h1>
-  <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
-  ${contentHtml}
-  <div class="disclaimer-box">
-    <span class="disc-hazard">&#9888;</span>
-    <div>
-    <strong>NOT LEGAL ADVICE</strong>
-    <p>This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
-    </div>
-  </div>
-  </div>
-</body>
-</html>`;
+      accentColor: "#1e3a8a",
+      extraStyles,
+      bodyHtml,
+    });
+  };
 
   const openTabPrintPreview = (mode = "print") => {
     const contentEl = document.querySelector('[data-tab-content][data-state="active"]') || document.querySelector('[data-tab-content]');

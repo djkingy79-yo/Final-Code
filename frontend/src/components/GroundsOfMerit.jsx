@@ -17,7 +17,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { buildCanonicalPrintCss } from "../utils/printStyles";
+import { buildExportHtml } from "../utils/exportHtml";
 import {
   Dialog,
   DialogContent,
@@ -727,43 +727,32 @@ const GroundsOfMerit = ({
       </div>
     );
 
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grounds of Merit Export</title>
-  <style>
-    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-    ${buildCanonicalPrintCss({
-      docLabel: "Grounds of Merit",
-      appellant: caseData?.defendant_name || "Appellant",
-      caseNumber: caseData?.case_number,
-    })}
-    /* Grounds-specific chrome only — NOT typography. */
+    // CANONICAL-ONLY: single buildExportHtml() call.
+    const extraStyles = `
     .grounds-export-shell { max-width: 820px; margin: 0 auto; background: #ffffff; padding: 12px 16px; }
     .grounds-export-header { border-bottom: 1.2pt solid #1e3a8a; padding-bottom: 5pt; margin-bottom: 6pt; }
-    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.14em; color: #1e3a8a; font-weight: 800; font-size: 8pt; margin: 0 0 2px;
+    .grounds-export-kicker { text-transform: uppercase; letter-spacing: 0.14em; color: #1e3a8a; font-weight: 800; margin: 0 0 2px;
       -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .grounds-export-section { padding: 5pt 0 2pt; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
     .grounds-export-section + .grounds-export-section { border-top: 0.5pt solid #cbd5e1; margin-top: 4pt; padding-top: 6pt; }
     .grounds-export-meta { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4pt; }
-    .grounds-export-meta span { background: #dbeafe; color: #1e3a8a; padding: 1px 6px; border-radius: 10pt; font-size: 8pt; font-weight: 700;
+    .grounds-export-meta span { background: #dbeafe; color: #1e3a8a; padding: 1px 6px; border-radius: 10pt; font-weight: 700;
       -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .grounds-export-description { margin: 0 0 6pt 0; line-height: 1.35; font-size: 10pt; text-align: justify; orphans: 3; widows: 3; }
+    .grounds-export-description { margin: 0 0 6pt 0; text-align: justify; orphans: 3; widows: 3; }
     .grounds-export-block { margin-bottom: 5pt; }
     .grounds-export-analysis { margin-top: 6pt; }
-    .grounds-export-disclaimer { margin-top: 8pt; background: #dc2626; border: 1pt solid #b91c1c; padding: 6px 8px; font-weight: 700; line-height: 1.35; font-size: 9pt; color: #ffffff; border-radius: 4px; display: flex; gap: 6px; align-items: flex-start;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .legal-report-table-wrap { overflow-x: auto; }
-    @media print {
-      .grounds-export-shell { max-width: none; padding: 0; }
-    }
-  </style>
-</head>
-<body>${contentMarkup}
-</body>
-</html>`;
+    @media print { .grounds-export-shell { max-width: none; padding: 0; } }`;
+
+    return buildExportHtml({
+      title: "Grounds of Merit Export",
+      docLabel: "Grounds of Merit",
+      defendantName: caseData?.defendant_name,
+      caseNumber: caseData?.case_number,
+      accentColor: "#1e3a8a",
+      extraStyles,
+      bodyHtml: `<div class="grounds-export-shell">${contentMarkup}</div>`,
+    });
   };
 
   const openGroundsPreview = (mode = "print") => {
@@ -805,35 +794,12 @@ const GroundsOfMerit = ({
   const buildSingleGroundHtml = (ground) => {
     const analysis = ground.deep_analysis?.full_analysis || ground.analysis || "";
     const escHtml = (s) => auSpelling((s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
-    return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Ground: ${escHtml(ground.title)}</title>
-<style>
-/* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-${buildCanonicalPrintCss({
-  docLabel: `Grounds of Merit — ${ground.title || 'Single Ground'}`,
-  appellant: caseData?.defendant_name || 'Appellant',
-  caseNumber: caseData?.case_number,
-})}
-/* Single-ground chrome only — NOT typography. */
-body { max-width: 820px; margin: 0 auto; padding: 12px 16px; }
-.meta { display: flex; gap: 5px; flex-wrap: wrap; margin: 3pt 0 6pt; }
-.meta span { background: #dbeafe; color: #1d4ed8; padding: 1px 6px; border-radius: 999px; font-size: 8pt; font-weight: 700;
-  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-.desc { margin: 0 0 6pt; font-size: 10pt; line-height: 1.35; orphans: 3; widows: 3; }
-.case-box { background: #eff6ff; border: 1px solid #93c5fd; padding: 6px 10px; border-radius: 6px; margin-bottom: 6pt; font-size: 10pt;
-  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-.analysis { margin-top: 6pt; font-size: 10pt; line-height: 1.35; }
-.disclaimer { background: #dc2626; border: 2px solid #b91c1c; padding: 6px 10px; border-radius: 6px; margin-top: 8pt; page-break-inside: avoid; display: flex; gap: 8px; align-items: flex-start;
-  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-.disclaimer .disc-hazard { font-size: 18px; color: #facc15; flex-shrink: 0; }
-.disclaimer strong { font-size: 10pt; text-transform: uppercase; color: #ffffff; display: block; margin-bottom: 2px; }
-.disclaimer p { font-size: 8pt; color: #ffffff; margin: 0; line-height: 1.35; font-weight: 700; }
-@media print { body { padding: 0; max-width: none; } }
-</style></head><body>
+
+    const bodyHtml = `
 <h1>Ground of Merit: ${escHtml(ground.title)}</h1>
 <div class="meta"><span>${escHtml((ground.ground_type || 'other').replace(/_/g,' '))}</span><span>${escHtml(ground.strength || 'Moderate')}</span><span>${escHtml(ground.status || 'Identified')}</span></div>
 <p class="desc">${escHtml(ground.description)}</p>
-${(ground.record_support || ground.verdict_robustness || ground.crown_strength || ground.failure_risk) ? `<h2>Appeal Realism</h2><ul>${ground.record_support ? `<li><strong>Record support:</strong> ${escHtml(ground.record_support.replace(/_/g, ' '))}</li>` : ''}${ground.verdict_robustness ? `<li><strong>Verdict robustness:</strong> ${escHtml(ground.verdict_robustness)}</li>` : ''}${ground.crown_strength ? `<li><strong>Likely Crown response:</strong> ${escHtml(ground.crown_strength)}</li>` : ''}</ul>${ground.failure_risk ? `<p style="margin:4pt 0 6pt;padding:4pt 6pt;background:#fef3c7;border:1px solid #fbbf24;border-radius:3px;font-size:9.5pt;"><strong style="text-transform:uppercase;font-size:8.5pt;color:#92400e;">Why this may fail: </strong>${escHtml(ground.failure_risk)}</p>` : ''}` : ''}
+${(ground.record_support || ground.verdict_robustness || ground.crown_strength || ground.failure_risk) ? `<h2>Appeal Realism</h2><ul>${ground.record_support ? `<li><strong>Record support:</strong> ${escHtml(ground.record_support.replace(/_/g, ' '))}</li>` : ''}${ground.verdict_robustness ? `<li><strong>Verdict robustness:</strong> ${escHtml(ground.verdict_robustness)}</li>` : ''}${ground.crown_strength ? `<li><strong>Likely Crown response:</strong> ${escHtml(ground.crown_strength)}</li>` : ''}</ul>${ground.failure_risk ? `<p style="margin:4pt 0 6pt;padding:4pt 6pt;background:#fef3c7;border:1px solid #fbbf24;border-radius:3px;"><strong style="text-transform:uppercase;color:#92400e;">Why this may fail: </strong>${escHtml(ground.failure_risk)}</p>` : ''}` : ''}
 ${(ground.supporting_evidence||[]).length ? '<h2>Supporting Evidence</h2><ul>' + ground.supporting_evidence.map(e => {
   let t = '';
   if (typeof e === 'string') {
@@ -854,9 +820,25 @@ ${(ground.law_sections||[]).filter(s => s.section && !s.section.toLowerCase().in
   return '<li>'+escHtml(`${secDisplay} ${actText}${jurInAct ? '' : ` (${jur})`}`.trim())+'</li>';
 }).join('') + '</ul>' : ''}
 ${(ground.similar_cases||[]).filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).length ? '<h2>Comparable Authority</h2>' + ground.similar_cases.filter(c=>c.case_name && c.case_name !== 'Case name' && !c.case_name.includes('[Surname]') && !c.case_name.includes('[Year]') && c.case_name !== 'None' && c.case_name !== 'optional' && !(c.citation || '').toLowerCase().includes('verification needed')).map(c=>'<div class="case-box"><strong>'+escHtml(c.case_name)+'</strong>'+(c.citation ? ' &mdash; '+escHtml(c.citation) : '')+'</div>').join('') : ''}
-${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + renderMarkdownToHtml(analysis) + '</div>' : ''}
-<div class="disclaimer"><span class="disc-hazard">&#9888;</span><div><strong>NOT LEGAL ADVICE</strong><p>This application is an educational research tool only and does NOT constitute legal advice. All analysis must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p></div></div>
-</body></html>`;
+${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + renderMarkdownToHtml(analysis) + '</div>' : ''}`;
+
+    const extraStyles = `
+.meta { display: flex; gap: 5px; flex-wrap: wrap; margin: 3pt 0 6pt; }
+.meta span { background: #dbeafe; color: #1d4ed8; padding: 1px 6px; border-radius: 999px; font-weight: 700;
+  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+.desc { text-align: justify; orphans: 3; widows: 3; }
+.case-box { background: #eff6ff; border: 1px solid #93c5fd; padding: 6px 10px; border-radius: 6px; margin-bottom: 6pt;
+  -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }`;
+
+    return buildExportHtml({
+      title: `Ground: ${escHtml(ground.title)}`,
+      docLabel: `Grounds of Merit — ${ground.title || 'Single Ground'}`,
+      defendantName: caseData?.defendant_name,
+      caseNumber: caseData?.case_number,
+      accentColor: "#1e3a8a",
+      extraStyles,
+      bodyHtml,
+    });
   };
 
   const handleGroundPrint = () => {

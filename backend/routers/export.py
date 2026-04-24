@@ -683,7 +683,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 10),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
@@ -1199,7 +1199,7 @@ async def generate_case_export_pack(case_id: str, request: Request):
             info_rows.append(["Jurisdiction:", case["state"].upper()])
         info_table = Table(info_rows, colWidths=[35 * mm, 120 * mm])
         info_table.setStyle(TableStyle([
-            ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+            ("FONTNAME", (0, 0), (0, -1), "Times-Bold"),
             ("FONTSIZE", (0, 0), (-1, -1), 10),
             ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#475569")),
             ("ALIGN", (0, 0), (0, -1), "RIGHT"),
@@ -1240,7 +1240,7 @@ async def generate_case_export_pack(case_id: str, request: Request):
     # Final disclaimer
     story.append(Spacer(1, 15 * mm))
     story.append(Paragraph("IMPORTANT DISCLAIMER — NOT LEGAL ADVICE", ParagraphStyle(
-        name="FinalDiscTitle", fontSize=12, fontName="Helvetica-Bold", alignment=TA_CENTER,
+        name="FinalDiscTitle", fontSize=12, fontName="Times-Bold", alignment=TA_CENTER,
         textColor=colors.HexColor("#dc2626"), spaceAfter=4,
     )))
     story.append(Paragraph(
