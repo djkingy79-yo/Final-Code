@@ -352,6 +352,25 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
             "under Weiss v The Queen and dismiss the appeal regardless."
         )
 
+    # Counsel feedback 23 Feb 2026 — Issue 7 improvement. Proviso soft cap:
+    # a high-proviso conviction ground (strong Crown case + strong/overwhelming
+    # verdict robustness) is exposed to Weiss-style dismissal even if error is
+    # established. Soft-cap `arguable_strong` viability down to
+    # `arguable_moderate` so counsel isn't given an inflated picture — the
+    # error may still be arguable, but the outcome is not "strong".
+    if (
+        ground.type == "conviction"
+        and ground.proviso_risk == "high"
+        and ground.viability == "arguable_strong"
+    ):
+        ground.viability = "arguable_moderate"
+        _log(
+            "Proviso soft cap: conviction ground with high Weiss-proviso "
+            "exposure → viability 'arguable_strong' → 'arguable_moderate'. "
+            "Even if error is established, the appeal may be dismissed if "
+            "no substantial miscarriage of justice is shown."
+        )
+
     ground.failure_risk = build_failure_risk(
         ground, record_support, verdict_robustness, crown_strength, profile
     )

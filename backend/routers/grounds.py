@@ -312,6 +312,10 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
     if case_jurisdiction == "FEDERAL":
         case_jurisdiction = "CTH"
 
+    # Outcome prediction — computed after normalisation/cleanup runs. Default
+    # to None so the persist block still works even if normalisation fails.
+    predicted_outcome = None
+
     try:
         from services.ground_normaliser import (
             EvidenceFlags,
@@ -432,9 +436,22 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 new_issue["verdict_robustness"] = match.verdict_robustness
                 new_issue["crown_strength"] = match.crown_strength
                 new_issue["failure_risk"] = match.failure_risk
+                new_issue["proviso_risk"] = getattr(match, "proviso_risk", None)
                 new_issue["reasoning_trail"] = match.reasoning_trail or []
                 rewritten_issues.append(new_issue)
         issues = rewritten_issues
+
+        # Counsel feedback 23 Feb 2026 — Issue 7 improvement. Predict the
+        # likely appellate outcome based on the primary/secondary ground
+        # selection + proviso risk, and surface it on the case payload so
+        # the Barrister Brief and cover page show aligned projections.
+        try:
+            from services.outcome_predictor import select_strategy, predict_outcome
+            strategy = select_strategy(normalised_grounds)
+            predicted_outcome = predict_outcome(strategy)
+        except Exception as outcome_err:
+            logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
+            predicted_outcome = None
     except Exception as norm_err:
         logger.warning(f"Ground normalisation skipped for case {case_id}: {norm_err}")
 
@@ -483,6 +500,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "verdict_robustness": issue.get("verdict_robustness"),
             "crown_strength": issue.get("crown_strength"),
             "failure_risk": issue.get("failure_risk"),
+            "proviso_risk": issue.get("proviso_risk"),
             "reasoning_trail": issue.get("reasoning_trail") or [],
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -499,6 +517,17 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             all_existing_grounds.append({"ground_id": ground_doc["ground_id"], "title": issue_title})
 
         count += 1
+    # Persist the predicted outcome at the case level so the Barrister Brief
+    # and cover page can show aligned projections. None means the prediction
+    # didn't run (rare — only on normalisation error).
+    try:
+        if predicted_outcome is not None:
+            await db.cases.update_one(
+                {"case_id": case_id, "user_id": user_id},
+                {"$set": {"predicted_outcome": predicted_outcome}},
+            )
+    except Exception as persist_err:
+        logger.warning(f"Failed to persist predicted_outcome for case {case_id}: {persist_err}")
     return count
 
 
