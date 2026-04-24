@@ -8,7 +8,7 @@ import {
   Scale, Trash2, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
   BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download,
-  GripVertical, ArrowUpDown, Check
+  GripVertical, ArrowUpDown, Check, Info
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -23,6 +23,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "./ui/sheet";
 import { ScrollArea } from "./ui/scroll-area";
 import { toast } from "sonner";
 import PaymentModal from "./PaymentModal";
@@ -122,6 +130,110 @@ const CROWN_CONFIG = {
   strong:   { label: "Crown response: Strong",   color: "bg-red-100 text-red-800 border-red-300" },
   moderate: { label: "Crown response: Moderate", color: "bg-amber-100 text-amber-800 border-amber-300" },
   weak:     { label: "Crown response: Weak",     color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+};
+
+/**
+ * ExplainViabilityButton — one-tap forensic audit of a ground's viability.
+ * Opens a bottom-sheet on mobile / right-side sheet on desktop, surfacing:
+ *   - the current viability rating
+ *   - realism metrics (record support / verdict robustness / Crown response)
+ *   - the full reasoning_trail (every cleanup / uplift / cap / merge decision)
+ *   - failure_risk ("why this may fail")
+ * Counsel can read the audit and override with a human review if needed.
+ */
+const ExplainViabilityButton = ({ ground, size = "sm" }) => {
+  const trail = Array.isArray(ground?.reasoning_trail) ? ground.reasoning_trail.filter(Boolean) : [];
+  const hasAudit = trail.length > 0 || ground?.record_support || ground?.verdict_robustness || ground?.crown_strength || ground?.failure_risk;
+  if (!hasAudit) return null;
+
+  const rs = ground?.record_support && RECORD_SUPPORT_CONFIG[ground.record_support];
+  const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
+  const cs = ground?.crown_strength && CROWN_CONFIG[ground.crown_strength];
+  const viabilityLabel = STRENGTH_CONFIG[ground?.strength]?.label || ground?.strength || "Unknown";
+
+  const sizeCls = size === "xs" ? "text-[10px] px-2 py-0.5" : "text-xs px-2.5 py-1";
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <button
+          type="button"
+          data-testid={`explain-viability-btn-${ground?.ground_id || "x"}`}
+          className={`inline-flex items-center gap-1 rounded-full border border-blue-300 bg-blue-50 text-blue-800 font-semibold uppercase tracking-wide hover:bg-blue-100 hover:border-blue-500 transition-colors ${sizeCls}`}
+          aria-label="Explain this ground's viability"
+        >
+          <Info className="w-3 h-3" aria-hidden="true" />
+          Why?
+        </button>
+      </SheetTrigger>
+      <SheetContent
+        side="bottom"
+        className="sm:side-right sm:max-w-md h-auto max-h-[85dvh] overflow-y-auto rounded-t-2xl sm:rounded-t-none"
+        data-testid="explain-viability-sheet"
+      >
+        <SheetHeader className="text-left">
+          <SheetTitle className="flex items-center gap-2 text-lg">
+            <Info className="w-5 h-5 text-blue-700" aria-hidden="true" />
+            Why this viability rating?
+          </SheetTitle>
+          <SheetDescription className="text-xs italic">
+            Forensic audit of the engine's reasoning — use this to decide
+            whether to accept, refine, or override the ground's current
+            rating. Ground audit only; not legal advice.
+          </SheetDescription>
+        </SheetHeader>
+
+        <div className="mt-4 space-y-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Current rating</p>
+            <div className="text-base font-semibold text-slate-900">{viabilityLabel}</div>
+          </div>
+
+          {(rs || vr || cs) && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Realism metrics</p>
+              <div className="flex flex-wrap gap-1.5">
+                {rs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${rs.color}`}>{rs.label}</span>}
+                {vr && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${vr.color}`}>{vr.label}</span>}
+                {cs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${cs.color}`}>{cs.label}</span>}
+              </div>
+            </div>
+          )}
+
+          {ground?.failure_risk && (
+            <div className="bg-amber-50 border-l-4 border-amber-400 px-3 py-2 rounded-r text-xs text-amber-900 leading-snug">
+              <p className="font-semibold uppercase tracking-wide text-[10px] mb-0.5">Why this may fail</p>
+              {ground.failure_risk}
+            </div>
+          )}
+
+          {trail.length > 0 ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                Engine decisions ({trail.length} step{trail.length === 1 ? "" : "s"})
+              </p>
+              <ol className="space-y-2 text-xs text-slate-700 list-decimal list-inside pl-1">
+                {trail.map((entry, idx) => (
+                  <li key={idx} className="leading-snug" data-testid={`explain-step-${idx + 1}`}>{entry}</li>
+                ))}
+              </ol>
+            </div>
+          ) : (
+            <p className="text-xs italic text-slate-500">
+              No audit trail available for this ground — it may have been added manually
+              or the pipeline was not re-run after the last edit.
+            </p>
+          )}
+
+          <div className="pt-2 border-t border-slate-100 text-[11px] italic text-slate-500 leading-snug">
+            The rating above is generated by the post-normalisation cleanup layer
+            and the realism scoring engine. Counsel should always verify against
+            the trial record before filing.
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 };
 
 const RealismBadges = ({ ground, size = "sm" }) => {
@@ -1162,6 +1274,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                       {/* Verification + Source + Human Review */}
                       <div className="flex flex-wrap items-center gap-2 mt-3">
                         <StrengthBadge rating={ground.strength} />
+                        <ExplainViabilityButton ground={ground} size="xs" />
                         <VerificationBadge status={ground.verification_status} />
                         <SourceModeBadge sourceMode={ground.source_mode} />
                         {ground.ground_type ? (
@@ -1545,6 +1658,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                 {/* Verification + Source + Human Review in Detail View */}
                 <div className="flex flex-wrap items-center gap-2">
                   <StrengthBadge rating={detailGround.strength} />
+                  <ExplainViabilityButton ground={detailGround} size="sm" />
                   <VerificationBadge status={detailGround.verification_status} />
                   <SourceModeBadge sourceMode={detailGround.source_mode} />
                   {detailGround.ground_type ? (
