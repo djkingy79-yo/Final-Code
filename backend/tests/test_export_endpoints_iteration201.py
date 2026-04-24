@@ -388,34 +388,42 @@ class TestBarristerViewExports:
 
 class TestFooterLabelFormat:
     """Test that footer label format is correct across all exports."""
-    
+
     def test_footer_label_format_in_code(self):
-        """Verify build_footer_label produces canonical format:
-        '{Appellant} · {Doc Type} · {Date in en-AU long form}' — locked 2026-02 by owner."""
+        """Verify build_footer_label produces canonical format (locked 24 Feb 2026):
+        'Criminal Law Appeal Management / {doc} / {appellant} / {case_number}'.
+
+        Missing case number must render as 'No case number' — never blank."""
         # Import the function directly
         import sys
         sys.path.insert(0, '/app/backend')
         from services.export_footer import build_footer_label
-        
-        # Test case data
-        test_case = {
+
+        # ── Case with a case number ──
+        test_case_with_number = {
             "defendant_name": "John Smith",
-            "title": "R v Smith"
+            "title": "R v Smith",
+            "case_number": "2025/001234",
         }
-        
-        result = build_footer_label(test_case, "Case Summary Report (Free)", "2026-01-15T10:00:00Z")
-        
-        # Canonical format: "{Appellant} · {Doc Type} · {Date}"
-        assert "John Smith" in result, f"Missing defendant name in: {result}"
-        assert "Case Summary Report (Free)" in result, f"Missing doc type in: {result}"
-        assert "\u00B7" in result, f"Missing middle-dot separator (·) in: {result}"
-        # Date in en-AU long form (e.g. "15 January 2026")
-        assert "2026" in result and "January" in result, f"Missing long-form date in: {result}"
-        # No legacy 'Criminal Law Appeal Management' prefix
-        assert "Criminal Law Appeal Management" not in result, \
-            f"Legacy prefix should be removed, got: {result}"
-        
-        print(f"PASS: Footer label format is canonical: {result}")
+        result = build_footer_label(test_case_with_number, "Case Summary Report (Free)")
+        assert result == "Criminal Law Appeal Management / Case Summary Report (Free) / John Smith / 2025/001234", \
+            f"Canonical footer format mismatch: {result!r}"
+
+        # ── Case missing a case number ──
+        test_case_no_number = {"defendant_name": "Jane Doe"}
+        result_no_number = build_footer_label(test_case_no_number, "Legal Report")
+        assert result_no_number == "Criminal Law Appeal Management / Legal Report / Jane Doe / No case number", \
+            f"Missing-case-number fallback wrong: {result_no_number!r}"
+
+        # ── Hard content assertions ──
+        assert "Criminal Law Appeal Management" in result
+        assert "John Smith" in result
+        assert "Case Summary Report (Free)" in result
+        assert "2025/001234" in result
+        assert " / " in result          # Forward-slash separators (locked)
+        assert "\u00B7" not in result   # No middle-dots on LEFT any more
+
+        print(f"PASS: Canonical footer format locked: {result}")
 
 
 if __name__ == "__main__":

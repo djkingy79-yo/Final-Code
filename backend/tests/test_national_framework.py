@@ -130,3 +130,109 @@ def test_full_system_prompt_federal_accepts_cth_alias():
     out = build_full_system_prompt({"state": "cth", "offence_type": "federal fraud"})
     assert not out.startswith("ERROR")
     assert "FEDERAL" in out
+
+
+# ---------------------------------------------------------------------------
+# COUNSEL REFACTOR 24 Feb 2026 — 9-jurisdiction parametric suite.
+#
+# Proves every state/territory + Commonwealth runs build_full_system_prompt
+# correctly:
+#   (a) contains the jurisdiction's own governing appellate Act, and
+#   (b) does NOT leak NSW's Crimes Act 1900 (NSW) into any non-NSW prompt, and
+#   (c) emits the hard NO-SILENT-NSW-DEFAULT rule.
+# ---------------------------------------------------------------------------
+
+import pytest
+
+
+_JURISDICTION_EXPECTED_ACTS = {
+    "nsw": "Criminal Appeal Act 1912 (NSW)",
+    "vic": "Criminal Procedure Act 2009 (VIC)",
+    "qld": "Criminal Code (Qld)",
+    "sa": "Criminal Appeal Act 1939 (SA)",
+    "wa": "Criminal Appeals Act 2004 (WA)",
+    "tas": "Criminal Code Act 1924 (TAS)",
+    "nt": "Criminal Code Act 1983 (NT)",
+    "act": "Crimes (Appeal and Review) Act 2001 (ACT)",
+    "cth": "Judiciary Act 1903 (Cth)",
+}
+
+
+@pytest.mark.parametrize("jurisdiction,expected_act", list(_JURISDICTION_EXPECTED_ACTS.items()))
+def test_every_jurisdiction_renders_its_own_governing_act(jurisdiction, expected_act):
+    """Every jurisdiction must render its own appellate Act — no NSW fallback."""
+    out = build_full_system_prompt({"state": jurisdiction, "offence_type": "murder"})
+    assert not out.startswith("ERROR"), f"{jurisdiction} unexpectedly errored: {out!r}"
+    assert expected_act in out, (
+        f"{jurisdiction.upper()} prompt missing its own governing Act "
+        f"'{expected_act}'. Output was:\n{out}"
+    )
+
+
+@pytest.mark.parametrize(
+    "jurisdiction",
+    ["vic", "qld", "sa", "wa", "tas", "nt", "act", "cth"],
+)
+def test_non_nsw_prompts_do_not_leak_nsw_crimes_act(jurisdiction):
+    """Critical counsel rule: no NSW legislation may leak into a non-NSW prompt."""
+    out = build_full_system_prompt({"state": jurisdiction, "offence_type": "murder"})
+    assert "Crimes Act 1900 (NSW)" not in out, (
+        f"{jurisdiction.upper()} prompt unexpectedly contains "
+        f"'Crimes Act 1900 (NSW)'. This is a silent NSW fallback and must not occur."
+    )
+    assert "Crimes (Sentencing Procedure) Act 1999 (NSW)" not in out, (
+        f"{jurisdiction.upper()} prompt leaked NSW sentencing Act."
+    )
+    assert "Evidence Act 1995 (NSW)" not in out, (
+        f"{jurisdiction.upper()} prompt leaked NSW evidence Act."
+    )
+
+
+def test_sa_mental_impairment_renders_part_8a_of_clca():
+    """Counsel-corrected SA mental impairment must render the CLCA Part 8A, not the stale 1995 Act."""
+    out = build_full_system_prompt({"state": "sa", "offence_type": "murder"})
+    assert "Criminal Law Consolidation Act 1935 (SA) — Part 8A" in out, (
+        f"SA mental impairment did not render the counsel-corrected Part 8A reference. "
+        f"Output was:\n{out}"
+    )
+    assert "Mental Impairment Act 1995 (SA)" not in out, (
+        "SA prompt still contains the stale, incorrect 'Mental Impairment Act 1995 (SA)' string."
+    )
+
+
+@pytest.mark.parametrize(
+    "alias",
+    ["cth", "CTH", "federal", "FEDERAL", "commonwealth", "Commonwealth"],
+)
+def test_all_federal_aliases_resolve_to_the_same_matrix_row(alias):
+    """cth / commonwealth / federal (and case variants) must all resolve identically."""
+    fw = get_jurisdiction_framework(alias)
+    assert fw is not None, f"Federal alias '{alias}' did not resolve to any matrix row."
+    # Identity check — all aliases must return THE SAME dict object.
+    assert fw is get_jurisdiction_framework("federal"), (
+        f"Federal alias '{alias}' returned a different dict object from 'federal'."
+    )
+
+
+def test_no_silent_nsw_default_for_missing_jurisdiction():
+    """If jurisdiction is missing entirely, prompt must error out rather than default to NSW."""
+    out = build_full_system_prompt({"offence_type": "murder"})
+    assert out.startswith("ERROR"), (
+        "Missing jurisdiction must return an ERROR string — silent NSW default is forbidden."
+    )
+    assert "NSW" not in out or "silent" in out.lower()
+
+
+@pytest.mark.parametrize(
+    "jurisdiction",
+    ["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act", "cth"],
+)
+def test_every_jurisdiction_emits_do_not_default_to_nsw_rule(jurisdiction):
+    """Every valid prompt must include the hard 'Default to NSW' DO-NOT rule."""
+    out = build_full_system_prompt({"state": jurisdiction, "offence_type": "murder"})
+    assert "Default to NSW" in out, (
+        f"{jurisdiction.upper()} prompt missing the hard DO-NOT rule 'Default to NSW'."
+    )
+    assert "Invent authority" in out, (
+        f"{jurisdiction.upper()} prompt missing the hard DO-NOT rule 'Invent authority'."
+    )

@@ -27,7 +27,7 @@ async function classifyIssues(caseId) {
 }
 
 async function verifyBatch(caseId, limit) {
-  return apiRequest(`/cases/${caseId}/issues/verify-batch`, {
+  return apiRequest(`/pipeline/cases/${caseId}/issues/verify-batch`, {
     method: "POST",
     body: JSON.stringify({ limit }),
   });

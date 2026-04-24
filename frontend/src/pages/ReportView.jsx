@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
+import { buildCanonicalPrintCss } from "../utils/printStyles";
 import ReportTranslator from "../components/ReportTranslator";
 import {
   Scale,
@@ -741,10 +742,14 @@ const ReportView = () => {
       : '';
     const previewDate = new Date(report?.generated_at || Date.now()).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
     const appellantForFooter = defendantName || caseData?.defendant_name || caseData?.title || "Appellant";
-    // Footer spec locked by owner 21/4/2026:
-    //   LEFT  = {Appellant}  ·  {Document Type}  ·  {Date in en-AU long form}
-    //   RIGHT = Page X of Y
+    // Footer now produced by the canonical printStyles.js engine (locked 24 Feb 2026).
+    // Kept as a reference only — not injected into @page content.
     const previewFooterLabel = `${appellantForFooter}  \\00B7  ${title}  \\00B7  ${previewDate}`;
+    const canonicalCss = buildCanonicalPrintCss({
+      docLabel: title,
+      appellant: appellantForFooter,
+      caseNumber: caseData?.case_number,
+    });
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -754,43 +759,16 @@ const ReportView = () => {
   <title>${title}</title>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page {
-      size: A4 portrait;
-      margin: 18mm 20mm 22mm 20mm;
-      @bottom-left {
-        content: "${previewFooterLabel}";
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-      @bottom-right {
-        content: "Page " counter(page) " of " counter(pages);
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-    }
-    @page landscape-table {
-      size: A4 landscape;
-      margin: 14mm 18mm 20mm 18mm;
-      @bottom-left {
-        content: "${previewFooterLabel}";
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-      @bottom-right {
-        content: "Page " counter(page) " of " counter(pages);
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.5; font-size: 11pt; background: #fff; }
-    th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
+    ${canonicalCss}
+    /* ReportView-specific chrome only — NOT typography. */
+    th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important;
+      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .report-container { max-width: 900px; margin: 0 auto; }
     .cover-page { padding: 20px 0 10px; }
     .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
     .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.18em; font-size: 8pt; font-weight: 800; color: #1d4ed8; }
-    .cover-page h1 { margin: 0 0 6px; font-family: 'Times New Roman', Times, serif; font-size: 14pt; color: #0f172a; font-weight: 700; line-height: 1.3; }
-    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 11pt; }
+    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 10pt; }
     .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; text-align: left; }
     .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
     .cover-page-card-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }

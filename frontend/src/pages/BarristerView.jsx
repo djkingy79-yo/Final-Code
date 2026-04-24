@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
+import { buildCanonicalPrintCss } from "../utils/printStyles";
 import ReportTranslator from "../components/ReportTranslator";
 import {
   AlertTriangle,
@@ -491,20 +492,12 @@ export default function BarristerView() {
     .disclaimer-bold .disc-text { font-size: 9pt; color: #ffffff; font-weight: 700; line-height: 1.45; }
     .disclaimer-bold .disc-text strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 3px; }
     .print-footer { display: none; }
-    @page {
-      size: A4 portrait;
-      margin: 18mm 20mm 22mm 20mm;
-      @bottom-left {
-        content: "${previewFooterLabel}";
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-      @bottom-right {
-        content: "Page " counter(page) " of " counter(pages);
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 9pt; font-style: italic; color: #334155;
-      }
-    }
+    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
+    ${buildCanonicalPrintCss({
+      docLabel: "Appellate Research Brief",
+      appellant: defendantForFooter,
+      caseNumber: caseData?.case_number,
+    })}
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }

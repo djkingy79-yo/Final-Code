@@ -690,3 +690,207 @@ def build_national_framework_result(case: dict[str, Any]) -> NationalFrameworkRe
         warnings=warnings,
         framework=framework,
     )
+
+
+# ---------------------------------------------------------------------------
+# COUNSEL REFACTOR 24 Feb 2026 — PROMPT-INJECTION COMPAT LAYER.
+#
+# The following five functions were previously defined in
+# services/national_framework.py. They are the summary-level prompt-injection
+# API that report_generator.py and the counsel test suite have always called.
+#
+# Per counsel's 7-task refactor brief, all prompt-building responsibility now
+# lives in this engine file. The wrapper services/national_framework.py is
+# kept as a thin re-export shim so any external caller continues to work.
+#
+# DATA SOURCE: These functions read from the legacy NATIONAL_CRIMINAL_FRAMEWORK
+# matrix preserved in services/national_framework.py. That matrix is the
+# counsel-approved one-line-per-topic summary for every jurisdiction
+# (appellate_act / appellate_test / mens_rea_source / mental_impairment /
+# sentencing / evidence / proviso). The detailed multi-section framework
+# rendering lives in build_national_case_context() above and is backed by
+# frameworks/*.py. Two complementary surfaces, one source of truth each.
+#
+# NO SILENT NSW DEFAULT. Any unknown/missing jurisdiction returns an explicit
+# ERROR string or None — callers surface that upstream so the LLM never
+# silently falls back to NSW law on a SA/WA/NT/CTH matter.
+# ---------------------------------------------------------------------------
+
+_FEDERAL_MATRIX_ALIASES = {"cth", "commonwealth", "federal"}
+
+
+def _load_national_matrix() -> dict[str, dict]:
+    """
+    Lazy accessor for the counsel-approved summary matrix. Lazy import is
+    required because services.national_framework imports FROM this engine
+    module at load time; resolving NATIONAL_CRIMINAL_FRAMEWORK at call time
+    (rather than module-load time) avoids a circular import while keeping
+    the matrix physically preserved in the compatibility wrapper.
+    """
+    from services.national_framework import NATIONAL_CRIMINAL_FRAMEWORK
+
+    return NATIONAL_CRIMINAL_FRAMEWORK
+
+
+def get_jurisdiction_framework(state: str | None) -> dict | None:
+    """
+    Returns the counsel-approved summary matrix row for the supplied
+    jurisdiction, or None if the jurisdiction is missing / unrecognised.
+
+    Accepts every counsel-approved input: NSW, VIC, QLD, SA, WA, TAS, NT,
+    ACT plus cth / commonwealth / federal (case-insensitive; all three
+    federal aliases resolve to the SAME 'federal' row — identity preserved,
+    so `get_jurisdiction_framework('cth') is get_jurisdiction_framework('federal')`).
+
+    Does NOT raise. Callers rely on None to surface explicit ERROR strings
+    upstream (no silent NSW fallback).
+    """
+    if state is None:
+        return None
+
+    key = str(state).strip().lower()
+    if not key:
+        return None
+
+    if key in _FEDERAL_MATRIX_ALIASES:
+        key = "federal"
+
+    return _load_national_matrix().get(key)
+
+
+def build_national_appellate_context(state: str | None) -> str:
+    """
+    Human-readable jurisdiction-accurate appellate-framework block for
+    injection at the TOP of every LLM prompt. No silent NSW default.
+    """
+    fw = get_jurisdiction_framework(state)
+    if fw is None:
+        return (
+            "ERROR: Jurisdiction must be specified before analysis. "
+            "No silent NSW default is permitted under the National Criminal Framework."
+        )
+
+    display_state = (state or "").upper().strip()
+    if display_state in {"CTH", "COMMONWEALTH"}:
+        display_state = "FEDERAL"
+
+    lines = [
+        f"APPELLATE FRAMEWORK — {display_state}:",
+        "",
+        "GOVERNING ACT:",
+        fw["appellate_act"],
+        "",
+        "CORE APPELLATE TESTS:",
+    ]
+    for test in fw["appellate_test"]:
+        lines.append(f"- {test}")
+
+    lines += [
+        "",
+        "MENS REA SOURCE:",
+        f"- {fw['mens_rea_source']}",
+        "",
+        "MENTAL IMPAIRMENT REGIME:",
+        f"- {fw['mental_impairment']}",
+        "",
+        "SENTENCING FRAMEWORK:",
+        f"- {fw['sentencing']}",
+        "",
+        "EVIDENCE FRAMEWORK:",
+        f"- {fw['evidence']}",
+    ]
+
+    if fw.get("proviso"):
+        lines.append("")
+        lines.append(
+            "PROVISO APPLIES: Court may dismiss appeal if no substantial "
+            "miscarriage of justice."
+        )
+
+    return "\n".join(lines)
+
+
+def build_mens_rea_analysis_block(offence: str | None) -> str:
+    """
+    Mandatory mens rea operationaliser — drilled into every brief prompt
+    regardless of jurisdiction. Forces the LLM to identify fault elements,
+    test them against prosecution evidence, and consider the impact of
+    intoxication / psychiatric evidence on intent / capacity / voluntariness,
+    plus alternative-verdict availability.
+    """
+    offence = (offence or "the offence").strip() or "the offence"
+    return (
+        "MANDATORY MENS REA ANALYSIS:\n"
+        "\n"
+        f"- Identify the fault elements required for {offence}\n"
+        "- Assess whether prosecution evidence established those elements beyond reasonable doubt\n"
+        "- Where intoxication or psychiatric evidence exists:\n"
+        "    - assess impact on intent\n"
+        "    - assess capacity to reason\n"
+        "    - assess voluntariness\n"
+        "- Determine whether an alternative verdict (e.g. manslaughter) was reasonably open\n"
+    )
+
+
+def build_record_integrity_block() -> str:
+    """
+    Record vs speculation enforcer — forces the LLM to distinguish
+    transcript-supported error from inference or extra-curial allegation,
+    and to treat off-record issues as fresh evidence questions.
+    """
+    return (
+        "RECORD INTEGRITY RULE:\n"
+        "\n"
+        "- Identify whether each alleged error appears on the trial record\n"
+        "- If not on record → classify as fresh evidence issue\n"
+        "- Distinguish:\n"
+        "    (a) transcript-supported error\n"
+        "    (b) inference from conduct\n"
+        "    (c) extra-curial allegation\n"
+    )
+
+
+def build_full_system_prompt(case: dict) -> str:
+    """
+    Full system-prompt injection counsel requires.
+
+    - Refuses to analyse without a jurisdiction (returns an explicit ERROR
+      string so the LLM cannot silently proceed on an NSW default).
+    - Injects the national framework + mens rea operationaliser + record
+      integrity rule.
+    - Mandatory analysis structure + hard DO-NOT rules.
+    """
+    state = case.get("state") or case.get("jurisdiction")
+    offence = case.get("offence_type") or case.get("offence_category") or "offence"
+
+    if not state:
+        return "ERROR: Jurisdiction must be specified before analysis."
+
+    fw = get_jurisdiction_framework(state)
+    if fw is None:
+        return (
+            f"ERROR: Unknown jurisdiction '{state}'. Must be one of: "
+            f"{', '.join(sorted(_load_national_matrix().keys()))}."
+        )
+
+    return (
+        f"{build_national_appellate_context(state)}\n"
+        f"\n"
+        f"{build_mens_rea_analysis_block(offence)}\n"
+        f"\n"
+        f"{build_record_integrity_block()}\n"
+        f"\n"
+        "MANDATORY ANALYSIS STRUCTURE:\n"
+        "\n"
+        "1. Identify alleged legal error\n"
+        "2. Link error to appellate test\n"
+        "3. Assess evidentiary support\n"
+        "4. Consider Crown counterargument\n"
+        "5. Apply proviso where relevant\n"
+        "\n"
+        "DO NOT:\n"
+        "- Default to NSW\n"
+        "- Assume uniform law\n"
+        "- Predict success\n"
+        "- Invent authority\n"
+    )
