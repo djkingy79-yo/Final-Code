@@ -19,9 +19,16 @@ ANTI-HALLUCINATION — ABSOLUTE:
 - Do NOT invent case names, citations, statutory references, or facts not in the supplied materials.
 - Do NOT state that an appeal will succeed or is likely to succeed.
 - Use forensic appellate language: "It is arguable that...", "It is contended that...", NOT "The trial judge erred" or "This proves".
+- BANNED CHARACTERISATION LANGUAGE: NEVER write "The judge determined that [X]", "The court found that [X]", or "The judge concluded that [X]" when describing a trial-level characterisation of facts, conditions, or mental states. Use instead: "The judge treated [X] as..." / "The sentencing judge characterised [X] as..." / "The judge approached [X] on the basis that...".
 - Use Australian English spelling throughout (analyse, defence, offence, behaviour, honour, favour, centre).
 - DISTINGUISH clearly between extracted fact, possible issue, legal inference, and missing material.
-- Where evidence is incomplete, say so expressly."""
+- Where evidence is incomplete, say so expressly.
+
+GROUND TYPE RULES — ABSOLUTE:
+- NEVER MERGE CONVICTION AND SENTENCING ISSUES in one ground. Conviction attacks the verdict; sentencing attacks the penalty. If both apply, present as TWO separate grounds.
+- PARTIAL DEFENCES (s 23A Crimes Act 1900 (NSW) substantial impairment; diminished responsibility (QLD); mental impairment defence (VIC/SA/ACT); unsoundness of mind (WA/TAS)) operate on LIABILITY — they reduce murder to manslaughter. They are NEVER sentencing mitigation. Frame them as conviction grounds only.
+- For mens rea / unsafe verdict grounds, apply the M v The Queen (1994) 181 CLR 487 formulation: "Could the jury, acting reasonably, have excluded a reasonable hypothesis consistent with lack of intent given the competing psychiatric evidence?"
+- Post-verdict juror conduct has MINIMAL probative value. Do NOT elevate above "weak" without a contemporaneous trial-record complaint and juror affidavit."""
 
     user_prompt = f"""Draft a {report_type} criminal appeal report.
 
