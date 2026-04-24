@@ -68,6 +68,7 @@ app.add_middleware(
             + [
                 "https://criminallawappealmanagement.com.au",
                 "https://www.criminallawappealmanagement.com.au",
+                "https://criminal-appeals-au-2.preview.emergentagent.com",
                 "http://localhost:3000",
             ]
         )
