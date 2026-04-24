@@ -688,72 +688,65 @@ FORMATTING RULES — STRICTLY ENFORCED:
 """
     
     if report_type == "quick_summary":
+        # ------------------------------------------------------------------
+        # CASE SUMMARY (free tier, T1 per REPORT_PRODUCT_SPEC.md).
+        # Locked by owner 24 Feb 2026:
+        #   - Pure descriptive summary of the uploaded case
+        #   - NO grounds of merit (titles, types, analysis, count)
+        #   - NO legislation / statutory framework
+        #   - NO appeal outlook / outcome / viability language
+        #   - NO strategy / recommendations
+        #   - No "likelihood of success", no "strong / moderate" ratings
+        # Grounds, legislation and appeal analysis live in T2/T3/T4.
+        # DO_NOT_UNDO — any re-introduction of grounds/legislation/appeal
+        # outcome language breaks the paid-tier boundary.
+        # ------------------------------------------------------------------
         system_prompt = f"""{base_system}
 {report_guardrails}
-You are generating a FREE Quick Summary — an ISSUE IDENTIFICATION report. Its purpose is to identify and list the potential grounds of appeal, NOT to provide deep legal analysis. Deliver real legal value in a concise overview, then clearly explain what deeper paid reports add. IMPORTANT: Write at least 2000 words. Narrative sections (Case Snapshot, Sentencing Overview, Value Statement) must have 3-5 substantive paragraphs. Structured sections (Issues, Grounds, Legislation) use the specified format (numbered items, lists, or tables).
+You are generating a FREE Case Summary — a purely DESCRIPTIVE orientation document for the appellant. Its sole purpose is to describe what was uploaded and the procedural posture of the case. It MUST NOT identify grounds of appeal, cite legislation, evaluate the strength of any appellate path, or recommend legal strategy. Those analyses belong exclusively to the paid tiers (Grounds Unlock, Full Detailed Report, Extensive Log Report). Write 1200-1800 words of plain, orientation-level description.
 
 """ + FORENSIC_LANGUAGE_RULE + """"""
-        user_prompt = f"""Analyse this {category_name.lower()} appeal matter and produce a QUICK SUMMARY REPORT (Issue Identification).
+        user_prompt = f"""Produce a CASE SUMMARY for this {category_name.lower()} matter.
 
 {case_context}
 
-Write MINIMUM 2000 words. This is an ISSUE IDENTIFICATION report — identify all potential grounds clearly but do not provide the deep appellate pathway analysis (that is for paid reports). Structure EXACTLY as follows:
+Write 1200-1800 words of plain, descriptive orientation. This is NOT a legal analysis. Do not identify grounds of appeal. Do not cite statutory provisions. Do not evaluate appellate strength or likelihood of success. Do not recommend a strategy. Structure EXACTLY as follows:
 
 ## 1. CASE SNAPSHOT
-3-4 paragraphs covering: defendant, offence, jurisdiction, sentence imposed, non-parole period, key procedural dates, presiding judge, and what material was reviewed. Be specific to the supplied facts.
+3-4 paragraphs covering, in neutral descriptive language: the appellant, the offence of conviction, jurisdiction, sentence imposed, non-parole period (if any), key procedural dates, the presiding judge (if on record), and a high-level description of what material was reviewed. Be specific to the supplied facts. Do NOT characterise any aspect as strong, weak, arguable, or otherwise.
 
-MANDATORY: Start this section with: "This analysis is based on [X] documents and [Y] timeline events. [Z] grounds of appeal have been identified." Use EXACT counts from supplied data.
+## 2. CASE NARRATIVE
+3-5 paragraphs of plain-English summary of the facts as recorded in the supplied documents and the procedural history to date. Describe what happened at trial and at sentencing. Stay strictly on the record — no inference, no evaluation, no appellate commentary.
 
-## 2. PRIMARY ISSUES IDENTIFIED
-6-10 numbered items. Each must include:
-- Issue title framed as an appellate ground (e.g. "Failure to Properly Evaluate Psychiatric Evidence")
-- Which document/evidence it comes from
-- Why it matters for the appeal
+## 3. DOCUMENTS UPLOADED
+For each uploaded document, list its name and one descriptive sentence of what it contains. Group by category if helpful (transcripts, judgments, affidavits, reports, correspondence). Do NOT evaluate what any document proves or fails to prove.
 
-## 3. ALL GROUNDS IDENTIFIED (PREVIEW)
-You MUST list EVERY ground identified. For each ground:
-- Ground title + type (e.g., Procedural Error, Sentencing Error, Miscarriage of Justice)
-- Appellate viability: Arguable — Strong / Arguable — Moderate / Requires Development
-- 2-3 sentence legal rationale referencing the specific case facts
-- One immediate action step
+## 4. KEY DATES
+List the material dates on the record: date of offence, date of charge, date of plea (if entered), date of trial or sentencing, date of conviction, date of sentence. If the appeal lodging deadline is computable from the supplied material, state it. Do NOT add dates that are not supported by the record.
 
-Do NOT use percentage success rates. Use appellate viability language only.
+## 5. APPEAL DEADLINE STATUS
+One short paragraph indicating, as a factual matter only, how many days remain to lodge an appeal or whether the deadline has passed. Do NOT advise whether the appellant should appeal or what grounds might be available.
 
-## 4. KEY LEGISLATION (PREVIEW)
-List the most relevant statutory provisions from {state_info.get('name', 'the relevant jurisdiction')} and Commonwealth law. You MUST cite the CORRECT legislation for the case's jurisdiction — NOT NSW legislation for non-NSW cases. Include ACTUAL section numbers, years, and one-line relevance notes. Cite at minimum:
-- The jurisdiction's primary Criminal Code/Act (with specific sections relevant to the offence)
-- The jurisdiction's Sentencing Act (with relevant sentencing provisions — aggravating/mitigating factors, non-parole periods)
-- The jurisdiction's Evidence Act (if evidentiary issues arise)
-- The jurisdiction's Criminal Appeal Act (appeal grounds and powers)
-- Any Commonwealth legislation that applies
-If the exact section number is not known, do NOT include that entry.
+## 6. WHAT HAPPENS NEXT
+Four bullet points only, each a single sentence, describing the next stages available to the appellant:
+- Unlock the full Grounds of Merit analysis ($99) to see identified grounds, detailed investigation, legal framework, and appellate pathways.
+- Generate the Full Detailed Report ($150) for a counsel-grade dossier built on the unlocked grounds.
+- Generate the Extensive Log Report ($200) for the master litigation brief.
+- Once all three are generated, the Appellate Research Brief (free) synthesises them for counsel.
 
-## 5. SENTENCING OVERVIEW
-2-3 paragraphs comparing the sentence imposed against typical appellate principles for this offence category. Include a mini comparison table:
-| Comparator Case | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Key Insight |
-Include at least 3 rows. Do NOT include cases with "[Surname]" or placeholder citations.
+ABSOLUTE PROHIBITIONS — this report must NOT contain any of:
+- Ground titles, ground types, ground counts beyond documents/events, or appellate ground lists.
+- Statutory citations, Act names, section numbers, or references to the Crimes Act, Criminal Appeal Act, Sentencing Act, Evidence Act, or Commonwealth legislation.
+- Any viability / strength / weakness / arguable / strong / moderate / weak / likelihood / prospect language.
+- Percentages, success rates, or predictions of outcome.
+- Precedent cases, comparator sentences, comparative tables, or "similar cases".
+- Appellate strategy, submissions blueprints, or recommendations on what to argue.
+- Mention of "fresh evidence", "miscarriage of justice", "procedural error", "judicial error", or any other appellate ground category.
 
-## 6. APPEAL OUTLOOK
-Overall appellate viability assessment: Arguable — Strong / Arguable — Moderate / Requires Development.
-2-3 paragraphs explaining the reasoning, strongest pathway to relief, and main risk factors. Do NOT use percentages.
-
-## 7. PLAIN ENGLISH GUIDE
-Explain the case and appeal in clear, plain English for a non-lawyer. CRITICAL: Use ONLY third-person language ("the applicant", "the legal professional"). ABSOLUTE BAN on "we", "us", "our", "you", "your".
-
-IMPORTANT:
-- No cost estimates or funding discussion.
-- No witness contradiction section.
-- Be specific to the supplied material — do not write generic legal advice.
-- Do NOT use percentage success rates anywhere. Use appellate viability language.
-- Do NOT include "Similar Cases (AI-Suggested)" with unverified citations. If citing cases, use REAL citations only.
-
-GROUNDS TO COVER (MUST INCLUDE ALL):
-{grounds_enumerated}
-
-MATERIAL COUNTS:
-- Total documents analysed: {len(documents)}
+MATERIAL COUNTS (for section 1 only):
+- Total documents reviewed: {len(documents)}
 - Total timeline events: {len(timeline)}
-- Total grounds identified: {len(grounds)}"""
+"""
 
     elif report_type == "full_detailed":
         system_prompt = f"""{base_system}

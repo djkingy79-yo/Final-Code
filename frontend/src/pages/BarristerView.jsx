@@ -804,7 +804,7 @@ export default function BarristerView() {
                   return order.indexOf(a.report_type) - order.indexOf(b.report_type);
                 })
                 .map(r => {
-                  const labels = { quick_summary: "Quick Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
+                  const labels = { quick_summary: "Case Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
                   const isCurrent = r.report_type === "barrister_view";
                   const href = r.report_type === "barrister_view"
                     ? `/cases/${caseId}/reports/${r.report_id}/barrister`
@@ -870,7 +870,7 @@ export default function BarristerView() {
                     </p>
                     <p className="text-sm text-white/80">
                       {genElapsed < 30
-                        ? "Merging Quick Summary, Full Detailed, and Extensive Log into one brief..."
+                        ? "Merging Case Summary, Full Detailed, and Extensive Log into one brief..."
                         : genElapsed < 120
                         ? "AI is writing a comprehensive counsel-grade legal analysis..."
                         : genElapsed < 300

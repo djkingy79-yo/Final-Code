@@ -431,7 +431,7 @@ const AdminDashboard = () => {
                   <p className="text-sm font-bold text-slate-700 mb-3">Reports Generated (All)</p>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-600">Quick Summary (Free)</span>
+                      <span className="text-sm text-slate-600">Case Summary (Free)</span>
                       <span className="font-bold text-slate-900">{stats.engagement.reports_by_type?.quick_summary || 0}</span>
                     </div>
                     <div className="flex justify-between items-center">

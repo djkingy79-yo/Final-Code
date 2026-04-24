@@ -95,14 +95,14 @@ const PipelineDraftPanel = ({ report }) => {
 const REPORT_TYPES = [
   { 
     value: "quick_summary", 
-    label: "Quick Summary", 
-    description: "Rapid triage brief with key grounds preview and immediate next steps",
+    label: "Case Summary", 
+    description: "Plain-English orientation summary of the uploaded case and procedural posture. No grounds, legislation, or appeal strategy — those are in the paid tiers.",
     price: 0,
     priceId: null,
     isFree: true,
     color: "emerald",
     icon: "FileText",
-    features: ["Case snapshot", "Primary issues", "Grounds preview", "Appeal outlook"]
+    features: ["Case snapshot", "Case narrative", "Documents uploaded", "Key dates", "Appeal deadline status"]
   },
   { 
     value: "full_detailed", 
@@ -113,7 +113,7 @@ const REPORT_TYPES = [
     isFree: false,
     color: "blue",
     icon: "Scale",
-    features: ["Everything in Quick Summary", "Deep ground analysis (500+ words each)", "8+ sentencing comparisons", "Submissions blueprint", "Action plan"]
+    features: ["Everything in Case Summary", "Deep ground analysis (500+ words each)", "8+ sentencing comparisons", "Submissions blueprint", "Action plan"]
   },
   { 
     value: "extensive_log", 
@@ -850,7 +850,7 @@ const ReportsSection = ({
             
             /* Colour theme per report type - matches landing page */
             const rTheme = {
-              quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Quick Summary", price: "FREE" },
+              quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Case Summary", price: "FREE" },
               full_detailed: { headerBg: "bg-blue-700", badge: "bg-blue-500", label: "Full Detailed Report", price: "$150 AUD" },
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
               barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Appellate Research Brief", price: "CAPSTONE" },
@@ -1113,7 +1113,7 @@ const ReportsSection = ({
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                       <span className="flex items-center gap-1 text-xs text-slate-400">
                         <Lock className="w-3 h-3" />
-                        Requires: Quick Summary (Free) + Full Detailed ($150) + Extensive Log ($200)
+                        Requires: Case Summary (Free) + Full Detailed ($150) + Extensive Log ($200)
                       </span>
                     </div>
                   )}
@@ -1135,7 +1135,7 @@ const ReportsSection = ({
             <div className="text-xs text-slate-500 mb-3 rounded-lg border border-slate-200 bg-slate-50 p-3" data-testid="report-workflow-guidance">
               Recommended workflow:
               <br />
-              &bull; Quick Summary: generate directly
+              &bull; Case Summary: generate directly
               <br />
               &bull; Full Detailed Report: verify top 3 issues first
               <br />

@@ -572,7 +572,7 @@ const LazySection = ({ section, idx, theme, isFirst, forceRender }) => {
 /* Colour configs per report type — matches landing page design */
 const REPORT_THEME = {
   quick_summary: {
-    label: "Quick Summary Report",
+    label: "Case Summary Report",
     headerBg: "bg-emerald-600",
     previewColor: "#059669",
     accentBg: "bg-emerald-600",
@@ -1100,7 +1100,7 @@ const ReportView = () => {
                   return order.indexOf(a.report_type) - order.indexOf(b.report_type);
                 })
                 .map(r => {
-                  const labels = { quick_summary: "Quick Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
+                  const labels = { quick_summary: "Case Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
                   const isCurrent = r.report_id === reportId;
                   const href = r.report_type === "barrister_view"
                     ? `/cases/${caseId}/reports/${r.report_id}/barrister`

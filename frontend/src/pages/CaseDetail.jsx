@@ -1106,7 +1106,7 @@ const CaseDetail = ({ user }) => {
     if (o.legislation && hasLegislation) tocSections.push("Legislation & Case Law");
     if (o.notes) tocSections.push("Notes");
     if (o.progress && progressAnalysis) tocSections.push("Progress Analysis");
-    if (o.quick_summary && quickReport) tocSections.push("Quick Summary Report");
+    if (o.quick_summary && quickReport) tocSections.push("Case Summary Report");
     if (o.full_detailed && fullReport) tocSections.push("Full Detailed Legal Analysis");
     if (o.extensive_log && extensiveReport) tocSections.push("Extensive Case Log & Analysis");
     if (o.barrister_view && barristerReport) tocSections.push("Appellate Research Brief");
@@ -1282,7 +1282,7 @@ const CaseDetail = ({ user }) => {
       const analysis = rep.content?.analysis || rep.analysis || "";
       return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div style="font-size:11pt;line-height:1.5;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div></div></div>`;
     };
-    if (o.quick_summary)   body += renderReportSection("Quick Summary Report", quickReport);
+    if (o.quick_summary)   body += renderReportSection("Case Summary Report", quickReport);
     if (o.full_detailed)   body += renderReportSection("Full Detailed Legal Analysis", fullReport);
     if (o.extensive_log)   body += renderReportSection("Extensive Case Log & Analysis", extensiveReport);
     if (o.barrister_view)  body += renderReportSection("Appellate Research Brief", barristerReport);
