@@ -1158,7 +1158,8 @@ const CaseDetail = ({ user }) => {
 
     let sn = 0;
     body += `<div class="sections">`;
-    if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`; }
+    // Counsel Briefing comes FIRST in exports — highest-value forensic
+    // output (per counsel 23 Feb 2026).
     if (o.summary && (caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder)) {
       const counselBriefingEl = document.querySelector('[data-testid="counsel-briefing-block"]');
       if (counselBriefingEl) {
@@ -1166,6 +1167,7 @@ const CaseDetail = ({ user }) => {
         body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Counsel Briefing</span></div><div class="section-body">${counselBriefingEl.outerHTML}</div></div>`;
       }
     }
+    if (o.summary && caseData?.summary) { sn++; body += `<div class="section"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Case Summary</span></div><div class="section-body">${mdToHtml(caseData.summary)}</div></div>`; }
     if (o.documents && documents.length > 0) {
       sn++;
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Uploaded Documents</span></div><div class="section-body">`;
@@ -1480,17 +1482,21 @@ const CaseDetail = ({ user }) => {
             )}
           </div>
 
+          {/* Counsel Briefing — Predicted Outcome + Attack Plan + Evidence Builder
+              (Times New Roman, small, tight spacing per counsel 23 Feb 2026).
+              Elevated above Case Summary — this is the single highest-value
+              forensic output, so counsel sees it first. Rendered on every tab
+              (no activeTab gate) so Print All / PDF All exports always include
+              it regardless of which tab triggered them. */}
+          {(caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
+            <CounselBriefingBlock caseData={caseData} />
+          )}
+
           {caseData?.summary && activeTab !== "grounds" && (
             <div className="mt-3">
               <h3 className="font-bold text-slate-500 uppercase tracking-wide mb-1" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '10pt' }} data-testid="case-summary-heading">Case Summary</h3>
               <p className="text-slate-600 leading-relaxed max-w-3xl" style={{ fontFamily: "'Times New Roman', Times, serif", fontSize: '12pt', lineHeight: '1.8' }} data-testid="case-summary-text">{caseData.summary}</p>
             </div>
-          )}
-
-          {/* Counsel Briefing — Predicted Outcome + Attack Plan + Evidence Builder
-              (Times New Roman, small, tight spacing per counsel 23 Feb 2026) */}
-          {activeTab !== "grounds" && (caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
-            <CounselBriefingBlock caseData={caseData} />
           )}
 
           {/* Review Status — hidden for clarity, the tabs themselves convey status */}
