@@ -173,29 +173,37 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ).to_list(100)
     
     # Create PDF buffer
+    # Canonical page margins (locked 24 Feb 2026).
+    from services.print_styles import (
+        canonical_page_margins_mm,
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT,
+        CANONICAL_BODY_PT,
+    )
+    _m = canonical_page_margins_mm()
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=18*mm,
-        leftMargin=18*mm,
-        topMargin=18*mm,
-        bottomMargin=22*mm
+        rightMargin=_m["right"]*mm,
+        leftMargin=_m["left"]*mm,
+        topMargin=_m["top"]*mm,
+        bottomMargin=_m["bottom"]*mm
     )
-    
-    # Styles — Legal Report Format: Times New Roman body 11pt, bold headings (matches frontend print CSS)
+
+    # Canonical typography (locked 24 Feb 2026): Times New Roman everywhere,
+    # H1 14.5pt bold, H2 12.5pt bold, H3 11.5pt bold italic, body 10pt.
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name='ReportTitle',
-        fontSize=16,
+        fontSize=CANONICAL_H1_PT,
         spaceAfter=6,
         alignment=TA_CENTER,
         fontName='Times-Bold',
-        leading=20
+        leading=CANONICAL_H1_PT * 1.25,
     ))
     styles.add(ParagraphStyle(
         name='ReportSubtitle',
-        fontSize=10,
+        fontSize=CANONICAL_BODY_PT,
         spaceAfter=4,
         alignment=TA_CENTER,
         fontName='Times-Roman',
@@ -203,8 +211,8 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ))
     styles.add(ParagraphStyle(
         name='SectionHeader',
-        fontSize=15,
-        spaceBefore=12,
+        fontSize=CANONICAL_H1_PT,
+        spaceBefore=10,
         spaceAfter=6,
         fontName='Times-Bold',
         textColor=colors.HexColor('#0f172a'),
@@ -212,19 +220,19 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ))
     styles.add(ParagraphStyle(
         name='SubHeader',
-        fontSize=13,
+        fontSize=CANONICAL_H2_PT,
         spaceBefore=8,
-        spaceAfter=4,
+        spaceAfter=3,
         fontName='Times-Bold',
         textColor=colors.HexColor('#1e293b'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='ReportBodyText',
-        fontSize=11,
-        spaceAfter=4,
+        fontSize=CANONICAL_BODY_PT,
+        spaceAfter=6,
         alignment=TA_JUSTIFY,
-        leading=14,
+        leading=CANONICAL_BODY_PT * 1.35,
         fontName='Times-Roman'
     ))
     styles.add(ParagraphStyle(
@@ -233,31 +241,31 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         leftIndent=20,
         bulletIndent=10,
         fontName='Times-Roman',
-        fontSize=11,
-        leading=14
+        fontSize=CANONICAL_BODY_PT,
+        leading=CANONICAL_BODY_PT * 1.35
     ))
     styles.add(ParagraphStyle(
         name='LawSection',
-        fontSize=11,
+        fontSize=CANONICAL_BODY_PT,
         spaceAfter=2,
         leftIndent=20,
         fontName='Times-Italic',
         textColor=colors.HexColor('#1e40af'),
-        leading=14
+        leading=CANONICAL_BODY_PT * 1.35
     ))
     styles.add(ParagraphStyle(
         name='GroundTitle',
-        fontSize=13,
-        spaceBefore=8,
-        spaceAfter=4,
-        fontName='Times-Bold',
+        fontSize=CANONICAL_H3_PT,
+        spaceBefore=6,
+        spaceAfter=3,
+        fontName='Times-BoldItalic',
         textColor=colors.HexColor('#1e3a8a'),
         keepWithNext=True
     ))
     styles.add(ParagraphStyle(
         name='NumberedSectionHeader',
-        fontSize=15,
-        spaceBefore=12,
+        fontSize=CANONICAL_H1_PT,
+        spaceBefore=10,
         spaceAfter=6,
         fontName='Times-Bold',
         textColor=colors.HexColor('#0f172a'),
@@ -637,62 +645,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         {"_id": 0}
     ).to_list(100)
     
-    # Create DOCX document
+    # Create DOCX document — canonical style engine (locked 24 Feb 2026).
+    from services.print_styles import apply_canonical_docx_styles
     doc = DocxDocument()
-    
-    # Set default font to Times New Roman 11pt (canonical print spec — locked 2026-02)
-    style = doc.styles['Normal']
-    style.font.name = 'Times New Roman'
-    style.font.size = Pt(11)
-    style.paragraph_format.space_after = Pt(10)
-    style.paragraph_format.line_spacing = 1.5
-    
-    # Set up styles
-    styles = doc.styles
-    
-    # Title style
-    title_style = styles['Title']
-    title_style.font.name = 'Times New Roman'
-    title_style.font.size = Pt(14)
-    title_style.font.bold = True
-    title_style.font.color.rgb = RGBColor(15, 23, 42)
-    
-    # Heading 1 style — 14pt bold section headers (canonical)
-    h1_style = styles['Heading 1']
-    h1_style.font.name = 'Times New Roman'
-    h1_style.font.size = Pt(14)
-    h1_style.font.bold = True
-    h1_style.font.color.rgb = RGBColor(15, 23, 42)
-    h1_style.paragraph_format.space_before = Pt(14)
-    h1_style.paragraph_format.space_after = Pt(6)
-    h1_style.paragraph_format.page_break_before = True
-    
-    # Heading 2 style — 12pt bold sub-headers (canonical)
-    h2_style = styles['Heading 2']
-    h2_style.font.name = 'Times New Roman'
-    h2_style.font.size = Pt(12)
-    h2_style.font.bold = True
-    h2_style.font.color.rgb = RGBColor(30, 58, 138)
-    h2_style.paragraph_format.space_before = Pt(12)
-    h2_style.paragraph_format.space_after = Pt(6)
-    h2_style.paragraph_format.page_break_before = False
-    
-    # Heading 3 style — 12pt bold italic sub-sub-headers (canonical)
-    h3_style = styles['Heading 3']
-    h3_style.font.name = 'Times New Roman'
-    h3_style.font.size = Pt(12)
-    h3_style.font.bold = True
-    h3_style.font.italic = True
-    h3_style.font.color.rgb = RGBColor(30, 58, 138)
-    h3_style.paragraph_format.space_before = Pt(10)
-    h3_style.paragraph_format.space_after = Pt(4)
-    
-    # List Bullet style
-    list_style = styles['List Bullet']
-    list_style.font.name = 'Times New Roman'
-    list_style.font.size = Pt(11)
-    list_style.paragraph_format.line_spacing = 1.5
-    list_style.paragraph_format.left_indent = Pt(20)
+    apply_canonical_docx_styles(doc)
     
     # Header
     header_para = doc.add_paragraph()

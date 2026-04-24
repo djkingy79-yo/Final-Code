@@ -63,22 +63,30 @@ async def generate_barrister_pack(case_id: str, request: Request):
         {"_id": 0}
     ).sort("created_at", -1).to_list(100)
 
-    # Build PDF
+    # Build PDF — margins locked to canonical print spec (24 Feb 2026).
+    from services.print_styles import (
+        canonical_page_margins_mm,
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT,
+        CANONICAL_BODY_PT, CANONICAL_TABLE_SHRINK_PT,
+    )
+    _m = canonical_page_margins_mm()
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer, pagesize=A4,
-        rightMargin=20*mm, leftMargin=20*mm,
-        topMargin=25*mm, bottomMargin=25*mm,
+        rightMargin=_m["right"]*mm, leftMargin=_m["left"]*mm,
+        topMargin=_m["top"]*mm, bottomMargin=_m["bottom"]*mm,
     )
 
+    # Canonical typography (locked 24 Feb 2026): Times New Roman everywhere,
+    # H1 14.5pt bold, H2 12.5pt bold, H3 11.5pt bold italic, body 10pt.
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="PackTitle", fontName="Helvetica-Bold", fontSize=20, spaceAfter=6, textColor=colors.HexColor("#0f172a"), alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name="PackSubtitle", fontName="Helvetica", fontSize=11, spaceAfter=12, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name="SectionHead", fontName="Helvetica-Bold", fontSize=14, spaceAfter=8, spaceBefore=16, textColor=colors.HexColor("#0f4c81")))
-    styles.add(ParagraphStyle(name="SubHead", fontName="Helvetica-Bold", fontSize=12, spaceAfter=4, spaceBefore=10, textColor=colors.HexColor("#1e293b")))
-    styles.add(ParagraphStyle(name="BodyText2", fontName="Helvetica", fontSize=11, spaceAfter=6, leading=15, alignment=TA_JUSTIFY))
-    styles.add(ParagraphStyle(name="Small", fontName="Helvetica", fontSize=9, spaceAfter=3, textColor=colors.HexColor("#475569"), leading=12))
-    styles.add(ParagraphStyle(name="Disclaimer", fontName="Helvetica-Oblique", fontSize=8, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="PackTitle", fontName="Times-Bold", fontSize=CANONICAL_H1_PT, spaceAfter=6, textColor=colors.HexColor("#0f172a"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="PackSubtitle", fontName="Times-Roman", fontSize=CANONICAL_BODY_PT, spaceAfter=8, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
+    styles.add(ParagraphStyle(name="SectionHead", fontName="Times-Bold", fontSize=CANONICAL_H1_PT, spaceAfter=6, spaceBefore=12, textColor=colors.HexColor("#0f4c81"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="SubHead", fontName="Times-Bold", fontSize=CANONICAL_H2_PT, spaceAfter=3, spaceBefore=8, textColor=colors.HexColor("#1e293b"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="BodyText2", fontName="Times-Roman", fontSize=CANONICAL_BODY_PT, spaceAfter=6, leading=CANONICAL_BODY_PT*1.35, alignment=TA_JUSTIFY))
+    styles.add(ParagraphStyle(name="Small", fontName="Times-Roman", fontSize=CANONICAL_TABLE_SHRINK_PT, spaceAfter=3, textColor=colors.HexColor("#475569"), leading=CANONICAL_TABLE_SHRINK_PT*1.3))
+    styles.add(ParagraphStyle(name="Disclaimer", fontName="Times-Italic", fontSize=8, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
 
     elements = []
 

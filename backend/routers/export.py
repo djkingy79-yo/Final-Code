@@ -839,8 +839,8 @@ def _render_table_to_story(lines, story_ref, doc_ref, body_style=None):
     rows = [r + [""] * (col_count - len(r)) for r in rows]
     try:
         col_width = doc_ref.width / col_count
-        cell_style = ParagraphStyle(name="TblCell", fontSize=9, leading=12, fontName="Helvetica", wordWrap="CJK")
-        header_cell = ParagraphStyle(name="TblHeader", fontSize=9, leading=12, fontName="Helvetica-Bold", textColor=colors.white)
+        cell_style = ParagraphStyle(name="TblCell", fontSize=9, leading=12, fontName="Times-Roman", wordWrap="CJK")
+        header_cell = ParagraphStyle(name="TblHeader", fontSize=9, leading=12, fontName="Times-Bold", textColor=colors.white)
         para_rows = []
         for ri, row in enumerate(rows):
             st = header_cell if ri == 0 else cell_style
@@ -915,32 +915,39 @@ async def generate_case_export_pack(case_id: str, request: Request):
     # Fetch timeline
     timeline = await db.timeline_events.find({"case_id": case_id}, {"_id": 0}).sort("event_date", 1).to_list(500)
 
-    # ── Build PDF ──
+    # ── Build PDF ── canonical margins (locked 24 Feb 2026)
+    from services.print_styles import (
+        canonical_page_margins_mm,
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT,
+        CANONICAL_BODY_PT,
+    )
+    _m = canonical_page_margins_mm()
     pdf_buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         pdf_buffer,
         pagesize=A4,
-        rightMargin=22 * mm,
-        leftMargin=22 * mm,
-        topMargin=22 * mm,
-        bottomMargin=28 * mm,
+        rightMargin=_m["right"] * mm,
+        leftMargin=_m["left"] * mm,
+        topMargin=_m["top"] * mm,
+        bottomMargin=_m["bottom"] * mm,
     )
 
+    # Canonical typography (locked 24 Feb 2026): Times New Roman only.
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="PackTitle", fontSize=22, spaceAfter=10, alignment=TA_CENTER, fontName="Helvetica-Bold", textColor=colors.HexColor("#0f172a")))
-    styles.add(ParagraphStyle(name="PackSubtitle", fontSize=11, spaceAfter=6, alignment=TA_CENTER, textColor=colors.HexColor("#475569")))
-    styles.add(ParagraphStyle(name="PackSection", fontSize=15, spaceBefore=16, spaceAfter=8, fontName="Helvetica-Bold", textColor=colors.HexColor("#0f172a")))
-    styles.add(ParagraphStyle(name="PackSubSection", fontSize=12, spaceBefore=10, spaceAfter=5, fontName="Helvetica-Bold", textColor=colors.HexColor("#1e293b")))
-    styles.add(ParagraphStyle(name="PackBody", fontSize=10.5, spaceAfter=5, alignment=TA_JUSTIFY, leading=15, fontName="Helvetica"))
+    styles.add(ParagraphStyle(name="PackTitle", fontSize=CANONICAL_H1_PT, spaceAfter=6, alignment=TA_CENTER, fontName="Times-Bold", textColor=colors.HexColor("#0f172a")))
+    styles.add(ParagraphStyle(name="PackSubtitle", fontSize=CANONICAL_BODY_PT, spaceAfter=6, alignment=TA_CENTER, fontName="Times-Roman", textColor=colors.HexColor("#475569")))
+    styles.add(ParagraphStyle(name="PackSection", fontSize=CANONICAL_H1_PT, spaceBefore=10, spaceAfter=6, fontName="Times-Bold", textColor=colors.HexColor("#0f172a"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="PackSubSection", fontSize=CANONICAL_H2_PT, spaceBefore=8, spaceAfter=3, fontName="Times-Bold", textColor=colors.HexColor("#1e293b"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="PackBody", fontSize=CANONICAL_BODY_PT, spaceAfter=6, alignment=TA_JUSTIFY, leading=CANONICAL_BODY_PT*1.35, fontName="Times-Roman"))
     styles.add(ParagraphStyle(name="PackBullet", parent=styles["PackBody"], leftIndent=14, bulletIndent=7))
-    styles.add(ParagraphStyle(name="PackLaw", fontSize=10, spaceAfter=4, leftIndent=18, textColor=colors.HexColor("#1e40af")))
-    styles.add(ParagraphStyle(name="PackGround", fontSize=12, spaceBefore=10, spaceAfter=5, fontName="Helvetica-Bold", textColor=colors.HexColor("#1e3a8a")))
-    styles.add(ParagraphStyle(name="PackDisclaimer", fontSize=10, fontName="Helvetica-Bold", textColor=colors.HexColor("#dc2626"), alignment=TA_CENTER, leading=14))
-    styles.add(ParagraphStyle(name="PackMetaLabel", fontSize=9, fontName="Helvetica-Bold", textColor=colors.HexColor("#64748b"), spaceAfter=2))
-    styles.add(ParagraphStyle(name="PackMetaValue", fontSize=11, fontName="Helvetica-Bold", textColor=colors.HexColor("#0f172a"), spaceAfter=5))
-    styles.add(ParagraphStyle(name="PackTocEntry", fontSize=11, spaceAfter=4, leftIndent=10, leading=14))
-    styles.add(ParagraphStyle(name="PackReportTitle", fontSize=16, spaceBefore=8, spaceAfter=6, fontName="Helvetica-Bold", textColor=colors.HexColor("#1e3a8a"), alignment=TA_CENTER))
-    styles.add(ParagraphStyle(name="PackNumberedHeader", fontSize=13, spaceBefore=12, spaceAfter=6, fontName="Helvetica-Bold", textColor=colors.HexColor("#0f172a")))
+    styles.add(ParagraphStyle(name="PackLaw", fontSize=CANONICAL_BODY_PT, spaceAfter=3, leftIndent=18, fontName="Times-Italic", textColor=colors.HexColor("#1e40af")))
+    styles.add(ParagraphStyle(name="PackGround", fontSize=CANONICAL_H3_PT, spaceBefore=6, spaceAfter=3, fontName="Times-BoldItalic", textColor=colors.HexColor("#1e3a8a"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="PackDisclaimer", fontSize=CANONICAL_BODY_PT, fontName="Times-Bold", textColor=colors.HexColor("#dc2626"), alignment=TA_CENTER, leading=CANONICAL_BODY_PT*1.35))
+    styles.add(ParagraphStyle(name="PackMetaLabel", fontSize=8, fontName="Times-Bold", textColor=colors.HexColor("#64748b"), spaceAfter=2))
+    styles.add(ParagraphStyle(name="PackMetaValue", fontSize=CANONICAL_BODY_PT, fontName="Times-Bold", textColor=colors.HexColor("#0f172a"), spaceAfter=4))
+    styles.add(ParagraphStyle(name="PackTocEntry", fontSize=CANONICAL_BODY_PT, spaceAfter=3, leftIndent=10, leading=CANONICAL_BODY_PT*1.35, fontName="Times-Roman"))
+    styles.add(ParagraphStyle(name="PackReportTitle", fontSize=CANONICAL_H1_PT, spaceBefore=8, spaceAfter=6, fontName="Times-Bold", textColor=colors.HexColor("#1e3a8a"), alignment=TA_CENTER, keepWithNext=True))
+    styles.add(ParagraphStyle(name="PackNumberedHeader", fontSize=CANONICAL_H1_PT, spaceBefore=10, spaceAfter=6, fontName="Times-Bold", textColor=colors.HexColor("#0f172a"), keepWithNext=True))
 
     # ── Resolve sentence ──
     sentence = case.get("sentence") or "See report analysis"
@@ -1145,8 +1152,8 @@ async def generate_case_export_pack(case_id: str, request: Request):
                 str(ev.get("significance", "")).title()[:15],
             ])
         try:
-            cell_style = ParagraphStyle(name="TLCell", fontSize=9, leading=11, fontName="Helvetica")
-            hdr_style = ParagraphStyle(name="TLHeader", fontSize=9, leading=11, fontName="Helvetica-Bold", textColor=colors.white)
+            cell_style = ParagraphStyle(name="TLCell", fontSize=9, leading=11, fontName="Times-Roman")
+            hdr_style = ParagraphStyle(name="TLHeader", fontSize=9, leading=11, fontName="Times-Bold", textColor=colors.white)
             para_rows = []
             for ri, row in enumerate(tl_data):
                 st = hdr_style if ri == 0 else cell_style
