@@ -52,7 +52,6 @@ import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
 import EvidenceProfilePanel from "../components/EvidenceProfilePanel";
-import CounselBriefingBlock from "../components/CounselBriefingBlock";
 import DeadlineTracker from "../components/DeadlineTracker";
 import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
@@ -73,7 +72,6 @@ import PipelineProgress from "../components/PipelineProgress";
 import BarristerToolsPanel from "../components/BarristerToolsPanel";
 import CaseLawPanel from "../components/CaseLawPanel";
 import { buildExportHtml } from "../utils/exportHtml";
-import { buildCanonicalPrintCss } from "../utils/printStyles";
 import ExportOptionsModal from "../components/ExportOptionsModal";
 import auSpelling from "../utils/auSpelling";
 
@@ -490,53 +488,37 @@ const CaseDetail = ({ user }) => {
     }
   };
 
-  const buildTabPreviewHtml = (contentHtml, tabLabel, noticeHtml) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${caseData?.title || 'Case'} — ${tabLabel}</title>
-  <style>
-    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-    ${buildCanonicalPrintCss({
+  const buildTabPreviewHtml = (contentHtml, tabLabel, noticeHtml) => {
+    // CANONICAL-ONLY: routes through buildExportHtml(). No standalone shell.
+    const extraStyles = `
+      .tab-shell { padding: 12px 18px; }
+      .meta { color: #475569; margin-bottom: 10pt; font-style: italic; }
+      .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 6px 10px; border-radius: 4px; color: #1e3a8a; margin-bottom: 10pt;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 8px 12px; margin: 6pt 0 10pt; background: #eff6ff;
+        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 4px; }
+      .case-summary-card .case-grid .k { font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
+      .case-summary-card .case-grid .v { font-weight: 700; }`;
+
+    const bodyHtml = `
+      <div class="tab-shell">
+        ${noticeHtml || ''}
+        <h1>${caseData?.title || ''} — ${tabLabel}</h1>
+        <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
+        ${contentHtml}
+      </div>`;
+
+    return buildExportHtml({
+      title: `${caseData?.title || 'Case'} — ${tabLabel}`,
       docLabel: tabLabel,
-      appellant: caseData?.defendant_name || 'Appellant',
+      defendantName: caseData?.defendant_name,
       caseNumber: caseData?.case_number,
-    })}
-    /* Tab-export chrome only — NOT typography. */
-    .tab-shell { padding: 12px 18px; }
-    .meta { font-size: 9pt; color: #475569; margin-bottom: 10pt; font-style: italic; }
-    .notice { background: #eff6ff; border: 0.5pt solid #93c5fd; padding: 6px 10px; border-radius: 4px; color: #1e3a8a; margin-bottom: 10pt; font-size: 10pt;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-box { background: #dc2626; border: 1pt solid #b91c1c; padding: 8px 10px; border-radius: 4px; margin-top: 14pt; page-break-inside: avoid; break-inside: avoid; display: flex; gap: 8px; align-items: flex-start;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-box .disc-hazard { font-size: 18px; color: #facc15; flex-shrink: 0; }
-    .disclaimer-box strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .disclaimer-box p { font-size: 8pt; color: #ffffff; margin: 0; line-height: 1.45; font-weight: 700; }
-    .case-summary-card { border: 1pt solid #1e3a8a; border-radius: 4px; padding: 8px 12px; margin: 6pt 0 10pt; background: #eff6ff;
-      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .case-summary-card .case-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 4px; }
-    .case-summary-card .case-grid > div { font-size: 10pt; line-height: 1.35; }
-    .case-summary-card .case-grid .k { font-size: 8pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1e3a8a; display: inline-block; margin-right: 4px; vertical-align: middle; }
-    .case-summary-card .case-grid .v { font-weight: 700; }
-  </style>
-</head>
-<body>
-  <div class="tab-shell">
-  ${noticeHtml}
-  <h1>${caseData?.title || ''} — ${tabLabel}</h1>
-  <div class="meta">${caseData?.defendant_name || ''}${caseData?.case_number ? ' &middot; ' + caseData.case_number : ''}${caseData?.court ? ' &middot; ' + caseData.court : ''}</div>
-  ${contentHtml}
-  <div class="disclaimer-box">
-    <span class="disc-hazard">&#9888;</span>
-    <div>
-    <strong>NOT LEGAL ADVICE</strong>
-    <p>This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</p>
-    </div>
-  </div>
-  </div>
-</body>
-</html>`;
+      accentColor: "#1e3a8a",
+      extraStyles,
+      bodyHtml,
+    });
+  };
 
   const openTabPrintPreview = (mode = "print") => {
     const contentEl = document.querySelector('[data-tab-content][data-state="active"]') || document.querySelector('[data-tab-content]');
@@ -984,9 +966,9 @@ const CaseDetail = ({ user }) => {
 
     // TOC
     body += `<div class="toc-container" style="padding:10px 24px;">
-      <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocItems.length} SECTIONS)</p>
+      <p class="toc-heading" style="text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;">CONTENTS (${tocItems.length} SECTIONS)</p>
       <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+        ${tocItems.map((s, i) => `<div class="toc-item" style="color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>`;
 
@@ -1058,7 +1040,7 @@ const CaseDetail = ({ user }) => {
     let body = "";
     if (o.cover) {
       body += `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-      body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
+      body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:10pt;color:#0f172a;">${escAu(defendant)}</strong></div>
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:10pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
@@ -1106,7 +1088,7 @@ const CaseDetail = ({ user }) => {
     if (o.legislation && hasLegislation) tocSections.push("Legislation & Case Law");
     if (o.notes) tocSections.push("Notes");
     if (o.progress && progressAnalysis) tocSections.push("Progress Analysis");
-    if (o.quick_summary && quickReport) tocSections.push("Quick Summary Report");
+    if (o.quick_summary && quickReport) tocSections.push("Case Summary Report");
     if (o.full_detailed && fullReport) tocSections.push("Full Detailed Legal Analysis");
     if (o.extensive_log && extensiveReport) tocSections.push("Extensive Case Log & Analysis");
     if (o.barrister_view && barristerReport) tocSections.push("Appellate Research Brief");
@@ -1114,9 +1096,9 @@ const CaseDetail = ({ user }) => {
     if (o.toc && tocSections.length > 0) {
       body += `<div class="export-body" style="page-break-after:always;">
       <div class="toc-container" style="padding:10px 24px;">
-        <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
+        <p class="toc-heading" style="text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;">CONTENTS (${tocSections.length} SECTIONS)</p>
         <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+          ${tocSections.map((s, i) => `<div class="toc-item" style="color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
         </div>
       </div>
     </div>`;
@@ -1179,7 +1161,7 @@ const CaseDetail = ({ user }) => {
             }
           }).filter(Boolean);
           if (cleanEvidence.length > 0) {
-            body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Supporting Evidence</h4><ul>`;
+            body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Supporting Evidence</h4><ul>`;
             cleanEvidence.forEach(text => {
               body += `<li>${escAu(text)}</li>`;
             });
@@ -1189,7 +1171,7 @@ const CaseDetail = ({ user }) => {
         // Law sections — handle both objects and raw strings/JSON
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Relevant Legislation</h4><ul>`;
           const fmtLaw = (sec, actOrTitle, juris) => {
             const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             const j = esc((juris || "NSW").toUpperCase());
@@ -1215,7 +1197,7 @@ const CaseDetail = ({ user }) => {
         // Similar cases
         const cases = Array.isArray(g.similar_cases) ? g.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional") : [];
         if (cases.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Similar Cases (AI-Suggested)</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Similar Cases (AI-Suggested)</h4><ul>`;
           cases.forEach(c => {
             body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`;
           });
@@ -1224,8 +1206,8 @@ const CaseDetail = ({ user }) => {
         // Deep analysis — render markdown headings properly
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Deep Investigation Analysis</h4>`;
-          body += `<div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Deep Investigation Analysis</h4>`;
+          body += `<div>${mdToHtml(analysis)}</div>`;
         }
         body += `</div>`;
       });
@@ -1245,7 +1227,7 @@ const CaseDetail = ({ user }) => {
     }
     if (o.progress && progressAnalysis) {
       sn++;
-      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div>${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
     }
 
     // ── Legislation & Case Law consolidated section ──
@@ -1263,12 +1245,12 @@ const CaseDetail = ({ user }) => {
       };
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Legislation &amp; Case Law</span></div><div class="section-body">`;
       if (legislationItems.length > 0) {
-        body += `<h4 style="margin:4pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Legislation</h4><ul>`;
+        body += `<h4 style="margin:4pt 0 6pt;color:#1e293b;">Legislation</h4><ul>`;
         legislationItems.forEach(l => { body += `<li>${escAu(fmtLawStr(l))}</li>`; });
         body += `</ul>`;
       }
       if (caseLawItems.length > 0) {
-        body += `<h4 style="margin:10pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Case Law</h4><ul>`;
+        body += `<h4 style="margin:10pt 0 6pt;color:#1e293b;">Case Law</h4><ul>`;
         caseLawItems.forEach(c => { body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`; });
         body += `</ul>`;
       }
@@ -1280,9 +1262,9 @@ const CaseDetail = ({ user }) => {
       if (!rep) return "";
       sn++;
       const analysis = rep.content?.analysis || rep.analysis || "";
-      return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div style="font-size:11pt;line-height:1.5;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div></div></div>`;
+      return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div>${mdToHtml(analysis)}</div></div></div>`;
     };
-    if (o.quick_summary)   body += renderReportSection("Quick Summary Report", quickReport);
+    if (o.quick_summary)   body += renderReportSection("Case Summary Report", quickReport);
     if (o.full_detailed)   body += renderReportSection("Full Detailed Legal Analysis", fullReport);
     if (o.extensive_log)   body += renderReportSection("Extensive Case Log & Analysis", extensiveReport);
     if (o.barrister_view)  body += renderReportSection("Appellate Research Brief", barristerReport);
@@ -1448,15 +1430,10 @@ const CaseDetail = ({ user }) => {
             )}
           </div>
 
-          {/* Counsel Briefing — Predicted Outcome + Attack Plan + Evidence Builder
-              (Times New Roman, small, tight spacing per counsel 23 Feb 2026).
-              Elevated above Case Summary — this is the single highest-value
-              forensic output, so counsel sees it first. Rendered on every tab
-              (no activeTab gate) so Print All / PDF All exports always include
-              it regardless of which tab triggered them. */}
-          {(caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
-            <CounselBriefingBlock caseData={caseData} />
-          )}
+          {/* Counsel Briefing block (Predicted Outcome / Counsel Attack Plan /
+              Evidence Builder) has been removed from the Case Detail head area.
+              That content does not belong before the tabs or outside paid/report
+              surfaces. */}
 
           {caseData?.summary && activeTab !== "grounds" && (
             <div className="mt-3">

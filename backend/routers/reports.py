@@ -206,41 +206,86 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     
     # Check payment for premium reports (admin bypasses all payments)
     is_admin = is_admin_user(user.email)
-    
-    if report_type == "full_detailed" and not is_admin:
-        payment = await db.payments.find_one({
+
+    # ------------------------------------------------------------------
+    # Tier prerequisite gates (locked 24 Feb 2026 per REPORT_PRODUCT_SPEC.md):
+    #   T3 (full_detailed)  requires T2 (grounds_of_merit) unlocked first.
+    #   T4 (extensive_log)  requires T3 (full_report)      unlocked first.
+    #
+    # Admin bypass preserved by the `not is_admin` guard. The 402 detail
+    # body is a superset of the previous payload — the legacy
+    # {message,feature_type,price,currency} fields are unchanged so every
+    # existing client continues to work, with an additional
+    # `prerequisite_required` field that only ships when the lower tier is
+    # still locked.
+    # ------------------------------------------------------------------
+
+    async def _has_completed_payment(feature_canonical: str) -> bool:
+        """Returns True iff the case owner has a completed payment for the
+        given canonical feature key. Accepts any registered alias via
+        feature_type_variants()."""
+        p = await db.payments.find_one({
             "case_id": case_id,
             "user_id": user.user_id,
-            "feature_type": {"$in": feature_type_variants("full_report")},
-            "status": "completed"
+            "feature_type": {"$in": feature_type_variants(feature_canonical)},
+            "status": "completed",
         })
-        if not payment:
+        return p is not None
+
+    if report_type == "full_detailed" and not is_admin:
+        # Must have bought grounds_of_merit before buying full_report.
+        if not await _has_completed_payment("grounds_of_merit"):
             raise HTTPException(
-                status_code=402, 
+                status_code=402,
+                detail={
+                    "message": (
+                        "Grounds of Merit must be unlocked before the Full "
+                        "Detailed Report can be generated."
+                    ),
+                    "feature_type": "full_report",
+                    "price": FEATURE_PRICES["full_report"]["price"],
+                    "currency": "AUD",
+                    "prerequisite_required": "grounds_of_merit",
+                    "prerequisite_price": FEATURE_PRICES["grounds_of_merit"]["price"],
+                },
+            )
+        if not await _has_completed_payment("full_report"):
+            raise HTTPException(
+                status_code=402,
                 detail={
                     "message": "Payment required for Full Detailed Report",
                     "feature_type": "full_report",
                     "price": FEATURE_PRICES["full_report"]["price"],
-                    "currency": "AUD"
-                }
+                    "currency": "AUD",
+                },
             )
-    
+
     if report_type == "extensive_log" and not is_admin:
-        payment = await db.payments.find_one({
-            "case_id": case_id,
-            "user_id": user.user_id,
-            "feature_type": {"$in": feature_type_variants("extensive_report")},
-            "status": "completed"
-        })
-        if not payment:
+        # Must have bought full_report before buying extensive_report.
+        if not await _has_completed_payment("full_report"):
             raise HTTPException(
-                status_code=402, 
+                status_code=402,
+                detail={
+                    "message": (
+                        "Full Detailed Report must be unlocked before the "
+                        "Extensive Log Report can be generated."
+                    ),
+                    "feature_type": "extensive_report",
+                    "price": FEATURE_PRICES["extensive_report"]["price"],
+                    "currency": "AUD",
+                    "prerequisite_required": "full_report",
+                    "prerequisite_price": FEATURE_PRICES["full_report"]["price"],
+                },
+            )
+        if not await _has_completed_payment("extensive_report"):
+            raise HTTPException(
+                status_code=402,
                 detail={
                     "message": "Payment required for Extensive Log Report",
                     "feature_type": "extensive_report",
                     "price": FEATURE_PRICES["extensive_report"]["price"],
-                    "currency": "AUD"
-                }
+                    "currency": "AUD",
+                },
             )
     
     existing_failed = await db.reports.find(

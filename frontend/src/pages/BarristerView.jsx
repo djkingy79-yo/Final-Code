@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
-import { buildCanonicalPrintCss } from "../utils/printStyles";
+import { buildExportHtml } from "../utils/exportHtml";
 import ReportTranslator from "../components/ReportTranslator";
 import {
   AlertTriangle,
@@ -30,6 +30,7 @@ import VerificationBadge from "../components/VerificationBadge";
 import LegitimacyPanel from "../components/LegitimacyPanel";
 import EvidenceSummary from "../components/EvidenceSummary";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
+import CounselBriefingBlock from "../components/CounselBriefingBlock";
 import auSpelling from "../utils/auSpelling";
 import { normaliseMarkdown } from "../utils/mdRender";
 
@@ -422,126 +423,16 @@ export default function BarristerView() {
     // Build TOC from sections
     const tocHtml = sections.length > 1
       ? `<div class="toc-container" style="padding:14px 32px;">
-          <p class="toc-heading" style="font-size:13pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;font-family:'Times New Roman',Times,serif;">CONTENTS (${sections.length} SECTIONS)</p>
+          <p class="toc-heading" style="text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:800;margin:0 0 10px;">CONTENTS (${sections.length} SECTIONS)</p>
           <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
-            ${sections.map((s, i) => `<div class="toc-item" style="font-size:9pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
+            ${sections.map((s, i) => `<div class="toc-item" style="color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;font-weight:500;"><strong>${i + 1}.</strong> ${s.title}</div>`).join('')}
           </div>
         </div>`
       : "";
 
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    /* CANONICAL PRINT SPEC (locked 2026-02 by owner — DO NOT DRIFT)
-       Body 11pt / H1 14pt / H2 12pt / H3 12pt italic / line-height 1.5 / para-gap 10pt
-       Margins 18/20/22mm / Footer 9pt italic. */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Times New Roman', Times, serif; padding: 0; color: #0f172a; line-height: 1.5; font-size: 11pt; background: #fff; }
-    th { background: #1d4ed8 !important; color: #fff !important; font-weight: 700 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-container { max-width: 900px; margin: 0 auto; }
-    .cover-page { padding: 14pt 0 10pt; }
-    .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
-    .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 9pt; font-weight: 800; color: #1d4ed8; }
-    .cover-page h1 { margin: 0 0 6px; font-family: 'Times New Roman', Times, serif; font-size: 14pt; color: #0f172a; font-weight: 700; line-height: 1.3; }
-    .cover-page p { margin: 0 0 4px; color: #334155; font-size: 11pt; }
-    .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12pt 0; text-align: left; }
-    .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
-    .cover-page-card-label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }
-    .cover-page-card-value { font-size: 11pt; font-weight: 700; color: #0f172a; }
-    .cover-page-note { margin-top: 10pt; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 12px; font-size: 9pt; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; line-height: 1.45; }
-    .page-break { page-break-after: always; break-after: page; }
-    .preview-notice { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 10pt; }
-    .report-header { background: #14b8a6; color: #fff; padding: 16px 22px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
-    .report-header h1 { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; margin-bottom: 3px; color: #fff; line-height: 1.3; }
-    .report-header .meta-line { font-size: 11pt; color: rgba(255,255,255,0.9); margin-top: 2px; }
-    .report-header .grounds-count { font-size: 18pt; font-weight: 700; color: #fff; text-align: right; }
-    .report-header .grounds-label { font-size: 9pt; color: rgba(255,255,255,0.8); text-align: right; }
-    .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
-    .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 999px; font-size: 10pt; font-weight: 700; margin-top: 4px; }
-    .report-header .gen-date { font-size: 9pt; color: rgba(255,255,255,0.85); margin-top: 3px; }
-    .report-header .case-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); background: inherit; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .report-header .case-info-grid .ci-label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 1px; }
-    .report-header .case-info-grid .ci-value { font-size: 11pt; font-weight: 700; color: #fff; font-family: 'Times New Roman', Times, serif; }
-    .sections { padding: 14pt 22pt; }
-    .section { margin-bottom: 14pt; page-break-inside: auto; break-inside: auto; orphans: 3; widows: 3; }
-    .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid #14b8a6; padding-left: 10px; margin-bottom: 6pt; page-break-after: avoid; break-after: avoid; }
-    .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-size: 10pt; font-weight: 700; flex-shrink: 0; }
-    .section-title { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; color: #0f172a; text-transform: uppercase; }
-    .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; font-size: 11pt; line-height: 1.5; }
-    .section-body h1, .section-body h2, .section-body h3, .section-body h4 { font-family: 'Times New Roman', Times, serif; font-weight: 700; color: #0f172a; }
-    .section-body h2 { font-size: 12pt; border-bottom: 1.5pt solid #1e3a8a; padding-bottom: 3px; margin: 12pt 0 6pt; page-break-after: avoid; break-after: avoid; }
-    .section-body h3 { font-size: 12pt; font-style: italic; color: #1e3a8a; margin: 10pt 0 4pt; }
-    .section-body h4 { font-size: 11pt; color: #334155; margin: 8pt 0 3pt; }
-    .section-body p { margin: 0 0 10pt 0; font-size: 11pt; line-height: 1.5; orphans: 3; widows: 3; }
-    .section-body strong { color: #0f172a; font-weight: 700; }
-    .section-body ul, .section-body ol { padding-left: 1.6rem; margin: 4pt 0 10pt; }
-    .section-body li { margin-bottom: 3pt; font-size: 11pt; line-height: 1.5; }
-    .section-body a { color: #1d4ed8; text-decoration: underline; }
-    .section-body .legal-report-table-wrap { overflow-x: auto; }
-    .section-body table { width: 100%; border-collapse: collapse; margin: 8pt 0; font-size: 10pt !important; table-layout: fixed; }
-    .section-body th { background: #1d4ed8; color: #fff !important; font-weight: 700; padding: 5px 7px; text-align: left; border: 1px solid #cbd5e1; font-size: 9.5pt !important; word-wrap: break-word; overflow-wrap: break-word; }
-    .section-body td { border: 1px solid #cbd5e1; padding: 5px 7px; color: #0f172a !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; font-size: 10pt !important; }
-    .section-body blockquote { border-left: 3px solid #14b8a6; padding: 6px 10px; margin: 6pt 0; background: #f0fdfa; color: #0f766e; font-size: 10.5pt; }
-    .disclaimer-bold { background: #dc2626; border: 2px solid #b91c1c; padding: 10px 16px; margin: 12pt 22pt; border-radius: 6px; display: flex; gap: 10px; align-items: flex-start; page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .disclaimer-bold .disc-icon { color: #facc15; font-size: 22px; flex-shrink: 0; }
-    .disclaimer-bold .disc-text { font-size: 9pt; color: #ffffff; font-weight: 700; line-height: 1.45; }
-    .disclaimer-bold .disc-text strong { font-size: 10pt; text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; display: block; margin-bottom: 3px; }
-    .print-footer { display: none; }
-    /* Canonical typography + @page from utils/printStyles.js (locked 24 Feb 2026). */
-    ${buildCanonicalPrintCss({
-      docLabel: "Appellate Research Brief",
-      appellant: defendantForFooter,
-      caseNumber: caseData?.case_number,
-    })}
-    @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
-      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .report-container { max-width: none; }
-      .cover-page { page-break-after: always; break-after: page; }
-      .report-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; page-break-inside: avoid; break-inside: avoid; }
-      .report-header .case-info-grid { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; background: inherit; }
-      .section-number { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .section-body th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .disclaimer-bold { page-break-inside: avoid; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .report-branding { page-break-inside: avoid; break-inside: avoid; }
-      .disclaimer-bold + .report-branding { page-break-before: avoid; break-before: avoid; }
-      .section-body .legal-report-table-wrap { overflow: visible; }
-      .section-body table { min-width: 0 !important; width: 100% !important; table-layout: fixed !important; }
-      .preview-notice { display: none; }
-    }
-    @media (max-width: 768px) {
-      /* WYSIWYG parity with print — same canonical sizes, just tighter padding */
-      .cover-page-grid { grid-template-columns: 1fr; }
-      body { font-size: 11pt; line-height: 1.5; padding: 0; }
-      .report-container { max-width: 100%; }
-      .cover-page-inner { padding: 16px 14px; }
-      .cover-page h1 { font-size: 14pt; }
-      .cover-page-card-value { font-size: 11pt; }
-      .cover-page-note { font-size: 9pt; padding: 10px 12px; }
-      .report-header { padding: 14px 16px; }
-      .report-header h1 { font-size: 14pt; }
-      .report-header .case-info-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-      .report-header .case-info-grid .ci-value { font-size: 11pt; }
-      .sections { padding: 10px 14px; }
-      .section-title { font-size: 12pt; }
-      .section-body { padding: 10px 12px; font-size: 11pt; }
-      .section-body h2 { font-size: 12pt; }
-      .section-body h3 { font-size: 12pt; }
-      .section-body p, .section-body li { font-size: 11pt; line-height: 1.5; }
-      .section-body table { font-size: 9.5pt !important; }
-      .section-body th, .section-body td { padding: 4px 6px; font-size: 9.5pt !important; }
-      .disclaimer-bold { margin: 10px 14px; padding: 10px 14px; }
-      .disclaimer-bold .disc-text { font-size: 9.5pt; }
-      .disclaimer-bold .disc-text strong { font-size: 10pt; }
-    }
-  </style>
-</head>
-<body>
+    // CANONICAL-ONLY: single buildExportHtml() call. No HTML shell, no @page,
+    // no footer CSS. Typography comes from utils/printStyles.js.
+    const beforeBody = `
     ${notice}
     <section class="cover-page page-break">
       <div class="cover-page-inner">
@@ -556,93 +447,109 @@ export default function BarristerView() {
         </div>
         <div class="cover-page-note">NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.</div>
       </div>
-    </section>
-  <div class="report-container">
-    <div class="report-header">
-      <div class="header-row">
-        <div>
-          <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">Appellate Research Brief</div>
-          <h1>${title}</h1>
-          <div class="meta-line">${meta}</div>
-          <div class="badge">BARRISTER BRIEF</div>
-          <div class="gen-date">Generated: ${previewDate}</div>
-        </div>
-        <div>
-          <div class="grounds-count">${grounds.length}</div>
-          <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
-        </div>
-      </div>
-      <div class="case-info-grid">
-        <div><div class="ci-label">Defendant</div><div class="ci-value">${defendantName}</div></div>
-        <div><div class="ci-label">Offence</div><div class="ci-value">${offenceLabel}</div></div>
-        <div><div class="ci-label">Sentence</div><div class="ci-value">${sentenceSummary}</div></div>
-        <div><div class="ci-label">Documents</div><div class="ci-value">${documentsCount} files analysed</div></div>
-        <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
-        <div><div class="ci-label">Source Reports</div><div class="ci-value">${reportsCount} reports referenced</div></div>
-      </div>
-    </div>
-    ${tocHtml}
-    <div class="sections">
-      ${sections.map((section, idx) => {
-        // Get individual section content from DOM
-        const sectionMarkdownEl = document.querySelector(`[data-testid="barrister-section-markdown-${idx + 1}"]`);
-        const sectionContent = sectionMarkdownEl ? sectionMarkdownEl.innerHTML : '';
-        return `<div class="section">
-          <div class="section-header">
-            <span class="section-number">${idx + 1}</span>
-            <span class="section-title">${section.title}</span>
+    </section>`;
+
+    const bodyHtml = `
+    <div class="report-container">
+      <div class="report-header">
+        <div class="header-row">
+          <div>
+            <div style="font-size:8pt;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:4px;">Appellate Research Brief</div>
+            <h1>${title}</h1>
+            <div class="meta-line">${meta}</div>
+            <div class="badge">BARRISTER BRIEF</div>
+            <div class="gen-date">Generated: ${previewDate}</div>
           </div>
-          <div class="section-body">${sectionContent.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
-        </div>`;
-      }).join('')}
-      ${(() => {
-        // Grounds of Merit detailed section
-        const groundsSection = document.querySelector('[data-testid="barrister-grounds-detail-section"]');
-        if (!groundsSection) return '';
-        return `<div class="section" style="page-break-before:always;">
-          <div class="section-header">
-            <span class="section-number">&#9733;</span>
-            <span class="section-title">Grounds of Merit — Detailed Assessment</span>
+          <div>
+            <div class="grounds-count">${grounds.length}</div>
+            <div class="grounds-label">Ground${grounds.length !== 1 ? 's' : ''} Identified</div>
           </div>
-          <div class="section-body">${groundsSection.innerHTML.replace(/<th(?=[\s>])([^>]*?)style="[^"]*"/gi, '<th$1').replace(/<th(?=[\s>])/gi, '<th style="background:#1d4ed8;color:#ffffff;font-weight:800;"')}</div>
-        </div>`;
-      })()}
-      ${(() => {
-        // Verification section
-        const verifySection = document.querySelector('[data-testid="barrister-verification-section"]');
-        if (!verifySection) return '';
-        return `<div class="section">
-          <div class="section-header">
-            <span class="section-number">&#10003;</span>
-            <span class="section-title">Verification and Review Status</span>
-          </div>
-          <div class="section-body">${verifySection.innerHTML}</div>
-        </div>`;
-      })()}
-    </div>
-  </div>
-    <div class="disclaimer-bold">
-      <div class="disc-icon">&#9888;</div>
-      <div class="disc-text">
-        <strong>NOT LEGAL ADVICE</strong>
-        This application is an educational research tool only and does NOT constitute legal advice. It must NOT be relied upon as such. The creator of this application is not a lawyer. All analysis, findings, reports, and recommendations generated by this tool must be independently verified by a qualified Australian legal professional before any action is taken. This tool covers Australian law only. No solicitor-client relationship is created by using this service. No document, report, or output generated by this Application should be filed with, submitted to, or relied upon before any court, tribunal, or regulatory body.
-      </div>
-    </div>
-    <div style="text-align:center;margin:24px 32px;padding:16px 0;page-break-inside:avoid;" class="report-branding">
-      <p style="font-size:12px;font-weight:700;color:#334155;margin:0 0 10px;">Created and Designed by Deb King</p>
-      <div style="display:inline-flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
         </div>
-        <div style="text-align:left;">
-          <p style="margin:0;font-weight:700;font-size:13px;color:#0f172a;">Appeal Case Manager</p>
-          <p style="margin:0;font-size:11px;color:#64748b;">Founded by Debra King</p>
-          <p style="margin:0;font-size:11px;color:#64748b;">Criminal Appeal Research Tool &mdash; Australian Law Only</p>
+        <div class="case-info-grid">
+          <div><div class="ci-label">Defendant</div><div class="ci-value">${defendantName}</div></div>
+          <div><div class="ci-label">Offence</div><div class="ci-value">${offenceLabel}</div></div>
+          <div><div class="ci-label">Sentence</div><div class="ci-value">${sentenceSummary}</div></div>
+          <div><div class="ci-label">Documents</div><div class="ci-value">${documentsCount} files analysed</div></div>
+          <div><div class="ci-label">Timeline Events</div><div class="ci-value">${eventsCount} events</div></div>
+          <div><div class="ci-label">Source Reports</div><div class="ci-value">${reportsCount} reports referenced</div></div>
         </div>
       </div>
-    </div>
-</body>
-</html>`;
+      ${tocHtml}
+      <div class="sections">
+        ${sections.map((section, idx) => {
+          const sectionMarkdownEl = document.querySelector(`[data-testid="barrister-section-markdown-${idx + 1}"]`);
+          const sectionContent = sectionMarkdownEl ? sectionMarkdownEl.innerHTML : '';
+          return `<div class="section">
+            <div class="section-header">
+              <span class="section-number">${idx + 1}</span>
+              <span class="section-title">${section.title}</span>
+            </div>
+            <div class="section-body">${sectionContent}</div>
+          </div>`;
+        }).join('')}
+        ${(() => {
+          const groundsSection = document.querySelector('[data-testid="barrister-grounds-detail-section"]');
+          if (!groundsSection) return '';
+          return `<div class="section" style="page-break-before:always;">
+            <div class="section-header">
+              <span class="section-number">&#9733;</span>
+              <span class="section-title">Grounds of Merit — Detailed Assessment</span>
+            </div>
+            <div class="section-body">${groundsSection.innerHTML}</div>
+          </div>`;
+        })()}
+        ${(() => {
+          const verifySection = document.querySelector('[data-testid="barrister-verification-section"]');
+          if (!verifySection) return '';
+          return `<div class="section">
+            <div class="section-header">
+              <span class="section-number">&#10003;</span>
+              <span class="section-title">Verification and Review Status</span>
+            </div>
+            <div class="section-body">${verifySection.innerHTML}</div>
+          </div>`;
+        })()}
+      </div>
+    </div>`;
+
+    // Component-only chrome CSS — NO typography.
+    const extraStyles = `
+      .report-container { max-width: 900px; margin: 0 auto; }
+      .cover-page { padding: 20px 0 10px; }
+      .cover-page-inner { border: 2px solid #cbd5e1; border-radius: 14px; padding: 20px 18px; text-align: center; background: #fff; }
+      .cover-page-kicker { margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 800; color: #1d4ed8; }
+      .cover-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 14px 0 12px; text-align: left; }
+      .cover-page-card { border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 10px; background: #f8fafc; }
+      .cover-page-card-label { text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 2px; }
+      .cover-page-card-value { font-weight: 700; color: #0f172a; }
+      .cover-page-note { margin-top: 8px; border: 2px solid #b91c1c; border-radius: 10px; padding: 8px 10px; font-weight: 700; color: #ffffff; background: #dc2626; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .report-header { background: #1e3a8a; color: #fff !important; padding: 18px 24px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; page-break-inside: avoid; break-inside: avoid; }
+      .report-header, .report-header * { color: #fff !important; }
+      .report-header .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 999px; font-weight: 700; margin-top: 4px; }
+      .report-header .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+      .report-header .grounds-count { font-weight: 700; color: #fff; text-align: right; }
+      .report-header .grounds-label { color: rgba(255,255,255,0.8); text-align: right; }
+      .report-header .case-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); }
+      .report-header .case-info-grid .ci-label { text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.7); margin-bottom: 1px; }
+      .toc-container { padding: 10px 24px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+      .sections { padding: 16px 24px; }
+      .section { margin-bottom: 14px; }
+      .section-header { display: flex; align-items: center; gap: 8px; border-left: 3px solid #1e3a8a; padding-left: 10px; margin-bottom: 6px; }
+      .section-number { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: #0f172a; font-weight: 700; flex-shrink: 0; }
+      .section-title { font-weight: 700; color: #0f172a; text-transform: uppercase; }
+      .section-body { background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 16px; }
+      @media print { .cover-page { page-break-after: always; break-after: page; } .report-container { max-width: none; } }`;
+
+    const html = buildExportHtml({
+      title,
+      docLabel: "Appellate Research Brief",
+      defendantName: defendantForFooter,
+      caseNumber: caseData?.case_number,
+      accentColor: "#1e3a8a",
+      extraStyles,
+      beforeBody,
+      bodyHtml,
+    });
 
     localStorage.setItem(
       "document-preview-payload",
@@ -804,7 +711,7 @@ export default function BarristerView() {
                   return order.indexOf(a.report_type) - order.indexOf(b.report_type);
                 })
                 .map(r => {
-                  const labels = { quick_summary: "Quick Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
+                  const labels = { quick_summary: "Case Summary", full_detailed: "Full Detailed", extensive_log: "Extensive Log", barrister_view: "Appellate Research Brief" };
                   const isCurrent = r.report_type === "barrister_view";
                   const href = r.report_type === "barrister_view"
                     ? `/cases/${caseId}/reports/${r.report_id}/barrister`
@@ -870,7 +777,7 @@ export default function BarristerView() {
                     </p>
                     <p className="text-sm text-white/80">
                       {genElapsed < 30
-                        ? "Merging Quick Summary, Full Detailed, and Extensive Log into one brief..."
+                        ? "Merging Case Summary, Full Detailed, and Extensive Log into one brief..."
                         : genElapsed < 120
                         ? "AI is writing a comprehensive counsel-grade legal analysis..."
                         : genElapsed < 300
@@ -1099,6 +1006,23 @@ export default function BarristerView() {
                 metadata={report?.metadata || report?.content?.metadata}
                 verificationStatus={report?.verification_status || report?.source_mode}
               />
+
+              {/* Counsel Briefing — Predicted Outcome + Counsel Attack Plan +
+                  Evidence Builder. Rendered at the end of the Appellate Research
+                  Brief, immediately before the disclaimer warning footer. */}
+              {(caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
+                <div data-testid="barrister-counsel-briefing-section">
+                  <div className="border-l-4 border-teal-500 pl-4 mb-4">
+                    <h3
+                      className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
+                      style={{ fontFamily: "'Times New Roman', Times, serif" }}
+                    >
+                      Counsel Briefing
+                    </h3>
+                  </div>
+                  <CounselBriefingBlock caseData={caseData} />
+                </div>
+              )}
             </div>
 
             {/* AI-analysis footer */}

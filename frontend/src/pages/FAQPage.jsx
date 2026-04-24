@@ -108,8 +108,8 @@ const faqs = [
     image: "/images/stock/handshake.jpg",
     questions: [
       {
-        q: "What's included in a Quick Summary Report?",
-        a: "The Quick Summary (FREE) has 7 sections: Case Snapshot, Primary Issues Identified, Top Potential Grounds (preview), Key Legislation & Similar Cases (preview), Sentencing Overview with comparison table, Appeal Outlook, and What the Paid Reports Add. It's 1,500-2,200 words of real analysis — perfect for initial assessment."
+        q: "What's included in a Case Summary Report?",
+        a: "The Case Summary (FREE) is a plain-English orientation document with 6 sections: Case Snapshot, Case Narrative, Documents Uploaded, Key Dates, Appeal Deadline Status, and What Happens Next. It describes what was uploaded and the procedural posture of the case — it does NOT identify grounds of appeal, cite legislation, or evaluate appellate strength. Those analyses are unlocked by the paid tiers (Grounds Unlock $99, Full Detailed $150, Extensive Log $200)."
       },
       {
         q: "What's included in a Full Detailed Report?",
@@ -137,7 +137,7 @@ const faqs = [
     questions: [
       {
         q: "What does the free version include?",
-        a: "Free features include: unlimited document uploads, camera document scanning with OCR, AI-generated timeline, Quick Summary reports, appeal progress checklist, and the legal glossary. You can manage your entire case without paying."
+        a: "Free features include: unlimited document uploads, camera document scanning with OCR, AI-generated timeline, Case Summary reports, appeal progress checklist, and the legal glossary. You can manage your entire case without paying."
       },
       {
         q: "What are the paid features?",

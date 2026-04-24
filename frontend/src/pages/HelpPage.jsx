@@ -593,7 +593,7 @@ const HelpPage = ({ user }) => {
             <li>Click <strong>"Generate Report"</strong> button</li>
             <li>Choose report type:
               <ul className="list-disc list-inside ml-4 mt-1">
-                <li><strong>Quick Summary</strong>: 2-3 paragraph overview of the case and key issues</li>
+                <li><strong>Case Summary</strong>: Plain-English orientation summary of the case and uploaded documents (grounds and legislation are in the paid tiers)</li>
                 <li><strong>Full Detailed</strong>: Complete analysis formatted as a legal brief with law references</li>
                 <li><strong>Extensive Log</strong>: Comprehensive documentation with full chronology and evidence analysis</li>
               </ul>

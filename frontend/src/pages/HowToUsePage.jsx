@@ -114,8 +114,8 @@ const HowToUsePage = () => {
       description: "Create professional reports summarising your case, grounds, and findings. Three tiers are available, each with increasing depth of analysis. All reports can be exported as PDF or Word documents and translated into 41 languages.",
       instructions: [
         "Go to the 'Reports' tab in your case",
-        "Choose your report type: Quick Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
-        "Quick Summary: 8 sections, 2,000-3,000 words — a snapshot of your case and identified grounds",
+        "Choose your report type: Case Summary (Free), Full Detailed ($150 AUD), or Extensive Log ($200 AUD)",
+        "Case Summary: 6 sections, 1,200-1,800 words — a plain-English orientation of your case and uploaded documents",
         "Full Detailed: 15 sections, 15,000-20,000 words — includes comparative sentencing, submissions blueprint, and 800+ words per ground",
         "Extensive Log: 20 sections, 25,000-35,000 words — includes 5 exclusive sections (hearing prep, conference pack, risk assessment) and 1,200+ words per ground",
         "Download reports as PDF or Word (DOCX) documents to share with your lawyer",
@@ -124,7 +124,7 @@ const HowToUsePage = () => {
       ],
       tip: "The Full Detailed Report is ideal to take to a lawyer for initial review. Generate all three to unlock the Appellate Research Brief — the capstone counsel-ready brief.",
       reportScreenshots: [
-        { label: "Quick Summary (Free)", image: "/images/howto/live-report-quick-summary.png", color: "emerald" },
+        { label: "Case Summary (Free)", image: "/images/howto/live-report-quick-summary.png", color: "emerald" },
         { label: "Full Detailed Report ($150 AUD)", image: "/images/howto/live-report-full-detailed.png", color: "blue" },
         { label: "Extensive Log Report ($200 AUD)", image: "/images/howto/live-report-extensive-log.png", color: "purple" }
       ]
@@ -137,7 +137,7 @@ const HowToUsePage = () => {
       image: "/images/howto/live-barrister.png",
       description: "Once all three reports are generated, the Appellate Research Brief unlocks. It synthesises every report into one hearing-ready brief with 12 sections plus the Appellate Issue Matrix attachment.",
       instructions: [
-        "Generate all three reports first (Quick Summary, Full Detailed, Extensive Log)",
+        "Generate all three reports first (Case Summary, Full Detailed, Extensive Log)",
         "Click 'Appellate Research Brief' from your case reports once unlocked",
         "Opens a clean, professional presentation synthesising all three reports into one document",
         "Includes 'Attachment A — Appellate Issue Matrix' for quick counsel reference",

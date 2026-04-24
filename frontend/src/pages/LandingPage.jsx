@@ -1038,7 +1038,7 @@ const LandingPage = () => {
                   <svg className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-emerald-700 font-semibold">Quick Summary</span>
+                  <span className="text-emerald-700 font-semibold">Case Summary</span>
                 </li>
               </ul>
               <Button
@@ -1143,7 +1143,7 @@ const LandingPage = () => {
                 <tr>
                   <th className="text-left p-4 bg-blue-700 border border-slate-200 font-semibold text-white" style={{ minWidth: '240px' }}>Section</th>
                   <th className="p-4 bg-emerald-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
-                    Quick Summary<br /><span className="text-sm font-normal">FREE (8 sections)</span>
+                    Case Summary<br /><span className="text-sm font-normal">FREE (6 sections)</span>
                   </th>
                   <th className="p-4 bg-blue-600 text-center font-semibold text-white border border-slate-200" style={{ minWidth: '130px' }}>
                     Full Detailed Report<br /><span className="text-sm font-normal">$150 (15 sections)</span>

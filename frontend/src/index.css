@@ -213,18 +213,13 @@ code, .mono {
 }
 
 /* DO NOT UNDO — Print styles for reports */
+/* ─────────────────────────────────────────────────────────────────────
+   Print visibility rules only (locked 24 Feb 2026 Print/Export Pass).
+   All typography + @page rules live in utils/printStyles.js and are
+   injected per-export by buildExportHtml(). This block therefore only
+   hides the app chrome that would otherwise print alongside a report.
+   ───────────────────────────────────────────────────────────────────── */
 @media print {
-  @page {
-    size: A4;
-    margin: 20mm 15mm 25mm 15mm;
-  }
-
-  .report-paper {
-    @apply shadow-none border-none;
-    margin: 0;
-    padding: 0;
-  }
-  
   .no-print,
   nav,
   header,
@@ -236,73 +231,9 @@ code, .mono {
     display: none !important;
   }
 
-  body {
-    background: white !important;
-    color: black !important;
-    font-family: 'Times New Roman', Times, serif !important;
-  }
-
-  .prose {
-    max-width: 100% !important;
-    color: black !important;
-  }
-
-  table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-    font-size: 9pt !important;
-    table-layout: fixed !important;
-  }
-
-  th, td {
-    border: 1px solid #333 !important;
-    padding: 4px 8px !important;
-    color: black !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-  }
-
-  th {
-    background: #1d4ed8 !important;
-    color: white !important;
-    font-weight: bold !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  .legal-report-table-wrap {
-    overflow: visible !important;
-  }
-
-  a {
-    color: #111111 !important;
-    text-decoration: underline !important;
-  }
-
-  h1, h2, h3, h4 {
-    color: black !important;
-    page-break-after: avoid !important;
-  }
 
   .page-break-inside-avoid {
     page-break-inside: avoid !important;
-  }
-
-  /* Print footer */
-  .report-print-footer {
-    display: block !important;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 10pt;
-    font-style: italic;
-    color: #475569;
-    padding: 8px 15mm;
-    border-top: 1px solid #cbd5e1;
   }
 }
 
@@ -640,84 +571,11 @@ code, .mono {
 }
 
 /* Print styles for legal reports */
-@media print {
-  .legal-report {
-    color: black !important;
-    font-size: 10.5pt;
-    line-height: 1.6;
-  }
-
-  .legal-report h1 {
-    font-size: 16pt;
-    border-bottom-color: #000 !important;
-    color: black !important;
-  }
-
-  .legal-report h2 {
-    font-size: 13pt;
-    border-bottom-color: #666 !important;
-    color: black !important;
-  }
-
-  .legal-report h3 {
-    font-size: 11.5pt;
-    color: black !important;
-  }
-
-  .legal-report p,
-  .legal-report li,
-  .legal-report td {
-    color: black !important;
-  }
-
-  .legal-report a {
-    color: #111111 !important;
-    text-decoration: underline !important;
-  }
-
-  .legal-report thead {
-    background: #1d4ed8 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .legal-report thead th {
-    color: white !important;
-    background: #1d4ed8 !important;
-    font-weight: 800 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .legal-report tbody tr:nth-child(even) {
-    background: #f8fafc !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .legal-report table {
-    page-break-inside: auto;
-    width: 100%;
-    min-width: 640px;
-    table-layout: fixed;
-  }
-
-  .legal-report td,
-  .legal-report th {
-    word-wrap: break-word;
-    overflow-wrap: anywhere;
-    min-width: 0;
-  }
-
-  .legal-report tr {
-    page-break-inside: avoid;
-  }
-
-  .legal-report-table-wrap {
-    overflow: visible !important;
-    border: 1px solid #cbd5e1;
-  }
-}
+/* (LEGACY .legal-report @media print block removed 24 Feb 2026.
+   Typography for print/export comes from utils/printStyles.js. The
+   in-browser on-screen preview uses the non-print .legal-report rules
+   only — print rendering happens inside the iframe/new window built by
+   buildExportHtml(), which injects the canonical @page + sizes. */
 
 /* Print styles for the redesigned report page */
 @media print {
@@ -1725,22 +1583,5 @@ select {
   margin: 1.5rem 0;
 }
 
-/* Print styles for legal content */
-@media print {
-  .legal-content {
-    font-size: 12pt !important;
-    font-family: 'Times New Roman', Times, serif !important;
-    color: black !important;
-  }
-
-  .legal-content h1 { font-size: 22pt !important; }
-  .legal-content h2 { font-size: 18pt !important; }
-  .legal-content h3 { font-size: 14pt !important; }
-  .legal-content h4 { font-size: 12pt !important; }
-
-  .legal-content p,
-  .legal-content li {
-    font-size: 12pt !important;
-    color: black !important;
-  }
-}
+/* (LEGACY .legal-content print block removed 24 Feb 2026.
+   Typography for print/export comes from utils/printStyles.js. */

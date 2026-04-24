@@ -380,7 +380,10 @@ const NotesSection = ({ caseId, notes, setNotes, defendantName = "" }) => {
     try {
       toast.info("Generating Word document...");
       const html = buildNotesHtml();
-      const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>@page{size:A4;margin:16mm}</style></head><body>${html}</body></html>`;
+      // Wrap as Word HTML document. The canonical @page + footer are
+      // already embedded inside `html` by buildExportHtml(); this wrapper
+      // adds only the Word-XML namespace declarations Microsoft Word needs.
+      const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">${html.slice(html.indexOf("<head"))}`;
       const blob = new Blob(['\ufeff', wordHtml], { type: "application/msword" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

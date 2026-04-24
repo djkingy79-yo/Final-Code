@@ -54,7 +54,7 @@ const PRESETS = [
   {
     id: "client",
     label: "Client-friendly Summary",
-    desc: "Cover + summary + Quick Summary report + progress — readable overview without legal detail",
+    desc: "Cover + summary + Case Summary report + progress — readable overview without legal detail",
     sections: { cover: true, toc: false, summary: true, documents: false, timeline: false, grounds: false, legislation: false, notes: false, progress: true, quick_summary: true, full_detailed: false, extensive_log: false, barrister_view: false },
   },
   {
@@ -75,7 +75,7 @@ const SECTION_LABELS = [
   { key: "legislation",   label: "Legislation & case law",     desc: "Consolidated list of statutes and cases cited across grounds" },
   { key: "notes",         label: "Case notes",                 desc: "Notes you or collaborators have written" },
   { key: "progress",      label: "Progress analysis",          desc: "AI-generated overall case-readiness assessment" },
-  { key: "quick_summary", label: "Quick Summary report",       desc: "7-section plain-English case snapshot" },
+  { key: "quick_summary", label: "Case Summary report",         desc: "6-section plain-English case snapshot" },
   { key: "full_detailed", label: "Full Detailed Legal Analysis", desc: "Comprehensive legal analysis with comparative sentencing" },
   { key: "extensive_log", label: "Extensive Case Log & Analysis", desc: "Deepest 20+ section forensic log" },
   { key: "barrister_view",label: "Appellate Research Brief",   desc: "The fourth report — the counsel-ready synthesis" },

@@ -238,7 +238,7 @@ const HowItWorksPage = () => {
         "All three reports must be generated before the Appellate Research Brief becomes available",
       ],
       proTips: [
-        "Start with the FREE Quick Summary to get an overview before committing to a paid report",
+        "Start with the FREE Case Summary to get an overview before committing to a paid report",
         "Full Detailed Reports include legislation links and comparative sentencing tables",
         "Extensive Log Reports are designed to be handed directly to a barrister",
         "Generate all three to unlock the Appellate Research Brief — the capstone synthesis",
@@ -383,7 +383,7 @@ const HowItWorksPage = () => {
 
   const reportPricing = [
     {
-      title: "Quick Summary",
+      title: "Case Summary",
       price: "FREE",
       headerColor: "#059669",
       color: "bg-emerald-600",
@@ -402,7 +402,7 @@ const HowItWorksPage = () => {
       headerColor: "#1d4ed8",
       popular: true,
       features: [
-        "15 sections — 3x the depth of Quick Summary",
+        "15 sections — 3x the depth of Case Summary",
         "800+ words per ground with Crown response and defence rebuttal",
         "Comparative sentencing table with 8+ cases and reduction analysis",
         "Outcome options matrix (quash, retrial, downgrade, sentence reduction)",
@@ -504,7 +504,7 @@ const HowItWorksPage = () => {
               <Zap className="w-4 h-4" /> First report in under 10 minutes
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-700">
-              <Shield className="w-4 h-4" /> Quick Summary is FREE
+              <Shield className="w-4 h-4" /> Case Summary is FREE
             </div>
           </div>
         </div>
@@ -722,7 +722,7 @@ const HowItWorksPage = () => {
             Ready to begin your appeal?
           </h2>
           <p className="text-sm text-slate-700 mb-5 max-w-xl mx-auto">
-            Create your case, upload your documents, and get your first AI analysis in under 10 minutes. Your Quick Summary report is completely free.
+            Create your case, upload your documents, and get your first AI analysis in under 10 minutes. Your Case Summary report is completely free.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link to="/dashboard">
@@ -743,7 +743,7 @@ const HowItWorksPage = () => {
           <h2 className="text-xl font-bold text-slate-900">Common Questions</h2>
           {[
             { q: "Do I need a lawyer to use this?", a: "No — Appeal Case Manager is designed for self-represented appellants. However, consulting a qualified legal professional before taking any action is strongly recommended. This tool helps understand options and prepare materials." },
-            { q: "How long does report generation take?", a: "Quick Summary: 30-60 seconds. Full Detailed: 1-3 minutes. Extensive Log: 2-5 minutes. Complex cases with many documents may take slightly longer." },
+            { q: "How long does report generation take?", a: "Case Summary: 30-60 seconds. Full Detailed: 1-3 minutes. Extensive Log: 2-5 minutes. Complex cases with many documents may take slightly longer." },
             { q: "Is my data secure?", a: "Yes. All documents are encrypted and stored securely. Case information is never shared with anyone. Cases and all associated data can be deleted at any time." },
             { q: "Can I use this for any Australian state?", a: "Yes — Appeal Case Manager covers all 8 Australian jurisdictions: NSW, VIC, QLD, SA, WA, TAS, NT, and ACT, plus Commonwealth/Federal offences." },
           ].map((faq, i) => (
