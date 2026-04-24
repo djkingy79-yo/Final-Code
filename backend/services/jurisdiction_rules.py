@@ -39,6 +39,12 @@ COMMON_CONVICTION_TERMS = {
     "mental state", "psychosis", "psychiatric evidence", "reckless indifference",
     "beyond reasonable doubt", "partial defence", "mental illness", "mental impairment",
     "fault elements", "knowledge", "recklessness", "negligence",
+    # Counsel feedback 23 Feb 2026 — Issue 1: mens-rea misdirection / probability
+    # vs possibility directions / element-of-offence errors are conviction-level
+    # concepts; add explicit terms so sub-particulars framed this way don't
+    # fall through to the (new) procedure default.
+    "misdirection", "probability versus possibility", "element of offence",
+    "element of the offence",
     "mental impairment defence", "psychosis at time of offence",
 }
 

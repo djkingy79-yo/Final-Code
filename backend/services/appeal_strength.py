@@ -17,7 +17,7 @@ Use AFTER ground_normaliser.py and BEFORE final report rendering.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Optional
 
 from services.ground_normaliser import Ground, cap_viability, normalise
 
@@ -334,10 +334,77 @@ def apply_realism_adjustments(ground: Ground, profile: CaseEvidenceProfile) -> G
         ground.viability = "arguable_moderate"
         _log("Strong Crown response: viability 'arguable_strong' → 'arguable_moderate'.")
 
+    # Counsel feedback 23 Feb 2026 — Issue 7: proviso layer.
+    # Per Weiss v The Queen (2005) 224 CLR 300 the court may dismiss an
+    # appeal even when error is established, if satisfied no substantial
+    # miscarriage of justice occurred. Compute proviso_risk from Crown
+    # strength + verdict robustness so counsel can see — before filing —
+    # how exposed the ground is to the Weiss proviso.
+    ground.proviso_risk = _assess_proviso_risk(
+        ground_type=ground.type,
+        crown_strength=crown_strength,
+        verdict_robustness=verdict_robustness,
+    )
+    if ground.proviso_risk == "high" and ground.type == "conviction":
+        _log(
+            "Proviso assessment: Crown case + verdict robustness are strong — "
+            "even if error is established, the court may apply the proviso "
+            "under Weiss v The Queen and dismiss the appeal regardless."
+        )
+
+    # Counsel feedback 23 Feb 2026 — Issue 7 improvement. Proviso soft cap:
+    # a high-proviso conviction ground (strong Crown case + strong/overwhelming
+    # verdict robustness) is exposed to Weiss-style dismissal even if error is
+    # established. Soft-cap `arguable_strong` viability down to
+    # `arguable_moderate` so counsel isn't given an inflated picture — the
+    # error may still be arguable, but the outcome is not "strong".
+    if (
+        ground.type == "conviction"
+        and ground.proviso_risk == "high"
+        and ground.viability == "arguable_strong"
+    ):
+        ground.viability = "arguable_moderate"
+        _log(
+            "Proviso soft cap: conviction ground with high Weiss-proviso "
+            "exposure → viability 'arguable_strong' → 'arguable_moderate'. "
+            "Even if error is established, the appeal may be dismissed if "
+            "no substantial miscarriage of justice is shown."
+        )
+
     ground.failure_risk = build_failure_risk(
         ground, record_support, verdict_robustness, crown_strength, profile
     )
     return ground
+
+
+def _assess_proviso_risk(
+    ground_type: Optional[str],
+    crown_strength: Optional[str],
+    verdict_robustness: Optional[str],
+) -> str:
+    """
+    Classify exposure to the proviso (Weiss v The Queen).
+    Only meaningful for conviction grounds — sentence / procedure grounds
+    aren't assessed under Weiss, so return 'low' to avoid alarming counsel.
+    """
+    if ground_type != "conviction":
+        return "low"
+
+    # Both signals strong → proviso is a real risk.
+    if crown_strength == "strong" and verdict_robustness in {"overwhelming", "strong"}:
+        return "high"
+
+    # Either signal strong → proviso is a factor but not decisive.
+    if crown_strength == "strong" or verdict_robustness in {"overwhelming", "strong"}:
+        return "moderate"
+
+    # Mixed → moderate; weak on both → low.
+    if crown_strength == "weak" and verdict_robustness == "weak":
+        return "low"
+    if crown_strength == "moderate" or verdict_robustness == "balanced":
+        return "moderate"
+
+    return "low"
 
 
 def score_grounds_for_realism(

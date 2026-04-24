@@ -131,6 +131,14 @@ const CROWN_CONFIG = {
   moderate: { label: "Crown response: Moderate", color: "bg-amber-100 text-amber-800 border-amber-300" },
   weak:     { label: "Crown response: Weak",     color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
 };
+// Proviso-risk badge (Weiss v The Queen (2005) 224 CLR 300): an appeal may
+// be dismissed even where error is established if no substantial
+// miscarriage is shown. Counsel feedback 23 Feb 2026 — Issue 7.
+const PROVISO_CONFIG = {
+  high:     { label: "Proviso risk: High (Weiss)",     color: "bg-red-100 text-red-800 border-red-300" },
+  moderate: { label: "Proviso risk: Moderate (Weiss)", color: "bg-amber-100 text-amber-800 border-amber-300" },
+  low:      { label: "Proviso risk: Low (Weiss)",      color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
+};
 
 /**
  * ExplainViabilityButton — one-tap forensic audit of a ground's viability.
@@ -143,12 +151,13 @@ const CROWN_CONFIG = {
  */
 const ExplainViabilityButton = ({ ground, size = "sm" }) => {
   const trail = Array.isArray(ground?.reasoning_trail) ? ground.reasoning_trail.filter(Boolean) : [];
-  const hasAudit = trail.length > 0 || ground?.record_support || ground?.verdict_robustness || ground?.crown_strength || ground?.failure_risk;
+  const hasAudit = trail.length > 0 || ground?.record_support || ground?.verdict_robustness || ground?.crown_strength || ground?.proviso_risk || ground?.failure_risk;
   if (!hasAudit) return null;
 
   const rs = ground?.record_support && RECORD_SUPPORT_CONFIG[ground.record_support];
   const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
   const cs = ground?.crown_strength && CROWN_CONFIG[ground.crown_strength];
+  const pr = ground?.proviso_risk && PROVISO_CONFIG[ground.proviso_risk];
   const viabilityLabel = STRENGTH_CONFIG[ground?.strength]?.label || ground?.strength || "Unknown";
 
   const sizeCls = size === "xs" ? "text-[10px] px-2 py-0.5" : "text-xs px-2.5 py-1";
@@ -189,13 +198,14 @@ const ExplainViabilityButton = ({ ground, size = "sm" }) => {
             <div className="text-base font-semibold text-slate-900">{viabilityLabel}</div>
           </div>
 
-          {(rs || vr || cs) && (
+          {(rs || vr || cs || pr) && (
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Realism metrics</p>
               <div className="flex flex-wrap gap-1.5">
                 {rs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${rs.color}`}>{rs.label}</span>}
                 {vr && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${vr.color}`}>{vr.label}</span>}
                 {cs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${cs.color}`}>{cs.label}</span>}
+                {pr && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${pr.color}`} title="Weiss v The Queen (2005) 224 CLR 300 — an appeal may be dismissed even where error is established if no substantial miscarriage of justice is shown">{pr.label}</span>}
               </div>
             </div>
           )}

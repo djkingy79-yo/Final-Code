@@ -62,6 +62,15 @@ class Ground:
     verdict_robustness: Optional[str] = None      # overwhelming | strong | balanced | weak
     crown_strength: Optional[str] = None          # strong | moderate | weak
     failure_risk: Optional[str] = None            # one-sentence explanation
+    # Counsel feedback 23 Feb 2026 — Issue 7: proviso layer.
+    # Per Weiss v The Queen (2005) 224 CLR 300, an appeal court may dismiss
+    # an appeal even when error is established, if satisfied no substantial
+    # miscarriage of justice occurred. This field captures that risk:
+    #   high     = strong Crown case + overwhelming/strong verdict robustness;
+    #              conviction ground highly vulnerable to the proviso
+    #   moderate = mixed profile; proviso is a real but not decisive factor
+    #   low      = weak Crown case + weak verdict robustness; proviso unlikely
+    proviso_risk: Optional[str] = None            # high | moderate | low
     # Chain of Reasoning — audit trail of every classification / split / cap /
     # realism decision this engine made on the ground. Shown to users in the
     # UI so counsel can verify the forensic logic, not just the output.
@@ -140,6 +149,10 @@ def classify_text_with_reason(text: str, jurisdiction: str) -> tuple[GroundType,
         "diminished responsibility", "mental impairment defence",
         "defence of mental impairment", "unsoundness of mind", "mental incompetence",
         "partial defence", "psychosis at time of offence",
+        # Commonwealth: Criminal Code (Cth) s 7.3 — mental impairment.
+        "s 7.3", "section 7.3",
+        "criminal code s 7.3",
+        "mental impairment under the criminal code",
     }
     for term in _PARTIAL_DEFENCE_TERMS:
         if term in t:
@@ -157,9 +170,13 @@ def classify_text_with_reason(text: str, jurisdiction: str) -> tuple[GroundType,
     for term in rules.ineffective_counsel_terms:
         if term in t:
             return "ineffective_counsel", f"Ineffective counsel rule: content matches '{term}'"
+    # Counsel feedback 23 Feb 2026 — Issue 2: evidence is NEVER a standalone
+    # ground in Australian appellate practice. Evidentiary errors are either
+    # (a) conviction grounds (unsafe verdict), or (b) procedural unfairness.
+    # Route evidence-term matches to conviction as the safer default.
     for term in rules.evidence_terms:
         if term in t:
-            return "evidence", f"Evidence rule: content matches '{term}'"
+            return "conviction", f"Evidence rule: content matches '{term}' → conviction (evidentiary error impacting verdict safety; evidence is not a standalone ground)"
 
     score: dict[GroundType, int] = {
         "conviction": 0, "sentence": 0, "procedure": 0,
@@ -174,9 +191,11 @@ def classify_text_with_reason(text: str, jurisdiction: str) -> tuple[GroundType,
     for term in rules.procedure_terms:
         if term in t:
             score["procedure"] += 2
+    # Evidence score folded into conviction (Issue 2) — evidentiary error
+    # supports verdict-safety challenge rather than a standalone evidence ground.
     for term in rules.evidence_terms:
         if term in t:
-            score["evidence"] += 2
+            score["conviction"] += 2
     for term in rules.ineffective_counsel_terms:
         if term in t:
             score["ineffective_counsel"] += 2
@@ -184,7 +203,12 @@ def classify_text_with_reason(text: str, jurisdiction: str) -> tuple[GroundType,
     best = max(score, key=score.get)
     if score[best] > 0:
         return best, f"Weighted classification: highest score ({score[best]}) for '{best}'"
-    return "conviction", "No specific terms matched; defaulted to conviction (safest classification)"
+    # Counsel feedback 23 Feb 2026 — Issue 1: default to PROCEDURE when
+    # uncertain. Procedure is the least-destructive misclassification — the
+    # Court can still entertain a procedural complaint under the miscarriage
+    # of justice limb. Defaulting to conviction when uncertain risks losing
+    # the appeal entirely on preservation issues.
+    return "procedure", "No specific terms matched; defaulted to procedure (least-destructive classification; still actionable under miscarriage of justice limb)"
 
 
 def classify_text(text: str, jurisdiction: str) -> GroundType:
@@ -385,7 +409,17 @@ def merge_duplicate_grounds(grounds: list[Ground]) -> list[Ground]:
     for g in grounds:
         if g.type is None:
             continue
-        key = (g.type, canonical_title(g.title))
+        key = (
+            g.type,
+            canonical_title(g.title),
+            # Counsel feedback 23 Feb 2026 — Issue 5: the canonical title alone
+            # collapsed legitimately distinct legal arguments. Three different
+            # mens-rea grounds (psychiatric / intoxication / direction error)
+            # all dedupe to the same canonical title. Adding a truncated hash
+            # of the error_identified field preserves distinct legal arguments
+            # while still collapsing true duplicates.
+            normalise(g.error_identified or "")[:120],
+        )
         existing = merged.get(key)
 
         if existing is None:
@@ -455,9 +489,15 @@ def apply_viability_caps(ground: Ground, flags: EvidenceFlags) -> Ground:
 def validate_ground_integrity(ground: Ground) -> None:
     text = blob_for_ground(ground)
 
+    # Counsel feedback 23 Feb 2026 — Issue 4: some conviction grounds
+    # legitimately reference sentencing as a consequence ("if this appeal
+    # succeeds, the head sentence must be reduced"), for parity context, or
+    # to explain outcome distortion. Only raise on "manifestly excessive"
+    # which is a hard sentencing-primary signal — incidental parole /
+    # rehabilitation / non-parole references are allowed.
     if ground.type == "conviction":
-        if any(x in text for x in ("rehabilitation", "manifestly excessive", "manifest excess", "non-parole", "parole")):
-            raise ValueError(f"Conviction ground contains sentencing content: {ground.title}")
+        if any(x in text for x in ("manifestly excessive", "manifest excess")):
+            raise ValueError(f"Conviction ground contains primary-focus sentencing content: {ground.title}")
 
     if ground.type == "sentence":
         if any(x in text for x in ("unsafe verdict", "mens rea", "intent", "mental impairment defence", "substantial impairment")):
@@ -492,7 +532,22 @@ def auto_repair_integrity(ground: Ground, jurisdiction: str) -> list[Ground]:
             materiality=ground.materiality, consequence=ground.consequence,
             sub_particulars=synthetic_subs,
         )
-        return split_mixed_ground(repaired, jurisdiction)
+        split_out = split_mixed_ground(repaired, jurisdiction)
+        # Counsel feedback 23 Feb 2026 — Issue 6: auto-repair rebuilds a
+        # ground's structure from its narrative fields. That is powerful but
+        # risks reshaping the trial-level argument (or creating fragments not
+        # argued at trial). Flag EVERY split output so counsel MUST manually
+        # verify before filing. The UI (ExplainViabilityButton) surfaces the
+        # trail directly.
+        for g in split_out:
+            _append_trail(
+                g,
+                "⚠ Auto-repair triggered due to integrity violation: ground content "
+                "was reconstructed for pathway separation. The argument structure "
+                "has been synthesised from narrative fields and REQUIRES MANUAL "
+                "VERIFICATION against the trial record before filing.",
+            )
+        return split_out
 
 
 def sort_grounds(grounds: list[Ground]) -> list[Ground]:
@@ -597,5 +652,6 @@ def ground_to_dict(ground: Ground) -> dict:
         "verdict_robustness": getattr(ground, "verdict_robustness", None),
         "crown_strength": getattr(ground, "crown_strength", None),
         "failure_risk": getattr(ground, "failure_risk", None),
+        "proviso_risk": getattr(ground, "proviso_risk", None),
         "reasoning_trail": getattr(ground, "reasoning_trail", None) or [],
     }

@@ -312,6 +312,12 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
     if case_jurisdiction == "FEDERAL":
         case_jurisdiction = "CTH"
 
+    # Outcome prediction — computed after normalisation/cleanup runs. Default
+    # to None so the persist block still works even if normalisation fails.
+    predicted_outcome = None
+    attack_plan = None
+    evidence_builder = None
+
     try:
         from services.ground_normaliser import (
             EvidenceFlags,
@@ -432,9 +438,58 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 new_issue["verdict_robustness"] = match.verdict_robustness
                 new_issue["crown_strength"] = match.crown_strength
                 new_issue["failure_risk"] = match.failure_risk
+                new_issue["proviso_risk"] = getattr(match, "proviso_risk", None)
                 new_issue["reasoning_trail"] = match.reasoning_trail or []
                 rewritten_issues.append(new_issue)
         issues = rewritten_issues
+
+        # Counsel feedback 23 Feb 2026 — Issue 7 improvement. Predict the
+        # likely appellate outcome based on the primary/secondary ground
+        # selection + proviso risk, and surface it on the case payload so
+        # the Barrister Brief and cover page show aligned projections.
+        try:
+            from services.outcome_predictor import select_strategy, predict_outcome
+            from services.attack_plan import generate_attack_plan
+            from services.evidence_builder import generate_evidence_builder
+            strategy = select_strategy(normalised_grounds)
+            predicted_outcome = predict_outcome(strategy)
+            # Counsel feedback 23 Feb 2026 — attack plan + evidence builder.
+            # Produce deterministic counsel-conference output so the exported
+            # report can show strategy / evidence gaps / required material /
+            # Crown response / counter strategy / next steps for primary +
+            # secondary grounds, plus affidavit templates.
+            attack_plan = generate_attack_plan(strategy)
+            evidence_builder = generate_evidence_builder(strategy)
+
+            # LLM refinement pass — counsel feedback 23 Feb 2026. Rewrites
+            # the deterministic attack-plan wording to sound like counsel's
+            # own brief (case facts, defendant surname, authorities,
+            # jurisdictional framing). Bounded — cannot invent grounds, add
+            # keys, or change viability. Falls back to the deterministic
+            # plan per-ground on any LLM failure so this is fully optional.
+            try:
+                from services.attack_plan import refine_attack_plan_with_llm
+                defendant = ((case_doc or {}).get("defendant_name") or "").strip()
+                defendant_surname = defendant.split()[-1] if defendant else ""
+                case_context = {
+                    "defendant_surname": defendant_surname,
+                    "jurisdiction": case_jurisdiction,
+                    "offence_type": (case_doc or {}).get("offence_type") or (case_doc or {}).get("charge") or "",
+                    "case_summary": (case_doc or {}).get("summary") or "",
+                }
+                attack_plan = await refine_attack_plan_with_llm(
+                    plan=attack_plan,
+                    strategy=strategy,
+                    case_context=case_context,
+                    session_id=f"attack-plan-{case_id}",
+                )
+            except Exception as refine_err:
+                logger.warning(f"LLM attack-plan refinement skipped for case {case_id}: {refine_err}")
+        except Exception as outcome_err:
+            logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
+            predicted_outcome = None
+            attack_plan = None
+            evidence_builder = None
     except Exception as norm_err:
         logger.warning(f"Ground normalisation skipped for case {case_id}: {norm_err}")
 
@@ -483,6 +538,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             "verdict_robustness": issue.get("verdict_robustness"),
             "crown_strength": issue.get("crown_strength"),
             "failure_risk": issue.get("failure_risk"),
+            "proviso_risk": issue.get("proviso_risk"),
             "reasoning_trail": issue.get("reasoning_trail") or [],
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -499,6 +555,25 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             all_existing_grounds.append({"ground_id": ground_doc["ground_id"], "title": issue_title})
 
         count += 1
+    # Persist the predicted outcome + counsel conference outputs at the
+    # case level so the Barrister Brief and cover page can show aligned
+    # projections. None means the prediction didn't run (rare — only on
+    # normalisation error).
+    try:
+        persist_doc: dict = {}
+        if predicted_outcome is not None:
+            persist_doc["predicted_outcome"] = predicted_outcome
+        if attack_plan is not None:
+            persist_doc["attack_plan"] = attack_plan
+        if evidence_builder is not None:
+            persist_doc["evidence_builder"] = evidence_builder
+        if persist_doc:
+            await db.cases.update_one(
+                {"case_id": case_id, "user_id": user_id},
+                {"$set": persist_doc},
+            )
+    except Exception as persist_err:
+        logger.warning(f"Failed to persist outcome/attack_plan/evidence_builder for case {case_id}: {persist_err}")
     return count
 
 
