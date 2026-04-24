@@ -198,8 +198,8 @@ RELEVANT {abbreviation} LEGISLATION:
         context += (
             "\n\nJURISDICTION FRAMEWORK ERROR:\n"
             f"- {exc}\n"
-            "- The analysis must not default to NSW or any other jurisdiction.\n"
-            "- The user must confirm the correct jurisdiction before legal conclusions are generated.\n"
+            "- The report must not default to NSW.\n"
+            "- The user must correct the jurisdiction and offence category before legal analysis is generated.\n"
         )
 
     return context
