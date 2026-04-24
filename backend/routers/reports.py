@@ -413,25 +413,69 @@ async def get_report_status(case_id: str, report_id: str, request: Request):
 
 @router.get("/cases/{case_id}/reports", response_model=List[dict])
 async def get_reports(case_id: str, request: Request):
-    """Get all reports for a case"""
+    """Get all reports for a case.
+
+    Performance note (24-Apr-2026): the list view ships ONLY the metadata
+    needed to render report cards on the Case Detail Reports tab. Large
+    report body fields (`content.analysis`, `content.backup_analysis`, the
+    legacy per-tier blobs, `content.barrister_view`, etc.) are intentionally
+    excluded from this projection — fetching them here was returning ~1 MB
+    per case and stalling the page on slow connections.
+
+    The full body is loaded lazily by the Reports tab when the user expands
+    a card, via `GET /cases/{case_id}/reports/{report_id}` — that endpoint
+    is unchanged and continues to return the full document.
+    """
     user = await get_current_user(request)
-    
+
     # Auto-fail any report stuck in "generating" for more than 60 minutes
     thirty_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=60)).isoformat()
     await db.reports.update_many(
         {"case_id": case_id, "user_id": user.user_id, "status": "generating", "generated_at": {"$lt": thirty_min_ago}},
         {"$set": {"status": "failed", "error": "Generation timed out"}}
     )
-    
+
+    # Projection — exclude heavy body fields. Keep `content.aggressive_mode`
+    # because the frontend filters on it, plus `content.metadata` which holds
+    # generation provenance shown on the card.
+    LIST_PROJECTION = {
+        "_id": 0,
+        # Heavy body fields — stripped. Loaded on expand via per-report endpoint.
+        "content.analysis": 0,
+        "content.backup_analysis": 0,
+        "content.barrister_view": 0,
+        "content.full_detailed": 0,
+        "content.extensive_log": 0,
+        "content.quick_summary": 0,
+        "content.report": 0,
+        "content.body": 0,
+        "content.text": 0,
+        "content.markdown": 0,
+        "content.html": 0,
+        "content.draft": 0,
+        "content.sections": 0,
+        # Mid-generation / regeneration scratchpad fields. These can grow to
+        # 100+ KB on the extensive_log tier and are not consumed by the
+        # ReportsSection card UI — only the full body is shown post-expand.
+        "content.partial_analysis": 0,
+        "content.partial_sections": 0,
+        "content.partial_stage": 0,
+        "content.partial": 0,
+        # Source-report bundles attached to the barrister brief; large and
+        # only rendered on the standalone BarristerView page.
+        "content.source_reports": 0,
+        "content.source_signature": 0,
+    }
+
     reports = await db.reports.find(
         {
             "case_id": case_id,
             "user_id": user.user_id,
             "content.aggressive_mode": {"$ne": True},
         },
-        {"_id": 0}
+        LIST_PROJECTION,
     ).sort("generated_at", -1).to_list(100)
-    
+
     return reports
 
 

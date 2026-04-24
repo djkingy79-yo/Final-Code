@@ -83,3 +83,4 @@ backend/tests/test_google_oauth_iteration*.py
 backend/tests/test_security_fixes_iteration*.py
 frontend/node_modules/.cache/default-development/25.pack
 frontend/node_modules/.cache/default-development/32.pack
+frontend/node_modules/.cache/default-development/27.pack

@@ -145,6 +145,17 @@ const ReportsSection = ({
   const [genElapsed, setGenElapsed] = useState(0);
   const [genProgress, setGenProgress] = useState(null); // {current_pass, total_passes, pass_label, pass_title}
   const [expandedReports, setExpandedReports] = useState({});
+  /* DO_NOT_UNDO — Lazy-fetch cache for report bodies.
+     The list endpoint /api/cases/{id}/reports intentionally strips the
+     heavy content body (24-Apr-2026 Fix #1, see backend
+     routers/reports.py::get_reports). When a user expands a report card
+     for the first time, we fetch the full body from
+     GET /api/cases/{id}/reports/{report_id} and cache it here keyed by
+     report_id. Subsequent expand/collapse cycles reuse the cached copy
+     until the page is reloaded. */
+  const [fullReportBodies, setFullReportBodies] = useState({});
+  const [loadingReportBody, setLoadingReportBody] = useState({});
+  const [reportBodyErrors, setReportBodyErrors] = useState({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [pendingReportType, setPendingReportType] = useState(null);
   const [pipelineVerifyLoading, setPipelineVerifyLoading] = useState(false);
@@ -522,12 +533,63 @@ const ReportsSection = ({
     }
   };
 
+  /* DO_NOT_UNDO — Lazy-fetch a report's full body on first expand.
+     The list endpoint no longer ships content.analysis (perf fix); the
+     full body lives on GET /api/cases/{id}/reports/{report_id}. We cache
+     the result so re-expanding the same card does not refetch. */
+  const fetchFullReportBody = async (reportId) => {
+    if (fullReportBodies[reportId] !== undefined) return; // already cached
+    if (loadingReportBody[reportId]) return; // in-flight
+    setLoadingReportBody(prev => ({ ...prev, [reportId]: true }));
+    setReportBodyErrors(prev => {
+      const next = { ...prev };
+      delete next[reportId];
+      return next;
+    });
+    try {
+      const res = await axios.get(`${API}/cases/${caseId}/reports/${reportId}`, { timeout: 60000 });
+      setFullReportBodies(prev => ({ ...prev, [reportId]: res.data?.content || {} }));
+    } catch (err) {
+      const msg = err?.response?.status === 404
+        ? "Report not found."
+        : err?.code === "ECONNABORTED"
+          ? "Loading the report timed out — please try again."
+          : (err?.response?.data?.detail || "Failed to load report content.");
+      setReportBodyErrors(prev => ({ ...prev, [reportId]: msg }));
+    } finally {
+      setLoadingReportBody(prev => {
+        const next = { ...prev };
+        delete next[reportId];
+        return next;
+      });
+    }
+  };
+
   const toggleReportExpand = (reportId, isOpen) => {
     setExpandedReports(prev => ({
       ...prev,
       [reportId]: isOpen
     }));
+    if (isOpen) {
+      fetchFullReportBody(reportId);
+    }
   };
+
+  /* DO_NOT_UNDO — Auto-fetch full body for generating/failed reports so the
+     status banner correctly shows prior content when regenerating an
+     existing report. Without this, post-Fix-#1 the list endpoint returns
+     no body, the !reportText check falls through to the bare status card
+     and a regenerating report appears blank until the user expands it. */
+  useEffect(() => {
+    if (!Array.isArray(reports)) return;
+    for (const r of reports) {
+      const status = r.status || "completed";
+      if (status === "generating" || status === "failed") {
+        fetchFullReportBody(r.report_id);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reports]);
 
   const getReportTypeLabel = (type) => {
     return REPORT_TYPES.find(t => t.value === type)?.label || type;
@@ -714,14 +776,26 @@ const ReportsSection = ({
           {reports.map((report) => {
             const reportStatus = report.status || 'completed';
 
-            // DO NOT UNDO — Extract report content BEFORE status checks so content stays visible during generating/failed
-            const rawReportText = typeof report.content === 'string'
+            // DO_NOT_UNDO — The list endpoint /cases/{id}/reports no
+            // longer ships content.analysis (24-Apr-2026 Fix #1 perf
+            // optimisation). Look up the lazy-fetched full body from the
+            // fullReportBodies cache keyed by report_id — falls back to
+            // any inline content.analysis the legacy endpoint may still
+            // carry (defensive — shouldn't happen post-fix).
+            const cachedBody = fullReportBodies[report.report_id];
+            const inlineAnalysis = typeof report.content === 'string'
               ? report.content
               : report.content?.analysis || report.content?.backup_analysis || '';
+            const lazyAnalysis = cachedBody && typeof cachedBody === 'object'
+              ? cachedBody.analysis || cachedBody.backup_analysis || ''
+              : '';
+            const rawReportText = lazyAnalysis || inlineAnalysis;
             const reportText = (rawReportText || "")
               .replace(/^\s*DO NOT UNDO\.?\s*$/gim, "")
               .replace(/\n{3,}/g, "\n\n")
               .trim();
+            const isFetchingBody = Boolean(loadingReportBody[report.report_id]);
+            const bodyFetchError = reportBodyErrors[report.report_id];
 
             // For generating/failed with NO existing content, show just the status card
             if (reportStatus === 'generating' && !reportText) {
@@ -968,11 +1042,40 @@ const ReportsSection = ({
 
                       {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
-                        <SectionTranslatableReport
-                          reportText={reportText}
-                          reportId={report.report_id}
-                          caseId={caseId}
-                        />
+                        {isFetchingBody && !reportText ? (
+                          <div
+                            className="flex items-center gap-3 text-sm text-slate-600 py-4"
+                            data-testid={`report-body-loading-${report.report_id}`}
+                          >
+                            <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                            <span>Loading report content…</span>
+                          </div>
+                        ) : bodyFetchError && !reportText ? (
+                          <div
+                            className="flex items-center justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+                            data-testid={`report-body-error-${report.report_id}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="w-4 h-4 text-red-600" />
+                              <span>{bodyFetchError}</span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => fetchFullReportBody(report.report_id)}
+                              className="border-red-300 text-red-700 hover:bg-red-100"
+                              data-testid={`report-body-retry-${report.report_id}`}
+                            >
+                              Retry
+                            </Button>
+                          </div>
+                        ) : (
+                          <SectionTranslatableReport
+                            reportText={reportText}
+                            reportId={report.report_id}
+                            caseId={caseId}
+                          />
+                        )}
 
                         {/* AI-analysis warning */}
                         <div className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100" data-testid={`report-ai-warning-${report.report_id}`}>
