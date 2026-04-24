@@ -485,6 +485,21 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
                 )
             except Exception as refine_err:
                 logger.warning(f"LLM attack-plan refinement skipped for case {case_id}: {refine_err}")
+
+            # Same LLM refinement pattern for the evidence builder — customises
+            # affidavit templates, document requests, and steps to the case.
+            # Hard guardrails preserve list lengths, affidavit types, and the
+            # SWORN: skeleton. Per-ground fallback on any failure.
+            try:
+                from services.evidence_builder import refine_evidence_builder_with_llm
+                evidence_builder = await refine_evidence_builder_with_llm(
+                    builder=evidence_builder,
+                    strategy=strategy,
+                    case_context=case_context,
+                    session_id=f"evidence-builder-{case_id}",
+                )
+            except Exception as refine_err:
+                logger.warning(f"LLM evidence-builder refinement skipped for case {case_id}: {refine_err}")
         except Exception as outcome_err:
             logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
             predicted_outcome = None
