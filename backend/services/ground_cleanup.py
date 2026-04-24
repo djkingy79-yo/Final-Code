@@ -373,16 +373,291 @@ def clean_ground_narrative_language(ground: Ground, jurisdiction: str) -> Ground
     return ground
 
 
+def enforce_type_title_consistency(ground: Ground) -> Ground:
+    """
+    Resolve internal contradiction between ground.type and ground.title.
+    Liability terminology in the title (mens rea, mental state, substantial
+    impairment, partial defence, etc.) wins over any 'sentencing' framing
+    because liability ≠ sentencing — a common drafting slip the splitter
+    sometimes leaves behind.
+
+    Order: sentence-words set 'sentence' first, then liability-words flip
+    to 'conviction' (liability wins). Mirrors counsel feedback 23 Feb 2026.
+    """
+    title = normalise(ground.title or "")
+    before = ground.type
+
+    if "sentencing" in title or "manifestly excessive" in title:
+        ground.type = "sentence"
+
+    liability_title_tokens = (
+        "mens rea",
+        "mental state",
+        "substantial impairment",
+        "abnormality of mind",
+        "partial defence",
+        "diminished responsibility",
+        "mental impairment",
+        "unsoundness of mind",
+        "fault elements",
+    )
+    if any(t in title for t in liability_title_tokens):
+        ground.type = "conviction"
+
+    if ground.type != before:
+        _log(
+            ground,
+            f"Cleanup type-title consistency: type '{before}' → '{ground.type}' "
+            f"based on ground title tokens.",
+        )
+
+    return ground
+
+
+def downgrade_speculative_procedure(ground: Ground) -> Ground:
+    """
+    Procedure grounds resting on inference ('implication', 'no direct
+    evidence', etc.) without affidavit/transcript material are cosmetic —
+    the Court will ask "where is the evidence of prejudice?" and strike
+    them out. Cap at requires_development so they are clearly flagged as
+    needing record support before filing.
+    """
+    if ground.type != "procedure":
+        return ground
+
+    blob = normalise(
+        " ".join([
+            ground.materiality or "",
+            ground.error_identified or "",
+            ground.consequence or "",
+            " ".join(ground.supporting_evidence or []),
+        ])
+    )
+
+    speculative_markers = (
+        "implication that",
+        "implied that",
+        "no direct evidence",
+        "there is no transcript",
+        "no affidavit",
+        "inference only",
+    )
+
+    if any(m in blob for m in speculative_markers):
+        prior = ground.viability
+        ground.viability = "requires_development"
+        if ground.viability != prior:
+            _log(
+                ground,
+                f"Cleanup: procedure ground rests on inference / lacks "
+                f"record support — viability '{prior}' → 'requires_development'.",
+            )
+
+    return ground
+
+
+# ---------------------------------------------------------------------------
+# Authority preferences — jurisdiction-neutral but ground-type specific.
+# Counsel feedback 23 Feb 2026.
+# ---------------------------------------------------------------------------
+
+PROCEDURE_AUTHORITIES = (
+    "ebner",
+    "gittany",
+    "belghar",
+)
+
+SENTENCE_AUTHORITIES = (
+    "house v the king",
+    "house v king",
+    "hili",
+    "dinsdale",
+    "muldrock",
+    "barbaro",
+)
+
+
+def _prefer_authorities(authorities: list[str], preferred_tokens: tuple[str, ...]) -> list[str]:
+    """
+    Keep any authority matching a preferred-token; if none match, fall back
+    to the first three of the supplied list so we never return an empty
+    authorities list.
+    """
+    if not authorities:
+        return authorities
+    preferred: list[str] = []
+    fallback: list[str] = []
+    for a in authorities:
+        t = normalise(a)
+        if any(tok in t for tok in preferred_tokens):
+            preferred.append(a)
+        else:
+            fallback.append(a)
+    return preferred or fallback[:3]
+
+
+def apply_authority_preferences(ground: Ground) -> Ground:
+    """
+    Apply ground-type-specific authority preference filters. Avoids citing
+    Weiss / M v The Queen on a jury-misconduct ground, where the Court will
+    expect Ebner / Gittany / Belghar instead. Same pattern for sentencing —
+    House v The King / Hili / Dinsdale / Muldrock.
+    """
+    if not ground.authorities:
+        return ground
+
+    before = list(ground.authorities)
+    if ground.type == "procedure":
+        ground.authorities = _prefer_authorities(ground.authorities, PROCEDURE_AUTHORITIES)
+    elif ground.type == "sentence":
+        ground.authorities = _prefer_authorities(ground.authorities, SENTENCE_AUTHORITIES)
+
+    if ground.authorities != before:
+        _log(
+            ground,
+            f"Cleanup: authorities filtered for ground type '{ground.type}' — "
+            f"kept {len(ground.authorities)} of {len(before)} to prefer "
+            f"ground-type-appropriate precedent.",
+        )
+
+    return ground
+
+
+# ---------------------------------------------------------------------------
+# List-level passes — run after the per-ground pipeline has finished.
+# Counsel feedback 23 Feb 2026.
+# ---------------------------------------------------------------------------
+
+_PSYCHIATRIC_DUP_TOKENS = (
+    "substantial impairment",
+    "psychiatric",
+    "mental state",
+    "mens rea",
+    "psychosis",
+    "partial defence",
+    "diminished responsibility",
+    "mental impairment",
+    "abnormality of mind",
+)
+
+
+def _merge_into(base: Ground, dup: Ground) -> None:
+    """
+    Merge unique sub-particulars + supporting evidence from dup into base
+    without creating duplicate text entries.
+    """
+    seen_sub = {normalise(sp.text) for sp in (base.sub_particulars or [])}
+    for sp in (dup.sub_particulars or []):
+        key = normalise(sp.text)
+        if key and key not in seen_sub:
+            base.sub_particulars = (base.sub_particulars or []) + [sp]
+            seen_sub.add(key)
+
+    seen_ev = {normalise(e) for e in (base.supporting_evidence or [])}
+    for e in (dup.supporting_evidence or []):
+        key = normalise(e)
+        if key and key not in seen_ev:
+            base.supporting_evidence = (base.supporting_evidence or []) + [e]
+            seen_ev.add(key)
+
+
+def collapse_duplicate_psychiatric_grounds(grounds: list[Ground]) -> list[Ground]:
+    """
+    Ensure no more than one psychiatric / liability ground survives.
+    A second "Sentencing Error: Failure to Consider Substantial Impairment"
+    is the SAME issue re-framed as mitigation — that's legally wrong in NSW
+    (s 23A is a partial defence, not sentencing mitigation) and the Court
+    will strike it as duplicative. Merge the dropped ground's unique
+    sub-particulars / evidence into the survivor before discarding.
+    """
+    kept: list[Ground] = []
+    survivor: Ground | None = None
+
+    for g in grounds:
+        blob = normalise(
+            (g.title or "") + " " + (g.error_identified or "") + " " + (g.materiality or "")
+        )
+        is_psych = any(tok in blob for tok in _PSYCHIATRIC_DUP_TOKENS)
+        if is_psych:
+            if survivor is None:
+                survivor = g
+                kept.append(g)
+            else:
+                _merge_into(survivor, g)
+                _log(
+                    survivor,
+                    f"Cleanup: merged duplicate psychiatric / liability ground "
+                    f"'{g.title}' into this ground — same issue, different framing.",
+                )
+                continue
+        else:
+            kept.append(g)
+
+    return kept
+
+
+def merge_procedural_grounds(grounds: list[Ground]) -> list[Ground]:
+    """
+    Procedural unfairness fragmented across multiple grounds (e.g. jury
+    separation + judge-alone refusal + prejudicial material) should be one
+    consolidated 'Procedural Unfairness (Jury / Trial Integrity)' ground
+    with sub-particulars. The Court prefers a single integrated challenge,
+    not three thin ones — counsel feedback 23 Feb 2026.
+    """
+    procedural = [g for g in grounds if g.type == "procedure"]
+    if len(procedural) <= 1:
+        return grounds
+
+    base = procedural[0]
+    for dup in procedural[1:]:
+        _merge_into(base, dup)
+        _log(
+            base,
+            f"Cleanup: merged fragmented procedural ground '{dup.title}' "
+            f"into consolidated procedural-unfairness ground.",
+        )
+
+    # Preserve original list order, minus the dropped procedure grounds.
+    dropped_ids = {id(g) for g in procedural[1:]}
+    return [g for g in grounds if id(g) not in dropped_ids]
+
+
 def apply_cleanup(grounds: list[Ground], jurisdiction: str) -> list[Ground]:
     """
     Final cleanup pass — run AFTER realism scoring (appeal_strength).
-    Order matters: scrub contaminated sub-particulars first, then uplift if
-    the realism profile supports it, then clean the narrative language.
+
+    Per-ground order:
+      1. enforce_type_title_consistency   (title vs type mismatches first,
+         so downstream steps see the corrected type)
+      2. remove_misclassified_subs        (strip cross-pathway contamination)
+      3. uplift_if_core_metrics_favour_ground  (rescue over-downgraded conviction grounds)
+      4. downgrade_speculative_procedure  (cap speculative procedure grounds)
+      5. clean_ground_narrative_language  (NSW s 23A + post-verdict jury language)
+      6. apply_authority_preferences      (ground-type-appropriate precedent)
+
+    List-level passes (after per-ground loop):
+      7. merge_procedural_grounds         (consolidate fragmented procedure)
+      8. collapse_duplicate_psychiatric_grounds  (no Ground 2 + Ground 4 twins)
     """
     cleaned: list[Ground] = []
     for ground in grounds:
+        ground = enforce_type_title_consistency(ground)
         ground = remove_misclassified_subs(ground)
         ground = uplift_if_core_metrics_favour_ground(ground)
+        ground = downgrade_speculative_procedure(ground)
         ground = clean_ground_narrative_language(ground, jurisdiction)
+        ground = apply_authority_preferences(ground)
         cleaned.append(ground)
+
+    cleaned = merge_procedural_grounds(cleaned)
+    cleaned = collapse_duplicate_psychiatric_grounds(cleaned)
+
+    # Final invariant sweep — the list-level merges above may have pulled
+    # sub-particulars / evidence across pathway boundaries (e.g. a sentence-
+    # typed psychiatric twin merges into a conviction-typed survivor carrying
+    # a "mitigation at sentence" sub). Re-run the scrubber once so the two
+    # cross-jurisdictional invariants still hold after merging:
+    #   INV1: no conviction ground retains a sentencing sub
+    #   INV2: no sentence ground retains a liability sub
+    cleaned = [remove_misclassified_subs(g) for g in cleaned]
     return cleaned
