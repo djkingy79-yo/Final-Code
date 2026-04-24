@@ -43,6 +43,10 @@ class RefreshPipelineRequest(BaseModel):
     verify_limit: int = 0
 
 
+class VerifyBatchRequest(BaseModel):
+    limit: int = 3
+
+
 @router.post("/cases/{case_id}/documents/{document_id}/extract", response_model=dict)
 async def extract_document(case_id: str, document_id: str, request: Request):
     user = await get_current_user(request)
@@ -227,6 +231,98 @@ async def verify_single_issue(case_id: str, issue_id: str, request: Request):
         "verification_id": verification.verification_id,
         "verification_status": verification.verification_status,
         "rating": verification.legitimacy_scores.get("rating", "moderate"),
+    }
+
+
+@router.post("/cases/{case_id}/issues/verify-batch", response_model=dict)
+async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Request):
+    """
+    Staged-router twin of POST /api/cases/{case_id}/issues/verify-batch.
+
+    Verify a batch of top unverified issues and sync the projection into
+    grounds_of_merit. Reuses the service-layer helpers in
+    services/pipeline_actions.py (priority rank, projection sync) and the
+    canonical verify_issue pipeline stage. Response shape is byte-identical
+    to the original old-router endpoint so the UI can migrate without any
+    client-side adjustment.
+    """
+    user = await get_current_user(request)
+
+    case = await db.cases.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+
+    case_extract = await db.case_extracts.find_one(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    )
+    if not case_extract:
+        raise HTTPException(status_code=400, detail="Case extract not found. Run extraction first.")
+
+    issues = await db.issue_classifications.find(
+        {"case_id": case_id, "user_id": user.user_id}, {"_id": 0}
+    ).to_list(500)
+    if not issues:
+        raise HTTPException(status_code=400, detail="No classified issues found. Run classification first.")
+
+    eligible = []
+    for issue in issues:
+        existing_verification = await db.issue_verifications.find_one(
+            {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id}, {"_id": 0}
+        )
+        if existing_verification:
+            continue
+        eligible.append(issue)
+
+    eligible.sort(key=_issue_priority_rank)
+    limit = max(1, min(int(payload.limit or 1), 20))
+    selected_issues = eligible[:limit]
+
+    supporting_context = {
+        "facts": case_extract.get("merged_facts", []),
+        "events": case_extract.get("merged_events", []),
+        "findings": case_extract.get("merged_findings", []),
+    }
+
+    verified = 0
+    failed = 0
+    verified_issue_ids = []
+
+    for issue in selected_issues:
+        try:
+            verification = await verify_issue(case, issue, supporting_context)
+            verification_dict = verification.model_dump()
+            verification_dict["created_at"] = verification_dict["created_at"].isoformat()
+            await db.issue_verifications.update_one(
+                {"case_id": case_id, "issue_id": issue["issue_id"], "user_id": user.user_id},
+                {"$set": verification_dict},
+                upsert=True,
+            )
+            verified += 1
+            verified_issue_ids.append(issue["issue_id"])
+        except Exception as e:
+            logger.warning(f"Batch verification failed for issue {issue.get('issue_id')}: {e}")
+            failed += 1
+
+    synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
+    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    from services.ground_dedup import cleanup_duplicate_grounds
+    await cleanup_duplicate_grounds(db, case_id, user.user_id)
+
+    return {
+        "requested_limit": payload.limit,
+        "applied_limit": limit,
+        "eligible_issues": len(eligible),
+        "attempted": len(selected_issues),
+        "verified": verified,
+        "failed": failed,
+        "verified_issue_ids": verified_issue_ids,
+        "synced_count": synced_count,
+        "message": (
+            f"Attempted verification for {len(selected_issues)} issue(s); "
+            f"verified {verified}, failed {failed}, synced {synced_count} projected ground(s)."
+        ),
     }
 
 

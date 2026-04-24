@@ -46,7 +46,7 @@ import {
 
 async function verifyTopIssues(apiBase, caseId, limit) {
   const response = await axios.post(
-    `${apiBase}/cases/${caseId}/issues/verify-batch`,
+    `${apiBase}/pipeline/cases/${caseId}/issues/verify-batch`,
     { limit },
     { timeout: 300000 }
   );
