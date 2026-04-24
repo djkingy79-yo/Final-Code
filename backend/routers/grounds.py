@@ -460,6 +460,31 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
             # secondary grounds, plus affidavit templates.
             attack_plan = generate_attack_plan(strategy)
             evidence_builder = generate_evidence_builder(strategy)
+
+            # LLM refinement pass — counsel feedback 23 Feb 2026. Rewrites
+            # the deterministic attack-plan wording to sound like counsel's
+            # own brief (case facts, defendant surname, authorities,
+            # jurisdictional framing). Bounded — cannot invent grounds, add
+            # keys, or change viability. Falls back to the deterministic
+            # plan per-ground on any LLM failure so this is fully optional.
+            try:
+                from services.attack_plan import refine_attack_plan_with_llm
+                defendant = ((case_doc or {}).get("defendant_name") or "").strip()
+                defendant_surname = defendant.split()[-1] if defendant else ""
+                case_context = {
+                    "defendant_surname": defendant_surname,
+                    "jurisdiction": case_jurisdiction,
+                    "offence_type": (case_doc or {}).get("offence_type") or (case_doc or {}).get("charge") or "",
+                    "case_summary": (case_doc or {}).get("summary") or "",
+                }
+                attack_plan = await refine_attack_plan_with_llm(
+                    plan=attack_plan,
+                    strategy=strategy,
+                    case_context=case_context,
+                    session_id=f"attack-plan-{case_id}",
+                )
+            except Exception as refine_err:
+                logger.warning(f"LLM attack-plan refinement skipped for case {case_id}: {refine_err}")
         except Exception as outcome_err:
             logger.warning(f"Outcome prediction skipped for case {case_id}: {outcome_err}")
             predicted_outcome = None

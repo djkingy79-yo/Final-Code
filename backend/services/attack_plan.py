@@ -160,3 +160,160 @@ def generate_attack_plan(strategy: dict) -> dict:
         plan["secondary"] = build_attack_plan_for_ground(strategy["secondary"])
 
     return plan
+
+
+# ---------------------------------------------------------------------------
+# LLM refinement layer — counsel feedback 23 Feb 2026.
+# ---------------------------------------------------------------------------
+# The deterministic plan above gives the correct STRUCTURE. The LLM pass
+# refines WORDING so it reads like counsel's own brief: case-specific
+# facts, defendant name, specific authorities, jurisdictional framing.
+# The LLM is explicitly bounded — it may not invent new grounds, add new
+# sub-particulars, re-rate viability, or change the ground type.
+# ---------------------------------------------------------------------------
+
+import logging  # noqa: E402 — grouped with LLM helpers
+
+_log = logging.getLogger(__name__)
+
+_REFINEMENT_SYSTEM_PROMPT = (
+    "You are a senior junior counsel drafting a strictly forensic, third-person "
+    "appellate brief under Australian practice. Australian spelling only "
+    "(analyse, organise, judgement, offence). "
+    "\n\nIMPORTANT STYLE RULES:\n"
+    "- Third-person only. NEVER use 'we', 'us', 'our', 'you', 'your'.\n"
+    "- Forensic appellate register. No marketing language. No hedging adjectives.\n"
+    "- Reference authorities by full citation (e.g. 'House v The King (1936) 55 CLR "
+    "499') when naturally relevant; do NOT invent authorities.\n"
+    "- Reference the defendant by surname where used (passed in user prompt).\n"
+    "- Keep each refined field to the SAME TYPE AND APPROXIMATE LENGTH as the "
+    "deterministic input. One-paragraph fields stay one paragraph; lists stay "
+    "lists of the same count or fewer.\n"
+    "\nHARD BOUNDS:\n"
+    "- Do NOT invent new grounds, new sub-particulars, or new legal issues.\n"
+    "- Do NOT change the ground type or viability rating.\n"
+    "- Do NOT add fields not present in the input plan.\n"
+    "- Refine WORDING only; every refined value must remain a direct rewording "
+    "of the deterministic input.\n"
+    "\nReturn STRICT JSON matching the shape of the input plan."
+)
+
+
+def _build_refinement_user_prompt(
+    plan_for_ground: dict,
+    ground: object,
+    case_context: dict,
+) -> str:
+    return (
+        f"CASE CONTEXT\n"
+        f"- Defendant surname: {case_context.get('defendant_surname') or '[not provided]'}\n"
+        f"- Jurisdiction: {case_context.get('jurisdiction') or '[not provided]'}\n"
+        f"- Offence type: {case_context.get('offence_type') or '[not provided]'}\n"
+        f"- Case summary: {(case_context.get('case_summary') or '')[:800]}\n"
+        f"\nGROUND\n"
+        f"- Title: {getattr(ground, 'title', '')}\n"
+        f"- Type: {getattr(ground, 'type', '')}\n"
+        f"- Viability: {getattr(ground, 'viability', '')}\n"
+        f"- Proviso risk: {getattr(ground, 'proviso_risk', '')}\n"
+        f"- Authorities: {', '.join(getattr(ground, 'authorities', []) or []) or '[none]'}\n"
+        f"- Law sections: {', '.join(getattr(ground, 'relevant_law_sections', []) or []) or '[none]'}\n"
+        f"- Trial finding: {(getattr(ground, 'trial_finding', None) or '')[:400]}\n"
+        f"- Error identified: {(getattr(ground, 'error_identified', None) or '')[:400]}\n"
+        f"- Materiality: {(getattr(ground, 'materiality', None) or '')[:400]}\n"
+        f"\nDETERMINISTIC ATTACK PLAN TO REFINE (JSON)\n"
+        f"```json\n{_json_dump_compact(plan_for_ground)}\n```\n"
+        f"\nTASK\n"
+        f"Rewrite each string value in the plan so it reads like a real counsel "
+        f"brief. Inject jurisdictional framing, authorities, and defendant surname "
+        f"where natural. Keep list lengths the same or fewer. Return the FULL JSON "
+        f"with the same keys and list/string shapes."
+    )
+
+
+def _json_dump_compact(obj) -> str:
+    import json
+    return json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+
+
+_REQUIRED_STRING_KEYS = {"title", "strategy", "crown_response", "counter_strategy"}
+_REQUIRED_LIST_KEYS = {"evidence_gaps", "required_material", "next_steps"}
+
+
+def _validate_refined_shape(original: dict, refined: dict) -> bool:
+    """Ensure the LLM didn't add keys, drop required ones, or change types."""
+    if not isinstance(refined, dict):
+        return False
+    # Allowed keys = whatever was in the original. No adds.
+    if not set(refined.keys()).issubset(set(original.keys())):
+        return False
+    for k in _REQUIRED_STRING_KEYS:
+        if k in original and not isinstance(refined.get(k, ""), str):
+            return False
+    for k in _REQUIRED_LIST_KEYS:
+        if k in original:
+            if not isinstance(refined.get(k, []), list):
+                return False
+            if not all(isinstance(x, str) for x in refined[k]):
+                return False
+    return True
+
+
+async def _refine_single_plan(
+    plan_for_ground: dict,
+    ground: object,
+    case_context: dict,
+    session_id: str,
+) -> dict:
+    from services.llm_service import call_llm_for_json
+
+    def _valid(parsed: dict) -> bool:
+        # call_llm_for_json expects validation at the top-level dict.
+        return _validate_refined_shape(plan_for_ground, parsed)
+
+    refined = await call_llm_for_json(
+        system_prompt=_REFINEMENT_SYSTEM_PROMPT,
+        user_prompt=_build_refinement_user_prompt(plan_for_ground, ground, case_context),
+        session_id=session_id,
+        task_type="general",
+        validation_fn=_valid,
+        max_tokens=1200,
+        timeout_seconds=45,
+    )
+    # Belt-and-braces: overlay refined onto original so any missing key stays
+    # as the deterministic fallback rather than silently disappearing.
+    merged = dict(plan_for_ground)
+    merged.update({k: v for k, v in refined.items() if k in plan_for_ground})
+    return merged
+
+
+async def refine_attack_plan_with_llm(
+    plan: dict,
+    strategy: dict,
+    case_context: dict,
+    session_id: str = "attack-plan-refine",
+) -> dict:
+    """
+    Take a deterministic attack plan produced by generate_attack_plan() and
+    refine its wording using the LLM, one ground at a time.
+    On any per-ground failure, fall back to the deterministic text for that
+    ground so the feature is fully non-blocking.
+    """
+    if not plan:
+        return plan
+
+    refined: dict = {}
+    for role in ("primary", "secondary"):
+        plan_for_ground = plan.get(role)
+        ground = (strategy or {}).get(role)
+        if not plan_for_ground or ground is None:
+            if plan_for_ground is not None:
+                refined[role] = plan_for_ground
+            continue
+        try:
+            refined[role] = await _refine_single_plan(
+                plan_for_ground, ground, case_context, session_id=f"{session_id}-{role}"
+            )
+        except Exception as refine_err:
+            _log.warning(f"LLM refine skipped for {role} ground: {refine_err}")
+            refined[role] = plan_for_ground
+    return refined
