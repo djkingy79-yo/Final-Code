@@ -8,7 +8,7 @@ import {
   Scale, Trash2, Search, Loader2, 
   AlertTriangle, CheckCircle, XCircle, Sparkles,
   BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download,
-  GripVertical, ArrowUpDown, Check
+  GripVertical, ArrowUpDown, Check, Info
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -23,6 +23,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "./ui/sheet";
 import { ScrollArea } from "./ui/scroll-area";
 import { toast } from "sonner";
 import PaymentModal from "./PaymentModal";
@@ -78,16 +86,16 @@ const GROUND_TYPE_LABELS = {
 };
 
 const GROUND_TYPE_COLORS = {
-  procedural_error: "bg-blue-50 text-blue-700 border-blue-200",
-  fresh_evidence: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  miscarriage_of_justice: "bg-red-50 text-red-700 border-red-200",
-  sentencing_error: "bg-blue-50 text-blue-700 border-blue-200",
-  judicial_error: "bg-purple-50 text-purple-700 border-purple-200",
-  ineffective_counsel: "bg-orange-50 text-orange-700 border-orange-200",
-  prosecution_misconduct: "bg-rose-50 text-rose-700 border-rose-200",
-  jury_irregularity: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  constitutional_violation: "bg-slate-50 text-slate-700 border-slate-200",
-  other: "bg-gray-50 text-gray-700 border-gray-200"
+  procedural_error: "bg-blue-50 text-blue-700 border-blue-300",
+  fresh_evidence: "bg-amber-50 text-amber-800 border-amber-300",
+  miscarriage_of_justice: "bg-red-50 text-red-700 border-red-300",
+  sentencing_error: "bg-green-50 text-green-700 border-green-300",
+  judicial_error: "bg-purple-50 text-purple-700 border-purple-300",
+  ineffective_counsel: "bg-orange-50 text-orange-700 border-orange-300",
+  prosecution_misconduct: "bg-rose-50 text-rose-700 border-rose-300",
+  jury_irregularity: "bg-indigo-50 text-indigo-700 border-indigo-300",
+  constitutional_violation: "bg-slate-50 text-slate-700 border-slate-300",
+  other: "bg-gray-50 text-gray-700 border-gray-300"
 };
 
 const STRENGTH_CONFIG = {
@@ -124,6 +132,110 @@ const CROWN_CONFIG = {
   weak:     { label: "Crown response: Weak",     color: "bg-emerald-100 text-emerald-800 border-emerald-300" },
 };
 
+/**
+ * ExplainViabilityButton — one-tap forensic audit of a ground's viability.
+ * Opens a bottom-sheet on mobile / right-side sheet on desktop, surfacing:
+ *   - the current viability rating
+ *   - realism metrics (record support / verdict robustness / Crown response)
+ *   - the full reasoning_trail (every cleanup / uplift / cap / merge decision)
+ *   - failure_risk ("why this may fail")
+ * Counsel can read the audit and override with a human review if needed.
+ */
+const ExplainViabilityButton = ({ ground, size = "sm" }) => {
+  const trail = Array.isArray(ground?.reasoning_trail) ? ground.reasoning_trail.filter(Boolean) : [];
+  const hasAudit = trail.length > 0 || ground?.record_support || ground?.verdict_robustness || ground?.crown_strength || ground?.failure_risk;
+  if (!hasAudit) return null;
+
+  const rs = ground?.record_support && RECORD_SUPPORT_CONFIG[ground.record_support];
+  const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
+  const cs = ground?.crown_strength && CROWN_CONFIG[ground.crown_strength];
+  const viabilityLabel = STRENGTH_CONFIG[ground?.strength]?.label || ground?.strength || "Unknown";
+
+  const sizeCls = size === "xs" ? "text-[10px] px-2 py-0.5" : "text-xs px-2.5 py-1";
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <button
+          type="button"
+          data-testid={`explain-viability-btn-${ground?.ground_id || "x"}`}
+          className={`inline-flex items-center gap-1 rounded-full border border-blue-300 bg-blue-50 text-blue-800 font-semibold uppercase tracking-wide hover:bg-blue-100 hover:border-blue-500 transition-colors ${sizeCls}`}
+          aria-label="Explain this ground's viability"
+        >
+          <Info className="w-3 h-3" aria-hidden="true" />
+          Why?
+        </button>
+      </SheetTrigger>
+      <SheetContent
+        side="bottom"
+        className="sm:side-right sm:max-w-md h-auto max-h-[85dvh] overflow-y-auto rounded-t-2xl sm:rounded-t-none"
+        data-testid="explain-viability-sheet"
+      >
+        <SheetHeader className="text-left">
+          <SheetTitle className="flex items-center gap-2 text-lg">
+            <Info className="w-5 h-5 text-blue-700" aria-hidden="true" />
+            Why this viability rating?
+          </SheetTitle>
+          <SheetDescription className="text-xs italic">
+            Forensic audit of the engine's reasoning — use this to decide
+            whether to accept, refine, or override the ground's current
+            rating. Ground audit only; not legal advice.
+          </SheetDescription>
+        </SheetHeader>
+
+        <div className="mt-4 space-y-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Current rating</p>
+            <div className="text-base font-semibold text-slate-900">{viabilityLabel}</div>
+          </div>
+
+          {(rs || vr || cs) && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Realism metrics</p>
+              <div className="flex flex-wrap gap-1.5">
+                {rs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${rs.color}`}>{rs.label}</span>}
+                {vr && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${vr.color}`}>{vr.label}</span>}
+                {cs && <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${cs.color}`}>{cs.label}</span>}
+              </div>
+            </div>
+          )}
+
+          {ground?.failure_risk && (
+            <div className="bg-amber-50 border-l-4 border-amber-400 px-3 py-2 rounded-r text-xs text-amber-900 leading-snug">
+              <p className="font-semibold uppercase tracking-wide text-[10px] mb-0.5">Why this may fail</p>
+              {ground.failure_risk}
+            </div>
+          )}
+
+          {trail.length > 0 ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                Engine decisions ({trail.length} step{trail.length === 1 ? "" : "s"})
+              </p>
+              <ol className="space-y-2 text-xs text-slate-700 list-decimal list-inside pl-1">
+                {trail.map((entry, idx) => (
+                  <li key={idx} className="leading-snug" data-testid={`explain-step-${idx + 1}`}>{entry}</li>
+                ))}
+              </ol>
+            </div>
+          ) : (
+            <p className="text-xs italic text-slate-500">
+              No audit trail available for this ground — it may have been added manually
+              or the pipeline was not re-run after the last edit.
+            </p>
+          )}
+
+          <div className="pt-2 border-t border-slate-100 text-[11px] italic text-slate-500 leading-snug">
+            The rating above is generated by the post-normalisation cleanup layer
+            and the realism scoring engine. Counsel should always verify against
+            the trial record before filing.
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
 const RealismBadges = ({ ground, size = "sm" }) => {
   const rs = ground?.record_support && RECORD_SUPPORT_CONFIG[ground.record_support];
   const vr = ground?.verdict_robustness && VERDICT_CONFIG[ground.verdict_robustness];
@@ -140,20 +252,20 @@ const RealismBadges = ({ ground, size = "sm" }) => {
         {cs && <span data-testid="crown-strength-badge" className={`inline-flex items-center px-2 py-0.5 rounded-full border ${cs.color} ${textCls} font-semibold`}>{cs.label}</span>}
       </div>
       {fr && (
-        <div data-testid="failure-risk-box" className="bg-amber-50 border-l-4 border-amber-400 px-3 py-2 rounded-r text-xs text-amber-900">
+        <div data-testid="failure-risk-box" className="bg-amber-50 border-l-4 border-amber-400 px-3 py-1.5 rounded-r text-xs text-amber-900 leading-snug">
           <strong className="font-semibold uppercase tracking-wide text-[10px] mr-1">Why this may fail:</strong>
           {fr}
         </div>
       )}
       {trail.length > 0 && (
         <details className="rounded border border-slate-200 bg-slate-50" data-testid="chain-of-reasoning">
-          <summary className="cursor-pointer list-none px-3 py-2 flex items-center justify-between text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
+          <summary className="cursor-pointer list-none px-3 py-1 flex items-center justify-between text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
             <span>Chain of reasoning <span className="text-slate-500 font-normal normal-case ml-1">({trail.length} step{trail.length === 1 ? "" : "s"})</span></span>
             <span className="text-slate-400 text-lg leading-none">›</span>
           </summary>
-          <ol className="px-3 pb-3 pt-1 space-y-1.5 text-xs text-slate-700 list-decimal list-inside">
+          <ol className="px-3 pb-2 pt-0.5 space-y-0.5 text-xs text-slate-700 list-decimal list-inside">
             {trail.map((entry, idx) => (
-              <li key={idx} className="leading-snug" data-testid={`reasoning-step-${idx + 1}`}>{entry}</li>
+              <li key={idx} className="leading-tight" data-testid={`reasoning-step-${idx + 1}`}>{entry}</li>
             ))}
           </ol>
         </details>
@@ -1162,11 +1274,15 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                       {/* Verification + Source + Human Review */}
                       <div className="flex flex-wrap items-center gap-2 mt-3">
                         <StrengthBadge rating={ground.strength} />
+                        <ExplainViabilityButton ground={ground} size="xs" />
                         <VerificationBadge status={ground.verification_status} />
                         <SourceModeBadge sourceMode={ground.source_mode} />
                         {ground.ground_type ? (
-                          <span className="text-xs opacity-75">
-                            {String(ground.ground_type).replaceAll("_", " ")}
+                          <span
+                            data-testid={`ground-type-label-${ground.ground_id}`}
+                            className={`inline-flex items-center px-2.5 py-1 rounded-md border text-sm font-semibold uppercase tracking-wide ${GROUND_TYPE_COLORS[ground.ground_type] || GROUND_TYPE_COLORS.other}`}
+                          >
+                            {GROUND_TYPE_LABELS[ground.ground_type] || String(ground.ground_type).replaceAll("_", " ")}
                           </span>
                         ) : null}
                       </div>
@@ -1542,11 +1658,15 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                 {/* Verification + Source + Human Review in Detail View */}
                 <div className="flex flex-wrap items-center gap-2">
                   <StrengthBadge rating={detailGround.strength} />
+                  <ExplainViabilityButton ground={detailGround} size="sm" />
                   <VerificationBadge status={detailGround.verification_status} />
                   <SourceModeBadge sourceMode={detailGround.source_mode} />
                   {detailGround.ground_type ? (
-                    <span className="text-xs opacity-75">
-                      {String(detailGround.ground_type).replaceAll("_", " ")}
+                    <span
+                      data-testid={`ground-type-label-detail-${detailGround.ground_id}`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md border text-sm font-semibold uppercase tracking-wide ${GROUND_TYPE_COLORS[detailGround.ground_type] || GROUND_TYPE_COLORS.other}`}
+                    >
+                      {GROUND_TYPE_LABELS[detailGround.ground_type] || String(detailGround.ground_type).replaceAll("_", " ")}
                     </span>
                   ) : null}
                 </div>

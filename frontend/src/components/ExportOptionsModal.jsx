@@ -93,10 +93,21 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
 
   const anySelected = Object.values(sections).some(Boolean);
 
+  // Counter — respects availability so "2 of 11" when some sections are greyed
+  // out because there's no content for them (e.g. no uploaded documents).
+  const availableSectionKeys = SECTION_LABELS
+    .filter(({ key }) => availability[key] !== false)
+    .map(({ key }) => key);
+  const selectedCount = availableSectionKeys.filter((k) => sections[k]).length;
+  const totalCount = availableSectionKeys.length;
+
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onCancel(); }}>
-      <DialogContent className="sm:max-w-md" data-testid="export-options-modal">
-        <DialogHeader>
+      <DialogContent
+        className="sm:max-w-md max-h-[calc(100dvh-2rem)] p-0 flex flex-col overflow-hidden"
+        data-testid="export-options-modal"
+      >
+        <DialogHeader className="px-6 pt-6 pb-3 shrink-0 border-b border-slate-100">
           <DialogTitle className="flex items-center gap-2">
             <ModeIcon className="w-5 h-5 text-blue-700" />
             {modeLabel} Options
@@ -105,60 +116,77 @@ const ExportOptionsModal = ({ open, mode = "print", availability = {}, onCancel,
             Choose which sections to include in the {modeLabel.toLowerCase()}.
             Untick anything you don't need.
           </DialogDescription>
+          <div
+            className="mt-2 flex items-center justify-between text-xs"
+            data-testid="export-selection-counter"
+          >
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 font-semibold text-blue-800">
+              <span
+                className={`inline-block w-1.5 h-1.5 rounded-full ${selectedCount === 0 ? "bg-slate-400" : selectedCount === totalCount ? "bg-emerald-500" : "bg-blue-500"}`}
+                aria-hidden="true"
+              />
+              {selectedCount} of {totalCount} selected
+            </span>
+            <div className="flex items-center gap-2">
+              <button onClick={selectAll}  type="button" className="text-blue-700 hover:underline font-medium" data-testid="export-select-all">Select all</button>
+              <span className="text-slate-300">·</span>
+              <button onClick={selectNone} type="button" className="text-slate-500 hover:underline font-medium" data-testid="export-select-none">None</button>
+            </div>
+          </div>
         </DialogHeader>
 
-        <div className="space-y-2 pb-1">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick presets</p>
-          <div className="flex flex-wrap gap-1.5">
-            {PRESETS.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setSections(p.sections)}
-                title={p.desc}
-                className="text-xs px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 font-medium hover:bg-blue-100 hover:border-blue-400"
-                data-testid={`export-preset-${p.id}`}
-              >
-                {p.label}
-              </button>
-            ))}
+        {/* Scrollable middle — iOS Safari fix: without this the Confirm button
+            was pushed off-screen on small viewports and the modal could not be
+            scrolled internally (Radix Dialog centres via translate which clips
+            overflow). */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-3" data-testid="export-options-scroll">
+          <div className="space-y-2 pb-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Quick presets</p>
+            <div className="flex flex-wrap gap-1.5">
+              {PRESETS.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSections(p.sections)}
+                  title={p.desc}
+                  className="text-xs px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-800 font-medium hover:bg-blue-100 hover:border-blue-400"
+                  data-testid={`export-preset-${p.id}`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3 py-2">
+            {SECTION_LABELS.map(({ key, label, desc }) => {
+              const isAvailable = availability[key] !== false;
+              return (
+                <label
+                  key={key}
+                  className={`flex items-start gap-3 p-2 rounded-lg border ${isAvailable ? "border-slate-200 hover:bg-slate-50 cursor-pointer" : "border-slate-100 bg-slate-50 opacity-50 cursor-not-allowed"}`}
+                  data-testid={`export-opt-${key}`}
+                >
+                  <Checkbox
+                    checked={!!sections[key] && isAvailable}
+                    onCheckedChange={() => isAvailable && toggle(key)}
+                    disabled={!isAvailable}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-slate-900">
+                      {label}
+                      {!isAvailable && <span className="text-xs font-normal text-slate-400 ml-2">(no content)</span>}
+                    </div>
+                    <div className="text-xs text-slate-500">{desc}</div>
+                  </div>
+                </label>
+              );
+            })}
           </div>
         </div>
 
-        <div className="space-y-3 py-2">
-          {SECTION_LABELS.map(({ key, label, desc }) => {
-            const isAvailable = availability[key] !== false;
-            return (
-              <label
-                key={key}
-                className={`flex items-start gap-3 p-2 rounded-lg border ${isAvailable ? "border-slate-200 hover:bg-slate-50 cursor-pointer" : "border-slate-100 bg-slate-50 opacity-50 cursor-not-allowed"}`}
-                data-testid={`export-opt-${key}`}
-              >
-                <Checkbox
-                  checked={!!sections[key] && isAvailable}
-                  onCheckedChange={() => isAvailable && toggle(key)}
-                  disabled={!isAvailable}
-                  className="mt-0.5"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-slate-900">
-                    {label}
-                    {!isAvailable && <span className="text-xs font-normal text-slate-400 ml-2">(no content)</span>}
-                  </div>
-                  <div className="text-xs text-slate-500">{desc}</div>
-                </div>
-              </label>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center gap-2 text-xs">
-          <button onClick={selectAll}  type="button" className="text-blue-700 hover:underline" data-testid="export-select-all">Select all</button>
-          <span className="text-slate-300">·</span>
-          <button onClick={selectNone} type="button" className="text-slate-500 hover:underline" data-testid="export-select-none">Select none</button>
-        </div>
-
-        <DialogFooter className="gap-2">
+        <DialogFooter className="gap-2 px-6 py-4 shrink-0 border-t border-slate-100 bg-white">
           <Button variant="outline" onClick={onCancel} data-testid="export-options-cancel">Cancel</Button>
           <Button
             className="bg-blue-700 text-white hover:bg-blue-600"
