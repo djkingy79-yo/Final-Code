@@ -4,6 +4,43 @@ Criminal Appeal AI - Staged Pipeline Router
 Extract → Classify → Verify → Project → Draft
 
 ADDITIVE: Does not remove any existing route, feature, or collection.
+
+============================================================================
+DEPRECATION NOTICE — 24 February 2026
+============================================================================
+Six endpoints in THIS router now have canonical twins in
+routers/pipeline_staged.py at the /api/pipeline/* prefix. The staged router
+is the live UI path as of 24 Feb 2026; the legacy routes below are kept in
+service only for backward compatibility and external clients.
+
+Each deprecated route carries:
+  - `deprecated=True` on its @router decorator (shows up in OpenAPI /docs)
+  - a `[DEPRECATED 24 Feb 2026 → staged twin …]` banner at the top of its
+    docstring.
+
+Removal policy: no deletion yet. A follow-up caller audit after a few commits
+will confirm zero frontend / backend / test traffic hits the legacy routes
+before removal is scheduled.
+
+Overlapping / deprecated routes (legacy → canonical):
+  POST  /api/cases/{id}/documents/{doc}/extract
+        → POST /api/pipeline/cases/{id}/documents/{doc}/extract
+  POST  /api/cases/{id}/extract/refresh
+        → POST /api/pipeline/cases/{id}/extract/refresh
+  POST  /api/cases/{id}/issues/classify
+        → POST /api/pipeline/cases/{id}/issues/classify
+  POST  /api/cases/{id}/issues/{issue_id}/verify
+        → POST /api/pipeline/cases/{id}/issues/{issue_id}/verify
+  POST  /api/cases/{id}/issues/verify-batch
+        → POST /api/pipeline/cases/{id}/issues/verify-batch
+  POST  /api/cases/{id}/grounds/sync-from-issues
+        → POST /api/pipeline/cases/{id}/grounds/sync-from-issues
+
+Non-deprecated endpoints in this file (no staged twin yet):
+  GET   /extract, GET /issues, GET /issues/{id}/verification,
+  POST  /issues/verify-all, POST /issues/{id}/argue, POST /issues/argue-batch,
+  POST  /submissions-draft, GET /submissions-draft-view, GET /pipeline/status
+============================================================================
 """
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
@@ -138,9 +175,15 @@ async def _require_case_ownership(case_id: str, user_id: str):
 # STAGE 1 — EXTRACT
 # ============================================================================
 
-@router.post("/{case_id}/documents/{document_id}/extract")
+@router.post("/{case_id}/documents/{document_id}/extract", deprecated=True)
 async def extract_document(case_id: str, document_id: str, request: Request):
-    """Per-document structured extraction: facts, events, findings."""
+    """Per-document structured extraction: facts, events, findings.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/documents/{document_id}/extract]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
+    yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -298,9 +341,15 @@ DOCUMENT TEXT:
     }
 
 
-@router.post("/{case_id}/extract/refresh")
+@router.post("/{case_id}/extract/refresh", deprecated=True)
 async def refresh_case_extract(case_id: str, request: Request):
-    """Rebuild case-level merged extract from all document extracts."""
+    """Rebuild case-level merged extract from all document extracts.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/extract/refresh]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
+    yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -411,9 +460,15 @@ async def get_case_extract(case_id: str, request: Request):
 # STAGE 2 — CLASSIFY
 # ============================================================================
 
-@router.post("/{case_id}/issues/classify")
+@router.post("/{case_id}/issues/classify", deprecated=True)
 async def classify_issues(case_id: str, request: Request):
-    """Classify extracted facts into candidate appeal issues."""
+    """Classify extracted facts into candidate appeal issues.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/issues/classify]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
+    yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -567,9 +622,15 @@ async def list_issues(case_id: str, request: Request):
 # STAGE 3 — VERIFY
 # ============================================================================
 
-@router.post("/{case_id}/issues/{issue_id}/verify")
+@router.post("/{case_id}/issues/{issue_id}/verify", deprecated=True)
 async def verify_issue(case_id: str, issue_id: str, request: Request):
-    """Verify a single classified issue against the extracted record."""
+    """Verify a single classified issue against the extracted record.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/issues/{issue_id}/verify]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
+    yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
@@ -813,9 +874,15 @@ async def get_issue_verification(case_id: str, issue_id: str, request: Request):
     return verification
 
 
-@router.post("/{case_id}/issues/verify-batch", response_model=dict)
+@router.post("/{case_id}/issues/verify-batch", response_model=dict, deprecated=True)
 async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Request):
-    """Verify a batch of top unverified issues and sync the projection into grounds_of_merit."""
+    """Verify a batch of top unverified issues and sync the projection into grounds_of_merit.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/issues/verify-batch]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path (frontend migrated
+    the same day). No deletion scheduled yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
 
     case = await db.cases.find_one(
@@ -1112,9 +1179,15 @@ async def get_case_submissions_draft(case_id: str, request: Request):
 # STAGE 4 — PROJECT TO GROUNDS
 # ============================================================================
 
-@router.post("/{case_id}/grounds/sync-from-issues")
+@router.post("/{case_id}/grounds/sync-from-issues", deprecated=True)
 async def sync_grounds_from_issues(case_id: str, request: Request):
-    """Project classified + verified issues into grounds_of_merit."""
+    """Project classified + verified issues into grounds_of_merit.
+
+    [DEPRECATED 24 Feb 2026 → POST /api/pipeline/cases/{case_id}/grounds/sync-from-issues]
+    Kept in service for backward compatibility. The staged twin in
+    routers/pipeline_staged.py is the canonical UI path. No deletion scheduled
+    yet; pending follow-up caller audit.
+    """
     user = await get_current_user(request)
     await _require_case_ownership(case_id, user.user_id)
 
