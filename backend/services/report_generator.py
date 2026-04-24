@@ -342,8 +342,9 @@ DOCUMENTS:
 
                 valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
                 # State allowlist — counsel feedback 23 Feb 2026: must include
-                # Commonwealth/federal matters. Normalise "federal" → "cth".
-                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","cth","federal"]
+                # Commonwealth/federal matters. Normalise "federal" and
+                # "commonwealth" → "cth".
+                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","cth","federal","commonwealth"]
                 update_fields = {}
                 if meta.get("offence_category") in valid_cats:
                     update_fields["offence_category"] = meta["offence_category"]
@@ -358,8 +359,8 @@ DOCUMENTS:
                         update_fields["sentence"] = meta["sentence"].strip()
                 if meta.get("state") and str(meta["state"]).lower() in valid_sts:
                     state_val = str(meta["state"]).lower()
-                    # Counsel feedback 23 Feb 2026: federal → cth normalisation.
-                    if state_val == "federal":
+                    # Counsel feedback 23 Feb 2026: federal / commonwealth → cth.
+                    if state_val in {"federal", "commonwealth"}:
                         state_val = "cth"
                     update_fields["state"] = state_val
                 if meta.get("court"):
