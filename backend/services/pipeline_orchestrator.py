@@ -13,7 +13,7 @@ from services.pipeline import (
     verify_issue,
 )
 from services.pipeline_models import CaseExtract
-from routers.pipeline_staged import (
+from services.pipeline_actions import (
     _ensure_document_extracts as _staged_ensure_extracts,
     _refresh_case_extract as _staged_refresh_case,
     _classify_issues as _staged_classify,
