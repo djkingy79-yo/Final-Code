@@ -133,3 +133,186 @@ def generate_evidence_builder(strategy: dict) -> dict:
         output["secondary"] = build_evidence_plan(strategy["secondary"])
 
     return output
+
+
+# ---------------------------------------------------------------------------
+# LLM refinement layer — counsel feedback 23 Feb 2026.
+# ---------------------------------------------------------------------------
+# The deterministic builder above gives the correct STRUCTURE + mandatory
+# warning. The LLM pass customises the affidavit template wording for the
+# specific ground and case (defendant name, offence, jurisdictional
+# statutory partial defence, procedural specifics) while preserving:
+#   - the mandatory warning text (exactly)
+#   - the set of affidavits (no adds / no removes)
+#   - the affidavit 'type' field (unchanged)
+#   - the structured skeleton: heading + numbered paragraphs + SWORN:
+# ---------------------------------------------------------------------------
+
+import logging  # noqa: E402 — grouped with LLM helpers
+
+_log = logging.getLogger(__name__)
+
+_REFINEMENT_SYSTEM_PROMPT = (
+    "You are a senior junior counsel preparing evidence-gathering material "
+    "for an Australian criminal appeal. Third-person forensic register only. "
+    "Australian spelling (analyse, organise, judgement, offence).\n\n"
+    "STYLE RULES:\n"
+    "- NEVER use 'we', 'us', 'our', 'you', 'your'.\n"
+    "- Refer to the accused by surname where passed in the user prompt.\n"
+    "- Cite statutory framing by section and Act (e.g. 's 23A Crimes Act 1900 "
+    "(NSW)') where naturally relevant.\n"
+    "- Document-request items stay crisp noun phrases (e.g. 'Full trial "
+    "transcript'); do NOT turn them into sentences.\n"
+    "- Affidavit templates KEEP their existing skeleton — heading in capitals, "
+    "numbered paragraphs (1., 2., 3., ...), nested sub-paragraphs ((a), (b), "
+    "(i), (ii)), and the closing 'SWORN:' block. Fill placeholders with the "
+    "case-specific facts provided; leave placeholders unfilled where facts are "
+    "not supplied (do not invent).\n\n"
+    "HARD BOUNDS:\n"
+    "- Do NOT invent additional documents, steps, or affidavits.\n"
+    "- Do NOT add or remove entries from any list.\n"
+    "- Do NOT change affidavit 'type' values.\n"
+    "- Do NOT change the 'ground' title.\n"
+    "- Return STRICT JSON matching the shape of the input ground plan."
+)
+
+
+def _build_refinement_user_prompt(
+    plan_for_ground: dict,
+    ground: object,
+    case_context: dict,
+) -> str:
+    return (
+        f"CASE CONTEXT\n"
+        f"- Defendant surname: {case_context.get('defendant_surname') or '[not provided]'}\n"
+        f"- Jurisdiction: {case_context.get('jurisdiction') or '[not provided]'}\n"
+        f"- Offence type: {case_context.get('offence_type') or '[not provided]'}\n"
+        f"- Case summary: {(case_context.get('case_summary') or '')[:800]}\n"
+        f"\nGROUND\n"
+        f"- Title: {getattr(ground, 'title', '')}\n"
+        f"- Type: {getattr(ground, 'type', '')}\n"
+        f"- Authorities: {', '.join(getattr(ground, 'authorities', []) or []) or '[none]'}\n"
+        f"- Law sections: {', '.join(getattr(ground, 'relevant_law_sections', []) or []) or '[none]'}\n"
+        f"- Error identified: {(getattr(ground, 'error_identified', None) or '')[:400]}\n"
+        f"- Trial finding: {(getattr(ground, 'trial_finding', None) or '')[:400]}\n"
+        f"\nDETERMINISTIC EVIDENCE PLAN TO REFINE (JSON)\n"
+        f"```json\n{_json_dump_compact(plan_for_ground)}\n```\n"
+        f"\nTASK\n"
+        f"Rewrite each string value so it references the defendant's surname, "
+        f"the specific offence, and relevant statutory framing where natural. "
+        f"Preserve list lengths and affidavit skeletons. Return the FULL JSON "
+        f"with the same keys, same list counts, and same affidavit 'type' values."
+    )
+
+
+def _json_dump_compact(obj) -> str:
+    import json
+    return json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+
+
+def _validate_refined_shape(original: dict, refined: dict) -> bool:
+    """
+    Shape-preservation validator for a single ground's evidence plan.
+    Ensures the LLM didn't add/remove keys, change types, change list
+    lengths, or change affidavit types.
+    """
+    if not isinstance(refined, dict):
+        return False
+    if set(refined.keys()) != set(original.keys()):
+        return False
+    # ground title must stay a string
+    if "ground" in original and not isinstance(refined.get("ground"), str):
+        return False
+    for list_key in ("documents_required", "steps"):
+        if list_key in original:
+            orig_list = original[list_key]
+            ref_list = refined.get(list_key)
+            if not isinstance(ref_list, list):
+                return False
+            if len(ref_list) != len(orig_list):
+                return False
+            if not all(isinstance(x, str) for x in ref_list):
+                return False
+    if "affidavits" in original:
+        orig_affs = original["affidavits"] or []
+        ref_affs = refined.get("affidavits") or []
+        if not isinstance(ref_affs, list) or len(ref_affs) != len(orig_affs):
+            return False
+        for orig_a, ref_a in zip(orig_affs, ref_affs):
+            if not isinstance(ref_a, dict):
+                return False
+            if set(ref_a.keys()) != set(orig_a.keys()):
+                return False
+            # 'type' must be unchanged
+            if ref_a.get("type") != orig_a.get("type"):
+                return False
+            if not isinstance(ref_a.get("template"), str):
+                return False
+            # template must still contain the structural skeleton markers
+            t = ref_a["template"]
+            if "SWORN" not in t.upper():
+                return False
+    return True
+
+
+async def _refine_single_plan(
+    plan_for_ground: dict,
+    ground: object,
+    case_context: dict,
+    session_id: str,
+) -> dict:
+    from services.llm_service import call_llm_for_json
+
+    def _valid(parsed: dict) -> bool:
+        return _validate_refined_shape(plan_for_ground, parsed)
+
+    refined = await call_llm_for_json(
+        system_prompt=_REFINEMENT_SYSTEM_PROMPT,
+        user_prompt=_build_refinement_user_prompt(plan_for_ground, ground, case_context),
+        session_id=session_id,
+        task_type="general",
+        validation_fn=_valid,
+        max_tokens=1600,
+        timeout_seconds=60,
+    )
+    # Overlay onto deterministic plan so any missing key stays as fallback.
+    merged = dict(plan_for_ground)
+    merged.update({k: v for k, v in refined.items() if k in plan_for_ground})
+    return merged
+
+
+async def refine_evidence_builder_with_llm(
+    builder: dict,
+    strategy: dict,
+    case_context: dict,
+    session_id: str = "evidence-builder-refine",
+) -> dict:
+    """
+    Take a deterministic evidence builder produced by generate_evidence_builder()
+    and refine each ground's wording (documents, steps, affidavit templates)
+    using the LLM. The mandatory warning is preserved verbatim. Per-ground
+    fallback to deterministic text on any LLM failure.
+    """
+    if not builder:
+        return builder
+
+    refined: dict = {}
+    # Preserve warning verbatim — never LLM-touched.
+    if "warning" in builder:
+        refined["warning"] = builder["warning"]
+
+    for role in ("primary", "secondary"):
+        plan_for_ground = builder.get(role)
+        ground = (strategy or {}).get(role)
+        if not plan_for_ground or ground is None:
+            if plan_for_ground is not None:
+                refined[role] = plan_for_ground
+            continue
+        try:
+            refined[role] = await _refine_single_plan(
+                plan_for_ground, ground, case_context, session_id=f"{session_id}-{role}"
+            )
+        except Exception as refine_err:
+            _log.warning(f"LLM evidence-builder refine skipped for {role}: {refine_err}")
+            refined[role] = plan_for_ground
+    return refined
