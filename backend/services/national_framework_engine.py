@@ -148,7 +148,14 @@ def render_appeal_framework(jurisdiction: str) -> str:
 
     out = [f"\nAPPELLATE FRAMEWORK ({jurisdiction.upper()}):"]
 
-    for field in ("act", "court", "time_limit", "test", "powers", "note"):
+    # Counsel feedback 23 Feb 2026: taxonomy uses "legislation" as the
+    # governing-Act key; bridge spec uses "act". Accept either so the VIC
+    # Criminal Procedure Act 2009 (and equivalents) render correctly.
+    act_value = data.get("act") or data.get("legislation")
+    if act_value:
+        out.append(f"- Act: {act_value}")
+
+    for field in ("court", "time_limit", "test", "powers", "note"):
         value = data.get(field)
         if value:
             out.append(f"- {field.replace('_', ' ').title()}: {value}")
