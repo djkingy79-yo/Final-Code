@@ -342,8 +342,9 @@ DOCUMENTS:
 
                 valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
                 # State allowlist — counsel feedback 23 Feb 2026: must include
-                # Commonwealth/federal matters. Normalise "federal" → "cth".
-                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","cth","federal"]
+                # Commonwealth/federal matters. Normalise "federal" and
+                # "commonwealth" → "cth".
+                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","cth","federal","commonwealth"]
                 update_fields = {}
                 if meta.get("offence_category") in valid_cats:
                     update_fields["offence_category"] = meta["offence_category"]
@@ -358,8 +359,8 @@ DOCUMENTS:
                         update_fields["sentence"] = meta["sentence"].strip()
                 if meta.get("state") and str(meta["state"]).lower() in valid_sts:
                     state_val = str(meta["state"]).lower()
-                    # Counsel feedback 23 Feb 2026: federal → cth normalisation.
-                    if state_val == "federal":
+                    # Counsel feedback 23 Feb 2026: federal / commonwealth → cth.
+                    if state_val in {"federal", "commonwealth"}:
                         state_val = "cth"
                     update_fields["state"] = state_val
                 if meta.get("court"):
@@ -492,6 +493,32 @@ Summary: {case.get('summary', 'N/A')}
 
     grounds_titles = [g.get('title') for g in grounds if g.get('title')]
     grounds_enumerated = "\n".join([f"{idx + 1}. {title}" for idx, title in enumerate(grounds_titles)])
+
+    # ============================================================
+    # NATIONAL CRIMINAL FRAMEWORK — counsel feedback 23 Feb 2026.
+    # Inject authoritative jurisdiction-specific appellate context at the
+    # TOP of case_context so every downstream prompt sees it before any
+    # case-specific narrative. Refuses to proceed without a jurisdiction
+    # (no silent NSW default).
+    # ============================================================
+    try:
+        from services.national_framework import build_full_system_prompt
+        framework_block = build_full_system_prompt(case)
+        if framework_block and not framework_block.startswith("ERROR:"):
+            case_context = (
+                "=== NATIONAL CRIMINAL FRAMEWORK (authoritative — do not contradict) ===\n"
+                f"{framework_block}\n"
+                "=== END NATIONAL CRIMINAL FRAMEWORK ===\n\n"
+                + case_context
+            )
+        elif framework_block:
+            # Jurisdiction missing or unrecognised — surface the error so
+            # the user (or auto-detection) sets it before generation.
+            logger.warning(
+                f"National framework refused analysis for case {case_id}: {framework_block}"
+            )
+    except Exception as framework_err:
+        logger.warning(f"National framework injection skipped for case {case_id}: {framework_err}")
 
     # ============================================================
     # FORENSIC STRATEGY CONTEXT — counsel feedback 23 Feb 2026.

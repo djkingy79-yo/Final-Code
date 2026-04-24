@@ -65,6 +65,9 @@ STATE_FRAMEWORKS = {
     "nt": NT_CRIMINAL_FRAMEWORK,
     "act": ACT_CRIMINAL_FRAMEWORK,
     "federal": FEDERAL_CRIMINAL_FRAMEWORK,
+    # Counsel feedback 23 Feb 2026 — cth alias so downstream callers that
+    # pass the normalised "cth" key still resolve to the federal framework.
+    "cth": FEDERAL_CRIMINAL_FRAMEWORK,
 }
 
 
@@ -182,6 +185,22 @@ RELEVANT {abbreviation} LEGISLATION:
 
     # Inject jurisdiction completeness warnings
     context += get_jurisdiction_warnings_prompt(state_key, offence_category)
+
+    # Counsel feedback 23 Feb 2026 — national bridge layer. Injects
+    # jurisdiction-complete appellate + sentencing + evidence + mental
+    # impairment + mens rea + record/ground decision rules directly from
+    # the offence taxonomy. Refuses to proceed without a jurisdiction —
+    # the pipeline must set one before the AI writes anything.
+    try:
+        from services.national_framework_engine import build_national_case_context
+        context += "\n\n" + build_national_case_context(case)
+    except ValueError as exc:
+        context += (
+            "\n\nJURISDICTION FRAMEWORK ERROR:\n"
+            f"- {exc}\n"
+            "- The report must not default to NSW.\n"
+            "- The user must correct the jurisdiction and offence category before legal analysis is generated.\n"
+        )
 
     return context
 
