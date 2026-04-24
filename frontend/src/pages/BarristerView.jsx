@@ -30,6 +30,7 @@ import VerificationBadge from "../components/VerificationBadge";
 import LegitimacyPanel from "../components/LegitimacyPanel";
 import EvidenceSummary from "../components/EvidenceSummary";
 import ReportMetadataPanel from "../components/ReportMetadataPanel";
+import CounselBriefingBlock from "../components/CounselBriefingBlock";
 import auSpelling from "../utils/auSpelling";
 import { normaliseMarkdown } from "../utils/mdRender";
 
@@ -1005,6 +1006,23 @@ export default function BarristerView() {
                 metadata={report?.metadata || report?.content?.metadata}
                 verificationStatus={report?.verification_status || report?.source_mode}
               />
+
+              {/* Counsel Briefing — Predicted Outcome + Counsel Attack Plan +
+                  Evidence Builder. Rendered at the end of the Appellate Research
+                  Brief, immediately before the disclaimer warning footer. */}
+              {(caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
+                <div data-testid="barrister-counsel-briefing-section">
+                  <div className="border-l-4 border-teal-500 pl-4 mb-4">
+                    <h3
+                      className="text-lg sm:text-xl font-bold text-teal-700 tracking-tight"
+                      style={{ fontFamily: "'Times New Roman', Times, serif" }}
+                    >
+                      Counsel Briefing
+                    </h3>
+                  </div>
+                  <CounselBriefingBlock caseData={caseData} />
+                </div>
+              )}
             </div>
 
             {/* AI-analysis footer */}
