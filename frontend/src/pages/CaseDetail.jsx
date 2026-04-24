@@ -52,7 +52,6 @@ import Timeline from "../components/TimelineEnhanced";
 import TimelineAnalysis from "../components/TimelineAnalysis";
 import GroundsOfMerit from "../components/GroundsOfMerit";
 import EvidenceProfilePanel from "../components/EvidenceProfilePanel";
-import CounselBriefingBlock from "../components/CounselBriefingBlock";
 import DeadlineTracker from "../components/DeadlineTracker";
 import AppealChecklist from "../components/AppealChecklist";
 import PaymentModal from "../components/PaymentModal";
@@ -1431,15 +1430,10 @@ const CaseDetail = ({ user }) => {
             )}
           </div>
 
-          {/* Counsel Briefing — Predicted Outcome + Attack Plan + Evidence Builder
-              (Times New Roman, small, tight spacing per counsel 23 Feb 2026).
-              Elevated above Case Summary — this is the single highest-value
-              forensic output, so counsel sees it first. Rendered on every tab
-              (no activeTab gate) so Print All / PDF All exports always include
-              it regardless of which tab triggered them. */}
-          {(caseData?.predicted_outcome || caseData?.attack_plan || caseData?.evidence_builder) && (
-            <CounselBriefingBlock caseData={caseData} />
-          )}
+          {/* Counsel Briefing block (Predicted Outcome / Counsel Attack Plan /
+              Evidence Builder) has been removed from the Case Detail head area.
+              That content does not belong before the tabs or outside paid/report
+              surfaces. */}
 
           {caseData?.summary && activeTab !== "grounds" && (
             <div className="mt-3">
