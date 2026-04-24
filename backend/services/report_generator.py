@@ -494,6 +494,32 @@ Summary: {case.get('summary', 'N/A')}
     grounds_enumerated = "\n".join([f"{idx + 1}. {title}" for idx, title in enumerate(grounds_titles)])
 
     # ============================================================
+    # NATIONAL CRIMINAL FRAMEWORK — counsel feedback 23 Feb 2026.
+    # Inject authoritative jurisdiction-specific appellate context at the
+    # TOP of case_context so every downstream prompt sees it before any
+    # case-specific narrative. Refuses to proceed without a jurisdiction
+    # (no silent NSW default).
+    # ============================================================
+    try:
+        from services.national_framework import build_full_system_prompt
+        framework_block = build_full_system_prompt(case)
+        if framework_block and not framework_block.startswith("ERROR:"):
+            case_context = (
+                "=== NATIONAL CRIMINAL FRAMEWORK (authoritative — do not contradict) ===\n"
+                f"{framework_block}\n"
+                "=== END NATIONAL CRIMINAL FRAMEWORK ===\n\n"
+                + case_context
+            )
+        elif framework_block:
+            # Jurisdiction missing or unrecognised — surface the error so
+            # the user (or auto-detection) sets it before generation.
+            logger.warning(
+                f"National framework refused analysis for case {case_id}: {framework_block}"
+            )
+    except Exception as framework_err:
+        logger.warning(f"National framework injection skipped for case {case_id}: {framework_err}")
+
+    # ============================================================
     # FORENSIC STRATEGY CONTEXT — counsel feedback 23 Feb 2026.
     # Inject the strategised primary/secondary/tertiary + outcome + proviso
     # into case_context so every prompt downstream is aligned with what the
