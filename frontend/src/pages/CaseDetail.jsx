@@ -967,9 +967,9 @@ const CaseDetail = ({ user }) => {
 
     // TOC
     body += `<div class="toc-container" style="padding:10px 24px;">
-      <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocItems.length} SECTIONS)</p>
+      <p class="toc-heading" style="text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;">CONTENTS (${tocItems.length} SECTIONS)</p>
       <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-        ${tocItems.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+        ${tocItems.map((s, i) => `<div class="toc-item" style="color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
       </div>
     </div>`;
 
@@ -1041,7 +1041,7 @@ const CaseDetail = ({ user }) => {
     let body = "";
     if (o.cover) {
       body += `<div class="export-header"><h1>Complete Case Bundle</h1><p>${escAu(title)} - ${escAu(defendant)}</p></div>`;
-      body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:'Times New Roman',Times,serif;">
+      body += `<div style="margin:10px 24px;padding:10px;border:2px solid #1d4ed8;border-radius:8px;background:#eff6ff;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Defendant</span><br/><strong style="font-size:10pt;color:#0f172a;">${escAu(defendant)}</strong></div>
         <div><span style="font-size:8pt;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#2563eb;">Offence</span><br/><strong style="font-size:10pt;color:#0f172a;text-transform:capitalize;">${escAu(offenceCapitalised)}</strong></div>
@@ -1097,9 +1097,9 @@ const CaseDetail = ({ user }) => {
     if (o.toc && tocSections.length > 0) {
       body += `<div class="export-body" style="page-break-after:always;">
       <div class="toc-container" style="padding:10px 24px;">
-        <p class="toc-heading" style="font-size:9pt;text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;font-family:'Times New Roman',Times,serif;">CONTENTS (${tocSections.length} SECTIONS)</p>
+        <p class="toc-heading" style="text-transform:uppercase;letter-spacing:0.05em;color:#334155;font-weight:700;margin:0 0 4px;">CONTENTS (${tocSections.length} SECTIONS)</p>
         <div class="toc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;">
-          ${tocSections.map((s, i) => `<div class="toc-item" style="font-size:8pt;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;font-family:'Times New Roman',Times,serif;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
+          ${tocSections.map((s, i) => `<div class="toc-item" style="color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0;font-weight:500;"><strong>${i + 1}.</strong> ${s}</div>`).join('')}
         </div>
       </div>
     </div>`;
@@ -1162,7 +1162,7 @@ const CaseDetail = ({ user }) => {
             }
           }).filter(Boolean);
           if (cleanEvidence.length > 0) {
-            body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Supporting Evidence</h4><ul>`;
+            body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Supporting Evidence</h4><ul>`;
             cleanEvidence.forEach(text => {
               body += `<li>${escAu(text)}</li>`;
             });
@@ -1172,7 +1172,7 @@ const CaseDetail = ({ user }) => {
         // Law sections — handle both objects and raw strings/JSON
         const laws = Array.isArray(g.law_sections) ? g.law_sections : [];
         if (laws.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Relevant Legislation</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Relevant Legislation</h4><ul>`;
           const fmtLaw = (sec, actOrTitle, juris) => {
             const esc = (v) => String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             const j = esc((juris || "NSW").toUpperCase());
@@ -1198,7 +1198,7 @@ const CaseDetail = ({ user }) => {
         // Similar cases
         const cases = Array.isArray(g.similar_cases) ? g.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional") : [];
         if (cases.length > 0) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Similar Cases (AI-Suggested)</h4><ul>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Similar Cases (AI-Suggested)</h4><ul>`;
           cases.forEach(c => {
             body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`;
           });
@@ -1207,8 +1207,8 @@ const CaseDetail = ({ user }) => {
         // Deep analysis — render markdown headings properly
         const analysis = g.deep_analysis?.full_analysis || g.analysis || "";
         if (analysis) {
-          body += `<h4 style="margin:12px 0 6px;font-size:14pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Deep Investigation Analysis</h4>`;
-          body += `<div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div>`;
+          body += `<h4 style="margin:12px 0 6px;color:#1e293b;">Deep Investigation Analysis</h4>`;
+          body += `<div>${mdToHtml(analysis)}</div>`;
         }
         body += `</div>`;
       });
@@ -1228,7 +1228,7 @@ const CaseDetail = ({ user }) => {
     }
     if (o.progress && progressAnalysis) {
       sn++;
-      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div style="font-size:12pt;line-height:1.8;font-family:'Times New Roman',Times,serif;">${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
+      body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Progress Analysis</span></div><div class="section-body"><div>${mdToHtml(progressAnalysis.analysis || progressAnalysis.content || "")}</div></div></div>`;
     }
 
     // ── Legislation & Case Law consolidated section ──
@@ -1246,12 +1246,12 @@ const CaseDetail = ({ user }) => {
       };
       body += `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">Legislation &amp; Case Law</span></div><div class="section-body">`;
       if (legislationItems.length > 0) {
-        body += `<h4 style="margin:4pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Legislation</h4><ul>`;
+        body += `<h4 style="margin:4pt 0 6pt;color:#1e293b;">Legislation</h4><ul>`;
         legislationItems.forEach(l => { body += `<li>${escAu(fmtLawStr(l))}</li>`; });
         body += `</ul>`;
       }
       if (caseLawItems.length > 0) {
-        body += `<h4 style="margin:10pt 0 6pt;font-size:12pt;color:#1e293b;font-family:'Times New Roman',Times,serif;font-weight:700;">Case Law</h4><ul>`;
+        body += `<h4 style="margin:10pt 0 6pt;color:#1e293b;">Case Law</h4><ul>`;
         caseLawItems.forEach(c => { body += `<li>${escAu(c.case_name || "")}${c.citation ? ` — ${escAu(c.citation)}` : ""}${c.relevance_note ? `: ${escAu(c.relevance_note)}` : ""}</li>`; });
         body += `</ul>`;
       }
@@ -1263,7 +1263,7 @@ const CaseDetail = ({ user }) => {
       if (!rep) return "";
       sn++;
       const analysis = rep.content?.analysis || rep.analysis || "";
-      return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div style="font-size:11pt;line-height:1.5;font-family:'Times New Roman',Times,serif;">${mdToHtml(analysis)}</div></div></div>`;
+      return `<div class="section" style="page-break-before:always;"><div class="section-header"><span class="section-number">${sn}</span><span class="section-title">${title}</span></div><div class="section-body"><div>${mdToHtml(analysis)}</div></div></div>`;
     };
     if (o.quick_summary)   body += renderReportSection("Case Summary Report", quickReport);
     if (o.full_detailed)   body += renderReportSection("Full Detailed Legal Analysis", fullReport);
