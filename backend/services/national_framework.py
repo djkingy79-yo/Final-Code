@@ -1,28 +1,47 @@
 """
-national_framework.py
+national_framework.py — THIN COMPATIBILITY WRAPPER.
 
-Unified National Criminal Framework engine — counsel feedback 23 Feb 2026.
+Historic file. All implementation now lives in
+`services.national_framework_engine`, which sources its data from
+`backend/frameworks/` (the single source of truth).
 
-Purpose: inject a jurisdiction-accurate, state-by-state appellate context
-into every LLM prompt. Refuses to generate analysis without a jurisdiction
-(no silent NSW default). Operationalises mens rea, mental impairment,
-sentencing, and evidence regimes per jurisdiction.
+This wrapper is preserved so that any external caller that imports from
+`services.national_framework` continues to work without modification.
 
-This module is designed to work alongside services/offence_helpers.py
-(which already provides rich offence-specific context) and the
-services/jurisdiction_rules.py classifier rules. It adds the
-national-framework CONTEXT BLOCK that the LLM sees at the top of its
-prompt so it cannot default across jurisdictions.
+Do not add new logic here. All new framework code belongs in
+`national_framework_engine.py`.
+
+Counsel refactor 24 Feb 2026: wrapper shrunk from 295 lines to ~45.
+Legacy NATIONAL_CRIMINAL_FRAMEWORK dict retained below for any caller
+that introspects it; DEPRECATED — the authoritative data now lives in
+frameworks/appeal.py, frameworks/sentencing.py, frameworks/evidence.py,
+and frameworks/mental_impairment.py.
 """
 
 from __future__ import annotations
 
-from typing import Optional
+from services.national_framework_engine import (
+    build_full_system_prompt,
+    build_mens_rea_analysis_block,
+    build_national_appellate_context,
+    build_record_integrity_block,
+    get_jurisdiction_framework,
+)
+
+__all__ = [
+    "build_full_system_prompt",
+    "build_mens_rea_analysis_block",
+    "build_national_appellate_context",
+    "build_record_integrity_block",
+    "get_jurisdiction_framework",
+    "NATIONAL_CRIMINAL_FRAMEWORK",
+]
 
 
-# ---------------------------------------------------------------------------
-# MASTER JURISDICTION MATRIX — counsel supplied, authoritative.
-# ---------------------------------------------------------------------------
+# DEPRECATED: legacy hard-coded matrix retained for back-compat only.
+# Prefer importing from frameworks/*.py. This dict is NO LONGER the
+# source of truth — callers that read it should migrate to the engine's
+# get_jurisdiction_framework() helper which resolves from frameworks/.
 NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
     "nsw": {
         "appellate_act": "Criminal Appeal Act 1912 (NSW)",
@@ -66,11 +85,7 @@ NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
     },
     "wa": {
         "appellate_act": "Criminal Appeals Act 2004 (WA)",
-        "appellate_test": [
-            "miscarriage of justice",
-            "error of law",
-            "unsafe verdict",
-        ],
+        "appellate_test": ["miscarriage of justice", "error of law", "unsafe verdict"],
         "mens_rea_source": "Criminal Code Act Compilation Act 1913 (WA)",
         "mental_impairment": "Criminal Code (WA) s 27",
         "sentencing": "Sentencing Act 1995 (WA)",
@@ -79,22 +94,20 @@ NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
     },
     "sa": {
         "appellate_act": "Criminal Appeal Act 1939 (SA)",
-        "appellate_test": [
-            "miscarriage of justice",
-            "error of law",
-        ],
+        "appellate_test": ["miscarriage of justice", "error of law"],
         "mens_rea_source": "Criminal Law Consolidation Act 1935 (SA)",
-        "mental_impairment": "Mental Impairment Act 1995 (SA)",
+        # Fixed 24 Feb 2026: was legacy "Mental Impairment Act 1995 (SA)".
+        # Correct reference is Part 8A of the Criminal Law Consolidation
+        # Act — see frameworks/mental_impairment.py for the authoritative,
+        # up-to-date mapping.
+        "mental_impairment": "Criminal Law Consolidation Act 1935 (SA) — Part 8A",
         "sentencing": "Sentencing Act 2017 (SA)",
         "evidence": "Evidence Act 1929 (SA)",
         "proviso": True,
     },
     "tas": {
         "appellate_act": "Criminal Code Act 1924 (TAS)",
-        "appellate_test": [
-            "miscarriage of justice",
-            "error of law",
-        ],
+        "appellate_test": ["miscarriage of justice", "error of law"],
         "mens_rea_source": "Criminal Code Act 1924 (TAS)",
         "mental_impairment": "Criminal Code (TAS) s 16",
         "sentencing": "Sentencing Act 1997 (TAS)",
@@ -103,10 +116,7 @@ NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
     },
     "nt": {
         "appellate_act": "Criminal Code Act 1983 (NT)",
-        "appellate_test": [
-            "miscarriage of justice",
-            "error of law",
-        ],
+        "appellate_test": ["miscarriage of justice", "error of law"],
         "mens_rea_source": "Criminal Code (NT)",
         "mental_impairment": "Criminal Code (NT)",
         "sentencing": "Sentencing Act 1995 (NT)",
@@ -115,10 +125,7 @@ NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
     },
     "act": {
         "appellate_act": "Crimes (Appeal and Review) Act 2001 (ACT)",
-        "appellate_test": [
-            "miscarriage of justice",
-            "error of law",
-        ],
+        "appellate_test": ["miscarriage of justice", "error of law"],
         "mens_rea_source": "Criminal Code 2002 (ACT)",
         "mental_impairment": "Criminal Code (ACT)",
         "sentencing": "Crimes (Sentencing) Act 2005 (ACT)",
@@ -139,157 +146,3 @@ NATIONAL_CRIMINAL_FRAMEWORK: dict[str, dict] = {
         "proviso": True,
     },
 }
-
-
-def get_jurisdiction_framework(state: Optional[str]) -> Optional[dict]:
-    """
-    Resolve a jurisdiction key to its framework row. Accepts lowercase or
-    uppercase, with federal / commonwealth / cth all mapping to the federal
-    entry. Returns None if the key is missing or unknown — callers must
-    treat None as a hard failure (no silent NSW default).
-    """
-    if not state:
-        return None
-    k = str(state).strip().lower()
-    # Normalise variants of "federal".
-    if k in {"cth", "commonwealth"}:
-        k = "federal"
-    return NATIONAL_CRIMINAL_FRAMEWORK.get(k)
-
-
-def build_national_appellate_context(state: Optional[str]) -> str:
-    """
-    Human-readable jurisdiction-accurate appellate-framework block for
-    injection at the top of every LLM prompt.
-    """
-    fw = get_jurisdiction_framework(state)
-    if fw is None:
-        return (
-            "ERROR: Jurisdiction must be specified before analysis. "
-            "No silent NSW default is permitted under the National Criminal Framework."
-        )
-
-    display_state = (state or "").upper().strip()
-    if display_state in {"CTH", "COMMONWEALTH"}:
-        display_state = "FEDERAL"
-
-    lines = [
-        f"APPELLATE FRAMEWORK — {display_state}:",
-        "",
-        "GOVERNING ACT:",
-        fw["appellate_act"],
-        "",
-        "CORE APPELLATE TESTS:",
-    ]
-    for test in fw["appellate_test"]:
-        lines.append(f"- {test}")
-
-    lines += [
-        "",
-        "MENS REA SOURCE:",
-        f"- {fw['mens_rea_source']}",
-        "",
-        "MENTAL IMPAIRMENT REGIME:",
-        f"- {fw['mental_impairment']}",
-        "",
-        "SENTENCING FRAMEWORK:",
-        f"- {fw['sentencing']}",
-        "",
-        "EVIDENCE FRAMEWORK:",
-        f"- {fw['evidence']}",
-    ]
-
-    if fw["proviso"]:
-        lines.append("")
-        lines.append(
-            "PROVISO APPLIES: Court may dismiss appeal if no substantial "
-            "miscarriage of justice."
-        )
-
-    return "\n".join(lines)
-
-
-def build_mens_rea_analysis_block(offence: Optional[str]) -> str:
-    """
-    Mandatory mens rea operationaliser — drilled into every brief prompt
-    regardless of jurisdiction. Forces the LLM to identify fault elements,
-    test them against prosecution evidence, and consider the full impact of
-    intoxication / psychiatric evidence on intent / capacity / voluntariness,
-    and alternative-verdict availability.
-    """
-    offence = (offence or "the offence").strip() or "the offence"
-    return (
-        "MANDATORY MENS REA ANALYSIS:\n"
-        "\n"
-        f"- Identify the fault elements required for {offence}\n"
-        "- Assess whether prosecution evidence established those elements beyond reasonable doubt\n"
-        "- Where intoxication or psychiatric evidence exists:\n"
-        "    - assess impact on intent\n"
-        "    - assess capacity to reason\n"
-        "    - assess voluntariness\n"
-        "- Determine whether an alternative verdict (e.g. manslaughter) was reasonably open\n"
-    )
-
-
-def build_record_integrity_block() -> str:
-    """
-    Record vs speculation enforcer — forces the LLM to distinguish
-    transcript-supported error from inference or extra-curial allegation,
-    and to treat off-record issues as fresh evidence questions.
-    """
-    return (
-        "RECORD INTEGRITY RULE:\n"
-        "\n"
-        "- Identify whether each alleged error appears on the trial record\n"
-        "- If not on record → classify as fresh evidence issue\n"
-        "- Distinguish:\n"
-        "    (a) transcript-supported error\n"
-        "    (b) inference from conduct\n"
-        "    (c) extra-curial allegation\n"
-    )
-
-
-def build_full_system_prompt(case: dict) -> str:
-    """
-    Full system-prompt injection counsel requires.
-
-    - Refuses to analyse without a jurisdiction (returns an explicit ERROR
-      string so the LLM cannot silently proceed on an NSW default).
-    - Injects the national framework + mens rea operationaliser + record
-      integrity rule.
-    - Mandatory analysis structure + hard DO-NOT rules.
-    """
-    state = case.get("state") or case.get("jurisdiction")
-    offence = case.get("offence_type") or case.get("offence_category") or "offence"
-
-    if not state:
-        return "ERROR: Jurisdiction must be specified before analysis."
-
-    fw = get_jurisdiction_framework(state)
-    if fw is None:
-        return (
-            f"ERROR: Unknown jurisdiction '{state}'. Must be one of: "
-            f"{', '.join(sorted(NATIONAL_CRIMINAL_FRAMEWORK.keys()))}."
-        )
-
-    return (
-        f"{build_national_appellate_context(state)}\n"
-        f"\n"
-        f"{build_mens_rea_analysis_block(offence)}\n"
-        f"\n"
-        f"{build_record_integrity_block()}\n"
-        f"\n"
-        "MANDATORY ANALYSIS STRUCTURE:\n"
-        "\n"
-        "1. Identify alleged legal error\n"
-        "2. Link error to appellate test\n"
-        "3. Assess evidentiary support\n"
-        "4. Consider Crown counterargument\n"
-        "5. Apply proviso where relevant\n"
-        "\n"
-        "DO NOT:\n"
-        "- Default to NSW\n"
-        "- Assume uniform law\n"
-        "- Predict success\n"
-        "- Invent authority\n"
-    )

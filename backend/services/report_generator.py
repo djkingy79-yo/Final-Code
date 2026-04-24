@@ -502,7 +502,7 @@ Summary: {case.get('summary', 'N/A')}
     # (no silent NSW default).
     # ============================================================
     try:
-        from services.national_framework import build_full_system_prompt
+        from services.national_framework_engine import build_full_system_prompt
         framework_block = build_full_system_prompt(case)
         if framework_block and not framework_block.startswith("ERROR:"):
             case_context = (
