@@ -15,6 +15,8 @@ jurisdiction before the AI writes anything.
 
 from __future__ import annotations
 
+from functools import lru_cache
+
 from offence_framework import (
     OFFENCE_CATEGORIES,
     AUSTRALIAN_STATES,  # noqa: F401 — re-exported for callers
@@ -89,6 +91,11 @@ def get_jurisdiction_legislation(category_key: str, jurisdiction: str) -> dict:
 
 
 def render_legislation_block(category_key: str, jurisdiction: str) -> str:
+    return _render_legislation_block_cached(category_key, jurisdiction)
+
+
+@lru_cache(maxsize=128)
+def _render_legislation_block_cached(category_key: str, jurisdiction: str) -> str:
     legislation = get_jurisdiction_legislation(category_key, jurisdiction)
 
     out = [f"RELEVANT {jurisdiction.upper()} OFFENCE LEGISLATION:"]
@@ -101,6 +108,11 @@ def render_legislation_block(category_key: str, jurisdiction: str) -> str:
 
 
 def render_commonwealth_overlay(category_key: str, jurisdiction: str) -> str:
+    return _render_commonwealth_overlay_cached(category_key, jurisdiction)
+
+
+@lru_cache(maxsize=128)
+def _render_commonwealth_overlay_cached(category_key: str, jurisdiction: str) -> str:
     if jurisdiction == "cth":
         return ""
 
@@ -123,6 +135,7 @@ def render_commonwealth_overlay(category_key: str, jurisdiction: str) -> str:
     return "\n".join(out)
 
 
+@lru_cache(maxsize=32)
 def render_appeal_framework(jurisdiction: str) -> str:
     key = "federal" if jurisdiction == "cth" else jurisdiction
     data = APPEAL_FRAMEWORK.get(key)
@@ -149,6 +162,7 @@ def render_appeal_framework(jurisdiction: str) -> str:
     return "\n".join(out)
 
 
+@lru_cache(maxsize=32)
 def render_sentencing_framework(jurisdiction: str) -> str:
     key = "federal" if jurisdiction == "cth" else jurisdiction
     data = SENTENCING_FRAMEWORK.get(key)
@@ -174,6 +188,7 @@ def render_sentencing_framework(jurisdiction: str) -> str:
     return "\n".join(out)
 
 
+@lru_cache(maxsize=32)
 def render_evidence_framework(jurisdiction: str) -> str:
     key = "federal" if jurisdiction == "cth" else jurisdiction
     data = EVIDENCE_FRAMEWORK.get(key)
@@ -202,6 +217,7 @@ def render_evidence_framework(jurisdiction: str) -> str:
     return "\n".join(out)
 
 
+@lru_cache(maxsize=32)
 def render_mental_impairment_framework(jurisdiction: str) -> str:
     key = "federal" if jurisdiction == "cth" else jurisdiction
     data = MENTAL_IMPAIRMENT_FRAMEWORK.get(key)
@@ -228,6 +244,7 @@ def render_mental_impairment_framework(jurisdiction: str) -> str:
     return "\n".join(out)
 
 
+@lru_cache(maxsize=128)
 def render_mens_rea_framework(category_key: str, jurisdiction: str) -> str:
     category = get_offence_category(category_key)
     keys = category.get("relevant_mens_rea") or []
