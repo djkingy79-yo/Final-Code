@@ -174,6 +174,122 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
         {"case_id": case_id},
         {"_id": 0}
     ).to_list(100)
+
+    # ============================================================
+    # FORENSIC PIPELINE — counsel feedback 23 Feb 2026.
+    # ============================================================
+    # Drive the brief from cleaned/scored/strategised grounds, NOT the raw
+    # database list. The pipeline:
+    #     ground_normaliser  →  appeal_strength  →  ground_cleanup  →
+    #     proviso_engine     →  barrister_mode   →  outcome_predictor →
+    #     attack_plan        →  evidence_builder
+    # The outputs (strategy, predicted_outcome, attack_plan, evidence_builder)
+    # are persisted on the case record and injected into the prompt context
+    # so the LLM brief and the on-screen Counsel Briefing block stay aligned.
+    # ============================================================
+    forensic_strategy = None
+    forensic_predicted_outcome = None
+    forensic_attack_plan = None
+    forensic_evidence_builder = None
+    forensic_proviso_summary = None
+    try:
+        from services.ground_normaliser import (
+            EvidenceFlags,
+            ground_from_dict,
+            ground_to_dict,
+            normalise_generated_grounds,
+        )
+        from services.appeal_strength import (
+            CaseEvidenceProfile,
+            score_grounds_for_realism,
+        )
+        from services.ground_cleanup import apply_cleanup
+        from services.proviso_engine import apply_proviso_engine, case_proviso_summary
+        from services.barrister_mode import build_strategy_summary
+        from services.outcome_predictor import predict_outcome
+        from services.attack_plan import generate_attack_plan
+        from services.evidence_builder import generate_evidence_builder
+
+        case_jurisdiction = str(case.get("state") or case.get("jurisdiction") or "").upper().strip()
+        if case_jurisdiction == "FEDERAL":
+            case_jurisdiction = "CTH"
+
+        if grounds:
+            raw_grounds = [ground_from_dict(g) for g in grounds]
+
+            def _doc_text_lower(d: dict) -> str:
+                return ((d.get("filename") or "") + " " + (d.get("content_text") or "")).lower()
+
+            doc_blob_lower = " ".join(_doc_text_lower(d) for d in documents)
+
+            flags = EvidenceFlags(
+                transcript_support=any("transcript" in (d.get("filename", "") or "").lower() for d in documents),
+                sentencing_remarks=any("sentenc" in (d.get("filename", "") or "").lower() for d in documents),
+                counsel_affidavit=("counsel" in doc_blob_lower and "affidavit" in doc_blob_lower),
+                juror_affidavit=("juror" in doc_blob_lower and "affidavit" in doc_blob_lower),
+                psychiatric_reports=("psychiatr" in doc_blob_lower),
+                judge_alone_application_material=("judge alone" in doc_blob_lower or "judge-alone" in doc_blob_lower),
+                pretrial_publicity_material=("publicity" in doc_blob_lower or "media" in doc_blob_lower),
+            )
+
+            normalised = normalise_generated_grounds(
+                raw_grounds=raw_grounds,
+                flags=flags,
+                jurisdiction=case_jurisdiction,
+            )
+
+            profile = CaseEvidenceProfile(
+                has_trial_transcript=flags.transcript_support,
+                has_sentencing_remarks=flags.sentencing_remarks,
+                has_psychiatric_reports=flags.psychiatric_reports,
+                disputed_intent=any(
+                    "intent" in (g.get("title", "") or "").lower()
+                    or "mens rea" in (g.get("title", "") or "").lower()
+                    for g in grounds
+                ),
+                competing_psychiatric_opinions=("dr martin" in doc_blob_lower and "dr allnutt" in doc_blob_lower),
+            )
+
+            scored = score_grounds_for_realism(normalised, profile)
+            cleaned = apply_cleanup(scored, case_jurisdiction)
+            with_proviso = apply_proviso_engine(cleaned)
+
+            forensic_strategy = build_strategy_summary(with_proviso)
+            forensic_predicted_outcome = predict_outcome(forensic_strategy)
+            forensic_attack_plan = generate_attack_plan(forensic_strategy)
+            forensic_evidence_builder = generate_evidence_builder(forensic_strategy)
+            forensic_proviso_summary = case_proviso_summary(with_proviso)
+
+            # Replace `grounds` with the cleaned/strategised list so every
+            # downstream prompt builder uses the post-pipeline data.
+            grounds = [ground_to_dict(g) for g in with_proviso]
+
+            # Persist the strategy + outcome + plans onto the case record so
+            # the existing CounselBriefingBlock UI picks them up automatically
+            # without a second pipeline run.
+            try:
+                await db.cases.update_one(
+                    {"case_id": case_id},
+                    {"$set": {
+                        "predicted_outcome": forensic_predicted_outcome,
+                        "attack_plan": forensic_attack_plan,
+                        "evidence_builder": forensic_evidence_builder,
+                        "proviso_summary": forensic_proviso_summary,
+                        "strategy_snapshot": {
+                            "primary": ground_to_dict(forensic_strategy["primary"]) if forensic_strategy.get("primary") else None,
+                            "secondary": ground_to_dict(forensic_strategy["secondary"]) if forensic_strategy.get("secondary") else None,
+                            "tertiary": ground_to_dict(forensic_strategy["tertiary"]) if forensic_strategy.get("tertiary") else None,
+                            "abandon": [ground_to_dict(g) for g in forensic_strategy.get("abandon", [])],
+                        },
+                    }},
+                )
+            except Exception as persist_err:
+                logger.warning(f"Failed to persist forensic outputs for case {case_id}: {persist_err}")
+    except Exception as pipeline_err:
+        logger.warning(
+            f"Forensic pipeline skipped for case {case_id} ({pipeline_err}); "
+            f"falling back to raw grounds for the report."
+        )
     
     # ── Auto-detect case metadata if still defaults (HARDENED via call_llm_for_json) ──
     # DO NOT UNDO — Also re-detect if sentence contains crime narrative (e.g. "for murdering")
@@ -199,7 +315,7 @@ Return ONLY valid JSON (no markdown, no explanation):
   "offence_category": "<one of: homicide, assault, sexual_offences, robbery_theft, drug_offences, fraud_dishonesty, firearms_weapons, domestic_violence, public_order, terrorism, driving_offences>",
   "offence_type": "<specific offence e.g. Murder, Assault Occasioning ABH, Armed Robbery>",
   "sentence": "<the HEAD SENTENCE and non-parole period ONLY. Format: '[X] years imprisonment with a non-parole period of [Y] years [and Z months]'. Do NOT include the crime description, victim details, or case narrative. If life sentence, state 'Life imprisonment with a non-parole period of [X] years'. If sentence not stated, null.>",
-  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act — if determinable>",
+  "state": "<one of: nsw, vic, qld, sa, wa, tas, nt, act, cth — if determinable; map federal/Commonwealth → cth>",
   "court": "<court name if found>"
 }}
 Rules:
@@ -225,7 +341,9 @@ DOCUMENTS:
                 )
 
                 valid_cats = ["homicide","assault","sexual_offences","robbery_theft","drug_offences","fraud_dishonesty","firearms_weapons","domestic_violence","public_order","terrorism","driving_offences"]
-                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act"]
+                # State allowlist — counsel feedback 23 Feb 2026: must include
+                # Commonwealth/federal matters. Normalise "federal" → "cth".
+                valid_sts = ["nsw","vic","qld","sa","wa","tas","nt","act","cth","federal"]
                 update_fields = {}
                 if meta.get("offence_category") in valid_cats:
                     update_fields["offence_category"] = meta["offence_category"]
@@ -239,7 +357,11 @@ DOCUMENTS:
                     elif meta["sentence"].strip():
                         update_fields["sentence"] = meta["sentence"].strip()
                 if meta.get("state") and str(meta["state"]).lower() in valid_sts:
-                    update_fields["state"] = str(meta["state"]).lower()
+                    state_val = str(meta["state"]).lower()
+                    # Counsel feedback 23 Feb 2026: federal → cth normalisation.
+                    if state_val == "federal":
+                        state_val = "cth"
+                    update_fields["state"] = state_val
                 if meta.get("court"):
                     update_fields["court"] = meta["court"]
                 if update_fields:
@@ -370,6 +492,43 @@ Summary: {case.get('summary', 'N/A')}
 
     grounds_titles = [g.get('title') for g in grounds if g.get('title')]
     grounds_enumerated = "\n".join([f"{idx + 1}. {title}" for idx, title in enumerate(grounds_titles)])
+
+    # ============================================================
+    # FORENSIC STRATEGY CONTEXT — counsel feedback 23 Feb 2026.
+    # Inject the strategised primary/secondary/tertiary + outcome + proviso
+    # into case_context so every prompt downstream is aligned with what the
+    # legal engines decided. The LLM brief MUST match the on-screen Counsel
+    # Briefing block, not contradict it.
+    # ============================================================
+    if forensic_strategy or forensic_predicted_outcome or forensic_proviso_summary:
+        case_context += "\n=== FORENSIC STRATEGY (engine-derived; do not contradict) ===\n"
+        if forensic_predicted_outcome:
+            case_context += (
+                f"- Predicted outcome: {forensic_predicted_outcome.get('outcome')} — "
+                f"{forensic_predicted_outcome.get('reason')}\n"
+            )
+        if forensic_proviso_summary:
+            case_context += (
+                f"- Case proviso risk (Weiss v The Queen): "
+                f"{forensic_proviso_summary.get('risk')} — {forensic_proviso_summary.get('summary')}\n"
+            )
+        for role in ("primary", "secondary", "tertiary"):
+            sg = (forensic_strategy or {}).get(role)
+            if sg is not None:
+                case_context += (
+                    f"- {role.upper()} ground: \"{sg.title}\" "
+                    f"[{sg.type}] viability={sg.viability} "
+                    f"proviso_risk={getattr(sg, 'proviso_risk', 'n/a')} "
+                    f"crown_strength={getattr(sg, 'crown_strength', 'n/a')}\n"
+                )
+        if forensic_strategy and forensic_strategy.get("abandon"):
+            ab_titles = [g.title for g in forensic_strategy["abandon"]][:5]
+            case_context += f"- ABANDON candidates (do not lead with these): {'; '.join(ab_titles)}\n"
+        case_context += (
+            "INSTRUCTION: lead the brief with the PRIMARY ground; SECONDARY then TERTIARY. "
+            "Adopt the predicted outcome. Address the proviso risk explicitly for any conviction "
+            "ground rated moderate/high. Do NOT introduce grounds outside this strategy.\n"
+        )
 
     # ================= INJECT STRUCTURED PIPELINE DATA =================
     if high_value_report and structured_context:
@@ -792,7 +951,7 @@ Write each ground as a numbered entry starting with "Ground X: [Exact Title]" an
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
 CRITICAL: This section MUST contain an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...". If exact data cannot be found, use the best available comparable cases from Australian jurisprudence.
 
-Markdown table with at least 12 comparable sentencing outcomes:
+Markdown table with at least 12 comparable sentencing outcomes. IMPORTANT: Include only verified authorities already present in the supplied material or in the internal framework. If fewer than 12 verified comparators are available, include as many verified comparators as exist and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations:
 | Case | Offence | Original Sentence / NPP | Appeal Outcome | Revised Sentence / NPP | Reduction (Years + %) | Key Reason |
 Include AustLII search link: [Search {state_info.get('appeal_court', 'the Court of Criminal Appeal')}]({state_info.get('cca_search_url', 'https://www.austlii.edu.au/')})
 After the table, provide a DETAILED paragraph for EACH case explaining:
@@ -824,7 +983,7 @@ For each gap:
 - Impact on which grounds if not remediated
 
 ## 9. PRECEDENT OUTCOME MATRIX (15+ CASES)
-For each of at least 15 cases:
+For each of at least 15 cases (IMPORTANT: include only verified authorities already present in the supplied material or in the internal framework; if fewer than 15 verified comparators are available, include as many verified comparators as exist and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations):
 - Full citation
 - Factual similarity to this matter (specific comparison)
 - Hearing outcome
@@ -1001,10 +1160,10 @@ EXPANDED SCOPE:
    - A draft submission paragraph ready to be read in court
    - The specific orders to seek if this ground succeeds
    - Fallback position with alternative argument if primary is challenged
-3. COMPARATIVE SENTENCING TABLE: 15+ cases minimum. For each, explain HOW the reduction was achieved.
+3. COMPARATIVE SENTENCING TABLE: 15+ cases if verified comparators exist. IMPORTANT: Include only verified authorities already present in the supplied material or in the internal framework; if fewer than 15 verified comparators exist, include what exists and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations. For each, explain HOW the reduction was achieved.
 4. OUTCOME OPTIONS: 250+ words per pathway. Reference ALL identified grounds for each pathway.
 5. SUBMISSIONS: Write FULL draft argument paragraphs, not outlines. Include opening, authority chains, and closing for each ground.
-6. PRECEDENT MATRIX: 20+ cases with detailed factual comparison.
+6. PRECEDENT MATRIX: 20+ cases if verified comparators exist. IMPORTANT: Include only verified authorities already present in the supplied material or in the internal framework; if fewer than 20 verified comparators exist, include what exists and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations. Provide detailed factual comparison for each.
 7. Every conclusion must state the SPECIFIC order sought from the court.
 8. Write as if the appeal WILL succeed — identify the path to victory, not just the obstacles.
 """
@@ -1448,7 +1607,7 @@ For EACH ground, write 1200+ words as flowing paragraphs (NOT bullet points) cov
 
 ## 5. COMPARATIVE SENTENCING TABLE (12+ CASES)
 CRITICAL: Produce an ACTUAL populated markdown table with real case data — NEVER placeholder text like "The table will reference..." or "Details will be provided...".
-Markdown table with 12+ rows. After the table, write a DETAILED PARAGRAPH for EACH of the 12+ cases (200+ words each) explaining: original sentencing reasoning, appeal court's reasoning, how the reduction was achieved, which grounds succeeded, and how this specifically compares to the current case.
+Markdown table with 12+ rows IF verified comparators exist. IMPORTANT: Include only verified authorities already present in the supplied material or in the internal framework; if fewer than 12 verified comparators exist, produce as many rows as exist and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations. After the table, write a DETAILED PARAGRAPH for EACH of the verified cases (200+ words each) explaining: original sentencing reasoning, appeal court's reasoning, how the reduction was achieved, which grounds succeeded, and how this specifically compares to the current case.
 
 STOP after section 5."""),
                 ("PASS 3/10", f"""
@@ -1475,7 +1634,7 @@ STOP after section 8."""),
 NOW GENERATE ONLY SECTIONS 9-10. Write 3200+ WORDS for this pass.
 
 ## 9. PRECEDENT OUTCOME MATRIX (12+ CASES)
-For each of 12+ cases, write a FULL PARAGRAPH (not just a table row):
+For each of at least 12 verified cases (IMPORTANT: include only verified authorities already present in the supplied material or in the internal framework; if fewer than 12 verified comparators exist, write the paragraphs for as many verified comparators as exist and STATE CLEARLY that verified comparators are insufficient — do not fabricate citations), write a FULL PARAGRAPH (not just a table row):
 - Full citation
 - Factual similarity to THIS matter (be specific — offence type, relationship, circumstances)
 - Hearing outcome
