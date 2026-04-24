@@ -591,23 +591,30 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     if synth_match:
         counsel_synthesis = synth_match.group(1).strip()
 
-    # Build PDF
+    # Build PDF — canonical margins (locked 24 Feb 2026).
+    from services.print_styles import (
+        canonical_page_margins_mm,
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT,
+        CANONICAL_BODY_PT,
+    )
+    _m = canonical_page_margins_mm()
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer, pagesize=A4,
-        rightMargin=18*mm, leftMargin=18*mm,
-        topMargin=18*mm, bottomMargin=22*mm
+        rightMargin=_m["right"]*mm, leftMargin=_m["left"]*mm,
+        topMargin=_m["top"]*mm, bottomMargin=_m["bottom"]*mm,
     )
 
+    # Canonical typography (locked 24 Feb 2026): Times New Roman only.
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='QBTitle', fontSize=18, spaceAfter=6, alignment=TA_CENTER, fontName='Helvetica-Bold', textColor=colors.HexColor('#0f172a')))
-    styles.add(ParagraphStyle(name='QBSubtitle', fontSize=10, spaceAfter=10, alignment=TA_CENTER, textColor=colors.HexColor('#475569')))
-    styles.add(ParagraphStyle(name='QBSection', fontSize=13, spaceBefore=10, spaceAfter=4, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e3a8a')))
-    styles.add(ParagraphStyle(name='QBSubSection', fontSize=11, spaceBefore=6, spaceAfter=3, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e293b')))
-    styles.add(ParagraphStyle(name='QBBody', fontSize=10, spaceAfter=4, alignment=TA_JUSTIFY, leading=13))
-    styles.add(ParagraphStyle(name='QBPriority', fontSize=10, spaceAfter=3, leftIndent=8, leading=13))
-    styles.add(ParagraphStyle(name='QBDisclaimer', fontSize=8, fontName='Helvetica-Oblique', textColor=colors.HexColor('#94a3b8'), alignment=TA_CENTER, leading=10))
-    styles.add(ParagraphStyle(name='QBGroundTitle', fontSize=11, spaceBefore=6, spaceAfter=3, fontName='Helvetica-Bold', textColor=colors.HexColor('#1e3a8a')))
+    styles.add(ParagraphStyle(name='QBTitle', fontSize=CANONICAL_H1_PT, spaceAfter=6, alignment=TA_CENTER, fontName='Times-Bold', textColor=colors.HexColor('#0f172a')))
+    styles.add(ParagraphStyle(name='QBSubtitle', fontSize=CANONICAL_BODY_PT, spaceAfter=8, alignment=TA_CENTER, fontName='Times-Roman', textColor=colors.HexColor('#475569')))
+    styles.add(ParagraphStyle(name='QBSection', fontSize=CANONICAL_H1_PT, spaceBefore=10, spaceAfter=6, fontName='Times-Bold', textColor=colors.HexColor('#1e3a8a'), keepWithNext=True))
+    styles.add(ParagraphStyle(name='QBSubSection', fontSize=CANONICAL_H2_PT, spaceBefore=8, spaceAfter=3, fontName='Times-Bold', textColor=colors.HexColor('#1e293b'), keepWithNext=True))
+    styles.add(ParagraphStyle(name='QBBody', fontSize=CANONICAL_BODY_PT, spaceAfter=6, alignment=TA_JUSTIFY, leading=CANONICAL_BODY_PT*1.35, fontName='Times-Roman'))
+    styles.add(ParagraphStyle(name='QBPriority', fontSize=CANONICAL_BODY_PT, spaceAfter=3, leftIndent=8, leading=CANONICAL_BODY_PT*1.35, fontName='Times-Roman'))
+    styles.add(ParagraphStyle(name='QBDisclaimer', fontSize=8, fontName='Times-Italic', textColor=colors.HexColor('#94a3b8'), alignment=TA_CENTER, leading=10))
+    styles.add(ParagraphStyle(name='QBGroundTitle', fontSize=CANONICAL_H3_PT, spaceBefore=6, spaceAfter=3, fontName='Times-BoldItalic', textColor=colors.HexColor('#1e3a8a'), keepWithNext=True))
 
     def safe_text(text):
         return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")

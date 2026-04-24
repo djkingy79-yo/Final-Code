@@ -113,8 +113,8 @@ def _render_table_to_story(lines, story_ref, doc_ref, body_style=None):
     rows = [r + [""] * (col_count - len(r)) for r in rows]
     try:
         col_width = doc_ref.width / col_count
-        cell_style = ParagraphStyle(name="TblCell", fontSize=9, leading=12, fontName="Helvetica", wordWrap="CJK")
-        header_cell = ParagraphStyle(name="TblHeader", fontSize=9, leading=12, fontName="Helvetica-Bold", textColor=colors.white)
+        cell_style = ParagraphStyle(name="TblCell", fontSize=9, leading=12, fontName="Times-Roman", wordWrap="CJK")
+        header_cell = ParagraphStyle(name="TblHeader", fontSize=9, leading=12, fontName="Times-Bold", textColor=colors.white)
         para_rows = []
         for ri, row in enumerate(rows):
             st = header_cell if ri == 0 else cell_style
@@ -436,8 +436,8 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
     # Register CJK font for Asian languages
     cjk_langs = {"zh", "zh-TW", "ja", "ko", "th", "my", "km", "lo", "si", "bn", "ta", "te", "ne", "hi", "pa", "ur"}
     use_cjk = lang in cjk_langs
-    body_font = "Helvetica"
-    bold_font = "Helvetica-Bold"
+    body_font = "Times-Roman"
+    bold_font = "Times-Bold"
 
     if use_cjk:
         try:
@@ -467,17 +467,23 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
         bottomMargin=28 * mm,
     )
 
+    # Canonical typography (locked 24 Feb 2026). `body_font` / `bold_font`
+    # fall back to Times unless the target language is CJK (in which case
+    # they've already been swapped to NotoSansCJK above).
+    from services.print_styles import (
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT, CANONICAL_BODY_PT,
+    )
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="TrTitle", fontSize=20, spaceAfter=8, alignment=TA_CENTER, fontName=bold_font, textColor=colors.HexColor("#0f172a")))
-    styles.add(ParagraphStyle(name="TrSubtitle", fontSize=11, spaceAfter=5, alignment=TA_CENTER, textColor=colors.HexColor("#475569"), fontName=body_font))
-    styles.add(ParagraphStyle(name="TrSection", fontSize=14, spaceBefore=14, spaceAfter=6, fontName=bold_font, textColor=colors.HexColor("#0f172a")))
-    styles.add(ParagraphStyle(name="TrSubSection", fontSize=11, spaceBefore=8, spaceAfter=4, fontName=bold_font, textColor=colors.HexColor("#1e293b")))
-    styles.add(ParagraphStyle(name="TrBody", fontSize=10.5, spaceAfter=4, alignment=TA_JUSTIFY, leading=15, fontName=body_font))
-    styles.add(ParagraphStyle(name="TrBullet", fontSize=10.5, spaceAfter=3, leading=15, fontName=body_font, leftIndent=14, bulletIndent=7))
-    styles.add(ParagraphStyle(name="TrDisclaimer", fontSize=10, fontName=bold_font, textColor=colors.HexColor("#dc2626"), alignment=TA_CENTER, leading=14))
-    styles.add(ParagraphStyle(name="TrMetaValue", fontSize=11, fontName=bold_font, textColor=colors.HexColor("#0f172a"), spaceAfter=4))
-    styles.add(ParagraphStyle(name="TrLangBadge", fontSize=12, fontName=bold_font, textColor=colors.HexColor("#1e40af"), alignment=TA_CENTER, spaceAfter=6))
-    styles.add(ParagraphStyle(name="TrNumberedHeader", fontSize=12, spaceBefore=10, spaceAfter=5, fontName=bold_font, textColor=colors.HexColor("#0f172a")))
+    styles.add(ParagraphStyle(name="TrTitle", fontSize=CANONICAL_H1_PT, spaceAfter=6, alignment=TA_CENTER, fontName=bold_font, textColor=colors.HexColor("#0f172a")))
+    styles.add(ParagraphStyle(name="TrSubtitle", fontSize=CANONICAL_BODY_PT, spaceAfter=5, alignment=TA_CENTER, textColor=colors.HexColor("#475569"), fontName=body_font))
+    styles.add(ParagraphStyle(name="TrSection", fontSize=CANONICAL_H1_PT, spaceBefore=10, spaceAfter=6, fontName=bold_font, textColor=colors.HexColor("#0f172a"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="TrSubSection", fontSize=CANONICAL_H2_PT, spaceBefore=8, spaceAfter=3, fontName=bold_font, textColor=colors.HexColor("#1e293b"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="TrBody", fontSize=CANONICAL_BODY_PT, spaceAfter=6, alignment=TA_JUSTIFY, leading=CANONICAL_BODY_PT*1.35, fontName=body_font))
+    styles.add(ParagraphStyle(name="TrBullet", fontSize=CANONICAL_BODY_PT, spaceAfter=3, leading=CANONICAL_BODY_PT*1.35, fontName=body_font, leftIndent=14, bulletIndent=7))
+    styles.add(ParagraphStyle(name="TrDisclaimer", fontSize=CANONICAL_BODY_PT, fontName=bold_font, textColor=colors.HexColor("#dc2626"), alignment=TA_CENTER, leading=CANONICAL_BODY_PT*1.35))
+    styles.add(ParagraphStyle(name="TrMetaValue", fontSize=CANONICAL_BODY_PT, fontName=bold_font, textColor=colors.HexColor("#0f172a"), spaceAfter=4))
+    styles.add(ParagraphStyle(name="TrLangBadge", fontSize=CANONICAL_H2_PT, fontName=bold_font, textColor=colors.HexColor("#1e40af"), alignment=TA_CENTER, spaceAfter=6))
+    styles.add(ParagraphStyle(name="TrNumberedHeader", fontSize=CANONICAL_H2_PT, spaceBefore=8, spaceAfter=4, fontName=bold_font, textColor=colors.HexColor("#0f172a"), keepWithNext=True))
 
     story = []
 

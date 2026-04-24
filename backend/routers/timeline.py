@@ -676,19 +676,30 @@ async def export_timeline_pdf(case_id: str, request: Request):
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
     from io import BytesIO
     from services.export_footer import build_footer_label, NumberedCanvas
+    from services.print_styles import (
+        canonical_page_margins_mm,
+        CANONICAL_H1_PT, CANONICAL_H2_PT, CANONICAL_H3_PT,
+        CANONICAL_BODY_PT,
+    )
 
     footer_label = build_footer_label(case, "Timeline of Events")
     numbered_canvas = NumberedCanvas(footer_label)
 
+    _m = canonical_page_margins_mm()
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=25*mm, leftMargin=15*mm, rightMargin=15*mm)
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        topMargin=_m["top"]*mm, bottomMargin=_m["bottom"]*mm,
+        leftMargin=_m["left"]*mm, rightMargin=_m["right"]*mm,
+    )
+    # Canonical typography (locked 24 Feb 2026): Times New Roman only.
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontSize=18, spaceAfter=12, textColor=colors.HexColor('#0f172a'))
-    subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, textColor=colors.HexColor('#64748b'), spaceAfter=20)
-    event_title_style = ParagraphStyle('EventTitle', parent=styles['Heading3'], fontSize=12, textColor=colors.HexColor('#1e293b'), spaceBefore=8, spaceAfter=4)
-    event_body_style = ParagraphStyle('EventBody', parent=styles['Normal'], fontSize=10, textColor=colors.HexColor('#475569'), spaceAfter=4)
-    meta_style = ParagraphStyle('Meta', parent=styles['Normal'], fontSize=9, textColor=colors.HexColor('#94a3b8'))
-    section_style = ParagraphStyle('Section', parent=styles['Heading2'], fontSize=14, textColor=colors.HexColor('#334155'), spaceBefore=16, spaceAfter=8)
+    title_style = ParagraphStyle('CustomTitle', parent=styles['Heading1'], fontName='Times-Bold', fontSize=CANONICAL_H1_PT, spaceAfter=6, textColor=colors.HexColor('#0f172a'))
+    subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontName='Times-Roman', fontSize=CANONICAL_BODY_PT, textColor=colors.HexColor('#64748b'), spaceAfter=12)
+    event_title_style = ParagraphStyle('EventTitle', parent=styles['Heading3'], fontName='Times-BoldItalic', fontSize=CANONICAL_H3_PT, textColor=colors.HexColor('#1e3a8a'), spaceBefore=6, spaceAfter=3, keepWithNext=True)
+    event_body_style = ParagraphStyle('EventBody', parent=styles['Normal'], fontName='Times-Roman', fontSize=CANONICAL_BODY_PT, textColor=colors.HexColor('#475569'), spaceAfter=4, leading=CANONICAL_BODY_PT*1.35)
+    meta_style = ParagraphStyle('Meta', parent=styles['Normal'], fontName='Times-Italic', fontSize=8, textColor=colors.HexColor('#94a3b8'))
+    section_style = ParagraphStyle('Section', parent=styles['Heading2'], fontName='Times-Bold', fontSize=CANONICAL_H2_PT, textColor=colors.HexColor('#334155'), spaceBefore=10, spaceAfter=6, keepWithNext=True)
     story = []
     story.append(Paragraph(f"Case Timeline: {case.get('title', 'Untitled Case')}", title_style))
     story.append(Paragraph(f"Generated for {user.name} on {datetime.now().strftime('%d %B %Y')}", subtitle_style))

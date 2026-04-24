@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 
 def format_export_date(dt=None):
-    """Format date as en-AU long form (e.g. '21 April 2026') to match frontend."""
+    """Format date as short DD/MM/YYYY Australian format (locked 24 Feb 2026 spec)."""
     if dt is None:
         dt = datetime.now(timezone.utc)
     if isinstance(dt, str):
@@ -23,21 +23,26 @@ def format_export_date(dt=None):
             dt = datetime.fromisoformat(dt.replace('Z', '+00:00'))
         except Exception:
             dt = datetime.now(timezone.utc)
-    # Manual long-form format (locale-independent so CI on minimal images works).
-    _months = ["January","February","March","April","May","June",
-               "July","August","September","October","November","December"]
-    return f"{dt.day} {_months[dt.month - 1]} {dt.year}"
+    return f"{dt.day:02d}/{dt.month:02d}/{dt.year}"
+
+
+MISSING_CASE_NUMBER_LABEL = "No case number"
 
 
 def build_footer_label(case: dict, doc_type: str, generated_at=None) -> str:
-    """Canonical footer label (locked 2026-02 by owner — matches frontend exportHtml.js).
-    Format: '{Appellant} · {Doc Type} · {Date}' — paired with 'Page X of Y' by the
-    caller. Uses the middle-dot (·, U+00B7) separator for consistency across PDF,
-    DOCX and browser print output."""
-    defendant = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
-    doc_type = (doc_type or "Legal Report").strip()
-    date_str = format_export_date(generated_at)
-    return f"{defendant} \u00B7 {doc_type} \u00B7 {date_str}"
+    """Canonical footer label (locked 24 Feb 2026 by owner).
+
+    Format:
+        LEFT  : 'Criminal Law Appeal Management / {doc} / {appellant} / {case_number}'
+        RIGHT : '{DD/MM/YYYY} · Page X of Y'  (painted by NumberedCanvas)
+
+    This function returns the LEFT half only. Missing case number is rendered
+    as 'No case number' — never left blank.
+    """
+    appellant = (case.get("defendant_name") or case.get("title") or "Appellant").strip()
+    case_number = (case.get("case_number") or "").strip() or MISSING_CASE_NUMBER_LABEL
+    doc_type = (doc_type or "Legal Document").strip()
+    return f"Criminal Law Appeal Management / {doc_type} / {appellant} / {case_number}"
 
 
 # ============ ReportLab PDF "Page X of Y" Canvas ============
@@ -83,13 +88,17 @@ class NumberedCanvas:
                 self.setLineWidth(0.6)
                 self.line(20 * mm, line_y, A4[0] - 20 * mm, line_y)
                 self.setFillColor(colors.HexColor('#334155'))
-                # Canonical print spec — 9pt italic Times (matches frontend)
-                self.setFont('Times-Italic', 9)
+                # Canonical print spec (locked 24 Feb 2026) — 8pt Times-Italic
+                self.setFont('Times-Italic', 8)
                 label = outer._footer_label
-                page_str = f"Page {page_num} of {total_pages}"
+                # RIGHT side: "DD/MM/YYYY · Page X of Y" — date prefix computed
+                # at footer draw time so every regenerated export carries the
+                # actual generation date, not the request timestamp.
+                from services.export_footer import format_export_date
+                page_str = f"{format_export_date()}  \u00B7  Page {page_num} of {total_pages}"
                 # Truncate label if too long to fit
-                max_w = A4[0] - 40 * mm - self.stringWidth(page_str, 'Times-Italic', 9) - 8 * mm
-                while self.stringWidth(label, 'Times-Italic', 9) > max_w and len(label) > 30:
+                max_w = A4[0] - 40 * mm - self.stringWidth(page_str, 'Times-Italic', 8) - 8 * mm
+                while self.stringWidth(label, 'Times-Italic', 8) > max_w and len(label) > 30:
                     label = label[:-4] + "..."
                 self.drawString(20 * mm, footer_y, label)
                 self.drawRightString(A4[0] - 20 * mm, footer_y, page_str)
@@ -102,12 +111,17 @@ class NumberedCanvas:
 
 def apply_docx_footer(doc, footer_label):
     """Apply the standardised footer to all sections of a python-docx Document.
-    Footer format: [label] Page X of Y — Times New Roman, Italic, 10pt."""
+
+    Layout (locked 24 Feb 2026):
+        LEFT tab   : '{footer_label}'                      — canonical 4-field legal identifier
+        RIGHT tab  : 'DD/MM/YYYY · Page X of Y'             — short AU date + page counter fields
+
+    Typography: Times New Roman, italic, 8pt, #334155.
+    """
     from docx.shared import Pt, RGBColor
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    # DO NOT REMOVE — `qn` is used below on lines ~100, ~102, ~105 to set
-    # OOXML attributes (w:fldCharType, xml:space) inside the page-number
-    # field. Removing it will crash DOCX exports with NameError.
+    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
+    # DO NOT REMOVE — `qn` is used below to set OOXML attributes on the
+    # page-number field runs. Removing it will crash DOCX exports.
     from docx.oxml.ns import qn  # noqa: F401 — used via qn() calls below
     from docx.oxml import OxmlElement
     from docx.shared import Inches
@@ -124,26 +138,42 @@ def apply_docx_footer(doc, footer_label):
         run._r.append(fld_char_begin)
         run._r.append(instr_text)
         run._r.append(fld_char_end)
+        return run
 
     def style_run(run):
         run.font.name = 'Times New Roman'
-        # Canonical print spec — 9pt italic (matches frontend)
-        run.font.size = Pt(9)
+        run.font.size = Pt(8)            # Canonical footer spec (locked 24 Feb 2026)
         run.font.italic = True
         run.font.color.rgb = RGBColor(51, 65, 85)
+
+    date_str = format_export_date()
 
     for section in doc.sections:
         section.footer_distance = Inches(0.4)
         footer = section.footer
-        footer_line = footer.paragraphs[0]
-        footer_line.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        footer_para = footer.paragraphs[0]
+        # Centre-tab disabled; right-tab at page width so date+page sits on the right edge.
+        tab_stops = footer_para.paragraph_format.tab_stops
+        tab_stops.clear_all()
+        tab_stops.add_tab_stop(section.page_width - section.left_margin - section.right_margin,
+                               WD_TAB_ALIGNMENT.RIGHT)
+        footer_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
-        label_run = footer_line.add_run(f"{footer_label}  |  Page ")
+        # LEFT half — the 4-field canonical identifier.
+        label_run = footer_para.add_run(footer_label)
         style_run(label_run)
-        add_field(footer_line, 'PAGE')
-        of_run = footer_line.add_run(" of ")
+
+        # Separator (tab), then RIGHT half starts: "DD/MM/YYYY · Page X of Y".
+        tab_run = footer_para.add_run('\t')
+        style_run(tab_run)
+        date_run = footer_para.add_run(f"{date_str}  \u00B7  Page ")
+        style_run(date_run)
+        page_field_run = add_field(footer_para, 'PAGE')
+        style_run(page_field_run)
+        of_run = footer_para.add_run(" of ")
         style_run(of_run)
-        add_field(footer_line, 'NUMPAGES')
+        numpages_field_run = add_field(footer_para, 'NUMPAGES')
+        style_run(numpages_field_run)
 
 
 # ============ Report Type Labels ============
