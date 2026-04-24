@@ -6,7 +6,7 @@
 - [ ] `FRONTEND_URL` set to `https://criminallawappealmanagement.com.au`
 - [ ] CORS configured to allow only production domain
 - [ ] MongoDB connection string points to production database (Atlas recommended)
-- [ ] `EMERGENT_LLM_KEY` configured and tested
+- [ ] `OPENAI_API_KEY` configured and tested (your personal OpenAI key — billing goes to your account)
 - [ ] `RESEND_API_KEY` configured for transactional emails
 - [ ] SSL/TLS certificate installed and valid
 - [ ] Domain DNS configured (A record → server IP)
