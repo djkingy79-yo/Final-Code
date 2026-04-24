@@ -71,7 +71,7 @@ const SECTION_LABELS = [
   { key: "summary",       label: "Case summary",               desc: "Your written summary of the case" },
   { key: "documents",     label: "Uploaded documents list",    desc: "Table of all documents uploaded (filename, type, date)" },
   { key: "timeline",      label: "Timeline of events",         desc: "Chronological case timeline table" },
-  { key: "grounds",       label: "Grounds of merit",           desc: "All identified grounds with analysis, evidence, legislation" },
+  { key: "grounds",       label: "Grounds of Merit",           desc: "All identified grounds with analysis, evidence, legislation" },
   { key: "legislation",   label: "Legislation & case law",     desc: "Consolidated list of statutes and cases cited across grounds" },
   { key: "notes",         label: "Case notes",                 desc: "Notes you or collaborators have written" },
   { key: "progress",      label: "Progress analysis",          desc: "AI-generated overall case-readiness assessment" },
