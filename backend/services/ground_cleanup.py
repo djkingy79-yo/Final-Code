@@ -115,6 +115,13 @@ PARTIAL_DEFENCE_MAP: dict[str, tuple[str, ...]] = {
         "fault elements",
         "mental impairment",
         "unsoundness of mind",
+        # Counsel feedback 23 Feb 2026 — Issue 3: Commonwealth uses
+        # Criminal Code (Cth) s 7.3 for mental impairment, not the
+        # generic "mental impairment defence" phrasing.
+        "s 7.3",
+        "section 7.3",
+        "criminal code s 7.3",
+        "mental impairment under the criminal code",
     ),
 }
 
