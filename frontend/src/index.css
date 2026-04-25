@@ -231,6 +231,7 @@ code, .mono {
     display: none !important;
   }
 
+
   .page-break-inside-avoid {
     page-break-inside: avoid !important;
   }
@@ -268,7 +269,6 @@ code, .mono {
   margin: 1.7rem 0 0.6rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid #cbd5e1;
-  page-break-before: always;
 }
 
 .legal-report h3 {

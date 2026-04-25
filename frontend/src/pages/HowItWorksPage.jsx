@@ -617,7 +617,7 @@ const HowItWorksPage = () => {
                           </div>
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                             doc.priority === "ESSENTIAL" ? "bg-red-100 text-red-700" :
-                            doc.priority === "HIGH" ? "bg-amber-100 text-amber-700" :
+                            doc.priority === "HIGH" ? "bg-orange-100 text-orange-700" :
                             doc.priority === "MEDIUM" ? "bg-blue-100 text-blue-700" :
                             "bg-blue-100 text-blue-700"
                           }`}>
@@ -632,7 +632,7 @@ const HowItWorksPage = () => {
                 {/* Pro Tips */}
                 <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200">
                   <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <Sparkles className="w-4 h-4 text-blue-600" />
                     <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide">Pro Tips</h3>
                   </div>
                   <ul className="space-y-2">
