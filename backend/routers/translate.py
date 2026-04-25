@@ -590,7 +590,7 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
             continue
         if stripped.startswith("#### "):
             flush_buf()
-            hdr = stripped.lstrip("#").strip()
+            hdr = stripped[5:].strip()
             story.append(Paragraph(_format_inline(hdr), styles["TrMinorHeading"]))
             story.append(Spacer(1, 1 * mm))
             continue
