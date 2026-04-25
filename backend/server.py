@@ -68,7 +68,9 @@ app.add_middleware(
             + [
                 "https://criminallawappealmanagement.com.au",
                 "https://www.criminallawappealmanagement.com.au",
-                "https://criminal-appeals-au-2.preview.emergentagent.com",
+                # Preview/staging origins must NOT be hardcoded here.
+                # Add them via the CORS_ORIGINS env var in the preview environment instead:
+                # e.g. CORS_ORIGINS=https://<your-preview-host>
                 "http://localhost:3000",
             ]
         )
