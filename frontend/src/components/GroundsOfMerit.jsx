@@ -572,7 +572,7 @@ const GroundsOfMerit = ({
       <div className="grounds-export-shell">
         <div className="grounds-export-header">
           <p className="grounds-export-kicker">Grounds of Merit</p>
-          <h1>Detailed Grounds Analysis</h1>
+          <h1>Grounds of Merit Analysis</h1>
           {/* DO_NOT_UNDO — Case identity must always display in export */}
           <div style={{margin:'4px 0 6px', padding:'5px 8px', border:'1pt solid #1e3a8a', borderRadius:'4px', background:'#eff6ff'}}>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', columnGap:'12px', rowGap:'2px', fontSize:'10pt', fontFamily:"'Times New Roman', Times, serif", lineHeight:'1.25'}}>

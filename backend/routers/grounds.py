@@ -51,6 +51,103 @@ GROUND_TYPES = [
     "prosecution_misconduct", "jury_irregularity", "constitutional_violation", "other"
 ]
 
+# ---------------------------------------------------------------------------
+# Strategic default ordering for grounds display.
+# ---------------------------------------------------------------------------
+# When the user has not manually reordered grounds (i.e. every row still has
+# the default priority_order = 999), fall back to a strategic priority rather
+# than alphabetical title. Conviction-safety / mens rea / unsafe verdict /
+# miscarriage of justice grounds must surface above procedural / evidentiary
+# grounds so counsel sees the highest-value attack first.
+#
+# Covers BOTH vocabularies used in the DB:
+#   - LLM enum (models/GroundType): procedural_error, miscarriage_of_justice,
+#     sentencing_error, judicial_error, ineffective_counsel,
+#     prosecution_misconduct, jury_irregularity, constitutional_violation,
+#     fresh_evidence, other
+#   - Normaliser enum (services/ground_normaliser.GroundType): conviction,
+#     sentence, procedure, evidence, ineffective_counsel
+#
+# Lower number = higher priority (sorted ascending).
+# ---------------------------------------------------------------------------
+_TYPE_STRATEGIC_PRIORITY = {
+    # Tier 0 — conviction safety / the safety of the verdict itself
+    "conviction": 0,
+    "miscarriage_of_justice": 0,
+    "fresh_evidence": 0,
+    # Tier 1 — procedural / judicial / jury / prosecutorial integrity
+    "procedure": 1,
+    "procedural_error": 1,
+    "jury_irregularity": 1,
+    "judicial_error": 1,
+    "prosecution_misconduct": 1,
+    "constitutional_violation": 1,
+    # Tier 2 — evidentiary error
+    "evidence": 2,
+    # Tier 3 — ineffective assistance of counsel (high evidentiary threshold)
+    "ineffective_counsel": 3,
+    # Tier 4 — sentencing
+    "sentence": 4,
+    "sentencing_error": 4,
+    # Tier 5 — other / unknown / unmapped
+    "other": 5,
+}
+
+# Title tokens that force tier 0 even when the stored ground_type is generic
+# (e.g. "other"). These are the classic conviction-safety signals counsel
+# expects to read first on the brief.
+_CONVICTION_SAFETY_TITLE_TOKENS = (
+    "mens rea",
+    "unsafe verdict",
+    "miscarriage of justice",
+    "mental state",
+    "substantial impairment",
+    "mental impairment",
+    "diminished responsibility",
+    "unsoundness of mind",
+    "fault elements",
+)
+
+
+def _ground_strategic_priority(ground: dict) -> int:
+    """Return the strategic sort tier for a ground dict.
+
+    Checks title first (so a title like "Miscarriage of Justice — Mens Rea"
+    carrying a generic stored ground_type of "other" still reaches tier 0),
+    then falls back to the stored ground_type mapping.
+    """
+    title = (ground.get("title") or "").lower()
+    if any(tok in title for tok in _CONVICTION_SAFETY_TITLE_TOKENS):
+        return 0
+    gtype = (ground.get("ground_type") or "other").strip().lower()
+    return _TYPE_STRATEGIC_PRIORITY.get(gtype, 5)
+
+
+# Strength tier used in the display sort — lower = stronger.
+_STRENGTH_ORDER = {"strong": 0, "moderate": 1, "weak": 2, "unknown": 3}
+
+
+def _grounds_display_sort_key(ground: dict):
+    """Canonical display sort key for grounds_of_merit rows.
+
+    Order of precedence (ascending):
+      1. priority_order — user-driven manual reorder always wins when set
+      2. strategic type priority — conviction safety first, then procedure,
+         evidence, ineffective counsel, sentencing, other
+      3. strength — strong > moderate > weak > unknown
+      4. title (alphabetical) — stable final tiebreaker
+
+    This function is exposed at module scope so tests can unit-test the sort
+    without needing the HTTP layer or the database.
+    """
+    return (
+        ground.get("priority_order", 999),
+        _ground_strategic_priority(ground),
+        _STRENGTH_ORDER.get(ground.get("strength", "unknown"), 3),
+        (ground.get("title") or ""),
+    )
+
+
 router = APIRouter(prefix="/api", tags=["grounds"])
 
 
@@ -662,19 +759,17 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
 
-    STRENGTH_ORDER = {"strong": 0, "moderate": 1, "weak": 2, "unknown": 3}
-
     grounds = await db.grounds_of_merit.find(
         {"case_id": case_id},
         {"_id": 0}
     ).sort([("created_at", -1)]).to_list(200)
 
-    # Sort: priority_order first (if set by user reorder), then strength, then title
-    grounds.sort(key=lambda g: (
-        g.get("priority_order", 999),
-        STRENGTH_ORDER.get(g.get("strength", "unknown"), 3),
-        g.get("title", "")
-    ))
+    # Sort: priority_order first (user manual reorder always wins), then
+    # strategic type priority (conviction / mens rea / unsafe verdict first,
+    # procedural integrity second, evidence third, ineffective counsel
+    # fourth, sentencing fifth, other last), then strength, then title.
+    # See _grounds_display_sort_key above for the canonical spec.
+    grounds.sort(key=_grounds_display_sort_key)
 
     # For payment lookup, use the case owner's user_id (not admin's)
     case_owner_id = case.get("user_id", user.user_id)

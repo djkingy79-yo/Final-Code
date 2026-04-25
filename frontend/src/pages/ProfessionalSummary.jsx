@@ -120,7 +120,7 @@ const ProfessionalSummary = () => {
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
-                  <span><strong>Grounds of Appeal Identification:</strong> Uses AI analysis to identify potential grounds of appeal including procedural irregularities, misdirections to the jury, evidentiary errors, manifestly excessive or inadequate sentencing, fresh evidence, and miscarriage of justice considerations. Each ground is assessed with a strength rating and supporting evidence references.</span>
+                  <span><strong>Grounds of Merit Identification:</strong> Uses AI analysis to identify potential grounds of appeal including procedural irregularities, misdirections to the jury, evidentiary errors, manifestly excessive or inadequate sentencing, fresh evidence, and miscarriage of justice considerations. Each ground is assessed with a strength rating and supporting evidence references.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2"></div>
