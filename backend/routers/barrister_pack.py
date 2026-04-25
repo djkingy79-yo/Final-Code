@@ -84,6 +84,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
     styles.add(ParagraphStyle(name="PackSubtitle", fontName="Times-Roman", fontSize=CANONICAL_BODY_PT, spaceAfter=8, textColor=colors.HexColor("#64748b"), alignment=TA_CENTER))
     styles.add(ParagraphStyle(name="SectionHead", fontName="Times-Bold", fontSize=CANONICAL_H1_PT, spaceAfter=6, spaceBefore=12, textColor=colors.HexColor("#0f4c81"), keepWithNext=True))
     styles.add(ParagraphStyle(name="SubHead", fontName="Times-Bold", fontSize=CANONICAL_H2_PT, spaceAfter=3, spaceBefore=8, textColor=colors.HexColor("#1e293b"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="SubSubHead", fontName="Times-BoldItalic", fontSize=CANONICAL_H3_PT, spaceAfter=2, spaceBefore=6, textColor=colors.HexColor("#334155"), keepWithNext=True))
     styles.add(ParagraphStyle(name="BodyText2", fontName="Times-Roman", fontSize=CANONICAL_BODY_PT, spaceAfter=6, leading=CANONICAL_BODY_PT*1.35, alignment=TA_JUSTIFY))
     styles.add(ParagraphStyle(name="Small", fontName="Times-Roman", fontSize=CANONICAL_TABLE_SHRINK_PT, spaceAfter=3, textColor=colors.HexColor("#475569"), leading=CANONICAL_TABLE_SHRINK_PT*1.3))
     styles.add(ParagraphStyle(name="Disclaimer", fontName="Times-Italic", fontSize=8, spaceAfter=4, textColor=colors.HexColor("#94a3b8"), alignment=TA_CENTER))
@@ -188,7 +189,7 @@ async def generate_barrister_pack(case_id: str, request: Request):
 
             evidence = g.get("supporting_evidence", [])
             if evidence:
-                elements.append(Paragraph(f"<b>Supporting Evidence ({len(evidence)}):</b>", styles["SubHead"]))
+                elements.append(Paragraph(f"Supporting Evidence ({len(evidence)}):", styles["SubSubHead"]))
                 for e in evidence[:8]:
                     quote = e.get("quote", e) if isinstance(e, dict) else str(e)
                     fname = e.get("filename", "") if isinstance(e, dict) else ""
