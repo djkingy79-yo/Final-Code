@@ -484,6 +484,7 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
     styles.add(ParagraphStyle(name="TrMetaValue", fontSize=CANONICAL_BODY_PT, fontName=bold_font, textColor=colors.HexColor("#0f172a"), spaceAfter=4))
     styles.add(ParagraphStyle(name="TrLangBadge", fontSize=CANONICAL_H2_PT, fontName=bold_font, textColor=colors.HexColor("#1e40af"), alignment=TA_CENTER, spaceAfter=6))
     styles.add(ParagraphStyle(name="TrNumberedHeader", fontSize=CANONICAL_H2_PT, spaceBefore=8, spaceAfter=4, fontName=bold_font, textColor=colors.HexColor("#0f172a"), keepWithNext=True))
+    styles.add(ParagraphStyle(name="TrMinorHeading", fontSize=CANONICAL_H3_PT, spaceBefore=6, spaceAfter=2, fontName=bold_font, textColor=colors.HexColor("#334155"), keepWithNext=True))
 
     story = []
 
@@ -581,10 +582,16 @@ async def export_translated_report_pdf(case_id: str, report_id: str, lang: str, 
             story.append(Paragraph(_format_inline(stripped), styles["TrNumberedHeader"]))
             story.append(Spacer(1, 2 * mm))
             continue
-        if stripped.startswith("### ") or stripped.startswith("#### "):
+        if stripped.startswith("### "):
             flush_buf()
-            hdr = stripped.lstrip("#").strip()
+            hdr = stripped[4:].strip()
             story.append(Paragraph(_format_inline(hdr), styles["TrSubSection"]))
+            story.append(Spacer(1, 1 * mm))
+            continue
+        if stripped.startswith("#### "):
+            flush_buf()
+            hdr = stripped[5:].strip()
+            story.append(Paragraph(_format_inline(hdr), styles["TrMinorHeading"]))
             story.append(Spacer(1, 1 * mm))
             continue
         if stripped.startswith("- ") or stripped.startswith("• "):
