@@ -214,7 +214,7 @@ curl -s "$API_URL/api/cases" -H "Authorization: Bearer $TOKEN"
 
 | Issue | Solution |
 |-------|----------|
-| Google Auth fails on custom domain | Domain must be registered with Emergent Support for OAuth callbacks |
+| Google Auth fails on custom domain | Verify `criminallawappealmanagement.com.au` is listed as an authorised JavaScript origin and redirect URI in your Google Cloud Console OAuth 2.0 client |
 | PDF export blank on iOS | Uses `/document-preview?mode=pdf` route (not blob URLs) |
 | Report stuck in "generating" | Startup cleanup auto-recovers or fails stuck reports |
 | Translation timeout | Large reports are chunked (12KB per chunk). Increase `timeout_seconds` if needed |

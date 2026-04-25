@@ -45,12 +45,28 @@ COMMON_CONVICTION_TERMS = {
     # fall through to the (new) procedure default.
     "misdirection", "probability versus possibility", "element of offence",
     "element of the offence",
+    "mental impairment defence", "psychosis at time of offence",
 }
 
 COMMON_SENTENCE_TERMS = {
     "manifestly excessive", "manifest excess", "rehabilitation", "mitigation",
     "sentencing error", "non-parole", "parole", "moral culpability", "totality",
     "discount", "sentence excessive", "sentence manifestly excessive",
+    "parity", "sentence severity",
+}
+
+# Hard-lock conviction terms that are unambiguously liability/conviction issues across
+# all jurisdictions — applied BEFORE soft-scoring to ensure the mental impairment
+# split fires reliably (the scorer must bite, not merely nudge).
+COMMON_HARD_CONVICTION_TERMS = {
+    "mens rea", "mental impairment defence", "psychosis at time of offence",
+}
+
+# Hard-lock sentence terms that are unambiguously sentencing issues across all
+# jurisdictions — applied BEFORE soft-scoring so moral-culpability/totality/parity
+# language always resolves to sentence, never conviction.
+COMMON_HARD_SENTENCE_TERMS = {
+    "moral culpability", "totality", "parity", "sentence severity",
 }
 
 COMMON_PROCEDURE_TERMS = {
@@ -95,12 +111,12 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
             "s 23a", "section 23a", "substantial impairment", "abnormality of mind",
             "unsafe verdict", "mens rea", "mental illness defence",
             "beyond reasonable doubt",
-        },
+        } | COMMON_HARD_CONVICTION_TERMS,
         hard_sentence_terms={
             "manifestly excessive", "manifest excess", "rehabilitation",
             "s 21a", "section 21a", "s 3a", "section 3a",
             "house v the king", "house v king",
-        },
+        } | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "VIC": JurisdictionRuleSet(
@@ -115,8 +131,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS | {"judge alone"},
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"mental impairment", "defence of mental impairment"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"mental impairment", "defence of mental impairment"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "QLD": JurisdictionRuleSet(
@@ -131,8 +147,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS,
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"unsoundness of mind", "diminished responsibility"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"unsoundness of mind", "diminished responsibility"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "SA": JurisdictionRuleSet(
@@ -147,8 +163,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS,
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"mental incompetence", "mental impairment"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"mental incompetence", "mental impairment"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "WA": JurisdictionRuleSet(
@@ -163,8 +179,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS | {"judge alone"},
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"unsoundness of mind"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"unsoundness of mind"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "TAS": JurisdictionRuleSet(
@@ -179,8 +195,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS,
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"insanity"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"insanity"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"juror", "jury integrity", "jury misconduct"},
     ),
     "NT": JurisdictionRuleSet(
@@ -195,8 +211,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS,
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"mental impairment", "criminal responsibility"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"mental impairment", "criminal responsibility"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "ACT": JurisdictionRuleSet(
@@ -211,8 +227,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS | {"judge alone"},
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"mental impairment"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"mental impairment"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
     "CTH": JurisdictionRuleSet(
@@ -227,8 +243,8 @@ JURISDICTION_RULES: dict[Jurisdiction, JurisdictionRuleSet] = {
         procedure_terms=COMMON_PROCEDURE_TERMS,
         evidence_terms=COMMON_EVIDENCE_TERMS,
         ineffective_counsel_terms=COMMON_INEFFECTIVE_COUNSEL_TERMS,
-        hard_conviction_terms={"fault elements", "intention", "knowledge", "recklessness", "negligence"},
-        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"},
+        hard_conviction_terms={"fault elements", "intention", "knowledge", "recklessness", "negligence"} | COMMON_HARD_CONVICTION_TERMS,
+        hard_sentence_terms={"manifestly excessive", "manifest excess", "rehabilitation"} | COMMON_HARD_SENTENCE_TERMS,
         hard_procedure_terms={"judge-alone", "judge alone", "juror", "jury integrity", "jury misconduct"},
     ),
 }
