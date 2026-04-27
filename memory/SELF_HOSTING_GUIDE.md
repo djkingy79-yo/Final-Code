@@ -1,15 +1,12 @@
 # Self-Hosting Deployment Guide — Appeal Case Manager
 
-This guide walks through moving the backend off the Emergent preview URL
-(`*.preview.emergentagent.com`) and onto infrastructure under your own
-control. When this is complete, every part of the pipeline — frontend,
-backend, LLM, authentication, and domain — is owned by you.
+This guide covers deploying the backend onto infrastructure under your own
+control so that every part of the pipeline — frontend, backend, LLM,
+authentication, and domain — is owned by you.
 
-> **Status today:** The frontend is already served from
-> `criminallawappealmanagement.com.au`. The backend still runs on the
-> Emergent preview URL (see `REACT_APP_BACKEND_URL` in
-> `/app/frontend/.env`). After this migration, it will run at
-> `api.criminallawappealmanagement.com.au` on your chosen provider.
+> **Status:** Both frontend and backend run on
+> `criminallawappealmanagement.com.au` / `api.criminallawappealmanagement.com.au`.
+> Use this guide when migrating to a new hosting provider.
 
 ---
 
@@ -65,9 +62,7 @@ Railway will detect this and run the FastAPI app with the port it exposes.
 
 ### Step 2 — Push to GitHub
 
-Use the **Save to Github** button in the Emergent chat input. This pushes
-the full `/app` directory to your repo. Never commit `.env` files — Git is
-already configured to ignore them.
+Push the repository to GitHub using `git push`.
 
 ### Step 3 — Create the Railway project
 
@@ -106,13 +101,12 @@ Copy each variable from your local `/app/backend/.env`:
 
 The frontend already builds against `REACT_APP_BACKEND_URL`. Update it:
 
-1. Edit `/app/frontend/.env` on the Emergent preview environment:
+1. Edit `/app/frontend/.env`:
    ```
    REACT_APP_BACKEND_URL=https://api.criminallawappealmanagement.com.au
    ```
 2. Trigger a frontend rebuild / redeploy. Once live, the frontend will call
-   your Railway-hosted backend directly. The Emergent preview URL is no
-   longer in the runtime path.
+   your new backend directly.
 
 ### Step 7 — Google Cloud Console update
 
@@ -192,14 +186,12 @@ FastAPI error with a stack trace. The most common post-migration issues are:
 
 ---
 
-## 6. Decommissioning the Emergent preview URL
+## 6. Verification
 
-Once the frontend is pointing at your Railway backend and the above
-verification passes, the Emergent preview URL (`*.preview.emergentagent.com`)
-is no longer in any runtime path. You may leave it running for rollback
-insurance, or ask Emergent support to retire it. Either way, there is now
-zero third-party dependency between you, your data, and your barrister
-users — the application runs end-to-end on infrastructure you own.
+Once the frontend is pointing at your new backend and the above
+verification passes, there is zero third-party dependency between you,
+your data, and your barrister users — the application runs end-to-end
+on infrastructure you own.
 
 ---
 
