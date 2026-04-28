@@ -1,0 +1,66 @@
+# Render Blueprint — Appeal Case Manager
+# https://render.com/docs/blueprint-spec
+#
+# Single Docker container: Python/FastAPI backend + pre-built React frontend.
+# MongoDB is hosted externally (MongoDB Atlas recommended).
+#
+# Deploy steps:
+#   1. Push this file to your repo.
+#   2. In Render Dashboard → New → Blueprint → connect your repo.
+#   3. Render will prompt for all sync:false env vars before first deploy.
+#   4. See DEPLOYMENT_RENDER.md for the full walkthrough.
+
+services:
+  - type: web
+    name: appeal-case-manager
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # REACT_APP_BACKEND_URL must be set to the public URL of THIS service.
+    # On first deploy: accept the placeholder, deploy once to get your .onrender.com URL,
+    # then update this variable and redeploy. The frontend is rebuilt on each deploy.
+    dockerBuildArgs:
+      - key: REACT_APP_BACKEND_URL
+        value: https://appeal-case-manager.onrender.com
+    healthCheckPath: /api/health
+    autoDeploy: false  # set to true once URLs are confirmed
+
+    envVars:
+      # ── Database ────────────────────────────────────────────────────────────
+      - key: MONGO_URL
+        sync: false   # set in Render dashboard — your MongoDB Atlas connection string
+      - key: DB_NAME
+        value: criminal_appeals
+
+      # ── App URLs & CORS ──────────────────────────────────────────────────────
+      # Set FRONTEND_URL to the public URL of this Render web service.
+      - key: FRONTEND_URL
+        value: https://appeal-case-manager.onrender.com
+      # Comma-separated list of trusted origins (never use *).
+      - key: CORS_ORIGINS
+        value: https://appeal-case-manager.onrender.com
+
+      # ── AI / LLM ─────────────────────────────────────────────────────────────
+      - key: OPENAI_API_KEY
+        sync: false   # set in Render dashboard
+
+      # ── Google OAuth ─────────────────────────────────────────────────────────
+      - key: GOOGLE_CLIENT_ID
+        sync: false   # set in Render dashboard
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false   # set in Render dashboard
+
+      # ── Admin & Contact ──────────────────────────────────────────────────────
+      - key: ADMIN_EMAILS
+        sync: false   # comma-separated admin email addresses
+      - key: CONTACT_EMAIL
+        sync: false   # primary support/contact address
+
+      # ── Email (Resend) ────────────────────────────────────────────────────────
+      - key: RESEND_API_KEY
+        sync: false   # set in Render dashboard
+      - key: RESEND_FROM_EMAIL
+        sync: false   # e.g. noreply@your-domain.com (must be a verified Resend sender)
+
+      # ── Payments (optional) ──────────────────────────────────────────────────
+      - key: PAYID_EMAIL
+        sync: false   # PayID email shown on invoices; defaults to CONTACT_EMAIL if blank
