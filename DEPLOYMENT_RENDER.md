@@ -56,7 +56,7 @@ FastAPI backend into one image — no separate static-hosting service is needed.
      ```
 5. Copy the **Client ID** and **Client Secret**.
 
-> **Note:** You will only know the exact Render URL after first deploy (Step 4).
+> **Note:** You will only know the exact Render URL after the first deploy (Step 4 below).
 > You can deploy first with any placeholder URL, then update the OAuth credentials
 > and re-deploy once you know the final URL.
 

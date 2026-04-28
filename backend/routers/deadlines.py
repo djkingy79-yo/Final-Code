@@ -6,6 +6,7 @@ ADDITIVE HARDENING PATCH
 from fastapi import APIRouter, HTTPException, Request
 from typing import List
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 import logging
 
 from config import db, get_frontend_url
@@ -446,7 +447,7 @@ async def export_deadlines_ics(case_id: str, request: Request):
         f"X-WR-CALNAME:{_ics_escape(appellant)} — Appeal Deadlines",
     ]
     for d in deadlines:
-        uid = f"{d.get('deadline_id', 'unknown')}@{get_frontend_url().split('//')[-1].split('/')[0]}"
+        uid = f"{d.get('deadline_id', 'unknown')}@{urlparse(get_frontend_url()).netloc}"
         dtstart = _fmt_dt(d.get("due_date"))
         summary = _ics_escape(d.get("title", "Appeal deadline"))
         description = _ics_escape(d.get("description", ""))
