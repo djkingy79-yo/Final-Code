@@ -479,7 +479,7 @@ All files in `frontend/src/components/ui/` are Shadcn/Radix UI component wrapper
 | `memory/PRD.md` | Markdown | Product Requirements Document with full feature history | documentation |
 | `memory/CHANGELOG.md` | Markdown | Change log | documentation |
 | `memory/ROADMAP.md` | Markdown | Product roadmap | documentation |
-| `memory/IDENTITY_LOCK.md` | Markdown | Permanent non-negotiable rules: domain, LLM key, branding, Emergent purge | documentation |
+| `memory/IDENTITY_LOCK.md` | Markdown | Permanent non-negotiable rules: domain, LLM key, branding, third-party purge | documentation |
 | `memory/SELF_HOSTING_GUIDE.md` | Markdown | Self-hosting setup guide (Railway, MongoDB, env vars, Google OAuth) | documentation |
 | `memory/.gitkeep` | Text | Keeps memory/ directory in git | documentation |
 
@@ -500,19 +500,10 @@ All files in `frontend/src/components/ui/` are Shadcn/Radix UI component wrapper
 | `docs/USER_GUIDE.md` | Markdown | End-user guide | documentation |
 | `docs/REPO_ARCHITECTURE_AUDIT.md` | Markdown | Full repository architecture audit (this session) | documentation |
 | `docs/REPO_FILE_INDEX.md` | Markdown | This file — complete file index | documentation |
-| `docs/audit/FULL_AUDIT_REPORT.txt` | Text | Historical ground-dedup debug audit log (Emergent platform artifact) | legacy |
-| `docs/audit/COMPLETE_JOB_AUDIT.txt` | Text | Historical job audit log (Emergent platform artifact) | legacy |
-| `docs/audit/FULL_JOB_AUDIT.txt` | Text | Historical full job audit log (Emergent platform artifact) | legacy |
+| `docs/audit/FULL_AUDIT_REPORT.txt` | Text | Historical ground-dedup debug audit log | legacy |
+| `docs/audit/COMPLETE_JOB_AUDIT.txt` | Text | Historical job audit log | legacy |
+| `docs/audit/FULL_JOB_AUDIT.txt` | Text | Historical full job audit log | legacy |
 | `README.md` | Markdown | Repository readme | documentation |
-
----
-
-## Legacy / Platform Artifacts
-
-| Path | Language/Type | Purpose | Status |
-|------|---------------|---------|--------|
-| `.emergent/emergent.yml` | YAML | Legacy Emergent platform config (inert — IDENTITY_LOCK prohibits Emergent usage) | legacy |
-| `.emergent/summary.txt` | Text | Legacy Emergent platform summary (inert) | legacy |
 
 ---
 
