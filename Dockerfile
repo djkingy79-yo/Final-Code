@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package.json frontend/yarn.lock ./
 RUN yarn install --network-timeout 600000
 COPY frontend/ ./
-ARG REACT_APP_BACKEND_URL
+ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 RUN yarn build
 
@@ -32,8 +32,6 @@ COPY --from=frontend-build /app/frontend/build ./static
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:8001/api/health || exit 1
+    CMD sh -c 'curl -f "http://localhost:${PORT:-8001}/api/health" || exit 1'
 
-EXPOSE 8001
-
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "1"]
+CMD ["sh", "-c", "exec uvicorn server:app --host 0.0.0.0 --port ${PORT:-8001} --workers 1"]

@@ -103,6 +103,10 @@ railway deploy
 #   Start: uvicorn backend.server:app --host 0.0.0.0 --port $PORT
 ```
 
+If Railway deploys from the repository root, it will detect the root `Dockerfile`.
+That container now honors Railway's `$PORT` and can build the web frontend
+without a separate `REACT_APP_BACKEND_URL` build arg for same-origin web deploys.
+
 ## Option 3: VPS / Manual
 
 ```bash
