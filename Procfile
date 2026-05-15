@@ -1,1 +1,1 @@
-web: cd backend && uvicorn server:app --host 0.0.0.0 --port ${PORT:-8001} --workers 1
+web: uvicorn backend.server:app --host 0.0.0.0 --port ${PORT:-8001} --workers 1
