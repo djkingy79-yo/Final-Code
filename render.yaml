@@ -21,7 +21,7 @@ services:
     dockerBuildArgs:
       - key: REACT_APP_BACKEND_URL
         value: https://appeal-case-manager.onrender.com
-    healthCheckPath: /api/health
+    healthCheckPath: /api/health/ready
     autoDeploy: false  # set to true once URLs are confirmed
 
     envVars:
