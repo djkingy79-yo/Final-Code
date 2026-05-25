@@ -19,8 +19,7 @@ services:
     # On first deploy: accept the placeholder, deploy once to get your .onrender.com URL,
     # then update this variable and redeploy. The frontend is rebuilt on each deploy.
     dockerBuildArgs:
-      - key: REACT_APP_BACKEND_URL
-        value: https://appeal-case-manager.onrender.com
+      REACT_APP_BACKEND_URL: https://appeal-case-manager.onrender.com
     healthCheckPath: /api/health/ready
     autoDeploy: false  # set to true once URLs are confirmed
 
