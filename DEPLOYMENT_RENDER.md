@@ -164,14 +164,14 @@ Update the following to use the actual URL:
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | `GOCSPX-...` |
 | `ADMIN_EMAILS` | Comma-separated admin emails | `admin@example.com` |
 | `CONTACT_EMAIL` | Contact/support email | `support@example.com` |
-| `RESEND_API_KEY` | Resend API key | `re_...` |
-| `RESEND_FROM_EMAIL` | Verified sender email | `noreply@example.com` |
 
 ### Backend (optional)
 
 | Variable | Description | Default |
 |---|---|---|
 | `PAYID_EMAIL` | PayID payment email | Falls back to `CONTACT_EMAIL` |
+| `RESEND_API_KEY` | Resend API key used to enable email sending | Email features are disabled when unset |
+| `RESEND_FROM_EMAIL` | Verified sender email used with Resend | Required only when `RESEND_API_KEY` is set |
 
 ### Frontend (Docker build argument — baked into bundle at build time)
 
