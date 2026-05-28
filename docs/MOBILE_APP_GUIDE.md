@@ -101,7 +101,7 @@ Update version in:
 ---
 
 ## Support
-For issues with mobile builds, contact Emergent support or refer to:
+For issues with mobile builds, refer to:
 - Capacitor docs: https://capacitorjs.com/docs
 - iOS submission: https://developer.apple.com/app-store/submitting/
 - Android submission: https://developer.android.com/distribute/console
