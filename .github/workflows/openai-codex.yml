@@ -13,13 +13,25 @@ on:
         default: gpt-5.2-codex
 
 jobs:
-  codex-exec:
+  codex:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: read
     steps:
-      - name: Run codex-exec with explicit stdin prompt
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Ensure OPENAI_API_KEY is configured
         env:
-          CODEX_PROMPT: ${{ github.event.inputs.prompt || 'Fix issue' }}
-          CODEX_MODEL: ${{ github.event.inputs.model || 'gpt-5.2-codex' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          echo "$CODEX_PROMPT" | codex-exec --model "$CODEX_MODEL"
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Missing OPENAI_API_KEY secret for OpenAI Codex workflow."
+            exit 1
+          fi
+      - name: Run Codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt: ${{ github.event.inputs.prompt || 'Fix issue' }}
+          model: ${{ github.event.inputs.model || 'gpt-5.2-codex' }}
