@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Python dependencies
 COPY backend/requirements.txt ./
-RUN pip install --no-cache-dir --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend
 COPY backend/ ./

@@ -302,7 +302,7 @@ And see something like:
   - `pip check` → no broken requirements.
   - `/api/health` → 200, DB connected. Frontend on port 3000 → 200.
 - **Security scan (zero findings):** no hardcoded secrets (sk-/AKIA/AIza/ghp_), no `os.system`, no `subprocess(shell=True)`, no `eval/exec`, no bare `except:` in production code, no raw `innerHTML` (only `dangerouslySetInnerHTML` via `DOMPurify.sanitize`), all API keys read from `os.environ`.
-- **Dependency health:** `emergentintegrations==0.1.1` properly gated with `--extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/` at the top of `requirements.txt`.
+- **Dependency health:** Removed the stale CloudFront `--extra-index-url` from `backend/requirements.txt` (the host no longer resolves); installs now use the default PyPI index.
 
 
 ## 19 Apr 2026 — Real Backend-Fed Pass-by-Pass Report Progress
