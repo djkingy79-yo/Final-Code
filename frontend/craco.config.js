@@ -3,18 +3,28 @@ const path = require("path");
 require("dotenv").config();
 
 // ── Production environment validation ──
-if (process.env.NODE_ENV === 'production') {
-  if (!process.env.REACT_APP_BACKEND_URL) {
-    // Web deployments (Render/Railway/Docker same-origin) use window.location.origin at runtime
-    // and do not require a baked-in backend URL. Mobile builds (Capacitor) DO require it.
-    // Keep builds unblocked for PaaS platforms that don't set build-time env vars.
-    // Mobile builds are guarded in frontend/build-mobile.sh.
-    // eslint-disable-next-line no-console
-    console.warn(
-      'REACT_APP_BACKEND_URL is not set. Web builds will use same-origin at runtime; ' +
-        'mobile (Capacitor) builds require REACT_APP_BACKEND_URL to be set.'
+const deployTarget = (process.env.DEPLOY_TARGET || "").trim().toLowerCase();
+const useSameOrigin = (process.env.REACT_APP_USE_SAME_ORIGIN || "").trim().toLowerCase();
+const requiresBackendUrl =
+  useSameOrigin === "false" || deployTarget === "mobile" || deployTarget === "split";
+
+if (process.env.NODE_ENV === "production" && !process.env.REACT_APP_BACKEND_URL) {
+  if (requiresBackendUrl) {
+    throw new Error(
+      "REACT_APP_BACKEND_URL is required for production builds when " +
+        "REACT_APP_USE_SAME_ORIGIN=false or DEPLOY_TARGET=mobile|split."
     );
   }
+
+  // Web deployments (Render/Railway/Docker same-origin) use window.location.origin at runtime
+  // and do not require a baked-in backend URL. Mobile builds (Capacitor) DO require it.
+  // Keep builds unblocked for same-origin web deploys unless the build flags say otherwise.
+  // Mobile builds are additionally guarded in frontend/build-mobile.sh.
+  // eslint-disable-next-line no-console
+  console.warn(
+    "REACT_APP_BACKEND_URL is not set. Defaulting to same-origin runtime API calls. " +
+      "Set REACT_APP_USE_SAME_ORIGIN=false (or DEPLOY_TARGET=mobile|split) to require it at build time."
+  );
 }
 
 // Check if we're in development/preview mode (not production build)
