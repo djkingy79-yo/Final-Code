@@ -4,7 +4,21 @@ require("dotenv").config();
 
 // ── Production environment validation ──
 if (process.env.NODE_ENV === 'production') {
+  const deployTarget = (process.env.DEPLOY_TARGET || 'web').toLowerCase();
+  const sameOriginFlag = process.env.REACT_APP_USE_SAME_ORIGIN;
+  const requiresBackendUrl =
+    deployTarget === 'mobile' ||
+    deployTarget === 'split' ||
+    sameOriginFlag === 'false';
+
   if (!process.env.REACT_APP_BACKEND_URL) {
+    if (requiresBackendUrl) {
+      throw new Error(
+        'REACT_APP_BACKEND_URL is required when DEPLOY_TARGET is "mobile" or "split", ' +
+          'or when REACT_APP_USE_SAME_ORIGIN=false.'
+      );
+    }
+
     // Web deployments (Render/Railway/Docker same-origin) use window.location.origin at runtime
     // and do not require a baked-in backend URL. Mobile builds (Capacitor) DO require it.
     // Keep builds unblocked for PaaS platforms that don't set build-time env vars.
