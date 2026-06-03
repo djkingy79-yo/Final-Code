@@ -182,6 +182,19 @@ Update the following to use the actual URL:
 > the React build step (`yarn build`). You do **not** need it for same-origin
 > web deployments. If you do set or change it, you need a full redeploy.
 
+### Optional setup — when you **do** need `REACT_APP_BACKEND_URL` (mobile/split hosting)
+
+Use one of these paths:
+
+1. **Render Dashboard** → your service → **Settings** → **Build & Deploy** →
+   **Build Arguments** → add:
+   - Key: `REACT_APP_BACKEND_URL`
+   - Value: `https://api.your-domain.com`
+2. **Blueprint (`render.yaml`)** → uncomment the example `dockerBuildArgs` block
+   under the service and set the same value.
+
+Then redeploy so the new build arg is baked into the frontend bundle.
+
 ---
 
 ## Verifying the deployment
