@@ -98,14 +98,14 @@ The included `Procfile` supports PaaS platforms:
 # Railway
 railway deploy
 
-# Render — set build command:
-#   Build: cd frontend && yarn install && yarn build
-#   Start: uvicorn backend.server:app --host 0.0.0.0 --port $PORT
+# Render (recommended): use the included `render.yaml` Blueprint
+# See: /DEPLOYMENT_RENDER.md
 ```
 
 If Railway deploys from the repository root, it will detect the root `Dockerfile`.
 That container now honors Railway's `$PORT` and can build the web frontend
-without a separate `REACT_APP_BACKEND_URL` build arg for same-origin web deploys.
+without a separate `REACT_APP_BACKEND_URL` build arg for same-origin web deploys
+(mobile builds still require it).
 
 ## Option 3: VPS / Manual
 

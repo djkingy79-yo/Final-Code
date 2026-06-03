@@ -5,6 +5,15 @@
 echo "🚀 Criminal Law Appeal Management - Mobile Build"
 echo "======================================"
 
+# Mobile builds MUST bake in the real production backend URL.
+# Without it, the Capacitor webview will call itself (capacitor://localhost) instead of the backend.
+if [ -z "${REACT_APP_BACKEND_URL:-}" ]; then
+    echo "❌ REACT_APP_BACKEND_URL is required for mobile builds."
+    echo "Set it to your production backend origin, for example:"
+    echo "  export REACT_APP_BACKEND_URL=https://api.your-domain.com"
+    exit 1
+fi
+
 # Step 1: Build the React app
 echo ""
 echo "📦 Step 1: Building React app..."

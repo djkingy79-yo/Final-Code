@@ -101,11 +101,7 @@ FastAPI backend into one image — no separate static-hosting service is needed.
 2. Connect your repository.
 3. Set **Runtime** to **Docker**.
 4. Set **Dockerfile Path** to `./Dockerfile`.
-5. Under **Build & Deploy** → **Build Arguments**, add:
-   ```
-   REACT_APP_BACKEND_URL=https://<your-service-name>.onrender.com
-   ```
-6. Under **Environment**, add all the variables listed in the table above, plus:
+5. Under **Environment**, add all the variables listed in the table above, plus:
 
    | Variable | Value |
    |---|---|
@@ -113,8 +109,13 @@ FastAPI backend into one image — no separate static-hosting service is needed.
    | `FRONTEND_URL` | `https://<your-service-name>.onrender.com` |
    | `CORS_ORIGINS` | `https://<your-service-name>.onrender.com` |
 
-7. **Health Check Path**: `/api/health`
-8. Click **Create Web Service**.
+6. **Health Check Path**: `/api/health`
+7. Click **Create Web Service**.
+
+> **Note:** For this repo's single-container deployment, you do **not** need
+> `REACT_APP_BACKEND_URL` because the frontend calls the backend using the
+> same origin it was loaded from. `REACT_APP_BACKEND_URL` is only required
+> for native mobile builds (Capacitor) or split frontend/backend hosting.
 
 ---
 
@@ -128,14 +129,12 @@ Update the following to use the actual URL:
 1. **Render environment variables** (via Dashboard → your service → Environment):
    - `FRONTEND_URL` → actual Render URL
    - `CORS_ORIGINS` → actual Render URL
-   - Build argument `REACT_APP_BACKEND_URL` → actual Render URL
 
 2. **Google Cloud Console** → OAuth 2.0 Client:
    - Authorised JavaScript origins → add actual URL
    - Authorised redirect URIs → add `<actual-url>/auth/callback`
 
-3. **Trigger a redeploy** in Render so the frontend is rebuilt with the correct
-   `REACT_APP_BACKEND_URL`.
+3. **Trigger a redeploy** in Render so the new environment variables take effect.
 
 ---
 
@@ -177,11 +176,11 @@ Update the following to use the actual URL:
 
 | Variable | Description | Example |
 |---|---|---|
-| `REACT_APP_BACKEND_URL` | Backend API base URL | `https://your-app.onrender.com` |
+| `REACT_APP_BACKEND_URL` | Backend API base URL (mobile/split hosting only) | `https://your-app.onrender.com` |
 
 > **Important:** `REACT_APP_BACKEND_URL` is a Docker build argument consumed by
-> the React build step (`yarn build`). Changing it requires a full redeploy
-> (Render does this automatically when you update it via the Dashboard).
+> the React build step (`yarn build`). You do **not** need it for same-origin
+> web deployments. If you do set or change it, you need a full redeploy.
 
 ---
 
@@ -208,6 +207,6 @@ https://your-app.onrender.com/api/health/deep   → MongoDB + OpenAI + email che
 |---|---|---|
 | App fails to start — `FATAL: Missing required environment variables` | One or more required env vars not set | Check Render Dashboard → Environment |
 | Google sign-in shows `redirect_uri_mismatch` | OAuth redirect URI not matching | Add `https://your-url.onrender.com/auth/callback` to Google Cloud Console |
-| Blank page / API calls fail | `REACT_APP_BACKEND_URL` points at wrong URL | Update build arg in Render → redeploy |
+| API calls fail from a separately-hosted frontend | Frontend and backend are on different origins | Set `REACT_APP_BACKEND_URL` to backend origin and ensure CORS allows the frontend |
 | Email not sending | `RESEND_API_KEY` missing or sender not verified | Check Resend dashboard |
 | `database: disconnected` on health check | `MONGO_URL` wrong or Atlas IP allowlist blocking Render | Fix connection string or allow `0.0.0.0/0` in Atlas |

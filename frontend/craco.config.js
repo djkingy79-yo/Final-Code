@@ -5,7 +5,15 @@ require("dotenv").config();
 // ── Production environment validation ──
 if (process.env.NODE_ENV === 'production') {
   if (!process.env.REACT_APP_BACKEND_URL) {
-    throw new Error('REACT_APP_BACKEND_URL is required for production build. Set it in frontend/.env');
+    // Web deployments (Render/Railway/Docker same-origin) use window.location.origin at runtime
+    // and do not require a baked-in backend URL. Mobile builds (Capacitor) DO require it.
+    // Keep builds unblocked for PaaS platforms that don't set build-time env vars.
+    // Mobile builds are guarded in frontend/build-mobile.sh.
+    // eslint-disable-next-line no-console
+    console.warn(
+      'REACT_APP_BACKEND_URL is not set. Web builds will use same-origin at runtime; ' +
+        'mobile (Capacitor) builds require REACT_APP_BACKEND_URL to be set.'
+    );
   }
 }
 

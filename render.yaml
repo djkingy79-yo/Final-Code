@@ -15,11 +15,12 @@ services:
     name: appeal-case-manager
     runtime: docker
     dockerfilePath: ./Dockerfile
-    # REACT_APP_BACKEND_URL must be set to the public URL of THIS service.
-    # On first deploy: accept the placeholder, deploy once to get your .onrender.com URL,
-    # then update this variable and redeploy. The frontend is rebuilt on each deploy.
-    dockerBuildArgs:
-      REACT_APP_BACKEND_URL: https://appeal-case-manager.onrender.com
+    # Note: REACT_APP_BACKEND_URL is NOT required for the web app when the frontend
+    # and backend are served from the same origin (this container). The frontend
+    # defaults to window.location.origin at runtime.
+    #
+    # REACT_APP_BACKEND_URL is only required for native mobile builds (Capacitor),
+    # where window.location.origin is not the real backend.
     # Render health checks must return 200 even before the DB is reachable.
     # /api/ready returns 503 when Mongo is unavailable, so use /api/health here.
     healthCheckPath: /api/health
