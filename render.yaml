@@ -20,7 +20,9 @@ services:
     # then update this variable and redeploy. The frontend is rebuilt on each deploy.
     dockerBuildArgs:
       REACT_APP_BACKEND_URL: https://appeal-case-manager.onrender.com
-    healthCheckPath: /api/health/ready
+    # Render health checks must return 200 even before the DB is reachable.
+    # /api/ready returns 503 when Mongo is unavailable, so use /api/health here.
+    healthCheckPath: /api/health
     autoDeploy: false  # set to true once URLs are confirmed
 
     envVars:

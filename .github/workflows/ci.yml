@@ -37,8 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install ruff
-          pip install -r backend/requirements.txt \
-            --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
+          pip install -r backend/requirements.txt
       - name: Lint backend
         run: >-
           ruff check backend/
@@ -67,8 +66,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-asyncio httpx
-          pip install -r backend/requirements.txt \
-            --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
+          pip install -r backend/requirements.txt
       - name: Run unit tests (no server required)
         working-directory: backend
         env:
@@ -113,8 +111,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-asyncio httpx
-          pip install -r backend/requirements.txt \
-            --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
+          pip install -r backend/requirements.txt
       - name: Wait for MongoDB to be ready
         run: |
           for i in {1..30}; do
