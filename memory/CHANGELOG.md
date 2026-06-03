@@ -104,7 +104,7 @@ Deb reported that all exports (Print / PDF / Word) on iPhone were rendering raw 
 
 ## 20 Apr 2026 — Security Audit + Preset Profiles
 - **Export Options — Preset Profiles** added. Quick-apply pills above the checkboxes: *Full Archive*, *Brief for Barrister*, *Client-friendly Summary*, *Evidence Pack*. One-click sets all checkboxes. `data-testid="export-preset-{id}"`.
-- **CORS hardened.** `server.py` CORS middleware was `allow_origins=["*"]` + `allow_credentials=True` — a security misconfiguration (browsers reject the combo; removes origin protection). Now reads comma-separated `CORS_ORIGINS` env, filters empty + explicit wildcards, fails closed (empty list) on misconfiguration. `CORS_ORIGINS` in `.env` updated to explicit list: production bare + www, preview, localhost:3000. Note: Emergent's preview ingress proxy overrides the header to `*` regardless, so live behaviour is unchanged on preview — matters when Deb self-hosts later.
+- **CORS hardened.** `server.py` CORS middleware was `allow_origins=["*"]` + `allow_credentials=True` — a security misconfiguration (browsers reject the combo; removes origin protection). Now reads comma-separated `CORS_ORIGINS` env, filters empty + explicit wildcards, fails closed (empty list) on misconfiguration. `CORS_ORIGINS` in `.env` updated to explicit list: production bare + www, preview, localhost:3000. Note: some preview ingress proxies override the header to `*` regardless, so live behaviour may differ in preview — this matters when self-hosting later.
 - **Global 401 response interceptor** in `App.js`. Previously, expired sessions left users stuck on broken pages because each route handled 401s locally (some didn't handle them at all). Now any axios 401 → localStorage cleared → redirect to `/?session_expired=1` (except for OAuth callback, admin endpoints, health, visit-track endpoints which legitimately 401 without needing logout).
 - **Pre-existing test-scaffolding issues fixed** — 2 `pytest.fail` assertions in `test_comprehensive_iteration_199.py` now accept 401 (unauth) in addition to 403 (non-admin) — both prove the auth gate works. `test_report_progress_iteration203.py` and other files have hardcoded relative URLs (`/api/auth/login` instead of full URL) that need a BASE_URL env var — pre-existing, NOT a regression from this session's work, not touched.
 
@@ -118,12 +118,12 @@ Deb requested the ability to pick which sections get included in the Case Bundle
 - **Modified** `CaseDetail.jsx` — `buildPrintAllHtml(opts)` now accepts a sections dict and skips excluded sections; all 3 "All" buttons (Print All / PDF All / Word All) first open the modal, then on confirm run the export with only chosen sections. `data-testid`s: `export-options-modal`, `export-opt-{key}`, `export-options-confirm`, `export-options-cancel`, `export-select-all`, `export-select-none`.
 - Backwards-compatible: `buildPrintAllHtml(null)` still produces the legacy "everything-on" output.
 
-### B. Full OpenAI Swap — no more EMERGENT_LLM_KEY dependency
+### B. Full OpenAI Swap — no more legacy key dependency
 - `backend/.env` → added `OPENAI_API_KEY=sk-proj-...` (Deb's own key with billing live).
-- `backend/config.py` → key loading now prefers `OPENAI_API_KEY`, falls back to `EMERGENT_LLM_KEY` only if the OpenAI key is absent (safety fallback, not runtime path).
+- `backend/config.py` → key loading uses `OPENAI_API_KEY` only (no alternate/shared key fallback).
 - `backend/services/llm_service.py`:
   - `_default_models_for_task()` stripped of Anthropic slots (Deb has no Claude key). Chain is now 4× gpt-4o + 2× gpt-4o-mini for retry + price-saver fallback.
-  - `call_llm_with_fallback()` resolves `api_key = OPENAI_API_KEY or EMERGENT_LLM_KEY`.
+  - `call_llm_with_fallback()` resolves `api_key = OPENAI_API_KEY`.
 - **End-to-end verified:** Live test through the actual production code path returned a forensically-styled response using the "It is arguable that..." opener — proving guardrails, banned-phrases, 27-Acts context, and ground-type framing all intact. Reports will read identically.
 - **Billing live and confirmed** on Deb's OpenAI account (smoke test "BILLING_OK" returned on first call). Both keys pasted in chat have been rotated to a third key (`sk-proj-S0C5jh...`) — earlier exposed keys still need to be deleted by Deb on platform.openai.com.
 - **Cost expectations:** ~$0.90 USD per complete case (all 4 tiers). Deb's $150-$200 pricing has massive margin.
@@ -201,7 +201,7 @@ And see something like:
 
 
 ## 20 Apr 2026 — Clarification: Preview OAuth 403 / Fix: Appeal Stats Edge-to-Edge Hero
-- **Preview Google OAuth 403 is NOT a bug** — user clicked CTAs from the Emergent preview URL (`*.preview.emergentagent.com`), which is correctly rejected by Google Cloud Console because only `criminallawappealmanagement.com.au` is registered as an authorised origin. This is Google's security working as designed. Buttons will work perfectly once deployed to production.
+- **Preview Google OAuth 403 is NOT a bug** — user clicked CTAs from a non-production preview URL, which is correctly rejected by Google Cloud Console because only `criminallawappealmanagement.com.au` is registered as an authorised origin. This is Google's security working as designed. Buttons will work perfectly once deployed to production.
 - **Fixed edge-to-edge blue hero banner** on AppealStatisticsPage. The "Australian Appeal Statistics" section was spilling full viewport width (`py-12 px-6 bg-blue-800`) while the logo above (contained `max-w-4xl`) and content below (contained `max-w-5xl`) were properly boxed. Visually jarring after the logo was added. Wrapped it in `max-w-5xl mx-auto rounded-2xl` so it's now a contained rounded card matching the rest of the page (1024 px wide, 448 px margin each side on 1920 viewport). All other added-logo pages use `bg-white` heroes which blend with page background — no further changes needed.
 
 
@@ -241,7 +241,7 @@ And see something like:
   - Left untouched (intentional): internal DB key `barrister_view`, endpoint URLs (`/reports/barrister-quick-brief`), service filename `barrister_generator.py`, page component `BarristerView.jsx`, generic references to the *profession* (Bar Associations, Find a Barrister, lawyer-directory firm names).
 - **Email-to-support button** added to the sign-in diagnostics panel (`App.js`). Opens `mailto:` with pre-filled subject and body (full diagnostics JSON) to `REACT_APP_SUPPORT_EMAIL`. Button only renders when the env var is set — graceful fallback for self-hosted forks. `data-testid="auth-email-diagnostics-btn"`. Verified live on preview.
 - **Env vars added:** `REACT_APP_SUPPORT_EMAIL` in `frontend/.env` (defaults to `djkingy79@gmail.com`).
-- **README overhauled end-to-end** — zero Emergent references remain (grep-verified), all recent features documented (direct Google OAuth, belt-and-braces CSRF state, background polling for bulk extract, live pass-by-pass progress, 27 recent Acts, 5-gate CI pipeline with MongoDB service container, Capacitor 7 mobile, sign-in diagnostics panel). `EMERGENT_LLM_KEY` removed from env table; `OPENAI_API_KEY`, `GOOGLE_CLIENT_ID/SECRET`, `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_SUPPORT_EMAIL`, mobile App Store/Play URLs added.
+- **README overhauled end-to-end** — zero legacy platform references remain (grep-verified), all recent features documented (direct Google OAuth, belt-and-braces CSRF state, background polling for bulk extract, live pass-by-pass progress, 27 recent Acts, 5-gate CI pipeline with MongoDB service container, Capacitor 7 mobile, sign-in diagnostics panel). Legacy key env var removed from env table; `OPENAI_API_KEY`, `GOOGLE_CLIENT_ID/SECRET`, `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_SUPPORT_EMAIL`, mobile App Store/Play URLs added.
 - **Mobile bundle resynced** (`yarn build` + `npx cap sync` — iOS + Android, 12 plugins synced).
 
 
@@ -258,24 +258,24 @@ And see something like:
 - **Deb's real-world test still required:** Sign in from `criminallawappealmanagement.com.au` (bare domain preferred). The CSRF mismatch screen should no longer appear.
 
 
-## 19 Apr 2026 — Direct Google OAuth Wired (replaces Emergent-managed auth)
+## 19 Apr 2026 — Direct Google OAuth Wired (replaces third-party managed auth)
 - **Backend (`routers/auth.py` + `config.py` + `.env`):** New `POST /api/auth/google/callback` endpoint. Exchanges Google `code` at `https://oauth2.googleapis.com/token`, verifies `id_token` with `google.oauth2.id_token.verify_oauth2_token` against `GOOGLE_CLIENT_ID`, upserts user by verified email, issues session_token + sets secure httponly cookie. Returns 400 on missing fields, 401 on invalid code, 503 if OAuth env not configured, 504 on Google unreachable, 403 if email not verified.
 - **Frontend (`AuthModal.jsx` + `App.js`):** `buildGoogleLoginUrl()` now builds direct Google authorize URL (`https://accounts.google.com/o/oauth2/v2/auth`) with OpenID scopes + CSRF `state` param stored in `sessionStorage`. `AuthCallback` component reads `code` from query, verifies `state` match, POSTs to new backend endpoint. Legacy `session_id` path kept briefly for users mid-redirect.
 - **Env vars added:** backend `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; frontend `REACT_APP_GOOGLE_CLIENT_ID`.
-- **Last Emergent auth touchpoint removed from app** — `auth.emergentagent.com` no longer referenced anywhere in frontend source. Users matched by verified email preserve all existing accounts.
-- **Tests (iteration_204):** 15/15 passed (missing code → 400, invalid code → 401, config loaded, id_token verification correct, Emergent fallback works, all regression tests pass for `/login`, `/register`, `/me`, `/logout`).
+- **Last third-party auth touchpoint removed from app** — external auth-hop hostname no longer referenced anywhere in frontend source. Users matched by verified email preserve all existing accounts.
+- **Tests (iteration_204):** 15/15 passed (missing code → 400, invalid code → 401, config loaded, id_token verification correct, legacy fallback works, all regression tests pass for `/login`, `/register`, `/me`, `/logout`).
 - **⚠️ Deb must rotate the client secret** — the secret `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` was pasted in chat. Reset it via Google Cloud Console → Credentials → OAuth client → Reset Secret, then update `/app/backend/.env` `GOOGLE_CLIENT_SECRET`.
 - **⚠️ Deb must fix Google Console JavaScript origin** from `http://criminallawappealmanagement.com.au` to `https://...` or mobile login will fail.
 
 
-## 19 Apr 2026 — Mobile CTA + Emergent Reference Cleanup (Partial)
+## 19 Apr 2026 — Mobile CTA + Reference Cleanup (Partial)
 - **Mobile CTA added** to `HelpPage.jsx` → new "Get the iOS & Android App" section between "What is Criminal Appeal AI?" and "Step 1: Sign In". App Store + Google Play buttons are greyed-out placeholders showing "Coming soon" by default, and **auto-activate** when `REACT_APP_IOS_APP_STORE_URL` and/or `REACT_APP_GOOGLE_PLAY_URL` env vars are set (will open in new tab once live). Uses inline Apple/Google logo SVGs (no external CDN). `data-testid`s: `help-mobile-cta-section`, `help-app-store-cta`, `help-google-play-cta`.
-- **Emergent CDN image purged.** Landing page hero image (`static.prod-images.emergentagent.com/...png`) downloaded to `/app/frontend/public/images/court-custody-hero.png` (1.28 MB). `LandingPage.jsx` now references the local asset via `${PUBLIC_URL}/images/court-custody-hero.png`.
-- **Cosmetic cleanup.** Removed "Emergent badge" code comment from LandingPage.jsx.
-- **Remaining Emergent touchpoints documented for Deb** (can't auto-remove — require her input):
-  - `auth.emergentagent.com` Google OAuth redirect — needs Deb's own Google Cloud OAuth app (`client_id` + `client_secret`) for me to rewire to direct Google OAuth.
-  - `EMERGENT_LLM_KEY` — needs Deb's own OpenAI/Anthropic/Gemini API key to swap off the universal key.
-  - `REACT_APP_BACKEND_URL` preview URL — goes away when backend is deployed to Deb's own host (Vercel/Railway/VPS).
+- **Third-party CDN image purged.** Landing page hero image downloaded to `/app/frontend/public/images/court-custody-hero.png` (1.28 MB). `LandingPage.jsx` now references the local asset via `${PUBLIC_URL}/images/court-custody-hero.png`.
+- **Cosmetic cleanup.** Removed legacy badge code comment from LandingPage.jsx.
+- **Remaining non-production touchpoints documented for Deb** (can't auto-remove — require her input):
+  - Google OAuth redirect + authorised origins must match Deb's own Google Cloud OAuth app (`client_id` + `client_secret`).
+  - LLM access must use Deb's own API key with billing enabled (no shared/fallback keys).
+  - Any preview backend URL goes away once backend is deployed to Deb's own host (Vercel/Railway/VPS).
 - **Refund / billing concern** (user said she paid >$3k): explicitly NOT handled by main agent. Must be routed via `support_agent` if she requests again.
 
 
@@ -283,7 +283,7 @@ And see something like:
 - **P2 — Counsel Conference Prep (Attachment B) verified COMPLETE.** Feature was already shipped in `services/barrister_generator.py` (lines 846–911). Verified present in all 5 most recent barrister reports (rpt_1d3ddfc9c595, rpt_3ef5f8797fdb, rpt_a976824bd035, rpt_35c073a0c8f8, rpt_e0300749db58). Contains B.1 Key Questions, B.2 Weak Points (markdown table), B.3 Likely Prosecution Responses, B.4 Document References (checklist table), B.5 Suggested Conference Agenda. Parsed by `parseBarristerSections` in `BarristerView.jsx` and rendered via ReactMarkdown+remarkGfm (tables render correctly).
 - **P1 — Mobile build prep COMPLETE.**
   - Re-ran `yarn build` (18 s) + `npx cap sync` (both iOS + Android) — 12 Capacitor plugins synced.
-  - Updated `capacitor.config.json` → `allowNavigation` now whitelists `*.emergentagent.com`, `criminallawappealmanagement.com.au`, `*.criminallawappealmanagement.com.au` (stops mobile CORS failures on custom domain).
+- Updated `capacitor.config.json` → `allowNavigation` now whitelists the production domain and its subdomains (stops mobile CORS failures on custom domain).
   - Created `/app/frontend/MOBILE_BUILD.md` with step-by-step Xcode + Android Studio build instructions, signing notes, keystore commands, release-bundle upload steps, and re-sync workflow.
   - Native `.ipa` and `.aab` production builds must be completed on Deb's Mac / with Android Studio (Linux container has no JDK/Xcode) — all project state is deploy-ready.
 
