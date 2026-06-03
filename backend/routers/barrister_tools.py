@@ -1,4 +1,4 @@
-# DO NOT UNDO — Barrister Tools router (Crown Response Simulator + Fresh
+#  — Barrister Tools router (Crown Response Simulator + Fresh
 # Evidence Gallagher Wizard). Both endpoints are LLM-backed AI-assist tools
 # that assume the caller is self-represented and produce EDUCATIONAL output.
 # All output must pass the non-legal-advice disclaimer rendered on the client.

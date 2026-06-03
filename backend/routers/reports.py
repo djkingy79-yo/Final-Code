@@ -78,8 +78,8 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
         }
         analysis_result = await analyze_case_with_ai(case_id, user_id, report_type, aggressive_mode, report_id=report_id)
         new_analysis = analysis_result.get("analysis", "")
-        
-        # DO_NOT_UNDO — Content protection: never overwrite a longer report with a shorter one.
+
+        #  — Content protection: never overwrite a longer report with a shorter one.
         # If the new content is less than 50% the length of the backup, something went wrong
         # (e.g. 502 errors truncated the generation). Keep the backup instead.
         backup_doc = await db.reports.find_one(
@@ -154,7 +154,7 @@ async def _run_report_generation(report_id: str, case_id: str, user_id: str, rep
     except Exception as exc:
         logger.error(f"Report {report_id} generation failed: {exc}")
         friendly_error = "Report generation was interrupted by a temporary AI service error. Retry resumes from the last completed section."
-        # DO_NOT_UNDO — Restore backup on failure. If backup_analysis exists,
+        #  — Restore backup on failure. If backup_analysis exists,
         # restore it so the user doesn't lose their previous report.
         backup_doc = await db.reports.find_one(
             {"report_id": report_id},
@@ -185,11 +185,11 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     """Generate an AI-powered report for a case (background task)"""
     user = await get_current_user(request)
     report_type = report_request.report_type
-    
+
     if report_type not in ["quick_summary", "full_detailed", "extensive_log"]:
         raise HTTPException(status_code=400, detail="Invalid report type")
-    
-    # DO_NOT_UNDO — Block duplicate generation. If a report of this type is
+
+    #  — Block duplicate generation. If a report of this type is
     # already generating, return its status instead of creating a duplicate.
     existing_generating = await db.reports.find_one(
         {
@@ -203,7 +203,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     )
     if existing_generating:
         return {"report_id": existing_generating["report_id"], "status": "generating", "report_type": report_type}
-    
+
     # Check payment for premium reports (admin bypasses all payments)
     is_admin = is_admin_user(user.email)
 
@@ -287,7 +287,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
                     "currency": "AUD",
                 },
             )
-    
+
     existing_failed = await db.reports.find(
         {
             "case_id": case_id,
@@ -325,7 +325,7 @@ async def generate_report(case_id: str, report_request: ReportRequest, request: 
     )
     if existing_completed:
         report_id = existing_completed["report_id"]
-        # DO_NOT_UNDO — NEVER wipe content.analysis during regeneration.
+        #  — NEVER wipe content.analysis during regeneration.
         # Keep the old report visible to the user while the new one generates.
         # Only clear partial_analysis and passes_completed (used by the generation engine).
         # The old analysis stays visible until the new generation completes and overwrites it.
@@ -517,7 +517,7 @@ async def get_or_generate_barrister_view(case_id: str, request: Request, regener
         if current_status == "completed":
             current_analysis = ((current_report.get("content") or {}).get("analysis") or "").strip()
             if len(current_analysis) < 4000:
-                # DO_NOT_UNDO — Backup before auto-regen of thin barrister report
+                #  — Backup before auto-regen of thin barrister report
                 await db.reports.update_one(
                     {"report_id": report_id_cur},
                     {"$set": {
@@ -636,7 +636,7 @@ async def export_latest_barrister_view_docx(case_id: str, request: Request):
     return await export_report_docx(case_id, report["report_id"], request)
 
 
-# DO NOT UNDO — Quick Research Brief: 2-page PDF with Counsel Synthesis + Priority Order + top 3 grounds
+#  — Quick Research Brief: 2-page PDF with Counsel Synthesis + Priority Order + top 3 grounds
 @router.get("/cases/{case_id}/reports/barrister-quick-brief")
 async def export_barrister_quick_brief(case_id: str, request: Request):
     """Generate a concise 2-page Quick Research Brief PDF.
@@ -777,7 +777,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
     # Top 3 Grounds
     top_grounds = grounds[:3]
     story.append(Paragraph("TOP 3 GROUNDS OF APPEAL", styles['QBSection']))
-    
+
     VIABILITY_LABELS = {
         "strong": "Arguable \u2014 Strong",
         "moderate": "Arguable \u2014 Moderate",
@@ -795,7 +795,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
         description = ground.get("description", "")
 
         story.append(Paragraph(f"Ground {idx}: {safe_text(title)}", styles['QBGroundTitle']))
-        
+
         # Viability badge — colour keyed to verified label, not raw strength
         viability_colour = {
             "Arguable \u2014 Strong": "#059669",
@@ -803,7 +803,7 @@ async def export_barrister_quick_brief(case_id: str, request: Request):
             "Requires Development": "#dc2626",
         }.get(viability or "", "#64748b")
         story.append(Paragraph(f'<font color="{viability_colour}"><b>{safe_text(badge_text)}</b></font> | Type: {safe_text(ground_type.replace("_", " ").title())}', styles['QBBody']))
-        
+
         if appellate_pathway:
             story.append(Paragraph(f"<b>Appellate Pathway:</b> {safe_text(appellate_pathway)}", styles['QBBody']))
 
@@ -919,28 +919,28 @@ async def get_embedded_legacy_reports(request: Request, limit: int = 3):
 async def get_report(case_id: str, report_id: str, request: Request):
     """Get a specific report"""
     user = await get_current_user(request)
-    
+
     report = await db.reports.find_one(
         {"report_id": report_id, "case_id": case_id, "user_id": user.user_id},
         {"_id": 0}
     )
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     return report
 
 @router.delete("/cases/{case_id}/reports/{report_id}")
 async def delete_report(case_id: str, report_id: str, request: Request):
     """Delete a report"""
     user = await get_current_user(request)
-    
+
     result = await db.reports.delete_one({
         "report_id": report_id,
         "case_id": case_id,
         "user_id": user.user_id
     })
-    
+
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     return {"message": "Report deleted"}

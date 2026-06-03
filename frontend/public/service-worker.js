@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-/* DO_NOT_UNDO — Enhanced service worker for offline access.
+/*  — Enhanced service worker for offline access.
    CACHE_NAME bumped on 2026-04-21 after a CORS regression left stale error
    responses cached on users' phones; bumping the name forces every installed
    PWA to wipe its caches on next open. */

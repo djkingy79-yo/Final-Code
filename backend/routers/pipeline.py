@@ -1,4 +1,4 @@
-# DO NOT UNDO — pipeline router. All endpoints in this file are approved and must be preserved.
+#  — pipeline router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Staged Pipeline Router
 Extract → Classify → Verify → Project → Draft
@@ -96,7 +96,7 @@ def _issue_priority_rank(issue: dict) -> tuple:
 async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> int:
     """Project staged issues/verifications into grounds_of_merit.
 
-    DO_NOT_UNDO — MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title
+     — MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title
     upsert. Exact-title upsert was the ROOT CAUSE of grounds multiplying from 4 to 27+.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
@@ -963,7 +963,7 @@ async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Reque
             failed += 1
 
     synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
-    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    #  — 3 Apr 2026: cleanup after EVERY sync, no exceptions
     from services.ground_dedup import cleanup_duplicate_grounds
     await cleanup_duplicate_grounds(db, case_id, user.user_id)
 
@@ -1301,7 +1301,7 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        # DO_NOT_UNDO — Fuzzy ground deduplication. MUST use topic-based + fuzzy + bidirectional overlap.
+        #  — Fuzzy ground deduplication. MUST use topic-based + fuzzy + bidirectional overlap.
         # First check: exact match by pipeline source issue_id
         existing = await db.grounds_of_merit.find_one(
             {"case_id": case_id, "user_id": user.user_id, "pipeline_source.issue_id": issue["issue_id"]},

@@ -1,4 +1,4 @@
-# DO NOT UNDO — statistics router. All endpoints in this file are approved and must be preserved.
+#  — statistics router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Statistics Router
 Handles public statistics and case comparison
@@ -57,51 +57,51 @@ GROUND_TYPE_LABELS = {
 @router.get("/statistics/public")
 async def get_public_statistics():
     """Get anonymized public statistics for the dashboard"""
-    
+
     # Get total counts
     total_cases = await db.cases.count_documents({})
     total_documents = await db.documents.count_documents({})
     total_reports = await db.reports.count_documents({})
     total_grounds = await db.grounds_of_merit.count_documents({})
-    
+
     # Cases by offence category
     offence_pipeline = [
         {"$group": {"_id": "$offence_category", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
     ]
     offence_stats = await db.cases.aggregate(offence_pipeline).to_list(20)
-    
+
     # Cases by state
     state_pipeline = [
         {"$group": {"_id": "$state", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
     ]
     state_stats = await db.cases.aggregate(state_pipeline).to_list(10)
-    
+
     # Reports by type
     report_pipeline = [
         {"$group": {"_id": "$report_type", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
     ]
     report_stats = await db.reports.aggregate(report_pipeline).to_list(5)
-    
+
     # Grounds by type
     ground_pipeline = [
         {"$group": {"_id": "$ground_type", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
     ]
     ground_stats = await db.grounds_of_merit.aggregate(ground_pipeline).to_list(10)
-    
+
     # Grounds by strength
     strength_pipeline = [
         {"$group": {"_id": "$strength", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}}
     ]
     strength_stats = await db.grounds_of_merit.aggregate(strength_pipeline).to_list(5)
-    
+
     # Average documents per case
     avg_docs = total_documents / total_cases if total_cases > 0 else 0
-    
+
     return {
         "overview": {
             "total_cases": total_cases,
@@ -142,15 +142,15 @@ async def get_public_statistics():
 async def get_case_comparison(case_id: str, request: Request):
     """Compare your case against similar cases (same offence type/state)"""
     user = await get_current_user(request)
-    
+
     # Get the current case
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     offence_category = case.get("offence_category", "other")
     state = case.get("state", "")
-    
+
     # Get stats for similar cases
     similar_offence_count = await db.cases.count_documents({"offence_category": offence_category})
     same_state_count = await db.cases.count_documents({"state": state})
@@ -158,10 +158,10 @@ async def get_case_comparison(case_id: str, request: Request):
         "offence_category": offence_category,
         "state": state
     })
-    
+
     # Get your case's document count
     your_docs = await db.documents.count_documents({"case_id": case_id})
-    
+
     # Get average documents for similar cases
     doc_pipeline = [
         {"$match": {"offence_category": offence_category}},
@@ -176,10 +176,10 @@ async def get_case_comparison(case_id: str, request: Request):
     ]
     avg_docs_result = await db.cases.aggregate(doc_pipeline).to_list(1)
     avg_docs = round(avg_docs_result[0]["avg_docs"], 1) if avg_docs_result else 0
-    
+
     # Get your grounds count
     your_grounds = await db.grounds_of_merit.count_documents({"case_id": case_id})
-    
+
     # Get average grounds for similar cases
     grounds_pipeline = [
         {"$match": {"offence_category": offence_category}},
@@ -194,10 +194,10 @@ async def get_case_comparison(case_id: str, request: Request):
     ]
     avg_grounds_result = await db.cases.aggregate(grounds_pipeline).to_list(1)
     avg_grounds = round(avg_grounds_result[0]["avg_grounds"], 1) if avg_grounds_result else 0
-    
+
     # Get your reports count
     your_reports = await db.reports.count_documents({"case_id": case_id})
-    
+
     # Get most common grounds for this offence type
     common_grounds_pipeline = [
         {"$lookup": {
@@ -213,7 +213,7 @@ async def get_case_comparison(case_id: str, request: Request):
         {"$limit": 5}
     ]
     common_grounds = await db.grounds_of_merit.aggregate(common_grounds_pipeline).to_list(5)
-    
+
     return {
         "your_case": {
             "offence_category": OFFENCE_LABELS.get(offence_category, offence_category),

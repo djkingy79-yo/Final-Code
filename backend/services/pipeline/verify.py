@@ -1,4 +1,4 @@
-# DO NOT UNDO — staged verification pipeline. Additive module.
+#  — staged verification pipeline. Additive module.
 import logging
 from services.llm_service import call_llm_for_json
 from services.legitimacy_engine import calculate_ground_rating
@@ -26,7 +26,7 @@ async def verify_issue(case: dict, issue: dict, supporting_context: dict) -> Iss
     if state_key:
         legislation_reference = _build_state_framework_context(state_key)
 
-    # DO NOT UNDO — inject landmark authorities so the LLM has REAL, verified
+    #  — inject landmark authorities so the LLM has REAL, verified
     # citations to draw from. Previously the prompt told the LLM to omit when
     # "unsure", which made every investigation return 0 comparable cases even
     # though landmark High Court authorities are directly on point. Now the
@@ -177,7 +177,7 @@ STRICT RULES:
         validation_fn=_validate_issue_verification,
     )
 
-    # DO NOT UNDO — Post-process: strip any law sections without real section numbers
+    #  — Post-process: strip any law sections without real section numbers
     # Also strip entries that are just the appellate act (not substantive legislation)
     clean_law_sections = []
     for ls in parsed.get("law_sections", []):
@@ -206,7 +206,7 @@ STRICT RULES:
                 continue
         clean_law_sections.append(ls)
 
-    # DO NOT UNDO — Post-process: strip any similar cases with placeholder names
+    #  — Post-process: strip any similar cases with placeholder names
     # Enhanced with citation hallucination detection
     from services.case_validation import validate_citation
     clean_similar_cases = []
@@ -226,7 +226,7 @@ STRICT RULES:
         sc["verification_status"] = "unverified — check on AustLII"
         clean_similar_cases.append(sc)
 
-    # DO NOT UNDO — Enforce forensic language in verification text fields
+    #  — Enforce forensic language in verification text fields
     from services.offence_helpers import enforce_forensic_language
     supporting_items = parsed.get("supporting_items", [])
     undermining_items = parsed.get("undermining_items", [])

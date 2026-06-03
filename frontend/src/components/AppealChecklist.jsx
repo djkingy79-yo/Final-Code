@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../App";
-import { 
+import {
   CheckCircle2, Circle, ChevronDown, ChevronRight
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -49,8 +49,8 @@ const AppealChecklist = ({ caseId }) => {
       await axios.patch(`${API}/cases/${caseId}/checklist/${itemId}`, {
         is_completed: !isCompleted
       });
-      setItems(items.map(item => 
-        item.item_id === itemId 
+      setItems(items.map(item =>
+        item.item_id === itemId
           ? { ...item, is_completed: !isCompleted }
           : item
       ));
@@ -147,7 +147,7 @@ const AppealChecklist = ({ caseId }) => {
                     <span className="font-medium text-slate-800">{config.label}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge 
+                    <Badge
                       variant={phaseProgress === 100 ? "default" : "outline"}
                       className={phaseProgress === 100 ? "bg-emerald-500" : ""}
                     >
@@ -155,11 +155,11 @@ const AppealChecklist = ({ caseId }) => {
                     </Badge>
                   </div>
                 </button>
-                
+
                 {isExpanded && (
                   <div className="p-3 space-y-2 bg-white">
                     {phaseItems.map(item => (
-                      <div 
+                      <div
                         key={item.item_id}
                         className={`flex items-start gap-3 p-2 rounded-lg transition-colors ${
                           item.is_completed ? 'bg-emerald-50' : 'hover:bg-slate-50'

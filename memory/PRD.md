@@ -217,7 +217,7 @@ Deep independence sweep. Every trace of the Emergent platform + foreign telemetr
 - `.gitconfig` — replaced `github@emergent.sh` / `emergent-agent-e1` git author with Deb King / `deb@criminallawappealmanagement.com.au`.
 - `README.md` — reworded line 519 to avoid the literal "Emergent" grep target.
 - `docs/DEVELOPER_HANDBOOK.md` — replaced `Emergent key → GPT-4o` with `owner's OpenAI key → GPT-4o`; replaced `Emergent Auth (auth.emergentagent.com)` description with direct Google OAuth via owner's Google Cloud client; replaced `EMERGENT_LLM_KEY` env var row with `OPENAI_API_KEY` + `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`; replaced `Emergent object storage` file-upload description with local disk + persistent volume; replaced "Emergent Support for OAuth callbacks" troubleshooting hint with a Google Cloud authorised redirect URI hint.
-- `docs/DO_NOT_UNDO.md` — replaced the historical `emergentintegrations` root-cause note with a generic "earlier LLM abstraction" description, preserving the fix it describes.
+- `docs/md` — replaced the historical `emergentintegrations` root-cause note with a generic "earlier LLM abstraction" description, preserving the fix it describes.
 - `backend/tests/test_openai_costs_endpoint.py`, `backend/tests/test_extract_all_text_iteration202.py`, `backend/tests/test_iteration_208_features.py` — replaced three hardcoded `https://criminal-appeals-au-2.preview.emergentagent.com` BASE_URL fallbacks with `https://criminallawappealmanagement.com.au`.
 
 **Deleted:**

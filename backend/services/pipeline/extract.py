@@ -1,4 +1,4 @@
-# DO NOT UNDO — staged extraction pipeline. Additive module.
+#  — staged extraction pipeline. Additive module.
 from services.llm_service import call_llm_for_json
 from services.pipeline_models import (
     DocumentExtract,

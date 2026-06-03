@@ -1,4 +1,4 @@
-# DO NOT UNDO — barrister_pack router. Extracted from pipeline.py.
+#  — barrister_pack router. Extracted from pipeline.py.
 """
 Criminal Appeal AI - Barrister Acceptance Pack Generator
 Generates a comprehensive PDF pack for barrister review containing:

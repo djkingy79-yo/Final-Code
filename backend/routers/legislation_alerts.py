@@ -1,4 +1,4 @@
-# DO NOT UNDO — Legislation Alerts router. Backs a case-aware amendment
+#  — Legislation Alerts router. Backs a case-aware amendment
 # tracker that surfaces changes to any Act referenced in the user's case.
 """
 Legislation Alerts — case-aware real-time feed of legislative changes.

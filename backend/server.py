@@ -1,4 +1,4 @@
-# DO NOT UNDO — server.py. All endpoints in this file are approved and must be preserved.
+#  — server.py. All endpoints in this file are approved and must be preserved.
 # ===========================================================================
 # Criminal Appeal AI - Main Server
 # ===========================================================================

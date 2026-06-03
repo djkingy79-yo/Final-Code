@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -60,7 +60,7 @@ const ProfessionalSummary = () => {
         {/* Title */}
         <div className="text-center mb-10 print-break">
           <img src="/logo.png" alt="Appeal Case Manager" className="mx-auto mb-4 w-40 h-40 object-contain" data-testid="prof-logo" />
-          <h1 
+          <h1
             className="text-3xl font-bold text-slate-900 mb-2"
             style={{ fontFamily: "'Times New Roman', Times, serif" }}
             data-testid="prof-title"
@@ -79,23 +79,23 @@ const ProfessionalSummary = () => {
           </h2>
           <div className="text-slate-700 leading-relaxed space-y-4">
             <p>
-              Appeal Case Manager is a <strong>document-analysis and case-organisation tool</strong> designed 
-              to assist with identifying potential appeal issues across <strong>all criminal offence categories</strong> in 
-              every Australian state and territory, as well as Commonwealth jurisdiction. The tool supports the 
-              preparation of appeal documentation by helping users organise case materials and identify issues 
+              Appeal Case Manager is a <strong>document-analysis and case-organisation tool</strong> designed
+              to assist with identifying potential appeal issues across <strong>all criminal offence categories</strong> in
+              every Australian state and territory, as well as Commonwealth jurisdiction. The tool supports the
+              preparation of appeal documentation by helping users organise case materials and identify issues
               that may warrant further legal review.
             </p>
             <p>
-              The platform covers the full spectrum of indictable offences including homicide (murder and manslaughter), 
-              sexual offences, assault and grievous bodily harm, drug trafficking and supply, robbery and armed robbery, 
-              fraud and dishonesty offences, firearms and weapons charges, arson and property damage, child abuse material 
-              offences, kidnapping, and all other indictable matters heard across District, Supreme, and appellate courts 
+              The platform covers the full spectrum of indictable offences including homicide (murder and manslaughter),
+              sexual offences, assault and grievous bodily harm, drug trafficking and supply, robbery and armed robbery,
+              fraud and dishonesty offences, firearms and weapons charges, arson and property damage, child abuse material
+              offences, kidnapping, and all other indictable matters heard across District, Supreme, and appellate courts
               in NSW, Victoria, Queensland, South Australia, Western Australia, Tasmania, the Northern Territory, and the ACT.
             </p>
             <p>
-              The tool is jurisdiction-aware, referencing the relevant Crimes Act, Criminal Code, Evidence Act, and 
-              sentencing legislation for each state and territory. It generates analysis specific to the applicable 
-              appellate framework, including the relevant Court of Criminal Appeal or Court of Appeal procedures, 
+              The tool is jurisdiction-aware, referencing the relevant Crimes Act, Criminal Code, Evidence Act, and
+              sentencing legislation for each state and territory. It generates analysis specific to the applicable
+              appellate framework, including the relevant Court of Criminal Appeal or Court of Appeal procedures,
               leave requirements, time limits, and filing obligations.
             </p>
           </div>
@@ -312,10 +312,10 @@ const ProfessionalSummary = () => {
                 <div>
                   <h3 className="font-extrabold text-white text-lg mb-2">Important Notice</h3>
                   <p className="text-white font-bold text-sm leading-relaxed">
-                    This tool provides AI-assisted document analysis and research support intended to help identify 
-                    potential issues that may warrant further legal review. The information generated does not 
-                    constitute legal advice and should not be relied upon as a substitute for advice from a 
-                    qualified Australian legal practitioner. Users should obtain independent legal advice before 
+                    This tool provides AI-assisted document analysis and research support intended to help identify
+                    potential issues that may warrant further legal review. The information generated does not
+                    constitute legal advice and should not be relied upon as a substitute for advice from a
+                    qualified Australian legal practitioner. Users should obtain independent legal advice before
                     making any decision or taking any action in relation to an appeal or criminal proceeding.
                   </p>
                 </div>

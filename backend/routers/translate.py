@@ -1,4 +1,4 @@
-# DO NOT UNDO — translate router. Extracted from export.py.
+#  — translate router. Extracted from export.py.
 """
 Criminal Appeal AI - Report Translation Router
 Handles translation of reports into 41 languages with cached results and PDF export.

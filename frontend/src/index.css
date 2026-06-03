@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -212,7 +212,7 @@ code, .mono {
   padding: 20mm;
 }
 
-/* DO NOT UNDO — Print styles for reports */
+/*  — Print styles for reports */
 /* ─────────────────────────────────────────────────────────────────────
    Print visibility rules only (locked 24 Feb 2026 Print/Export Pass).
    All typography + @page rules live in utils/printStyles.js and are
@@ -240,7 +240,7 @@ code, .mono {
 /* ═══════════════════════════════════════════════════════════════════════
    LEGAL REPORT MARKDOWN STYLES — Professional legal document formatting
    Applied via .legal-report wrapper on all ReactMarkdown containers
-   DO NOT UNDO — This stylesheet is critical for report presentation
+    — This stylesheet is critical for report presentation
    ═══════════════════════════════════════════════════════════════════════ */
 
 .legal-report {
@@ -587,7 +587,7 @@ code, .mono {
     print-color-adjust: exact !important;
     padding: 20pt !important;
   }
-  
+
   [data-testid="report-colour-header"] * {
     color: white !important;
   }
@@ -612,7 +612,7 @@ code, .mono {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
+
   /* Section borders */
   [data-testid="report-full-analysis-section"] article {
     page-break-inside: avoid;
@@ -713,7 +713,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Layered shadows */
 .shadow-layered {
-  box-shadow: 
+  box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.05),
     0 10px 15px -3px rgba(0, 0, 0, 0.08),
     0 20px 25px -5px rgba(0, 0, 0, 0.05);
@@ -1373,7 +1373,7 @@ select {
    LEGAL CONTENT — Unified legal document styling for ALL case tabs
    Applied via .legal-content wrapper on Documents, Timeline, Notes,
    Grounds, Case Law, Progress, Legal Framework, and Collaboration tabs.
-   DO NOT UNDO — This stylesheet is critical for consistent presentation.
+    — This stylesheet is critical for consistent presentation.
    ═══════════════════════════════════════════════════════════════════════ */
 
 .legal-content {

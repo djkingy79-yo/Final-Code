@@ -1,4 +1,4 @@
-# DO_NOT_UNDO — IDENTITY LOCK
+# IDENTITY LOCK
 
 **Permanent rules for Appeal Case Manager. Last verified 23 Feb 2026.**
 
@@ -66,4 +66,3 @@ grep -rEn "EMERGENT_LLM_KEY|emergentintegrations" \\
 ```
 
 Both MUST return empty.
-

@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -8,9 +8,9 @@ import { Button } from "./ui/button";
 import { ArrowRight, Upload, FileText, Briefcase } from "lucide-react";
 import { startGoogleLogin } from "../lib/oauthState";
 
-const PageCTA = ({ 
-  variant = "default", 
-  className = "" 
+const PageCTA = ({
+  variant = "default",
+  className = ""
 }) => {
   const navigate = useNavigate();
 

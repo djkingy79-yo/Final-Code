@@ -1,6 +1,6 @@
 /**
  * Platform detection and Capacitor utilities
- * DO_NOT_UNDO — Core native platform detection
+ *  — Core native platform detection
  */
 import { Capacitor } from "@capacitor/core";
 

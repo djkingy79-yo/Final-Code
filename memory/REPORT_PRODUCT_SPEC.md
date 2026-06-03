@@ -413,7 +413,7 @@ new states required.
 
 - NOT a refactor plan. No files to be touched under this document.
 - NOT a rename of DB keys, route URLs, or payment feature keys.
-- NOT a change to the existing DO_NOT_UNDO blocks in `reports.py`,
+- NOT a change to the existing  blocks in `reports.py`,
   `report_generator.py`, `grounds.py`, `pipeline_actions.py`.
 - NOT a change to the canonical print-style engine
   (`services/print_styles.py` + `utils/printStyles.js` — locked 24 Feb 2026).

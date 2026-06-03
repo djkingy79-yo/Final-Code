@@ -1,9 +1,9 @@
-# DO NOT UNDO — staged classification pipeline. Additive module.
+#  — staged classification pipeline. Additive module.
 from services.llm_service import call_llm_for_json
 from services.pipeline_models import IssueClassification
 from services.offence_helpers import _build_recent_legislation_context, _build_state_framework_context, _build_federal_framework_context
 
-# DO NOT UNDO — Pipeline ground type taxonomy.
+#  — Pipeline ground type taxonomy.
 #
 # The AI prompt accepts a broad vocabulary so the LLM can express fine-grained
 # distinctions. After the LLM responds, _remap_to_canonical_bucket() collapses
@@ -145,7 +145,7 @@ def _norm_ground_type(value: str) -> str:
     return v if v in GROUND_TYPES else "other"
 
 
-# DO NOT UNDO — Appellate pathway mapping per state
+#  — Appellate pathway mapping per state
 APPELLATE_PATHWAYS = {
     "nsw": "s 6(1) Criminal Appeal Act 1912 (NSW)",
     "vic": "s 276 Criminal Procedure Act 2009 (Vic)",
@@ -337,7 +337,7 @@ STRICT RULES:
             case_id=case["case_id"],
             user_id=case["user_id"],
             title=raw.get("title", "Untitled issue"),
-            # DO NOT UNDO — Step 3 of 7-step pipeline: remap to canonical bucket.
+            #  — Step 3 of 7-step pipeline: remap to canonical bucket.
             # _remap_to_canonical_bucket enforces keyword rules BEFORE label mapping:
             #   s 23A / substantial impairment -> conviction (NOT mitigation/sentence)
             #   manifestly excessive / House v The King -> sentence
@@ -360,7 +360,7 @@ STRICT RULES:
             law_sections=clean_law_sections,
         ))
 
-    # DO NOT UNDO — Post-classification: merge overlapping grounds into sub-issues
+    #  — Post-classification: merge overlapping grounds into sub-issues
     issues = _merge_overlapping_grounds(issues)
 
     return issues
@@ -368,8 +368,8 @@ STRICT RULES:
 
 def _merge_overlapping_grounds(issues: list) -> list:
     """Merge grounds that address the same underlying legal matrix into a single ground with sub-particulars.
-    
-    DO NOT UNDO — Barrister-approved: The Court of Criminal Appeal prefers
+
+     — Barrister-approved: The Court of Criminal Appeal prefers
     "one ground, multiple particulars". This makes the appeal cleaner, stronger,
     and more persuasive. E.g. judge-alone refusal + jury reduction + juror conduct
     all become sub-particulars under "Procedural Unfairness (Jury Integrity)".

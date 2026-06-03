@@ -1,4 +1,4 @@
-# DO NOT UNDO — auth_utils module. All logic in this file is approved and must be preserved.
+#  — auth_utils module. All logic in this file is approved and must be preserved.
 """
 Criminal Appeal AI - Authentication Utilities
 Shared authentication helpers used across all routers
@@ -33,14 +33,14 @@ async def get_current_user(request: Request) -> User:
         qs_token = request.query_params.get("session_token")
         if qs_token:
             session_token = qs_token
-    
+
     if not session_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    
+
     session_doc = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
     if not session_doc:
         raise HTTPException(status_code=401, detail="Invalid session")
-    
+
     expires_at = session_doc.get("expires_at")
     if isinstance(expires_at, str):
         expires_at = datetime.fromisoformat(expires_at)
@@ -48,11 +48,11 @@ async def get_current_user(request: Request) -> User:
         expires_at = expires_at.replace(tzinfo=timezone.utc)
     if expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=401, detail="Session expired")
-    
+
     user_doc = await db.users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
     if not user_doc:
         raise HTTPException(status_code=401, detail="User not found")
-    
+
     return User(**user_doc)
 
 

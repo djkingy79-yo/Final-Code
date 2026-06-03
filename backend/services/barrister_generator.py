@@ -187,7 +187,7 @@ def _normalise_barrister_table_titles(text: str) -> str:
     return text
 
 
-# DO NOT UNDO — Barrister View multi-pass generation engine
+#  — Barrister View multi-pass generation engine
 async def generate_barrister_brief(case_id: str, user_id: str, report_id: str | None = None) -> dict:
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
     if not case:
@@ -238,7 +238,7 @@ GROUNDS COUNT: {len(grounds)}
     state_framework_block = _build_state_framework_context(barrister_state)
     federal_framework_block = _build_federal_framework_context()
 
-    # DO NOT UNDO — Barrister View system prompt with strict depth requirements and FORENSIC language
+    #  — Barrister View system prompt with strict depth requirements and FORENSIC language
     system_prompt = """You are a senior Australian criminal appeal barrister preparing the definitive barrister brief for a criminal appeal matter. This is the CAPSTONE document that synthesises and BUILDS UPON three earlier analytical reports (Quick Summary, Full Detailed Report, and Extensive Log). The output must read like one coherent, authoritative legal document written by a careful appellate specialist who has thoroughly digested all three source reports and is now producing a comprehensive counsel-ready working brief.
 
 MANDATORY RULES:
@@ -311,7 +311,7 @@ DOCUMENT INVENTORY
 {state_framework_block}
 {federal_framework_block}"""
 
-    # DO NOT UNDO — Section groups with calibrated source limits (larger limits cause 502 proxy errors)
+    #  — Section groups with calibrated source limits (larger limits cause 502 proxy errors)
     section_groups = [
         {
             "slug": "counsel-synthesis",
@@ -457,15 +457,15 @@ SOURCE REPORTS
 
     response = "\n\n".join(part for part in section_outputs if part).strip()
 
-    # DO NOT UNDO — General expansion DISABLED (causes 502 proxy errors with large payloads)
+    #  — General expansion DISABLED (causes 502 proxy errors with large payloads)
     # Section-by-section expansion below is more effective and reliable.
-    # DO NOT UNDO — expansion_source_text must remain defined here (used by ground expansion, cross-analysis, strategy, final QA)
+    #  — expansion_source_text must remain defined here (used by ground expansion, cross-analysis, strategy, final QA)
     expansion_source_text = _build_barrister_group_source_text(
         source_reports,
         {"quick_summary": 10000, "full_detailed": 24000, "extensive_log": 32000},
     )
 
-    # DO NOT UNDO — Section-by-section expansion for thin sections
+    #  — Section-by-section expansion for thin sections
     thin_section_targets = {
         "## Counsel Synthesis": 2000,
         "## Executive Overview for Counsel": 5000,
@@ -572,7 +572,7 @@ SOURCE REPORTS
                 except Exception as exc:
                     logger.warning(f"Thin section expansion skipped for {section_heading}: {exc}")
 
-    # DO NOT UNDO — Ground expansion: rewrites each ground as a ### subsection with deep analysis
+    #  — Ground expansion: rewrites each ground as a ### subsection with deep analysis
     if len(response) < 100000 and grounds:
         try:
             rewritten_ground_sections = []
@@ -616,7 +616,7 @@ CURRENT BARRISTER BRIEF
                 )
                 subsection = _strip_report_placeholders(subsection)
                 subsection = re.sub(r"\n{3,}", "\n\n", subsection).strip()
-                # DO NOT UNDO — Strip any heading format the LLM used and enforce ### subsection format
+                #  — Strip any heading format the LLM used and enforce ### subsection format
                 subsection = re.sub(r'^#{1,4}\s*' + re.escape(ground_title) + r'\s*\n+', '', subsection).strip()
                 subsection = f"### {ground_title}\n\n{subsection}"
                 rewritten_ground_sections.append(subsection)
@@ -632,7 +632,7 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Barrister grounds expansion skipped for {case_id}: {exc}")
 
-    # DO NOT UNDO — Cross-analysis MUST run BEFORE strategy expansion to avoid content loss
+    #  — Cross-analysis MUST run BEFORE strategy expansion to avoid content loss
     # Cross-analysis sections insert before Sentencing Comparison, not at end
     # Always run — these are unique sections not generated elsewhere
     if "## Report-to-Report Cross-Analysis" not in response:
@@ -666,7 +666,7 @@ CURRENT BARRISTER BRIEF
             cross_analysis = _strip_report_placeholders(cross_analysis)
             cross_analysis = re.sub(r"\n{3,}", "\n\n", cross_analysis).strip()
             if cross_analysis.startswith("## Report-to-Report Cross-Analysis"):
-                # DO NOT UNDO — Insert before Sentencing Comparison, not at the end
+                #  — Insert before Sentencing Comparison, not at the end
                 # This ensures cross-analysis isn't eaten by the strategy expansion regex
                 if "## Sentencing Comparison and Relief Pathways" in response:
                     response = response.replace(
@@ -712,7 +712,7 @@ CURRENT BARRISTER BRIEF
             rewritten_strategy = _strip_report_placeholders(rewritten_strategy)
             rewritten_strategy = re.sub(r"\n{3,}", "\n\n", rewritten_strategy).strip()
             if rewritten_strategy.startswith("## Proposed Submissions and Hearing Strategy"):
-                # DO NOT UNDO — Regex stops at Attachment A/B, Report-to-Report, or Document and Evidence.
+                #  — Regex stops at Attachment A/B, Report-to-Report, or Document and Evidence.
                 # Old regex ([\s\S]*$) ate cross-analysis sections that were appended after strategy.
                 response = re.sub(
                     r"## Proposed Submissions and Hearing Strategy\n[\s\S]*?(?=\n## (?:Attachment [AB]|Report-to-Report|Document and Evidence)|$)",
@@ -913,7 +913,7 @@ CURRENT BARRISTER BRIEF
         except Exception as exc:
             logger.warning(f"Counsel conference prep skipped for {case_id}: {exc}")
 
-    # DO NOT UNDO — Final quality validation pass: expand any remaining thin sections
+    #  — Final quality validation pass: expand any remaining thin sections
     final_min_chars = {
         "## Counsel Synthesis": 1500,
         "## Executive Overview for Counsel": 5000,
@@ -971,7 +971,7 @@ SOURCE REPORTS
     response = _normalise_barrister_table_titles(response)
     response = _dedupe_barrister_ground_subsections(response)
 
-    # DO NOT UNDO — Strip rogue H2 sections not in the expected structure
+    #  — Strip rogue H2 sections not in the expected structure
     expected_h2s = {
         "## Counsel Synthesis",
         "## Executive Overview for Counsel",
@@ -1012,7 +1012,7 @@ SOURCE REPORTS
 
     response = re.sub(r"\n{3,}", "\n\n", response).strip()
 
-    # DO NOT UNDO — Runtime forensic language enforcement: rewrites any
+    #  — Runtime forensic language enforcement: rewrites any
     # "determined that / found that / concluded that" characterisation language
     # that slipped through the prompt, and enforces all other forensic appellate
     # language rules defined in enforce_forensic_language (offence_helpers.py).
@@ -1095,7 +1095,7 @@ async def _run_barrister_report_generation(report_id: str, case_id: str, user_id
     except Exception as exc:
         logger.error(f"Barrister brief {report_id} generation failed: {exc}")
         friendly_error = "Barrister brief generation was interrupted by a temporary AI service error. Please generate again."
-        # DO_NOT_UNDO — Restore backup on failure
+        #  — Restore backup on failure
         backup_doc = await db.reports.find_one(
             {"report_id": report_id},
             {"_id": 0, "content.backup_analysis": 1}

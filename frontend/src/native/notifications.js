@@ -1,6 +1,6 @@
 /**
  * Push & Local Notifications
- * DO_NOT_UNDO — Notification handling for native apps
+ *  — Notification handling for native apps
  */
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { isNativePlatform } from "./platform";

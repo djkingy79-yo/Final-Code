@@ -1,5 +1,5 @@
 ---
-# DO_NOT_UNDO — CI/CD pipeline for Appeal Case Manager
+# CI/CD pipeline for Appeal Case Manager
 name: CI
 
 on:  # yamllint disable-line rule:truthy

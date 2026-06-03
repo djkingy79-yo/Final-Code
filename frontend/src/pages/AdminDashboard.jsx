@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -348,7 +348,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Secondary Metrics */}
-        
+
         {/* Sales & Revenue Section */}
         {stats.sales && (
           <Card className="mb-8 bg-gradient-to-r from-emerald-50 to-blue-50 border-emerald-200" data-testid="sales-section">
@@ -523,7 +523,7 @@ const AdminDashboard = () => {
                     <span className="font-semibold">{stats.users.by_auth_type.email}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-blue-600"
                       style={{ width: `${(stats.users.by_auth_type.email / stats.users.total) * 100}%` }}
                     />
@@ -535,7 +535,7 @@ const AdminDashboard = () => {
                     <span className="font-semibold">{stats.users.by_auth_type.google}</span>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-emerald-600"
                       style={{ width: `${(stats.users.by_auth_type.google / stats.users.total) * 100}%` }}
                     />

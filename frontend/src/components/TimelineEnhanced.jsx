@@ -1,10 +1,10 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useMemo } from "react";
-import { 
+import {
   Trash2, FileText, Users, AlertTriangle, Link2, Scale,
   Filter, Search, Download, ChevronDown, ChevronUp, Printer, ArrowUp, ArrowDown
 } from "lucide-react";
@@ -84,13 +84,13 @@ const PERSPECTIVE_CONFIG = {
   neutral: { label: "Neutral", color: "bg-slate-50 text-slate-700 border-slate-300" }
 };
 
-const Timeline = ({ 
-  events, 
-  documents = [], 
+const Timeline = ({
+  events,
+  documents = [],
   grounds = [],
   caseId,
   caseInfo,
-  onDeleteEvent, 
+  onDeleteEvent,
   onEditEvent,
   onExportPDF,
   onAnalyse,
@@ -123,39 +123,39 @@ const Timeline = ({
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        const matchesSearch = 
+        const matchesSearch =
           event.title?.toLowerCase().includes(query) ||
           event.description?.toLowerCase().includes(query) ||
           event.source_citation?.toLowerCase().includes(query) ||
           event.participants?.some(p => p.name?.toLowerCase().includes(query));
         if (!matchesSearch) return false;
       }
-      
+
       // Category filter
       if (categoryFilter !== "all" && event.event_category !== categoryFilter) {
         return false;
       }
-      
+
       // Significance filter
       if (significanceFilter !== "all" && event.significance !== significanceFilter) {
         return false;
       }
-      
+
       // Perspective filter
       if (perspectiveFilter !== "all" && event.perspective !== perspectiveFilter) {
         return false;
       }
-      
+
       // Contested filter
       if (showContestedOnly && !event.is_contested) {
         return false;
       }
-      
+
       return true;
     });
   }, [events, searchQuery, categoryFilter, significanceFilter, perspectiveFilter, showContestedOnly]);
 
-  /* DO_NOT_UNDO — formatDate handles year-only ("2018"), year-month ("2018-06"), and
+  /*  — formatDate handles year-only ("2018"), year-month ("2018-06"), and
      full ISO dates. Never convert year-only to "Mon, 1 Jan" — display just the year. */
   const formatDate = (dateStr) => {
     if (!dateStr) return "Unknown date";
@@ -336,7 +336,7 @@ const Timeline = ({
             data-testid="timeline-search"
           />
         </div>
-        
+
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="w-[140px]" data-testid="category-filter">
             <Filter className="w-4 h-4 mr-2" />
@@ -349,7 +349,7 @@ const Timeline = ({
             ))}
           </SelectContent>
         </Select>
-        
+
         <Select value={significanceFilter} onValueChange={setSignificanceFilter}>
           <SelectTrigger className="w-[130px]" data-testid="significance-filter">
             <SelectValue placeholder="Significance" />
@@ -362,7 +362,7 @@ const Timeline = ({
             <SelectItem value="minor">Minor</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Select value={perspectiveFilter} onValueChange={setPerspectiveFilter}>
           <SelectTrigger className="w-[130px]" data-testid="perspective-filter">
             <Scale className="w-4 h-4 mr-2" />
@@ -375,7 +375,7 @@ const Timeline = ({
             <SelectItem value="neutral">Neutral</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Button
           variant={showContestedOnly ? "default" : "outline"}
           size="sm"
@@ -386,7 +386,7 @@ const Timeline = ({
           <AlertTriangle className="w-4 h-4 mr-1" />
           Contested
         </Button>
-        
+
         <div className="flex gap-2 ml-auto">
           <Button
             variant="outline"
@@ -447,10 +447,10 @@ const Timeline = ({
             const perspConfig = PERSPECTIVE_CONFIG[event.perspective] || PERSPECTIVE_CONFIG.neutral;
             const catConfig = EVENT_CATEGORIES[event.event_category] || EVENT_CATEGORIES.general;
             const isExpanded = expandedEvents.has(event.event_id);
-            
+
             return (
-              <div 
-                key={event.event_id} 
+              <div
+                key={event.event_id}
                 className="relative group"
                 data-testid={`timeline-event-${event.event_id}`}
               >
@@ -487,17 +487,17 @@ const Timeline = ({
                               {formatDate(event.event_date)}
                             </span>
                           </div>
-                          
+
                           {/* Title */}
                           <h4 className="font-semibold text-slate-900 text-lg leading-tight">
                             {auSpelling(event.title)}
                           </h4>
-                          
+
                           {/* Type */}
                           <p className="text-sm text-slate-500 mt-1">
                             {EVENT_TYPE_LABELS[event.event_type] || event.event_type}
                           </p>
-                          
+
                           {/* Quick indicators */}
                           <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
                             {event.linked_documents?.length > 0 && (
@@ -520,7 +520,7 @@ const Timeline = ({
                             )}
                           </div>
                         </div>
-                        
+
                         {/* Actions */}
                         <div className="flex items-center gap-1 ml-2">
                           <CollapsibleTrigger asChild>
@@ -564,7 +564,7 @@ const Timeline = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Expanded content */}
                     <CollapsibleContent>
                       <div className="px-4 pb-4 pt-0 border-t border-slate-100 space-y-4">
@@ -577,7 +577,7 @@ const Timeline = ({
                             </p>
                           </div>
                         )}
-                        
+
                         {/* Contested details */}
                         {event.is_contested && event.contested_details && (
                           <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
@@ -588,7 +588,7 @@ const Timeline = ({
                             <p className="text-blue-800 text-sm">{event.contested_details}</p>
                           </div>
                         )}
-                        
+
                         {/* Source citation */}
                         {event.source_citation && (
                           <div>
@@ -596,7 +596,7 @@ const Timeline = ({
                             <p className="text-slate-600 text-sm italic">{event.source_citation}</p>
                           </div>
                         )}
-                        
+
                         {/* Participants */}
                         {event.participants?.length > 0 && (
                           <div>
@@ -611,7 +611,7 @@ const Timeline = ({
                             </div>
                           </div>
                         )}
-                        
+
                         {/* Linked Documents */}
                         {event.linked_documents?.length > 0 && (
                           <div>
@@ -629,7 +629,7 @@ const Timeline = ({
                             </div>
                           </div>
                         )}
-                        
+
                         {/* Related Grounds */}
                         {event.related_grounds?.length > 0 && (
                           <div>
@@ -647,7 +647,7 @@ const Timeline = ({
                             </div>
                           </div>
                         )}
-                        
+
                         {/* Inconsistency notes */}
                         {event.inconsistency_notes && (
                           <div className="bg-red-50 p-3 rounded-lg border border-red-200">

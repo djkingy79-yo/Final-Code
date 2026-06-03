@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { 
+import {
   Scale, Plus, FileText, Clock, Trash2,
   LogOut, FolderOpen, Search, User, HelpCircle, Users, BookOpen,
   FileCheck, Menu, Home, Gavel, ChevronRight, GitCompare,
@@ -127,7 +127,7 @@ const Dashboard = ({ user }) => {
 
     try {
       // =============================================================
-      // DO NOT UNDO — AUTO-DETECT PROTECTION
+      //  — AUTO-DETECT PROTECTION
       // =============================================================
       // Empty strings MUST be stripped so the backend receives None
       // for state/offence_category, enabling LLM auto-detection
@@ -167,7 +167,7 @@ const Dashboard = ({ user }) => {
   const handleDeleteCase = (caseId) => {
     setDeleteCaseId(caseId);
   };
-  
+
   const confirmDeleteCase = async () => {
     const cId = deleteCaseId;
     setDeleteCaseId(null);
@@ -193,7 +193,7 @@ const Dashboard = ({ user }) => {
     }
   };
 
-  const filteredCases = cases.filter(c => 
+  const filteredCases = cases.filter(c =>
     c.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.defendant_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.case_number?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -211,7 +211,7 @@ const Dashboard = ({ user }) => {
   // Sidebar navigation items - grouped logically
   const normalisedEmail = (user?.email || "").trim().toLowerCase();
   const isAdmin = Boolean(user?.is_admin) || normalisedEmail === "djkingy79@gmail.com";
-  
+
   const navGroups = [
     {
       title: "Main",
@@ -247,7 +247,7 @@ const Dashboard = ({ user }) => {
   return (
     <div className="case-page min-h-screen bg-white">
       <DisclaimerReminder />
-      
+
       {/* Sidebar */}
       <aside className={`fixed left-0 top-8 bottom-0 w-72 bg-white border-r border-slate-200 z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`} style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Logo */}
@@ -313,7 +313,7 @@ const Dashboard = ({ user }) => {
               Payment History
             </Button>
           </Link>
-          
+
           <Button
             onClick={handleLogout}
             variant="ghost"
@@ -329,7 +329,7 @@ const Dashboard = ({ user }) => {
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -341,14 +341,14 @@ const Dashboard = ({ user }) => {
         <header className="sticky top-8 z-20 glass-header px-4 sm:px-6 py-4 overflow-hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 className="lg:hidden p-2 -ml-2"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Menu className="w-6 h-6" />
               </button>
               <div>
-                <h1 
+                <h1
                   className="text-2xl font-bold text-slate-900 tracking-tight"
                   style={{ fontFamily: "'Times New Roman', Times, serif" }}
                 >
@@ -387,7 +387,7 @@ const Dashboard = ({ user }) => {
 
         {/* Content */}
         <div className="p-6 lg:p-8 space-y-6">
-          
+
           {/* NEW USER $5 TRIAL OFFER BANNER */}
           <div className="bg-pink-600 rounded-lg p-3 shadow-lg border-2 border-pink-400" data-testid="dashboard-trial-offer">
             <div className="flex items-center gap-3">
@@ -409,7 +409,7 @@ const Dashboard = ({ user }) => {
                 Overview
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               {/* Stats Cards - 3 columns on large */}
               <div className="card-elevated p-6">
@@ -423,7 +423,7 @@ const Dashboard = ({ user }) => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="card-elevated p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -437,7 +437,7 @@ const Dashboard = ({ user }) => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="card-elevated p-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-emerald-100 flex items-center justify-center">
@@ -451,7 +451,7 @@ const Dashboard = ({ user }) => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Info Card - Combined */}
               <div className="card-elevated p-6 lg:row-span-1">
                 <div className="flex items-start gap-4">
@@ -467,7 +467,7 @@ const Dashboard = ({ user }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* Privacy Notice - Bright blue with bold white text */}
             <div className="mt-4 flex items-center gap-3 px-4 py-3 bg-blue-600 rounded-xl">
               <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="#dc2626" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -497,7 +497,7 @@ const Dashboard = ({ user }) => {
                   </span>
                 )}
               </div>
-              
+
               {/* Search */}
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-700" />
@@ -548,15 +548,15 @@ const Dashboard = ({ user }) => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filteredCases.map((caseItem) => (
-                  <div 
-                    key={caseItem.case_id} 
+                  <div
+                    key={caseItem.case_id}
                     className="card-elevated p-5 group cursor-pointer hover:border-blue-300:border-blue-700 transition-colors"
                     onClick={() => navigate(`/cases/${caseItem.case_id}`)}
                     data-testid={`case-card-${caseItem.case_id}`}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
-                        <h3 
+                        <h3
                           className="text-base font-semibold text-slate-900 group-hover:text-red-600 transition-colors truncate"
                           style={{ fontFamily: "'Times New Roman', Times, serif" }}
                         >
@@ -564,18 +564,18 @@ const Dashboard = ({ user }) => {
                         </h3>
                         <p className="text-sm text-slate-700 mt-0.5">{caseItem.defendant_name}</p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); setShareModalCase(caseItem); }}
                         className="text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300 rounded-lg flex-shrink-0 mr-1"
                         data-testid={`share-case-btn-${caseItem.case_id}`}
                       >
                         <Share2 className="w-4 h-4" />
                       </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm" 
+                      <Button
+                        variant="destructive"
+                        size="sm"
                         onClick={(e) => { e.stopPropagation(); handleDeleteCase(caseItem.case_id); }}
                         className="bg-red-600 hover:bg-red-700 text-white rounded-lg flex-shrink-0"
                         data-testid={`delete-case-btn-${caseItem.case_id}`}
@@ -583,11 +583,11 @@ const Dashboard = ({ user }) => {
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                    
+
                     {caseItem.case_number && (
                       <p className="text-xs text-slate-700 font-mono mb-3 truncate">{caseItem.case_number}</p>
                     )}
-                    
+
                     <div className="flex items-center gap-4 text-xs text-slate-700">
                       <div className="flex items-center gap-1.5">
                         <FileText className="w-3.5 h-3.5" />
@@ -598,7 +598,7 @@ const Dashboard = ({ user }) => {
                         <span>{caseItem.event_count || 0} events</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200">
                       <p className="text-xs text-slate-700">
                         {formatDate(caseItem.updated_at)}
@@ -625,8 +625,8 @@ const Dashboard = ({ user }) => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {sharedCases.map((caseItem) => (
-                  <div 
-                    key={caseItem.case_id} 
+                  <div
+                    key={caseItem.case_id}
                     className="card-elevated p-5 group cursor-pointer hover:border-teal-300 transition-colors border-l-4 border-l-teal-500"
                     onClick={() => navigate(`/cases/${caseItem.case_id}`)}
                     data-testid={`shared-case-card-${caseItem.case_id}`}
@@ -829,7 +829,7 @@ const Dashboard = ({ user }) => {
             <Button variant="outline" onClick={() => setShowNewCaseDialog(false)} className="rounded-xl">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateCase}
               className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl"
               data-testid="create-case-submit"
@@ -840,7 +840,7 @@ const Dashboard = ({ user }) => {
         </DialogContent>
       </Dialog>
 
-      {/* DO NOT UNDO — Delete Case Confirmation Dialog */}
+      {/*  — Delete Case Confirmation Dialog */}
       <AlertDialog open={!!deleteCaseId} onOpenChange={() => setDeleteCaseId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

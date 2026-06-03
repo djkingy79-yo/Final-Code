@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -267,11 +267,11 @@ const FAQPage = () => {
 
   const getFilteredFaqs = () => {
     let filtered = faqs;
-    
+
     if (activeCategory !== "all") {
       filtered = faqs.filter(cat => cat.category === activeCategory);
     }
-    
+
     if (searchQuery) {
       filtered = filtered.map(category => ({
         ...category,
@@ -281,7 +281,7 @@ const FAQPage = () => {
         )
       })).filter(category => category.questions.length > 0);
     }
-    
+
     return filtered;
   };
 
@@ -327,14 +327,14 @@ const FAQPage = () => {
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/scales-justice.jpg" 
+          <img
+            src="/images/stock/scales-justice.jpg"
             alt="Lady Justice"
             className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-20 h-20 rounded-2xl bg-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30" data-testid="faq-hero-icon">
             <HelpCircle className="w-10 h-10 text-white" />
@@ -348,7 +348,7 @@ const FAQPage = () => {
           <p className="text-sm text-slate-700" data-testid="faq-hero-count">
             <strong>{totalQuestions} answers</strong> across {faqs.length} categories
           </p>
-          
+
           {/* Search */}
           <div className="max-w-xl mx-auto mt-8 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-700" />
@@ -447,13 +447,13 @@ const FAQPage = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Questions */}
                 <div className="space-y-3">
                   {category.questions.map((item, questionIndex) => {
                     const isOpen = openItems[`${categoryIndex}-${questionIndex}`];
                     return (
-                      <div 
+                      <div
                         key={questionIndex}
                         className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
                       >

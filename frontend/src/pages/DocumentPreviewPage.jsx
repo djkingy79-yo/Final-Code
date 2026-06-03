@@ -130,7 +130,7 @@ export default function DocumentPreviewPage() {
               background colours — renders EXACTLY as it will print. The older
               iOS path rendered via dangerouslySetInnerHTML into a <div>, which
               Safari parses as HTML but fails to apply head-level @page rules
-              and collapses grid layouts. DO_NOT_UNDO. */}
+              and collapses grid layouts.  */}
           <iframe
             ref={iframeRef}
             title={payload.title || "Document preview"}

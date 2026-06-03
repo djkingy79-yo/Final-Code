@@ -3,7 +3,7 @@ Case Law Search Router
 Provides verified case law search URLs and database metadata
 for all Australian jurisdictions.
 
-DO NOT UNDO — This router provides verified case law search across all
+ — This router provides verified case law search across all
 Australian jurisdictions. Endpoints are used by the CaseLawPanel component.
 """
 import logging

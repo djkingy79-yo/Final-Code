@@ -1,4 +1,4 @@
-# DO NOT UNDO — Router registry. All routers must be registered here.
+#  — Router registry. All routers must be registered here.
 """
 Centralised router registration for the Criminal Appeal AI application.
 All route modules are imported and registered via register_all_routers(app).

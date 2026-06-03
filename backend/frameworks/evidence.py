@@ -1,4 +1,4 @@
-# DO NOT UNDO — Evidence (split from offence_framework.py on 2026-02-14).
+#  — Evidence (split from offence_framework.py on 2026-02-14).
 # All logic in this module is approved and must be preserved.
 """
 Part of the Appeal Case Manager legal framework package.

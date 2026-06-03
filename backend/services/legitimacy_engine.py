@@ -1,6 +1,6 @@
 """
 Criminal Appeal AI - Legitimacy Engine (Phase 4 — Three-Axis Viability Scoring)
-DO NOT UNDO — Barrister-approved scoring model.
+ — Barrister-approved scoring model.
 
 Three-Axis Model:
   1. Outcome Impact    — Determinative / Influential / Minor

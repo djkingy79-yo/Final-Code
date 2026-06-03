@@ -1,6 +1,6 @@
 /**
  * Haptic feedback for native interactions
- * DO_NOT_UNDO — Tactile feedback on native platforms
+ *  — Tactile feedback on native platforms
  */
 import { Haptics, ImpactStyle, NotificationType } from "@capacitor/haptics";
 import { isNativePlatform } from "./platform";

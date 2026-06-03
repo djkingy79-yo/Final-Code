@@ -1,6 +1,6 @@
 /**
  * Offline data storage using Capacitor Preferences
- * DO_NOT_UNDO — Offline cache for cases and reports
+ *  — Offline cache for cases and reports
  */
 import { Preferences } from "@capacitor/preferences";
 

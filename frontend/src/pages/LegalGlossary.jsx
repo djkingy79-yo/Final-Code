@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -603,15 +603,15 @@ const LegalGlossary = () => {
   };
 
   const getFilteredTerms = () => {
-    let terms = activeCategory === "all" 
-      ? getAllTerms() 
+    let terms = activeCategory === "all"
+      ? getAllTerms()
       : glossaryCategories.find(c => c.id === activeCategory)?.terms.map(t => ({
           ...t,
           category: glossaryCategories.find(c => c.id === activeCategory).name,
           categoryId: activeCategory,
           color: glossaryCategories.find(c => c.id === activeCategory).color
         })) || [];
-    
+
     if (searchTerm) {
       terms = terms.filter(item =>
         item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -619,7 +619,7 @@ const LegalGlossary = () => {
         item.detailed.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     return terms;
   };
 
@@ -668,14 +668,14 @@ const LegalGlossary = () => {
       {/* Hero Section with Image */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/scales-justice.jpg" 
+          <img
+            src="/images/stock/scales-justice.jpg"
             alt="Lady Justice"
             className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <BookOpen className="w-10 h-10 text-white" />
@@ -738,8 +738,8 @@ const LegalGlossary = () => {
           <button
             onClick={() => setActiveCategory("all")}
             className={`p-3 rounded-xl border-2 transition-all text-center ${
-              activeCategory === "all" 
-                ? "border-blue-500 bg-blue-50" 
+              activeCategory === "all"
+                ? "border-blue-500 bg-blue-50"
                 : "border-slate-200 hover:border-blue-300"
             }`}
           >
@@ -747,14 +747,14 @@ const LegalGlossary = () => {
             <p className={`font-bold text-xs ${activeCategory === "all" ? "text-blue-700" : "text-slate-800"}`}>All</p>
             <p className="text-[10px] text-slate-500">{getAllTerms().length}</p>
           </button>
-          
+
           {glossaryCategories.map(cat => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`p-3 rounded-xl border-2 transition-all text-center ${
-                activeCategory === cat.id 
-                  ? "border-blue-500 bg-blue-50" 
+                activeCategory === cat.id
+                  ? "border-blue-500 bg-blue-50"
                   : "border-slate-200 hover:border-blue-300"
               }`}
             >
@@ -770,7 +770,7 @@ const LegalGlossary = () => {
         {/* Active Category Image Banner */}
         {activeCategory !== "all" && (
           <div className="mb-8 rounded-2xl overflow-hidden relative h-40">
-            <img 
+            <img
               src={glossaryCategories.find(c => c.id === activeCategory)?.image}
               alt={glossaryCategories.find(c => c.id === activeCategory)?.name}
               className="w-full h-full object-cover"
@@ -791,7 +791,7 @@ const LegalGlossary = () => {
         {/* Terms List */}
         <div className={viewDensity === "compact" ? "grid xl:grid-cols-2 gap-3" : "space-y-4"} data-testid="glossary-terms-list">
           {filteredTerms.map((item, index) => (
-            <div 
+            <div
               key={`${item.term}-${index}`}
               className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-blue-500/30 transition-all"
             >
@@ -823,7 +823,7 @@ const LegalGlossary = () => {
                   )}
                 </div>
               </button>
-              
+
               {expandedTerms[item.term] && (
                 <div className={`${viewDensity === "compact" ? "px-4 pb-4" : "px-5 pb-5"}`}>
                   <div className={`bg-slate-50 rounded-xl border-l-4 border-blue-500 space-y-4 ${viewDensity === "compact" ? "p-4" : "p-5"}`}>
@@ -862,7 +862,7 @@ const LegalGlossary = () => {
             <div>
               <h3 className="font-extrabold text-white text-xl mb-2">Important Disclaimer</h3>
               <p className="text-white font-bold text-base leading-relaxed">
-                This glossary is for <span className="underline">educational purposes only</span> and does not constitute legal advice. 
+                This glossary is for <span className="underline">educational purposes only</span> and does not constitute legal advice.
                 Laws vary by jurisdiction and change over time. Always consult a qualified legal professional for advice about your specific situation.
               </p>
             </div>

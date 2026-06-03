@@ -1,5 +1,5 @@
 """
-DO NOT UNDO — ENTIRE FILE PROTECTED
+ — ENTIRE FILE PROTECTED
 Criminal Appeal AI - Documents Router (CRUD + OCR + Text Extraction)
 All features in this file are approved. Do not remove, rename, or refactor.
 Timeline auto-generation uses fuzzy dedup and year-only dates for unknown dates.
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/api", tags=["documents"])
 
 
 # ==========================================================================
-# DO NOT UNDO — AUTO-DETECT METADATA FUNCTION
+#  — AUTO-DETECT METADATA FUNCTION
 # ==========================================================================
 # This function auto-detects state, offence_category, offence_type,
 # sentence, court, case_number from uploaded documents via LLM.
@@ -146,7 +146,7 @@ DOCUMENTS:
             events = tl_result if isinstance(tl_result, list) else []
             if isinstance(events, list):
                 created = 0
-                # DO_NOT_UNDO — Timeline fuzzy dedup. Build fingerprints of existing events.
+                #  — Timeline fuzzy dedup. Build fingerprints of existing events.
                 # Without this, identical events multiply every time documents are processed.
                 existing = await db.timeline_events.find({"case_id": case_id}, {"_id": 0, "title": 1}).to_list(200)
                 existing_titles = [e.get("title", "").lower().strip() for e in existing]
@@ -160,7 +160,7 @@ DOCUMENTS:
                     if is_dup:
                         continue
                     event_date = evt.get("date", "")
-                    # DO_NOT_UNDO — Fix Jan 1 placeholder dates. Use year only when exact date unknown.
+                    #  — Fix Jan 1 placeholder dates. Use year only when exact date unknown.
                     if event_date and event_date.endswith("-01-01"):
                         event_date = event_date[:4]  # Keep year only
                     event_doc = {

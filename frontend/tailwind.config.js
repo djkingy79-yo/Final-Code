@@ -1,4 +1,4 @@
-/* DO NOT UNDO — Tailwind configuration. All theme settings are approved and must be preserved. */
+/*  — Tailwind configuration. All theme settings are approved and must be preserved. */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     darkMode: ["class"],

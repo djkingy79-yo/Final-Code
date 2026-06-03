@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -54,7 +54,7 @@ const DocumentPreviewPage = lazy(() => import("./pages/DocumentPreviewPage"));
 const AcceptShareLink = lazy(() => import("./pages/AcceptShareLink"));
 const PaymentHistoryPage = lazy(() => import("./pages/PaymentHistoryPage"));
 
-// DO_NOT_UNDO — Backend URL resolution for Web + Mobile (Capacitor).
+//  — Backend URL resolution for Web + Mobile (Capacitor).
 //
 // Web (prod domain criminallawappealmanagement.com.au):
 //   Use window.location.origin so the same bundle works on any domain the
@@ -404,7 +404,7 @@ Thanks.`;
 };
 
 // Protected Route Component
-// DO_NOT_UNDO — Handles auth verification for all protected pages.
+//  — Handles auth verification for all protected pages.
 // Initialises state from location.state?.user to avoid unnecessary /auth/me calls
 // after AuthCallback passes user data via navigate state.
 const ProtectedRoute = ({ children }) => {
@@ -423,7 +423,7 @@ const ProtectedRoute = ({ children }) => {
     // If user data was passed from AuthCallback via navigate state, already handled in initial state
     if (initialUser) return;
 
-    // DO_NOT_UNDO — Auth check with aggressive retry. NEVER silently redirect to landing.
+    //  — Auth check with aggressive retry. NEVER silently redirect to landing.
     const checkAuth = async (attempt = 1) => {
       const token = localStorage.getItem("session_token");
       if (!token) {

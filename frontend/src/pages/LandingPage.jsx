@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -32,7 +32,7 @@ const LandingPage = () => {
     }
   }, []);
 
-  // DO_NOT_UNDO — If user has a valid session token, redirect to dashboard immediately.
+  //  — If user has a valid session token, redirect to dashboard immediately.
   // Prevents authenticated users from being stuck on the landing page.
   useEffect(() => {
     const token = localStorage.getItem("session_token");
@@ -56,12 +56,12 @@ const LandingPage = () => {
   return (
     <div id="landing-top" className="landing-page min-h-screen bg-white" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Auth Modal */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
         onSuccess={handleAuthSuccess}
       />
-      
+
       {/* Header */}
       <header className="bg-white sticky top-0 z-50 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -73,7 +73,7 @@ const LandingPage = () => {
               Appeal Case Manager
             </span>
           </div>
-          {/* DO NOT UNDO — Desktop + iPad Navigation */}
+          {/*  — Desktop + iPad Navigation */}
           <div className="hidden lg:flex items-center gap-4">
             <Link to="/how-it-works" className="text-slate-700 hover:text-blue-700 text-sm transition-colors" data-testid="nav-how-it-works-link">
               How It Works
@@ -105,7 +105,7 @@ const LandingPage = () => {
                 <Link to="/terms" className="block px-4 py-2 text-sm text-slate-700 hover:text-blue-700 hover:bg-slate-100" data-testid="nav-more-terms">Terms & Privacy</Link>
               </div>
             </div>
-            <Button 
+            <Button
               onClick={() => setShowAuthModal(true)}
               data-testid="login-btn"
               className="landing-cta-primary px-5 py-3 text-base font-semibold"
@@ -113,7 +113,7 @@ const LandingPage = () => {
               Sign In
             </Button>
           </div>
-          <button 
+          <button
             className="lg:hidden p-2 text-slate-900"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -132,7 +132,7 @@ const LandingPage = () => {
                   Appeal Case Manager
                 </span>
               </div>
-              <button 
+              <button
                 className="p-2 text-slate-900"
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -172,7 +172,7 @@ const LandingPage = () => {
         <p className="text-red-600 font-semibold text-xs uppercase tracking-widest mb-3">
           All Australian States & Territories • All Criminal Offences
         </p>
-        <h1 
+        <h1
           className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight mb-2"
           style={{ fontFamily: "'Times New Roman', Times, serif" }}
         >
@@ -286,7 +286,7 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* NEW USER SPECIAL OFFER + CTA — Side by side banners — DO NOT UNDO */}
+      {/* NEW USER SPECIAL OFFER + CTA — Side by side banners —  */}
       <div className="max-w-6xl mx-auto px-6 pt-2 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {/* Pink $5 Offer Box */}
@@ -321,10 +321,10 @@ const LandingPage = () => {
       {/* SECTION 1: HERO */}
       {/* ============================================ */}
       <section className="relative pt-8 pb-8 md:pt-12 md:pb-12 px-6 overflow-hidden">
-        {/* Background Image with Blue Overlay — DO NOT UNDO */}
+        {/* Background Image with Blue Overlay —  */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/court-building.jpg" 
+          <img
+            src="/images/stock/court-building.jpg"
             alt="Australian High Court building"
             className="w-full h-full object-cover ios-image-safe image-safe"
             loading="eager"
@@ -333,7 +333,7 @@ const LandingPage = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/95 via-blue-900/95 to-slate-900/95" />
         </div>
-        
+
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -341,7 +341,7 @@ const LandingPage = () => {
               <p className="text-red-400 font-semibold text-xs uppercase tracking-widest mb-4">
                 All Australian States & Territories • All Criminal Offences
               </p>
-              <h1 
+              <h1
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 tracking-tight leading-tight mb-6"
                 style={{ fontFamily: "'Times New Roman', Times, serif" }}
               >
@@ -350,8 +350,8 @@ const LandingPage = () => {
               <p className="text-base text-slate-700 mb-6 max-w-xl leading-relaxed">
                 Organise case documents, generate timelines, and produce educational appeal reports with comparative sentencing tables, options matrices, and counsel-ready strategy notes across all Australian jurisdictions. This Application does not guarantee any particular outcome in any legal matter.
               </p>
-              
-              {/* State Badges — DO NOT UNDO */}
+
+              {/* State Badges —  */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
                 <span className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">NSW</span>
                 <span className="text-sm bg-purple-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">VIC</span>
@@ -363,7 +363,7 @@ const LandingPage = () => {
                 <span className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">ACT</span>
                 <span className="text-sm bg-red-700 text-white px-3 py-1.5 rounded-lg font-extrabold shadow-sm">Federal</span>
               </div>
-              
+
               {/* Types of Crimes */}
               <div className="mb-8 text-left">
                 <h3 className="text-2xl font-bold text-blue-600 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Types of Crimes Covered</h3>
@@ -375,8 +375,8 @@ const LandingPage = () => {
                   ))}
                 </div>
               </div>
-              
-              {/* CTA Buttons — DO NOT UNDO */}
+
+              {/* CTA Buttons —  */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button
                   onClick={() => setShowAuthModal(true)}
@@ -396,12 +396,12 @@ const LandingPage = () => {
                 </Link>
               </div>
             </div>
-            
+
             {/* Right - Hero Image */}
             <div className="relative mt-8 lg:mt-0">
               <div className="relative max-w-md mx-auto lg:max-w-none">
-                <img 
-                  src="/logo.png" 
+                <img
+                  src="/logo.png"
                   alt="Criminal Law Appeal Management - Founded by Deb King"
                   className="rounded-3xl shadow-2xl w-full object-contain ios-image-safe image-safe h-[320px] sm:h-[400px] lg:h-[500px] bg-slate-900 p-2"
                   loading="eager"
@@ -436,7 +436,7 @@ const LandingPage = () => {
       <section className="py-8 px-6 bg-white relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <img
             src={`${process.env.PUBLIC_URL || ""}/images/court-custody-hero.png`}
             alt="Court custody scene representing high-stakes criminal appeal review"
             className="w-full h-full object-contain sm:object-cover ios-image-safe image-safe opacity-20"
@@ -459,7 +459,7 @@ const LandingPage = () => {
 
           {/* Feature Grid - All Pages & Capabilities */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
+
             {/* Case Management */}
             <div className="bg-white border border-slate-700 rounded-xl p-6 hover:border-red-600 transition-all group">
               <div className="flex items-center gap-3 mb-3">
@@ -668,7 +668,7 @@ const LandingPage = () => {
               Your Complete Appeal Research Companion
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-              This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions. 
+              This application helps you organise, analyse, and research criminal appeals across all Australian jurisdictions.
               Whether you're representing yourself or working with a lawyer, get the tools you need to improve access to appeal preparation resources. This Application does not guarantee any particular outcome. All outputs are provided strictly for informational, educational, and research purposes only.
             </p>
           </div>
@@ -683,7 +683,7 @@ const LandingPage = () => {
                 Organise Everything
               </h3>
               <p className="text-slate-600 text-sm">
-                Upload all your case documents, create a timeline of events, and keep everything in one secure place. 
+                Upload all your case documents, create a timeline of events, and keep everything in one secure place.
                 OCR extracts text from scanned documents automatically.
               </p>
             </div>
@@ -697,7 +697,7 @@ const LandingPage = () => {
                 AI-Powered Analysis
               </h3>
               <p className="text-slate-600 text-sm">
-                Automatically identify potential grounds for appeal based on Australian law. 
+                Automatically identify potential grounds for appeal based on Australian law.
                 The AI scans your case for procedural errors, misdirections, and legal issues.
               </p>
             </div>
@@ -711,7 +711,7 @@ const LandingPage = () => {
                 Generate Reports
               </h3>
               <p className="text-slate-600 text-sm">
-                Create detailed reports with legal citations, case law references, and structured analysis. 
+                Create detailed reports with legal citations, case law references, and structured analysis.
                 Export to PDF or present in Appellate Research Brief for legal meetings. Translate any report into 41 languages.
               </p>
             </div>
@@ -946,7 +946,7 @@ const LandingPage = () => {
                   </h3>
                 </div>
                 <p className="text-slate-600 mb-4">
-                  Complete overview of Australian criminal law by state — Crimes Acts, Criminal Codes, Evidence Acts, 
+                  Complete overview of Australian criminal law by state — Crimes Acts, Criminal Codes, Evidence Acts,
                   Human Rights legislation, and the specific legal framework that applies to your case.
                 </p>
                 <div className="flex items-center gap-2 text-blue-600 font-medium">
@@ -968,7 +968,7 @@ const LandingPage = () => {
                   </h3>
                 </div>
                 <p className="text-slate-600 mb-4">
-                  Direct access to official court databases across all Australian jurisdictions. Search real judgments 
+                  Direct access to official court databases across all Australian jurisdictions. Search real judgments
                   from the High Court, Federal Court, and every state and territory Supreme Court.
                 </p>
                 <div className="flex items-center gap-2 text-red-600 font-medium">
@@ -1057,7 +1057,7 @@ const LandingPage = () => {
                 UNLOCK FULL ANALYSIS
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-4 mt-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Premium Features</h3>
-              
+
               <ul className="space-y-4 text-sm text-slate-900 mb-6">
                 <li className="flex items-start gap-3 p-4 bg-white rounded-lg border border-red-200">
                   <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1228,7 +1228,7 @@ const LandingPage = () => {
 
           <div className="mt-4 bg-teal-50 border border-teal-200 rounded-xl p-4 text-center" data-testid="barrister-view-comparison-note">
             <p className="text-teal-800 font-semibold text-sm">
-              <strong className="text-teal-900">Appellate Research Brief</strong> — Unlocks after all three reports above are generated. 
+              <strong className="text-teal-900">Appellate Research Brief</strong> — Unlocks after all three reports above are generated.
               A capstone synthesis combining every ground, strategy, authority, and recommendation into a single counsel-ready brief.
             </p>
           </div>
@@ -1254,7 +1254,7 @@ const LandingPage = () => {
           </h3>
           <p className="text-white text-base font-bold mb-1">Created and Designed by Deb King</p>
           <p className="text-white text-base font-bold mb-6 max-w-2xl mx-auto leading-relaxed">
-            Built from lived experience, driven by the belief that everyone deserves to understand their legal rights. 
+            Built from lived experience, driven by the belief that everyone deserves to understand their legal rights.
             If this tool helps even one person discover grounds they didn't know existed, my goal is accomplished.
           </p>
           <Link to="/about" data-testid="about-story-link">

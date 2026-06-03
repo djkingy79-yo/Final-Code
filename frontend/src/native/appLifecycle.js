@@ -1,6 +1,6 @@
 /**
  * App lifecycle and device info
- * DO_NOT_UNDO — App state management for native
+ *  — App state management for native
  */
 import { App } from "@capacitor/app";
 import { Device } from "@capacitor/device";

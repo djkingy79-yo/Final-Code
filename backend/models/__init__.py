@@ -1,4 +1,4 @@
-# DO NOT UNDO — All models in this file are approved and must be preserved.
+#  — All models in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Pydantic Models
 HARDENED / ADDITIVE PATCH
@@ -188,10 +188,10 @@ class Case(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: Optional[StateType] = None                        # DO NOT UNDO — must be None for auto-detect
-    offence_category: Optional[OffenceCategoryType] = None   # DO NOT UNDO — must be None for auto-detect
-    offence_type: Optional[str] = None                       # DO NOT UNDO — must be None for auto-detect
-    sentence: Optional[str] = None                           # DO NOT UNDO — must be None for auto-detect
+    state: Optional[StateType] = None                        #  — must be None for auto-detect
+    offence_category: Optional[OffenceCategoryType] = None   #  — must be None for auto-detect
+    offence_type: Optional[str] = None                       #  — must be None for auto-detect
+    sentence: Optional[str] = None                           #  — must be None for auto-detect
     status: CaseStatusType = "active"
     summary: Optional[str] = None
 
@@ -205,7 +205,7 @@ class Case(BaseModel):
 
 
 # ==========================================================================
-# DO NOT UNDO — AUTO-DETECT PROTECTION
+#  — AUTO-DETECT PROTECTION
 # ==========================================================================
 # state and offence_category MUST remain Optional = None.
 # DO NOT add default values like "nsw" or "homicide".
@@ -224,13 +224,13 @@ class CaseCreate(BaseModel):
     case_number: Optional[str] = None
     court: Optional[str] = None
     judge: Optional[str] = None
-    state: Optional[StateType] = None                        # DO NOT UNDO — must be None for auto-detect
-    offence_category: Optional[OffenceCategoryType] = None   # DO NOT UNDO — must be None for auto-detect
-    offence_type: Optional[str] = None                       # DO NOT UNDO — must be None for auto-detect
-    sentence: Optional[str] = None                           # DO NOT UNDO — must be None for auto-detect
+    state: Optional[StateType] = None                        #  — must be None for auto-detect
+    offence_category: Optional[OffenceCategoryType] = None   #  — must be None for auto-detect
+    offence_type: Optional[str] = None                       #  — must be None for auto-detect
+    sentence: Optional[str] = None                           #  — must be None for auto-detect
     summary: Optional[str] = None
 
-    # DO NOT UNDO — Converts empty strings to None so enum validation doesn't reject them
+    #  — Converts empty strings to None so enum validation doesn't reject them
     @field_validator("state", "offence_category", "offence_type", "sentence", "summary", "case_number", "court", "judge", mode="before")
     @classmethod
     def empty_str_to_none(cls, v):

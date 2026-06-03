@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../App";
-import { 
+import {
   Clock, CheckCircle2, Plus, Trash2, Calendar as CalendarIcon, List, ExternalLink, Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -63,7 +63,7 @@ const DeadlineTracker = ({ caseId }) => {
 
     try {
       const response = await axios.post(`${API}/cases/${caseId}/deadlines`, newDeadline);
-      setDeadlines([...deadlines, response.data].sort((a, b) => 
+      setDeadlines([...deadlines, response.data].sort((a, b) =>
         new Date(a.due_date) - new Date(b.due_date)
       ));
       setShowAddDialog(false);
@@ -79,8 +79,8 @@ const DeadlineTracker = ({ caseId }) => {
       await axios.patch(`${API}/cases/${caseId}/deadlines/${deadlineId}`, {
         is_completed: !isCompleted
       });
-      setDeadlines(deadlines.map(d => 
-        d.deadline_id === deadlineId 
+      setDeadlines(deadlines.map(d =>
+        d.deadline_id === deadlineId
           ? { ...d, is_completed: !isCompleted }
           : d
       ));
@@ -261,9 +261,9 @@ const DeadlineTracker = ({ caseId }) => {
                 {deadlines.map(deadline => {
                   const daysRemaining = getDaysRemaining(deadline.due_date);
                   const isOverdue = daysRemaining < 0 && !deadline.is_completed;
-                  
+
                   return (
-                    <div 
+                    <div
                       key={deadline.deadline_id}
                       className={`p-3 rounded-lg border ${getPriorityColor(deadline.priority, daysRemaining, deadline.is_completed)} ${deadline.is_completed ? 'opacity-60' : ''}`}
                     >
@@ -290,11 +290,11 @@ const DeadlineTracker = ({ caseId }) => {
                               </Badge>
                               {!deadline.is_completed && (
                                 <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : daysRemaining <= 3 ? 'text-red-600' : daysRemaining <= 7 ? 'text-red-600' : 'text-slate-600'}`}>
-                                  {isOverdue 
+                                  {isOverdue
                                     ? `${Math.abs(daysRemaining)} days overdue!`
-                                    : daysRemaining === 0 
+                                    : daysRemaining === 0
                                       ? 'Due today!'
-                                      : daysRemaining === 1 
+                                      : daysRemaining === 1
                                         ? 'Due tomorrow'
                                         : `${daysRemaining} days left`
                                   }
@@ -399,7 +399,7 @@ const DeadlineTracker = ({ caseId }) => {
                         {getDeadlinesForDate(selectedDate).map(deadline => {
                           const daysRemaining = getDaysRemaining(deadline.due_date);
                           return (
-                            <div 
+                            <div
                               key={deadline.deadline_id}
                               className={`p-2 rounded border text-sm ${getPriorityColor(deadline.priority, daysRemaining, deadline.is_completed)}`}
                             >
@@ -459,7 +459,7 @@ const DeadlineTracker = ({ caseId }) => {
               </div>
               <div>
                 <label className="text-sm font-medium">Type</label>
-                <Select 
+                <Select
                   value={newDeadline.deadline_type}
                   onValueChange={(v) => setNewDeadline({ ...newDeadline, deadline_type: v })}
                 >

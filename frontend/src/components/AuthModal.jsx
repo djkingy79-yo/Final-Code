@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -14,7 +14,7 @@ import { Label } from "./ui/label";
 import {
   Dialog,
   DialogContent,
-  
+
   DialogTitle,
 } from "./ui/dialog";
 import { API } from "../App";
@@ -59,49 +59,49 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email format";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     if (mode === "register" && !formData.name) {
       newErrors.name = "Name is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setLoading(true);
-    
+
     try {
       const endpoint = mode === "login" ? "/auth/login" : "/auth/register";
       const response = await axios.post(`${API}${endpoint}`, formData);
-      
+
       // Store session token in localStorage as fallback for cookie issues
       if (response.data?.session_token) {
         localStorage.setItem("session_token", response.data.session_token);
       }
-      
+
       toast.success(mode === "login" ? "Welcome back!" : "Account created successfully!");
       onSuccess(response.data);
       onClose();
     } catch (error) {
       const message = error.response?.data?.detail || "Authentication failed. Please try again.";
-      
+
       // Handle specific error cases with clearer messages
       if (message.includes("Google login") || message.includes("Google")) {
         toast.error("This email is linked to Google. Please close this and use 'Sign in with Google' instead.", {
@@ -139,8 +139,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         <div className="bg-white border-b border-slate-200 px-6 py-8 text-center relative">
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-0">
-            <img 
-              src="/images/stock/scales-justice.jpg" 
+            <img
+              src="/images/stock/scales-justice.jpg"
               alt=""
               className="w-full h-full object-cover"
             />
@@ -149,7 +149,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-600/30">
               <Scale className="w-7 h-7 text-white" />
             </div>
-            <DialogTitle 
+            <DialogTitle
               className="text-2xl font-bold text-slate-900 mb-1"
               style={{ fontFamily: "'Times New Roman', Times, serif" }}
             >
@@ -160,7 +160,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             </p>
           </div>
         </div>
-        
+
         <div className="p-6">
           {/* Google Sign-in Button — generates state AT CLICK TIME (atomic), closes dialog, then navigates */}
           <button
@@ -209,7 +209,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 </p>
               </div>
             )}
-            
+
             {mode === "register" && (
               <div>
                 <Label htmlFor="name" className="flex items-center gap-2 text-slate-900 font-medium">
@@ -228,7 +228,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 {errors.name && <p className="text-red-500 text-xs mt-1.5">{errors.name}</p>}
               </div>
             )}
-            
+
             <div>
               <Label htmlFor="email" className="flex items-center gap-2 text-slate-900 font-medium">
                 <Mail className="w-4 h-4 text-red-600" />
@@ -245,7 +245,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               />
               {errors.email && <p className="text-red-500 text-xs mt-1.5">{errors.email}</p>}
             </div>
-            
+
             <div>
               <Label htmlFor="password" className="flex items-center gap-2 text-slate-900 font-medium">
                 <Lock className="w-4 h-4 text-red-600" />
@@ -289,7 +289,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 </div>
               )}
             </div>
-            
+
             <Button
               type="submit"
               disabled={loading}
@@ -306,7 +306,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               )}
             </Button>
           </form>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-700">
               {mode === "login" ? "Don't have an account?" : "Already have an account?"}
@@ -319,7 +319,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               </button>
             </p>
           </div>
-          
+
           <div className="mt-6 pt-4 border-t border-slate-200">
             <div className="flex items-center justify-center gap-2 text-slate-700 mb-3">
               <Shield className="w-4 h-4" />

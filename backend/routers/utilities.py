@@ -1,4 +1,4 @@
-# DO NOT UNDO — utilities router. All endpoints in this file are approved and must be preserved.
+#  — utilities router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Utilities Router
 Helper endpoints: Australian states, offence framework, categories
@@ -62,13 +62,13 @@ async def get_offence_category_details(category: str, state: str = ""):
     """Get detailed framework for a specific offence category and state"""
     if category not in OFFENCE_CATEGORIES:
         raise HTTPException(status_code=404, detail="Offence category not found")
-    
+
     category_data = OFFENCE_CATEGORIES[category]
-    
+
     # Get state-specific legislation
     state_leg_key = f"{state}_legislation"
     state_legislation = category_data.get(state_leg_key, {})
-    
+
     # Build response with state-specific data
     response_category = {
         "name": category_data["name"],
@@ -79,12 +79,12 @@ async def get_offence_category_details(category: str, state: str = ""):
         "state_legislation": state_legislation,
         "cth_legislation": category_data.get("cth_legislation", {}),
     }
-    
+
     # Get appeal framework for the state — do NOT silently default to NSW
     state_appeal = APPEAL_FRAMEWORK.get(state)
     if not state_appeal:
         state_appeal = {"note": "Appeal framework not available for the specified jurisdiction. Please verify the state is set correctly."}
-    
+
     return {
         "category": response_category,
         "common_appeal_grounds": COMMON_APPEAL_GROUNDS,

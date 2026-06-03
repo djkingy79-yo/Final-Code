@@ -1,13 +1,13 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { 
-  Scale, ArrowLeft, GitCompare, BarChart3, TrendingUp, 
+import {
+  Scale, ArrowLeft, GitCompare, BarChart3, TrendingUp,
   Filter, CheckCircle, FileText,
   Gavel, Menu, X, Info, Sparkles
 } from "lucide-react";
@@ -27,13 +27,13 @@ const CompareCasesPage = ({ user }) => {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("my-cases"); // "my-cases" or "patterns"
-  
+
   // My Cases comparison state
   const [myCases, setMyCases] = useState([]);
   const [selectedCases, setSelectedCases] = useState([]);
   const [comparisonResult, setComparisonResult] = useState(null);
   const [loadingComparison, setLoadingComparison] = useState(false);
-  
+
   // Patterns state
   const [patterns, setPatterns] = useState(null);
   const [loadingPatterns, setLoadingPatterns] = useState(false);
@@ -42,7 +42,7 @@ const CompareCasesPage = ({ user }) => {
     state: "",
     ground_type: ""
   });
-  
+
   // Success factors state
   const [successFactors, setSuccessFactors] = useState(null);
   const [loadingFactors, setLoadingFactors] = useState(false);
@@ -85,7 +85,7 @@ const CompareCasesPage = ({ user }) => {
       toast.error("Select at least 2 cases to compare");
       return;
     }
-    
+
     setLoadingComparison(true);
     try {
       const response = await axios.post(`${API}/compare/my-cases`, {
@@ -106,7 +106,7 @@ const CompareCasesPage = ({ user }) => {
       if (patternFilters.offence_category) params.append("offence_category", patternFilters.offence_category);
       if (patternFilters.state) params.append("state", patternFilters.state);
       if (patternFilters.ground_type) params.append("ground_type", patternFilters.ground_type);
-      
+
       const response = await axios.get(`${API}/compare/patterns?${params.toString()}`);
       setPatterns(response.data);
     } catch (error) {
@@ -121,7 +121,7 @@ const CompareCasesPage = ({ user }) => {
     try {
       const params = new URLSearchParams();
       if (patternFilters.offence_category) params.append("offence_category", patternFilters.offence_category);
-      
+
       const response = await axios.get(`${API}/compare/case-composition?${params.toString()}`);
       setSuccessFactors(response.data);
     } catch (error) {
@@ -206,8 +206,8 @@ const CompareCasesPage = ({ user }) => {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-<Button 
-              onClick={() => navigate("/dashboard")} 
+<Button
+              onClick={() => navigate("/dashboard")}
               className="bg-blue-700 text-white hover:bg-blue-600 rounded-lg"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -225,14 +225,14 @@ const CompareCasesPage = ({ user }) => {
       {/* Hero Section */}
       <section className="relative py-12 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/office-desk.jpg" 
+          <img
+            src="/images/stock/office-desk.jpg"
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex items-center gap-4 mb-2">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -258,8 +258,8 @@ const CompareCasesPage = ({ user }) => {
             <button
               onClick={() => setActiveTab("my-cases")}
               className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${
-                activeTab === "my-cases" 
-                  ? "border-blue-500 text-red-600" 
+                activeTab === "my-cases"
+                  ? "border-blue-500 text-red-600"
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -269,8 +269,8 @@ const CompareCasesPage = ({ user }) => {
             <button
               onClick={() => setActiveTab("patterns")}
               className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${
-                activeTab === "patterns" 
-                  ? "border-blue-500 text-red-600" 
+                activeTab === "patterns"
+                  ? "border-blue-500 text-red-600"
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -318,7 +318,7 @@ const CompareCasesPage = ({ user }) => {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <h3 className="font-semibold text-slate-900 truncate">{case_.title}</h3>
-                          <Checkbox 
+                          <Checkbox
                             checked={selectedCases.includes(case_.case_id)}
                             className="data-[state=checked]:bg-red-600"
                           />
@@ -340,11 +340,11 @@ const CompareCasesPage = ({ user }) => {
                     ))}
                   </div>
                 )}
-                
+
                 {myCases.length >= 2 && (
                   <div className="mt-6 flex justify-center">
-                    <Button 
-                      onClick={compareMyCases} 
+                    <Button
+                      onClick={compareMyCases}
                       disabled={selectedCases.length < 2 || loadingComparison}
                       className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold shadow-lg shadow-red-600/20"
                     >
@@ -462,8 +462,8 @@ const CompareCasesPage = ({ user }) => {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
                     <label className="text-sm font-medium text-slate-900 mb-1.5 block">Offence Category</label>
-                    <Select 
-                      value={patternFilters.offence_category || "all"} 
+                    <Select
+                      value={patternFilters.offence_category || "all"}
                       onValueChange={(v) => setPatternFilters({...patternFilters, offence_category: v === "all" ? "" : v})}
                     >
                       <SelectTrigger className="rounded-xl">
@@ -479,8 +479,8 @@ const CompareCasesPage = ({ user }) => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-900 mb-1.5 block">State</label>
-                    <Select 
-                      value={patternFilters.state || "all"} 
+                    <Select
+                      value={patternFilters.state || "all"}
                       onValueChange={(v) => setPatternFilters({...patternFilters, state: v === "all" ? "" : v})}
                     >
                       <SelectTrigger className="rounded-xl">
@@ -496,8 +496,8 @@ const CompareCasesPage = ({ user }) => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-900 mb-1.5 block">Ground Type</label>
-                    <Select 
-                      value={patternFilters.ground_type || "all"} 
+                    <Select
+                      value={patternFilters.ground_type || "all"}
                       onValueChange={(v) => setPatternFilters({...patternFilters, ground_type: v === "all" ? "" : v})}
                     >
                       <SelectTrigger className="rounded-xl">
@@ -591,7 +591,7 @@ const CompareCasesPage = ({ user }) => {
                                 {groundTypeLabels[type] || type}
                               </div>
                               <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
-                                <div 
+                                <div
                                   className="h-full bg-gradient-to-r from-blue-500 to-red-600 rounded-full flex items-center justify-end pr-3 transition-all duration-500"
                                   style={{ width: `${Math.max(percentage, 10)}%` }}
                                 >

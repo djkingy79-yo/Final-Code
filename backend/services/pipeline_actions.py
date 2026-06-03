@@ -157,7 +157,7 @@ async def _refresh_case_extract(case: dict) -> dict:
 
 
 async def _classify_issues(case: dict, case_extract: dict) -> dict:
-    """DO_NOT_UNDO — 3 Apr 2026: If issues already exist, DO NOT re-classify.
+    """ — 3 Apr 2026: If issues already exist, DO NOT re-classify.
     Re-classification generates new LLM titles that slip past dedup and multiply grounds.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
@@ -288,7 +288,7 @@ async def _verify_top_issues(case: dict, verify_limit: int) -> dict:
 
 
 async def _sync_pipeline_projection_to_grounds(case_id: str, user_id: str) -> int:
-    """DO_NOT_UNDO — Sync staged issues/verifications into grounds_of_merit.
+    """ — Sync staged issues/verifications into grounds_of_merit.
     MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title upsert.
     Exact-title upsert was the ROOT CAUSE of grounds multiplying from 4 to 27+.
     """

@@ -3,7 +3,7 @@ Verified Case Law Search Service
 Generates smart search URLs for AustLII and state-specific databases.
 All searches open in the user's browser for verified, official results.
 
-DO NOT UNDO — Provides verified case law search across all Australian jurisdictions.
+ — Provides verified case law search across all Australian jurisdictions.
 """
 import logging
 from urllib.parse import quote_plus

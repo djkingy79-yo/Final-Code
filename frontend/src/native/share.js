@@ -1,6 +1,6 @@
 /**
  * Native share functionality
- * DO_NOT_UNDO — Share case materials natively
+ *  — Share case materials natively
  */
 import { Share } from "@capacitor/share";
 import { isNativePlatform } from "./platform";

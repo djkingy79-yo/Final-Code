@@ -1,4 +1,4 @@
-# DO NOT UNDO — startup_tasks.py. All startup logic extracted from server.py.
+#  — startup_tasks.py. All startup logic extracted from server.py.
 """
 Startup and shutdown tasks for the Criminal Appeal AI application.
 - Database index creation
@@ -171,7 +171,7 @@ async def create_database_indexes():
 async def recover_orphaned_reports():
     """Auto-fail or recover reports stuck in 'generating' from server restarts.
 
-    DO_NOT_UNDO — Recovery uses minimum character targets to decide whether a partial
+     — Recovery uses minimum character targets to decide whether a partial
     report is complete enough to mark as finished, or needs re-generation.
     """
     min_recovery_targets = {
@@ -206,7 +206,7 @@ async def recover_orphaned_reports():
                 )
                 logger.info(f"Partial report {report['report_id']} below target ({len(partial)} < {min_target}), marked as failed for resume")
         else:
-            # DO_NOT_UNDO — Restore from backup if available. When a user regenerates
+            #  — Restore from backup if available. When a user regenerates
             # a completed report and the generation fails, restore the old content
             # so they never lose their existing report.
             backup = report.get("content", {}).get("backup_analysis", "")
@@ -254,7 +254,7 @@ async def flag_undersized_reports():
         logger.info(f"Flagged {flagged_count} undersized reports on startup")
 
     # Also restore any reports that were accidentally set to "failed" by a previous migration
-    # DO_NOT_UNDO — Only restore if the report actually meets the minimum target.
+    #  — Only restore if the report actually meets the minimum target.
     # Reports below the target MUST stay failed so the user can regenerate them.
     for rtype, min_chars in min_completed_targets.items():
         async for report in db.reports.find({"status": "failed", "report_type": rtype}).limit(50):
@@ -276,7 +276,7 @@ async def flag_undersized_reports():
 
 
 async def dedup_grounds_on_startup():
-    """DO_NOT_UNDO — Auto-cleanup duplicate grounds on every server start.
+    """ — Auto-cleanup duplicate grounds on every server start.
 
     Runs the fuzzy deduplication cleanup across ALL cases to merge any duplicates
     that slipped through before the dedup logic was fully applied.
@@ -308,7 +308,7 @@ async def dedup_grounds_on_startup():
 
 
 async def backfill_markdown_normalise_on_startup():
-    """DO_NOT_UNDO — Idempotent markdown normaliser backfill.
+    """ — Idempotent markdown normaliser backfill.
 
     Scans all reports and grounds, normalises LLM markdown that may have been
     stored with inline `## Heading` or glued bullet lists. Runs once per

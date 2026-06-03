@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -141,8 +141,8 @@ const LegalResourcesPage = () => {
               Legal Help You May Not Know About
             </h2>
             <p className="text-blue-50">
-              For most people, Legal Aid is the only affordable option — but private firms are often out of reach. 
-              What many don't realise is that there are other avenues for help. <strong className="text-white">When you think you have no options, 
+              For most people, Legal Aid is the only affordable option — but private firms are often out of reach.
+              What many don't realise is that there are other avenues for help. <strong className="text-white">When you think you have no options,
               there definitely are options.</strong>
             </p>
           </div>
@@ -155,10 +155,10 @@ const LegalResourcesPage = () => {
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Legal Aid</h3>
                 <p className="text-slate-700 text-xs mb-2">
-                  Government-funded legal assistance available in every state. While overburdened, they can provide 
+                  Government-funded legal assistance available in every state. While overburdened, they can provide
                   representation for serious criminal matters and appeals if you meet the eligibility criteria.
                 </p>
-                <button 
+                <button
                   onClick={() => scrollToSection("legal-aid")}
                   className="text-blue-700 hover:underline text-sm font-medium"
                 >
@@ -173,10 +173,10 @@ const LegalResourcesPage = () => {
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Pro Bono Legal Services</h3>
                 <p className="text-slate-700 text-xs mb-2">
-                  Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
+                  Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation.
                   This is not widely advertised but is a genuine option.
                 </p>
-                <button 
+                <button
                   onClick={() => scrollToSection("pro-bono")}
                   className="text-emerald-700 hover:underline text-sm font-medium"
                 >
@@ -191,10 +191,10 @@ const LegalResourcesPage = () => {
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Community Legal Centres</h3>
                 <p className="text-slate-700 text-xs mb-2">
-                  Independent, non-profit organisations providing free legal advice and assistance. They often help with 
+                  Independent, non-profit organisations providing free legal advice and assistance. They often help with
                   matters Legal Aid cannot cover and can refer you to specialist services.
                 </p>
-                <button 
+                <button
                   onClick={() => scrollToSection("community")}
                   className="text-purple-700 hover:underline text-sm font-medium"
                 >
@@ -209,7 +209,7 @@ const LegalResourcesPage = () => {
                 </div>
                 <h3 className="text-sm font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Grants & Special Funding</h3>
                 <p className="text-slate-700 text-[10px] mb-3">
-                  Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases. 
+                  Various grants and funding programmes exist specifically to support criminal appeals and wrongful conviction cases.
                   These are rarely advertised but can cover legal costs.
                 </p>
                 <ul className="text-[10px] text-slate-600 space-y-1 mb-3">
@@ -225,21 +225,21 @@ const LegalResourcesPage = () => {
             <div className="bg-blue-600 border border-blue-700 rounded-2xl p-6 text-center" data-testid="legal-resources-dont-give-up">
               <h3 className="text-white text-2xl font-bold mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Don't Give Up</h3>
               <p className="text-blue-50 text-base font-semibold">
-                The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services 
+                The legal system is complex, but help exists. Start with Legal Aid, then explore pro bono services
                 and community legal centres. Many people have found help when they thought there was none.
               </p>
             </div>
           </div>
 
         {/* Legal Aid Tab */}
-        
+
           <div id="legal-aid" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Legal Aid Services
               </h2>
               <p className="text-slate-700 text-xs">
-                Government-funded legal assistance available in every state and territory. While overburdened, 
+                Government-funded legal assistance available in every state and territory. While overburdened,
                 they can provide representation for serious criminal matters and appeals if you meet eligibility criteria.
               </p>
             </div>
@@ -313,14 +313,14 @@ const LegalResourcesPage = () => {
           </div>
 
         {/* Law Societies Tab */}
-        
+
           <div id="law-societies" className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Law Societies
               </h2>
               <p className="text-slate-700 text-xs">
-                Professional bodies representing solicitors in each state. They offer referral services to help you find a lawyer, 
+                Professional bodies representing solicitors in each state. They offer referral services to help you find a lawyer,
                 and can assist with complaints about legal practitioners.
               </p>
             </div>
@@ -427,14 +427,14 @@ const LegalResourcesPage = () => {
           </div>
 
         {/* Complaints & OLCR Tab */}
-        
+
           <div id="complaints" className="space-y-6">
             <div className="bg-red-50 border border-red-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Complaints Bodies & Legal Services Commissioners
               </h2>
               <p className="text-slate-700 text-xs">
-                If you have a complaint about a lawyer's conduct, fees, or service, these independent bodies can investigate 
+                If you have a complaint about a lawyer's conduct, fees, or service, these independent bodies can investigate
                 and take action. The OLCR (Office of the Legal Services Commissioner) in NSW handles complaints about lawyers.
               </p>
             </div>
@@ -518,14 +518,14 @@ const LegalResourcesPage = () => {
           </div>
 
         {/* Courts Tab */}
-        
+
           <div id="courts" className="space-y-6">
             <div className="bg-white border border-slate-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Courts of Australia
               </h2>
               <p className="text-slate-700 text-xs">
-                Direct links to court websites for each state and territory, plus federal courts. 
+                Direct links to court websites for each state and territory, plus federal courts.
                 Find court locations, forms, fees, and case information.
               </p>
             </div>
@@ -561,7 +561,7 @@ const LegalResourcesPage = () => {
               <h3 className="text-lg font-bold text-slate-900 mb-3" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 State & Territory Courts
               </h3>
-              
+
               {/* NSW */}
               <div className="mb-6">
                 <h4 className="font-semibold text-blue-700 mb-3 flex items-center gap-2">
@@ -649,14 +649,14 @@ const LegalResourcesPage = () => {
           </div>
 
         {/* Community Legal Tab */}
-        
+
           <div id="community" className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Community Legal Centres
               </h2>
               <p className="text-slate-700 text-xs">
-                Independent, non-profit organisations providing free legal advice and assistance. 
+                Independent, non-profit organisations providing free legal advice and assistance.
                 They often help with matters Legal Aid cannot cover and can refer you to specialist services.
               </p>
             </div>
@@ -740,14 +740,14 @@ const LegalResourcesPage = () => {
           </div>
 
         {/* Pro Bono Tab */}
-        
+
           <div id="pro-bono" className="space-y-6">
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
               <h2 className="text-xl font-bold text-slate-900 mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                 Pro Bono Legal Services
               </h2>
               <p className="text-slate-700 text-xs">
-                Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation. 
+                Many law firms and barristers provide free legal services (pro bono) for those who cannot afford representation.
                 This is not widely advertised but is a genuine option for serious matters.
               </p>
             </div>
@@ -801,7 +801,7 @@ const LegalResourcesPage = () => {
                   <div className="bg-white border border-slate-200 rounded-lg p-4">
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">University Law Clinics</h4>
                     <p className="text-[11px] text-slate-700">
-                      Many university law schools run clinics that take on appeals and wrongful conviction cases. 
+                      Many university law schools run clinics that take on appeals and wrongful conviction cases.
                       Contact your local university's law faculty.
                     </p>
                   </div>
@@ -1368,9 +1368,9 @@ const ResourceCard = ({ title, state, phone, website, description, color, highli
 
 // Small Resource Card for Courts
 const SmallResourceCard = ({ title, website }) => (
-  <a 
-    href={website} 
-    target="_blank" 
+  <a
+    href={website}
+    target="_blank"
     rel="noopener noreferrer"
     className="flex items-center gap-2 p-3 bg-white border border-slate-200 hover:border-blue-300 hover:bg-slate-50 rounded-lg text-sm transition-colors group"
     data-testid={`legal-resources-court-${title.toLowerCase().replace(/\s+/g, '-')}`}

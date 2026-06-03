@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -263,8 +263,8 @@ const LegalFrameworkPage = () => {
 
   const humanRights = {
     international: [
-      { 
-        name: "International Covenant on Civil and Political Rights (ICCPR)", 
+      {
+        name: "International Covenant on Civil and Political Rights (ICCPR)",
         url: "https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-civil-and-political-rights",
         articles: [
           { num: "Article 7", desc: "Freedom from torture and cruel, inhuman or degrading treatment" },
@@ -275,8 +275,8 @@ const LegalFrameworkPage = () => {
           { num: "Article 15", desc: "No retrospective criminal laws" },
         ]
       },
-      { 
-        name: "Universal Declaration of Human Rights (UDHR)", 
+      {
+        name: "Universal Declaration of Human Rights (UDHR)",
         url: "https://www.un.org/en/about-us/universal-declaration-of-human-rights",
         articles: [
           { num: "Article 5", desc: "No torture or cruel treatment" },
@@ -287,13 +287,13 @@ const LegalFrameworkPage = () => {
       },
     ],
     australian: [
-      { 
-        name: "Australian Human Rights Commission Act 1986 (Cth)", 
+      {
+        name: "Australian Human Rights Commission Act 1986 (Cth)",
         url: "https://www.legislation.gov.au/C2004A03366/latest/text",
         desc: "Establishes the Australian Human Rights Commission and its powers"
       },
-      { 
-        name: "Charter of Human Rights and Responsibilities Act 2006 (Vic)", 
+      {
+        name: "Charter of Human Rights and Responsibilities Act 2006 (Vic)",
         url: "https://www.legislation.vic.gov.au/in-force/acts/charter-human-rights-and-responsibilities-act-2006",
         desc: "Victoria's human rights charter - courts must interpret laws consistently with human rights",
         articles: [
@@ -302,13 +302,13 @@ const LegalFrameworkPage = () => {
           { num: "s.25", desc: "Rights in criminal proceedings" },
         ]
       },
-      { 
-        name: "Human Rights Act 2004 (ACT)", 
+      {
+        name: "Human Rights Act 2004 (ACT)",
         url: "https://www.legislation.act.gov.au/a/2004-5/",
         desc: "ACT human rights legislation"
       },
-      { 
-        name: "Human Rights Act 2019 (Qld)", 
+      {
+        name: "Human Rights Act 2019 (Qld)",
         url: "https://www.legislation.qld.gov.au/view/html/inforce/current/act-2019-005",
         desc: "Queensland's human rights act"
       },
@@ -379,7 +379,7 @@ const LegalFrameworkPage = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-slate-900 mb-2">Criminal Law by Jurisdiction</h2>
               <p className="text-sm text-slate-700">
-                Each state and territory has its own criminal legislation. The Commonwealth also has criminal laws for federal offences. 
+                Each state and territory has its own criminal legislation. The Commonwealth also has criminal laws for federal offences.
                 Click on a jurisdiction to see all relevant acts.
               </p>
             </div>
@@ -404,7 +404,7 @@ const LegalFrameworkPage = () => {
                 {expandedState === key && (
                   <div className="px-5 pb-5 space-y-3">
                     {state.acts.map((act, i) => (
-                      <a 
+                      <a
                         key={i}
                         href={act.url}
                         target="_blank"
@@ -431,14 +431,14 @@ const LegalFrameworkPage = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-slate-900 mb-2">Evidence Acts</h2>
               <p className="text-sm text-slate-700">
-                Evidence Acts govern what evidence can be used in court, how it must be presented, and rules around witnesses, 
+                Evidence Acts govern what evidence can be used in court, how it must be presented, and rules around witnesses,
                 hearsay, admissions, and more. Understanding these is crucial for appeals based on improper evidence admission.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               {Object.entries(evidenceActs).map(([key, act]) => (
-                <a 
+                <a
                   key={key}
                   href={act.url}
                   target="_blank"
@@ -493,7 +493,7 @@ const LegalFrameworkPage = () => {
               <div key={key} className="space-y-2">
                 <h3 className="font-semibold text-slate-900 uppercase text-sm">{key.toUpperCase()}</h3>
                 {acts.map((act, i) => (
-                  <a 
+                  <a
                     key={i}
                     href={act.url}
                     target="_blank"
@@ -537,7 +537,7 @@ const LegalFrameworkPage = () => {
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
               <h2 className="font-bold text-slate-900 mb-2">Human Rights & Fair Trial</h2>
               <p className="text-sm text-slate-700">
-                Australia has signed international treaties protecting fundamental rights. While not always directly enforceable, 
+                Australia has signed international treaties protecting fundamental rights. While not always directly enforceable,
                 courts must consider these when interpreting Australian law. Some states also have their own human rights legislation.
               </p>
             </div>

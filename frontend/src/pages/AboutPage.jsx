@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -81,18 +81,18 @@ const AboutPage = () => {
       {/* Hero Section */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/scales-justice.jpg" 
+          <img
+            src="/images/stock/scales-justice.jpg"
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-4xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
-            <img 
-              src="/logo.png" 
+            <img
+              src="/logo.png"
               alt="Criminal Law Appeal Management - Founded by Deb King"
               className="w-64 sm:w-80 md:w-96 rounded-2xl shadow-2xl"
               data-testid="about-hero-logo"
@@ -118,19 +118,19 @@ const AboutPage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
               <p className="text-slate-700 text-sm leading-relaxed">
-                A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney, Colyton 
-                and has never been afraid of hard work. From TAB Limited to human resources, workplace safety, 
+                A proud single mother of four and grandmother to one, Deb King grew up in Western Sydney, Colyton
+                and has never been afraid of hard work. From TAB Limited to human resources, workplace safety,
                 training and assessment — Deb has always been driven by purpose.
               </p>
               <p className="text-slate-700 text-sm leading-relaxed">
-                Civil construction plant operations, painting and decorating — 
-                Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black 
-                belt in Taekwondo, ten-year undefeated champion, and proud representative of Australia at 
+                Civil construction plant operations, painting and decorating —
+                Deb has built a career across industries that demanded resilience and grit. A 3rd Dan black
+                belt in Taekwondo, ten-year undefeated champion, and proud representative of Australia at
                 multiple World Championships.
               </p>
               <p className="text-slate-700 text-sm leading-relaxed">
-                That same determination now drives her mission to help others 
-                navigate the justice system. Deb understands what it means to fight — and she brings that 
+                That same determination now drives her mission to help others
+                navigate the justice system. Deb understands what it means to fight — and she brings that
                 same tenacity to every case managed through this platform.
               </p>
             </div>
@@ -142,7 +142,7 @@ const AboutPage = () => {
             </h2>
             <p className="text-blue-700 font-medium">Founded by Debra King</p>
             <p className="text-slate-700 text-sm mt-2">Glenmore Park, NSW, Australia</p>
-            
+
             <div className="mt-6 inline-block bg-blue-600 rounded-xl px-6 py-3">
               <p className="text-white text-sm font-bold">
                 AUSTRALIAN LAW ONLY — Covers all States & Territories
@@ -167,13 +167,13 @@ const AboutPage = () => {
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
               I'm not a lawyer — I'm someone who knows firsthand how isolating and confusing the justice system can be.
-              <strong className="text-slate-900"> I served a considerable amount of time in prison.</strong> During that time, 
-              I accepted my situation, believing I had no options. What I didn't know then was that I had appellant rights 
+              <strong className="text-slate-900"> I served a considerable amount of time in prison.</strong> During that time,
+              I accepted my situation, believing I had no options. What I didn't know then was that I had appellant rights
               — rights that were never properly explained to me.
             </p>
-            
+
             <p>
-              Legal Aid failed to help me. Like so many others, I fell through the cracks of an overburdened system 
+              Legal Aid failed to help me. Like so many others, I fell through the cracks of an overburdened system
               that offers little support once you're sentenced. I served my time not knowing what could have been challenged.
             </p>
 
@@ -183,16 +183,16 @@ const AboutPage = () => {
                 <strong>It's now been eight years since I've been free from trouble.</strong>
               </p>
               <p className="text-emerald-700 mt-2 text-sm">
-                In that time, I've invested years of hard work, research, and determination into building this application. 
-                Every hour spent learning criminal law, every late night developing this tool — it was all driven by one goal: 
+                In that time, I've invested years of hard work, research, and determination into building this application.
+                Every hour spent learning criminal law, every late night developing this tool — it was all driven by one goal:
                 to ensure others don't have to go through what I went through.
               </p>
             </div>
 
             <p>
-              The reality is: from manifest injustice to denial of procedural fairness, from critical elements missed 
-              at sentencing, to failures by defence counsel, errors by the judge, or simply unsafe verdicts — there are 
-              <em> many</em> potential grounds that can arise in criminal matters. Unless you're a legal expert or have 
+              The reality is: from manifest injustice to denial of procedural fairness, from critical elements missed
+              at sentencing, to failures by defence counsel, errors by the judge, or simply unsafe verdicts — there are
+              <em> many</em> potential grounds that can arise in criminal matters. Unless you're a legal expert or have
               thousands of dollars for advice, these issues often go unnoticed.
             </p>
           </div>
@@ -225,7 +225,7 @@ const AboutPage = () => {
                 <span className="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-semibold">Murder</span>
               </div>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-6 text-sm">
               <div className="space-y-3">
                 <div className="flex justify-between">
@@ -260,17 +260,17 @@ const AboutPage = () => {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-slate-900">Josh is my best mate.</strong> He was convicted in 2018 and sentenced to 
-              30 years imprisonment with a non-parole period of 22 years and 6 months. For 10 years, he was told he had 
+              <strong className="text-slate-900">Josh is my best mate.</strong> He was convicted in 2018 and sentenced to
+              30 years imprisonment with a non-parole period of 22 years and 6 months. For 10 years, he was told he had
               no appellant rights. No grounds of merit. No options. He believed it — and so did I, at first.
             </p>
 
             <p>
-              I've dedicated the last <strong className="text-slate-900">five years</strong> to researching, analysing, and 
-              reporting on Josh's case. Five years of reading transcripts, studying legislation, examining evidence, and 
-              learning criminal law from the ground up. Blood, sweat, and tears went into understanding every aspect of 
-              what happened to him. I've become so knowledgeable on Murder, Manslaughter, and Mens Rea that I'm confident 
-              I could represent Josh myself and succeed. That's not arrogance — that's the result of years of relentless 
+              I've dedicated the last <strong className="text-slate-900">five years</strong> to researching, analysing, and
+              reporting on Josh's case. Five years of reading transcripts, studying legislation, examining evidence, and
+              learning criminal law from the ground up. Blood, sweat, and tears went into understanding every aspect of
+              what happened to him. I've become so knowledgeable on Murder, Manslaughter, and Mens Rea that I'm confident
+              I could represent Josh myself and succeed. That's not arrogance — that's the result of years of relentless
               dedication to finding the truth.
             </p>
 
@@ -280,25 +280,25 @@ const AboutPage = () => {
                 <strong>Then I built this app.</strong>
               </p>
               <p className="text-blue-700 text-sm">
-                Using this very application, we analysed every document, every transcript, every piece of evidence. 
+                Using this very application, we analysed every document, every transcript, every piece of evidence.
                 What we found was shocking — Josh had been severely let down by the system.
               </p>
             </div>
 
             <p>
-              The grounds we identified are severe and deny him natural justice. He was denied a judge alone trial — his 
-              right to elect trial by judge alone was not properly afforded to him. There were multiple failures in 
-              procedural fairness throughout the trial process. Fundamental rights that every accused person is entitled 
-              to were simply not upheld. These aren't minor technicalities — these are serious breaches that go to the 
+              The grounds we identified are severe and deny him natural justice. He was denied a judge alone trial — his
+              right to elect trial by judge alone was not properly afforded to him. There were multiple failures in
+              procedural fairness throughout the trial process. Fundamental rights that every accused person is entitled
+              to were simply not upheld. These aren't minor technicalities — these are serious breaches that go to the
               heart of whether he received a fair trial.
             </p>
 
             <p>
-              This app was born from that journey. But it's not just for people like Josh — it's designed to be a powerful 
-              tool for <strong className="text-slate-900">lawyers and legal professionals</strong> too. When solicitors and 
-              barristers are overloaded with cases, when Legal Aid is stretched beyond capacity, when there simply aren't 
-              enough hours in the day to give every case the attention it deserves — this app can help. It organises, 
-              analyses, and identifies issues that might otherwise be missed. What took me five years to learn, this app 
+              This app was born from that journey. But it's not just for people like Josh — it's designed to be a powerful
+              tool for <strong className="text-slate-900">lawyers and legal professionals</strong> too. When solicitors and
+              barristers are overloaded with cases, when Legal Aid is stretched beyond capacity, when there simply aren't
+              enough hours in the day to give every case the attention it deserves — this app can help. It organises,
+              analyses, and identifies issues that might otherwise be missed. What took me five years to learn, this app
               can help accomplish in a fraction of the time.
             </p>
 
@@ -308,9 +308,9 @@ const AboutPage = () => {
                 Josh now has a full appeal in progress
               </p>
               <p className="text-emerald-700">
-                After 10 years of being told he had no options, Josh is currently in the process of a <strong>full case appeal 
-                for both conviction and sentence</strong>. From being denied a judge alone trial to failures in procedural 
-                fairness — the grounds identified are severe and deny him natural justice. This app made it possible to 
+                After 10 years of being told he had no options, Josh is currently in the process of a <strong>full case appeal
+                for both conviction and sentence</strong>. From being denied a judge alone trial to failures in procedural
+                fairness — the grounds identified are severe and deny him natural justice. This app made it possible to
                 identify what the legal system failed to tell him for a decade.
               </p>
             </div>
@@ -344,7 +344,7 @@ const AboutPage = () => {
                 <span className="px-3 py-1 bg-blue-700 text-white rounded-lg text-xs font-semibold">2+ Years</span>
               </div>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-slate-700">Charge:</span>
@@ -359,7 +359,7 @@ const AboutPage = () => {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-slate-900">Brad is my best mate for life.</strong> He's been on remand for over 
+              <strong className="text-slate-900">Brad is my best mate for life.</strong> He's been on remand for over
               two years now, still waiting for his matter to be finalised. Two years of his life in limbo.
             </p>
 
@@ -369,13 +369,13 @@ const AboutPage = () => {
                 <strong>Even before trial, we've already identified strong issues.</strong>
               </p>
               <p className="text-blue-700 text-sm">
-                During the proceedings, using this app to analyse the available materials, we've already found significant 
+                During the proceedings, using this app to analyse the available materials, we've already found significant
                 issues that are apparent. Problems that need to be documented and tracked from day one.
               </p>
             </div>
 
             <p>
-              Once Brad's matter is finalised, this app will be there to help him too — just like it helped Josh. 
+              Once Brad's matter is finalised, this app will be there to help him too — just like it helped Josh.
               Every document, every inconsistency, every potential ground will be captured and analysed.
             </p>
           </div>
@@ -396,19 +396,19 @@ const AboutPage = () => {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              <strong className="text-slate-900">Josh and Brad inspired me to build this.</strong> Watching them — and 
-              so many others — struggle through a system that offers little help once you're sentenced or charged, 
+              <strong className="text-slate-900">Josh and Brad inspired me to build this.</strong> Watching them — and
+              so many others — struggle through a system that offers little help once you're sentenced or charged,
               I knew something had to change.
             </p>
 
             <p>
-              The legal system is complex. Appeals are complicated. And unless you have money for lawyers or get lucky 
+              The legal system is complex. Appeals are complicated. And unless you have money for lawyers or get lucky
               with Legal Aid, you're on your own. That's not justice. That's a lottery.
             </p>
 
             <p>
-              This app exists because <strong className="text-slate-900">everyone deserves to know their rights</strong>. 
-              Everyone deserves the chance to identify if something went wrong in their case. Everyone deserves access 
+              This app exists because <strong className="text-slate-900">everyone deserves to know their rights</strong>.
+              Everyone deserves the chance to identify if something went wrong in their case. Everyone deserves access
               to the same tools that expensive law firms use.
             </p>
           </div>
@@ -430,8 +430,8 @@ const AboutPage = () => {
         <div className="max-w-3xl mx-auto text-center">
           <Quote className="w-12 h-12 text-blue-500/30 mx-auto mb-4" />
           <blockquote className="text-xl text-slate-700 italic leading-relaxed">
-            "I just wanted to create something that could help others without them spending years working it out themselves. 
-            Josh has been sitting in jail for 10 years after being told he had no grounds. Navigating the appeals process is overwhelming, especially for those without legal training. 
+            "I just wanted to create something that could help others without them spending years working it out themselves.
+            Josh has been sitting in jail for 10 years after being told he had no grounds. Navigating the appeals process is overwhelming, especially for those without legal training.
             This tool was built to help people understand and navigate that process."
           </blockquote>
           <p className="text-slate-900 font-semibold mt-4">— Debra King</p>
