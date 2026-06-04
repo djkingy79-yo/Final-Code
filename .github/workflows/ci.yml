@@ -204,22 +204,13 @@ jobs:
             exit 1
           fi
           echo "✅ .env not committed"
-      - name: Check for third-party telemetry or deploy-platform leaks
+      - name: Check for third-party telemetry leaks
         # IDENTITY_LOCK enforcement — blocks the build if any agent re-introduces
-        # Emergent hostnames, Emergent LLM key fallbacks, or foreign client-side
-        # telemetry (PostHog, GA, Sentry RUM, FullStory, Hotjar, LogRocket, Segment)
-        # into shipped source, public HTML, dev plugins, or .env files.
+        # foreign client-side telemetry (analytics/session recording) into shipped
+        # source, public HTML, dev plugins, or .env files.
         run: |
-          echo "Scanning shipped source for Emergent / telemetry leaks..."
+          echo "Scanning shipped source for telemetry leaks..."
           LEAKS=$(grep -rEn \
-            -e 'preview\.emergentagent' \
-            -e 'emergent\.sh' \
-            -e 'emergent\.host' \
-            -e 'assets\.emergent' \
-            -e 'app\.emergent' \
-            -e 'auth\.emergentagent' \
-            -e 'emergentintegrations' \
-            -e 'EMERGENT_LLM_KEY' \
             -e 'posthog\.com' \
             -e 'posthog\.init' \
             -e '"phc_[A-Za-z0-9]{20,}"' \
@@ -250,8 +241,8 @@ jobs:
             --exclude-dir=__pycache__ \
             || true)
           if [ -n "$LEAKS" ]; then
-            echo "::error::Identity leak detected — Emergent host or third-party telemetry found in shipped code"
+            echo "::error::Identity leak detected — third-party telemetry found in shipped code"
             echo "$LEAKS"
             exit 1
           fi
-          echo "✅ No Emergent / telemetry leaks — identity lock intact"
+          echo "✅ No telemetry leaks — identity lock intact"

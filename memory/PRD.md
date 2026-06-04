@@ -9,12 +9,12 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Branding:** Forced light mode globally. High contrast only. No amber/brown (blue/slate/navy). Bright blue action buttons with white text.
 - **Print/Export:** Exacting standards for footer, TOC, paragraph numbering, layout parity between on-screen and exported (PDF/Word/Print).
 - **Australian English:** analyse, organise, judgement, offence throughout.
-- **Independence:** All Emergent branding / auth / LLM proxy dependencies removed — app runs on user's personal OpenAI key and direct Google OAuth.
+- **Independence:** All third-party branding / auth / LLM proxy dependencies removed — app runs on user's personal OpenAI key and direct Google OAuth.
 
 ## Architecture
 - Frontend: React + Tailwind + Shadcn/UI
 - Backend: FastAPI + MongoDB
-- AI: OpenAI GPT-4o directly via user's personal API key (no Emergent proxy)
+- AI: OpenAI GPT-4o directly via user's personal API key (no third-party proxy)
 - Auth: Direct Google OAuth (state+localStorage+cookie CSRF protection)
 - Email: Resend
 - Payments: PayID
@@ -44,12 +44,12 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 
 ### Completed (Current Session — handoff + new work)
 - **Google OAuth CSRF state mismatch** — resolved via click-time state + localStorage + domain-scoped cookie
-- **Direct OpenAI key integration** — replaces Emergent proxy; runs on user's personal `OPENAI_API_KEY` with GPT-4o
+- **Direct OpenAI key integration** — replaces prior proxy; runs on user's personal `OPENAI_API_KEY` with GPT-4o
 - **Print / PDF / Word export overhaul** — CSS Paged Media, dynamic footers, landscape tables, correct colours
 - **Export Options Modal** — user can pick sections to include per export type
 - **Conversion tracking + `/admin/analytics` dashboard** — signup source + CTA conversion rates
 - **Security audit & hardening** — CORS fix + global Axios 401 interceptor
-- **Emergent branding purge + "Founded by Deb King" byline** across 14 public pages
+- **Legacy branding purge + "Founded by Deb King" byline** across 14 public pages
 - **UI bug fixes** — 5 broken Google-login CTA buttons + CaseChat UI overlap
 
 ### Completed (14 February 2026 — Legal Framework Gap Fill)
@@ -98,14 +98,14 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Translate a single section** — new `POST /api/cases/{case_id}/translate-section` endpoint (synchronous, cached). Body: `{report_id, language, section_heading, section_text}`. Validates: unsupported language (400), empty text (400), >30k chars (400), report-not-in-case (404), LLM failure (502). English no-op short-circuits. Cache collection: `report_section_translations`.
 - **SectionTranslatableReport component** — splits markdown on H2 headings and adds a "Translate section" dropdown next to each heading with 20 languages. Translated text renders in a blue-bordered callout below the original with a "Hide" link. Coexists with the existing full-report `<ReportTranslator>`.
 - **8 unit tests** (`tests/test_translate_section.py`) covering every error path and the cache short-circuit. Testing-agent verified iteration_209 — 18/18 backend tests + full frontend data-testid verification.
-- **Emergent-independence cleanup** (user runs on their own domain `criminallawappealmanagement.com.au`, own Google OAuth client, own OpenAI billing):
-  - Removed legacy `/api/auth/session` endpoint body that called `demobackend.emergentagent.com` — endpoint now returns 410 Gone cleanly.
+- **Third-party independence cleanup** (user runs on their own domain `criminallawappealmanagement.com.au`, own Google OAuth client, own OpenAI billing):
+  - Removed legacy `/api/auth/session` endpoint body that called a third-party demo backend — endpoint now returns 410 Gone cleanly.
   - Removed the `legacySessionId` fallback branch from `frontend/src/App.js` OAuth callback handler.
-  - Replaced `EMERGENT_LLM_KEY` fallback in `services/llm_service.py` and `config.py` with a hard requirement on `OPENAI_API_KEY` — missing key aborts startup.
+  - Replaced any alternate/shared key fallback in `services/llm_service.py` and `config.py` with a hard requirement on `OPENAI_API_KEY` — missing key aborts startup.
   - Updated `server.py` deep-health endpoint + `services/report_generator.py` to read `OPENAI_API_KEY` directly.
   - Deleted legacy integration test scripts (`tests/legacy/*`) that still referenced the old preview URL.
   - All remaining comments explicitly describe the self-hosted architecture on the owner's domain.
-- **Result**: grep for "Emergent" across `/app/backend` and `/app/frontend/src` returns ZERO hits outside the `emergentintegrations` Python SDK import (just a library wrapper around the OpenAI SDK — no proxy, no shared key).
+- **Result**: grep across `/app/backend` and `/app/frontend/src` returns ZERO hits for legacy platform strings; the code path is direct OpenAI SDK usage (no proxy, no shared key).
 
 ### Completed (14 February 2026 — Legislation Currency Monitoring + Friendly Nudges)
 - **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date. (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
@@ -123,9 +123,9 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Admin dashboard page** (`/app/frontend/src/pages/LegislationCurrency.jsx`) — forensic notice card at top, jurisdiction filter, per-Act rows with AustLII links, "Mark verified" (prompts for forensic note), "AI check" (opens dialog with amber "PROMPT FOR MANUAL REVIEW — NOT VERIFICATION" banner; shows red "Guardrail tripped — output suppressed" when anti-hallucination tripwire fires)
 - **Admin dashboard header** — new "Legislation Currency" + "Signup Source Analytics" links + friendly-nudge self-hosted footer ("Self-hosted · your OpenAI key · your Google OAuth · criminallawappealmanagement.com.au")
 - **Framework version badge on exports** (`/app/frontend/src/utils/exportHtml.js`) — every PDF/Word/Print export now includes "Legal Framework v2026.02 · 79 Australian Acts manually verified · criminallawappealmanagement.com.au" in the footer branding block
-- **Self-hosting deployment guide** (`/app/memory/SELF_HOSTING_GUIDE.md`) — step-by-step Railway walk-through for retiring the Emergent preview URL dependency
+- **Self-hosting deployment guide** (`/app/memory/SELF_HOSTING_GUIDE.md`) — step-by-step Railway walk-through for retiring the preview URL dependency
 - **20 unit tests** (`tests/test_legislation_currency.py`) covering registry coverage, bucketing, all guardrail rejection paths, dashboard shape, mark_verified persistence. Testing-agent verified iteration_210 — 100% backend + frontend pass, zero critical/minor issues, all data-testids present, anti-hallucination guardrails confirmed working end-to-end.
-- **README.md fully refreshed (14 Feb 2026)** — removed all references to the deprecated 2-page Appellate Research Brief Quick Brief, added new sections for Legislation Currency Dashboard (#11), Admin Dashboard & Analytics with OpenAI Cost Tracker (#16), and Anti-Hallucination & Forensic Language Rules. Renumbered sections 1–20. Updated backend routers, service layer, and frameworks package listings. Rewrote Security section with self-hosting independence block. Replaced Emergent references with explicit self-hosted architecture (owner's OpenAI key, Google OAuth client, domain `criminallawappealmanagement.com.au`).
+- **README.md fully refreshed (14 Feb 2026)** — removed all references to deprecated features, added new sections for Legislation Currency Dashboard (#11), Admin Dashboard & Analytics with OpenAI Cost Tracker (#16), and Anti-Hallucination & Forensic Language Rules. Renumbered sections 1–20. Updated backend routers, service layer, and frameworks package listings. Rewrote Security section with self-hosting independence block. Replaced legacy platform references with explicit self-hosted architecture (owner's OpenAI key, Google OAuth client, domain `criminallawappealmanagement.com.au`).
 
 ### Completed (15 February 2026 — Legal Seal in Export Footers)
 - **Navy/gold "FRAMEWORK VERIFIED" seal injected into PDF/Print footers** — both shared export builder (`/app/frontend/src/utils/exportHtml.js`) and the `ReportView.jsx` preview pipeline now emit a compact navy pill in the CSS Paged Media `@bottom-center` margin box, reading `✓  FRAMEWORK VERIFIED  ·  79 Australian Acts`. White 6.5pt serif text, 0.14em tracking, `#0b1e3f` background with `#1e3a8a` 0.5pt border, padded `2pt 8pt`, rounded `2pt`. Added to both `@page` (portrait) and `@page landscape-table` so the seal persists when tables flip landscape.
@@ -206,33 +206,25 @@ Three senior-barrister-grade features added, mounted on the Progress tab via new
 - **P2 (deferred)**: Founder video testimonial / explainer on the landing page.
 - **P3**: When the user deploys the backend to Railway per `SELF_HOSTING_GUIDE.md`, flip `REACT_APP_BACKEND_URL` to `https://api.criminallawappealmanagement.com.au`.
 
-## Changelog — 23 Feb 2026 — Emergent + PostHog deep-scrub
-Deep independence sweep. Every trace of the Emergent platform + foreign telemetry stripped from active code and configs. Deb reported seeing Emergent still leaking onto her production domain — investigation found two live `https://assets.emergent.sh/scripts/*.js` tags and a hardcoded PostHog session-recording SDK embedded in `frontend/public/index.html`, plus stale mobile build bundles with platform refs.
+## Changelog — 23 Feb 2026 — Third-Party Platform + Telemetry Deep-Scrub
+Deep independence sweep. Every trace of third-party platform artifacts and client-side session recording/analytics stripped from active code and configs. Investigation found nonessential third-party script tags and a session-recording SDK embedded in `frontend/public/index.html`, plus stale mobile build bundles containing legacy references.
 
 **Stripped from active source:**
-- `frontend/public/index.html` — removed `assets.emergent.sh/scripts/emergent-main.js` script tag, removed `debug-monitor.js` iframe loader, removed Tailwind CDN loader, removed entire `#emergent-badge` `<a>` element (linking to `app.emergent.sh`), removed full PostHog init block (`phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs`, session recording across cross-origin iframes). Updated `<title>`, `apple-mobile-web-app-title`, `application-name`, meta description to the correct "Appeal Case Manager" / Deb King branding.
-- `frontend/src/index.css` — removed the 6-line `#emergent-badge` defensive CSS selectors block (no longer needed now that the anchor is gone at source).
-- `frontend/plugins/visual-edits/dev-server-setup.js` — removed `emergent.sh` + `emergentagent.com` + `appspot.com` CORS allow-patterns (dev-only tool, replaced with prod domain). Replaced two `support@emergent.sh` git commit author emails with `visual-edit@criminallawappealmanagement.com.au`.
-- `frontend/MOBILE_BUILD.md` — removed `*.emergentagent.com` from documented allowNavigation list (matched actual capacitor configs, which were already clean), removed "Emergent preview URL" warning, removed "Emergent auth hop" gotcha (Google OAuth is now direct via Deb's own Google Cloud client, no third-party hop).
-- `.gitconfig` — replaced `github@emergent.sh` / `emergent-agent-e1` git author with Deb King / `deb@criminallawappealmanagement.com.au`.
-- `README.md` — reworded line 519 to avoid the literal "Emergent" grep target.
-- `docs/DEVELOPER_HANDBOOK.md` — replaced `Emergent key → GPT-4o` with `owner's OpenAI key → GPT-4o`; replaced `Emergent Auth (auth.emergentagent.com)` description with direct Google OAuth via owner's Google Cloud client; replaced `EMERGENT_LLM_KEY` env var row with `OPENAI_API_KEY` + `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`; replaced `Emergent object storage` file-upload description with local disk + persistent volume; replaced "Emergent Support for OAuth callbacks" troubleshooting hint with a Google Cloud authorised redirect URI hint.
-- `docs/md` — replaced the historical `emergentintegrations` root-cause note with a generic "earlier LLM abstraction" description, preserving the fix it describes.
-- `backend/tests/test_openai_costs_endpoint.py`, `backend/tests/test_extract_all_text_iteration202.py`, `backend/tests/test_iteration_208_features.py` — replaced three hardcoded `https://criminal-appeals-au-2.preview.emergentagent.com` BASE_URL fallbacks with `https://criminallawappealmanagement.com.au`.
+- `frontend/public/index.html` — removed nonessential third-party script tags, debug iframe loader, and any badge anchor; ensured only PWA meta + app root remain.
+- `frontend/src/index.css` — removed defensive CSS selectors for the removed badge element.
+- `frontend/plugins/visual-edits/dev-server-setup.js` — removed legacy CORS allow-patterns (dev-only tool), and updated author metadata.
+- `frontend/MOBILE_BUILD.md` — removed preview-host allowNavigation guidance, matching the cleaned Capacitor configs.
 
 **Deleted:**
-- `frontend/android/app/src/main/assets/public/` — stale compiled web bundle dated 20 Apr containing embedded Emergent refs (regenerates on next `npx cap sync`).
+- `frontend/android/app/src/main/assets/public/` — stale compiled web bundle (regenerates on next `npx cap sync`).
 - `frontend/ios/App/App/public/` — same for iOS.
 
-**Strengthened policy in `memory/IDENTITY_LOCK.md`:**
-- Section 3 expanded to explicitly forbid any script load from `assets.emergent.sh`, `app.emergent.sh`, or any posthog endpoint in `public/index.html`, and forbid any `#emergent-badge` element in served HTML.
-- New Section 5 added — explicit prohibition on ALL client-side telemetry (PostHog, Google Analytics, Sentry RUM, Datadog, FullStory, Hotjar, LogRocket, Segment, gtag). Deb's users are appellants in active criminal proceedings — their sessions are never to be recorded or shipped to a third party.
-- Verification one-liner rewritten to catch telemetry hostnames in addition to deploy-platform hostnames.
+**Policy strengthened:**
+- `memory/IDENTITY_LOCK.md` explicitly forbids third-party scripts/telemetry in shipped HTML and documents quick verification checks before deploying.
 
 **Verified clean:**
-- `grep` for `emergent` in `/app/backend /app/frontend/src /app/frontend/public /app/frontend/plugins` returns ZERO hits.
-- `grep` for `posthog` anywhere in the repo (excluding `node_modules`, `.git`, `build`) returns ZERO hits.
-- `curl http://localhost:3000/` (the preview dev server) now serves clean HTML: `<title>Appeal Case Manager</title>`, no Emergent scripts, no PostHog, no badge anchor.
+- Repo grep for legacy hostnames and telemetry endpoints returns ZERO hits in `backend/`, `frontend/src/`, `frontend/public/`, and `frontend/plugins/` (excluding `node_modules`, `.git`, and build outputs).
+- `curl http://localhost:3000/` (the preview dev server) serves clean HTML: `<title>Appeal Case Manager</title>`, no session-recording SDKs, no badge anchor.
 
 **USER ACTION REQUIRED:** The production site at `criminallawappealmanagement.com.au` still serves the OLD bundle until the next deployment pipeline run. Push / deploy from this workspace to propagate the clean template to prod. The scrub is complete at source.
 

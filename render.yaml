@@ -15,6 +15,11 @@ services:
     name: appeal-case-manager
     runtime: docker
     dockerfilePath: ./Dockerfile
+    # Optional (split-hosting/non-same-origin): uncomment to bake a backend URL
+    # into the frontend at build time.
+    # dockerBuildArgs:
+    #   - key: REACT_APP_BACKEND_URL
+    #     value: https://api.your-domain.com
     # Note: REACT_APP_BACKEND_URL is NOT required for the web app when the frontend
     # and backend are served from the same origin (this container). The frontend
     # defaults to window.location.origin at runtime.
