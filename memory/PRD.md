@@ -108,7 +108,7 @@ Build "Appeal Case Manager" to assist with criminal appeals across Australian ju
 - **Result**: grep across `/app/backend` and `/app/frontend/src` returns ZERO hits for legacy platform strings; the code path is direct OpenAI SDK usage (no proxy, no shared key).
 
 ### Completed (14 February 2026 — Legislation Currency Monitoring + Friendly Nudges)
-- **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date. (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
+- **Legislation registry** (`/app/backend/frameworks/legislation_registry.py`) — 79 Australian Acts catalogued across NSW (13), VIC (10), QLD (9), SA (9), WA (9), TAS (8), NT (8), ACT (8), Cth (5). Each entry has direct AustLII URL + AustLII search fallback + `last_verified` ISO date.
 - **Currency dashboard service** (`/app/backend/services/legislation_currency.py`) — age bucketing (🟢 <90d current, 🟡 90–180d review soon, 🔴 >180d overdue), Mongo `framework_audit_log` collection mirrors manual ticks, dashboard prefers the later of registry date or audit-log date.
 - **Three new admin endpoints** (`/app/backend/routers/admin.py`):
   - `GET /api/admin/legislation-currency` — returns full dashboard with per-Act rows, totals, and a forensic notice card
