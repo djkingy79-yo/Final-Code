@@ -204,12 +204,12 @@ jobs:
             exit 1
           fi
           echo "✅ .env not committed"
-      - name: Check for third-party telemetry leaks
+      - name: Check for identity leaks in shipped code
         # IDENTITY_LOCK enforcement — blocks the build if any agent re-introduces
-        # foreign client-side telemetry (analytics/session recording) into shipped
-        # source, public HTML, dev plugins, or .env files.
+        # foreign client-side telemetry, preview hostnames, or shared/fallback key
+        # patterns into shipped source, public HTML, dev plugins, or .env files.
         run: |
-          echo "Scanning shipped source for telemetry leaks..."
+          echo "Scanning shipped source for identity leaks..."
           LEAKS=$(grep -rEn \
             -e 'posthog\.com' \
             -e 'posthog\.init' \
@@ -224,6 +224,13 @@ jobs:
             -e 'hotjar\.com' \
             -e 'logrocket' \
             -e 'segment\.com/analytics\.js' \
+            -e 'vercel\.app' \
+            -e 'netlify\.app' \
+            -e 'onrender\.com' \
+            -e 'up\.railway\.app' \
+            -e 'pages\.dev' \
+            -e 'LLM_KEY' \
+            -e 'UNIVERSAL_KEY' \
             backend/ frontend/src/ frontend/public/ frontend/plugins/ \
             --include="*.py" \
             --include="*.js" \
@@ -241,8 +248,8 @@ jobs:
             --exclude-dir=__pycache__ \
             || true)
           if [ -n "$LEAKS" ]; then
-            echo "::error::Identity leak detected — third-party telemetry found in shipped code"
+            echo "::error::Identity leak detected — telemetry, preview hostnames, or shared key patterns found in shipped code"
             echo "$LEAKS"
             exit 1
           fi
-          echo "✅ No telemetry leaks — identity lock intact"
+          echo "✅ No identity leaks found — identity lock intact"

@@ -55,8 +55,23 @@ OPENAI_API_KEY=sk-proj-...
 Before committing / deploying / submitting to App Store:
 
 ```bash
-# No deploy-platform hostnames or third-party telemetry in active source
-grep -rEn "posthog|google-analytics|gtag\\(|sentry\\.io|fullstory|hotjar|logrocket|segment\\.com/analytics\\.js" \\
+# No deploy-platform hostnames, third-party telemetry, or shared key refs in active source
+grep -rEn \\
+  -e "posthog" \\
+  -e "google-analytics" \\
+  -e "gtag\\(" \\
+  -e "sentry\\.io" \\
+  -e "fullstory" \\
+  -e "hotjar" \\
+  -e "logrocket" \\
+  -e "segment\\.com/analytics\\.js" \\
+  -e "vercel\\.app" \\
+  -e "netlify\\.app" \\
+  -e "onrender\\.com" \\
+  -e "up\\.railway\\.app" \\
+  -e "pages\\.dev" \\
+  -e "LLM_KEY" \\
+  -e "UNIVERSAL_KEY" \\
   /app/backend /app/frontend/src /app/frontend/public /app/frontend/.env /app/backend/.env \\
   2>/dev/null | grep -v node_modules | grep -v tests/ | grep -v \\.pyc
 
