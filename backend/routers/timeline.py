@@ -1,4 +1,4 @@
-# DO NOT UNDO — timeline router. All endpoints in this file are approved and must be preserved.
+#  — timeline router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Timeline Router
 ADDITIVE HARDENING PATCH
@@ -498,7 +498,7 @@ Rules:
                 skipped_duplicates += 1
                 continue
 
-            # DO_NOT_UNDO — Fuzzy title dedup for timeline events
+            #  — Fuzzy title dedup for timeline events
             new_title = _safe_str(raw_event.get("title")).lower()
             if any(_fuzz.token_set_ratio(new_title, et) >= 65 for et in existing_titles):
                 skipped_duplicates += 1

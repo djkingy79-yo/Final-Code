@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -223,7 +223,7 @@ const SuccessStories = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.story || !formData.consent) {
       toast.error("Please fill in all required fields and give consent");
       return;
@@ -305,7 +305,7 @@ const SuccessStories = () => {
         {/* Disclaimer */}
         <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
           <p className="text-[11px] text-blue-800">
-            <strong>Note:</strong> These stories are shared with consent. Individual results vary. 
+            <strong>Note:</strong> These stories are shared with consent. Individual results vary.
             This tool does not guarantee any outcome. All legal matters should be reviewed by a qualified professional.
           </p>
         </div>
@@ -318,9 +318,9 @@ const SuccessStories = () => {
           <p className="text-slate-600 text-xs mb-4 max-w-md mx-auto">
             Has this tool helped a family member or loved one? Shared experiences can provide hope to others in similar situations.
           </p>
-          
+
           {!showSubmitForm ? (
-            <Button 
+            <Button
               onClick={() => setShowSubmitForm(true)}
               className="landing-cta-primary text-xs"
               data-testid="share-story-btn"

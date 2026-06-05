@@ -1,4 +1,4 @@
-# DO NOT UNDO — deadlines router. All endpoints in this file are approved and must be preserved.
+#  — deadlines router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Deadlines, Checklist & Case Strength Router
 ADDITIVE HARDENING PATCH
@@ -272,7 +272,7 @@ async def compute_deadlines(case_id: str, request: Request):
     """Auto-compute the canonical appeal deadlines for a case from sentence_date
     + jurisdiction. Idempotent — returns the existing computed set if already
     present (identified by source_mode='jurisdiction_auto').
-    
+
     Sentence date resolution order:
       1. POST body {"sentence_date": "YYYY-MM-DD"}
       2. case.sentence_date / case.sentencing_date field

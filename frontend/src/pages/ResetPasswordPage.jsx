@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -78,7 +78,7 @@ const ResetPasswordPage = () => {
         new_password: newPassword
       });
       setSuccess(true);
-      
+
       // Redirect to sign-in modal on landing after 3 seconds.
       // "/?login=true" makes LandingPage auto-open the AuthModal — the user
       // never sees the raw landing page in between.

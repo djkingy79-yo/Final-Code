@@ -1,4 +1,4 @@
-# DO NOT UNDO — llm_service module. All existing logic must be preserved.
+#  — llm_service module. All existing logic must be preserved.
 """
 Criminal Appeal AI - LLM Service
 Reusable LLM call with model fallback.
@@ -11,7 +11,7 @@ import logging
 import json
 from typing import Optional, Callable, Any, Dict, Literal
 
-# DO_NOT_UNDO — Direct OpenAI SDK is fully async (AsyncOpenAI.chat.completions.create
+#  — Direct OpenAI SDK is fully async (AsyncOpenAI.chat.completions.create
 # is a coroutine). No ThreadPoolExecutor is required — the event loop is NOT
 # blocked.
 from openai import AsyncOpenAI
@@ -136,7 +136,7 @@ TASK_CONFIGS: dict[str, dict] = {
 # ============================================================================
 
 def _default_models_for_task(task_type: str):
-    # DO_NOT_UNDO — Model diversity for resilience. Previously used Anthropic as
+    #  — Model diversity for resilience. Previously used Anthropic as
     # one of the fallbacks, but since moving to the user's OWN OpenAI API key
     # (no Anthropic key available), all slots must be OpenAI models. GPT-4o is
     # the primary; gpt-4o-mini is the cheaper fallback if gpt-4o is rate-limited
@@ -238,7 +238,7 @@ def _basic_text_validation(result: str) -> bool:
 
 
 def _apply_task_guardrails(system_prompt: str, task_type: str, require_json: bool) -> str:
-    """DO_NOT_UNDO — Report generation MUST NOT include 'cautious language' guardrail.
+    """ — Report generation MUST NOT include 'cautious language' guardrail.
     That rule was stripping assertive legal analysis and making reports weak/generic."""
     # Universal anti-hallucination and jurisdiction fidelity guardrails
     # applied to EVERY LLM call regardless of task type.
@@ -310,7 +310,7 @@ async def call_llm_structured(
 
     for idx, (provider, model_name) in enumerate(models):
         try:
-            # DO_NOT_UNDO — Direct AsyncOpenAI call. Natively async — no
+            #  — Direct AsyncOpenAI call. Natively async — no
             # thread-pool shim needed. `provider` is retained in the loop tuple
             # for schema compatibility with _default_models_for_task; all slots
             # are OpenAI (see that function for rationale).
@@ -404,7 +404,7 @@ async def call_llm_structured(
             last_err = str(e)[:200]
 
         logger.warning(f"LLM attempt {idx+1} ({provider}/{model_name}) for {session_id}: {last_err}")
-        # DO_NOT_UNDO — Exponential backoff for 502/service errors on large report prompts.
+        #  — Exponential backoff for 502/service errors on large report prompts.
         # Increased backoff ceiling (was 14s, now 25s) to survive sustained proxy outages.
         is_server_error = "502" in str(last_err) or "503" in str(last_err) or "ServiceUnavailable" in str(last_err) or "BadGateway" in str(last_err)
         # Detect OpenAI 429 Tokens-Per-Minute rate-limit errors so we can wait

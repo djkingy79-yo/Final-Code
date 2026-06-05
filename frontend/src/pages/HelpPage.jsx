@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Scale, ArrowLeft, FileText, Clock, Upload, Search, 
+import {
+  Scale, ArrowLeft, FileText, Clock, Upload, Search,
   Sparkles, Gavel, MessageSquare, Eye,
   CheckCircle, ChevronDown, ChevronUp, HelpCircle, BookOpen,
   AlertTriangle, Info, Smartphone
@@ -255,7 +255,7 @@ const HelpPage = ({ user }) => {
   ];
 
   // Filter glossary terms
-  const filteredTerms = glossaryTerms.filter(item => 
+  const filteredTerms = glossaryTerms.filter(item =>
     glossarySearch === "" ||
     item.term.toLowerCase().includes(glossarySearch.toLowerCase()) ||
     item.definition.toLowerCase().includes(glossarySearch.toLowerCase()) ||
@@ -279,7 +279,7 @@ const HelpPage = ({ user }) => {
       content: (
         <div className="space-y-4 text-slate-700">
           <p>
-            <strong>Criminal Appeal Case Manager</strong> is a tool designed to help analyse criminal appeal cases 
+            <strong>Criminal Appeal Case Manager</strong> is a tool designed to help analyse criminal appeal cases
             across <strong>all criminal offences</strong> under Australian State and Federal law.
           </p>
           <div className="bg-slate-50 p-4 rounded-lg">
@@ -298,7 +298,7 @@ const HelpPage = ({ user }) => {
               Important Disclaimer
             </p>
             <p className="text-blue-700 text-sm mt-1">
-              This app provides AI-assisted analysis only. All findings should be reviewed by a qualified 
+              This app provides AI-assisted analysis only. All findings should be reviewed by a qualified
               legal professional. AI suggestions are not legal advice.
             </p>
           </div>
@@ -458,7 +458,7 @@ const HelpPage = ({ user }) => {
       content: (
         <div className="space-y-4 text-slate-700">
           <p>The Timeline helps you track the chronology of events from the crime through to appeal.</p>
-          
+
           <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
             <p className="font-medium text-blue-800 mb-2">Timeline Event Categories:</p>
             <div className="grid grid-cols-2 gap-2 text-sm text-blue-700">
@@ -478,7 +478,7 @@ const HelpPage = ({ user }) => {
               <li>Wait 30-60 seconds while AI extracts dates from your documents</li>
             </ol>
           </div>
-          
+
           <div>
             <p className="font-medium mb-2">Add Events Manually:</p>
             <ol className="list-decimal list-inside space-y-1 text-sm">
@@ -509,10 +509,10 @@ const HelpPage = ({ user }) => {
       content: (
         <div className="space-y-4 text-slate-700">
           <p>
-            <strong>Grounds of Merit</strong> are the legal arguments for why the conviction or sentence 
+            <strong>Grounds of Merit</strong> are the legal arguments for why the conviction or sentence
             should be overturned. Each ground identifies a specific error or problem.
           </p>
-          
+
           <div className="bg-slate-50 p-3 rounded-lg">
             <p className="font-medium mb-2">Types of Grounds the AI looks for:</p>
             <ul className="list-disc list-inside space-y-1 text-sm">
@@ -535,7 +535,7 @@ const HelpPage = ({ user }) => {
               <li>The AI won't duplicate grounds already identified</li>
             </ol>
           </div>
-          
+
           <div>
             <p className="font-medium mb-2">Investigate a Ground (Deep Dive):</p>
             <ol className="list-decimal list-inside space-y-1 text-sm">
@@ -565,7 +565,7 @@ const HelpPage = ({ user }) => {
             <ul className="list-disc list-inside ml-4 mt-1">
               <li><strong>Title</strong>: Note heading</li>
               <li><strong>Content</strong>: Your notes</li>
-              <li><strong>Category</strong>: 
+              <li><strong>Category</strong>:
                 <ul className="list-disc list-inside ml-4 text-sm">
                   <li>General — General observations</li>
                   <li>Legal Opinion — Legal analysis or advice</li>
@@ -657,9 +657,9 @@ const HelpPage = ({ user }) => {
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => navigate(-1)}
                 className="text-slate-600 hover:text-slate-900"
               >
@@ -686,8 +686,8 @@ const HelpPage = ({ user }) => {
             <button
               onClick={() => setActiveTab("guide")}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${
-                activeTab === "guide" 
-                  ? "border-blue-500 text-blue-700" 
+                activeTab === "guide"
+                  ? "border-blue-500 text-blue-700"
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -697,8 +697,8 @@ const HelpPage = ({ user }) => {
             <button
               onClick={() => setActiveTab("glossary")}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${
-                activeTab === "glossary" 
-                  ? "border-blue-500 text-blue-700" 
+                activeTab === "glossary"
+                  ? "border-blue-500 text-blue-700"
                   : "border-transparent text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -731,7 +731,7 @@ const HelpPage = ({ user }) => {
             {/* Steps */}
             <div className="space-y-4">
               {sections.map((section) => (
-                <Card 
+                <Card
                   key={section.id}
                   className={`cursor-pointer transition-all ${
                     expandedSection === section.id ? 'ring-2 ring-blue-500' : 'hover:shadow-md'
@@ -867,7 +867,7 @@ const HelpPage = ({ user }) => {
               {categoryOrder.map(category => {
                 const terms = groupedTerms[category];
                 if (!terms || terms.length === 0) return null;
-                
+
                 return (
                   <div key={category}>
                     <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
@@ -907,8 +907,8 @@ const HelpPage = ({ user }) => {
                 <CardContent>
                   <Info className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                   <p className="text-slate-500">No terms found matching "{glossarySearch}"</p>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     onClick={() => setGlossarySearch("")}
                     className="mt-2"
                   >

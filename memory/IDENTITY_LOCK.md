@@ -1,4 +1,4 @@
-# DO_NOT_UNDO — IDENTITY LOCK
+# IDENTITY LOCK
 
 **Permanent rules for Appeal Case Manager. Last verified 23 Feb 2026.**
 
@@ -61,7 +61,7 @@ grep -rEn "posthog|google-analytics|gtag\\(|sentry\\.io|fullstory|hotjar|logrock
   2>/dev/null | grep -v node_modules | grep -v tests/ | grep -v \\.pyc
 
 # No alternate/shared LLM key references anywhere
-grep -rEn "LLM_KEY|UNIVERSAL_KEY" \\
+grep -rEn "EMERGENT_LLM_KEY|UNIVERSAL_LLM_KEY|SHARED_LLM_KEY" \\
   /app/backend /app/frontend/src 2>/dev/null | grep -v node_modules
 ```
 

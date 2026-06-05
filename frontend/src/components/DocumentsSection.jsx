@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { 
+import {
   FileText, Upload, Loader2, Search, X, ScanLine, FileUp, Trash2, Download
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -54,11 +54,11 @@ const getCategoryColor = (category) => {
   return colors[category] || colors.other;
 };
 
-const DocumentsSection = ({ 
-  caseId, 
-  documents, 
+const DocumentsSection = ({
+  caseId,
+  documents,
   setDocuments,
-  onDocumentsChange 
+  onDocumentsChange
 }) => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [uploadFiles, setUploadFiles] = useState([]);
@@ -67,12 +67,12 @@ const DocumentsSection = ({
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [searching, setSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  
+
   const [extractingText, setExtractingText] = useState(false);
   const [extractProgress, setExtractProgress] = useState("");
   const [setRunningOcr] = useState(false);
@@ -82,7 +82,7 @@ const DocumentsSection = ({
       toast.error("Please select files to upload");
       return;
     }
-    
+
     // Check file sizes (max 10MB per file due to MongoDB storage limits)
     const maxSize = 10 * 1024 * 1024;
     const oversized = uploadFiles.filter(f => f.size > maxSize);
@@ -90,21 +90,21 @@ const DocumentsSection = ({
       toast.error(`Files too large (max 10MB): ${oversized.map(f => f.name).join(", ")}`);
       return;
     }
-    
+
     setUploading(true);
     setUploadProgress({ current: 0, total: uploadFiles.length });
     const uploadedDocs = [];
     const failedFiles = [];
-    
+
     for (let i = 0; i < uploadFiles.length; i++) {
       const file = uploadFiles[i];
       setUploadProgress({ current: i + 1, total: uploadFiles.length });
-      
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("category", uploadCategory);
       formData.append("description", uploadDescription);
-      
+
       try {
         const response = await axios.post(`${API}/cases/${caseId}/documents`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -117,7 +117,7 @@ const DocumentsSection = ({
         failedFiles.push(`${file.name} (${msg})`);
       }
     }
-    
+
     if (uploadedDocs.length > 0) {
       toast.success(`Successfully uploaded ${uploadedDocs.length} document(s) — analysing case details...`);
       if (onDocumentsChange) onDocumentsChange();
@@ -125,7 +125,7 @@ const DocumentsSection = ({
     if (failedFiles.length > 0) {
       toast.error(`Failed to upload: ${failedFiles.join(", ")}`);
     }
-    
+
     setShowUploadDialog(false);
     setUploadFiles([]);
     setUploadCategory("other");
@@ -135,7 +135,7 @@ const DocumentsSection = ({
 
   const handleDeleteDocument = async (docId) => {
     if (!window.confirm("Delete this document? This cannot be undone.")) return;
-    
+
     try {
       await axios.delete(`${API}/cases/${caseId}/documents/${docId}`);
       setDocuments(documents.filter(d => d.document_id !== docId));
@@ -226,7 +226,7 @@ const DocumentsSection = ({
       toast.info("All documents already have text content");
       return;
     }
-    
+
     setRunningOcr(true);
     try {
       const response = await axios.post(`${API}/cases/${caseId}/ocr-all`, {}, {
@@ -291,10 +291,10 @@ const DocumentsSection = ({
   const handleSearchDocuments = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    
+
     setSearching(true);
     setShowSearchResults(false);
-    
+
     try {
       const response = await axios.post(`${API}/cases/${caseId}/documents/search`, {
         query: searchQuery,
@@ -318,9 +318,9 @@ const DocumentsSection = ({
   const highlightMatch = (text, query) => {
     if (!query) return text;
     const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
-    return parts.map((part, i) => 
-      part.toLowerCase() === query.toLowerCase() 
-        ? <mark key={i} className="bg-blue-200 px-0.5">{part}</mark> 
+    return parts.map((part, i) =>
+      part.toLowerCase() === query.toLowerCase()
+        ? <mark key={i} className="bg-blue-200 px-0.5">{part}</mark>
         : part
     );
   };
@@ -351,8 +351,8 @@ const DocumentsSection = ({
                 </button>
               )}
             </div>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={searching || !searchQuery.trim()}
               className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="doc-search-btn"
@@ -367,7 +367,7 @@ const DocumentsSection = ({
               )}
             </Button>
           </form>
-          
+
           {/* Search Results */}
           {showSearchResults && searchResults && (
             <div className="mt-4 border-t pt-4">
@@ -379,7 +379,7 @@ const DocumentsSection = ({
                   {searchResults.total_matches} match{searchResults.total_matches !== 1 ? 'es' : ''} in {searchResults.documents_with_matches} document{searchResults.documents_with_matches !== 1 ? 's' : ''}
                 </span>
               </div>
-              
+
               {searchResults.results.length === 0 ? (
                 <p className="text-slate-600 text-center py-4">No matches found in any documents.</p>
               ) : (
@@ -420,7 +420,7 @@ const DocumentsSection = ({
           )}
         </Card>
       )}
-      
+
       {/* Action Buttons */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {documents.length > 0 && (
@@ -446,7 +446,7 @@ const DocumentsSection = ({
             )}
           </Button>
         )}
-        <Button 
+        <Button
           onClick={() => setShowUploadDialog(true)}
           className="bg-blue-700 text-white hover:bg-blue-600 w-full"
           data-testid="upload-doc-btn"
@@ -460,7 +460,7 @@ const DocumentsSection = ({
           disabled={uploading}
         />
       </div>
-      
+
       {/* Documents List */}
       {documents.length === 0 ? (
         <Card className="p-12 text-center">
@@ -469,7 +469,7 @@ const DocumentsSection = ({
             No documents yet
           </h3>
           <p className="text-slate-600 mb-4">Upload briefs, case notes, and evidence to build your case.</p>
-          <Button 
+          <Button
             onClick={() => setShowUploadDialog(true)}
             className="bg-blue-700 text-white hover:bg-blue-600"
           >
@@ -480,8 +480,8 @@ const DocumentsSection = ({
       ) : (
         <div className="grid gap-4">
           {documents.map((doc) => (
-            <Card 
-              key={doc.document_id} 
+            <Card
+              key={doc.document_id}
               className="hover:shadow-md transition-shadow group"
               data-testid={`doc-${doc.document_id}`}
             >
@@ -571,8 +571,8 @@ const DocumentsSection = ({
             {/* Drag & Drop Zone */}
             <div
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                isDragging 
-                  ? 'border-blue-500 bg-blue-50' 
+                isDragging
+                  ? 'border-blue-500 bg-blue-50'
                   : 'border-slate-300 hover:border-slate-400'
               }`}
               onDragOver={(e) => {
@@ -609,7 +609,7 @@ const DocumentsSection = ({
                 </p>
               </label>
             </div>
-            
+
             {/* Selected Files */}
             {uploadFiles.length > 0 && (
               <div className="bg-slate-50 rounded-lg p-3">
@@ -631,7 +631,7 @@ const DocumentsSection = ({
                 </div>
               </div>
             )}
-            
+
             <div>
               <Label htmlFor="category">Category</Label>
               <Select value={uploadCategory} onValueChange={setUploadCategory}>
@@ -658,8 +658,8 @@ const DocumentsSection = ({
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowUploadDialog(false)}>Cancel</Button>
-            <Button 
-              onClick={handleUploadDocuments} 
+            <Button
+              onClick={handleUploadDocuments}
               disabled={uploading || uploadFiles.length === 0}
               className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="upload-submit-btn"

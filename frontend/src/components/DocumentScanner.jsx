@@ -1,6 +1,6 @@
 /**
  * Document Scanner — camera-based document capture for native apps
- * DO_NOT_UNDO — Native camera integration for document scanning
+ *  — Native camera integration for document scanning
  */
 import { useState } from "react";
 import { Camera, Image, Loader2, Upload } from "lucide-react";

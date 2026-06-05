@@ -1,4 +1,4 @@
-# DO NOT UNDO — auth router. All endpoints in this file are approved and must be preserved.
+#  — auth router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Complete Auth Router
 Handles all authentication: Email/Password + Direct Google OAuth
@@ -60,21 +60,21 @@ async def register_user(request: Request, response: Response):
     # Validate email format
     if not reg_data.email or '@' not in reg_data.email:
         raise HTTPException(status_code=400, detail="Invalid email format")
-    
+
     # Check password strength
     if len(reg_data.password) < 8:
         raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
     if reg_data.password.isdigit() or reg_data.password.isalpha():
         raise HTTPException(status_code=400, detail="Password must contain both letters and numbers")
-    
+
     # Check if user exists
     existing_user = await db.users.find_one({"email": reg_data.email.lower()}, {"_id": 0})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered. Please login instead.")
-    
+
     # Hash password
     hashed_password, salt = hash_password(reg_data.password)
-    
+
     # Create user
     user_id = f"user_{uuid.uuid4().hex[:12]}"
     user_doc = {
@@ -87,20 +87,20 @@ async def register_user(request: Request, response: Response):
         "picture": None,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
-    
+
     await db.users.insert_one(user_doc)
-    
+
     # Create session
     session_token = uuid.uuid4().hex
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
+
     await db.user_sessions.insert_one({
         "user_id": user_id,
         "session_token": session_token,
         "expires_at": expires_at.isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    
+
     # Set cookie
     response.set_cookie(
         key="session_token",
@@ -111,7 +111,7 @@ async def register_user(request: Request, response: Response):
         path="/",
         max_age=7 * 24 * 60 * 60
     )
-    
+
     return {
         "user_id": user_id,
         "email": reg_data.email.lower(),
@@ -131,29 +131,29 @@ async def login_user(request: Request, response: Response):
     login_data = LoginRequest(**body)
     # Find user
     user_doc = await db.users.find_one({"email": login_data.email.lower()}, {"_id": 0})
-    
+
     if not user_doc:
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    
+
     # Check if user has password (email auth) OR is a Google user who set a password
     if not user_doc.get("password_hash"):
         raise HTTPException(status_code=401, detail="This account uses Google login. Please sign in with Google, or set a password first from your profile.")
-    
+
     # Verify password
     if not verify_password(login_data.password, user_doc["password_hash"], user_doc["password_salt"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    
+
     # Create session
     session_token = uuid.uuid4().hex
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
+
     await db.user_sessions.insert_one({
         "user_id": user_doc["user_id"],
         "session_token": session_token,
         "expires_at": expires_at.isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    
+
     # Set cookie
     response.set_cookie(
         key="session_token",
@@ -164,7 +164,7 @@ async def login_user(request: Request, response: Response):
         path="/",
         max_age=7 * 24 * 60 * 60
     )
-    
+
     return {
         "user_id": user_doc["user_id"],
         "email": user_doc["email"],
@@ -176,7 +176,7 @@ async def login_user(request: Request, response: Response):
 @router.post("/google/callback")
 async def google_oauth_callback(request: Request, response: Response):
     """Direct Google OAuth callback — exchanges `code` from Google for user profile, issues session_token.
-    
+
     Flow:
       1. Frontend redirects user to https://accounts.google.com/o/oauth2/v2/auth with client_id, redirect_uri, scope=openid email profile.
       2. Google redirects back to /auth/callback?code=... on the frontend.
@@ -379,10 +379,10 @@ class SetPasswordRequest(BaseModel):
 async def set_password(req: SetPasswordRequest, request: Request):
     """Allow any authenticated user (including Google users) to set/change their password"""
     user = await get_current_user(request)
-    
+
     if len(req.password) < 6:
         raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
-    
+
     password_hash, password_salt = hash_password(req.password)
     await db.users.update_one(
         {"user_id": user.user_id},
@@ -401,7 +401,7 @@ async def logout(request: Request, response: Response):
             session_token = auth_header.split(" ")[1]
     if session_token:
         await db.user_sessions.delete_one({"session_token": session_token})
-    
+
     response.delete_cookie(key="session_token", path="/", samesite="lax", secure=True)
     return {"message": "Logged out"}
 

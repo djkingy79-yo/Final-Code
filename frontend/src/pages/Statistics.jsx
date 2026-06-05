@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -132,14 +132,14 @@ const Statistics = () => {
       {/* Hero Section */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/data-charts.jpg" 
+          <img
+            src="/images/stock/data-charts.jpg"
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-6xl mx-auto relative z-10 text-center">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -169,7 +169,7 @@ const Statistics = () => {
               <p className="text-sm text-slate-600 mt-1">Total Cases</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
               <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -179,7 +179,7 @@ const Statistics = () => {
               <p className="text-sm text-slate-600 mt-1">Documents Uploaded</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -189,7 +189,7 @@ const Statistics = () => {
               <p className="text-sm text-slate-600 mt-1">Reports Generated</p>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-white border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-6 text-center">
               <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -220,7 +220,7 @@ const Statistics = () => {
                     <div key={index} className="flex items-center gap-3">
                       <div className="w-28 text-sm text-slate-600 truncate">{item.category}</div>
                       <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full ${getOffenceColor(item.key)} rounded-full flex items-center justify-end pr-3 transition-all duration-500`}
                           style={{ width: `${Math.max((item.count / maxOffenceCount) * 100, 15)}%` }}
                         >
@@ -258,7 +258,7 @@ const Statistics = () => {
                     <div key={index} className="flex items-center gap-3">
                       <div className="w-36 text-sm text-slate-600 truncate">{item.state}</div>
                       <div className="flex-1 bg-slate-100 rounded-full h-7 overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full ${getStateColor(item.key)} rounded-full flex items-center justify-end pr-3 transition-all duration-500`}
                           style={{ width: `${Math.max((item.count / maxStateCount) * 100, 15)}%` }}
                         >
@@ -359,8 +359,8 @@ const Statistics = () => {
           <Card className="bg-gradient-to-r from-slate-900 to-indigo-950 border-0 overflow-hidden">
             <CardContent className="p-8 relative">
               <div className="absolute inset-0 opacity-10">
-                <img 
-                  src="/images/stock/scales-justice.jpg" 
+                <img
+                  src="/images/stock/scales-justice.jpg"
                   alt=""
                   className="w-full h-full object-cover"
                 />
@@ -391,8 +391,8 @@ const Statistics = () => {
         {/* Disclaimer */}
         <div className="mt-10 p-5 bg-blue-50 border border-blue-200 rounded-2xl">
           <p className="text-sm text-blue-800">
-            <strong>Note:</strong> These statistics are based on cases managed through this platform and are provided 
-            for informational purposes only. They do not represent official court statistics or predict appeal outcomes. 
+            <strong>Note:</strong> These statistics are based on cases managed through this platform and are provided
+            for informational purposes only. They do not represent official court statistics or predict appeal outcomes.
             Every case is unique and should be assessed on its own merits by qualified legal professionals.
           </p>
         </div>

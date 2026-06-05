@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { 
+import {
   FileStack, Download, Loader2, CheckCircle,
   List, X
 } from "lucide-react";
@@ -31,7 +31,7 @@ const DocumentBundler = ({ caseId, documents }) => {
   const [generating, setGenerating] = useState(false);
 
   const toggleDocument = (docId) => {
-    setSelectedDocs(prev => 
+    setSelectedDocs(prev =>
       prev.includes(docId)
         ? prev.filter(id => id !== docId)
         : [...prev, docId]
@@ -63,7 +63,7 @@ const DocumentBundler = ({ caseId, documents }) => {
         },
         { responseType: 'blob' }
       );
-      
+
       // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -73,7 +73,7 @@ const DocumentBundler = ({ caseId, documents }) => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      
+
       toast.success("Document bundle downloaded!");
       setShowDialog(false);
     } catch (error) {
@@ -131,7 +131,7 @@ const DocumentBundler = ({ caseId, documents }) => {
                   className="rounded-xl"
                 />
               </div>
-              
+
               <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
                 <Checkbox
                   checked={includeToc}
@@ -149,16 +149,16 @@ const DocumentBundler = ({ caseId, documents }) => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-semibold text-slate-900">Select Documents</h4>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={selectAll}
                   className="text-xs"
                 >
                   {selectedDocs.length === documents.length ? "Deselect All" : "Select All"}
                 </Button>
               </div>
-              
+
               <div className="space-y-2 max-h-64 overflow-y-auto border border-slate-200 rounded-xl p-3">
                 {documents.map((doc, index) => (
                   <label
@@ -193,7 +193,7 @@ const DocumentBundler = ({ caseId, documents }) => {
                   </label>
                 ))}
               </div>
-              
+
               <p className="text-xs text-slate-600 mt-2">
                 {selectedDocs.length} of {documents.length} documents selected
               </p>

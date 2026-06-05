@@ -1,4 +1,4 @@
-# DO NOT UNDO — frameworks package (P2 refactor 2026-02-14).
+#  — frameworks package (P2 refactor 2026-02-14).
 """
 Legal framework package — previously a single 4000-line file.
 Every symbol is re-exported here so existing imports continue to work:

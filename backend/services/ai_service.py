@@ -1,4 +1,4 @@
-# DO NOT UNDO — ai_service service. All logic in this file is approved and must be preserved.
+#  — ai_service service. All logic in this file is approved and must be preserved.
 """
 Criminal Appeal AI - AI Services Module
 Encapsulates all AI/LLM operations for report generation, grounds analysis, etc.
@@ -25,7 +25,7 @@ async def call_llm_with_retry(
 ) -> Optional[str]:
     """Call LLM with exponential backoff retry logic (direct AsyncOpenAI).
 
-    DO_NOT_UNDO — Natively async, no thread-pool shim required. The `api_key`
+     — Natively async, no thread-pool shim required. The `api_key`
     and `session_prefix` arguments are retained for call-site compatibility.
     """
     from openai import AsyncOpenAI
@@ -95,7 +95,7 @@ def extract_case_citations(text: str) -> list:
 def build_case_context(case: dict, documents: list, timeline: list = None, notes: list = None, grounds: list = None, report_type: str = "full") -> str:
     """Build comprehensive context string from case data for AI analysis"""
     max_chars = 2000 if report_type == "quick_summary" else 3000
-    
+
     context = f"""
 === CASE INFORMATION ===
 Title: {case.get('title', 'N/A')}
@@ -106,7 +106,7 @@ Judge: {case.get('judge', 'N/A')}
 Summary: {case.get('summary', 'N/A')}
 
 """
-    
+
     if documents:
         context += f"=== CASE DOCUMENTS ({len(documents)} files) ===\n"
         for doc in documents:
@@ -122,25 +122,25 @@ Summary: {case.get('summary', 'N/A')}
                 context += "CONTENT: [No text extracted]\n"
     else:
         context += "=== NO DOCUMENTS UPLOADED ===\n"
-    
+
     if timeline:
         context += f"\n=== TIMELINE OF EVENTS ({len(timeline)} events) ===\n"
         for event in timeline:
             context += f"- {event.get('event_date', 'Unknown')}: [{event.get('event_type')}] {event.get('title')}\n"
             if event.get('description'):
                 context += f"  Details: {event.get('description')}\n"
-    
+
     if notes:
         context += f"\n=== LEGAL NOTES ({len(notes)} notes) ===\n"
         for note in notes:
             context += f"- [{note.get('category')}] {note.get('title')}: {note.get('content', '')[:500]}\n"
-    
+
     if grounds:
         context += f"\n=== IDENTIFIED GROUNDS OF MERIT ({len(grounds)} grounds) ===\n"
         for g in grounds:
             context += f"- [{g.get('ground_type')}] {g.get('title')} (Strength: {g.get('strength')})\n"
             context += f"  {g.get('description', '')[:300]}\n"
-    
+
     return context
 
 

@@ -1,4 +1,4 @@
-# DO NOT UNDO — export router. All endpoints in this file are approved and must be preserved.
+#  — export router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Export Router
 Handles Quick Export (Appeal Package) generation - ZIP with all docs, reports, and editable templates
@@ -42,15 +42,15 @@ async def generate_appeal_package(case_id: str, options: ExportOptions, request:
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     # Fetch case data
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # Create ZIP file in memory
     zip_buffer = io.BytesIO()
-    
+
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
         # 1. Case Summary (JSON + TXT)
         case_summary = {
@@ -68,7 +68,7 @@ async def generate_appeal_package(case_id: str, options: ExportOptions, request:
             "exported_at": datetime.now(timezone.utc).isoformat()
         }
         zip_file.writestr("00_Case_Summary.json", json.dumps(case_summary, indent=2))
-        
+
         # Text version of case summary
         summary_txt = f"""CASE SUMMARY
 {'='*50}
@@ -88,14 +88,14 @@ Summary:
 Exported: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}
 """
         zip_file.writestr("00_Case_Summary.txt", summary_txt)
-        
+
         # 2. Documents
         if options.include_documents:
             documents = await db.documents.find(
                 {"case_id": case_id},
                 {"_id": 0}
             ).to_list(500)
-            
+
             # Create documents folder
             doc_index = []
             for i, doc in enumerate(documents, 1):
@@ -106,7 +106,7 @@ Exported: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}
                     "has_text": bool(doc.get("extracted_text"))
                 }
                 doc_index.append(doc_info)
-                
+
                 # Save document metadata
                 doc_meta = f"""Document: {doc.get('filename')}
 Category: {doc.get('category', 'N/A').replace('_', ' ').title()}
@@ -121,17 +121,17 @@ AI Analysis:
 {doc.get('ai_analysis', 'No AI analysis available')}
 """
                 zip_file.writestr(f"01_Documents/{i:02d}_{doc.get('filename', 'document')}.txt", doc_meta)
-            
+
             # Document index
             zip_file.writestr("01_Documents/_Document_Index.json", json.dumps(doc_index, indent=2))
-        
+
         # 3. Timeline
         if options.include_timeline:
             timeline = await db.timeline_events.find(
                 {"case_id": case_id},
                 {"_id": 0}
             ).sort("event_date", 1).to_list(500)
-            
+
             timeline_txt = "CASE TIMELINE\n" + "="*50 + "\n\n"
             for event in timeline:
                 event_date = event.get("event_date", "Unknown date")
@@ -148,14 +148,14 @@ Source: {event.get('source_citation', 'N/A')}
 """
             zip_file.writestr("02_Timeline/Timeline_Chronological.txt", timeline_txt)
             zip_file.writestr("02_Timeline/Timeline_Data.json", json.dumps(timeline, indent=2, default=str))
-        
+
         # 4. Grounds of Merit
         if options.include_grounds:
             grounds = await db.grounds_of_merit.find(
                 {"case_id": case_id},
                 {"_id": 0}
             ).to_list(100)
-            
+
             grounds_txt = "GROUNDS OF MERIT\n" + "="*50 + "\n\n"
             for i, ground in enumerate(grounds, 1):
                 strength_indicator = {"strong": "★★★", "moderate": "★★☆", "weak": "★☆☆"}.get(ground.get("strength"), "★★☆")
@@ -178,14 +178,14 @@ Supporting Evidence:
 """
             zip_file.writestr("03_Grounds/Grounds_of_Merit.txt", grounds_txt)
             zip_file.writestr("03_Grounds/Grounds_Data.json", json.dumps(grounds, indent=2, default=str))
-        
+
         # 5. Notes
         if options.include_notes:
             notes = await db.notes.find(
                 {"case_id": case_id},
                 {"_id": 0}
             ).sort("created_at", -1).to_list(500)
-            
+
             notes_txt = "CASE NOTES\n" + "="*50 + "\n\n"
             for note in notes:
                 pinned = "📌 PINNED" if note.get("is_pinned") else ""
@@ -200,14 +200,14 @@ Category: {note.get('category', 'general').title()}
 """
             zip_file.writestr("04_Notes/Case_Notes.txt", notes_txt)
             zip_file.writestr("04_Notes/Notes_Data.json", json.dumps(notes, indent=2, default=str))
-        
+
         # 6. Reports
         if options.include_reports:
             reports = await db.reports.find(
                 {"case_id": case_id},
                 {"_id": 0}
             ).sort("generated_at", -1).to_list(50)
-            
+
             for i, report in enumerate(reports, 1):
                 report_type = report.get("report_type", "unknown").replace("_", " ").title()
                 report_txt = f"""REPORT: {report_type}
@@ -217,7 +217,7 @@ Generated: {report.get('generated_at', 'Unknown')}
 {report.get('content', 'No content')}
 """
                 zip_file.writestr(f"05_Reports/{i:02d}_{report_type.replace(' ', '_')}.txt", report_txt)
-        
+
         # 7. AI Analysis Summary
         if options.include_analysis:
             # Get contradiction scans
@@ -225,26 +225,26 @@ Generated: {report.get('generated_at', 'Unknown')}
                 {"case_id": case_id},
                 {"_id": 0}
             ).sort("scanned_at", -1).to_list(10)
-            
+
             if scans:
                 latest_scan = scans[0]
                 contradictions = latest_scan.get("results", {}).get("contradictions", [])
-                
+
                 analysis_txt = "AI ANALYSIS - CONTRADICTION FINDINGS\n" + "="*50 + "\n\n"
                 analysis_txt += f"Scan Date: {latest_scan.get('scanned_at', 'Unknown')}\n"
                 analysis_txt += f"Documents Analysed: {latest_scan.get('documents_analysed', latest_scan.get('documents_analyzed', 0))}\n\n"
-                
+
                 summary = latest_scan.get("results", {}).get("summary", {})
                 analysis_txt += f"Total Findings: {summary.get('total_found', 0)}\n"
                 analysis_txt += f"Critical: {summary.get('critical_count', 0)}\n"
                 analysis_txt += f"Significant: {summary.get('significant_count', 0)}\n"
                 analysis_txt += f"Minor: {summary.get('minor_count', 0)}\n\n"
-                
+
                 if summary.get("key_finding"):
                     analysis_txt += f"Key Finding: {summary.get('key_finding')}\n\n"
-                
+
                 analysis_txt += "DETAILED FINDINGS:\n" + "-"*40 + "\n\n"
-                
+
                 for i, c in enumerate(contradictions, 1):
                     analysis_txt += f"""FINDING {i}: [{c.get('severity', 'unknown').upper()}]
 Type: {c.get('type', 'N/A').replace('_', ' ').title()}
@@ -263,7 +263,7 @@ Recommendations:
 """
                 zip_file.writestr("06_AI_Analysis/Contradiction_Analysis.txt", analysis_txt)
                 zip_file.writestr("06_AI_Analysis/Contradiction_Data.json", json.dumps(scans, indent=2, default=str))
-        
+
         # 8. Editable Templates (DOCX-ready TXT files)
         if options.include_templates:
             # Notice of Appeal Template
@@ -314,7 +314,7 @@ _________________________________
 Filed by: _________________________________
 """
             zip_file.writestr("07_Templates/Notice_of_Appeal_Template.txt", notice_template)
-            
+
             # Leave to Appeal Template
             leave_template = f"""APPLICATION FOR LEAVE TO APPEAL
 {'='*50}
@@ -354,7 +354,7 @@ _________________________________
 [Applicant/Applicant's Solicitor]
 """
             zip_file.writestr("07_Templates/Leave_to_Appeal_Template.txt", leave_template)
-            
+
             # Written Submissions Template
             submissions_template = f"""WRITTEN SUBMISSIONS ON BEHALF OF THE APPELLANT
 {'='*50}
@@ -411,7 +411,7 @@ _________________________________
 [Counsel for the Appellant]
 """
             zip_file.writestr("07_Templates/Written_Submissions_Template.txt", submissions_template)
-            
+
             # Fresh Evidence Affidavit Template
             affidavit_template = f"""AFFIDAVIT IN SUPPORT OF FRESH EVIDENCE
 {'='*50}
@@ -467,7 +467,7 @@ _________________________________          _________________________________
 [Signature of Deponent]                    [Justice of the Peace/Solicitor]
 """
             zip_file.writestr("07_Templates/Fresh_Evidence_Affidavit_Template.txt", affidavit_template)
-            
+
             # Chronology Template
             chronology_template = f"""CHRONOLOGY OF PROCEEDINGS
 {'='*50}
@@ -487,8 +487,8 @@ DATE                | EVENT                              | REFERENCE
 [DD/MM/YYYY]        | [Event description]                | [TB page]
 [DD/MM/YYYY]        | Conviction                         | [TB page]
 [DD/MM/YYYY]        | Sentence                           | [TB page]
-[DD/MM/YYYY]        | Notice of Appeal filed             | 
-[DD/MM/YYYY]        | Appeal Hearing                     | 
+[DD/MM/YYYY]        | Notice of Appeal filed             |
+[DD/MM/YYYY]        | Appeal Hearing                     |
 
 TB = Trial Bundle
 AB = Appeal Book
@@ -497,7 +497,7 @@ Notes:
 - [Any relevant notes about the chronology]
 """
             zip_file.writestr("07_Templates/Chronology_Template.txt", chronology_template)
-        
+
         # 8. README
         readme = f"""APPEAL CASE PACKAGE
 {'='*50}
@@ -535,14 +535,14 @@ Always seek independent legal advice.
 For questions: {get_contact_email()}
 """
         zip_file.writestr("README.txt", readme)
-    
+
     # Prepare response
     zip_buffer.seek(0)
-    
+
     # Generate filename
     safe_title = "".join(c for c in case.get("title", "case")[:30] if c.isalnum() or c in " -_").strip()
     filename = f"Appeal_Package_{safe_title}_{datetime.now().strftime('%Y%m%d')}.zip"
-    
+
     return StreamingResponse(
         zip_buffer,
         media_type="application/zip",
@@ -559,7 +559,7 @@ async def preview_export(case_id: str, request: Request):
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     # Count items
     doc_count = await db.documents.count_documents({"case_id": case_id})
     timeline_count = await db.timeline_events.count_documents({"case_id": case_id})
@@ -567,7 +567,7 @@ async def preview_export(case_id: str, request: Request):
     notes_count = await db.notes.count_documents({"case_id": case_id})
     reports_count = await db.reports.count_documents({"case_id": case_id})
     scans_count = await db.contradiction_scans.count_documents({"case_id": case_id})
-    
+
     return {
         "documents": doc_count,
         "timeline_events": timeline_count,
@@ -596,27 +596,27 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
     from reportlab.lib.units import cm
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
     from reportlab.lib import colors
-    
+
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     if not bundle_request.document_ids:
         raise HTTPException(status_code=400, detail="No documents selected")
-    
+
     # Fetch case
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # Fetch selected documents
     documents = await db.documents.find(
         {"case_id": case_id, "document_id": {"$in": bundle_request.document_ids}},
         {"_id": 0, "file_data": 0}
     ).to_list(100)
-    
+
     if not documents:
         raise HTTPException(status_code=404, detail="No documents found")
-    
+
     # Create PDF
     pdf_buffer = io.BytesIO()
     pdf_doc = SimpleDocTemplate(
@@ -627,7 +627,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
         topMargin=2*cm,
         bottomMargin=2*cm
     )
-    
+
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
         'CustomTitle',
@@ -649,9 +649,9 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
         fontSize=11,
         leading=14
     )
-    
+
     story = []
-    
+
     # Title Page
     story.append(Spacer(1, 3*cm))
     story.append(Paragraph(bundle_request.title, title_style))
@@ -662,22 +662,22 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
     story.append(Spacer(1, 2*cm))
     story.append(Paragraph(f"Contains {len(documents)} document(s)", styles['Normal']))
     story.append(PageBreak())
-    
+
     # Table of Contents
     if bundle_request.include_toc:
         story.append(Paragraph("Table of Contents", title_style))
         story.append(Spacer(1, 0.5*cm))
-        
+
         toc_data = [["#", "Document", "Category", "Page"]]
         current_page = 3  # Start after title and TOC
-        
+
         for i, doc in enumerate(documents, 1):
             category = doc.get("category", "general").replace("_", " ").title()
             toc_data.append([str(i), doc.get("filename", "Unknown")[:40], category, str(current_page)])
             # Estimate pages based on text length
             text_len = len(doc.get("extracted_text", ""))
             current_page += max(1, text_len // 3000)
-        
+
         toc_table = Table(toc_data, colWidths=[1*cm, 9*cm, 4*cm, 2*cm])
         toc_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -692,7 +692,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
         ]))
         story.append(toc_table)
         story.append(PageBreak())
-    
+
     # Document Contents
     for i, doc in enumerate(documents, 1):
         # Document header
@@ -700,7 +700,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
         story.append(Paragraph(f"Category: {doc.get('category', 'N/A').replace('_', ' ').title()}", styles['Normal']))
         story.append(Paragraph(f"Uploaded: {doc.get('upload_date', 'N/A')}", styles['Normal']))
         story.append(Spacer(1, 0.5*cm))
-        
+
         # Document text
         text = doc.get("extracted_text", "No text extracted from this document.")
         # Clean and split text into paragraphs
@@ -714,7 +714,7 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
                     story.append(Spacer(1, 0.3*cm))
                 except Exception:
                     pass
-        
+
         # AI Analysis if available
         if doc.get("ai_analysis"):
             story.append(Spacer(1, 0.5*cm))
@@ -724,10 +724,10 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
                 story.append(Paragraph(analysis[:3000], body_style))
             except Exception:
                 pass
-        
+
         if i < len(documents):
             story.append(PageBreak())
-    
+
     # Legal Disclaimer
     story.append(Spacer(1, 1*cm))
     disclaimer_style = ParagraphStyle(
@@ -750,11 +750,11 @@ async def create_document_bundle(case_id: str, bundle_request: BundleRequest, re
     # Build PDF
     pdf_doc.build(story)
     pdf_buffer.seek(0)
-    
+
     # Generate filename
     safe_title = "".join(c for c in bundle_request.title[:30] if c.isalnum() or c in " -_").strip()
     filename = f"{safe_title.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf"
-    
+
     return StreamingResponse(
         pdf_buffer,
         media_type="application/pdf",

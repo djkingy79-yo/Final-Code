@@ -5,7 +5,7 @@ const EvidenceSummary = ({ items = [], expanded = false }) => {
     return <div data-testid="evidence-summary-empty" className="text-xs text-slate-400 mt-2">No structured evidence linked yet</div>;
   }
 
-  /* DO NOT UNDO — Extract readable evidence text, filtering out garbage key-concatenated strings */
+  /*  — Extract readable evidence text, filtering out garbage key-concatenated strings */
   const extractText = (item) => {
     if (!item) return null;
     if (typeof item === "string") {

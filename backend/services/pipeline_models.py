@@ -1,4 +1,4 @@
-# DO NOT UNDO — Pipeline models for the staged extraction/classification/verification pipeline.
+#  — Pipeline models for the staged extraction/classification/verification pipeline.
 # ExtractedFact, ExtractedEvent, ExtractedFinding are re-exported from models/ (canonical source).
 # Pipeline-specific models (DocumentExtract, CaseExtract, IssueClassification, IssueVerification)
 # are defined here with ALL fields that the pipeline code actually uses.

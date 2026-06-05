@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -11,7 +11,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { isIOSDevice } from "../utils/isIOS";
 import { renderMarkdownToHtml } from "../utils/mdRender";
-import { 
+import {
   Scale, ArrowLeft, FileText, Clock, Plus,
   Loader2, AlertCircle, Sparkles, Gavel,
   BookOpen, HelpCircle, TrendingUp,
@@ -235,11 +235,11 @@ const CaseDetail = ({ user }) => {
     setGroundsCount(0);
     setLoading(true);
     fetchCaseData(requestId);
-    
+
     // Handle payment return
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get('payment');
-    
+
     if (paymentStatus === 'success') {
       toast.success('Payment successful! Feature unlocked.');
       window.history.replaceState({}, '', `/cases/${caseId}`);
@@ -257,7 +257,7 @@ const CaseDetail = ({ user }) => {
       const caseRes = await axios.get(`${API}/cases/${caseId}`, { timeout: 90000 });
       if (requestId !== caseRequestRef.current) return;
       setCaseData(caseRes.data);
-      
+
       // Then fetch related data - use Promise.allSettled for resilience (generous timeouts)
       const [docsRes, timelineRes, reportsRes, notesRes, groundsRes, paymentsRes, barristerRes] = await Promise.allSettled([
         axios.get(`${API}/cases/${caseId}/documents`, { timeout: 90000 }),
@@ -269,11 +269,11 @@ const CaseDetail = ({ user }) => {
         axios.get(`${API}/cases/${caseId}/reports/barrister-view`, { timeout: 60000 })
       ]);
       if (requestId !== caseRequestRef.current) return;
-      
+
       // Set data from successful responses, empty arrays for failed ones
       setDocuments(docsRes.status === 'fulfilled' ? docsRes.value.data : []);
       setTimeline(timelineRes.status === 'fulfilled' ? timelineRes.value.data : []);
-      
+
       // Combine standard reports with barrister report if it exists and is completed
       const standardReports = reportsRes.status === 'fulfilled' ? reportsRes.value.data : [];
       const barristerReport = barristerRes.status === 'fulfilled' ? barristerRes.value.data : null;
@@ -286,7 +286,7 @@ const CaseDetail = ({ user }) => {
       setReports(standardReports);
       setNotes(notesRes.status === 'fulfilled' ? notesRes.value.data : []);
       setPaymentSummary(paymentsRes.status === 'fulfilled' ? paymentsRes.value.data : { payments: [], unlocked_features: {}, latest_status_by_feature: {} });
-      
+
       // Handle grounds response with paywall info
       if (groundsRes.status === 'fulfilled') {
         const groundsData = groundsRes.value.data;
@@ -298,7 +298,7 @@ const CaseDetail = ({ user }) => {
         setGrounds([]);
         setGroundsCount(0);
       }
-      
+
     } catch (error) {
       if (requestId !== caseRequestRef.current) return;
       console.error("Failed to load case:", error);
@@ -326,14 +326,14 @@ const CaseDetail = ({ user }) => {
 
     try {
       const response = await axios.post(`${API}/cases/${caseId}/timeline`, newEvent);
-      setTimeline([...timeline, response.data].sort((a, b) => 
+      setTimeline([...timeline, response.data].sort((a, b) =>
         new Date(a.event_date) - new Date(b.event_date)
       ));
       setShowEventDialog(false);
-      setNewEvent({ 
-        title: "", 
-        description: "", 
-        event_date: "", 
+      setNewEvent({
+        title: "",
+        description: "",
+        event_date: "",
         event_type: "other",
         event_category: "general",
         significance: "normal",
@@ -355,7 +355,7 @@ const CaseDetail = ({ user }) => {
   const handleDeleteEvent = async (eventId) => {
     setDeleteEventId(eventId);
   };
-  
+
   const confirmDeleteEvent = async () => {
     const eventId = deleteEventId;
     setDeleteEventId(null);
@@ -400,19 +400,19 @@ const CaseDetail = ({ user }) => {
       );
       if (!proceed) return;
     }
-    
+
     setGeneratingTimeline(true);
     toast.info("Analysing documents to generate timeline... This may take 30-60 seconds.");
-    
+
     try {
       const response = await axios.post(`${API}/cases/${caseId}/timeline/auto-generate`, {}, {
         timeout: 180000 // 3 minute timeout
       });
-      
+
       // Refresh timeline
       const timelineRes = await axios.get(`${API}/cases/${caseId}/timeline`);
       setTimeline(timelineRes.data);
-      
+
       toast.success(`Generated ${response.data.events_created} timeline events from documents!`);
     } catch (error) {
       console.error("Timeline generation error:", error);
@@ -433,10 +433,10 @@ const CaseDetail = ({ user }) => {
       toast.error("Need at least 2 timeline events for analysis");
       return;
     }
-    
+
     setAnalyzingTimeline(true);
     toast.info("Analysing timeline for gaps, inconsistencies, and insights...");
-    
+
     try {
       const response = await axios.post(`${API}/cases/${caseId}/timeline/analyse`, {}, {
         timeout: 120000
@@ -471,7 +471,7 @@ const CaseDetail = ({ user }) => {
       const response = await axios.get(`${API}/cases/${caseId}/timeline/export-pdf`, {
         responseType: 'blob'
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -480,7 +480,7 @@ const CaseDetail = ({ user }) => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      
+
       toast.success("Timeline PDF exported!");
     } catch (error) {
       console.error("PDF export error:", error);
@@ -723,7 +723,7 @@ const CaseDetail = ({ user }) => {
   const handleDeleteGround = async (groundId) => {
     setDeleteGroundId(groundId);
   };
-  
+
   const confirmDeleteGround = async () => {
     const groundId = deleteGroundId;
     setDeleteGroundId(null);
@@ -891,7 +891,7 @@ const CaseDetail = ({ user }) => {
     });
   };
 
-  /* DO NOT UNDO — AI Progress Analysis generation */
+  /*  — AI Progress Analysis generation */
   const handleGenerateProgressAnalysis = async () => {
     setGeneratingProgress(true);
     toast.info("Generating progress analysis — this can take several minutes.");
@@ -927,7 +927,7 @@ const CaseDetail = ({ user }) => {
   const handleDeleteCase = () => {
     setShowDeleteCaseDialog(true);
   };
-  
+
   const confirmDeleteCase = async () => {
     setShowDeleteCaseDialog(false);
     try {
@@ -1292,7 +1292,7 @@ const CaseDetail = ({ user }) => {
           <h2 className="mt-4 text-xl font-semibold text-slate-900">Error Loading Case</h2>
           <p className="mt-2 text-slate-600">{loadError}</p>
           <div className="mt-6 flex gap-3 justify-center">
-            <Button 
+            <Button
               onClick={() => navigate("/dashboard")}
               className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
               data-testid="back-to-dashboard-btn"
@@ -1300,7 +1300,7 @@ const CaseDetail = ({ user }) => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
-            <Button 
+            <Button
               onClick={fetchCaseData}
               className="rounded-xl bg-blue-700 text-white hover:bg-blue-600"
               data-testid="retry-load-btn"
@@ -1319,9 +1319,9 @@ const CaseDetail = ({ user }) => {
       <header className="glass-header sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-2 sm:gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigate("/dashboard")}
               className="rounded-xl shrink-0 text-slate-700 hover:text-slate-900"
               data-testid="back-btn"
@@ -1337,8 +1337,8 @@ const CaseDetail = ({ user }) => {
               <span className="font-medium text-slate-900 truncate text-sm sm:text-base">{caseData?.title}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={() => navigate("/help")}
                 className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl hidden sm:flex"
                 data-testid="help-btn"
@@ -1348,7 +1348,7 @@ const CaseDetail = ({ user }) => {
               </Button>
               <span className="hidden sm:inline"><QuickExport caseId={caseId} caseTitle={caseData?.title} /></span>
               <span className="hidden sm:inline"><DocumentBundler caseId={caseId} documents={documents} /></span>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowShareModal(true)}
@@ -1367,9 +1367,9 @@ const CaseDetail = ({ user }) => {
               <Button variant="outline" size="sm" onClick={() => { setExportMode("word"); setExportOpen(true); }} className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl" data-testid="print-all-word-btn">
                 <FileText className="w-4 h-4 mr-1" />Word All
               </Button>
-              <Button 
-                variant="destructive" 
-                size="sm" 
+              <Button
+                variant="destructive"
+                size="sm"
                 onClick={handleDeleteCase}
                 className="bg-red-600 hover:bg-red-700 text-white rounded-xl text-base font-extrabold"
                 data-testid="delete-case-btn"
@@ -1386,7 +1386,7 @@ const CaseDetail = ({ user }) => {
         {/* Case Info */}
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4">
-            <h1 
+            <h1
               className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight"
               style={{ fontFamily: "'Times New Roman', Times, serif" }}
               data-testid="case-title"
@@ -1403,7 +1403,7 @@ const CaseDetail = ({ user }) => {
               Edit
             </Button>
           </div>
-          {/* DO_NOT_UNDO — Case Identity Card. Must always show defendant, offence, state, sentence prominently with colour. */}
+          {/*  — Case Identity Card. Must always show defendant, offence, state, sentence prominently with colour. */}
           <div className="mt-4 rounded-xl border-2 border-blue-700 bg-blue-50 p-5 legal-content" data-testid="case-identity-card">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -1524,7 +1524,7 @@ const CaseDetail = ({ user }) => {
             <div className="flex gap-2 flex-wrap">
               {activeTab === "timeline" && (
                 <>
-                  <Button 
+                  <Button
                     onClick={handleGenerateTimeline}
                     disabled={generatingTimeline}
                     className="bg-blue-700 text-white hover:bg-blue-600"
@@ -1537,7 +1537,7 @@ const CaseDetail = ({ user }) => {
                     )}
                     AI Generate Timeline
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => setShowEventDialog(true)}
                     className="bg-blue-700 text-white hover:bg-blue-600"
                     data-testid="add-event-btn"
@@ -1550,7 +1550,7 @@ const CaseDetail = ({ user }) => {
               {activeTab === "grounds" && (
                 <>
                   {(groundsUnlocked || !groundsCount) && (
-                    <Button 
+                    <Button
                       onClick={handleAutoIdentifyGrounds}
                       disabled={autoIdentifying}
                       className="bg-blue-700 text-white hover:bg-blue-600"
@@ -1565,7 +1565,7 @@ const CaseDetail = ({ user }) => {
                     </Button>
                   )}
                   {groundsUnlocked && (
-                    <Button 
+                    <Button
                       onClick={() => {
                         setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
                         setShowGroundDialog(true);
@@ -1578,7 +1578,7 @@ const CaseDetail = ({ user }) => {
                     </Button>
                   )}
                   {groundsUnlocked && grounds.length > 0 && (
-                    <Button 
+                    <Button
                       onClick={handleRefreshLegalRefs}
                       disabled={refreshingLegalRefs}
                       variant="outline"
@@ -1629,7 +1629,7 @@ const CaseDetail = ({ user }) => {
                   No events yet
                 </h3>
                 <p className="text-slate-600 mb-4">Build a chronological timeline of case events.</p>
-                <Button 
+                <Button
                   onClick={() => setShowEventDialog(true)}
                   className="bg-blue-700 text-white hover:bg-blue-600 rounded-xl"
                 >
@@ -1640,13 +1640,13 @@ const CaseDetail = ({ user }) => {
             ) : (
               <div className="space-y-4">
                 {timelineAnalysis && (
-                  <TimelineAnalysis 
-                    analysis={timelineAnalysis} 
-                    onClose={() => setTimelineAnalysis(null)} 
+                  <TimelineAnalysis
+                    analysis={timelineAnalysis}
+                    onClose={() => setTimelineAnalysis(null)}
                   />
                 )}
-                <Timeline 
-                  events={timeline} 
+                <Timeline
+                  events={timeline}
                   documents={documents}
                   grounds={grounds}
                   caseId={caseId}
@@ -1682,11 +1682,11 @@ const CaseDetail = ({ user }) => {
                   No grounds of merit identified
                 </h3>
                 <p className="text-xs text-slate-500 mb-4 max-w-md mx-auto">
-                  Use AI to automatically analyse case materials and identify potential grounds for appeal, 
+                  Use AI to automatically analyse case materials and identify potential grounds for appeal,
                   or add grounds manually.
                 </p>
                 <div className="flex gap-3 justify-center">
-                  <Button 
+                  <Button
                     onClick={handleAutoIdentifyGrounds}
                     disabled={autoIdentifying}
                     className="bg-blue-600 text-white hover:bg-blue-500 rounded-xl"
@@ -1698,7 +1698,7 @@ const CaseDetail = ({ user }) => {
                     )}
                     AI Identify Grounds
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => {
                       setNewGround({ title: "", description: "", ground_type: "other", strength: "moderate", supporting_evidence: [] });
                       setShowGroundDialog(true);
@@ -1720,7 +1720,7 @@ const CaseDetail = ({ user }) => {
                     />
                   </div>
                 )}
-                <GroundsOfMerit 
+                <GroundsOfMerit
                   grounds={grounds}
                   groundsCount={groundsCount}
                   isUnlocked={groundsUnlocked}
@@ -1785,9 +1785,9 @@ const CaseDetail = ({ user }) => {
             />
           </TabsContent>
 
-          {/* Legal Framework Tab — DO NOT UNDO */}
+          {/* Legal Framework Tab —  */}
           <TabsContent value="legal" className="space-y-6 legal-content" data-tab-content>
-            <LegalFrameworkViewer 
+            <LegalFrameworkViewer
               offenceCategory={caseData?.offence_category}
               offenceType={caseData?.offence_type}
               state={caseData?.state}
@@ -1802,18 +1802,18 @@ const CaseDetail = ({ user }) => {
                 Find Case Law
               </h3>
               <p className="text-xs text-slate-500 mb-4">
-                Search official Australian court databases directly. All results open in the source 
+                Search official Australian court databases directly. All results open in the source
                 database and are not AI-generated.
               </p>
-              <CaseLawPanel 
+              <CaseLawPanel
                 caseId={caseId}
                 state={caseData?.state}
               />
             </Card>
           </TabsContent>
 
-          {/* Progress Tab — DO NOT UNDO, DO NOT DELETE */}
-          {/* DO NOT UNDO — Progress Tab with AI Analysis */}
+          {/* Progress Tab — , DO NOT DELETE */}
+          {/*  — Progress Tab with AI Analysis */}
           <TabsContent value="progress" className="space-y-6 legal-content" data-tab-content>
             {/* Export Buttons */}
             <div className="flex items-center gap-2 flex-wrap" data-testid="progress-export-bar">
@@ -1870,8 +1870,8 @@ const CaseDetail = ({ user }) => {
                     <h3 className="font-semibold text-base">AI Case Progress Analysis</h3>
                     <p className="text-xs text-slate-600">Get an AI-powered assessment of your appeal progress, next steps, and strategic recommendations</p>
                   </div>
-                  <Button 
-                    onClick={handleGenerateProgressAnalysis} 
+                  <Button
+                    onClick={handleGenerateProgressAnalysis}
                     disabled={generatingProgress}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                     data-testid="ai-generate-progress-btn"
@@ -1910,7 +1910,7 @@ const CaseDetail = ({ user }) => {
             {progressAnalysis && (
               <Card className="border-purple-200">
                 <CardContent className="p-4 legal-report prose prose-sm max-w-none">
-                  <ReactMarkdown 
+                  <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
                       a: ({ href, children }) => (
@@ -1940,7 +1940,7 @@ const CaseDetail = ({ user }) => {
                 <DeadlineTracker caseId={caseId} />
               </div>
             </details>
-            
+
             {/* Appeal Checklist — collapsed by default */}
             <details className="border border-slate-200 rounded-lg bg-white">
               <summary className="px-4 py-3 cursor-pointer text-sm font-semibold text-slate-700 hover:bg-slate-50">
@@ -1950,19 +1950,19 @@ const CaseDetail = ({ user }) => {
                 <AppealChecklist caseId={caseId} />
               </div>
             </details>
-            
+
             {/* Quick Links */}
             <Card>
               <CardContent className="p-4">
                 <div className="flex flex-wrap gap-3">
-                  <Button 
+                  <Button
                     onClick={() => navigate('/resources')}
                     className="flex items-center gap-2 bg-blue-700 text-white hover:bg-blue-600"
                   >
                     <HelpCircle className="w-4 h-4" />
                     Resource Directory
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => navigate('/help')}
                     className="flex items-center gap-2 bg-blue-700 text-white hover:bg-blue-600"
                   >
@@ -2010,7 +2010,7 @@ const CaseDetail = ({ user }) => {
                 data-testid="event-title"
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Date *</Label>
@@ -2023,8 +2023,8 @@ const CaseDetail = ({ user }) => {
               </div>
               <div>
                 <Label>Category</Label>
-                <Select 
-                  value={newEvent.event_category} 
+                <Select
+                  value={newEvent.event_category}
                   onValueChange={(v) => {
                     setNewEvent({ ...newEvent, event_category: v });
                   }}
@@ -2044,12 +2044,12 @@ const CaseDetail = ({ user }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Event Type</Label>
-                <Select 
-                  value={newEvent.event_type} 
+                <Select
+                  value={newEvent.event_type}
                   onValueChange={(v) => {
                     const eventType = EVENT_TYPES.find(t => t.value === v);
-                    setNewEvent({ 
-                      ...newEvent, 
+                    setNewEvent({
+                      ...newEvent,
                       event_type: v,
                       event_category: eventType?.category || newEvent.event_category
                     });
@@ -2067,8 +2067,8 @@ const CaseDetail = ({ user }) => {
               </div>
               <div>
                 <Label>Significance</Label>
-                <Select 
-                  value={newEvent.significance} 
+                <Select
+                  value={newEvent.significance}
                   onValueChange={(v) => setNewEvent({ ...newEvent, significance: v })}
                 >
                   <SelectTrigger data-testid="event-significance-select">
@@ -2107,8 +2107,8 @@ const CaseDetail = ({ user }) => {
               </div>
               <div>
                 <Label>Perspective</Label>
-                <Select 
-                  value={newEvent.perspective} 
+                <Select
+                  value={newEvent.perspective}
                   onValueChange={(v) => setNewEvent({ ...newEvent, perspective: v })}
                 >
                   <SelectTrigger data-testid="event-perspective-select">
@@ -2129,7 +2129,7 @@ const CaseDetail = ({ user }) => {
                 <Label>Link to Documents</Label>
                 <div className="flex flex-wrap gap-2 mt-2 p-3 bg-slate-50 rounded-lg max-h-32 overflow-y-auto">
                   {documents.map(doc => (
-                    <label 
+                    <label
                       key={doc.document_id}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm cursor-pointer transition-colors ${
                         newEvent.linked_documents.includes(doc.document_id)
@@ -2143,14 +2143,14 @@ const CaseDetail = ({ user }) => {
                         checked={newEvent.linked_documents.includes(doc.document_id)}
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setNewEvent({ 
-                              ...newEvent, 
-                              linked_documents: [...newEvent.linked_documents, doc.document_id] 
+                            setNewEvent({
+                              ...newEvent,
+                              linked_documents: [...newEvent.linked_documents, doc.document_id]
                             });
                           } else {
-                            setNewEvent({ 
-                              ...newEvent, 
-                              linked_documents: newEvent.linked_documents.filter(id => id !== doc.document_id) 
+                            setNewEvent({
+                              ...newEvent,
+                              linked_documents: newEvent.linked_documents.filter(id => id !== doc.document_id)
                             });
                           }
                         }}
@@ -2169,7 +2169,7 @@ const CaseDetail = ({ user }) => {
                 <Label>Link to Grounds of Appeal</Label>
                 <div className="flex flex-wrap gap-2 mt-2 p-3 bg-slate-50 rounded-lg max-h-32 overflow-y-auto">
                   {grounds.map(ground => (
-                    <label 
+                    <label
                       key={ground.ground_id}
                       className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm cursor-pointer transition-colors ${
                         newEvent.related_grounds.includes(ground.ground_id)
@@ -2183,14 +2183,14 @@ const CaseDetail = ({ user }) => {
                         checked={newEvent.related_grounds.includes(ground.ground_id)}
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setNewEvent({ 
-                              ...newEvent, 
-                              related_grounds: [...newEvent.related_grounds, ground.ground_id] 
+                            setNewEvent({
+                              ...newEvent,
+                              related_grounds: [...newEvent.related_grounds, ground.ground_id]
                             });
                           } else {
-                            setNewEvent({ 
-                              ...newEvent, 
-                              related_grounds: newEvent.related_grounds.filter(id => id !== ground.ground_id) 
+                            setNewEvent({
+                              ...newEvent,
+                              related_grounds: newEvent.related_grounds.filter(id => id !== ground.ground_id)
                             });
                           }
                         }}
@@ -2243,7 +2243,7 @@ const CaseDetail = ({ user }) => {
             <Button onClick={() => setShowEventDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateEvent}
               className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="event-submit"
@@ -2266,8 +2266,8 @@ const CaseDetail = ({ user }) => {
           <div className="space-y-4 py-4">
             <div>
               <Label>Ground Type</Label>
-              <Select 
-                value={newGround.ground_type} 
+              <Select
+                value={newGround.ground_type}
                 onValueChange={(v) => setNewGround({ ...newGround, ground_type: v })}
               >
                 <SelectTrigger data-testid="ground-type-select">
@@ -2301,8 +2301,8 @@ const CaseDetail = ({ user }) => {
             </div>
             <div>
               <Label>Strength Assessment</Label>
-              <Select 
-                value={newGround.strength} 
+              <Select
+                value={newGround.strength}
                 onValueChange={(v) => setNewGround({ ...newGround, strength: v })}
               >
                 <SelectTrigger data-testid="ground-strength-select">
@@ -2319,8 +2319,8 @@ const CaseDetail = ({ user }) => {
               <Label>Supporting Evidence (comma-separated)</Label>
               <Input
                 value={newGround.supporting_evidence.join(", ")}
-                onChange={(e) => setNewGround({ 
-                  ...newGround, 
+                onChange={(e) => setNewGround({
+                  ...newGround,
                   supporting_evidence: e.target.value.split(",").map(s => s.trim()).filter(Boolean)
                 })}
                 placeholder="e.g., Trial transcript pg 45, Witness statement from John"
@@ -2332,7 +2332,7 @@ const CaseDetail = ({ user }) => {
             <Button onClick={() => setShowGroundDialog(false)} className="bg-blue-700 text-white hover:bg-blue-600">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateGround}
               className="bg-blue-700 text-white hover:bg-blue-600"
               data-testid="ground-submit"
@@ -2362,7 +2362,7 @@ const CaseDetail = ({ user }) => {
         }}
       />
 
-      {/* DO NOT UNDO — Delete Case Confirmation Dialog */}
+      {/*  — Delete Case Confirmation Dialog */}
       <AlertDialog open={showDeleteCaseDialog} onOpenChange={setShowDeleteCaseDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -2380,7 +2380,7 @@ const CaseDetail = ({ user }) => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* DO NOT UNDO — Delete Event Confirmation Dialog */}
+      {/*  — Delete Event Confirmation Dialog */}
       <AlertDialog open={!!deleteEventId} onOpenChange={() => setDeleteEventId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -2396,7 +2396,7 @@ const CaseDetail = ({ user }) => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* DO NOT UNDO — Delete Ground Confirmation Dialog */}
+      {/*  — Delete Ground Confirmation Dialog */}
       <AlertDialog open={!!deleteGroundId} onOpenChange={() => setDeleteGroundId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

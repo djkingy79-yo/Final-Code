@@ -1,13 +1,13 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { 
-  Download, Package, FileText, Clock, Gavel, 
+import {
+  Download, Package, FileText, Clock, Gavel,
   MessageSquare, Scale, Search, FileCode, Loader2,
   FolderArchive, FileDown
 } from "lucide-react";
@@ -66,24 +66,24 @@ const QuickExport = ({ caseId, caseTitle }) => {
         options,
         { responseType: 'blob' }
       );
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      
+
       const contentDisposition = response.headers['content-disposition'];
       let filename = `Appeal_Package_${caseTitle?.replace(/[^a-zA-Z0-9]/g, '_') || 'case'}.zip`;
       if (contentDisposition) {
         const match = contentDisposition.match(/filename="(.+)"/);
         if (match) filename = match[1];
       }
-      
+
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      
+
       toast.success("Appeal package downloaded successfully!");
       setShowDialog(false);
     } catch (error) {

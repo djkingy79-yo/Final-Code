@@ -1,4 +1,4 @@
-/* DO NOT UNDO — SectionTranslatableReport component (14 Feb 2026).
+/*  — SectionTranslatableReport component (14 Feb 2026).
    Renders a markdown report split by H2 headings so each section can be
    translated individually via POST /api/cases/{case_id}/translate-section.
    Keeps the existing legal-report styling untouched. */

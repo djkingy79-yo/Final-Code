@@ -1,6 +1,6 @@
 /**
  * Offline status banner — shows when device is offline
- * DO_NOT_UNDO — Critical offline UX indicator
+ *  — Critical offline UX indicator
  */
 import { WifiOff, RefreshCw } from "lucide-react";
 import { useNetworkStatus } from "../native/network";

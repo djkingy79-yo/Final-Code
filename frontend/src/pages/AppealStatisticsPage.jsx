@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -245,30 +245,30 @@ const AppealStatisticsPage = () => {
             National Overview (2024-25)
           </h2>
           <p className="text-base md:text-lg text-black font-semibold mb-6 text-center">Key national figures and context before state-by-state breakdowns.</p>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <StatCard 
+            <StatCard
               icon={FileText}
               label="Total Appeals Filed"
               value="~1,400+"
               subtext="Across all states (2024-25)"
               color="blue"
             />
-            <StatCard 
+            <StatCard
               icon={CheckCircle}
               label="Average Success Rate"
               value="~25-35%"
               subtext="Appeals heard with change"
               color="emerald"
             />
-            <StatCard 
+            <StatCard
               icon={Clock}
               label="Avg Processing Time"
               value="10 months"
               subtext="To finalisation"
               color="blue"
             />
-            <StatCard 
+            <StatCard
               icon={Users}
               label="Defendants Finalised"
               value="515,460"
@@ -279,7 +279,7 @@ const AppealStatisticsPage = () => {
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-slate-700">
             <AlertTriangle className="w-5 h-5 text-red-600 inline mr-2" />
-            <strong className="text-black">Important:</strong> Fewer than 2% of all criminal defendants lodge an appeal. Of those that proceed to hearing, 
+            <strong className="text-black">Important:</strong> Fewer than 2% of all criminal defendants lodge an appeal. Of those that proceed to hearing,
             approximately 25-35% result in some change to the conviction or sentence. Success rates vary significantly by jurisdiction and type of appeal.
           </div>
 
@@ -294,9 +294,9 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>The Reality: Fewer Than 2% of Convicted Australians Appeal</p>
                 <p className="text-sm">
-                  Of the <strong>515,460 defendants finalised</strong> in Australian criminal courts in 2023-24 (ABS), 
-                  an estimated <strong>1,400+ criminal appeals</strong> were filed across all state and territory Courts of Appeal and Courts of Criminal Appeal. That's a 
-                  <strong style={{ color: '#fca5a5' }}> less than 2% appeal rate</strong> — 
+                  Of the <strong>515,460 defendants finalised</strong> in Australian criminal courts in 2023-24 (ABS),
+                  an estimated <strong>1,400+ criminal appeals</strong> were filed across all state and territory Courts of Appeal and Courts of Criminal Appeal. That's a
+                  <strong style={{ color: '#fca5a5' }}> less than 2% appeal rate</strong> —
                   meaning the vast majority of convicted defendants never pursue an appeal, even though many may have legitimate grounds.
                 </p>
               </div>
@@ -304,9 +304,9 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Data Limitations</p>
                 <p className="text-sm">
-                  <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some historical statistics cited are from Judicial Commission studies covering 
-                  <strong> 2001-2007</strong>. There is no single national database that comprehensively tracks criminal appeal outcomes across all Australian jurisdictions. 
-                  <span className="italic"> The lack of transparent, up-to-date national statistics itself points to how overlooked this area of justice is.</span> 
+                  <strong style={{ color: '#fca5a5' }}>Critical Note:</strong> Some historical statistics cited are from Judicial Commission studies covering
+                  <strong> 2001-2007</strong>. There is no single national database that comprehensively tracks criminal appeal outcomes across all Australian jurisdictions.
+                  <span className="italic"> The lack of transparent, up-to-date national statistics itself points to how overlooked this area of justice is.</span>
                   The figures on this page are drawn from the most recent published annual reports of each state and territory court, the ABS, and DPP annual reports (see sources below).
                 </p>
               </div>
@@ -314,7 +314,7 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>Why Are Appeal Rates So Low?</p>
                 <p className="mb-3 text-sm">This extraordinarily low rate doesn't mean most convictions are fair and error-free. Instead, it reveals major systemic barriers:</p>
-                
+
                 <div className="space-y-3 ml-4">
                   <div>
                     <p className="font-bold text-[14px] md:text-lg" style={{ color: '#fca5a5' }}>1. Failed Counsel & Inadequate Representation</p>
@@ -371,7 +371,7 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border border-blue-400">
                 <p className="font-bold text-2xl mb-2" style={{ fontFamily: "'Times New Roman', Times, serif" }}>The Hidden Tragedy</p>
                 <p className="text-sm">
-                  Given that <strong>approximately 25-35% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that 
+                  Given that <strong>approximately 25-35% of appeals that proceed to hearing result in some change</strong>, it's statistically certain that
                   <strong style={{ color: '#fca5a5' }}> thousands of Australians are serving sentences for wrongful convictions or manifestly excessive sentences</strong>,
                   simply because they lack the knowledge, resources, or support to appeal.
                 </p>
@@ -393,9 +393,9 @@ const AppealStatisticsPage = () => {
               <div className="bg-blue-700/70 rounded-lg p-4 border-2 border-blue-400">
                 <p className="font-bold text-2xl mb-2 text-white" style={{ fontFamily: "'Times New Roman', Times, serif" }}>This Tool's Purpose</p>
                 <p className="text-sm text-white">
-                  <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation, 
-                  and AI-powered analysis accessible and affordable, the goal is to help those who have grounds for appeal 
-                  but lack the resources to pursue justice through traditional means. Everyone deserves a fair chance to have 
+                  <strong>This application exists to bridge that gap.</strong> By making appeal research, document organisation,
+                  and AI-powered analysis accessible and affordable, the goal is to help those who have grounds for appeal
+                  but lack the resources to pursue justice through traditional means. Everyone deserves a fair chance to have
                   errors in their case reviewed — not just those who can afford $20,000+ in legal fees.
                 </p>
               </div>
@@ -490,7 +490,7 @@ const AppealStatisticsPage = () => {
             Most Common Grounds of Appeal
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
-            Based on analysis of appeals across Australian Courts of Criminal Appeal. 
+            Based on analysis of appeals across Australian Courts of Criminal Appeal.
             Sentence appeals (manifestly excessive) are most common, followed by conviction appeals based on legal errors.
           </p>
 
@@ -507,7 +507,7 @@ const AppealStatisticsPage = () => {
                 <p className="text-xs text-slate-600 ml-10">{ground.description}</p>
                 {/* Progress Bar */}
                 <div className="mt-3 ml-10 h-2 bg-blue-100 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-blue-500 rounded-full transition-all duration-500"
                     style={{ width: `${ground.percentage}%` }}
                   />
@@ -523,8 +523,8 @@ const AppealStatisticsPage = () => {
             Top Complaints About Lawyers
           </h2>
           <p className="text-slate-600 text-base mb-6 text-center">
-            Based on complaints received by Legal Services Commissioners across Australia. 
-            If you have concerns about your lawyer, you can lodge a complaint with the 
+            Based on complaints received by Legal Services Commissioners across Australia.
+            If you have concerns about your lawyer, you can lodge a complaint with the
             <Link to="/legal-resources" className="text-blue-600 hover:underline ml-1 font-semibold">OLCR or your state's Legal Services Commissioner</Link>.
           </p>
 
@@ -537,7 +537,7 @@ const AppealStatisticsPage = () => {
                 <div>
                   <p className="font-semibold text-slate-900">{complaint.type}</p>
                   <div className="mt-1 h-1.5 bg-blue-100 rounded-full w-32 overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${complaint.percentage * 2.5}%` }}
                     />
@@ -586,7 +586,7 @@ const AppealStatisticsPage = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-blue-600 mb-2 text-center" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             Historical Trends
           </h2>
-          
+
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
@@ -627,7 +627,7 @@ const AppealStatisticsPage = () => {
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" /><strong className="text-slate-900">OLCR/Legal Services Commissioners</strong></span>
           </div>
           <p className="text-xs text-slate-500 mt-3">
-            Note: National appeal totals are aggregated from individual court annual reports. Success rates vary year to year. TAS, NT, and ACT figures are estimates based on available court and AustLII data where comprehensive annual reports are not published. 
+            Note: National appeal totals are aggregated from individual court annual reports. Success rates vary year to year. TAS, NT, and ACT figures are estimates based on available court and AustLII data where comprehensive annual reports are not published.
             Always consult official court statistics for the most current information. Last updated: April 2026.
           </p>
         </section>

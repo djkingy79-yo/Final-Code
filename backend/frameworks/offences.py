@@ -1,4 +1,4 @@
-# DO NOT UNDO — Offences (split from offence_framework.py on 2026-02-14).
+#  — Offences (split from offence_framework.py on 2026-02-14).
 # All logic in this module is approved and must be preserved.
 """
 Part of the Appeal Case Manager legal framework package.
@@ -121,7 +121,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "recklessness", "negligence"]
     },
-    
+
     "assault": {
         "name": "Assault & Violence",
         "description": "Assault, grievous bodily harm, and violent offences",
@@ -212,7 +212,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "recklessness", "negligence"]
     },
-    
+
     "sexual_offences": {
         "name": "Sexual Offences",
         "description": "Sexual assault and related offences",
@@ -304,7 +304,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "recklessness", "knowledge"]
     },
-    
+
     "robbery_theft": {
         "name": "Robbery & Theft",
         "description": "Robbery, theft, stealing, and property offences",
@@ -403,7 +403,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "knowledge"]
     },
-    
+
     "drug_offences": {
         "name": "Drug Offences",
         "description": "Drug possession, supply, and trafficking",
@@ -490,7 +490,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "knowledge", "strict_liability"]
     },
-    
+
     "fraud_dishonesty": {
         "name": "Fraud & Dishonesty",
         "description": "Fraud, forgery, and dishonesty offences",
@@ -569,7 +569,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "knowledge", "recklessness"]
     },
-    
+
     "firearms_weapons": {
         "name": "Firearms & Weapons",
         "description": "Firearms and weapons offences",
@@ -644,7 +644,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "knowledge", "strict_liability"]
     },
-    
+
     "domestic_violence": {
         "name": "Domestic Violence",
         "description": "Domestic violence and related offences including AVO breaches and coercive control",
@@ -738,7 +738,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": HYBRID_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "recklessness", "knowledge"]
     },
-    
+
     "public_order": {
         "name": "Public Order Offences",
         "description": "Public order and nuisance offences",
@@ -820,7 +820,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": SUMMARY_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "recklessness"]
     },
-    
+
     "terrorism": {
         "name": "Terrorism Offences",
         "description": "Terrorism and national security offences",
@@ -924,7 +924,7 @@ OFFENCE_CATEGORIES = {
         "procedural_flow": INDICTABLE_PROCEDURE_FLOW,
         "relevant_mens_rea": ["intention", "knowledge", "recklessness"]
     },
-    
+
     "driving_offences": {
         "name": "Driving Offences",
         "description": "Serious driving and traffic offences",

@@ -1,4 +1,4 @@
-# DO NOT UNDO — legislation registry (14 Feb 2026).
+#  — legislation registry (14 Feb 2026).
 """
 Legislation currency registry for the Appeal Case Manager.
 

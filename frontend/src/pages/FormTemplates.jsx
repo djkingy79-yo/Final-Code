@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -115,11 +115,11 @@ const FormTemplates = () => {
   const handleDownload = (formId, stateName) => {
     const form = FORM_CATEGORIES.flatMap(c => c.forms).find(f => f.id === formId);
     if (!form) return;
-    
+
     const content = generateFormTemplate(form, stateName);
     const blob = new Blob([content], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    
+
     // iOS Safari doesn't support blob downloads — open in new tab instead
     const isIOS = isIOSDevice();
     if (isIOS) {
@@ -138,14 +138,14 @@ const FormTemplates = () => {
       document.body.removeChild(a);
       toast.success(`Downloading ${form.name} (${stateName})`);
     }
-    
+
     // Delay URL revocation to ensure download completes
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   };
 
   const generateFormTemplate = (form, stateName) => {
     const today = new Date().toLocaleDateString('en-AU');
-    
+
     return `
 <!DOCTYPE html>
 <html>
@@ -168,7 +168,7 @@ const FormTemplates = () => {
 </head>
 <body>
   <div class="instructions">
-    <strong>INSTRUCTIONS:</strong> This is a template only. Please consult with a legal professional before submitting any legal documents. 
+    <strong>INSTRUCTIONS:</strong> This is a template only. Please consult with a legal professional before submitting any legal documents.
     Fill in all fields marked with underlines. Remove this instruction box before printing.
     <br><br>
     <strong>Form:</strong> ${form.name}<br>
@@ -181,7 +181,7 @@ const FormTemplates = () => {
   </div>
 
   <h1>${form.name.toUpperCase()}</h1>
-  
+
   <div class="header">
     <p><strong>State/Territory:</strong> ${stateName}</p>
   </div>
@@ -230,7 +230,7 @@ const FormTemplates = () => {
           <p><strong>Appellant:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Respondent:</strong> The Crown / Director of Public Prosecutions</p>
         </div>
-        
+
         <div class="section">
           <h2>DETAILS OF CONVICTION</h2>
           <p><strong>Court of Trial:</strong> <span class="field field-long">________________________________</span></p>
@@ -241,7 +241,7 @@ const FormTemplates = () => {
           <p><strong>Sentence Imposed:</strong></p>
           <p><span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>NATURE OF APPEAL</h2>
           <p>The Appellant appeals against: (tick applicable)</p>
@@ -249,7 +249,7 @@ const FormTemplates = () => {
           <p>☐ Sentence only</p>
           <p>☐ Both conviction and sentence</p>
         </div>
-        
+
         <div class="section">
           <h2>GROUNDS OF APPEAL</h2>
           <p>1. <span class="field field-long">________________________________</span></p>
@@ -267,7 +267,7 @@ const FormTemplates = () => {
           <p><strong>Current Location (if in custody):</strong> <span class="field field-long">________________</span></p>
           <p><strong>MIN/CRN (if applicable):</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>AUTHORISED REPRESENTATIVE</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -276,7 +276,7 @@ const FormTemplates = () => {
           <p><strong>Phone:</strong> <span class="field">________________</span></p>
           <p><strong>Email:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>SCOPE OF AUTHORITY</h2>
           <p>I hereby authorise the above-named person to:</p>
@@ -286,7 +286,7 @@ const FormTemplates = () => {
           <p>☐ Make applications and file documents on my behalf</p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>DURATION</h2>
           <p>This authority is valid from: <span class="field">____/____/________</span></p>
@@ -298,21 +298,21 @@ const FormTemplates = () => {
           <h2>TO: ${stateName} Police Force</h2>
           <p>Police Records Section</p>
         </div>
-        
+
         <div class="section">
           <h2>PERSON AUTHORISING RELEASE</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Date of Birth:</strong> <span class="field">____/____/________</span></p>
           <p><strong>Address:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>MATTER DETAILS</h2>
           <p><strong>Police Reference/Event Number:</strong> <span class="field">________________</span></p>
           <p><strong>Court Case Number:</strong> <span class="field">________________</span></p>
           <p><strong>Date of Incident:</strong> <span class="field">____/____/________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>RECORDS REQUESTED</h2>
           <p>☐ Police facts sheet / Brief of evidence</p>
@@ -325,7 +325,7 @@ const FormTemplates = () => {
           <p>☐ Criminal history</p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>RELEASE TO</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -338,7 +338,7 @@ const FormTemplates = () => {
           <h2>TO: Medical Records Department</h2>
           <p>Hospital/Medical Practice: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>PATIENT DETAILS</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -346,7 +346,7 @@ const FormTemplates = () => {
           <p><strong>Address:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Medicare Number:</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>RECORDS REQUESTED</h2>
           <p><strong>Date Range:</strong> From <span class="field">____/____/____</span> To <span class="field">____/____/____</span></p>
@@ -359,12 +359,12 @@ const FormTemplates = () => {
           <p>☐ Medication history</p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>PURPOSE</h2>
           <p>These records are required for: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>SEND RECORDS TO</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -375,7 +375,7 @@ const FormTemplates = () => {
         <div class="section">
           <h2>TO: ${stateName} Corrective Services</h2>
         </div>
-        
+
         <div class="section">
           <h2>INMATE DETAILS</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -383,14 +383,14 @@ const FormTemplates = () => {
           <p><strong>MIN (Master Index Number):</strong> <span class="field">________________</span></p>
           <p><strong>Current Facility:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>AUTHORITY GRANTED TO</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Relationship:</strong> <span class="field">________________</span></p>
           <p><strong>Contact:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>AUTHORISATION</h2>
           <p>I authorise the above person to:</p>
@@ -410,7 +410,7 @@ const FormTemplates = () => {
           <p>Occupation: <span class="field">________________________________</span></p>
           <p>make oath and say as follows:</p>
         </div>
-        
+
         <div class="section">
           <p>1. <span class="field field-long">________________________________</span></p>
           <p><span class="field field-long">________________________________</span></p>
@@ -426,7 +426,7 @@ const FormTemplates = () => {
           <br>
           <p>(Continue on additional pages as required)</p>
         </div>
-        
+
         <div class="section">
           <p>SWORN at <span class="field">________________</span></p>
           <p>in the State of ${stateName}</p>
@@ -443,7 +443,7 @@ const FormTemplates = () => {
           <h2>NOTICE OF INTENTION TO APPEAL</h2>
           <p class="instructions"><strong>⚠️ TIME CRITICAL:</strong> This form must be filed within 28 days of conviction or sentence in most jurisdictions. Check your specific state requirements.</p>
         </div>
-        
+
         <div class="section">
           <h2>APPELLANT DETAILS</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -451,7 +451,7 @@ const FormTemplates = () => {
           <p><strong>Current Address/Location:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Master Index Number (MIN):</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>CONVICTION DETAILS</h2>
           <p><strong>Court:</strong> <span class="field field-long">________________________________</span></p>
@@ -462,7 +462,7 @@ const FormTemplates = () => {
           <p><strong>Offence(s):</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Sentence Imposed:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>INTENTION TO APPEAL</h2>
           <p>I, the above-named appellant, give notice of my intention to appeal against:</p>
@@ -470,7 +470,7 @@ const FormTemplates = () => {
           <p>☐ Sentence only</p>
           <p>☐ Both conviction and sentence</p>
         </div>
-        
+
         <div class="section">
           <h2>PRELIMINARY GROUNDS (TO BE REFINED IN NOTICE OF APPEAL)</h2>
           <p>The proposed grounds for appeal include:</p>
@@ -478,7 +478,7 @@ const FormTemplates = () => {
           <p>2. <span class="field field-long">________________________________</span></p>
           <p>3. <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <p><strong>Date:</strong> <span class="field">____/____/________</span></p>
           <p><strong>Signature:</strong> ___________________________________</p>
@@ -490,12 +490,12 @@ const FormTemplates = () => {
           <h2>REQUEST FOR COURT TRANSCRIPTS</h2>
           <p class="instructions"><strong>Important:</strong> Transcripts are essential for appeal preparation. Request these as soon as possible as they can take weeks or months to prepare.</p>
         </div>
-        
+
         <div class="section">
           <h2>TO: ${stateName} Court Reporting Services</h2>
           <p>Court Transcript Department</p>
         </div>
-        
+
         <div class="section">
           <h2>APPLICANT DETAILS</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -504,7 +504,7 @@ const FormTemplates = () => {
           <p><strong>Email:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Postal Address:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>MATTER DETAILS</h2>
           <p><strong>Court:</strong> <span class="field field-long">________________________________</span></p>
@@ -512,7 +512,7 @@ const FormTemplates = () => {
           <p><strong>Judge/Magistrate:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Defendant Name:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>TRANSCRIPTS REQUESTED</h2>
           <p>☐ Full Trial Transcript (all days)</p>
@@ -525,7 +525,7 @@ const FormTemplates = () => {
           <p>☐ Specific Dates: <span class="field field-long">________________________________</span></p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>PURPOSE OF REQUEST</h2>
           <p>☐ Lodging Notice of Appeal (urgent)</p>
@@ -533,14 +533,14 @@ const FormTemplates = () => {
           <p>☐ Legal advice</p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>DELIVERY METHOD</h2>
           <p>☐ Certified Hard Copy (mail)</p>
           <p>☐ Electronic Copy (email)</p>
           <p>☐ Both</p>
         </div>
-        
+
         <div class="section">
           <h2>PAYMENT</h2>
           <p class="instructions">Note: Transcript fees apply. Check with the court for current rates. Impecunious persons may apply for fee waiver.</p>
@@ -548,7 +548,7 @@ const FormTemplates = () => {
           <p>☐ Application for fee waiver attached (financial hardship)</p>
           <p>☐ Payment on invoice</p>
         </div>
-        
+
         <div class="section">
           <p><strong>Date:</strong> <span class="field">____/____/________</span></p>
           <p><strong>Signature:</strong> ___________________________________</p>
@@ -559,12 +559,12 @@ const FormTemplates = () => {
         <div class="section">
           <h2>REQUEST FOR ACCESS TO EXHIBITS</h2>
         </div>
-        
+
         <div class="section">
           <h2>TO: ${stateName} Court Registry</h2>
           <p>Exhibits Officer</p>
         </div>
-        
+
         <div class="section">
           <h2>MATTER DETAILS</h2>
           <p><strong>Court:</strong> <span class="field field-long">________________________________</span></p>
@@ -572,7 +572,7 @@ const FormTemplates = () => {
           <p><strong>Defendant:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Verdict Date:</strong> <span class="field">____/____/________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>EXHIBITS REQUESTED</h2>
           <p><strong>Exhibit Number:</strong> <span class="field">______</span> <strong>Description:</strong> <span class="field field-long">___________________</span></p>
@@ -580,7 +580,7 @@ const FormTemplates = () => {
           <p><strong>Exhibit Number:</strong> <span class="field">______</span> <strong>Description:</strong> <span class="field field-long">___________________</span></p>
           <p>☐ All exhibits tendered at trial</p>
         </div>
-        
+
         <div class="section">
           <h2>PURPOSE</h2>
           <p>☐ Inspection only</p>
@@ -588,14 +588,14 @@ const FormTemplates = () => {
           <p>☐ Expert examination (specify): <span class="field field-long">________________________________</span></p>
           <p>☐ Appeal preparation</p>
         </div>
-        
+
         <div class="section">
           <h2>APPLICANT DETAILS</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Capacity:</strong> ☐ Appellant ☐ Legal Representative ☐ Expert Witness</p>
           <p><strong>Contact:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <p class="instructions">Exhibits are court property and may only be accessed under supervision. Some exhibits may have been destroyed after retention periods.</p>
         </div>
@@ -605,24 +605,24 @@ const FormTemplates = () => {
           <h2>APPLICATION FOR CASE STATED</h2>
           <p class="instructions">A Case Stated refers a specific question of law to a higher court for determination.</p>
         </div>
-        
+
         <div class="section">
           <h2>IN THE [HIGHER COURT] OF ${stateName.toUpperCase()}</h2>
         </div>
-        
+
         <div class="section">
           <h2>APPELLANT DETAILS</h2>
           <p><strong>Name:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Lower Court Case Number:</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>LOWER COURT DETAILS</h2>
           <p><strong>Court:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Magistrate/Judge:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Date of Decision:</strong> <span class="field">____/____/________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>QUESTION(S) OF LAW FOR DETERMINATION</h2>
           <p>The Applicant requests the Court state a case on the following question(s) of law:</p>
@@ -632,7 +632,7 @@ const FormTemplates = () => {
           <p>2. <span class="field field-long">________________________________</span></p>
           <p><span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>GROUNDS</h2>
           <p>The question(s) arises because:</p>
@@ -645,7 +645,7 @@ const FormTemplates = () => {
           <h2>APPLICATION FOR EXTENSION OF TIME</h2>
           <p><strong>Applicant:</strong> <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>DETAILS OF CONVICTION</h2>
           <p><strong>Date of Conviction:</strong> <span class="field">____/____/________</span></p>
@@ -653,7 +653,7 @@ const FormTemplates = () => {
           <p><strong>Time limit expired on:</strong> <span class="field">____/____/________</span></p>
           <p><strong>Days/months out of time:</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>REASONS FOR DELAY</h2>
           <p>The Applicant seeks an extension of time for the following reasons:</p>
@@ -662,7 +662,7 @@ const FormTemplates = () => {
           <p><span class="field field-long">________________________________</span></p>
           <p><span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>PROPOSED GROUNDS OF APPEAL</h2>
           <p>If granted, the Applicant intends to appeal on the following grounds:</p>
@@ -670,7 +670,7 @@ const FormTemplates = () => {
           <p>2. <span class="field field-long">________________________________</span></p>
           <p>3. <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>ORDER SOUGHT</h2>
           <p>The Applicant seeks an order that time for lodging a Notice of Appeal be extended to <span class="field">____/____/________</span></p>
@@ -680,7 +680,7 @@ const FormTemplates = () => {
         <div class="section">
           <h2>APPLICATION FOR BAIL PENDING APPEAL</h2>
         </div>
-        
+
         <div class="section">
           <h2>APPLICANT DETAILS</h2>
           <p><strong>Full Name:</strong> <span class="field field-long">________________________________</span></p>
@@ -688,14 +688,14 @@ const FormTemplates = () => {
           <p><strong>Current Location:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>MIN:</strong> <span class="field">________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>CONVICTION DETAILS</h2>
           <p><strong>Offence(s):</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Sentence:</strong> <span class="field field-long">________________________________</span></p>
           <p><strong>Appeal lodged on:</strong> <span class="field">____/____/________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>GROUNDS FOR BAIL</h2>
           <p>The Applicant seeks bail on the following grounds:</p>
@@ -705,7 +705,7 @@ const FormTemplates = () => {
           <p>☐ No risk to community safety</p>
           <p>☐ Other: <span class="field field-long">________________________________</span></p>
         </div>
-        
+
         <div class="section">
           <h2>PROPOSED CONDITIONS</h2>
           <p><strong>Proposed Address:</strong> <span class="field field-long">________________________________</span></p>
@@ -715,7 +715,7 @@ const FormTemplates = () => {
         </div>
       `,
     };
-    
+
     // Return specific template or default
     return templates[formId] || `
       <div class="section">
@@ -726,7 +726,7 @@ const FormTemplates = () => {
         <p><strong>Contact Number:</strong> <span class="field">________________</span></p>
         <p><strong>Email:</strong> <span class="field field-long">________________________________</span></p>
       </div>
-      
+
       <div class="section">
         <h2>MATTER DETAILS</h2>
         <p><span class="field field-long">________________________________</span></p>
@@ -776,14 +776,14 @@ const FormTemplates = () => {
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/library-shelves.jpg" 
+          <img
+            src="/images/stock/library-shelves.jpg"
             alt="Legal Documents"
             className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <FileText className="w-10 h-10 text-white" />
@@ -797,7 +797,7 @@ const FormTemplates = () => {
           <p className="text-sm text-slate-600">
             <strong>{FORM_CATEGORIES.reduce((sum, cat) => sum + cat.forms.length, 0)} templates</strong> across {FORM_CATEGORIES.length} categories
           </p>
-          
+
           {/* Search */}
           <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto mt-8">
             <div className="relative flex-1">
@@ -834,8 +834,8 @@ const FormTemplates = () => {
               <Gavel className="w-5 h-5 text-red-600" />
             </div>
             <div className="text-sm text-blue-800">
-              <strong>Important:</strong> These templates are provided for general guidance only. 
-              Legal requirements vary by jurisdiction and may change. Always verify current requirements 
+              <strong>Important:</strong> These templates are provided for general guidance only.
+              Legal requirements vary by jurisdiction and may change. Always verify current requirements
               with the relevant court and consider seeking legal advice before lodging any documents.
             </div>
           </div>
@@ -852,7 +852,7 @@ const FormTemplates = () => {
             <AlertTriangle className="w-7 h-7" />
             Key Procedural Requirements - READ FIRST
           </h2>
-          
+
           <div className="space-y-6">
             {/* Time Limits */}
             <div className="bg-white/70 rounded-lg p-5 border-l-4 border-red-600">
@@ -919,7 +919,7 @@ const FormTemplates = () => {
               </h3>
               <div className="space-y-3 text-sm text-blue-900">
                 <p><strong>You will almost certainly need:</strong></p>
-                
+
                 <div className="space-y-3">
                   <div>
                     <p className="font-bold">1. Court Transcripts</p>
@@ -995,8 +995,8 @@ const FormTemplates = () => {
           <button
             onClick={() => setSelectedState("all")}
             className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-              selectedState === "all" 
-                ? "bg-red-600 text-white shadow-lg" 
+              selectedState === "all"
+                ? "bg-red-600 text-white shadow-lg"
                 : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
             }`}
           >
@@ -1022,7 +1022,7 @@ const FormTemplates = () => {
           {FORM_CATEGORIES.map(cat => (
             <button
               key={cat.id}
-              onClick={() => setExpandedCategories(prev => 
+              onClick={() => setExpandedCategories(prev =>
                 prev.includes(cat.id) ? prev : [...prev, cat.id]
               )}
               className={`p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
@@ -1049,10 +1049,10 @@ const FormTemplates = () => {
           <div className="space-y-6">
             {filteredCategories.map(category => (
               <div key={category.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <button 
+                <button
                   className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
-                  onClick={() => setExpandedCategories(prev => 
-                    prev.includes(category.id) 
+                  onClick={() => setExpandedCategories(prev =>
+                    prev.includes(category.id)
                       ? prev.filter(c => c !== category.id)
                       : [...prev, category.id]
                   )}
@@ -1082,7 +1082,7 @@ const FormTemplates = () => {
                     )}
                   </div>
                 </button>
-                
+
                 {expandedCategories.includes(category.id) && (
                   <div className="px-6 pb-6">
                     <div className="space-y-3">
@@ -1126,7 +1126,7 @@ const FormTemplates = () => {
               Need Help With Your Forms?
             </h3>
             <p className="text-slate-300 text-base md:text-lg mb-6 max-w-md mx-auto">
-              The FAQ section has guides on filling out these forms, and the Lawyer Directory 
+              The FAQ section has guides on filling out these forms, and the Lawyer Directory
               can help find legal assistance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

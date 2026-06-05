@@ -1,4 +1,4 @@
-# DO NOT UNDO — Legislation Currency Checker
+#  — Legislation Currency Checker
 # Queries AustLII / legislation.gov.au to verify section references are current.
 # Used as a background validation layer — results cached per-session.
 

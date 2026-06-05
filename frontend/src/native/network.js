@@ -1,6 +1,6 @@
 /**
  * Network status detection for offline mode
- * DO_NOT_UNDO — Offline/online detection
+ *  — Offline/online detection
  */
 import { useState, useEffect, useCallback } from "react";
 import { Network } from "@capacitor/network";

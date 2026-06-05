@@ -1,4 +1,4 @@
-# DO NOT UNDO — contradictions router. All endpoints in this file are approved and must be preserved.
+#  — contradictions router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Contradiction Finder Router
 AI-powered feature to scan documents and notes to find contradictions and inconsistencies
@@ -40,34 +40,34 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     # Fetch the case
     case = await db.cases.find_one({"case_id": case_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # Fetch documents
     doc_filter = {"case_id": case_id}
     if scan_request.document_ids:
         doc_filter["document_id"] = {"$in": scan_request.document_ids}
-    
+
     documents = await db.documents.find(doc_filter, {"_id": 0, "file_data": 0}).to_list(100)
-    
+
     if len(documents) < 2:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="At least 2 documents are required for contradiction analysis"
         )
-    
+
     # Fetch notes for additional context
     notes = await db.notes.find({"case_id": case_id}, {"_id": 0}).to_list(500)
-    
+
     # Fetch timeline events
     timeline = await db.timeline_events.find(
         {"case_id": case_id},
         {"_id": 0}
     ).sort("event_date", 1).to_list(500)
-    
+
     # Build document content for analysis
     doc_contents = []
     for doc in documents:
@@ -80,7 +80,7 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
             "upload_date": doc.get("upload_date", "")
         }
         doc_contents.append(content)
-    
+
     # Build notes content
     notes_content = []
     for note in notes:
@@ -91,7 +91,7 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
             "category": note.get("category", ""),
             "created_at": note.get("created_at", "")
         })
-    
+
     # Build timeline content
     timeline_content = []
     for event in timeline:
@@ -101,15 +101,15 @@ async def scan_for_contradictions(case_id: str, scan_request: ContradictionScanR
             "description": event.get("description", ""),
             "source": event.get("source", "")
         })
-    
+
     # Perform AI analysis
     from services.llm_service import call_llm_for_json
     import uuid
-    
+
     focus_instruction = ""
     if scan_request.focus_areas:
         focus_instruction = f"Focus particularly on: {', '.join(scan_request.focus_areas)}. "
-    
+
     prompt = f"""You are a legal contradiction analyst specialising in criminal appeals in Australia.
 
 Analyze the following case materials for contradictions, inconsistencies, and discrepancies that could be relevant for an appeal.
@@ -186,12 +186,12 @@ Important: Return ONLY valid JSON, no additional text."""
         )
         if not isinstance(analysis, dict):
             analysis = {"contradictions": [], "summary": {"total_contradictions": 0, "critical_count": 0, "significant_count": 0, "minor_count": 0, "key_finding": "Analysis could not be parsed.", "overall_assessment": ""}, "recommended_actions": []}
-        
+
         # Add IDs and timestamps to contradictions
         for i, contradiction in enumerate(analysis.get("contradictions", [])):
             contradiction["id"] = f"contra_{uuid.uuid4().hex[:12]}"
             contradiction["created_at"] = datetime.now(timezone.utc).isoformat()
-        
+
         # Store the scan result
         scan_result = {
             "scan_id": f"scan_{uuid.uuid4().hex[:12]}",
@@ -203,24 +203,24 @@ Important: Return ONLY valid JSON, no additional text."""
             "focus_areas": scan_request.focus_areas or ["all"],
             "results": analysis
         }
-        
+
         await db.contradiction_scans.insert_one(scan_result)
-        
+
         # Remove MongoDB _id before returning
         scan_result.pop("_id", None)
-        
+
         return scan_result
-        
+
     except json.JSONDecodeError as e:
         logger.error(f"Failed to parse AI response: {e}")
         raise HTTPException(
-            status_code=500, 
+            status_code=500,
             detail="Failed to analyse documents. Please try again."
         )
     except Exception as e:
         logger.error(f"Contradiction scan failed: {e}")
         raise HTTPException(
-            status_code=500, 
+            status_code=500,
             detail=f"Analysis failed: {str(e)}"
         )
 
@@ -232,12 +232,12 @@ async def get_contradiction_scans(case_id: str, request: Request):
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     scans = await db.contradiction_scans.find(
         {"case_id": case_id},
         {"_id": 0}
     ).sort("scanned_at", -1).to_list(50)
-    
+
     return scans
 
 
@@ -248,15 +248,15 @@ async def get_contradiction_scan(case_id: str, scan_id: str, request: Request):
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     scan = await db.contradiction_scans.find_one(
         {"case_id": case_id, "scan_id": scan_id},
         {"_id": 0}
     )
-    
+
     if not scan:
         raise HTTPException(status_code=404, detail="Scan not found")
-    
+
     return scan
 
 
@@ -267,13 +267,13 @@ async def delete_contradiction_scan(case_id: str, scan_id: str, request: Request
     """
     user = await get_current_user(request)
     await verify_case_ownership(case_id, user.user_id)
-    
+
     result = await db.contradiction_scans.delete_one({
         "case_id": case_id,
         "scan_id": scan_id
     })
-    
+
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Scan not found")
-    
+
     return {"message": "Scan deleted successfully"}

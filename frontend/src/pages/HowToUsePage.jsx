@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -279,7 +279,7 @@ const HowToUsePage = () => {
             How to Use the App
           </h1>
           <p className="text-base md:text-lg text-slate-700 max-w-2xl mx-auto">
-            A step-by-step guide with screenshots to help you get the most out of Appeal Case Manager. 
+            A step-by-step guide with screenshots to help you get the most out of Appeal Case Manager.
             Follow these steps to organise your case and identify potential appeal grounds.
           </p>
         </div>
@@ -310,7 +310,7 @@ const HowToUsePage = () => {
           {steps.map((step, index) => {
             const colors = getColorClasses(step.color);
             const Icon = step.icon;
-            
+
             return (
               <div key={step.num} className="space-y-6" data-testid={`howto-step-${step.num}`}>
                 {/* Step Header */}
@@ -337,8 +337,8 @@ const HowToUsePage = () => {
 
                 {/* Screenshot — Full Width, Zoomed In */}
                 <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-xl">
-                  <img 
-                    src={step.image} 
+                  <img
+                    src={step.image}
                     alt={`Step ${step.num}: ${step.title}`}
                     className="w-full"
                     loading="lazy"

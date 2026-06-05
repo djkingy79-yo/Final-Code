@@ -1,11 +1,11 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { 
+import {
   Scale, BookOpen, Shield, AlertTriangle, ChevronDown, ChevronRight,
   FileText, Gavel, ExternalLink, Loader2, MapPin, Clock, Search,
   Printer, Download, Copy
@@ -119,7 +119,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
       body += `<h2>State Legislation (${stateInfo.abbreviation})</h2>`;
       Object.entries(category.state_legislation).forEach(([key, val]) => {
         body += `<div class="section-block"><h3>${key}</h3>`;
-        if (Array.isArray(val)) val.forEach(v => { 
+        if (Array.isArray(val)) val.forEach(v => {
           if (typeof v === "object" && v !== null) {
             body += `<p><strong>${v.section || ""}</strong> — ${v.title || ""}</p>`;
           } else {
@@ -183,7 +183,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               <Scale className="w-5 h-5 text-blue-700" />
             </div>
             <div>
-              <CardTitle 
+              <CardTitle
                 className="text-xl font-bold text-slate-900"
                 style={{ fontFamily: "'Times New Roman', Times, serif" }}
               >
@@ -212,14 +212,14 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* State Legislation */}
         {category?.state_legislation && Object.keys(category.state_legislation).length > 0 && (
           <Collapsible open={expandedSections.state} onOpenChange={() => toggleSection('state')}>
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full justify-between p-4 h-auto bg-blue-50 hover:bg-blue-100 rounded-lg"
                 data-testid="state-legislation-toggle"
               >
@@ -291,8 +291,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                           }
                         };
                         return (
-                        <div 
-                          key={idx} 
+                        <div
+                          key={idx}
                           className="flex items-start gap-2 py-2 border-b border-slate-100 last:border-0"
                         >
                           <a
@@ -336,7 +336,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               <div>
                 <p className="font-medium text-blue-900">No State-Specific Legislation</p>
                 <p className="text-sm text-blue-700 mt-1">
-                  This offence category is primarily governed by Commonwealth/Federal legislation. 
+                  This offence category is primarily governed by Commonwealth/Federal legislation.
                   State-specific provisions may exist in procedural laws.
                 </p>
               </div>
@@ -348,8 +348,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
         {category?.cth_legislation && Object.keys(category.cth_legislation).length > 0 && (
           <Collapsible open={expandedSections.federal} onOpenChange={() => toggleSection('federal')}>
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full justify-between p-4 h-auto bg-purple-50 hover:bg-purple-100 rounded-lg"
                 data-testid="federal-legislation-toggle"
               >
@@ -381,8 +381,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                         const sRef = sectionObj?.section || "";
                         const sTitle = sectionObj?.title || "";
                         return (
-                        <div 
-                          key={idx} 
+                        <div
+                          key={idx}
                           className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0"
                         >
                           <Badge variant="outline" className="bg-slate-50 text-slate-700 border-slate-200 font-mono shrink-0">
@@ -404,8 +404,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
         {category?.key_elements && category.key_elements.length > 0 && (
           <Collapsible open={expandedSections.elements} onOpenChange={() => toggleSection('elements')}>
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full justify-between p-4 h-auto bg-blue-50 hover:bg-blue-100 rounded-lg"
                 data-testid="key-elements-toggle"
               >
@@ -447,8 +447,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
         {category?.defences && category.defences.length > 0 && (
           <Collapsible open={expandedSections.defences} onOpenChange={() => toggleSection('defences')}>
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full justify-between p-4 h-auto bg-emerald-50 hover:bg-emerald-100 rounded-lg"
                 data-testid="defences-toggle"
               >
@@ -473,9 +473,9 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {category.defences.map((defence, idx) => (
-                    <Badge 
-                      key={idx} 
-                      variant="outline" 
+                    <Badge
+                      key={idx}
+                      variant="outline"
                       className="bg-emerald-50 text-emerald-700 border-emerald-200 py-1.5 px-3"
                     >
                       {defence}
@@ -491,8 +491,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
         {appealFramework && appealFramework.legislation && (
           <Collapsible open={expandedSections.appeals} onOpenChange={() => toggleSection('appeals')}>
             <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="w-full justify-between p-4 h-auto bg-slate-100 hover:bg-slate-200 rounded-lg"
                 data-testid="appeal-procedure-toggle"
               >
@@ -573,8 +573,8 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {commonGrounds.slice(0, 8).map((ground, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="bg-slate-50 border border-slate-200 rounded-lg p-3"
                 >
                   <h5 className="font-bold text-slate-900 text-[16px]">{ground.ground}</h5>
@@ -585,7 +585,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
           </div>
         )}
 
-        {/* DO NOT UNDO — How to Start Your Appeal Section */}
+        {/*  — How to Start Your Appeal Section */}
         <div className="pt-4 border-t border-slate-200">
           <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <FileText className="w-5 h-5 text-indigo-600" />
@@ -618,7 +618,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
           </div>
         </div>
 
-        {/* DO NOT UNDO — Appeal Forms & Court Links */}
+        {/*  — Appeal Forms & Court Links */}
         <div className="pt-4 border-t border-slate-200">
           <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2 text-[18px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
             <FileText className="w-5 h-5 text-emerald-600" />
@@ -695,10 +695,10 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             Research Case Law
           </h4>
           <p className="text-[11px] text-slate-600 mb-4">
-            Search real court decisions to find cases similar to yours. These databases contain judgments 
+            Search real court decisions to find cases similar to yours. These databases contain judgments
             that may support your appeal grounds.
           </p>
-          
+
           {/* State-specific case law links — all routed through AustLII jurisdiction
               landing pages because the state-court-owned portals (caselaw.nsw.gov.au,
               sclqld.org.au, courts.sa.gov.au, ecourts.justice.wa.gov.au, etc.) change
@@ -706,7 +706,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               `/au/cases/<jur>/` paths have been stable since 1995 and never 404. */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {/* NSW */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/nsw/"
               target="_blank"
               rel="noopener noreferrer"
@@ -724,7 +724,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* Victoria */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/vic/"
               target="_blank"
               rel="noopener noreferrer"
@@ -742,7 +742,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* Queensland */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/qld/"
               target="_blank"
               rel="noopener noreferrer"
@@ -760,7 +760,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* South Australia */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/sa/"
               target="_blank"
               rel="noopener noreferrer"
@@ -778,7 +778,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* Western Australia */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/wa/"
               target="_blank"
               rel="noopener noreferrer"
@@ -796,7 +796,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* Tasmania */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/tas/"
               target="_blank"
               rel="noopener noreferrer"
@@ -814,7 +814,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* Northern Territory */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/nt/"
               target="_blank"
               rel="noopener noreferrer"
@@ -832,7 +832,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
             </a>
 
             {/* ACT */}
-            <a 
+            <a
               href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/act/"
               target="_blank"
               rel="noopener noreferrer"
@@ -858,7 +858,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
               Federal Courts
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <a 
+              <a
                 href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/HCA/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -868,7 +868,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
                 <ExternalLink className="w-3 h-3" />
                 High Court of Australia
               </a>
-              <a 
+              <a
                 href="https://www.austlii.edu.au/cgi-bin/viewdb/au/cases/cth/FCA/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -882,7 +882,7 @@ const LegalFrameworkViewer = ({ offenceCategory, offenceType, state = "", defend
           </div>
 
           {/* AustLII Main */}
-          <a 
+          <a
             href="https://www.austlii.edu.au/"
             target="_blank"
             rel="noopener noreferrer"

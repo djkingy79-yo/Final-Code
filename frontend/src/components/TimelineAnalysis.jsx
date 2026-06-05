@@ -1,10 +1,10 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
-import { 
-  AlertTriangle, TrendingUp, Scale, Clock, Lightbulb, 
+import {
+  AlertTriangle, TrendingUp, Scale, Clock, Lightbulb,
   ChevronRight, CheckCircle, ArrowRight
 } from "lucide-react";
 import { Badge } from "./ui/badge";
@@ -14,10 +14,10 @@ import { ScrollArea } from "./ui/scroll-area";
 const TimelineAnalysis = ({ analysis, onClose }) => {
   if (!analysis) return null;
 
-  const { 
-    gaps = [], 
-    inconsistencies = [], 
-    prosecution_events = [], 
+  const {
+    gaps = [],
+    inconsistencies = [],
+    prosecution_events = [],
     defence_events = [],
     contested_facts = [],
     ground_connections = [],
@@ -34,7 +34,7 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
           <Lightbulb className="w-5 h-5 text-blue-500" />
           AI Timeline Analysis
         </h3>
-        <button 
+        <button
           onClick={onClose}
           className="text-slate-400 hover:text-slate-600 text-sm"
         >
@@ -131,20 +131,20 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
             <div className="space-y-4">
               {/* Visual balance bar */}
               <div className="relative h-4 bg-slate-100 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="absolute left-0 top-0 h-full bg-red-400"
-                  style={{ 
-                    width: `${prosecution_events.length + defence_events.length > 0 
-                      ? (prosecution_events.length / (prosecution_events.length + defence_events.length)) * 100 
-                      : 50}%` 
+                  style={{
+                    width: `${prosecution_events.length + defence_events.length > 0
+                      ? (prosecution_events.length / (prosecution_events.length + defence_events.length)) * 100
+                      : 50}%`
                   }}
                 />
-                <div 
+                <div
                   className="absolute right-0 top-0 h-full bg-green-400"
-                  style={{ 
-                    width: `${prosecution_events.length + defence_events.length > 0 
-                      ? (defence_events.length / (prosecution_events.length + defence_events.length)) * 100 
-                      : 50}%` 
+                  style={{
+                    width: `${prosecution_events.length + defence_events.length > 0
+                      ? (defence_events.length / (prosecution_events.length + defence_events.length)) * 100
+                      : 50}%`
                   }}
                 />
               </div>
@@ -152,7 +152,7 @@ const TimelineAnalysis = ({ analysis, onClose }) => {
                 <span className="text-red-600 font-medium">{prosecution_events.length} Prosecution</span>
                 <span className="text-green-600 font-medium">{defence_events.length} Defence</span>
               </div>
-              
+
               {prosecution_events.length > defence_events.length && (
                 <p className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
                   Timeline currently favours prosecution. Consider gathering more defence-supportive evidence.

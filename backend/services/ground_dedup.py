@@ -1,9 +1,9 @@
-# DO_NOT_UNDO — Legal ground deduplication utility.
+#  — Legal ground deduplication utility.
 # Prevents grounds from multiplying by using topic-based classification + fuzzy matching.
 # Previous approaches (word overlap only, fuzzywuzzy only) let grounds multiply from 6 to 41.
 # LEGAL_TOPICS expanded massively on 2 Apr 2026 to cover ALL real-world title variants.
-# DO NOT UNDO — Keywords for "manifest excess", "inadequate defence", "failure to file" etc. added 2 Apr 2026.
-# DO NOT UNDO — "failure to file/lodge/appeal" is in ineffective_counsel, NOT procedural_error (prevents false merge with judge-alone trial)
+#  — Keywords for "manifest excess", "inadequate defence", "failure to file" etc. added 2 Apr 2026.
+#  — "failure to file/lodge/appeal" is in ineffective_counsel, NOT procedural_error (prevents false merge with judge-alone trial)
 
 from fuzzywuzzy import fuzz
 import re
@@ -11,7 +11,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# DO_NOT_UNDO — Legal topic keywords. If two titles share ANY topic, they are duplicates.
+#  — Legal topic keywords. If two titles share ANY topic, they are duplicates.
 # Keywords must cover ALL common word variants. Each keyword is checked as a substring (case-insensitive).
 # NEVER remove keywords. Only add new ones. Missing variants cause grounds to multiply.
 LEGAL_TOPICS = {
@@ -145,34 +145,34 @@ def _extract_topics(title: str) -> set:
 
 def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85) -> bool:
     """Check if two ground/issue titles are near-identical duplicates.
-    
-    DO_NOT_UNDO — Uses THREE methods (topic matching RE-ENABLED 3 Apr 2026):
+
+     — Uses THREE methods (topic matching RE-ENABLED 3 Apr 2026):
     1. fuzzywuzzy token_set_ratio (threshold=85 — catches near-identical titles)
     2. Bidirectional word overlap >60% (catches rephrased identical titles)
     3. Shared legal topic + fuzzy score >= 55 (catches same-argument-different-wording)
-    
+
     Method 3 was removed previously due to over-merging, but its absence caused grounds
     to multiply from ~8 to 15+ because rephrased titles like "Juror Misconduct" vs
     "Jury Irregularity and Possible Misconduct" were not caught. The fix is to require
     BOTH a shared topic AND a meaningful fuzzy score (55+), so titles from completely
     different arguments stay separate.
-    
+
     Returns True only if the titles are essentially the same argument rephrased.
     """
     if not new_title or not existing_title:
         return False
-    
+
     new_title = new_title.strip()
     existing_title = existing_title.strip()
-    
+
     new_lower = new_title.lower()
     existing_lower = existing_title.lower()
-    
+
     # Method 1: fuzzywuzzy token_set_ratio — high bar for near-identical
     score = fuzz.token_set_ratio(new_lower, existing_lower)
     if score >= threshold:
         return True
-    
+
     # Method 2: Bidirectional word overlap — only merge if >60% overlap
     new_words = set(w.lower() for w in new_title.split() if len(w) > 3)
     existing_words = set(w.lower() for w in existing_title.split() if len(w) > 3)
@@ -185,7 +185,7 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85
             )
             if ratio > 0.60:
                 return True
-    
+
     # Method 3: Shared legal topic + moderate fuzzy score (55+)
     # This catches "Juror Misconduct" vs "Jury Irregularity and Possible Misconduct"
     # which share the jury_misconduct topic but have low word overlap.
@@ -196,7 +196,7 @@ def is_ground_duplicate(new_title: str, existing_title: str, threshold: int = 85
         existing_topics = _extract_topics(existing_title)
         if new_topics and existing_topics and (new_topics & existing_topics):
             return True
-    
+
     return False
 
 
@@ -209,7 +209,7 @@ def find_matching_ground(new_title: str, existing_grounds: list) -> dict | None:
     return None
 
 
-# DO_NOT_UNDO — Australian spelling normaliser for ground titles.
+#  — Australian spelling normaliser for ground titles.
 # Applied when grounds are created/synced so titles always use Australian English.
 _AU_REPLACEMENTS = [
     (re.compile(r'\bcharacterization\b', re.I), lambda m: 'Characterisation' if m.group()[0].isupper() else 'characterisation'),
@@ -349,8 +349,8 @@ def normalise_au_spelling(text: str) -> str:
 
 
 async def cleanup_duplicate_grounds(db, case_id: str, user_id: str) -> dict:
-    """DO_NOT_UNDO — Scan and merge duplicate grounds for a case.
-    
+    """ — Scan and merge duplicate grounds for a case.
+
     Keeps the FIRST ground (by created_at) and deletes later duplicates.
     Uses the same is_ground_duplicate() logic as all sync paths.
     Returns stats about what was cleaned up.
@@ -433,7 +433,7 @@ async def cleanup_duplicate_grounds(db, case_id: str, user_id: str) -> dict:
 
 
 async def cleanup_duplicate_issues(db, case_id: str, user_id: str) -> dict:
-    """DO_NOT_UNDO — Scan and merge duplicate issue_classifications for a case."""
+    """ — Scan and merge duplicate issue_classifications for a case."""
     all_issues = await db.issue_classifications.find(
         {"case_id": case_id, "user_id": user_id},
         {"_id": 0}

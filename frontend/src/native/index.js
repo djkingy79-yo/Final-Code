@@ -1,6 +1,6 @@
 /**
  * Native features barrel export
- * DO_NOT_UNDO — Central import for all native capabilities
+ *  — Central import for all native capabilities
  */
 export { isNativePlatform, getPlatform, isIOS, isAndroid, isWeb, safeNativeCall } from "./platform";
 export { scanDocument, pickFromGallery, checkCameraPermission, requestCameraPermission, dataUrlToFile } from "./camera";

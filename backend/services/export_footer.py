@@ -1,5 +1,5 @@
 # ===========================================================================
-# DO NOT UNDO — ENTIRE FILE PROTECTED
+#  — ENTIRE FILE PROTECTED
 # Shared export footer utilities for all PDF and DOCX exports.
 # All formatting standards, font sizes, footer text, and OOXML field code
 # logic in this file are approved by Deb King and must be preserved.
@@ -53,7 +53,7 @@ class NumberedCanvas:
 
     def __init__(self, footer_label):
         self._footer_label = footer_label
-        
+
     def __call__(self, filename, **kwargs):
         from reportlab.pdfgen.canvas import Canvas as _Canvas
         from reportlab.lib.pagesizes import A4

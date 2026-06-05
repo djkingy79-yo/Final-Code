@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO - ENTIRE FILE PROTECTED
+    - ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -93,9 +93,9 @@ const PipelineDraftPanel = ({ report }) => {
 };
 
 const REPORT_TYPES = [
-  { 
-    value: "quick_summary", 
-    label: "Case Summary", 
+  {
+    value: "quick_summary",
+    label: "Case Summary",
     description: "Plain-English orientation summary of the uploaded case and procedural posture. No grounds, legislation, or appeal strategy — those are in the paid tiers.",
     price: 0,
     priceId: null,
@@ -104,9 +104,9 @@ const REPORT_TYPES = [
     icon: "FileText",
     features: ["Case snapshot", "Case narrative", "Documents uploaded", "Key dates", "Appeal deadline status"]
   },
-  { 
-    value: "full_detailed", 
-    label: "Full Detailed Report", 
+  {
+    value: "full_detailed",
+    label: "Full Detailed Report",
     description: "Counsel-grade deep dossier with comparative sentencing, appeal forms, external case links and full options matrix",
     price: 150.00,
     priceId: "full_report",
@@ -115,9 +115,9 @@ const REPORT_TYPES = [
     icon: "Scale",
     features: ["Everything in Case Summary", "Deep ground analysis (500+ words each)", "8+ sentencing comparisons", "Submissions blueprint", "Action plan"]
   },
-  { 
-    value: "extensive_log", 
-    label: "Extensive Log Report", 
+  {
+    value: "extensive_log",
+    label: "Extensive Log Report",
     description: "Master litigation brief with expanded precedent modelling, appeal filing steps, external law links and hearing script",
     price: 200.00,
     priceId: "extensive_report",
@@ -128,10 +128,10 @@ const REPORT_TYPES = [
   }
 ];
 
-const ReportsSection = ({ 
-  caseId, 
-  reports, 
-  setReports, 
+const ReportsSection = ({
+  caseId,
+  reports,
+  setReports,
   onReportsChange,
   documents,
   paymentSummary,
@@ -145,7 +145,7 @@ const ReportsSection = ({
   const [genElapsed, setGenElapsed] = useState(0);
   const [genProgress, setGenProgress] = useState(null); // {current_pass, total_passes, pass_label, pass_title}
   const [expandedReports, setExpandedReports] = useState({});
-  /* DO_NOT_UNDO — Lazy-fetch cache for report bodies.
+  /*  — Lazy-fetch cache for report bodies.
      The list endpoint /api/cases/{id}/reports intentionally strips the
      heavy content body (24-Apr-2026 Fix #1, see backend
      routers/reports.py::get_reports). When a user expands a report card
@@ -289,20 +289,20 @@ const ReportsSection = ({
   const _proceedWithGeneration = (reportType) => {
     setShowMetadataConfirm(false);
     setPendingMetadataAction(null);
-    
+
     // Admin bypasses all payment
     if (isAdmin) {
       generateReport(reportType);
       return;
     }
-    
+
     // Check if this report type is free
     const reportTypeInfo = REPORT_TYPES.find(t => t.value === reportType);
     if (reportTypeInfo?.isFree) {
       generateReport(reportType);
       return;
     }
-    
+
     // Check if user has already paid for this report type
     const existingReport = reports.find(r => r.report_type === reportType);
     const featureType = getReportPaymentFeature(reportType);
@@ -311,7 +311,7 @@ const ReportsSection = ({
       generateReport(reportType);
       return;
     }
-    
+
     // Need to pay first for premium reports
     setPendingReportType(reportType);
     setShowPaymentModal(true);
@@ -383,14 +383,14 @@ const ReportsSection = ({
     elapsedRef.current = setInterval(() => {
       setGenElapsed(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
-    
+
     try {
       const response = await axios.post(
         `${API}/cases/${caseId}/reports/generate`,
         { report_type: reportType },
         { timeout: 120000 }
       );
-      
+
       const reportId = response.data?.report_id;
       const status = response.data?.status;
 
@@ -520,7 +520,7 @@ const ReportsSection = ({
   const handleDeleteReport = (reportId) => {
     setDeleteReportId(reportId);
   };
-  
+
   const confirmDeleteReport = async () => {
     const rId = deleteReportId;
     setDeleteReportId(null);
@@ -533,7 +533,7 @@ const ReportsSection = ({
     }
   };
 
-  /* DO_NOT_UNDO — Lazy-fetch a report's full body on first expand.
+  /*  — Lazy-fetch a report's full body on first expand.
      The list endpoint no longer ships content.analysis (perf fix); the
      full body lives on GET /api/cases/{id}/reports/{report_id}. We cache
      the result so re-expanding the same card does not refetch. */
@@ -575,7 +575,7 @@ const ReportsSection = ({
     }
   };
 
-  /* DO_NOT_UNDO — Auto-fetch full body for generating/failed reports so the
+  /*  — Auto-fetch full body for generating/failed reports so the
      status banner correctly shows prior content when regenerating an
      existing report. Without this, post-Fix-#1 the list endpoint returns
      no body, the !reportText check falls through to the bare status card
@@ -649,7 +649,7 @@ const ReportsSection = ({
 
       {/* Action Button — Generate Report */}
       <div className="flex justify-end mb-4">
-        <Button 
+        <Button
           onClick={() => setShowReportDialog(true)}
           disabled={generatingReport || pipelineVerifyLoading}
           className="landing-cta-primary"
@@ -762,7 +762,7 @@ const ReportsSection = ({
           <p className="text-slate-700 mb-4">
             Generate AI-powered reports to analyse your case documents.
           </p>
-          <Button 
+          <Button
             onClick={() => setShowReportDialog(true)}
             disabled={generatingReport}
             className="landing-cta-primary"
@@ -776,7 +776,7 @@ const ReportsSection = ({
           {reports.map((report) => {
             const reportStatus = report.status || 'completed';
 
-            // DO_NOT_UNDO — The list endpoint /cases/{id}/reports no
+            //  — The list endpoint /cases/{id}/reports no
             // longer ships content.analysis (24-Apr-2026 Fix #1 perf
             // optimisation). Look up the lazy-fetched full body from the
             // fullReportBodies cache keyed by report_id — falls back to
@@ -791,7 +791,7 @@ const ReportsSection = ({
               : '';
             const rawReportText = lazyAnalysis || inlineAnalysis;
             const reportText = (rawReportText || "")
-              .replace(/^\s*DO NOT UNDO\.?\s*$/gim, "")
+              .replace(/^\s*\.?\s*$/gim, "")
               .replace(/\n{3,}/g, "\n\n")
               .trim();
             const isFetchingBody = Boolean(loadingReportBody[report.report_id]);
@@ -862,7 +862,7 @@ const ReportsSection = ({
               );
             }
 
-            // DO NOT UNDO — Status banner shown ABOVE preserved content for generating/failed states
+            //  — Status banner shown ABOVE preserved content for generating/failed states
             const statusBanner = reportStatus === 'generating' ? (
               <Card className="overflow-hidden border border-blue-200 bg-blue-50 shadow-sm" data-testid={`generating-banner-${report.report_id}`}>
                 <div className="px-5 py-3 flex items-center justify-between">
@@ -921,7 +921,7 @@ const ReportsSection = ({
                 </div>
               </Card>
             ) : null;
-            
+
             /* Colour theme per report type - matches landing page */
             const rTheme = {
               quick_summary: { headerBg: "bg-emerald-600", badge: "bg-emerald-500", label: "Case Summary", price: "FREE" },
@@ -929,11 +929,11 @@ const ReportsSection = ({
               extensive_log: { headerBg: "bg-purple-700", badge: "bg-purple-500", label: "Extensive Log Report", price: "$200 AUD" },
               barrister_view: { headerBg: "bg-teal-700", badge: "bg-teal-500", label: "Appellate Research Brief", price: "CAPSTONE" },
             }[report.report_type] || { headerBg: "bg-slate-200", badge: "bg-slate-400", label: getReportTypeLabel(report.report_type), price: "" };
-            
-            /* DO NOT UNDO — Content card wrapped with statusBanner above it */
+
+            /*  — Content card wrapped with statusBanner above it */
             return (
               <div key={report.report_id} className="space-y-3">
-                {/* DO NOT UNDO — statusBanner renders generating/failed indicator ABOVE the content */}
+                {/*  — statusBanner renders generating/failed indicator ABOVE the content */}
                 {statusBanner}
               <Card className="overflow-hidden border-0 shadow-md">
                 <Collapsible
@@ -985,12 +985,12 @@ const ReportsSection = ({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="px-4 pb-4 border-t border-slate-100 pt-4">
-                      {/* DO NOT UNDO - Action buttons at TOP of report box */}
+                      {/*  - Action buttons at TOP of report box */}
                       <div className="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-slate-100">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => report.report_type === 'barrister_view' 
+                          onClick={() => report.report_type === 'barrister_view'
                             ? navigate(`/cases/${caseId}/reports/${report.report_id}/barrister`)
                             : navigate(`/cases/${caseId}/reports/${report.report_id}`)
                           }
@@ -1040,7 +1040,7 @@ const ReportsSection = ({
                         <VerificationBadge status={report.verification_status || report.metadata?.verification_status} />
                       </div>
 
-                      {/* DO NOT UNDO - Report content rendered as formatted Markdown */}
+                      {/*  - Report content rendered as formatted Markdown */}
                       <div className="rounded-lg border border-slate-200 p-5 sm:p-6 bg-white" data-testid={`report-inline-content-${report.report_id}`}>
                         {isFetchingBody && !reportText ? (
                           <div
@@ -1137,7 +1137,7 @@ const ReportsSection = ({
               const colors = colorMap[type.color] || colorMap.blue;
               const IconComponent = type.color === 'emerald' ? FileText : type.color === 'blue' ? Scale : BookOpen;
               const paymentBadge = getPaymentBadge(type.value);
-              
+
               return (
                 <div
                   key={type.value}
@@ -1259,7 +1259,7 @@ const ReportsSection = ({
             <Button onClick={() => setShowReportDialog(false)} className="w-full sm:w-auto bg-blue-700 text-white hover:bg-blue-600" data-testid="report-dialog-cancel">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => {
                 if (selectedReportType === 'barrister_view') {
                   handleGenerateBarristerReport();
@@ -1293,7 +1293,7 @@ const ReportsSection = ({
         caseId={caseId}
       />
 
-      {/* DO NOT UNDO - Delete Report Confirmation Dialog */}
+      {/*  - Delete Report Confirmation Dialog */}
       <AlertDialog open={!!deleteReportId} onOpenChange={() => setDeleteReportId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

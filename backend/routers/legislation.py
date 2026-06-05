@@ -1,4 +1,4 @@
-# DO NOT UNDO — Legislation currency verification endpoint
+#  — Legislation currency verification endpoint
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from services.legislation_checker import (

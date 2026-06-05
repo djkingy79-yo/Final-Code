@@ -1,5 +1,5 @@
 # ===========================================================================
-# DO NOT UNDO — ENTIRE FILE PROTECTED
+#  — ENTIRE FILE PROTECTED
 # Report PDF & DOCX Export Routes (extracted from server.py)
 # All ReportLab styles, python-docx styles, font sizes, cover page layout,
 # spacers, footers, and disclaimer text in this file are approved by Deb King
@@ -150,9 +150,9 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
     from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
     from io import BytesIO
-    
+
     user = await get_current_user(request)
-    
+
     # Get report
     report = await db.reports.find_one(
         {"report_id": report_id, "case_id": case_id, "user_id": user.user_id},
@@ -160,18 +160,18 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     )
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     # Get case data
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # Get grounds of merit for this case
     grounds = await db.grounds_of_merit.find(
         {"case_id": case_id},
         {"_id": 0}
     ).to_list(100)
-    
+
     # Create PDF buffer
     # Canonical page margins (locked 24 Feb 2026).
     from services.print_styles import (
@@ -286,7 +286,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         spaceAfter=3,
         leading=13,
     ))
-    # DO_NOT_UNDO — Bold red disclaimer with white text in PDF
+    #  — Bold red disclaimer with white text in PDF
     styles.add(ParagraphStyle(
         name='CoverDisclaimer',
         fontSize=9,
@@ -495,7 +495,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         case_data_rows.append(['Sentence:', resolved_sentence])
     case_data_rows.append(['Grounds:', f"{len(pdf_grounds)} identified"])
     case_data_rows.append(['Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'])
-    
+
     case_table = Table(case_data_rows, colWidths=[40*mm, 130*mm])
     case_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (0, -1), 'Times-Bold'),
@@ -509,12 +509,12 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     ]))
     story.append(case_table)
     story.append(Spacer(1, 6*mm))
-    
+
     # Grounds of Merit Section
     if grounds:
         story.append(Paragraph("GROUNDS OF MERIT", styles['SectionHeader']))
         story.append(Spacer(1, 2*mm))
-        
+
         ground_type_labels = {
             'procedural_error': 'Procedural Error',
             'fresh_evidence': 'Fresh Evidence',
@@ -527,35 +527,35 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
             'constitutional_violation': 'Constitutional Violation',
             'other': 'Other'
         }
-        
+
         for idx, ground in enumerate(grounds, 1):
             ground_type = ground_type_labels.get(ground.get('ground_type'), 'Other')
             strength = ground.get('strength', 'moderate').capitalize()
-            
+
             # Ground header
             story.append(Paragraph(
                 f"{idx}. {ground.get('title', 'Unnamed Ground')} [{ground_type}] - Strength: {strength}",
                 styles['GroundTitle']
             ))
-            
+
             # Description
             if ground.get('description'):
                 story.append(Paragraph(ground.get('description'), styles['ReportBodyText']))
-            
+
             # Legal References (Law Sections)
             if ground.get('law_sections'):
                 story.append(Paragraph("<b>Relevant Law Sections:</b>", styles['ReportBodyText']))
                 for section in ground.get('law_sections', []):
                     section_text = f"- {_format_law_section(section)}"
                     story.append(Paragraph(section_text, styles['LawSection']))
-            
+
             # Similar Cases
             if ground.get('similar_cases'):
                 story.append(Paragraph("<b>Similar Cases:</b>", styles['ReportBodyText']))
                 for case_ref in ground.get('similar_cases', []):
                     case_text = f"- {(case_ref.get('case_name') or '').strip()} {(case_ref.get('citation') or '').strip()}".strip()
                     story.append(Paragraph(case_text, styles['LawSection']))
-            
+
             # Supporting Evidence
             if ground.get('supporting_evidence'):
                 story.append(Paragraph("<b>Supporting Evidence:</b>", styles['ReportBodyText']))
@@ -563,9 +563,9 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
                     clean = _format_evidence_item(evidence)
                     if clean:
                         story.append(Paragraph(f"- {clean}", styles['LawSection']))
-            
+
             story.append(Spacer(1, 3*mm))
-    
+
     # Legal Framework Reference — state-specific, NO NSW default
     story.append(Paragraph("LEGAL FRAMEWORK REFERENCE", styles['SectionHeader']))
     story.append(Spacer(1, 1*mm))
@@ -573,16 +573,16 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
     legal_refs = get_export_legal_refs(export_state)
     for ref in legal_refs:
         story.append(Paragraph(ref, styles['LawSection']))
-    
+
     story.append(Spacer(1, 5*mm))
-    
+
     # Main Analysis Content
     story.append(Paragraph("DETAILED ANALYSIS", styles['SectionHeader']))
 
     analysis_text = _strip_report_placeholders(report.get('content', {}).get('analysis', 'No analysis available.'))
     render_markdown(analysis_text)
 
-    # DO_NOT_UNDO — Bold red disclaimer in PDF body
+    #  — Bold red disclaimer in PDF body
     story.append(Spacer(1, 8*mm))
     story.append(Paragraph(
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE",
@@ -595,7 +595,7 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         "No solicitor-client relationship is created by using this service.",
         ParagraphStyle(name='DisclaimerBody', fontSize=8, fontName='Times-Bold', alignment=TA_CENTER, textColor=colors.HexColor('#dc2626'), leading=11)
     ))
-    
+
     # Build PDF
     try:
         doc.build(story, canvasmaker=numbered_canvas)
@@ -603,11 +603,11 @@ async def export_report_pdf(case_id: str, report_id: str, request: Request):
         logger.error(f"PDF build failed: {e}")
         raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)[:200]}")
     buffer.seek(0)
-    
+
     # Create filename
     safe_title = "".join(c for c in case.get('title', 'Report')[:30] if c.isalnum() or c in ' -_').strip()
     filename = f"{safe_title}_{report.get('report_type', 'report')}.pdf"
-    
+
     return Response(
         content=buffer.getvalue(),
         media_type="application/pdf",
@@ -623,9 +623,9 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     from docx.shared import Pt, RGBColor
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from io import BytesIO
-    
+
     user = await get_current_user(request)
-    
+
     # Get report
     report = await db.reports.find_one(
         {"report_id": report_id, "case_id": case_id, "user_id": user.user_id},
@@ -633,23 +633,23 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     )
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     # Get case data
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # Get grounds of merit
     grounds = await db.grounds_of_merit.find(
         {"case_id": case_id},
         {"_id": 0}
     ).to_list(100)
-    
+
     # Create DOCX document — canonical style engine (locked 24 Feb 2026).
     from services.print_styles import apply_canonical_docx_styles
     doc = DocxDocument()
     apply_canonical_docx_styles(doc)
-    
+
     # Header
     header_para = doc.add_paragraph()
     header_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -732,7 +732,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     cover_disclaimer_run = cover_disclaimer.add_run(
         "IMPORTANT DISCLAIMER — NOT LEGAL ADVICE — This application is an educational research tool only and does NOT constitute legal advice. The creator is not a lawyer. All analysis and recommendations must be independently verified by a qualified Australian legal professional. Australian law only. No solicitor-client relationship is created."
     )
-    # DO_NOT_UNDO — Cover page disclaimer in bold red
+    #  — Cover page disclaimer in bold red
     cover_disclaimer_run.font.name = 'Times New Roman'
     cover_disclaimer_run.font.size = Pt(9)
     cover_disclaimer_run.font.bold = True
@@ -742,7 +742,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
 
     title = doc.add_heading(report_title, 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    
+
     # Case Information Table — skip N/A fields
     case_info = [
         ('Case Title:', case.get('title', 'N/A')),
@@ -758,10 +758,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         case_info.append(('Sentence:', resolved_sentence))
     case_info.append(('Grounds:', f"{len(grounds)} identified"))
     case_info.append(('Generated:', report.get('generated_at', 'N/A')[:10] if report.get('generated_at') else 'N/A'))
-    
+
     case_table = doc.add_table(rows=len(case_info), cols=2)
     case_table.style = 'Table Grid'
-    
+
     for i, (label, value) in enumerate(case_info):
         row = case_table.rows[i]
         row.cells[0].text = label
@@ -771,13 +771,13 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
         row.cells[1].text = str(value)
         row.cells[1].paragraphs[0].runs[0].font.name = 'Times New Roman'
         row.cells[1].paragraphs[0].runs[0].font.size = Pt(11)
-    
+
     doc.add_paragraph()
-    
+
     # Grounds of Merit Section
     if grounds:
         doc.add_heading('GROUNDS OF MERIT', level=1)
-        
+
         ground_type_labels = {
             'procedural_error': 'Procedural Error',
             'fresh_evidence': 'Fresh Evidence',
@@ -790,71 +790,71 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
             'constitutional_violation': 'Constitutional Violation',
             'other': 'Other'
         }
-        
+
         for idx, ground in enumerate(grounds, 1):
             ground_type = ground_type_labels.get(ground.get('ground_type'), 'Other')
             strength = ground.get('strength', 'moderate').capitalize()
-            
+
             # Ground heading
             doc.add_heading(
                 f"{idx}. {ground.get('title', 'Unnamed Ground')} [{ground_type}] - Strength: {strength}",
                 level=2
             )
-            
+
             # Description
             if ground.get('description'):
                 doc.add_paragraph(ground.get('description'))
-            
+
             # Legal References
             if ground.get('law_sections'):
                 law_para = doc.add_paragraph()
                 law_run = law_para.add_run('Relevant Law Sections:')
                 law_run.font.bold = True
                 law_run.font.color.rgb = RGBColor(30, 64, 175)
-                
+
                 for section in ground.get('law_sections', []):
                     section_text = _format_law_section(section)
                     bullet = doc.add_paragraph(section_text, style='List Bullet')
                     for run in bullet.runs:
                         run.font.color.rgb = RGBColor(30, 64, 175)
-            
+
             # Similar Cases
             if ground.get('similar_cases'):
                 cases_para = doc.add_paragraph()
                 cases_run = cases_para.add_run('Similar Cases:')
                 cases_run.font.bold = True
                 cases_run.font.color.rgb = RGBColor(30, 58, 138)
-                
+
                 for case_ref in ground.get('similar_cases', []):
                     case_text = f"{(case_ref.get('case_name') or '').strip()} {(case_ref.get('citation') or '').strip()}".strip()
                     if case_text:
                         doc.add_paragraph(case_text, style='List Bullet')
-            
+
             # Supporting Evidence
             if ground.get('supporting_evidence'):
                 evidence_para = doc.add_paragraph()
                 evidence_run = evidence_para.add_run('Supporting Evidence:')
                 evidence_run.font.bold = True
                 evidence_run.font.color.rgb = RGBColor(5, 150, 105)
-                
+
                 for evidence in ground.get('supporting_evidence', []):
                     clean = _format_evidence_item(evidence)
                     if clean:
                         doc.add_paragraph(clean, style='List Bullet')
-            
+
             doc.add_paragraph()
-    
+
     # Legal Framework Reference — state-specific, NO NSW default
     doc.add_heading('LEGAL FRAMEWORK REFERENCE', level=1)
-    
+
     export_state_docx = (case.get('state') or '').lower()
     legal_refs = get_export_legal_refs(export_state_docx)
-    
+
     for ref in legal_refs:
         doc.add_paragraph(ref.lstrip('- '), style='List Bullet')
-    
+
     doc.add_paragraph()
-    
+
     # Detailed Analysis
     doc.add_heading('DETAILED ANALYSIS', level=1)
 
@@ -934,10 +934,10 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
 
     analysis_text = _strip_report_placeholders(report.get('content', {}).get('analysis', 'No analysis available.'))
     render_markdown_docx(analysis_text)
-    
+
     doc.add_paragraph()
-    
-    # DO_NOT_UNDO — Bold red disclaimer with white text
+
+    #  — Bold red disclaimer with white text
     disc_title = doc.add_paragraph()
     disc_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disc_run = disc_title.add_run("NOT LEGAL ADVICE")
@@ -945,7 +945,7 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_run.font.size = Pt(10)
     disc_run.font.bold = True
     disc_run.font.color.rgb = RGBColor(220, 38, 38)
-    
+
     disc_body = doc.add_paragraph()
     disc_body.alignment = WD_ALIGN_PARAGRAPH.CENTER
     disc_body_run = disc_body.add_run(
@@ -958,18 +958,18 @@ async def export_report_docx(case_id: str, report_id: str, request: Request):
     disc_body_run.font.bold = True
     disc_body_run.font.color.rgb = RGBColor(220, 38, 38)
     disc_body_run.font.name = 'Times New Roman'
-    
+
     # Footer already applied via apply_docx_footer above (line 695)
-    
+
     # Save to buffer
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
-    
+
     # Create filename
     safe_title = "".join(c for c in case.get('title', 'Report')[:30] if c.isalnum() or c in ' -_').strip()
     filename = f"{safe_title}_{report.get('report_type', 'report')}.docx"
-    
+
     return Response(
         content=buffer.getvalue(),
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",

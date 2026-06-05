@@ -1,4 +1,4 @@
-# DO_NOT_UNDO — Database normalisation script.
+#  — Database normalisation script.
 # Migrates legacy loose-dict DB entries to the strict Pydantic structures.
 # Safe to run multiple times (idempotent).
 """

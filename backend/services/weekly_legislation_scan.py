@@ -1,4 +1,4 @@
-# DO NOT UNDO — Weekly scheduled AI scan for legislation amendments.
+#  — Weekly scheduled AI scan for legislation amendments.
 """
 Weekly AI amendment scanner — runs every Monday at 09:00 AEST (23:00 UTC Sun).
 

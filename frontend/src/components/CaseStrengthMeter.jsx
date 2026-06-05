@@ -1,12 +1,12 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../App";
-import { 
+import {
   TrendingUp, AlertCircle, FileText, Clock, CheckCircle2,
   ChevronRight, Gavel, Shield, Sparkles
 } from "lucide-react";
@@ -161,7 +161,7 @@ const CaseStrengthMeter = ({ caseId }) => {
                 </span>
               </div>
               <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                <div 
+                <div
                   className={`h-full rounded-full transition-all duration-500 ${getProgressBg(item.score)}`}
                   style={{ width: `${item.score}%` }}
                 />

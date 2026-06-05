@@ -1,4 +1,4 @@
-/* DO NOT UNDO — Utility functions. All features in this file are approved and must be preserved. */
+/*  — Utility functions. All features in this file are approved and must be preserved. */
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
 

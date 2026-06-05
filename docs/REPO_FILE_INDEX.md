@@ -1,7 +1,7 @@
 # Repository File Index
 
-**Project:** Criminal Law Appeal Management (Appeal Case Manager)  
-**Index Date:** 2026-04-24  
+**Project:** Criminal Law Appeal Management (Appeal Case Manager)
+**Index Date:** 2026-04-24
 **Scope:** All non-binary, non-generated files excluding `.git/` internals
 
 Key for **Status** column:
@@ -493,7 +493,6 @@ All files in `frontend/src/components/ui/` are Shadcn/Radix UI component wrapper
 | `docs/BACKUP.md` | Markdown | Backup procedures | documentation |
 | `docs/DEPLOYMENT.md` | Markdown | Deployment guide | documentation |
 | `docs/DEVELOPER_HANDBOOK.md` | Markdown | Developer onboarding and conventions | documentation |
-| `docs/DO_NOT_UNDO.md` | Markdown | Protected features and approved changes | documentation |
 | `docs/MOBILE_APP_GUIDE.md` | Markdown | Mobile app guide | documentation |
 | `docs/PRODUCTION_CHECKLIST.md` | Markdown | Pre-launch production checklist | documentation |
 | `docs/SECURITY.md` | Markdown | Security documentation | documentation |

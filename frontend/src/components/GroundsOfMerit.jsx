@@ -1,11 +1,11 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { 
-  Scale, Trash2, Search, Loader2, 
+import {
+  Scale, Trash2, Search, Loader2,
   AlertTriangle, CheckCircle, XCircle, Sparkles,
   BookOpen, Gavel, FileText, Lock, CreditCard, ExternalLink, Printer, Download,
   GripVertical, ArrowUpDown, Check, Info
@@ -43,10 +43,10 @@ import auSpelling from "../utils/auSpelling";
 import { normaliseMarkdown, renderMarkdownToHtml } from "../utils/mdRender";
 import { API } from "../App";
 
-/* DO NOT UNDO — Australian spelling normaliser imported from utils/auSpelling.js
+/*  — Australian spelling normaliser imported from utils/auSpelling.js
    The shared utility is now used across all components. */
 
-/* DO NOT UNDO — Universal evidence text extractor.
+/*  — Universal evidence text extractor.
    Handles ALL formats the AI may return evidence in:
    - Plain string: "The judge failed to..."
    - Python dict string: "{'document_id': 'optional', 'quote': 'actual text...'}"
@@ -400,15 +400,15 @@ const GroundPipelineStatus = ({ ground }) => {
   );
 };
 
-const GroundsOfMerit = ({ 
-  grounds, 
+const GroundsOfMerit = ({
+  grounds,
   groundsCount,
   isUnlocked,
   unlockPrice,
   caseId,
   caseData,
-  onInvestigate, 
-  onDelete, 
+  onInvestigate,
+  onDelete,
   investigating,
   selectedGround,
   setSelectedGround,
@@ -501,11 +501,11 @@ const GroundsOfMerit = ({
     };
     fetchTrial();
   }, [isUnlocked]);
-  /* DO NOT UNDO — Search box state for each ground. Uses object to track per-ground search visibility */
+  /*  — Search box state for each ground. Uses object to track per-ground search visibility */
   const [searchOpen, setSearchOpen] = useState({});
   const [searchTerms, setSearchTerms] = useState({});
 
-  /* DO_NOT_UNDO — Investigate elapsed timer. Starts counting when investigation begins,
+  /*  — Investigate elapsed timer. Starts counting when investigation begins,
      resets when investigation completes. Matches the report generation timer block. */
   const [investElapsed, setInvestElapsed] = useState(0);
   useEffect(() => {
@@ -540,13 +540,13 @@ const GroundsOfMerit = ({
   };
 
   // Format the analysis content with sections
-  /* DO NOT UNDO — formatAnalysis renders investigation results with clickable links */
+  /*  — formatAnalysis renders investigation results with clickable links */
   const formatAnalysis = (analysis) => {
     if (!analysis) return null;
     const auText = normaliseMarkdown(auSpelling(analysis));
     return (
       <div className="legal-report prose prose-sm max-w-none">
-        <ReactMarkdown 
+        <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             a: ({ href, children }) => (
@@ -573,7 +573,7 @@ const GroundsOfMerit = ({
         <div className="grounds-export-header">
           <p className="grounds-export-kicker">Grounds of Merit</p>
           <h1>Grounds of Merit Analysis</h1>
-          {/* DO_NOT_UNDO — Case identity must always display in export */}
+          {/*  — Case identity must always display in export */}
           <div style={{margin:'4px 0 6px', padding:'5px 8px', border:'1pt solid #1e3a8a', borderRadius:'4px', background:'#eff6ff'}}>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', columnGap:'12px', rowGap:'2px', fontSize:'10pt', fontFamily:"'Times New Roman', Times, serif", lineHeight:'1.25'}}>
               <div><span style={{fontSize:'7pt', fontWeight:800, textTransform:'uppercase', letterSpacing:'0.08em', color:'#1e3a8a'}}>Defendant</span>&nbsp;<strong style={{fontSize:'10pt'}}>{caseData?.defendant_name || "—"}</strong></div>
@@ -628,7 +628,7 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {/* Appellate Pathway — DO NOT UNDO */}
+            {/* Appellate Pathway —  */}
             {ground.appellate_pathway && (
               <div className="grounds-export-block" style={{background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:'4px', padding:'4px 8px', marginBottom:'6px'}}>
                 <h3 style={{color:'#1d4ed8', marginBottom:'2px', fontSize:'10pt'}}>Appellate Pathway</h3>
@@ -649,7 +649,7 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {/* DO NOT UNDO — Filter out law sections without real section numbers */}
+            {/*  — Filter out law sections without real section numbers */}
             {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '')?.length > 0 && (
               <div className="grounds-export-block">
                 <h3>Relevant Law Sections</h3>
@@ -669,7 +669,7 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {/* DO NOT UNDO — Filter out unverified/placeholder similar cases */}
+            {/*  — Filter out unverified/placeholder similar cases */}
             {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed'))?.length > 0 && (
               <div className="grounds-export-block">
                 <h3>Comparable Authority</h3>
@@ -697,7 +697,7 @@ const GroundsOfMerit = ({
               </div>
             )}
 
-            {/* DO NOT UNDO — Per-ground appellate disclaimer */}
+            {/*  — Per-ground appellate disclaimer */}
             <div style={{marginTop:'6px', padding:'4px 8px', background:'#f1f5f9', border:'1px solid #cbd5e1', borderRadius:'4px', fontSize:'8pt', lineHeight:'1.4', color:'#475569', fontStyle:'italic'}}>
               This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.
             </div>
@@ -870,7 +870,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
 
   return (
     <div className="space-y-4" data-testid="grounds-container">
-      {/* DO_NOT_UNDO — Sticky Investigation Progress Banner.
+      {/*  — Sticky Investigation Progress Banner.
            Stays fixed at the top of the viewport whenever an investigation is running,
            so users always see the timer regardless of scroll position. */}
       {investigating && (
@@ -949,7 +949,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                 </div>
               </div>
               <div className="flex gap-2 w-full sm:w-auto items-center">
-                <Button 
+                <Button
                   onClick={async () => {
                     setCheckingPayment(true);
                     try {
@@ -967,7 +967,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                   {checkingPayment ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4 mr-1" />}
                   {checkingPayment ? "Checking..." : "Refresh Status"}
                 </Button>
-                <Button 
+                <Button
                   onClick={() => setShowPaymentModal(true)}
                   className={trialEligible ? "bg-pink-600 hover:bg-pink-700 text-white font-bold shadow-lg" : "bg-blue-600 hover:bg-blue-700 text-white"}
                   data-testid="unlock-grounds-btn"
@@ -1016,7 +1016,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
               </Button>
             </div>
           )}
-          {/* DO_NOT_UNDO — Dedup protection badge. Shows users the dedup system is active. */}
+          {/*  — Dedup protection badge. Shows users the dedup system is active. */}
           {isUnlocked && grounds.length > 0 && (
             <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg" data-testid="dedup-protection-badge">
               <CheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
@@ -1025,7 +1025,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
               </span>
             </div>
           )}
-          {/* DO NOT UNDO — Ground Priority Reorder button */}
+          {/*  — Ground Priority Reorder button */}
           {isUnlocked && grounds.length > 1 && (
             <div className="flex items-center gap-2">
               {reorderMode ? (
@@ -1069,10 +1069,10 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
             const strengthConfig = STRENGTH_CONFIG[ground.strength] || STRENGTH_CONFIG.moderate;
             const StrengthIcon = strengthConfig.icon;
             const statusConfig = STATUS_CONFIG[ground.status] || STATUS_CONFIG.identified;
-            
+
             return (
-              <Card 
-                key={ground.ground_id} 
+              <Card
+                key={ground.ground_id}
                 className={`card-hover group ${selectedGround?.ground_id === ground.ground_id ? 'ring-2 ring-blue-500' : ''} ${reorderMode ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 data-testid={`ground-${ground.ground_id}`}
                 draggable={reorderMode}
@@ -1121,14 +1121,14 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                           </span>
                         </div>
                       </div>
-                      
-                      <h4 
+
+                      <h4
                         className="font-bold text-slate-900 text-sm sm:text-base group-hover:text-blue-700 transition-colors"
                         style={{ fontFamily: "'Times New Roman', Times, serif" }}
                       >
                         {auSpelling(ground.title)}
                       </h4>
-                      
+
                       {/* Show locked message or actual description */}
                       {!isUnlocked && ground.description === "*** UNLOCK TO VIEW ***" ? (
                         <div className="mt-2 p-3 bg-slate-100 rounded-lg border border-slate-200">
@@ -1144,21 +1144,21 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                           </p>
                         </>
                       )}
-                      
+
                       {/* Supporting Evidence Tags */}
                       {ground.supporting_evidence && ground.supporting_evidence.length > 0 && (
                         <EvidenceSummary items={ground.supporting_evidence} />
                       )}
 
-                      {/* Appellate Pathway — DO NOT UNDO — blue box before Legal Framework */}
+                      {/* Appellate Pathway —  — blue box before Legal Framework */}
                       {ground.appellate_pathway && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`appellate-pathway-${ground.ground_id}`}>
                           <p className="text-xs font-bold text-blue-800">Appellate Pathway</p>
                           <p className="text-xs text-blue-700 mt-0.5">{auSpelling(ground.appellate_pathway)}</p>
                         </div>
                       )}
-                      
-                      {/* Law Sections Preview — DO NOT UNDO: displays actual legislation text */}
+
+                      {/* Law Sections Preview — : displays actual legislation text */}
                       {ground.law_sections?.filter(s => s.section && !s.section.toLowerCase().includes('not provided') && !s.section.toLowerCase().includes('unknown') && s.section.trim() !== '').length > 0 && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg" data-testid={`law-sections-${ground.ground_id}`}>
                           <div className="flex items-center gap-1.5 mb-1">
@@ -1180,8 +1180,8 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                           </div>
                         </div>
                       )}
-                      
-                      {/* Comparable Authority Preview — DO NOT UNDO: filtered for verified citations only */}
+
+                      {/* Comparable Authority Preview — : filtered for verified citations only */}
                       {ground.similar_cases?.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length > 0 && (
                         <div className="flex items-center gap-2 mt-1">
                           <Gavel className="w-4 h-4 text-slate-400" />
@@ -1190,10 +1190,10 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                           </span>
                         </div>
                       )}
-                      
+
                       {/* Legitimacy Score Breakdown */}
                       {ground.legitimacy_scores && <LegitimacyPanel scores={ground.legitimacy_scores} />}
-                      
+
                       {/* Verification + Source + Human Review */}
                       <div className="flex flex-wrap items-center gap-2 mt-3">
                         <StrengthBadge rating={ground.strength} />
@@ -1245,14 +1245,14 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                         {ground.deep_analysis && " • Has deep analysis"}
                       </p>
 
-                      {/* DO NOT UNDO — Disclaimer at end of every ground */}
+                      {/*  — Disclaimer at end of every ground */}
                       <div className="mt-3 p-2.5 bg-slate-50 border border-slate-200 rounded-lg" data-testid={`ground-disclaimer-${ground.ground_id}`}>
                         <p className="text-xs text-slate-500 leading-relaxed italic">
                           This analysis identifies potential appellate issues based on available material. It does not determine that the appeal will succeed. All grounds require refinement and verification by a qualified legal practitioner.
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-1 mt-2 sm:mt-0 sm:ml-4 sm:flex-shrink-0">
                       <Button
                         variant="outline"
@@ -1293,7 +1293,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                     </div>
                   </div>
 
-                  {/* DO_NOT_UNDO — Full Investigation Timer Block matching report generation UI.
+                  {/*  — Full Investigation Timer Block matching report generation UI.
                        Shows elapsed timer, stage labels, and progress bar when investigating a ground. */}
                   {investigating === ground.ground_id && (
                     <div className="mt-3 rounded-xl overflow-hidden shadow-lg border-2 border-blue-300" data-testid={`ai-investigate-progress-${ground.ground_id}`}>
@@ -1356,7 +1356,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                     </div>
                   )}
 
-                  {/* DO NOT UNDO — Caselaw Search Box for each ground */}
+                  {/*  — Caselaw Search Box for each ground */}
                   {searchOpen[ground.ground_id] && (
                     <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg" data-testid={`search-box-${ground.ground_id}`}>
                       <p className="text-xs font-bold text-slate-700 mb-2">Search verified case law databases for this ground</p>
@@ -1457,7 +1457,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
               </div>
             )}
           </DialogHeader>
-          
+
           {detailGround && (
             <ScrollArea className="max-h-[70vh] pr-4">
               <div className="space-y-6">
@@ -1481,7 +1481,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                       );
                     })()}
                   </div>
-                  <h3 
+                  <h3
                     className="text-base md:text-xl font-bold text-slate-900"
                     style={{ fontFamily: "'Times New Roman', Times, serif" }}
                   >
@@ -1539,7 +1539,7 @@ ${analysis ? '<h2>Deep Investigation Analysis</h2><div class="analysis">' + rend
                   </div>
                 )}
 
-                {/* Comparable Authority — DO NOT UNDO */}
+                {/* Comparable Authority —  */}
                 {detailGround.similar_cases && detailGround.similar_cases.filter(c => c.case_name && c.case_name !== "Case name" && !c.case_name.includes("[Surname]") && !c.case_name.includes("[Year]") && c.case_name !== "None" && c.case_name !== "optional" && !(c.citation || '').toLowerCase().includes('verification needed')).length > 0 && (
                   <div>
                     <h4 className="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">

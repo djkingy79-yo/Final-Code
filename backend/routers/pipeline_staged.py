@@ -1,4 +1,4 @@
-# DO NOT UNDO — staged pipeline router. Additive module.
+#  — staged pipeline router. Additive module.
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from datetime import datetime, timezone
@@ -154,7 +154,7 @@ async def classify_issues(case_id: str, request: Request):
 
     issues = await classify_case_issues(case, case_extract)
 
-    # DO_NOT_UNDO — Fuzzy dedup on issue_classifications to stop them multiplying.
+    #  — Fuzzy dedup on issue_classifications to stop them multiplying.
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
     # Get existing classifications for this case
@@ -305,7 +305,7 @@ async def verify_batch(case_id: str, payload: VerifyBatchRequest, request: Reque
             failed += 1
 
     synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
-    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    #  — 3 Apr 2026: cleanup after EVERY sync, no exceptions
     from services.ground_dedup import cleanup_duplicate_grounds
     await cleanup_duplicate_grounds(db, case_id, user.user_id)
 
@@ -339,7 +339,7 @@ async def sync_grounds_from_issues(case_id: str, request: Request):
         {"_id": 0}
     ).to_list(500)
 
-    # DO_NOT_UNDO — Fuzzy ground deduplication in staged pipeline sync.
+    #  — Fuzzy ground deduplication in staged pipeline sync.
     # Previous exact-title match let grounds multiply on every pipeline run.
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
 
@@ -491,7 +491,7 @@ async def refresh_all_pipeline(case_id: str, payload: RefreshPipelineRequest, re
 
     verify_result = await _verify_top_issues(case, payload.verify_limit)
     synced_count = await _sync_pipeline_projection_to_grounds(case_id, user.user_id)
-    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    #  — 3 Apr 2026: cleanup after EVERY sync, no exceptions
     from services.ground_dedup import cleanup_duplicate_grounds
     await cleanup_duplicate_grounds(db, case_id, user.user_id)
 

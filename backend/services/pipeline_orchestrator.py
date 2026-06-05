@@ -82,36 +82,36 @@ async def _refresh_case_extract_for_case(case: dict) -> dict:
 
 async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[dict]:
     """Run staged issue classification and persist results.
-    
-    DO_NOT_UNDO — 3 Apr 2026: If issues already exist for this case, DO NOT re-classify.
+
+     — 3 Apr 2026: If issues already exist for this case, DO NOT re-classify.
     Re-classification was the ROOT CAUSE of grounds multiplying — every LLM call generates
     slightly different titles which slip past dedup and create new grounds.
     Only classify if zero issues exist (first-time analysis).
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
-    
+
     # Check if issues already exist — if so, return them without re-classifying
     existing_issues = await db.issue_classifications.find(
         {"case_id": case["case_id"], "user_id": case["user_id"]},
         {"_id": 0}
     ).to_list(500)
-    
+
     # Check if enough issues already exist — only skip if 8+ exist (healthy count)
     # If fewer than 8, re-classify to find missing grounds (previous dedup may have been too aggressive)
     if len(existing_issues) >= 8:
         logger.info(f"Skipping re-classification for case {case['case_id']}: {len(existing_issues)} issues already exist (>= 8)")
         return existing_issues
-    
+
     logger.info(f"Re-classifying case {case['case_id']}: only {len(existing_issues)} issues exist (< 8), looking for more")
     issues = await classify_case_issues(case, case_extract)
-    
+
     persisted = list(existing_issues)  # Start with existing issues for dedup comparison
     for issue in issues:
         issue_dict = issue.model_dump()
         issue_dict["created_at"] = issue_dict["created_at"].isoformat()
         issue_title = normalise_au_spelling((issue.title or "").strip())
         issue_dict["title"] = issue_title
-        
+
         # Fuzzy match against ALL existing + newly-persisted issues
         matched = None
         for ei in persisted:
@@ -119,7 +119,7 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
             if is_ground_duplicate(issue_title, ei_title):
                 matched = ei
                 break
-        
+
         if matched:
             await db.issue_classifications.update_one(
                 {"issue_id": matched["issue_id"]},
@@ -138,7 +138,7 @@ async def _ensure_issue_classifications(case: dict, case_extract: dict) -> list[
                 {"case_id": case["case_id"], "user_id": case["user_id"], "title": issue_title, "ground_type": issue.ground_type},
                 {"_id": 0}
             )
-        
+
         if saved:
             persisted.append(saved)
     return persisted
@@ -185,7 +185,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
     Sync staged issues/verifications into grounds_of_merit so report consumers
     and existing frontend views remain aligned.
 
-    DO_NOT_UNDO — 3 Apr 2026: HARD CAP on ground creation.
+     — 3 Apr 2026: HARD CAP on ground creation.
     If grounds already exist, NEVER create more than existing_count + 2.
     This prevents the recurring multiplication bug permanently.
     """
@@ -202,7 +202,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
         {"_id": 0, "ground_id": 1, "title": 1},
     ).to_list(200)
 
-    # DO_NOT_UNDO — HARD CAP enforcement. If grounds already exist,
+    #  — HARD CAP enforcement. If grounds already exist,
     # NEVER create more than existing_count + 2. This prevents the
     # recurring multiplication bug permanently.
     initial_ground_count = len(all_existing_grounds)
@@ -255,7 +255,7 @@ async def _sync_pipeline_projection_to_grounds(case: dict) -> int:
                 {"$set": ground_doc},
             )
         else:
-            # DO_NOT_UNDO — Hard cap check: skip if at limit
+            #  — Hard cap check: skip if at limit
             if new_grounds_created >= max_new_grounds:
                 logger.info(f"Sync: HARD CAP reached ({initial_ground_count}+{max_new_grounds}). Skipping '{issue_title[:50]}'")
                 continue
@@ -277,7 +277,7 @@ async def _refresh_pipeline_for_reporting(case: dict, documents: list, report_ty
     3. ensure issue classifications
     4. optionally auto-verify top issues by report tier
     5. sync projection into grounds
-    6. DO_NOT_UNDO — safety net dedup cleanup after sync
+    6.  — safety net dedup cleanup after sync
     """
     from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
 

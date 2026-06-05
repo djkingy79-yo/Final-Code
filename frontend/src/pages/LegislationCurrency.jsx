@@ -1,4 +1,4 @@
-/* DO NOT UNDO — Legislation Currency admin page (14 Feb 2026).
+/*  — Legislation Currency admin page (14 Feb 2026).
    Forensic-first dashboard for keeping the legal framework anchored to
    current law. Every AI output is explicitly framed as a prompt for
    manual review — never as verification. */

@@ -1,6 +1,6 @@
 /**
  * Camera integration for document scanning
- * DO_NOT_UNDO — Document scanning via native camera
+ *  — Document scanning via native camera
  */
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { isNativePlatform } from "./platform";

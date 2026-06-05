@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -262,8 +262,8 @@ const CaselawSearchPage = () => {
       <section className="py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <div className="flex justify-center mb-4">
-            <img 
-              src="/logo.png" 
+            <img
+              src="/logo.png"
               alt="Criminal Law Appeal Management"
               className="h-28 sm:h-36 object-contain"
               data-testid="caselaw-hero-logo"
@@ -273,10 +273,10 @@ const CaselawSearchPage = () => {
             Live Caselaw Search
           </h1>
           <p className="text-slate-700 max-w-2xl mx-auto mb-5">
-            Search real Australian court decisions across all states and territories. 
+            Search real Australian court decisions across all states and territories.
             Find cases similar to yours, understand legal precedents, and research appeal outcomes.
           </p>
-          <a 
+          <a
             href="https://www.caselaw.nsw.gov.au/"
             target="_blank"
             rel="noopener noreferrer"
@@ -294,7 +294,7 @@ const CaselawSearchPage = () => {
       <main className="max-w-5xl mx-auto px-6 py-8">
         <div className="mb-8">
           <label className="block text-sm font-semibold text-slate-900 mb-3">Select Jurisdiction</label>
-          <select 
+          <select
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
             className="w-full md:w-64 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -319,7 +319,7 @@ const CaselawSearchPage = () => {
             <h2 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               {databases[selectedState].name} Court Databases
             </h2>
-            
+
             {databases[selectedState].courts.map((court, index) => (
               <div key={index} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                 <div className={`px-4 py-3 flex items-center justify-between`}
@@ -329,9 +329,9 @@ const CaselawSearchPage = () => {
                     <h3 className="text-white font-bold text-sm">{court.name}</h3>
                     <p className="text-white/90 text-xs">{court.courts.join(" · ")}</p>
                   </div>
-                  <a 
-                    href={court.url} 
-                    target="_blank" 
+                  <a
+                    href={court.url}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="bg-white hover:bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
                     style={{ color: '#0f172a' }}
@@ -341,10 +341,10 @@ const CaselawSearchPage = () => {
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                
+
                 <div className="p-6 space-y-6">
                   <p className="text-slate-700">{court.description}</p>
-                  
+
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -360,7 +360,7 @@ const CaselawSearchPage = () => {
                         ))}
                       </ul>
                     </div>
-                    
+
                     <div>
                       <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
                         <Search className="w-4 h-4 text-blue-600" />
@@ -383,7 +383,7 @@ const CaselawSearchPage = () => {
             <h2 className="text-xl font-bold text-slate-900 mb-6" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
               Quick Access - All Jurisdictions
             </h2>
-            
+
             <div className="grid md:grid-cols-3 gap-4 mb-8">
               {Object.entries(databases).map(([key, state]) => (
                 <button
@@ -413,7 +413,7 @@ const CaselawSearchPage = () => {
                   <h3 className="text-2xl md:text-3xl font-bold text-white">AustLII - Search All Australian Courts</h3>
                   <p className="text-sm text-white/90 font-bold">Australasian Legal Information Institute - The most comprehensive free legal database</p>
                 </div>
-                <a 
+                <a
                   href="https://www.austlii.edu.au/"
                   target="_blank"
                   rel="noopener noreferrer"

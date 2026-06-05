@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -263,9 +263,9 @@ const nationalResources = [
 const LawyerDirectory = () => {
 
   const [selectedState, setSelectedState] = useState("all");
-  
-  const filteredResources = selectedState === "all" 
-    ? lawyerResources 
+
+  const filteredResources = selectedState === "all"
+    ? lawyerResources
     : lawyerResources.filter(r => r.code.toLowerCase() === selectedState.toLowerCase());
 
   return (
@@ -297,14 +297,14 @@ const LawyerDirectory = () => {
       {/* Hero with Image */}
       <section className="relative py-8 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/legal-library.jpg" 
+          <img
+            src="/images/stock/legal-library.jpg"
             alt="Legal Professionals"
             className="w-full h-full object-cover opacity-10"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-500/30">
             <Users className="w-10 h-10 text-white" />
@@ -362,7 +362,7 @@ const LawyerDirectory = () => {
             <div>
               <h3 className="font-semibold text-blue-900 text-xs mb-1">Important</h3>
               <p className="text-blue-800 text-[11px]">
-                This directory provides links to legal resources for informational purposes only. 
+                This directory provides links to legal resources for informational purposes only.
                 This directory does not endorse any specific lawyer or firm.
               </p>
             </div>
@@ -380,7 +380,7 @@ const LawyerDirectory = () => {
               <p className="text-blue-700 text-[10px]">Australia-wide legal services</p>
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-3">
             {nationalResources.map((resource, index) => (
               <a key={index} href={resource.url} target="_blank" rel="noopener noreferrer" className="block">
@@ -408,7 +408,7 @@ const LawyerDirectory = () => {
             <p className="text-emerald-700 text-[10px]">State-specific legal services and specialists</p>
           </div>
         </div>
-        
+
         <div className="space-y-6">
           {filteredResources.map((state, index) => (
             <div className={`bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all`}>

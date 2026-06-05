@@ -1,4 +1,4 @@
-# DO NOT UNDO — analytics router. All endpoints in this file are approved and must be preserved.
+#  — analytics router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Analytics Router
 Provides comprehensive usage statistics and metrics
@@ -23,18 +23,18 @@ async def track_visit(request: Request):
         client_ip = request.client.host if request.client else "unknown"
         user_agent = request.headers.get("user-agent", "unknown")
         referer = request.headers.get("referer", "")
-        
+
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        
+
         # Create a simple fingerprint for unique visitor tracking
         visitor_id = f"{client_ip}_{user_agent[:50]}"
-        
+
         # Check if this visitor already visited today
         existing_visit = await db.visits.find_one({
             "visitor_id": visitor_id,
             "date": today
         })
-        
+
         if not existing_visit:
             # New visitor today - record the visit
             await db.visits.insert_one({
@@ -45,23 +45,23 @@ async def track_visit(request: Request):
                 "date": today,
                 "timestamp": datetime.now(timezone.utc).isoformat()
             })
-            
+
             # Update daily counter
             await db.visit_stats.update_one(
                 {"date": today},
                 {"$inc": {"count": 1, "unique_visitors": 1}},
                 upsert=True
             )
-            
+
             # Update total counter
             await db.counters.update_one(
                 {"name": "total_visitors"},
                 {"$inc": {"count": 1}},
                 upsert=True
             )
-        
+
         return {"status": "tracked"}
-        
+
     except Exception as e:
         logger.error(f"Visit tracking error: {e}")
         return {"status": "error"}
@@ -74,25 +74,25 @@ async def get_visitor_count():
         # Get total unique visitors
         total_counter = await db.counters.find_one({"name": "total_visitors"}, {"_id": 0})
         total_visitors = total_counter["count"] if total_counter else 0
-        
+
         # Get today's visitors
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         today_stats = await db.visit_stats.find_one({"date": today}, {"_id": 0})
         today_visitors = today_stats["unique_visitors"] if today_stats else 0
-        
+
         # Get registered users count
         total_users = await db.users.count_documents({})
-        
+
         # Get total cases
         total_cases = await db.cases.count_documents({})
-        
+
         return {
             "total_visitors": total_visitors,
             "today_visitors": today_visitors,
             "registered_users": total_users,
             "cases_created": total_cases
         }
-        
+
     except Exception as e:
         logger.error(f"Visitor count error: {e}")
         return {
@@ -108,46 +108,46 @@ async def get_dashboard_stats(request: Request):
     """Get comprehensive dashboard statistics (admin only)"""
     try:
         user = await get_current_user(request)
-        
+
         # Only allow admin emails
         if user.email not in ADMIN_EMAILS:
             raise HTTPException(status_code=403, detail="Admin access required")
-        
+
         # Calculate date ranges
         now = datetime.now(timezone.utc)
         week_ago = now - timedelta(days=7)
         month_ago = now - timedelta(days=30)
-        
+
         # === USER METRICS ===
         total_users = await db.users.count_documents({})
-        
+
         # New users in last 7 days
         new_users_7d = await db.users.count_documents({
             "created_at": {"$gte": week_ago.isoformat()}
         })
-        
+
         # New users in last 30 days
         new_users_30d = await db.users.count_documents({
             "created_at": {"$gte": month_ago.isoformat()}
         })
-        
+
         # Users by auth type
         email_users = await db.users.count_documents({"auth_type": "email"})
         google_users = await db.users.count_documents({"auth_type": "google"})
-        
+
         # === CASE METRICS ===
         total_cases = await db.cases.count_documents({})
-        
+
         # Cases created in last 7 days
         new_cases_7d = await db.cases.count_documents({
             "created_at": {"$gte": week_ago.isoformat()}
         })
-        
+
         # Cases created in last 30 days
         new_cases_30d = await db.cases.count_documents({
             "created_at": {"$gte": month_ago.isoformat()}
         })
-        
+
         # Cases by state
         cases_by_state = {}
         states = ["nsw", "vic", "qld", "sa", "wa", "tas", "nt", "act"]
@@ -155,13 +155,13 @@ async def get_dashboard_stats(request: Request):
             count = await db.cases.count_documents({"state": state})
             if count > 0:
                 cases_by_state[state.upper()] = count
-        
+
         # === DOCUMENT METRICS ===
         total_documents = await db.documents.count_documents({})
         documents_7d = await db.documents.count_documents({
             "uploaded_at": {"$gte": week_ago.isoformat()}
         })
-        
+
         # === ACTIVITY METRICS ===
         total_visits = await db.visits.count_documents({})
         visits_7d = await db.visits.count_documents({
@@ -170,27 +170,27 @@ async def get_dashboard_stats(request: Request):
         visits_30d = await db.visits.count_documents({
             "timestamp": {"$gte": month_ago.isoformat()}
         })
-        
+
         # === ENGAGEMENT METRICS ===
         # Reports generated
         total_reports = await db.reports.count_documents({}) if "reports" in await db.list_collection_names() else 0
-        
+
         # Reports by type (completed only)
         reports_by_type = {}
         for rtype in ["quick_summary", "full_detailed", "extensive_log", "barrister_view"]:
             reports_by_type[rtype] = await db.reports.count_documents({"report_type": rtype, "status": "completed"})
-        
+
         # === SALES METRICS ===
         today_start = now.strftime("%Y-%m-%dT00:00:00")
         week_start = week_ago.isoformat()
         month_start = month_ago.isoformat()
-        
+
         # Total sales (payments with amount > 0)
         total_sales = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}})
         sales_today = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": today_start}})
         sales_7d = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": week_start}})
         sales_30d = await db.payments.count_documents({"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": month_start}})
-        
+
         # Total revenue
         revenue_pipeline = [
             {"$match": {"status": "completed", "amount": {"$gt": 0}}},
@@ -198,7 +198,7 @@ async def get_dashboard_stats(request: Request):
         ]
         revenue_result = await db.payments.aggregate(revenue_pipeline).to_list(1)
         total_revenue = revenue_result[0]["total"] if revenue_result else 0
-        
+
         # Revenue by period
         revenue_today_pipeline = [
             {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": today_start}}},
@@ -206,44 +206,44 @@ async def get_dashboard_stats(request: Request):
         ]
         rev_today_result = await db.payments.aggregate(revenue_today_pipeline).to_list(1)
         revenue_today = rev_today_result[0]["total"] if rev_today_result else 0
-        
+
         revenue_7d_pipeline = [
             {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": week_start}}},
             {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
         ]
         rev_7d_result = await db.payments.aggregate(revenue_7d_pipeline).to_list(1)
         revenue_7d = rev_7d_result[0]["total"] if rev_7d_result else 0
-        
+
         revenue_30d_pipeline = [
             {"$match": {"status": "completed", "amount": {"$gt": 0}, "created_at": {"$gte": month_start}}},
             {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
         ]
         rev_30d_result = await db.payments.aggregate(revenue_30d_pipeline).to_list(1)
         revenue_30d = rev_30d_result[0]["total"] if rev_30d_result else 0
-        
+
         # Sales by feature type
         sales_by_feature = {}
         for ftype in ["full_report", "extensive_report", "grounds_of_merit"]:
             sales_by_feature[ftype] = await db.payments.count_documents({"feature_type": ftype, "status": "completed", "amount": {"$gt": 0}})
-        
+
         # Deadlines tracked
         total_deadlines = await db.deadlines.count_documents({})
-        
+
         # Notes created
         total_notes = await db.notes.count_documents({})
-        
+
         # Contact messages
         total_messages = await db.contact_messages.count_documents({})
         unread_messages = await db.contact_messages.count_documents({"read": False})
-        
+
         # Success stories submitted
         total_stories = await db.success_stories.count_documents({})
-        
+
         # === DAILY STATS FOR CHART (Last 30 days) ===
         daily_stats = []
         for i in range(30, -1, -1):
             date = (now - timedelta(days=i)).strftime("%Y-%m-%d")
-            
+
             # Users registered on this day
             users_on_day = await db.users.count_documents({
                 "created_at": {
@@ -251,7 +251,7 @@ async def get_dashboard_stats(request: Request):
                     "$lt": f"{date}T23:59:59"
                 }
             })
-            
+
             # Cases created on this day
             cases_on_day = await db.cases.count_documents({
                 "created_at": {
@@ -259,18 +259,18 @@ async def get_dashboard_stats(request: Request):
                     "$lt": f"{date}T23:59:59"
                 }
             })
-            
+
             # Visits on this day
             visit_stat = await db.visit_stats.find_one({"date": date}, {"_id": 0})
             visits_on_day = visit_stat["count"] if visit_stat else 0
-            
+
             daily_stats.append({
                 "date": date,
                 "users": users_on_day,
                 "cases": cases_on_day,
                 "visits": visits_on_day
             })
-        
+
         # === RESPONSE ===
         return {
             "users": {
@@ -320,7 +320,7 @@ async def get_dashboard_stats(request: Request):
             "daily_stats": daily_stats,
             "generated_at": now.isoformat()
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -332,22 +332,22 @@ async def get_quick_stats(request: Request):
     """Get quick overview stats (admin only)"""
     try:
         user = await get_current_user(request)
-        
+
         if user.email not in ADMIN_EMAILS:
             raise HTTPException(status_code=403, detail="Admin access required")
-        
+
         total_users = await db.users.count_documents({})
         total_cases = await db.cases.count_documents({})
         total_visits = await db.visits.count_documents({})
         unread_messages = await db.contact_messages.count_documents({"read": False})
-        
+
         return {
             "total_users": total_users,
             "total_cases": total_cases,
             "total_visits": total_visits,
             "unread_messages": unread_messages
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:

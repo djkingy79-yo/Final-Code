@@ -1,4 +1,4 @@
-# DO NOT UNDO — admin router. All endpoints in this file are approved and must be preserved.
+#  — admin router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Admin Router
 Handles admin-only routes: contact messages, success stories, analytics
@@ -85,7 +85,7 @@ async def track_visit(request: Request):
             "path": path,
         }
         await db.visits.insert_one(visit)
-        
+
         # Update daily counter
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         await db.visit_stats.update_one(
@@ -93,10 +93,10 @@ async def track_visit(request: Request):
             {"$inc": {"count": 1}},
             upsert=True
         )
-        
+
         # Get total count
         total = await db.visits.count_documents({})
-        
+
         return {"tracked": True, "total_visits": total}
     except Exception as e:
         logger.error(f"Visit tracking error: {e}")
@@ -107,15 +107,15 @@ async def get_visit_stats(request: Request):
     """Get visit statistics (admin only - requires auth)"""
     try:
         user = await get_current_user(request)
-        
+
         # Only allow admin emails
         if user.email not in ADMIN_EMAILS:
             raise HTTPException(status_code=403, detail="Admin access required")
-        
+
         total_visits = await db.visits.count_documents({})
         total_users = await db.users.count_documents({})
         total_cases = await db.cases.count_documents({})
-        
+
         # Get last 7 days stats
         daily_stats = []
         for i in range(7):
@@ -125,7 +125,7 @@ async def get_visit_stats(request: Request):
                 "date": date,
                 "count": stat["count"] if stat else 0
             })
-        
+
         return {
             "total_visits": total_visits,
             "total_users": total_users,
@@ -156,7 +156,7 @@ async def submit_contact_form(request: Request, contact: ContactMessage):
             "read": False
         }
         await db.contact_messages.insert_one(message_doc)
-        
+
         # Try to send email notification
         email_sent = False
         if RESEND_API_KEY:
@@ -185,7 +185,7 @@ async def submit_contact_form(request: Request, contact: ContactMessage):
                     </p>
                 </div>
                 """
-                
+
                 params = {
                     "from": get_resend_from_email(),
                     "to": [CONTACT_EMAIL],
@@ -193,13 +193,13 @@ async def submit_contact_form(request: Request, contact: ContactMessage):
                     "html": html_content,
                     "reply_to": contact.email
                 }
-                
+
                 await asyncio.to_thread(resend.Emails.send, params)
                 email_sent = True
                 logger.info(f"Contact form email sent to {CONTACT_EMAIL}")
             except Exception as e:
                 logger.error(f"Failed to send contact email: {e}")
-        
+
         return {
             "success": True,
             "message": "Your message has been sent. We'll get back to you soon!",
@@ -215,10 +215,10 @@ async def get_contact_messages(request: Request):
     user = await get_current_user(request)
     if user.email not in ADMIN_EMAILS:
         raise HTTPException(status_code=403, detail="Admin access required")
-    
+
     messages = await db.contact_messages.find({}, {"_id": 0}).sort("timestamp", -1).to_list(100)
     unread_count = await db.contact_messages.count_documents({"read": False})
-    
+
     return {
         "messages": messages,
         "unread_count": unread_count
@@ -230,7 +230,7 @@ async def mark_message_read(message_id: str, request: Request):
     user = await get_current_user(request)
     if user.email not in ADMIN_EMAILS:
         raise HTTPException(status_code=403, detail="Admin access required")
-    
+
     await db.contact_messages.update_one(
         {"message_id": message_id},
         {"$set": {"read": True}}
@@ -244,7 +244,7 @@ async def submit_success_story(submission: SuccessStorySubmission):
     """Submit a success story"""
     if not submission.consent:
         raise HTTPException(status_code=400, detail="Consent is required")
-    
+
     story_doc = {
         "story_id": f"story_{uuid.uuid4().hex[:12]}",
         "name": submission.name,
@@ -257,7 +257,7 @@ async def submit_success_story(submission: SuccessStorySubmission):
         "featured": False
     }
     await db.success_stories.insert_one(story_doc)
-    
+
     return {"success": True, "message": "Story submitted for review"}
 
 @router.get("/admin/success-stories")
@@ -266,7 +266,7 @@ async def get_submitted_stories(request: Request):
     user = await get_current_user(request)
     if user.email not in ADMIN_EMAILS:
         raise HTTPException(status_code=403, detail="Admin access required")
-    
+
     stories = await db.success_stories.find({}, {"_id": 0}).sort("timestamp", -1).to_list(100)
     return {"stories": stories}
 
@@ -275,7 +275,7 @@ async def get_submitted_stories(request: Request):
 
 @router.post("/admin/normalise-db")
 async def normalise_database(request: Request):
-    """DO_NOT_UNDO — Run database normalisation script (admin only).
+    """ — Run database normalisation script (admin only).
     Fixes missing fields, removes stale sessions, and cleans up duplicate grounds.
     Safe to run multiple times (idempotent).
     """
@@ -310,7 +310,7 @@ async def normalise_database(request: Request):
 
 
 
-# DO_NOT_UNDO — Admin manual unlock endpoint
+#  — Admin manual unlock endpoint
 @router.post("/admin/unlock-feature")
 async def admin_unlock_feature(request: Request):
     """Admin-only: manually unlock a feature for any user's case.

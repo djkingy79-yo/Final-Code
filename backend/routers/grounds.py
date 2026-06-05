@@ -1,4 +1,4 @@
-# DO NOT UNDO — grounds router. All endpoints in this file are approved and must be preserved.
+#  — grounds router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Grounds of Merit Router
 ADDITIVE HARDENING PATCH
@@ -323,7 +323,7 @@ async def _refresh_case_extract_from_pipeline(case: dict) -> dict:
 async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict]:
     """Run staged issue classification and persist results.
 
-    DO_NOT_UNDO — 3 Apr 2026: If issues already exist, DO NOT re-classify.
+     — 3 Apr 2026: If issues already exist, DO NOT re-classify.
     Re-classification generates new LLM titles that slip past dedup and multiply grounds.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
@@ -381,7 +381,7 @@ async def _classify_pipeline_issues(case: dict, case_extract: dict) -> list[dict
 async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
     """Project pipeline issues + verifications into existing grounds_of_merit collection.
 
-    DO_NOT_UNDO — MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title
+     — MUST use fuzzy dedup via is_ground_duplicate(). NEVER revert to exact-title
     upsert. Exact-title upsert was the ROOT CAUSE of grounds multiplying from 4 to 27+.
     """
     from services.ground_dedup import is_ground_duplicate, normalise_au_spelling
@@ -390,7 +390,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
         {"case_id": case_id, "user_id": user_id}, {"_id": 0}
     ).to_list(500)
 
-    # DO_NOT_UNDO — Jurisdiction-aware ground normalisation.
+    #  — Jurisdiction-aware ground normalisation.
     # Lawyer feedback: app was misclassifying conviction grounds as sentencing
     # and defaulting to NSW pathway regardless of case jurisdiction. The
     # normaliser below:
@@ -691,7 +691,7 @@ async def _sync_pipeline_issues_to_grounds(case_id: str, user_id: str) -> int:
 
 async def _ensure_pipeline_identification(case: dict, documents: list) -> dict:
     """Full staged path: extract → refresh → classify → sync to grounds.
-    DO_NOT_UNDO — Final safety net: runs cleanup_duplicate_grounds AFTER sync.
+     — Final safety net: runs cleanup_duplicate_grounds AFTER sync.
     """
     from services.ground_dedup import cleanup_duplicate_grounds, cleanup_duplicate_issues
     extracted_count = await _ensure_document_extracts(case, documents)
@@ -727,7 +727,7 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
         upsert=True,
     )
     await _sync_pipeline_issues_to_grounds(case["case_id"], case["user_id"])
-    # DO_NOT_UNDO — 3 Apr 2026: cleanup after EVERY sync, no exceptions
+    #  — 3 Apr 2026: cleanup after EVERY sync, no exceptions
     from services.ground_dedup import cleanup_duplicate_grounds
     await cleanup_duplicate_grounds(db, case["case_id"], case["user_id"])
     if ground_id:
@@ -750,7 +750,7 @@ async def _verify_issue_and_sync(case: dict, issue: dict, ground_id: str | None 
 async def get_grounds_of_merit(case_id: str, request: Request):
     """Get all grounds of merit for a case - requires payment to see details"""
     user = await get_current_user(request)
-    
+
     # Admin can view any case's grounds
     if is_admin_user(user.email):
         case = await db.cases.find_one({"case_id": case_id})
@@ -773,7 +773,7 @@ async def get_grounds_of_merit(case_id: str, request: Request):
 
     # For payment lookup, use the case owner's user_id (not admin's)
     case_owner_id = case.get("user_id", user.user_id)
-    
+
     payment = await db.payments.find_one({
         "case_id": case_id,
         "user_id": case_owner_id,
@@ -782,7 +782,7 @@ async def get_grounds_of_merit(case_id: str, request: Request):
     })
 
     is_unlocked = (
-        payment is not None 
+        payment is not None
         or any(canonical_feature_type(f) == "grounds_of_merit" for f in (case.get("unlocked_features") or []))
         or is_admin_user(user.email)
     )
@@ -874,7 +874,7 @@ async def create_ground_of_merit(case_id: str, ground_data: GroundOfMeritCreate,
 
 
 
-# DO NOT UNDO — Ground priority reorder endpoint. MUST be defined BEFORE {ground_id} routes.
+#  — Ground priority reorder endpoint. MUST be defined BEFORE {ground_id} routes.
 @router.put("/cases/{case_id}/grounds/reorder")
 async def reorder_grounds(case_id: str, request: Request):
     """Reorder grounds by priority. Accepts a list of ground_ids in the desired order."""
@@ -1435,7 +1435,7 @@ async def auto_identify_status(case_id: str, request: Request):
 
 @router.post("/cases/{case_id}/grounds/cleanup-duplicates", response_model=dict)
 async def cleanup_ground_duplicates(case_id: str, request: Request):
-    """DO_NOT_UNDO — Remove duplicate grounds using fuzzy deduplication.
+    """ — Remove duplicate grounds using fuzzy deduplication.
     Merges data from duplicates into the kept ground (first by created_at).
     """
     user = await get_current_user(request)

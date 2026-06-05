@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -66,8 +66,8 @@ const AdminStats = () => {
             Access Denied
           </h2>
           <p className="text-slate-600 mb-6">{error}</p>
-          <Button 
-            onClick={() => navigate("/dashboard")} 
+          <Button
+            onClick={() => navigate("/dashboard")}
             className="bg-gradient-to-r from-red-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 rounded-xl px-8 py-5 font-semibold"
           >
             Go to Dashboard
@@ -93,9 +93,9 @@ const AdminStats = () => {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-4">
-<Button 
-              onClick={() => navigate("/dashboard")} 
-              variant="outline" 
+<Button
+              onClick={() => navigate("/dashboard")}
+              variant="outline"
               className="border-slate-600 text-slate-300 hover:bg-slate-800 rounded-lg"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -108,8 +108,8 @@ const AdminStats = () => {
         </div>
         {mobileMenuOpen && (
           <div className="md:hidden bg-slate-800 border-t border-slate-700 px-6 py-4 space-y-3">
-<button 
-              onClick={() => navigate("/dashboard")} 
+<button
+              onClick={() => navigate("/dashboard")}
               className="flex items-center gap-2 py-2 text-blue-500 hover:text-blue-400 w-full"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -122,14 +122,14 @@ const AdminStats = () => {
       {/* Hero Section */}
       <section className="relative py-12 px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/stock/data-charts.jpg" 
+          <img
+            src="/images/stock/data-charts.jpg"
             alt=""
             className="w-full h-full object-cover opacity-5"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
         </div>
-        
+
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex items-center gap-4 mb-2">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -207,9 +207,9 @@ const AdminStats = () => {
                 <div key={day.date} className="flex items-center gap-4">
                   <span className="text-sm text-slate-600 w-28 font-medium">{day.date}</span>
                   <div className="flex-1 bg-slate-100 rounded-full h-8 overflow-hidden">
-                    <div 
+                    <div
                       className="bg-gradient-to-r from-blue-500 to-red-600 h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500"
-                      style={{ 
+                      style={{
                         width: `${Math.max((day.count / maxDailyCount) * 100, day.count > 0 ? 10 : 0)}%`,
                         minWidth: day.count > 0 ? '40px' : '0'
                       }}

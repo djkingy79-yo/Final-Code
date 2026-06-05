@@ -1,4 +1,4 @@
-# DO NOT UNDO — cases router. All endpoints in this file are approved and must be preserved.
+#  — cases router. All endpoints in this file are approved and must be preserved.
 """
 Criminal Appeal AI - Cases Router
 """
@@ -50,18 +50,18 @@ async def get_cases(request: Request):
 async def create_case(case_data: CaseCreate, request: Request):
     """Create a new case"""
     user = await get_current_user(request)
-    
+
     case = Case(
         user_id=user.user_id,
         **case_data.model_dump()
     )
-    
+
     case_dict = case.model_dump()
     case_dict["created_at"] = case_dict["created_at"].isoformat()
     case_dict["updated_at"] = case_dict["updated_at"].isoformat()
-    
+
     await db.cases.insert_one(case_dict)
-    
+
     # Initialize checklist for new case
     for item in DEFAULT_CHECKLIST:
         checklist_item = ChecklistItem(
@@ -72,7 +72,7 @@ async def create_case(case_data: CaseCreate, request: Request):
         item_dict = checklist_item.model_dump()
         item_dict["created_at"] = item_dict["created_at"].isoformat()
         await db.checklist_items.insert_one(item_dict)
-    
+
     created_case = await db.cases.find_one({"case_id": case.case_id}, {"_id": 0})
     return created_case
 
@@ -81,11 +81,11 @@ async def create_case(case_data: CaseCreate, request: Request):
 async def get_case(case_id: str, request: Request):
     """Get a specific case"""
     user = await get_current_user(request)
-    
+
     case = await db.cases.find_one({"case_id": case_id, "user_id": user.user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     case["document_count"] = await db.documents.count_documents({"case_id": case_id})
     case["event_count"] = await db.timeline_events.count_documents({"case_id": case_id})
 
@@ -110,7 +110,7 @@ async def get_case(case_id: str, request: Request):
 async def update_case(case_id: str, case_data: CaseCreate, request: Request):
     """Update a case"""
     user = await get_current_user(request)
-    
+
     result = await db.cases.update_one(
         {"case_id": case_id, "user_id": user.user_id},
         {"$set": {
@@ -118,10 +118,10 @@ async def update_case(case_id: str, case_data: CaseCreate, request: Request):
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
-    
+
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     return await db.cases.find_one({"case_id": case_id}, {"_id": 0})
 
 
@@ -129,7 +129,7 @@ async def update_case(case_id: str, case_data: CaseCreate, request: Request):
 async def delete_case(case_id: str, request: Request):
     """Delete a case and all related data"""
     user = await get_current_user(request)
-    
+
     await db.documents.delete_many({"case_id": case_id, "user_id": user.user_id})
     await db.timeline_events.delete_many({"case_id": case_id, "user_id": user.user_id})
     await db.reports.delete_many({"case_id": case_id, "user_id": user.user_id})
@@ -137,11 +137,11 @@ async def delete_case(case_id: str, request: Request):
     await db.grounds_of_merit.delete_many({"case_id": case_id, "user_id": user.user_id})
     await db.deadlines.delete_many({"case_id": case_id, "user_id": user.user_id})
     await db.checklist_items.delete_many({"case_id": case_id, "user_id": user.user_id})
-    
+
     result = await db.cases.delete_one({"case_id": case_id, "user_id": user.user_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     return {"message": "Case deleted"}
 
 

@@ -1,6 +1,6 @@
-/* DO NOT UNDO — Australian spelling normaliser for ALL user-visible text.
+/*  — Australian spelling normaliser for ALL user-visible text.
    Converts American English to Australian English.
-   
+
    CRITICAL iOS SAFARI COMPATIBILITY:
    - NO const/module-level regex with 'g' flag (causes JIT "readonly property" crash)
    - NO .replace() chains (same iOS Safari JIT issue)

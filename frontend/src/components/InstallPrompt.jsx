@@ -1,5 +1,5 @@
 /* ========================================================================
-   DO NOT UNDO — ENTIRE FILE PROTECTED
+    — ENTIRE FILE PROTECTED
    All features, functions, styles, and content in this file are approved
    and must be preserved. Do not remove, rename, or refactor any code.
    ======================================================================== */
@@ -59,7 +59,7 @@ const InstallPrompt = () => {
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       setShowPrompt(false);
     }
@@ -77,7 +77,7 @@ const InstallPrompt = () => {
   if (showIOSInstructions) {
     return (
       <div className="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-slate-900 text-white rounded-xl shadow-2xl p-4 z-50 animate-in slide-in-from-bottom-4">
-        <button 
+        <button
           onClick={handleDismiss}
           className="absolute top-2 right-2 text-slate-400 hover:text-white"
         >
@@ -98,9 +98,9 @@ const InstallPrompt = () => {
             <span>Tap <strong>"Add"</strong> in the top right corner</span>
           </li>
         </ol>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           className="w-full mt-4 border-slate-600 text-white hover:bg-slate-800"
           onClick={handleDismiss}
         >
@@ -112,7 +112,7 @@ const InstallPrompt = () => {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-slate-900 text-white rounded-xl shadow-2xl p-4 z-50 animate-in slide-in-from-bottom-4">
-      <button 
+      <button
         onClick={handleDismiss}
         className="absolute top-2 right-2 text-slate-400 hover:text-white"
       >
@@ -130,16 +130,16 @@ const InstallPrompt = () => {
         </div>
       </div>
       <div className="flex gap-2 mt-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="flex-1 text-slate-400 hover:text-white hover:bg-slate-800"
           onClick={handleDismiss}
         >
           Not now
         </Button>
-        <Button 
-          size="sm" 
+        <Button
+          size="sm"
           className="flex-1 bg-blue-500 hover:bg-red-600 text-slate-900"
           onClick={handleInstall}
         >

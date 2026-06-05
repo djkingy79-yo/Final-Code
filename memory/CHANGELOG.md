@@ -344,7 +344,7 @@ And see something like:
 
 ## 1 Apr 2026 (Session 3) — Extensive Log Fix
 - **Extensive Log (3rd Report) Generation Fixed:** Triggered and monitored a fresh `extensive_log` generation for case `case_927d110878e7`. All 8 passes completed successfully using `condensed_prompt` logic. Report: 117,184 chars, ~15,710 words, 25 sections. Multiple 502 errors were handled by pass-level retry with exponential backoff.
-- **Condensed Prompt Protection:** Added DO_NOT_UNDO entry protecting the condensed_prompt approach.
+- **Condensed Prompt Protection:** Added  entry protecting the condensed_prompt approach.
 
 ## 1 Apr 2026 (Session 2) — Dedup & Resilience
 - Grounds of Merit Deduplication — 12-topic fuzzy dedup with startup and post-sync safety nets

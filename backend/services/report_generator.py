@@ -109,12 +109,12 @@ async def _update_report_pass_progress(report_id: str, pass_index: int, total_pa
 
 async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, aggressive_mode: bool = False, report_id: str = None) -> dict:
     """Use AI to analyse case and generate report — HARDENED with structured LLM calls"""
-    
+
     # Get case data
     case = await db.cases.find_one({"case_id": case_id, "user_id": user_id}, {"_id": 0})
     if not case:
         raise HTTPException(status_code=404, detail="Case not found")
-    
+
     # ================= PIPELINE GUARD =================
     high_value_report = report_type in ["full_detailed", "extensive_log"]
     pipeline_status = None
@@ -156,19 +156,19 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
         {"case_id": case_id},
         {"_id": 0, "file_data": 0}
     ).to_list(500)
-    
+
     # Get timeline
     timeline = await db.timeline_events.find(
         {"case_id": case_id},
         {"_id": 0}
     ).sort("event_date", 1).to_list(500)
-    
+
     # Get notes
     notes = await db.notes.find(
         {"case_id": case_id},
         {"_id": 0}
     ).to_list(100)
-    
+
     # Get identified grounds
     grounds = await db.grounds_of_merit.find(
         {"case_id": case_id},
@@ -290,9 +290,9 @@ async def analyze_case_with_ai(case_id: str, user_id: str, report_type: str, agg
             f"Forensic pipeline skipped for case {case_id} ({pipeline_err}); "
             f"falling back to raw grounds for the report."
         )
-    
+
     # ── Auto-detect case metadata if still defaults (HARDENED via call_llm_for_json) ──
-    # DO NOT UNDO — Also re-detect if sentence contains crime narrative (e.g. "for murdering")
+    #  — Also re-detect if sentence contains crime narrative (e.g. "for murdering")
     _current_sentence = (case.get('sentence') or "").strip()
     _sentence_has_narrative = bool(re.search(r'\bfor\s+(?:murder|kill|assault|robb|stab|rap|kidnap|abus|supplying|dealing)', _current_sentence, re.I)) if _current_sentence else False
     needs_detection = (
@@ -351,7 +351,7 @@ DOCUMENTS:
                 if meta.get("offence_type"):
                     update_fields["offence_type"] = meta["offence_type"]
                 if meta.get("sentence"):
-                    # DO NOT UNDO — Clean sentence to strip crime descriptions, victim info
+                    #  — Clean sentence to strip crime descriptions, victim info
                     cleaned_sentence = _clean_sentence_candidate(meta["sentence"])
                     if _is_valid_sentence_candidate(cleaned_sentence):
                         update_fields["sentence"] = cleaned_sentence
@@ -375,7 +375,7 @@ DOCUMENTS:
                     logger.info(f"Report gen auto-detected metadata for {case_id}: {update_fields}")
         except Exception as e:
             logger.warning(f"Report gen auto-detect failed for {case_id}: {e}")
-    
+
     # Get offence-specific context — NO SILENT DEFAULTS
     offence_category = case.get('offence_category') or 'general'
     offence_context = get_offence_context(case)
@@ -383,7 +383,7 @@ DOCUMENTS:
     category_name = category_data.get('name', offence_category.replace('_', ' ').title())
     state = case.get('state') or ''
     state_info = AUSTRALIAN_STATES.get(state, {})
-    
+
     # Context limits — FULL DETAIL for quality reports
     context_limits = {
         "quick_summary": {
@@ -443,7 +443,7 @@ Summary: {case.get('summary', 'N/A')}
         include_description=True,
         content_heading="CONTENT"
     )
-    
+
     # Include bounded document content for cross-referencing
     if documents:
         case_context += f"=== CASE DOCUMENTS ({doc_context['included_docs']} included / {len(documents)} total files) ===\n"
@@ -688,7 +688,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
 - CRITICAL MARKDOWN SPACING: Every heading line (##, ###, ####) MUST appear on its OWN line with a BLANK LINE BEFORE IT and a BLANK LINE AFTER IT. NEVER place a heading at the end of a paragraph (e.g. "...appellant. ## 2. CHRONOLOGY"). NEVER place prose on the same line as a heading. Non-compliant output will be rejected.
 - FOR GROUND ANALYSIS: Write each ground as a continuous series of detailed paragraphs (minimum 300 words in Quick Summary, 800+ words in Full Detailed, 1200+ words in Extensive). Do NOT use bullet points. Cover the legal threshold, case facts, viability, Crown response, defence rebuttal, and impact all within flowing prose.
 """
-    
+
     if report_type == "quick_summary":
         # ------------------------------------------------------------------
         # CASE SUMMARY (free tier, T1 per REPORT_PRODUCT_SPEC.md).
@@ -700,7 +700,7 @@ FORMATTING RULES — STRICTLY ENFORCED:
         #   - NO strategy / recommendations
         #   - No "likelihood of success", no "strong / moderate" ratings
         # Grounds, legislation and appeal analysis live in T2/T3/T4.
-        # DO_NOT_UNDO — any re-introduction of grounds/legislation/appeal
+        #  — any re-introduction of grounds/legislation/appeal
         # outcome language breaks the paid-tier boundary.
         # ------------------------------------------------------------------
         system_prompt = f"""{base_system}
@@ -1209,8 +1209,8 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     _report_generation_metadata = {"models_used": [], "fallback_used": False}
 
     async def _subprocess_llm(prompt_text):
-        """DO_NOT_UNDO — Run LLM call with pass-level retry for 502/service errors.
-        
+        """ — Run LLM call with pass-level retry for 502/service errors.
+
         The 4 model fallbacks inside call_llm_structured handle per-call retries.
         This outer retry handles cases where ALL 4 models fail on the same pass
         (e.g., upstream proxy 502 storm). Waits 30-60s between outer retries.
@@ -1248,7 +1248,7 @@ AGGRESSIVE ADVOCACY MODE IS ON. Write as a senior barrister who believes in this
     response = None
     last_error = None
     try:
-        # DO_NOT_UNDO — Condensed prompt for multi-pass generation.
+        #  — Condensed prompt for multi-pass generation.
         # Full document text is only needed for Pass 1-2 (Executive Brief, Chronology, Document Digest).
         # Later passes (Grounds analysis, Sentencing, Strategy, etc.) need grounds data, case metadata,
         # and pipeline data but NOT 100k+ of raw document text. This eliminates 502 proxy timeouts
@@ -1311,17 +1311,17 @@ Summary: {case.get('summary', 'N/A')}
         logger.info(f"Report prompt sizes: full={len(user_prompt)} chars, condensed={len(condensed_prompt)} chars")
 
         if report_type == "full_detailed":
-            # DO_NOT_UNDO — 8-pass generation is FINAL. Previous 5-pass produced only ~7,890 words.
+            #  — 8-pass generation is FINAL. Previous 5-pass produced only ~7,890 words.
             # Current 8-pass produces ~12,000+ words. NEVER reduce pass count.
             half_grounds = max(1, len(grounds) // 2)
-            # DO_NOT_UNDO — grounds_enumerated is ONE line per ground (e.g. "1. Title").
+            #  — grounds_enumerated is ONE line per ground (e.g. "1. Title").
             # Split by actual ground count, not by arbitrary line multiplier.
             all_ground_lines = grounds_enumerated.split('\n')
             first_grounds = all_ground_lines[:half_grounds]
             second_grounds = all_ground_lines[half_grounds:]
             first_grounds_text = '\n'.join(first_grounds) if first_grounds else grounds_enumerated
             second_grounds_text = '\n'.join(second_grounds) if second_grounds else ""
-            
+
             passes = [
                 ("PASS 1/8", f"""
 NOW GENERATE ONLY SECTIONS 1-2. Write 3000+ WORDS for this pass. Every paragraph must reference specific case facts.
@@ -1506,7 +1506,7 @@ Then cover:
 
 Do NOT truncate. Write ALL content."""),
             ]
-            
+
             parts = []
             resume_from = 0
             if report_id:
@@ -1522,14 +1522,14 @@ Do NOT truncate. Write ALL content."""),
                     resume_from = min(existing_passes_completed, len(passes))
                     logger.info(f"Resuming full_detailed report {report_id} from pass {resume_from + 1}")
 
-            # DO_NOT_UNDO — Same condensed context optimisation for full_detailed.
+            #  — Same condensed context optimisation for full_detailed.
             # Pass 1 (Exec Brief + Chronology) and Pass 2 (Document Digest) get full context.
             # Passes 3-8 (Grounds analysis, Sentencing, Strategy) get condensed context.
             for pass_index, (label, instruction) in enumerate(passes[resume_from:], start=resume_from + 1):
                 await _update_report_pass_progress(report_id, pass_index, len(passes), label)
                 base_prompt = user_prompt if pass_index <= 2 else condensed_prompt
                 pass_prompt = base_prompt + instruction
-                # DO_NOT_UNDO — TPM safety cap. OpenAI Tier 1 gives gpt-4o only
+                #  — TPM safety cap. OpenAI Tier 1 gives gpt-4o only
                 # 30,000 tokens per minute. If system (~17k chars ≈ 4.3k tokens)
                 # plus user exceed ~25,000 tokens of input, the request is
                 # rejected with 429 before it even starts and we silently
@@ -1565,7 +1565,7 @@ Do NOT truncate. Write ALL content."""),
                         {"report_id": report_id},
                         {"$set": {"content.analysis": partial_content, "content.partial": True, "content.partial_analysis": partial_content, "content.passes_completed": pass_index}}
                     )
-            
+
             response = "\n\n".join(parts)
             logger.info(f"Full detailed combined: {len(response)} chars")
 
@@ -1840,7 +1840,7 @@ Then cover:
 
 Do NOT truncate. Write ALL content for both sections."""),
             ]
-            
+
             parts = []
             resume_from = 0
             if report_id:
@@ -1882,7 +1882,7 @@ Do NOT truncate. Write ALL content for both sections."""),
                     {"report_id": report_id},
                     {"$set": {"content.partial_analysis": partial_response, "content.passes_completed": pass_index}}
                 )
-            
+
             response = "\n\n".join(parts)
             logger.info(f"Extensive log combined: {len(response)} chars")
 
@@ -1892,7 +1892,7 @@ Do NOT truncate. Write ALL content for both sections."""),
     except Exception as e:
         last_error = e
         logger.error(f"Report generation failed: {e}")
-    
+
     if response is None:
         logger.error(f"All report generation attempts failed: {last_error}")
         raise HTTPException(status_code=503, detail=f"AI report generation failed after retries: {str(last_error)}")
@@ -1900,7 +1900,7 @@ Do NOT truncate. Write ALL content for both sections."""),
     anchor_terms = _build_anchor_terms(case, documents, timeline, grounds)
     response = _dedupe_report_content(response, report_type, anchor_terms)
 
-    # DO_NOT_UNDO — Missing section repair. The resume logic can produce reports with
+    #  — Missing section repair. The resume logic can produce reports with
     # missing sections if a pass's LLM output truncated. This step detects missing
     # sections and generates them in-place BEFORE the expansion step runs.
     if report_type in ("quick_summary", "full_detailed", "extensive_log"):
@@ -2003,7 +2003,7 @@ INSTRUCTIONS:
                 except Exception as exc:
                     logger.warning(f"Section repair failed for {prefix} {name}: {exc}")
 
-    # DO_NOT_UNDO — Minimum character targets. NEVER lower these values.
+    #  — Minimum character targets. NEVER lower these values.
     min_lengths = {
         "quick_summary": 14000,
         "full_detailed": 80000,
@@ -2016,14 +2016,14 @@ INSTRUCTIONS:
     # Expand ANY report that falls below target — multi-pass reports can still be short
     if len(response) < target_length:
         logger.info(f"Report below target ({len(response)} < {target_length}), running expansion pass(es)")
-        
+
         if report_type in ("full_detailed", "extensive_log"):
             # For multi-pass reports, expand the THINNEST sections individually to avoid 502 errors
             sections = _split_report_sections(response)
             # Sort sections by content length (shortest first) and expand the thin ones
             thin_sections = [(heading, content) for heading, content in sections if heading and len(content) < 3000]
             thin_sections.sort(key=lambda x: len(x[1]))
-            
+
             for heading, content in thin_sections[:6]:  # Expand up to 6 thin sections
                 try:
                     section_expand_prompt = f"""You are expanding one section of a legal report for a criminal appeal case.
@@ -2074,7 +2074,7 @@ GROUNDS COVERED IN THIS CASE:
                 try:
                     expansion_prompt = f"""{case_context}
 
-The report below is {len(response)} characters but must be at least {target_length} characters. EXPAND IT SUBSTANTIALLY. 
+The report below is {len(response)} characters but must be at least {target_length} characters. EXPAND IT SUBSTANTIALLY.
 
 RULES:
 - Keep ALL existing ## section headings exactly as-is. Do NOT rename or reorder sections.
@@ -2101,7 +2101,7 @@ REPORT TO EXPAND:
 
     response = _strip_report_placeholders(response)
     response = _sanitise_suspect_authorities(response)
-    # DO_NOT_UNDO — Normalise markdown BEFORE persisting so bad LLM formatting
+    #  — Normalise markdown BEFORE persisting so bad LLM formatting
     # (inline `## Heading`, `- **Bullet**` glued to prose, missing blank lines
     # around tables) can never hit the DB. Applies to all report types.
     from services.md_normaliser import normalise_markdown
@@ -2119,7 +2119,7 @@ REPORT TO EXPAND:
         }
         for ground in grounds
     ]
-    
+
     if aggressive_mode:
         response += """
 
