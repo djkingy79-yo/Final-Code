@@ -58,6 +58,11 @@ cd /app/frontend && yarn install
 cp backend/.env.example backend/.env   # Fill in secrets
 cp frontend/.env.example frontend/.env # Set API URL
 
+# If using docker-compose for MongoDB, set in backend/.env:
+#   MONGO_URL=mongodb://mongo:27017
+# If running MongoDB locally on your machine, use:
+#   MONGO_URL=mongodb://localhost:27017
+#
 # 3. Start services
 # Backend (auto-reload on save):
 cd backend && uvicorn server:app --host 0.0.0.0 --port 8001 --reload
@@ -66,7 +71,7 @@ cd backend && uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 cd frontend && yarn start
 
 # Or use Docker:
-docker-compose up
+docker compose up --build
 ```
 
 ## Key API Endpoints
@@ -166,15 +171,15 @@ docker-compose up
 |----------|----------|-------------|
 | `MONGO_URL` | Yes | MongoDB connection string |
 | `DB_NAME` | Yes | Database name |
-| `CORS_ORIGINS` | Yes | Allowed frontend origins (comma-separated) |
+| `CORS_ORIGINS` | No | Allowed frontend origins (comma-separated) |
 | `OPENAI_API_KEY` | Yes | Owner's OpenAI API key (drives all LLM features) |
-| `GOOGLE_CLIENT_ID` | Yes | Owner's Google Cloud OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Yes | Owner's Google Cloud OAuth client secret |
-| `RESEND_API_KEY` | Yes | Resend.com API key for transactional emails |
-| `RESEND_FROM_EMAIL` | Yes | Sender email address |
+| `GOOGLE_CLIENT_ID` | No | Google Cloud OAuth client ID (required only for Google Sign-In) |
+| `GOOGLE_CLIENT_SECRET` | No | Google Cloud OAuth client secret (required only for Google Sign-In) |
+| `RESEND_API_KEY` | No | Resend.com API key (required only for password reset / notifications) |
+| `RESEND_FROM_EMAIL` | No | Sender email address (required only if using Resend) |
 | `CONTACT_EMAIL` | Yes | Admin contact email |
 | `FRONTEND_URL` | Yes | Frontend URL for email links |
-| `ADMIN_EMAILS` | No | Comma-separated admin emails |
+| `ADMIN_EMAILS` | Yes | Comma-separated admin emails |
 | `PAYID_EMAIL` | No | PayID payment email |
 
 ### Frontend (.env)

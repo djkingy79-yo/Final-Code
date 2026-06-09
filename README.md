@@ -554,17 +554,19 @@ The frontend is a **React** (v19) single-page application styled with **Tailwind
 
 ## Environment Setup
 
+Tip: if you run MongoDB via the repo’s `docker-compose.yml`, set `MONGO_URL=mongodb://mongo:27017` (service name), not `mongodb://localhost:27017`.
+
 ### Backend (`/app/backend/.env`)
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `MONGO_URL` | Yes | MongoDB connection string |
 | `DB_NAME` | Yes | Database name |
-| `CORS_ORIGINS` | Yes | Comma-separated allowed frontend origins |
 | `OPENAI_API_KEY` | Yes | Owner's OpenAI API key for GPT-4o (billing goes to this account) |
-| `GOOGLE_CLIENT_ID` | Yes | Google OAuth 2.0 client ID (from Google Cloud Console) |
-| `GOOGLE_CLIENT_SECRET` | Yes | Google OAuth 2.0 client secret |
-| `RESEND_API_KEY` | Yes | Resend.com API key for transactional emails |
-| `RESEND_FROM_EMAIL` | Yes | Sender email address |
+| `CORS_ORIGINS` | No | Comma-separated allowed frontend origins (recommended for browsers) |
+| `GOOGLE_CLIENT_ID` | No | Google OAuth 2.0 client ID (required only if you enable Google Sign-In) |
+| `GOOGLE_CLIENT_SECRET` | No | Google OAuth 2.0 client secret (required only if you enable Google Sign-In) |
+| `RESEND_API_KEY` | No | Resend.com API key (required only for password reset / notifications) |
+| `RESEND_FROM_EMAIL` | No | Sender email address (required only if using Resend) |
 | `CONTACT_EMAIL` | Yes | Admin contact email |
 | `FRONTEND_URL` | Yes | Frontend URL for email links and OAuth callbacks |
 | `ADMIN_EMAILS` | Yes | Comma-separated admin email addresses |
