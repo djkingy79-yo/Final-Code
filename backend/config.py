@@ -13,6 +13,16 @@ import json as _json_mod
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# ── Docker / Local Dev Helpers ──
+def _running_in_docker() -> bool:
+    # Common Docker indicator file, plus an explicit opt-in env var for edge cases.
+    return Path("/.dockerenv").exists() or os.environ.get("RUNNING_IN_DOCKER") == "1"
+
+
+def _looks_like_localhost_mongo(url: str) -> bool:
+    return url.startswith("mongodb://localhost") or url.startswith("mongodb://127.0.0.1")
+
+
 # ── Startup Validation ──
 # TIER 1: Fatal — app cannot function without these
 # Self-hosted: requires OPENAI_API_KEY (the owner's personal OpenAI billing key).
@@ -24,6 +34,17 @@ if _missing:
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
+if _running_in_docker() and _looks_like_localhost_mongo(mongo_url):
+    print(
+        "WARNING: Running in Docker and MONGO_URL points at localhost. "
+        "In docker-compose, use MONGO_URL=mongodb://mongo:27017 (service name).",
+        file=sys.stderr,
+    )
+    if os.environ.get("AUTO_FIX_DOCKER_MONGO", "").strip().lower() in {"1", "true", "yes", "on"}:
+        mongo_url = (
+            mongo_url.replace("mongodb://localhost", "mongodb://mongo", 1)
+            .replace("mongodb://127.0.0.1", "mongodb://mongo", 1)
+        )
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
