@@ -197,17 +197,13 @@ jobs:
             exit 1
           fi
           echo "✅ No credentials found in production code"
-      - name: Check .env not committed
+      - name: Check .env files not committed
         run: |
-          if [ -f "backend/.env" ]; then
-            echo "::error::backend/.env should not be committed"
+          if [ -f "backend/.env" ] || [ -f "frontend/.env" ]; then
+            echo "::error::backend/.env and frontend/.env should not be committed"
             exit 1
           fi
-          if [ -f "frontend/.env" ]; then
-            echo "::error::frontend/.env should not be committed"
-            exit 1
-          fi
-          echo "✅ backend/.env and frontend/.env are not committed"
+          echo "✅ No .env files committed"
       - name: Check for identity leaks in shipped code
         # IDENTITY_LOCK enforcement — blocks the build if any agent re-introduces
         # foreign client-side telemetry, preview hostnames, or shared/fallback key

@@ -56,27 +56,27 @@ Before committing / deploying / submitting to App Store:
 
 ```bash
 # No deploy-platform hostnames, third-party telemetry, or shared key refs in active source
-grep -rEn \\
-  -e "posthog" \\
-  -e "google-analytics" \\
-  -e "gtag\\(" \\
-  -e "sentry\\.io" \\
-  -e "fullstory" \\
-  -e "hotjar" \\
-  -e "logrocket" \\
-  -e "segment\\.com/analytics\\.js" \\
-  -e "vercel\\.app" \\
-  -e "netlify\\.app" \\
-  -e "onrender\\.com" \\
-  -e "up\\.railway\\.app" \\
-  -e "pages\\.dev" \\
-  -e "LLM_KEY" \\
-  -e "UNIVERSAL_KEY" \\
-  /app/backend /app/frontend/src /app/frontend/public /app/frontend/.env /app/backend/.env \\
-  2>/dev/null | grep -v node_modules | grep -v tests/ | grep -v \\.pyc
+grep -rEn \
+  -e "posthog" \
+  -e "google-analytics" \
+  -e "gtag\(" \
+  -e "sentry\.io" \
+  -e "fullstory" \
+  -e "hotjar" \
+  -e "logrocket" \
+  -e "segment\.com/analytics\.js" \
+  -e "vercel\.app" \
+  -e "netlify\.app" \
+  -e "onrender\.com" \
+  -e "up\.railway\.app" \
+  -e "pages\.dev" \
+  -e "LLM_KEY" \
+  -e "UNIVERSAL_KEY" \
+  /app/backend /app/frontend/src /app/frontend/public /app/frontend/.env /app/backend/.env \
+  2>/dev/null | grep -v node_modules | grep -v tests/ | grep -v \.pyc
 
 # No alternate/shared LLM key references anywhere
-grep -rEn "EMERGENT_LLM_KEY|UNIVERSAL_LLM_KEY|SHARED_LLM_KEY" \\
+grep -rEn "EMERGENT_LLM_KEY|UNIVERSAL_LLM_KEY|SHARED_LLM_KEY" \
   /app/backend /app/frontend/src 2>/dev/null | grep -v node_modules
 ```
 
