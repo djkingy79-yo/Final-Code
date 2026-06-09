@@ -203,11 +203,15 @@ jobs:
             echo "::error::backend/.env should not be committed"
             exit 1
           fi
-          echo "✅ .env not committed"
+          if [ -f "frontend/.env" ]; then
+            echo "::error::frontend/.env should not be committed"
+            exit 1
+          fi
+          echo "✅ backend/.env and frontend/.env are not committed"
       - name: Check for identity leaks in shipped code
         # IDENTITY_LOCK enforcement — blocks the build if any agent re-introduces
         # foreign client-side telemetry, preview hostnames, or shared/fallback key
-        # patterns into shipped source, public HTML, dev plugins, or .env files.
+        # patterns into shipped source, public HTML, or dev plugins.
         run: |
           echo "Scanning shipped source for identity leaks..."
           LEAKS=$(grep -rEn \
