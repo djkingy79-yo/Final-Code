@@ -168,7 +168,12 @@ async def on_startup():
     from services.startup_tasks import create_database_indexes
 
     # Only indexes on startup — fast and required before serving requests
-    await create_database_indexes()
+    db_startup_ready = True
+    try:
+        await create_database_indexes()
+    except Exception as e:
+        db_startup_ready = False
+        logger.error(f"Database startup tasks failed; starting API in degraded mode: {e}")
 
     # Heavy scans run in background AFTER app is ready to serve health checks
     async def _background_startup():
@@ -187,13 +192,17 @@ async def on_startup():
         except Exception as e:
             logger.error(f"Background startup task failed: {e}")
 
-    asyncio.create_task(_background_startup())
+    if db_startup_ready:
+        asyncio.create_task(_background_startup())
+    else:
+        logger.warning("Skipping DB-dependent background startup tasks because database is unavailable")
 
     # Weekly scheduled AI scan for legislation amendments — runs every Monday
     # at 09:00 AEST (Sun 23:00 UTC). Produces ai_flagged candidates for admin
     # manual confirmation. Never auto-publishes (zero hallucination risk).
-    from services.weekly_legislation_scan import weekly_legislation_scan_loop
-    asyncio.create_task(weekly_legislation_scan_loop())
+    if db_startup_ready:
+        from services.weekly_legislation_scan import weekly_legislation_scan_loop
+        asyncio.create_task(weekly_legislation_scan_loop())
 
 
 @app.on_event("shutdown")
